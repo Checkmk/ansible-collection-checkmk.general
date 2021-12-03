@@ -1,0 +1,19 @@
+namespace: tribe29
+name: checkmk
+version: 0.0.1
+readme: README.md
+authors:
+  - "Marcel Arentz (https://github.com/godspeed-you)"
+  - "Robin Gierse (https://github.com/robin-tribe29)"
+description: null
+license_file: LICENSE
+tags: [tribe29, checkmk, monitoring]
+# dependencies: []
+repository: https://github.com/tribe29/ansible-checkmk/
+documentation: https://github.com/tribe29/ansible-checkmk/tree/master/docs
+homepage: https://github.com/tribe29/ansible-checkmk/
+issues: https://github.com/tribe29/ansible-checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc
+# build_ignore:
+#   - '*cloud-config-aws.ini'
+#   - '*cloud-config-aws.yml'
+#   - 'changelogs/.plugin-cache.yaml'
