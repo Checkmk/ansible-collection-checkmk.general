@@ -1,0 +1,15 @@
+requires_ansible: '>=2.9.10'
+action_groups:
+  checkmk:
+  - checkmk_changes
+  - checkmk_host
+  - checkmk_services
+
+plugin_routing:
+  modules:
+    checkmk_foo:
+      deprecation:
+        removal_date: 2022-06-01
+        warning_text: >-
+          checkmk_foo was removed in Ansible 2.9.
+          Please update your tasks.
