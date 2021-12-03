@@ -1,0 +1,4 @@
+---
+#- include_vars: cmk_agent_win.yml
+- include_vars: cmk_agent_generic.yml
+- include_tasks: "{{ ansible_os_family }}-tasks.yml"

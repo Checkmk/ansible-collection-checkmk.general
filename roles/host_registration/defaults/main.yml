@@ -1,0 +1,6 @@
+---
+
+cmk_site_url: "http://192.168.56.1/mysite"
+cmk_site_user: automation
+cmk_site_password: myautomationpassword
+cmk_site_default_folder: "ansible"

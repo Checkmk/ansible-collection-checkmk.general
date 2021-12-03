@@ -1,0 +1,5 @@
+---
+
+plugins_path: "{{ cmk_agent_lnx_path }}/plugins"
+local_path: "{{ cmk_agent_lnx_path }}/local"
+config_path: "/etc/check_mk/"

@@ -1,0 +1,78 @@
+---
+# General variables
+cmk_site_url: "http://192.168.56.1/mysite"
+cmk_agent_lnx_path: "/usr/lib/check_mk_agent"
+cmk_agent_win_path: "C:\\Program Files (x86)\\check_mk"
+
+# Set optional search methods
+by_process: true
+by_package: false
+by_files: false
+
+
+# Definition of plugins
+# Example definition (none option is mandatory):
+#     apache_status:
+#       cmd: apache2            -> regex for process match
+#       pkg: apache2            -> exact name of package
+#       cfg: apache_status.cfg  -> config file if the plugin needs one
+#       path: /usr/sbin/apache2 -> path to file for match
+#       force: true             -> true/false to enforce the presence
+
+cmk_host_plugins:
+    Linux:
+      apache_status:
+        cmd: apache
+        pkg: apache2
+        cfg: apache_status.cfg
+      asmcmd.sh:
+        force: false
+      db2_mem:
+        cmd: db2sysc
+      dnsclient:
+        force: false
+      isc_dhcpd:
+        cmd: dhcpd
+        path: /etc/dhcp/dhcpd.conf
+      jar_signature:
+        path: /home/oracle/bin/jdk_latest_version
+        cfg: jar_signature.cfg
+      kaspersky_av:
+        path: /opt/kaspersky/kav4fs/bin/kav4fs-control
+      lnx_quota:
+        path: /usr/sbin/repquota
+      lvm:
+        pkg: lvm2
+      mailman_lists:
+        pkg: mailman
+      mk_apt:
+        path: /usr/bin/apt
+      mk_ceph:
+        cmd: ceph
+        cfg: ceph.cfg
+      mk_cups_queues:
+        cmd: cups
+        path: /usr/bin/lpstat
+        pkg: cups
+      mk_db2.linux:
+        cmd: db2wdog
+      mk_filehandler:
+        force: false
+      mk_docker_node:
+        cmd: docker
+        pkg: docker-ce
+      mk_docker_container_piggybacked:
+        cmd: docker
+        pkg: docker-ce
+      mk_logwatch:
+        cfg: logwatch.cfg
+        force: false
+      mk_logins:
+        force: true
+      mk_oracle:
+        cmd: oracle
+        cfg: mk_oracle.cfg
+    Windows:
+      mk_oracle.ps1:
+        cmd: oracle
+        cfg: mk_oracle_cfg.ps1

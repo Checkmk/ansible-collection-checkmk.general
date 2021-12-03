@@ -1,0 +1,12 @@
+---
+
+- name: Install {{ needed_plugin }}
+  win_get_url:
+    url: "{{ cmk_site_url }}/check_mk/agents/windows/plugins/{{ needed_plugin }}"
+    dest: "{{ plugins_path }}/{{ needed_plugin }}"
+
+- name: Install config file for {{ needed_plugin }}
+  win_copy:
+    src: "{{ cmk_plugin_base[ needed_plugin ].cfg }}"
+    dest: "{{ config_path }}/{{ cmk_plugin_base[ needed_plugin ].cfg }}"
+  when: cmk_plugin_base[ needed_plugin ].cfg is defined

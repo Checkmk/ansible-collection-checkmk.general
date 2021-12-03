@@ -1,0 +1,13 @@
+---
+# Install Check_MK Agent on Debian/Ubuntu
+
+- name: Download agent -> {{ cmk_agent.url.deb }}
+  get_url:
+    url: "{{ cmk_agent.url.deb }}"
+    dest: "{{ cmk_host_linux_tmp }}"
+
+- name: Install agent -> {{ cmk_agent.file.deb }}
+  become: yes
+  apt:
+      deb: "{{ cmk_agent.file.deb }}"
+      state: present

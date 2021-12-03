@@ -1,0 +1,9 @@
+galaxy_info:
+  role_name: cmk_host_registration
+  author: MArcel Arentz
+  description: Register Host at checkMK site, discover services and activate these changes
+  company: tribe29 GmbH
+
+  license: GPLv2
+
+  min_ansible_version: 2.4

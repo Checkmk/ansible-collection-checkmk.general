@@ -1,0 +1,9 @@
+galaxy_info:
+  role_name: cmk_host_agent
+  author: Marcel Arentz
+  description: Installing and updating checkMK agents
+  company: tribe29 GmbH
+
+  license: GPLv2
+
+  min_ansible_version: 2.4
