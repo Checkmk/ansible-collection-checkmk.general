@@ -12,6 +12,10 @@ We are completely reorganizing this repository. In the process we might even nee
 - https://docs.ansible.com/ansible/latest/dev_guide/developing_collections_structure.html
 - https://docs.ansible.com/ansible/latest/user_guide/collections_using.html
 
+## Repository Structure
+
+For information about the structure and organization of this repository have a look at [STRUCTURE.md](docs/STRUCTURE.md).
+
 ---
 
 Checkmk already provides the needed APIs to automate the 

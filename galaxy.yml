@@ -23,7 +23,7 @@ authors:
 ### OPTIONAL but strongly recommended
 
 # A short summary description of the collection
-description: null
+description: "The official Checkmk Ansible collection - brought to you by tribe29 - the Checkmk company."
 
 # Either a single license or a list of licenses for content inside of a collection. Ansible Galaxy currently only
 # accepts L(SPDX,https://spdx.org/licenses/) licenses. This key is mutually exclusive with 'license_file'
