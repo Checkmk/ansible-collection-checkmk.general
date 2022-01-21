@@ -110,8 +110,25 @@ You can also join our [Checkmk Community](https://docs.checkmk.com/).
 <!--Add a link to a changelog.rst file or an external docsite to cover this information. -->
 
 ## Roadmap
-
 <!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
+This is merely a collection of possible additions to the role. Please do not consider a concrete planning document for the near future!
+
+- Modules
+  - Monitoring
+    - Acknowledgement
+    - Downtime
+  - Setup
+    - Agents
+    - BI
+    - Contact Groups
+    - Host Groups
+    - Host Tag Groups
+    - Passwords
+    - Service Groups
+    - Time Periods
+    - Users
+- Lookup Plugins
+  - Version
 
 ## More information
 
