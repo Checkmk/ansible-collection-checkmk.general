@@ -1,5 +1,10 @@
 # tribe29 Checkmk Collection
 
+Checkmk already provides the needed APIs to automate the 
+configuration of your monitoring. With this project we want to create
+and share roles and modules for Ansible to simplify your first steps
+with automating Checkmk through Ansible.
+
 ## This is a work in progress!
 ## Do not use until you know what you are doing!
 
@@ -7,26 +12,19 @@
 
 We are completely reorganizing this repository. In the process we might even
 need to create new repositories or rename this one. Most of this work will
-happen in a dedicated branch until it is ready to be mainlined. Keep an eye on
+happen in dedicated branches until it is ready to be mainlined. Keep an eye on
 the progress here and feel free to contribute in any way. We will try to keep
 you posted as best as we can.
 Keep an eye on [this Checkmk forum post](https://forum.checkmk.com/t/checkmk-goes-ansible/25428) for updates.
 
 ## Notes
 
-See [NOTES.md](NOTES.md)
+See [NOTES.md](NOTES.md).
 
 ## Repository Structure
 
 For information about the structure and organization of this repository
 have a look at [STRUCTURE.md](docs/STRUCTURE.md).
-
----
-
-Checkmk already provides the needed APIs to automate the 
-configuration of your monitoring. With this project we want to create
-and share roles and modules for Ansible to simplify your first steps
-with automating Checkmk through Ansible.
 
 ## Included content
 
@@ -88,11 +86,23 @@ collections:
 
 You can either call modules by their Fully Qualified Collection Namespace (FQCN),
 such as `tribe29.checkmk.activation`, or you can call modules by their short name
-if you list the `tribe29.checkmk` collection in the playbook's `collections` keyword:
+if you list the `tribe29.checkmk` collection in the playbook's [`collections`](https://docs.ansible.com/ansible/devel/user_guide/collections_using.html#using-collections-in-playbooks) keyword:
 
 ```yaml
 ---
-    <Example Playbook>
+- hosts: all
+
+  collections:
+    - tribe29.checkmk
+
+  tasks:
+    - name: "Run activation."
+      activation:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        force_foreign_changes: 'true'
 ```
 ### See Also:
 
@@ -104,10 +114,11 @@ if you list the `tribe29.checkmk` collection in the playbook's `collections` key
 
 We welcome community contributions to this collection. If you find problems, please open an issue or create a PR against the [tribe29 Checkmk collection repository](https://github.com/tribe29/ansible-checkmk/). See [Contributing to Ansible-maintained collections](https://docs.ansible.com/ansible/devel/community/contributing_maintained_collections.html#contributing-maintained-collections) for more details.
 
-You can also join our [Checkmk Community](https://docs.checkmk.com/).
+You can also join our [Checkmk Community](https://forum.checkmk.com/) and have a look at the [dedicated post regarding Ansible](https://forum.checkmk.com/t/checkmk-goes-ansible/25428).
 
 ## Release notes
 <!--Add a link to a changelog.rst file or an external docsite to cover this information. -->
+See [CHANGELOG.rst](CHANGELOG.rst).
 
 ## Roadmap
 <!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
