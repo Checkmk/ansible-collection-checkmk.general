@@ -1,0 +1,19 @@
+---
+server_url: "http://localhost/"
+site: "ansible"
+automation_user: "automation"
+automation_secret: "$SECRET"
+
+checkmk_folders:
+  - path: /test
+    title: Test
+  - path: /foo
+    title: Foo
+  - path: /bar
+    title: Bar
+  - path: /foo/bar
+    title: Bar
+  - path: /bar/foo
+    title: Foo
+  - path: /foo/bar/treasure
+    title: Treasure
