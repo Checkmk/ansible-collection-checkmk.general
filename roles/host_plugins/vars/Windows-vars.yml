@@ -1,5 +1,0 @@
----
-
-plugins_path: "{{ cmk_agent_win_path }}\\plugins"
-local_path: "{{ cmk_agent_win_path }}\\local"
-config_path: "{{ cmk_agent_win_path }}\\config"

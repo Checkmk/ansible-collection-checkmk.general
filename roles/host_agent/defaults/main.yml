@@ -1,9 +1,0 @@
----
-# Site variables
-cmk_version: "1.5.0p13"
-cmk_site_url: "http://192.168.56.1/mysite"
-
-# temp directories for files
-cmk_host_linux_tmp: "/tmp"
-cmk_host_windows_tmp: "C:\\Users\\{{ ansible_user }}\\AppData\\Local\\Temp"
-
