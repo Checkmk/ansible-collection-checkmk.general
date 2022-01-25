@@ -17,5 +17,5 @@ class ModuleDocFragment(object):
         automation_secret:
             description: The secret to authenticate your automation user.
             required: true
-            type: str 
+            type: str
     '''

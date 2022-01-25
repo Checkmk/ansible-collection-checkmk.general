@@ -29,7 +29,7 @@ options:
         type: str
     force_foreign_changes:
         description: Wheather to active foreign changes.
-        default: False
+        default: false
         type: bool
 
 author:
@@ -72,7 +72,7 @@ def run_module():
         server_url=dict(type='str', required=True),
         site=dict(type='str', required=True),
         automation_user=dict(type='str', required=True),
-        automation_secret=dict(type='str', required=True),
+        automation_secret=dict(type='str', required=True, no_log=True),
         sites=dict(type='str', required=True),
         force_foreign_changes=dict(type='bool', default=False),
     )

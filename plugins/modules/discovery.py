@@ -76,15 +76,16 @@ from ansible.module_utils.urls import fetch_url
 
 import pprint
 
+
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         server_url=dict(type='str', required=True),
         site=dict(type='str', required=True),
         automation_user=dict(type='str', required=True),
-        automation_secret=dict(type='str', required=True),
+        automation_secret=dict(type='str', required=True, no_log=True),
         host_name=dict(type='str', required=True),
-        state=dict(type='str', choices= ['new', 'remove', 'fix_all', 'refresh', 'only_host_labels']),
+        state=dict(type='str', choices=['new', 'remove', 'fix_all', 'refresh', 'only_host_labels']),
     )
 
     result = dict(changed=False, failed=False, http_code='', msg='')
@@ -129,11 +130,7 @@ def run_module():
     }
     url = server_url + site + "/check_mk/api/1.0" + api_endpoint
 
-    response, info = fetch_url(module,
-                                url,
-                                module.jsonify(params),
-                                headers=headers,
-                                method='POST')
+    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method='POST')
     http_code = info['status']
 
     # Kudos to Lars G.!

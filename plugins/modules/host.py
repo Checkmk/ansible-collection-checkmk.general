@@ -78,7 +78,7 @@ def run_module():
         server_url=dict(type='str', required=True),
         site=dict(type='str', required=True),
         automation_user=dict(type='str', required=True),
-        automation_secret=dict(type='str', required=True),
+        automation_secret=dict(type='str', required=True, no_log=True),
         host_name=dict(type='str', required=True),
         folder=dict(type='str', required=True),
         state=dict(type='str', choices=['present', 'absent']),
@@ -129,7 +129,6 @@ def run_module():
         msg = 'Error calling API.'
         failed = True
 
-
     # Handle the host accordingly to above findings and desired state
     if state == 'present' and host_state == 'present':
         msg = "Host already present."
@@ -158,7 +157,6 @@ def run_module():
             msg = 'Error calling API.'
             failed = True
 
-
     elif state == 'absent' and host_state == 'absent':
         msg = "Host already absent."
 
@@ -177,7 +175,6 @@ def run_module():
         else:
             msg = 'Error calling API.'
             failed = True
-
 
     result['msg'] = msg
     result['changed'] = changed

@@ -49,7 +49,7 @@ EXAMPLES = r'''
     automation_user: "automation"
     automation_secret: "$SECRET"
     path: "/my_folder"
-    title: "My Folder
+    title: "My Folder"
     state: "present"
 '''
 
@@ -77,7 +77,7 @@ def run_module():
         server_url=dict(type='str', required=True),
         site=dict(type='str', required=True),
         automation_user=dict(type='str', required=True),
-        automation_secret=dict(type='str', required=True),
+        automation_secret=dict(type='str', required=True), no_log=True,
         path=dict(type='str', required=True),
         title=dict(type='str'),
         state=dict(type='str', choices=['present', 'absent']),
