@@ -50,6 +50,8 @@ EXAMPLES = r'''
     automation_user: "automation"
     automation_secret: "$SECRET"
     host_name: "my_host"
+    ip_address: "x.x.x.x"
+    monitored_on: "NAME_OF_DISTRIBUTED_HOST"
     folder: "/"
     state: "present"
 '''
@@ -80,6 +82,8 @@ def run_module():
         automation_user=dict(type='str', required=True),
         automation_secret=dict(type='str', required=True, no_log=True),
         host_name=dict(type='str', required=True),
+        ip_address=dict(type='str'),
+        monitored_on=dict(type='str'),
         folder=dict(type='str', required=True),
         state=dict(type='str', choices=['present', 'absent']),
     )
@@ -93,15 +97,22 @@ def run_module():
         module.params['folder'] = '/'
     if module.params['state'] is None:
         module.params['state'] = 'present'
-
+    if module.params['ip_address'] is None:
+        module.params['ip_address'] = '127.0.0.1'
+    if module.params['monitored_on'] is None:
+        module.params['monitored_on'] = ''
+ 
     changed = False
     failed = False
+    
     http_code = ''
     server_url = module.params['server_url']
     site = module.params['site']
     automation_user = module.params['automation_user']
     automation_secret = module.params['automation_secret']
     host_name = module.params['host_name']
+    ip_address = module.params['ip_address']
+    monitored_on = module.params['monitored_on']
     folder = module.params['folder']
     state = module.params['state']
 
@@ -139,7 +150,8 @@ def run_module():
             'folder': folder,
             'host_name': host_name,
             'attributes': {
-                'ipaddress': '127.0.0.1'
+                'site': monitored_on,
+                'ipaddress': ip_address
             }
         }
         url = server_url + site + "/check_mk/api/1.0" + api_endpoint
