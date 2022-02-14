@@ -58,20 +58,19 @@ jobs:
           body: |
             # Ansible Collection: tribe29.checkmk
 
-            You can install the Checkmk collection locally, if you download
-            the tarball from this release as follows:
+            You can install this collection locally as follows, if you download
+            the tarball from this release:
 
                 ansible-galaxy collection install /path/to/tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
 
-            You can also include it in a `requirements.yml` file and install it with
-            `ansible-galaxy collection install -r requirements.yml`, using the format:
-
+            You can also include it in a `requirements.yml` file using the format:
             ```yaml
             ---
             collections:
               - source: /path/to/tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
                 type: file
             ```
+            and install it with `ansible-galaxy collection install -r requirements.yml`.
           draft: false
           prerelease: false
 

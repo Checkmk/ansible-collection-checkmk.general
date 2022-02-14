@@ -65,15 +65,14 @@ offline installation as follows:
 
     ansible-galaxy collection install /path/to/tribe29-checkmk-X.Y.Z.tar.gz
 
-You can also include it in a `requirements.yml` file and install it with
-`ansible-galaxy collection install -r requirements.yml`, using the format:
-
+You can also include it in a `requirements.yml` file using the format:
 ```yaml
 ---
 collections:
   - source: /path/to/tribe29-checkmk-X.Y.Z.tar.gz
     type: file
 ```
+and install it with `ansible-galaxy collection install -r requirements.yml`.
 
 ### From the Galaxy
 
