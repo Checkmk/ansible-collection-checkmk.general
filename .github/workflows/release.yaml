@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get current version
-        id: cversion
+        id: current_version
         run: echo "::set-output name=version::$(grep version galaxy.yml | awk -F'"' '{ print $2 }')"
 
       - name: Set up Python ${{ matrix.python-version }}
@@ -24,12 +24,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Copy files and directories to source
+      - name: Copy Files and Directories to Source
         run: |
           mkdir -p build/src
           cp $files build/src
@@ -47,26 +47,29 @@ jobs:
         run: ansible-galaxy collection build build/src --force
 
       - name: Create Release
-        id: create_release
+        id: create-release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.cversion.outputs.version }}
-          release_name: Release v${{ steps.cversion.outputs.version }}
+          tag_name: v${{ steps.current_version.outputs.version }}
+          release_name: Release v${{ steps.current_version.outputs.version }}
           body: |
             # Ansible Collection: tribe29.checkmk
 
-            Install with:
-            ```sh
-            ansible-galaxy collection install -r requirements.yml -f
-            ```
+            You can install the Checkmk collection locally, if you download
+            the tarball from this release as follows:
 
-            The requirements.yml needs to have the following format and content:
+                ansible-galaxy collection install /path/to/tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+
+            You can also include it in a `requirements.yml` file and install it with
+            `ansible-galaxy collection install -r requirements.yml`, using the format:
+
             ```yaml
             ---
             collections:
-                - https://github.com/tribe29/ansible-collection-tribe29.checkmk/releases/download/v${{ steps.cversion.outputs.version }}/tribe29-checkmk-${{ steps.cversion.outputs.version }}.tar.gz
+              - source: /path/to/tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+                type: file
             ```
           draft: false
           prerelease: false
@@ -78,9 +81,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: tribe29-checkmk-${{ steps.cversion.outputs.version }}.tar.gz
-          asset_name: tribe29-checkmk-${{ steps.cversion.outputs.version }}.tar.gz
+          asset_path: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+          asset_name: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
           asset_content_type: application/tar+gzip
 
       # - name: Deploy Ansible collection to Galaxy
-      #   run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.cversion.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
+      #   run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
