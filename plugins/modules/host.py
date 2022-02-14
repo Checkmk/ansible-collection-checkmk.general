@@ -51,6 +51,7 @@ EXAMPLES = r'''
     automation_secret: "$SECRET"
     host_name: "my_host"
     ip_address: "x.x.x.x"
+    monitored_on: "NAME_OF_DISTRIBUTED_HOST"
     folder: "/"
     state: "present"
 '''
@@ -91,15 +92,15 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args,
                            supports_check_mode=False)
-    multisite = False
+
     if module.params['folder'] is None:
         module.params['folder'] = '/'
     if module.params['state'] is None:
         module.params['state'] = 'present'
     if module.params['ip_address'] is None:
         module.params['ip_address'] = '127.0.0.1'
-    if module.params['monitored_on'] != '':
-        multisite = True
+    if module.params['monitored_on'] is None:
+        module.params['monitored_on'] = ''
  
     changed = False
     failed = False
@@ -149,8 +150,7 @@ def run_module():
             'folder': folder,
             'host_name': host_name,
             'attributes': {
-                if (multisite):
-                    'site': monitored_on,
+                'site': monitored_on,
                 'ipaddress': ip_address
             }
         }
