@@ -40,49 +40,47 @@ jobs:
           # directories: "playbooks plugins roles vars"
           directories: "changelogs docs meta playbooks plugins"
 
-      # ToDo: This wont work! Need to fetch the workflow from my personal homepage to
-      # compile and commit changelog. Alternatively this could be done by a git hook.
       - name: Compile Collection Changelog
         run: cd build/src && antsibull-changelog release
 
       - name: Build Ansible Collection
         run: ansible-galaxy collection build build/src --force
 
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: v${{ steps.cversion.outputs.version }}
-      #     release_name: Release v${{ steps.cversion.outputs.version }}
-      #     body: |
-      #       # Ansible Collection: tribe29.checkmk
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.cversion.outputs.version }}
+          release_name: Release v${{ steps.cversion.outputs.version }}
+          body: |
+            # Ansible Collection: tribe29.checkmk
 
-      #       Install with:
-      #       ```sh
-      #       ansible-galaxy collection install -r requirements.yml -f
-      #       ```
+            Install with:
+            ```sh
+            ansible-galaxy collection install -r requirements.yml -f
+            ```
 
-      #       The requirements.yml needs to have the following format and content:
-      #       ```yaml
-      #       ---
-      #       collections:
-      #           - https://github.com/tribe29/ansible-checkmk/releases/download/v${{ steps.cversion.outputs.version }}/tribe29-checkmk-${{ steps.cversion.outputs.version }}.tar.gz
-      #       ```
-      #     draft: false
-      #     prerelease: false
+            The requirements.yml needs to have the following format and content:
+            ```yaml
+            ---
+            collections:
+                - https://github.com/tribe29/ansible-collection-tribe29.checkmk/releases/download/v${{ steps.cversion.outputs.version }}/tribe29-checkmk-${{ steps.cversion.outputs.version }}.tar.gz
+            ```
+          draft: false
+          prerelease: false
 
-      # - name: Upload Release Asset
-      #   id: upload-release-asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: tribe29-checkmk-${{ steps.cversion.outputs.version }}.tar.gz
-      #     asset_name: tribe29-checkmk-${{ steps.cversion.outputs.version }}.tar.gz
-      #     asset_content_type: application/tar+gzip
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: tribe29-checkmk-${{ steps.cversion.outputs.version }}.tar.gz
+          asset_name: tribe29-checkmk-${{ steps.cversion.outputs.version }}.tar.gz
+          asset_content_type: application/tar+gzip
 
       # - name: Deploy Ansible collection to Galaxy
       #   run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.cversion.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
