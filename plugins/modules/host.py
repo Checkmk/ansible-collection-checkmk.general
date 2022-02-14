@@ -50,6 +50,7 @@ EXAMPLES = r'''
     automation_user: "automation"
     automation_secret: "$SECRET"
     host_name: "my_host"
+    ip_address: "x.x.x.x"
     folder: "/"
     state: "present"
 '''
@@ -80,6 +81,7 @@ def run_module():
         automation_user=dict(type='str', required=True),
         automation_secret=dict(type='str', required=True, no_log=True),
         host_name=dict(type='str', required=True),
+        ip_address=dict(type='str'),
         folder=dict(type='str', required=True),
         state=dict(type='str', choices=['present', 'absent']),
     )
@@ -139,7 +141,7 @@ def run_module():
             'folder': folder,
             'host_name': host_name,
             'attributes': {
-                'ipaddress': '127.0.0.1'
+                'ipaddress': ip_address or '127.0.0.1'
             }
         }
         url = server_url + site + "/check_mk/api/1.0" + api_endpoint
