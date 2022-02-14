@@ -17,7 +17,8 @@ jobs:
 
       - name: Get current version
         id: current_version
-        run: echo "::set-output name=version::$(grep version galaxy.yml | awk -F'"' '{ print $2 }')"
+        # run: echo "::set-output name=version::$(grep version galaxy.yml | awk -F'"' '{ print $2 }')"
+        run : echo "::set-output name=version::$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)"
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -80,7 +81,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
           asset_name: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
           asset_content_type: application/tar+gzip
