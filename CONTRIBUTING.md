@@ -6,6 +6,14 @@ General information about setting up your Python environment, testing modules,
 Ansible coding styles, and more can be found in the [Ansible Community Guide](
 https://docs.ansible.com/ansible/latest/community/index.html).
 
+## A word of warning
+
+While we want the community to engage in developing this collection, please be
+aware, that we have to ensure a certain level of quality and scope. We will try
+to be as transparent as possible about what we will include but please do not
+feel discouraged, if an idea or proposal gets rejected. Instead go on an create
+something yourself, if you think your approach is viable! There is already a lot
+of great content out there and we love seeing you add to that plethora of content!
 
 ## Submitting Issues
 
