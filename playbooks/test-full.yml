@@ -40,6 +40,16 @@
       state: "present"
     delegate_to: localhost
 
+  - name: "Discover hosts."
+    discovery:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      host_name: "{{ inventory_hostname }}"
+      state: "fix_all"
+    delegate_to: localhost
+
   - name: "Run activation module - 2."
     activation:
       server_url: "{{ server_url }}"
