@@ -9,7 +9,7 @@ https://docs.ansible.com/ansible/latest/community/index.html).
 
 ## Submitting Issues
 
-If you encounter any bugs or have ideas for improvements feel free to open an issue or even better a [pull request](#Pull-Requests).
+If you encounter any bugs or have ideas for improvements feel free to open an [issue](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) or even better a [pull request](#Pull-Requests).
 Dedicated requirements will be added here as suitable.
 
 ## Pull Requests
@@ -24,4 +24,4 @@ The `tribe29.checkmk` collection follows the Ansible project's
 
 ## Forum
 
-If you have questions, feedback and or simply no Github account feel free to reach ou to our awesome community in our [Forum](https://community.checkmk.com).
+If you have questions, feedback and or simply no Github account feel free to reach out to our awesome community in our [forum](https://community.checkmk.com).

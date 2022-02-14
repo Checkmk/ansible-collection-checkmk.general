@@ -45,16 +45,16 @@ tags: [tribe29, checkmk, monitoring]
 # dependencies: []
 
 # The URL of the originating SCM repository
-repository: https://github.com/tribe29/ansible-checkmk/
+repository: https://github.com/tribe29/ansible-collection-tribe29.checkmk
 
 # The URL to any online docs
-documentation: https://github.com/tribe29/ansible-checkmk/tree/master/docs
+documentation: https://github.com/tribe29/ansible-collection-tribe29.checkmk/tree/main/docs
 
 # The URL to the homepage of the collection/project
-homepage: https://github.com/tribe29/ansible-checkmk/
+homepage: https://github.com/tribe29/ansible-collection-tribe29.checkmk
 
 # The URL to the collection issue tracker
-issues: https://github.com/tribe29/ansible-checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc
+issues: https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc
 
 # build_ignore:
 #   - '*cloud-config-aws.ini'
