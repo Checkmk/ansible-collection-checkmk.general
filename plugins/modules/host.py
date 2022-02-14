@@ -82,6 +82,7 @@ def run_module():
         automation_secret=dict(type='str', required=True, no_log=True),
         host_name=dict(type='str', required=True),
         ip_address=dict(type='str'),
+        monitored_on=dict(type='str'),
         folder=dict(type='str', required=True),
         state=dict(type='str', choices=['present', 'absent']),
     )
@@ -90,20 +91,27 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args,
                            supports_check_mode=False)
-
+    multisite = False
     if module.params['folder'] is None:
         module.params['folder'] = '/'
     if module.params['state'] is None:
         module.params['state'] = 'present'
-
+    if module.params['ip_address'] is None:
+        module.params['ip_address'] = '127.0.0.1'
+    if module.params['monitored_on'] != '':
+        multisite = True
+ 
     changed = False
     failed = False
+    
     http_code = ''
     server_url = module.params['server_url']
     site = module.params['site']
     automation_user = module.params['automation_user']
     automation_secret = module.params['automation_secret']
     host_name = module.params['host_name']
+    ip_address = module.params['ip_address']
+    monitored_on = module.params['monitored_on']
     folder = module.params['folder']
     state = module.params['state']
 
@@ -141,7 +149,9 @@ def run_module():
             'folder': folder,
             'host_name': host_name,
             'attributes': {
-                'ipaddress': ip_address or '127.0.0.1'
+                if (multisite):
+                    'site': monitored_on,
+                'ipaddress': ip_address
             }
         }
         url = server_url + site + "/check_mk/api/1.0" + api_endpoint
