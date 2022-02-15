@@ -1,6 +1,6 @@
 ---
-server_url: "http://localhost/"
-site: "ansible"
+server_url: "https://localhost/"
+site: "SD200"
 automation_user: "automation"
 automation_secret: "$SECRET"
 
