@@ -37,6 +37,9 @@
       automation_secret: "{{ automation_secret }}"
       host_name: "{{ inventory_hostname }}"
       folder: "{{ checkmk_folder_path }}"
+      attributes:
+              site: "{{ site }}"
+              ipaddress: 127.0.0.1
       state: "present"
     delegate_to: localhost
 
@@ -51,6 +54,32 @@
     delegate_to: localhost
 
   - name: "Run activation module - 2."
+    activation:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      force_foreign_changes: 'true'
+      sites: "test"
+    delegate_to: localhost
+    run_once: 'true'
+
+  - name: "Change host attributes."
+    host:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      host_name: "{{ inventory_hostname }}"
+      folder: "{{ checkmk_folder_path }}"
+      attributes:
+              site: "{{ site }}"
+              alias: "Important Server"
+              ipaddress: 127.0.0.2
+      state: "present"
+    delegate_to: localhost
+
+  - name: "Run activation module - 3."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -86,7 +115,7 @@
     run_once: 'yes'
     loop: "{{ checkmk_folders }}"
 
-  - name: "Run activation module - 3."
+  - name: "Run activation module - 4."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
