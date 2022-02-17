@@ -90,6 +90,28 @@
     delegate_to: localhost
     run_once: 'true'
 
+  - name: "Move host to another folder."
+    host:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      host_name: "{{ inventory_hostname }}"
+      folder: "/bar"
+      state: "present"
+    delegate_to: localhost
+
+  - name: "Run activation module - 4."
+    activation:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      force_foreign_changes: 'true'
+      sites: "test"
+    delegate_to: localhost
+    run_once: 'true'
+
   - name: "Delete Hosts."
     host:
       server_url: "{{ server_url }}"
@@ -115,7 +137,7 @@
     run_once: 'yes'
     loop: "{{ checkmk_folders }}"
 
-  - name: "Run activation module - 4."
+  - name: "Run activation module - 5."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
