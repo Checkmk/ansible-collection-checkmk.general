@@ -3,12 +3,11 @@
 
 # Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division, print_function)
-import json
+from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: host
 
@@ -44,9 +43,9 @@ options:
 
 author:
     - Robin Gierse (@robin-tribe29)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # Create a single host.
 - name: "Create a single host."
   tribe29.checkmk.host:
@@ -61,177 +60,234 @@ EXAMPLES = r'''
       site: "NAME_OF_DISTRIBUTED_HOST"
     folder: "/"
     state: "present"
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 # These are examples of possible return values, and in general should use other names for return values.
-http_code:
-    description: The HTTP code the Checkmk API returns.
-    type: int
-    returned: always
-    sample: '200'
 message:
     description: The output message that the module generates. Contains the API response details in case of an error.
     type: str
     returned: always
     sample: 'Host created.'
-'''
+"""
 
+import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
+
+
+def exit_failed(module, msg):
+    result = {"msg": msg, "changed": False, "failed": True}
+    module.fail_json(**result)
+
+
+def exit_changed(module, msg):
+    result = {"msg": msg, "changed": True, "failed": False}
+    module.exit_json(**result)
+
+
+def exit_ok(module, msg):
+    result = {"msg": msg, "changed": False, "failed": False}
+    module.exit_json(**result)
+
+
+def get_current_host_state(module, base_url, headers):
+    current_state = "unknown"
+    current_explicit_attributes = {}
+    current_folder = "/"
+    etag = ""
+
+    api_endpoint = "/objects/host_config/" + module.params.get("host_name")
+    parameters = "?effective_attributes=true"
+    url = base_url + api_endpoint + parameters
+
+    response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
+
+    if info["status"] == 200:
+        body = json.loads(response.read())
+        current_state = "present"
+        etag = info.get("etag", "")
+        extensions = body.get("extensions", {})
+        current_explicit_attributes = extensions.get("attributes", {})
+        current_folder = "/%s" % extensions.get("folder", "")
+        if "meta_data" in current_explicit_attributes:
+            del current_explicit_attributes["meta_data"]
+
+    elif info["status"] == 404:
+        current_state = "absent"
+
+    else:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s. Body: %s"
+            % (info["status"], info["body"], body),
+        )
+
+    return current_state, current_explicit_attributes, current_folder, etag
+
+
+def set_host_attributes(module, attributes, base_url, headers):
+    api_endpoint = "/objects/host_config/" + module.params.get("host_name")
+    params = {
+        "attributes": attributes,
+    }
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="PUT"
+    )
+
+    if info["status"] != 200:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+
+
+def move_host(module, base_url, headers):
+    api_endpoint = "/objects/host_config/%s/actions/move/invoke" % module.params.get(
+        "host_name"
+    )
+    params = {
+        "target_folder": module.params.get("folder", "/"),
+    }
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="POST"
+    )
+
+    if info["status"] != 200:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+
+
+def create_host(module, attributes, base_url, headers):
+    api_endpoint = "/domain-types/host_config/collections/all"
+    params = {
+        "folder": module.params.get("folder", "/"),
+        "host_name": module.params.get("host_name"),
+        "attributes": attributes,
+    }
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="POST"
+    )
+
+    if info["status"] != 200:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+
+
+def delete_host(module, base_url, headers):
+    api_endpoint = "/objects/host_config/" + module.params.get("host_name")
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
+
+    if info["status"] != 204:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
-        server_url=dict(type='str', required=True),
-        site=dict(type='str', required=True),
-        automation_user=dict(type='str', required=True),
-        automation_secret=dict(type='str', required=True, no_log=True),
-        host_name=dict(type='str', required=True),
-        attributes=dict(type='raw', default=[]),
-        folder=dict(type='str', required=True),
-        state=dict(type='str', choices=['present', 'absent']),
+        server_url=dict(type="str", required=True),
+        site=dict(type="str", required=True),
+        automation_user=dict(type="str", required=True),
+        automation_secret=dict(type="str", required=True, no_log=True),
+        host_name=dict(type="str", required=True),
+        attributes=dict(type="raw", default=[]),
+        folder=dict(type="str", required=True),
+        state=dict(type="str", choices=["present", "absent"]),
     )
 
-    result = dict(changed=False, failed=False, http_code='', msg='')
+    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
-    module = AnsibleModule(argument_spec=module_args,
-                           supports_check_mode=False)
-
-    attributes = {}
-    if module.params['attributes'] is not None:
-        attributes = module.params['attributes']
-
-    if module.params['folder'] is None:
-        module.params['folder'] = '/'
-    if module.params['state'] is None:
-        module.params['state'] = 'present'
- 
-    changed = False
-    failed = False
-    
-    http_code = ''
-    server_url = module.params['server_url']
-    site = module.params['site']
-    automation_user = module.params['automation_user']
-    automation_secret = module.params['automation_secret']
-    host_name = module.params['host_name']
-    folder = module.params['folder']
-    state = module.params['state']
-
-    # Declare headers including authentication to send to the Checkmk API
+    # Use the parameters to initialize some common variables
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + automation_user + ' ' + automation_secret
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer %s %s"
+        % (
+            module.params.get("automation_user", ""),
+            module.params.get("automation_secret", ""),
+        ),
     }
 
-    # Check whether the host exists
-    api_endpoint = '/objects/host_config/' + host_name
-    parameters = '?effective_attributes=true'
-    url = server_url + site + "/check_mk/api/1.0" + api_endpoint + parameters
-    response, info = fetch_url(module,
-                               url,
-                               data=None,
-                               headers=headers,
-                               method='GET')
-    http_code = info['status']
-    body = json.loads(response.read())
-    if http_code == 200:
-        current_state = 'present'
-        headers['If-Match'] = info.get('etag', '')
-        extensions = body.get('extensions', {})
-        current_explicit_attributes = extensions.get('attributes', {})
-        if "meta_data" in current_explicit_attributes:
-            del current_explicit_attributes["meta_data"]
-    elif http_code == 404:
-        current_state = 'absent'
+    base_url = "%s/%s/check_mk/api/1.0" % (
+        module.params.get("server_url", ""),
+        module.params.get("site", ""),
+    )
+
+    # Determine desired state and attributes
+    attributes = module.params.get("attributes", {})
+    if attributes == []:
+        attributes = {}
+    state = module.params.get("state", "present")
+
+    if "folder" in module.params:
+        if not module.params["folder"].startswith("/"):
+            module.params["folder"] = "/" + module.params["folder"]
     else:
-        msg = 'Error calling API. HTTP code %d. Details: %s. Body: %s' % (info['status'], info['body'], body)
-        failed = True
+        module.params["folder"] = "/"
+
+    # Determine the current state of this particular host
+    (
+        current_state,
+        current_explicit_attributes,
+        current_folder,
+        etag,
+    ) = get_current_host_state(module, base_url, headers)
 
     # Handle the host accordingly to above findings and desired state
-    if state == 'present' and current_state == 'present':
-        if current_explicit_attributes == attributes:
-            msg = "Host already present. All explicit attributes as desired."
-            changed = False
+    if state == "present" and current_state == "present":
+        headers["If-Match"] = etag
+        msg_tokens = []
+
+        if current_folder != module.params["folder"]:
+            move_host(module, base_url, headers)
+            msg_tokens.append("Host was moved.")
+
+        if attributes != {} and current_explicit_attributes != attributes:
+            set_host_attributes(module, attributes, base_url, headers)
+            msg_tokens.append("Host attributes changed.")
+
+        if len(msg_tokens) >= 1:
+            exit_changed(module, " ".join(msg_tokens))
         else:
-            # Set the explicit attributes. This might also remove attributes that were previously set.
-            api_endpoint = '/objects/host_config/' + host_name
-            params = {
-                'attributes': attributes,
-            }
-            url = server_url + site + "/check_mk/api/1.0" + api_endpoint
+            exit_ok(module, "Host already present. All explicit attributes as desired.")
 
-            response, info = fetch_url(module,
-                                       url,
-                                       module.jsonify(params),
-                                       headers=headers,
-                                       method='PUT')
-            http_code = info['status']
-            if http_code == 200:
-                changed = True
-                msg = "Host already present. All attributes set explicitly."
-                        
-            else:
-                msg = 'Error calling API. HTTP code %d. Details: %s, ' % (info['status'], info['body'])
-                failed = True
+    elif state == "present" and current_state == "absent":
+        create_host(module, attributes, base_url, headers)
+        exit_changed(module, "Host created.")
 
-    elif state == 'present' and current_state == 'absent':
-        api_endpoint = '/domain-types/host_config/collections/all'
-        params = {
-            'folder': folder,
-            'host_name': host_name,
-            'attributes': attributes,
-        }
-        url = server_url + site + "/check_mk/api/1.0" + api_endpoint
+    elif state == "absent" and current_state == "absent":
+        exit_ok(module, "Host already absent.")
 
-        response, info = fetch_url(module,
-                                   url,
-                                   module.jsonify(params),
-                                   headers=headers,
-                                   method='POST')
-        http_code = info['status']
-        if http_code == 200:
-            changed = True
-            msg = "Host created."
-        else:
-            msg = 'Error calling API. HTTP code %d. Details: %s, ' % (info['status'], info['body'])
-            failed = True
+    elif state == "absent" and current_state == "present":
+        delete_host(module, base_url, headers)
+        exit_changed(module, "Host deleted.")
 
-    elif state == 'absent' and current_state == 'absent':
-        msg = "Host already absent."
-
-    elif state == 'absent' and current_state == 'present':
-        api_endpoint = '/objects/host_config/' + host_name
-        url = server_url + site + "/check_mk/api/1.0" + api_endpoint
-        response, info = fetch_url(module,
-                                   url,
-                                   data=None,
-                                   headers=headers,
-                                   method='DELETE')
-        http_code = info['status']
-        if http_code == 204:
-            changed = True
-            msg = "Host deleted."
-        else:
-            msg = 'Error calling API. HTTP code %d. Details: %s, ' % (info['status'], info['body'])
-            failed = True
-
-    result['msg'] = msg
-    result['changed'] = changed
-    result['failed'] = failed
-    result['http_code'] = http_code
-
-    if result['failed']:
-        module.fail_json(**result)
-
-    module.exit_json(**result)
+    else:
+        exit_failed(module, "Unknown error")
 
 
 def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
