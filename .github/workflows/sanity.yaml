@@ -1,5 +1,5 @@
 ---
-name: Ansible Test Collection.
+name: Ansible Collection Sanity Tests
 on: # yamllint disable-line rule:truthy
   push:
     branches:    
@@ -9,7 +9,6 @@ on: # yamllint disable-line rule:truthy
 jobs:
   ansible-test:
     runs-on: ubuntu-latest
-    # if: github.repository == 'tribe29/ansible-checkmk'
     strategy:
       matrix:
         python-version: [2.6, 2.7, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10]
