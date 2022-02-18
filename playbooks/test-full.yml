@@ -2,7 +2,7 @@
   hosts: all
   gather_facts: 'no'
   vars_files:
-    - ./vars/site.yml
+    - ./vars/config.yml
   tasks:
   - name: "Run activation module - 1."
     activation:
