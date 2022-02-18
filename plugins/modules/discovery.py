@@ -85,16 +85,13 @@ def run_module():
         automation_user=dict(type='str', required=True),
         automation_secret=dict(type='str', required=True, no_log=True),
         host_name=dict(type='str', required=True),
-        state=dict(type='str', choices=['new', 'remove', 'fix_all', 'refresh', 'only_host_labels']),
+        state=dict(type='str', default='new', choices=['new', 'remove', 'fix_all', 'refresh', 'only_host_labels']),
     )
 
     result = dict(changed=False, failed=False, http_code='', msg='')
 
     module = AnsibleModule(argument_spec=module_args,
                            supports_check_mode=False)
-
-    if module.params['state'] is None:
-        module.params['state'] = 'new'
 
     changed = False
     failed = False
