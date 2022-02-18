@@ -28,7 +28,22 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: Copy Files and Directories to Source
+        run: |
+          mkdir -p ansible_collections/$namespace/$collection/
+          cp $files ansible_collections/$namespace/$collection/
+          cp -rf $directories ansible_collections/$namespace/$collection/
+        env:
+          # Keep in sync with release.yaml!
+          files: "README.md ansible.cfg galaxy.yml"
+          directories: "changelogs docs meta playbooks plugins"
+          namespace: "tribe29"
+          collection: "checkmk"
+
       - name: Run Sanity Checks.
-        run: ansible-test sanity
+        run: cd ansible_collections/$namespace/$collection/ && ansible-test sanity
+        env:
+          namespace: "tribe29"
+          collection: "checkmk"
 
 # ToDo: Automatically raise issue?
