@@ -27,6 +27,14 @@ options:
         description: The host you want to manage.
         required: true
         type: str
+    ip_address:
+        description: The IP address of your host.
+        required: false
+        type: str
+    monitored_on_site:
+        description: The site on which your host should be monitored.
+        required: false
+        type: str
     folder:
         description: The folder your host is located in.
         type: str
@@ -46,8 +54,19 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a single host.
-- name: "Create a single host."
+# Create a host.
+- name: "Create a host."
+  tribe29.checkmk.host:
+    server_url: "http://localhost/"
+    site: "local"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    host_name: "my_host"
+    folder: "/"
+    state: "present"
+
+# Create a host with IP.
+- name: "Create a host with IP address."
   tribe29.checkmk.host:
     server_url: "http://localhost/"
     site: "local"
@@ -58,6 +77,18 @@ EXAMPLES = r"""
       alias: "My Host"
       ip_address: "x.x.x.x"
       site: "NAME_OF_DISTRIBUTED_HOST"
+    folder: "/"
+    state: "present"
+
+# Create a host which is monitored on a distinct site.
+- name: "Create a host which is monitored on a distinct site."
+  tribe29.checkmk.host:
+    server_url: "http://localhost/"
+    site: "local"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    host_name: "my_host"
+    monitored_on_site: "NAME_OF_DISTRIBUTED_HOST"
     folder: "/"
     state: "present"
 """
