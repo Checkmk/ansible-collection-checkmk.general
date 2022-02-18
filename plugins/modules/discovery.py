@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: host
+module: discovery
 
 short_description: discovery services in Checkmk.
 
