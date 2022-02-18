@@ -1,6 +1,6 @@
 ---
-server_url: "https://localhost/"
-site: "SD200"
+server_url: "http://localhost/"
+site: "$SITENAME"
 automation_user: "automation"
 automation_secret: "$SECRET"
 

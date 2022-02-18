@@ -4,7 +4,7 @@
   vars_files:
     - ./vars/config.yml
   tasks:
-  - name: "Run activation module - 1."
+  - name: "Run activation module - Showcase no changes."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -53,7 +53,13 @@
       state: "fix_all"
     delegate_to: localhost
 
-  - name: "Run activation module - 2."
+  - name: "Pause to review first set of changes."
+    ansible.builtin.pause:
+      prompt: |
+        "Feel free to review the changes in your Checkmk site: {{ site }}."
+        "Press <Enter> to continue."
+
+  - name: "Run activation module - Showcase creation of hosts and folders."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -79,17 +85,6 @@
       state: "present"
     delegate_to: localhost
 
-  - name: "Run activation module - 3."
-    activation:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      force_foreign_changes: 'true'
-      sites: "test"
-    delegate_to: localhost
-    run_once: 'true'
-
   - name: "Move host to another folder."
     host:
       server_url: "{{ server_url }}"
@@ -101,7 +96,13 @@
       state: "present"
     delegate_to: localhost
 
-  - name: "Run activation module - 4."
+  - name: "Pause to review second set of changes."
+    ansible.builtin.pause:
+      prompt: |
+        "Feel free to review the changes in your Checkmk site: {{ site }}."
+        "Press <Enter> to continue."
+
+  - name: "Run activation module - Showcase changes to existing objects."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
