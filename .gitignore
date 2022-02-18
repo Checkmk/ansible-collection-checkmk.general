@@ -2,3 +2,5 @@
 .*.swo
 *~
 tests/output
+playbooks/vars/config.yml
+playbooks/test.yml
