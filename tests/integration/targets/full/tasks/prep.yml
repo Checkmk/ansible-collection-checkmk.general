@@ -1,0 +1,20 @@
+---
+- name: "Download Checkmk."
+  ansible.builtin.get_url:
+    url: "{{ download_url }}"
+    dest: /tmp/checkmk-server.deb
+
+- name: "Install Checkmk."
+  ansible.builtin.apt:
+    deb: /tmp/checkmk-server.deb
+    state: present
+
+- name: "Create site."
+  ansible.builtin.command: "omd create --no-tmpfs --admin-password {{ automation_secret }} {{ site }}"
+  args:
+    creates: "/omd/sites/{{ site }}"
+  register: omd_state_create
+
+- name: "Start site."
+  ansible.builtin.command: "omd start {{ site }}"
+  register: omd_state_start

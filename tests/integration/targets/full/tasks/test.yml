@@ -1,0 +1,163 @@
+---
+# Take this from playbooks/test-full.yml to ensure full coverage!
+# Be sure to remove header!
+
+# - name: "Test all modules."
+#   hosts: all
+#   gather_facts: 'no'
+#   vars_files:
+#     - ./vars/config.yml
+#   tasks:
+  - name: "Run activation module - 1."
+    activation:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      force_foreign_changes: 'true'
+      sites: "test"
+    delegate_to: localhost
+    run_once: 'true'
+
+  - name: "Create folders."
+    folder:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      path: "{{ item.path }}"
+      title: "{{ item.title }}"
+      state: "present"
+    register: testout
+    delegate_to: localhost
+    run_once: 'yes'
+    loop: "{{ checkmk_folders }}"
+
+  - name: "Create hosts."
+    host:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      host_name: "{{ item.name }}"
+      folder: "{{ item.folder }}"
+      attributes:
+              site: "{{ site }}"
+              ipaddress: 127.0.0.1
+      state: "present"
+    delegate_to: localhost
+    run_once: 'yes'
+    loop: "{{ checkmk_hosts }}"
+
+  - name: "Discover hosts."
+    discovery:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      host_name: "{{ item.name }}"
+      state: "fix_all"
+    delegate_to: localhost
+    run_once: 'yes'
+    loop: "{{ checkmk_hosts }}"
+
+  - name: "Run activation module - 2."
+    activation:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      force_foreign_changes: 'true'
+      sites: "test"
+    delegate_to: localhost
+    run_once: 'true'
+
+  - name: "Change host attributes."
+    host:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      host_name: "{{ item.name }}"
+      folder: "{{ item.folder }}"
+      attributes:
+              site: "{{ site }}"
+              alias: "Important Server"
+              ipaddress: 127.0.0.2
+      state: "present"
+    delegate_to: localhost
+    run_once: 'yes'
+    loop: "{{ checkmk_hosts }}"
+
+  - name: "Run activation module - 3."
+    activation:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      force_foreign_changes: 'true'
+      sites: "test"
+    delegate_to: localhost
+    run_once: 'true'
+
+  - name: "Move host to another folder."
+    host:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      host_name: "{{ item.name }}"
+      folder: "/bar"
+      state: "present"
+    delegate_to: localhost
+    run_once: 'yes'
+    loop: "{{ checkmk_hosts }}"
+
+  - name: "Run activation module - 4."
+    activation:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      force_foreign_changes: 'true'
+      sites: "test"
+    delegate_to: localhost
+    run_once: 'true'
+
+  - name: "Delete hosts."
+    host:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      host_name: "{{ item.name }}"
+      folder: "{{ item.folder }}"
+      state: "absent"
+    delegate_to: localhost
+    run_once: 'yes'
+    loop: "{{ checkmk_hosts }}"
+
+  - name: "Delete folders."
+    folder:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      path: "{{ item.path }}"
+      title: "{{ item.title }}"
+      state: "absent"
+    register: testout
+    delegate_to: localhost
+    run_once: 'yes'
+    loop: "{{ checkmk_folders }}"
+
+  - name: "Run activation module - 5."
+    activation:
+      server_url: "{{ server_url }}"
+      site: "{{ site }}"
+      automation_user: "{{ automation_user }}"
+      automation_secret: "{{ automation_secret }}"
+      force_foreign_changes: 'true'
+      sites: "test"
+    delegate_to: localhost
+    run_once: 'true'
