@@ -80,17 +80,13 @@ def run_module():
         automation_secret=dict(type='str', required=True, no_log=True),
         path=dict(type='str', required=True),
         title=dict(type='str'),
-        state=dict(type='str', choices=['present', 'absent']),
+        state=dict(type='str', default='present', choices=['present', 'absent']),
     )
 
     result = dict(changed=False, failed=False, http_code='', msg='')
 
     module = AnsibleModule(argument_spec=module_args,
                            supports_check_mode=False)
-
-    if module.params['state'] is None:
-        module.params['state'] = 'present'
-
     changed = False
     failed = False
     http_code = ''
