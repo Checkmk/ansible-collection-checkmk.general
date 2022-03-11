@@ -50,7 +50,9 @@
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
       host_name: "{{ inventory_hostname }}"
-      state: "fix_all"
+      # "refresh" is the only method working correctly, currently :-(
+      # See https://jira.lan.tribe29.com/browse/CMK-7200
+      state: "refresh"
     delegate_to: localhost
 
   - name: "Run activation module - 2."
