@@ -27,14 +27,6 @@ options:
         description: The host you want to manage.
         required: true
         type: str
-    ip_address:
-        description: The IP address of your host.
-        required: false
-        type: str
-    monitored_on_site:
-        description: The site on which your host should be monitored.
-        required: false
-        type: str
     folder:
         description: The folder your host is located in.
         type: str
@@ -76,7 +68,6 @@ EXAMPLES = r"""
     attributes:
       alias: "My Host"
       ip_address: "x.x.x.x"
-      site: "NAME_OF_DISTRIBUTED_HOST"
     folder: "/"
     state: "present"
 
@@ -88,7 +79,9 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     host_name: "my_host"
-    monitored_on_site: "NAME_OF_DISTRIBUTED_HOST"
+    attributes:
+      alias: "My Host"
+      site: "NAME_OF_DISTRIBUTED_HOST"
     folder: "/"
     state: "present"
 """
@@ -164,36 +157,28 @@ def set_host_attributes(module, attributes, base_url, headers):
     }
     url = base_url + api_endpoint
 
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="PUT"
-    )
+    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="PUT")
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
         )
 
 
 def move_host(module, base_url, headers):
-    api_endpoint = "/objects/host_config/%s/actions/move/invoke" % module.params.get(
-        "host_name"
-    )
+    api_endpoint = "/objects/host_config/%s/actions/move/invoke" % module.params.get("host_name")
     params = {
         "target_folder": module.params.get("folder", "/"),
     }
     url = base_url + api_endpoint
 
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )
+    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="POST")
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
         )
 
 
@@ -206,15 +191,12 @@ def create_host(module, attributes, base_url, headers):
     }
     url = base_url + api_endpoint
 
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )
+    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="POST")
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
         )
 
 
@@ -227,8 +209,7 @@ def delete_host(module, base_url, headers):
     if info["status"] != 204:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
         )
 
 
