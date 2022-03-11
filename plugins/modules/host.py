@@ -27,14 +27,6 @@ options:
         description: The host you want to manage.
         required: true
         type: str
-    ip_address:
-        description: The IP address of your host.
-        required: false
-        type: str
-    monitored_on_site:
-        description: The site on which your host should be monitored.
-        required: false
-        type: str
     folder:
         description: The folder your host is located in.
         type: str
@@ -76,7 +68,6 @@ EXAMPLES = r"""
     attributes:
       alias: "My Host"
       ip_address: "x.x.x.x"
-      site: "NAME_OF_DISTRIBUTED_HOST"
     folder: "/"
     state: "present"
 
@@ -88,7 +79,8 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     host_name: "my_host"
-    monitored_on_site: "NAME_OF_DISTRIBUTED_HOST"
+    attributes:
+      site: "NAME_OF_DISTRIBUTED_HOST"
     folder: "/"
     state: "present"
 """
