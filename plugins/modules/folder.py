@@ -3,11 +3,11 @@
 
 # Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: folder
 
@@ -30,6 +30,10 @@ options:
     title:
         description: The title of your folder. If omitted defaults to the folder name.
         type: str
+    attributes:
+        description: The attributes of your host as described in the API documentation.
+        type: raw
+        default: {}
     state:
         description: The state of your folder.
         type: str
@@ -38,9 +42,9 @@ options:
 
 author:
     - Robin Gierse (@robin-tribe29)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # Create a single folder.
 - name: "Create a single folder."
   tribe29.checkmk.folder:
@@ -51,9 +55,22 @@ EXAMPLES = r'''
     path: "/my_folder"
     title: "My Folder"
     state: "present"
-'''
 
-RETURN = r'''
+# Create a folder who's hosts should be hosted on a remote site.
+- name: "Create a single folder."
+  tribe29.checkmk.folder:
+    server_url: "http://localhost/"
+    site: "local"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    path: "/my_remote_folder"
+    title: "My Remote Folder"
+    attributes:
+      site: "NAME_OF_DISTRIBUTED_HOST"
+    state: "present"
+"""
+
+RETURN = r"""
 # These are examples of possible return values, and in general should use other names for return values.
 http_code:
     description: The HTTP code the Checkmk API returns.
@@ -65,57 +82,78 @@ message:
     type: str
     returned: always
     sample: 'Folder created.'
-'''
+"""
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 
 
+def exit_failed(module, msg):
+    result = {"msg": msg, "changed": False, "failed": True}
+    module.fail_json(**result)
+
+
+def exit_changed(module, msg):
+    result = {"msg": msg, "changed": True, "failed": False}
+    module.exit_json(**result)
+
+
+def exit_ok(module, msg):
+    result = {"msg": msg, "changed": False, "failed": False}
+    module.exit_json(**result)
+
+
+def cleanup_path(path):
+    p = Path(path)
+    if not p.is_absolute():
+        p = Path("/").joinpath(p)
+    return str(p.parent).lower(), p.name()
+
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
-        server_url=dict(type='str', required=True),
-        site=dict(type='str', required=True),
-        automation_user=dict(type='str', required=True),
-        automation_secret=dict(type='str', required=True, no_log=True),
-        path=dict(type='str', required=True),
-        title=dict(type='str'),
-        state=dict(type='str', default='present', choices=['present', 'absent']),
+        server_url=dict(type="str", required=True),
+        site=dict(type="str", required=True),
+        automation_user=dict(type="str", required=True),
+        automation_secret=dict(type="str", required=True, no_log=True),
+        path=dict(type="str", required=True),
+        title=dict(type="str"),
+        attributes=dict(type="raw", default=[]),
+        state=dict(type="str", default='present', choices=["present", "absent"]),
     )
 
-    result = dict(changed=False, failed=False, http_code='', msg='')
+    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
-    module = AnsibleModule(argument_spec=module_args,
-                           supports_check_mode=False)
-    changed = False
-    failed = False
-    http_code = ''
-    server_url = module.params['server_url']
-    site = module.params['site']
-    automation_user = module.params['automation_user']
-    automation_secret = module.params['automation_secret']
+    # Use the parameters to initialize some common variables
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer %s %s"
+        % (
+            module.params.get("automation_user", ""),
+            module.params.get("automation_secret", ""),
+        ),
+    }
 
-    path = module.params['path'].lower()
-    if path[0] != "/":
-        path = '/' + path
-    if path[-1] == "/":
-        path = path.rstrip("/")
+    base_url = "%s/%s/check_mk/api/1.0" % (
+        module.params.get("server_url", ""),
+        module.params.get("site", ""),
+    )
 
-    child = path.split("/")[-2:][1]
-    parent = path.split("/")[-2:][0]
-    if parent == '':
-        parent = '/'
-    else:
-        parent = path.rstrip(child)
-        # if parent[0] != "/":
-        #     parent = '/' + parent
-        if parent[-1] == "/":
-            parent = parent.rstrip("/")
+    # Determine desired state and attributes
+    attributes = module.params.get("attributes", {})
+    if attributes == []:
+        attributes = {}
+    state = module.params.get("state", "present")
 
-    path_for_url = path.replace('/', '~')
-    state = module.params['state']
-    title = module.params['title']
-    if title == '':
+    parent, foldername = cleanup_path(module.params["path"])
+    
+    # TODO: Hier geht's weiter
+
+    path_for_url = path.replace("/", "~")
+    state = module.params["state"]
+    title = module.params["title"]
+    if title == "":
         title = child
 
     # # ToDo: Remove debugging stuff
@@ -129,85 +167,73 @@ def run_module():
 
     # Declare headers including authentication to send to the Checkmk API
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + automation_user + ' ' + automation_secret
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + automation_user + " " + automation_secret,
     }
 
     # Check whether the folder exists
-    api_endpoint = '/objects/folder_config/' + path_for_url
+    api_endpoint = "/objects/folder_config/" + path_for_url
     url = server_url + site + "/check_mk/api/1.0" + api_endpoint
     params = {
-        'parent': parent,  # ToDo: split path to distinguish name and parent
+        "parent": parent,  # ToDo: split path to distinguish name and parent
     }
-    response, info = fetch_url(module,
-                               url,
-                               data=None,
-                               headers=headers,
-                               method='GET')
-    http_code = info['status']
+    response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
+    http_code = info["status"]
     if http_code == 200:
-        folder_state = 'present'
+        folder_state = "present"
     elif http_code == 404:
-        folder_state = 'absent'
+        folder_state = "absent"
     else:
-        msg = 'Error calling API.'
+        msg = "Error calling API."
         failed = True
 
     # Handle the folder accordingly to above findings and desired state
-    if state == 'present' and folder_state == 'present':
+    if state == "present" and folder_state == "present":
         msg = "Folder already present."
 
-    elif state == 'present' and folder_state == 'absent':
-        api_endpoint = '/domain-types/folder_config/collections/all'
+    elif state == "present" and folder_state == "absent":
+        api_endpoint = "/domain-types/folder_config/collections/all"
         params = {
-            'name': child,
-            'parent': parent,
-            'title': title,
-            'attributes': {  # ToDo: Enable attribute management
-                'tag_criticality': 'prod'
-            }
+            "name": child,
+            "parent": parent,
+            "title": title,
+            "attributes": {"tag_criticality": "prod"},  # ToDo: Enable attribute management
         }
         url = server_url + site + "/check_mk/api/1.0" + api_endpoint
 
-        response, info = fetch_url(module,
-                                   url,
-                                   module.jsonify(params),
-                                   headers=headers,
-                                   method='POST')
-        http_code = info['status']
+        response, info = fetch_url(
+            module, url, module.jsonify(params), headers=headers, method="POST"
+        )
+        http_code = info["status"]
         if http_code == 200:
             changed = True
             msg = "Folder created."
         else:
-            msg = 'Error calling API.'
+            msg = "Error calling API."
             failed = True
 
-    elif state == 'absent' and folder_state == 'absent':
+    elif state == "absent" and folder_state == "absent":
         msg = "Folder already absent."
 
-    elif state == 'absent' and folder_state == 'present':
-        api_endpoint = '/objects/folder_config/' + path_for_url
+    elif state == "absent" and folder_state == "present":
+        api_endpoint = "/objects/folder_config/" + path_for_url
         url = server_url + site + "/check_mk/api/1.0" + api_endpoint
-        response, info = fetch_url(module,
-                                   url,
-                                   data=None,
-                                   headers=headers,
-                                   method='DELETE')
-        http_code = info['status']
+        response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
+        http_code = info["status"]
         if http_code == 204:
             changed = True
             msg = "Folder deleted."
         else:
-            msg = 'Error calling API.'
+            msg = "Error calling API."
             failed = True
 
-    result['msg'] = msg
-    result['changed'] = changed
-    result['failed'] = failed
-    result['http_code'] = http_code
+    result["msg"] = msg
+    result["changed"] = changed
+    result["failed"] = failed
+    result["http_code"] = http_code
 
-    if result['failed']:
+    if result["failed"]:
         module.fail_json(**result)
 
     module.exit_json(**result)
@@ -217,5 +243,5 @@ def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
