@@ -27,14 +27,6 @@ options:
         description: The host you want to manage.
         required: true
         type: str
-    ip_address:
-        description: The IP address of your host.
-        required: false
-        type: str
-    monitored_on_site:
-        description: The site on which your host should be monitored.
-        required: false
-        type: str
     folder:
         description: The folder your host is located in.
         type: str
@@ -76,7 +68,6 @@ EXAMPLES = r"""
     attributes:
       alias: "My Host"
       ip_address: "x.x.x.x"
-      site: "NAME_OF_DISTRIBUTED_HOST"
     folder: "/"
     state: "present"
 
@@ -88,7 +79,8 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     host_name: "my_host"
-    monitored_on_site: "NAME_OF_DISTRIBUTED_HOST"
+    attributes:
+      site: "NAME_OF_DISTRIBUTED_HOST"
     folder: "/"
     state: "present"
 """
@@ -241,8 +233,8 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         host_name=dict(type="str", required=True),
         attributes=dict(type="raw", default=[]),
-        folder=dict(type="str", required=True),
-        state=dict(type="str", choices=["present", "absent"]),
+        folder=dict(type="str", default='/'),
+        state=dict(type="str", default='present', choices=["present", "absent"]),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)

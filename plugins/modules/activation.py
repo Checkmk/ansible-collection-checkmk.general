@@ -82,8 +82,6 @@ def run_module():
     module = AnsibleModule(argument_spec=module_args,
                            supports_check_mode=False)
 
-    if module.params['force_foreign_changes'] is None:
-        module.params['force_foreign_changes'] = False
     if module.params['sites'] is None:
         module.params['sites'] = {
         }  # ToDo: How to pass empty array of strings?
