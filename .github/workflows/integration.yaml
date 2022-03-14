@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [2.6, 2.7, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10]
+        python-version: [3.9]
 
     steps:
       - name: Checkout code
@@ -39,8 +39,8 @@ jobs:
           namespace: "tribe29"
           collection: "checkmk"
 
-      - name: Run Sanity Checks.
-        run: cd ansible_collections/$namespace/$collection/ && ansible-test integration
+      - name: Run Integration Checks.
+        run: cd ansible_collections/$namespace/$collection/ && ansible-test integration full
         env:
           namespace: "tribe29"
           collection: "checkmk"
