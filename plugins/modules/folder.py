@@ -3,11 +3,11 @@
 
 # Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: folder
 
@@ -30,6 +30,10 @@ options:
     title:
         description: The title of your folder. If omitted defaults to the folder name.
         type: str
+    attributes:
+        description: The attributes of your folder as described in the API documentation.
+        type: raw
+        default: {}
     state:
         description: The state of your folder.
         type: str
@@ -38,9 +42,9 @@ options:
 
 author:
     - Robin Gierse (@robin-tribe29)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # Create a single folder.
 - name: "Create a single folder."
   tribe29.checkmk.folder:
@@ -51,9 +55,22 @@ EXAMPLES = r'''
     path: "/my_folder"
     title: "My Folder"
     state: "present"
-'''
 
-RETURN = r'''
+# Create a folder who's hosts should be hosted on a remote site.
+- name: "Create a single folder."
+  tribe29.checkmk.folder:
+    server_url: "http://localhost/"
+    site: "local"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    path: "/my_remote_folder"
+    title: "My Remote Folder"
+    attributes:
+      site: "NAME_OF_DISTRIBUTED_HOST"
+    state: "present"
+"""
+
+RETURN = r"""
 # These are examples of possible return values, and in general should use other names for return values.
 http_code:
     description: The HTTP code the Checkmk API returns.
@@ -65,161 +82,206 @@ message:
     type: str
     returned: always
     sample: 'Folder created.'
-'''
+"""
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
+from pathlib import Path
+import json
+
+
+def exit_failed(module, msg):
+    result = {"msg": msg, "changed": False, "failed": True}
+    module.fail_json(**result)
+
+
+def exit_changed(module, msg):
+    result = {"msg": msg, "changed": True, "failed": False}
+    module.exit_json(**result)
+
+
+def exit_ok(module, msg):
+    result = {"msg": msg, "changed": False, "failed": False}
+    module.exit_json(**result)
+
+
+def cleanup_path(path):
+    p = Path(path)
+    if not p.is_absolute():
+        p = Path("/").joinpath(p)
+    return str(p.parent).lower(), p.name
+
+
+def get_current_folder_state(module, base_url, headers):
+    current_state = "unknown"
+    current_explicit_attributes = {}
+    current_folder = "/"
+    etag = ""
+
+    path_for_url = module.params["path"].replace("/", "~")
+
+    api_endpoint = "/objects/folder_config/" + path_for_url
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
+
+    if info["status"] == 200:
+        body = json.loads(response.read())
+        current_state = "present"
+        etag = info.get("etag", "")
+        extensions = body.get("extensions", {})
+        current_explicit_attributes = extensions.get("attributes", {})
+        if "meta_data" in current_explicit_attributes:
+            del current_explicit_attributes["meta_data"]
+
+    elif info["status"] == 404:
+        current_state = "absent"
+
+    else:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s. Body: %s"
+            % (info["status"], info["body"], body),
+        )
+
+    return current_state, current_explicit_attributes, etag
+
+
+def set_folder_attributes(module, attributes, base_url, headers):
+    parent, foldername = cleanup_path(module.params["path"])
+    path_for_url = module.params["path"].replace("/", "~")
+    title = module.params.get("title", foldername)
+
+    api_endpoint = "/objects/folder_config/" + path_for_url
+    params = {
+        "title": title,
+        "attributes": attributes,
+    }
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="PUT")
+
+    if info["status"] != 200:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+        )
+
+
+def create_folder(module, attributes, base_url, headers):
+    parent, foldername = cleanup_path(module.params["path"])
+    path_for_url = module.params["path"].replace("/", "~")
+    title = module.params.get("title", foldername)
+
+    api_endpoint = "/domain-types/folder_config/collections/all"
+    params = {
+        "name": foldername,
+        "title": title,
+        "parent": parent,
+        "attributes": attributes,
+    }
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="POST")
+
+    if info["status"] != 200:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+        )
+
+
+def delete_folder(module, base_url, headers):
+    path_for_url = module.params["path"].replace("/", "~")
+
+    api_endpoint = "/objects/folder_config/" + path_for_url
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
+
+    if info["status"] != 204:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+        )
 
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
-        server_url=dict(type='str', required=True),
-        site=dict(type='str', required=True),
-        automation_user=dict(type='str', required=True),
-        automation_secret=dict(type='str', required=True, no_log=True),
-        path=dict(type='str', required=True),
-        title=dict(type='str'),
-        state=dict(type='str', choices=['present', 'absent']),
+        server_url=dict(type="str", required=True),
+        site=dict(type="str", required=True),
+        automation_user=dict(type="str", required=True),
+        automation_secret=dict(type="str", required=True, no_log=True),
+        path=dict(type="str", required=True),
+        title=dict(type="str"),
+        attributes=dict(type="raw", default=[]),
+        state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    result = dict(changed=False, failed=False, http_code='', msg='')
+    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
-    module = AnsibleModule(argument_spec=module_args,
-                           supports_check_mode=False)
-
-    if module.params['state'] is None:
-        module.params['state'] = 'present'
-
-    changed = False
-    failed = False
-    http_code = ''
-    server_url = module.params['server_url']
-    site = module.params['site']
-    automation_user = module.params['automation_user']
-    automation_secret = module.params['automation_secret']
-
-    path = module.params['path'].lower()
-    if path[0] != "/":
-        path = '/' + path
-    if path[-1] == "/":
-        path = path.rstrip("/")
-
-    child = path.split("/")[-2:][1]
-    parent = path.split("/")[-2:][0]
-    if parent == '':
-        parent = '/'
-    else:
-        parent = path.rstrip(child)
-        # if parent[0] != "/":
-        #     parent = '/' + parent
-        if parent[-1] == "/":
-            parent = parent.rstrip("/")
-
-    path_for_url = path.replace('/', '~')
-    state = module.params['state']
-    title = module.params['title']
-    if title == '':
-        title = child
-
-    # # ToDo: Remove debugging stuff
-    # test = dict(
-    #     path=path,
-    #     parent=parent,
-    #     child=child,
-    #     path_for_url=path_for_url
-    # )
-    # module.exit_json(**test)
-
-    # Declare headers including authentication to send to the Checkmk API
+    # Use the parameters to initialize some common variables
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + automation_user + ' ' + automation_secret
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer %s %s"
+        % (
+            module.params.get("automation_user", ""),
+            module.params.get("automation_secret", ""),
+        ),
     }
 
-    # Check whether the folder exists
-    api_endpoint = '/objects/folder_config/' + path_for_url
-    url = server_url + site + "/check_mk/api/1.0" + api_endpoint
-    params = {
-        'parent': parent,  # ToDo: split path to distinguish name and parent
-    }
-    response, info = fetch_url(module,
-                               url,
-                               data=None,
-                               headers=headers,
-                               method='GET')
-    http_code = info['status']
-    if http_code == 200:
-        folder_state = 'present'
-    elif http_code == 404:
-        folder_state = 'absent'
-    else:
-        msg = 'Error calling API.'
-        failed = True
+    base_url = "%s/%s/check_mk/api/1.0" % (
+        module.params.get("server_url", ""),
+        module.params.get("site", ""),
+    )
+
+    # Determine desired state and attributes
+    attributes = module.params.get("attributes", {})
+    if attributes == []:
+        attributes = {}
+    state = module.params.get("state", "present")
+
+    # Determine the current state of this particular folder
+    (
+        current_state,
+        current_explicit_attributes,
+        etag,
+    ) = get_current_folder_state(module, base_url, headers)
 
     # Handle the folder accordingly to above findings and desired state
-    if state == 'present' and folder_state == 'present':
-        msg = "Folder already present."
+    if state == "present" and current_state == "present":
+        headers["If-Match"] = etag
+        msg_tokens = []
 
-    elif state == 'present' and folder_state == 'absent':
-        api_endpoint = '/domain-types/folder_config/collections/all'
-        params = {
-            'name': child,
-            'parent': parent,
-            'title': title,
-            'attributes': {  # ToDo: Enable attribute management
-                'tag_criticality': 'prod'
-            }
-        }
-        url = server_url + site + "/check_mk/api/1.0" + api_endpoint
+        if attributes != {} and current_explicit_attributes != attributes:
+            set_folder_attributes(module, attributes, base_url, headers)
+            msg_tokens.append("Folder attributes changed.")
 
-        response, info = fetch_url(module,
-                                   url,
-                                   module.jsonify(params),
-                                   headers=headers,
-                                   method='POST')
-        http_code = info['status']
-        if http_code == 200:
-            changed = True
-            msg = "Folder created."
+        if len(msg_tokens) >= 1:
+            exit_changed(module, " ".join(msg_tokens))
         else:
-            msg = 'Error calling API.'
-            failed = True
+            exit_ok(module, "Folder already present. All explicit attributes as desired.")
 
-    elif state == 'absent' and folder_state == 'absent':
-        msg = "Folder already absent."
+    elif state == "present" and current_state == "absent":
+        create_folder(module, attributes, base_url, headers)
+        exit_changed(module, "Folder created.")
 
-    elif state == 'absent' and folder_state == 'present':
-        api_endpoint = '/objects/folder_config/' + path_for_url
-        url = server_url + site + "/check_mk/api/1.0" + api_endpoint
-        response, info = fetch_url(module,
-                                   url,
-                                   data=None,
-                                   headers=headers,
-                                   method='DELETE')
-        http_code = info['status']
-        if http_code == 204:
-            changed = True
-            msg = "Folder deleted."
-        else:
-            msg = 'Error calling API.'
-            failed = True
+    elif state == "absent" and current_state == "absent":
+        exit_ok(module, "Folder already absent.")
 
-    result['msg'] = msg
-    result['changed'] = changed
-    result['failed'] = failed
-    result['http_code'] = http_code
+    elif state == "absent" and current_state == "present":
+        delete_folder(module, base_url, headers)
+        exit_changed(module, "Folder deleted.")
 
-    if result['failed']:
-        module.fail_json(**result)
-
-    module.exit_json(**result)
+    else:
+        exit_failed(module, "Unknown error")
 
 
 def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
