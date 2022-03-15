@@ -3,7 +3,7 @@
 
 # Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
@@ -45,11 +45,10 @@ EXAMPLES = r'''
       automation_user: "automation"
       automation_secret: "$SECRET"
       force_foreign_changes: 'true'
-      sites: "test"
+      sites: "my_site"
 '''
 
 RETURN = r'''
-# These are examples of possible return values, and in general should use other names for return values.
 http_code:
     description: The HTTP code the Checkmk API returns.
     type: int
@@ -123,8 +122,7 @@ def run_module():
 
     params = {
         'force_foreign_changes': force_foreign_changes,
-        'redirect':
-        True,  # ToDo: Do we need this? Does it need to be configurable?
+        'redirect': True,  # ToDo: Do we need this? Does it need to be configurable?
         # ToDo: make sites list iterable
         # 'sites': {
         #     'sitename'

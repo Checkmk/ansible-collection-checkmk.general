@@ -18,7 +18,7 @@ short_description: Manage hosts in Checkmk.
 version_added: "0.0.1"
 
 description:
-- Create and delete hosts within Checkmk.
+- Manage hosts within Checkmk.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -43,6 +43,7 @@ options:
 
 author:
     - Robin Gierse (@robin-tribe29)
+    - Lars Getwan (@lgetwan)
 """
 
 EXAMPLES = r"""
@@ -50,7 +51,7 @@ EXAMPLES = r"""
 - name: "Create a host."
   tribe29.checkmk.host:
     server_url: "http://localhost/"
-    site: "local"
+    site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
     host_name: "my_host"
@@ -61,13 +62,13 @@ EXAMPLES = r"""
 - name: "Create a host with IP address."
   tribe29.checkmk.host:
     server_url: "http://localhost/"
-    site: "local"
+    site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
     host_name: "my_host"
     attributes:
       alias: "My Host"
-      ip_address: "x.x.x.x"
+      ip_address: "127.0.0.1"
     folder: "/"
     state: "present"
 
@@ -75,18 +76,17 @@ EXAMPLES = r"""
 - name: "Create a host which is monitored on a distinct site."
   tribe29.checkmk.host:
     server_url: "http://localhost/"
-    site: "local"
+    site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
     host_name: "my_host"
     attributes:
-      site: "NAME_OF_DISTRIBUTED_HOST"
+      site: "my_remote_site"
     folder: "/"
     state: "present"
 """
 
 RETURN = r"""
-# These are examples of possible return values, and in general should use other names for return values.
 message:
     description: The output message that the module generates. Contains the API response details in case of an error.
     type: str
@@ -94,9 +94,9 @@ message:
     sample: 'Host created.'
 """
 
-import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
+import json
 
 
 def exit_failed(module, msg):

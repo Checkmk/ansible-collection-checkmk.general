@@ -1,18 +1,17 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: "[BUG]"
-labels: bug
+name: Feedback
+about: Give us any form of feedback
+title: "[FEED]"
+labels: feedback
 assignees: robin-tribe29
 
 ---
 
-Verify first that your issue is not already reported [here](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
-Where possible also test if the latest release and main branch are affected too.
-Complete all sections as described!
+Please verify first that your feedback is not already reported [here](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+sort%3Aupdated-desc).
+If possible and useful provide additional information below. This is optional however.
 
-**Describe the bug**
-<!--  A clear and concise description of what the bug is. -->
+**Provide your feedback**
+<!--  Provide your feedback here. -->
 
 **Component Name**
 <!--  Write the short name of the module or plugin below, use your best guess if unsure. -->
@@ -33,19 +32,6 @@ $ ansible-galaxy collection list
 ```
 **Environment**
 <!-- Provide all relevant information below, e.g. control node OS versions, Checkmk version, etc. -->
-
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Run '....'
-3. Execute '....'
-4. See error
-
-**Expected behavior**
-<!-- A clear and concise description of what you expected to happen. -->
-
-**Actual behavior**
-<!-- A clear and concise description of what actually happens. -->
 
 **Screenshots**
 <!-- If applicable, add screenshots to help explain your problem. -->
