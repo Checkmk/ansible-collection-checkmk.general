@@ -18,7 +18,7 @@ short_description: Manage folders in Checkmk.
 version_added: "0.0.1"
 
 description:
-- Create and delete folders within Checkmk.
+- Manage folders within Checkmk.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -42,6 +42,7 @@ options:
 
 author:
     - Robin Gierse (@robin-tribe29)
+    - Lars Getwan (@lgetwan)
 """
 
 EXAMPLES = r"""
@@ -49,7 +50,7 @@ EXAMPLES = r"""
 - name: "Create a single folder."
   tribe29.checkmk.folder:
     server_url: "http://localhost/"
-    site: "local"
+    site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
     path: "/my_folder"
@@ -60,18 +61,17 @@ EXAMPLES = r"""
 - name: "Create a single folder."
   tribe29.checkmk.folder:
     server_url: "http://localhost/"
-    site: "local"
+    site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
     path: "/my_remote_folder"
     title: "My Remote Folder"
     attributes:
-      site: "NAME_OF_DISTRIBUTED_HOST"
+      site: "my_remote_site"
     state: "present"
 """
 
 RETURN = r"""
-# These are examples of possible return values, and in general should use other names for return values.
 http_code:
     description: The HTTP code the Checkmk API returns.
     type: int
@@ -207,7 +207,6 @@ def delete_folder(module, base_url, headers):
 
 
 def run_module():
-    # define available arguments/parameters a user can pass to the module
     module_args = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),

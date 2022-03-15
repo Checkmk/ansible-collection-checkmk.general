@@ -1,5 +1,4 @@
 class ModuleDocFragment(object):
-    # Common options for Checkmk modules
     DOCUMENTATION = r'''
     options:
         server_url:
@@ -11,7 +10,7 @@ class ModuleDocFragment(object):
             required: true
             type: str
         automation_user:
-            description: The automation user you want to use.
+            description: The automation user you want to use. It has to be an 'Automation' user, not a normal one.
             required: true
             type: str
         automation_secret:
