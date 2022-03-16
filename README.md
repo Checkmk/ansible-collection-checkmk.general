@@ -160,4 +160,4 @@ Please do **not** consider a concrete planning document for the near future!
 - [Ansible Community code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
 
 ## Licensing
-To be done.
+See [LICENSE](LICENSE).
