@@ -24,8 +24,8 @@ Also, keep an eye on [this Checkmk forum post](https://forum.checkmk.com/t/check
 Please be aware, that although the content in this repository is maintained and
 curated by tribe29, this is fully open source and there is no commercial support
 to this whatsoever! We are happy to welcome you in our [Checkmk Community](https://forum.checkmk.com/)
-or to look at [issues](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) you create, but this is still a side project
-and we can only work on this on a **best effort basis**.
+or to look at [issues](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)
+you create, but this is still a side project and we can only work on this on a **best effort basis**.
 
 ## Repository Structure
 
@@ -119,7 +119,7 @@ if you list the `tribe29.checkmk` collection in the playbook's [`collections`](h
 
 ## Contributing to this collection
 
-We welcome community contributions to this collection.
+We welcome and appreciate community contributions to this collection.
 If you find problems, please open an issue or create a PR against the [tribe29 Checkmk collection repository](https://github.com/tribe29/ansible-collection-tribe29.checkmk).
 See [Contributing to Ansible-maintained collections](https://docs.ansible.com/ansible/devel/community/contributing_maintained_collections.html#contributing-maintained-collections) for more details on how to contribute.
 
