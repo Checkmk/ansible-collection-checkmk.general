@@ -88,7 +88,9 @@ import sys
 
 if sys.version[0] == '3':
     from pathlib import Path
+    PYTHON_VERSION = 3
 else:
+    PYTHON_VERSION = 2
     try:
         from pathlib2 import Path
     except ImportError:
@@ -232,7 +234,7 @@ def run_module():
 
     # Handle library import error according to the following link:
     # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
-    if not HAS_PATHLIB2_LIBRARY:
+    if PYTHON_VERSION == 2 and not HAS_PATHLIB2_LIBRARY:
         # Needs: from ansible.module_utils.basic import missing_required_lib
         module.fail_json(
             msg=missing_required_lib('pathlib2'),
