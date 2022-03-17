@@ -73,8 +73,6 @@ message:
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 
-import pprint
-
 
 def run_module():
     module_args = dict(
