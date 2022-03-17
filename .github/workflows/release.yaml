@@ -40,11 +40,11 @@ jobs:
           git commit -m "Add built front-end assets"
           git push -f origin changelogs-compile
       
-      - name: Merge changelogs back into main
+      - name: Merge changelogs back into devel
         uses: devmasx/merge-branch@master
         with:
           type: now
-          target_branch: main
+          target_branch: devel
           github_token: ${{ github.token }}
 
       - name: Copy Files and Directories to Source
