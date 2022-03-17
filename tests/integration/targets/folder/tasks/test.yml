@@ -1,0 +1,51 @@
+---
+# Take this from playbooks/test-full.yml to ensure full coverage!
+# Be sure to remove header!
+
+- name: "Create folders."
+  folder:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    path: "{{ item.path }}"
+    title: "{{ item.title }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: 'yes'
+  loop: "{{ checkmk_folders }}"
+
+- name: "Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: 'true'
+    sites: "test"
+  delegate_to: localhost
+  run_once: 'true'
+
+- name: "Delete folders."
+  folder:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    path: "{{ item.path }}"
+    title: "{{ item.title }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: 'yes'
+  loop: "{{ checkmk_folders }}"
+
+- name: "Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: 'true'
+    sites: "test"
+  delegate_to: localhost
+  run_once: 'true'
