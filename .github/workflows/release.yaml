@@ -6,9 +6,6 @@ on: # yamllint disable-line rule:truthy
 jobs:
   release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.9]
 
     steps:
       - name: Checkout code
@@ -18,10 +15,10 @@ jobs:
         id: current_version
         run: echo "::set-output name=version::$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)"
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python.
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.9
 
       - name: Install Dependencies
         run: |
