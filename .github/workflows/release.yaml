@@ -4,12 +4,11 @@ on: # yamllint disable-line rule:truthy
   workflow_dispatch:
 
 jobs:
-  releaseanddeploy:
+  release:
     runs-on: ubuntu-latest
-    # if: github.repository == 'tribe29/ansible-checkmk'
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.9]
 
     steps:
       - name: Checkout code
@@ -29,19 +28,41 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: Compile Collection Changelog
+        run: antsibull-changelog release
+
+      - name: Commit build changelogs
+        run: |
+          cd build/src
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git checkout -B changelogs-compile
+          git add -f changelogs/ CHANGELOG.rst
+          git commit -m "Add built front-end assets"
+          git push -f origin changelogs-compile
+      
+      - name: Merge changelogs back into main
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: main
+          github_token: ${{ github.token }}
+      
+      - name: Delete changelogs-compile branch
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          branches: changelogs-compile
+
       - name: Copy Files and Directories to Source
         run: |
           mkdir -p build/src
           cp $files build/src
           cp -rf $directories build/src
         env:
-          # files: "README.md LICENSE ansible.cfg galaxy.yml"
-          files: "README.md ansible.cfg galaxy.yml"
+          files: "CHANGELOG.rst LICENSE README.md ansible.cfg galaxy.yml"
           # directories: "playbooks plugins roles vars"
           directories: "changelogs docs meta playbooks plugins"
-
-      - name: Compile Collection Changelog
-        run: cd build/src && antsibull-changelog release
 
       - name: Build Ansible Collection
         run: ansible-galaxy collection build build/src --force
@@ -84,5 +105,5 @@ jobs:
           asset_name: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
           asset_content_type: application/tar+gzip
 
-      # - name: Deploy Ansible collection to Galaxy
+      # - name: changelogs-compile Ansible collection to Galaxy
       #   run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
