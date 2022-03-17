@@ -1,10 +1,7 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 major_changes:
-  - Initial creation of collection structure and layout.
-  - Add activation module.
-  - Add discovery module.
-  - Add folder module.
-  - Add host module.
+  - Major overhaul of folder module.
+  - Major overhaul of host module.
 
 known_issues:
   - This release is still in development and a heavy work in progress.
