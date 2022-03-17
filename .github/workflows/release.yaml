@@ -6,10 +6,9 @@ on: # yamllint disable-line rule:truthy
 jobs:
   releaseanddeploy:
     runs-on: ubuntu-latest
-    # if: github.repository == 'tribe29/ansible-checkmk'
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.9]
 
     steps:
       - name: Checkout code
