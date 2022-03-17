@@ -1,0 +1,13 @@
+---
+# https://help.github.com/en/github/building-a-strong-community/configuring-issue-templates-for-your-repository#configuring-the-template-chooser
+blank_issues_enabled: true
+contact_links:
+# - name: Security bug report
+#   url: 
+#   about: 
+- name: Ansible Code of Conduct
+  url: https://docs.ansible.com/ansible/latest/community/code_of_conduct.html?utm_medium=github&utm_source=issue_template_chooser_ansible_collections
+  about: Be nice to other members of the community.
+- name: Talk to our Checkmk community.
+  url: https://forum.checkmk.com/
+  about: Join our Checkmk community to aks and answer questions
