@@ -24,8 +24,7 @@
       path: "{{ item.path }}"
       title: "{{ item.title }}"
       state: "present"
-    register: testout
-    delegate_to: localhost
+      delegate_to: localhost
     run_once: 'yes'
     loop: "{{ checkmk_folders }}"
 

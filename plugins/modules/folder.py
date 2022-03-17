@@ -72,11 +72,6 @@ EXAMPLES = r"""
 """
 
 RETURN = r"""
-http_code:
-    description: The HTTP code the Checkmk API returns.
-    type: int
-    returned: always
-    sample: '200'
 message:
     description: The output message that the module generates.
     type: str
@@ -86,7 +81,22 @@ message:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
-from pathlib import Path
+# https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
+from ansible.module_utils.basic import missing_required_lib
+import traceback
+import sys
+
+if sys.version[0] == '3':
+    from pathlib import Path
+else:
+    try:
+        from pathlib2 import Path
+    except ImportError:
+        HAS_PATHLIB2_LIBRARY = False
+        PATHLIB2_LIBRARY_IMPORT_ERROR = traceback.format_exc()
+    else:
+        HAS_PATHLIB2_LIBRARY = True
+
 import json
 
 
@@ -219,6 +229,14 @@ def run_module():
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+
+    # Handle library import error according to the following link:
+    # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
+    if not HAS_PATHLIB2_LIBRARY:
+        # Needs: from ansible.module_utils.basic import missing_required_lib
+        module.fail_json(
+            msg=missing_required_lib('pathlib2'),
+            exception=PATHLIB2_LIBRARY_IMPORT_ERROR)
 
     # Use the parameters to initialize some common variables
     headers = {
