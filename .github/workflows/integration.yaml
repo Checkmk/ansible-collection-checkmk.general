@@ -1,5 +1,5 @@
 ---
-name: Ansible Collection Integration Tests
+name: Ansible Collection Full Integration Test
 on: # yamllint disable-line rule:truthy
   push:
     branches:    
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: ['2.6', '2.7', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10']
 
     steps:
       - name: Checkout code
@@ -44,5 +44,3 @@ jobs:
         env:
           namespace: "tribe29"
           collection: "checkmk"
-
-# ToDo: Automatically raise issue?
