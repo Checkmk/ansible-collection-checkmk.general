@@ -84,14 +84,19 @@ from ansible.module_utils.urls import fetch_url
 # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import missing_required_lib
 import traceback
-try:
+import sys
+
+if sys.version[0] == '3':
     from pathlib import Path
-except ImportError:
-    from pathlib2 import Path
-    HAS_ANOTHER_LIBRARY = False
-    ANOTHER_LIBRARY_IMPORT_ERROR = traceback.format_exc()
 else:
-    HAS_ANOTHER_LIBRARY = True
+    try:
+        from pathlib2 import Path
+    except ImportError:
+        HAS_PATHLIB2_LIBRARY = False
+        PATHLIB2_LIBRARY_IMPORT_ERROR = traceback.format_exc()
+    else:
+        HAS_PATHLIB2_LIBRARY = True
+
 import json
 
 
@@ -225,6 +230,14 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
+    # Handle library import error according to the following link:
+    # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
+    if not HAS_PATHLIB2_LIBRARY:
+        # Needs: from ansible.module_utils.basic import missing_required_lib
+        module.fail_json(
+            msg=missing_required_lib('pathlib2'),
+            exception=PATHLIB2_LIBRARY_IMPORT_ERROR)
+
     # Use the parameters to initialize some common variables
     headers = {
         "Accept": "application/json",
@@ -253,14 +266,6 @@ def run_module():
         current_explicit_attributes,
         etag,
     ) = get_current_folder_state(module, base_url, headers)
-
-    # Handle library import error according to the following link:
-    # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
-    if not HAS_ANOTHER_LIBRARY:
-        # Needs: from ansible.module_utils.basic import missing_required_lib
-        module.fail_json(
-            msg=missing_required_lib('pathlib2'),
-            exception=ANOTHER_LIBRARY_IMPORT_ERROR)
 
     # Handle the folder accordingly to above findings and desired state
     if state == "present" and current_state == "present":
