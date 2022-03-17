@@ -34,7 +34,7 @@ jobs:
           cp -rf $directories ansible_collections/$namespace/$collection/
         env:
           # Keep in sync with release.yaml!
-          files: "README.md ansible.cfg galaxy.yml"
+          files: "CHANGELOG.rst LICENSE README.md ansible.cfg galaxy.yml"
           directories: "changelogs docs meta playbooks plugins"
           namespace: "tribe29"
           collection: "checkmk"
