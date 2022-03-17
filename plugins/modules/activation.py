@@ -72,7 +72,7 @@ def run_module():
         site=dict(type='str', required=True),
         automation_user=dict(type='str', required=True),
         automation_secret=dict(type='str', required=True, no_log=True),
-        sites=dict(type='str', required=True),
+        sites=dict(type='raw', default=[]),
         force_foreign_changes=dict(type='bool', default=False),
     )
 
@@ -93,6 +93,8 @@ def run_module():
     automation_user = module.params['automation_user']
     automation_secret = module.params['automation_secret']
     sites = module.params['sites']
+    if sites == {}:
+        sites = []
     force_foreign_changes = module.params['force_foreign_changes']
 
     http_code_mapping = {
@@ -123,10 +125,7 @@ def run_module():
     params = {
         'force_foreign_changes': force_foreign_changes,
         'redirect': True,  # ToDo: Do we need this? Does it need to be configurable?
-        # ToDo: make sites list iterable
-        # 'sites': {
-        #     'sitename'
-        # }
+        'sites': sites
     }
 
     api_endpoint = '/domain-types/activation_run/actions/activate-changes/invoke'
