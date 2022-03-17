@@ -8,6 +8,8 @@ with automating Checkmk through Ansible.
 ---
 
 ## Here be dragons!
+[![Ansible Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-test.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-test.yaml)
+
 **This is a work in progress! Do not use unless you know what you are doing!**  
 Everything within this repository is subject to possibly heavy change
 and we cannot guarantee any stability at this point. You have been warned!
