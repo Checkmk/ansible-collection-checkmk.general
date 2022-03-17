@@ -11,6 +11,12 @@ on:
     branches:
       - main
       - devel
+    paths-ignore:
+      - '.github/**'
+      - 'changelogs/**'
+      - 'docs/**'
+      - '**.md'
+
 env:
   NAMESPACE: tribe29
   COLLECTION_NAME: checkmk 
