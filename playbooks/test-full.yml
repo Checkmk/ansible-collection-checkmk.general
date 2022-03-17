@@ -11,7 +11,8 @@
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
       force_foreign_changes: 'true'
-      sites: "test"
+      sites: 
+        - "{{ site }}"
     delegate_to: localhost
     run_once: 'true'
 
@@ -24,7 +25,7 @@
       path: "{{ item.path }}"
       title: "{{ item.title }}"
       state: "present"
-      delegate_to: localhost
+    delegate_to: localhost
     run_once: 'yes'
     loop: "{{ checkmk_folders }}"
 
@@ -61,7 +62,8 @@
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
       force_foreign_changes: 'true'
-      sites: "test"
+      sites: 
+        - "{{ site }}"
     delegate_to: localhost
     run_once: 'true'
 
@@ -87,7 +89,8 @@
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
       force_foreign_changes: 'true'
-      sites: "test"
+      sites: 
+        - "{{ site }}"
     delegate_to: localhost
     run_once: 'true'
 
@@ -109,7 +112,8 @@
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
       force_foreign_changes: 'true'
-      sites: "test"
+      sites: 
+        - "{{ site }}"
     delegate_to: localhost
     run_once: 'true'
 
@@ -133,7 +137,7 @@
       path: "{{ item.path }}"
       title: "{{ item.title }}"
       state: "absent"
-      delegate_to: localhost
+    delegate_to: localhost
     run_once: 'yes'
     loop: "{{ checkmk_folders }}"
 
@@ -144,6 +148,7 @@
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
       force_foreign_changes: 'true'
-      sites: "test"
+      sites: 
+        - "{{ site }}"
     delegate_to: localhost
     run_once: 'true'
