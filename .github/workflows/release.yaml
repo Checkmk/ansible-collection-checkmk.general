@@ -1,14 +1,11 @@
 ---
-name: Release new Collection Version
+name: Release Collection
 on: # yamllint disable-line rule:truthy
   workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.9]
 
     steps:
       - name: Checkout code
@@ -18,10 +15,10 @@ jobs:
         id: current_version
         run: echo "::set-output name=version::$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)"
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python.
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.9
 
       - name: Install Dependencies
         run: |
@@ -31,28 +28,22 @@ jobs:
       - name: Compile Collection Changelog
         run: antsibull-changelog release
 
-      - name: Commit build changelogs
-        run: |
-          cd build/src
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          git checkout -B changelogs-compile
-          git add -f changelogs/ CHANGELOG.rst
-          git commit -m "Add built front-end assets"
-          git push -f origin changelogs-compile
-      
-      - name: Merge changelogs back into main
-        uses: devmasx/merge-branch@master
+      # https://github.com/marketplace/actions/create-pull-request
+      - name: Create Pull Request for docs
+        uses: peter-evans/create-pull-request@v3
         with:
-          type: now
-          target_branch: main
-          github_token: ${{ github.token }}
-      
-      - name: Delete changelogs-compile branch
-        uses: dawidd6/action-delete-branch@v3
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
-          branches: changelogs-compile
+          commit-message: Update Changelogs
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: changelogs-update
+          delete-branch: true
+          title: '[Auto] Update changelogs'
+          body: |
+            Changelogs updated during *${{ steps.current_version.outputs.version }}* release.
+          assignees: robin-tribe29
+          reviewers: robin-tribe29
+          draft: false
 
       - name: Copy Files and Directories to Source
         run: |
