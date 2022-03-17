@@ -1,0 +1,30 @@
+ancestor: null
+releases:
+  0.0.1:
+    changes:
+      known_issues:
+      - Activation is not site aware yet. All sites will be activated.
+      - Discovery is not feature complete yet.
+      - This release is still in development and a heavy work in progress.
+      major_changes:
+      - Add activation module.
+      - Add discovery module.
+      - Add folder module.
+      - Add host module.
+      - Initial creation of collection structure and layout.
+    fragments:
+    - initial.yml
+    modules:
+    - description: Activate changes in Checkmk.
+      name: activation
+      namespace: ''
+    - description: Discover services in Checkmk.
+      name: discovery
+      namespace: ''
+    - description: Manage folders in Checkmk.
+      name: folder
+      namespace: ''
+    - description: Manage hosts in Checkmk.
+      name: host
+      namespace: ''
+    release_date: '2022-03-17'

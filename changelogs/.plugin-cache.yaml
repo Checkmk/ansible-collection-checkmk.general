@@ -1,0 +1,37 @@
+objects:
+  role: {}
+plugins:
+  become: {}
+  cache: {}
+  callback: {}
+  cliconf: {}
+  connection: {}
+  httpapi: {}
+  inventory: {}
+  lookup: {}
+  module:
+    activation:
+      description: Activate changes in Checkmk.
+      name: activation
+      namespace: ''
+      version_added: 0.0.1
+    discovery:
+      description: Discover services in Checkmk.
+      name: discovery
+      namespace: ''
+      version_added: 0.0.1
+    folder:
+      description: Manage folders in Checkmk.
+      name: folder
+      namespace: ''
+      version_added: 0.0.1
+    host:
+      description: Manage hosts in Checkmk.
+      name: host
+      namespace: ''
+      version_added: 0.0.1
+  netconf: {}
+  shell: {}
+  strategy: {}
+  vars: {}
+version: 0.0.1
