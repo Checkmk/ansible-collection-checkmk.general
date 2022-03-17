@@ -28,3 +28,15 @@ releases:
       name: host
       namespace: ''
     release_date: '2022-02-14'
+  0.0.2:
+    changes:
+      known_issues:
+      - Activation is not site aware yet. All sites will be activated.
+      - Discovery is not feature complete yet.
+      - This release is still in development and a heavy work in progress.
+      major_changes:
+      - Major overhaul of folder module.
+      - Major overhaul of host module.
+    fragments:
+    - v0.0.2.yml
+    release_date: '2022-03-17'
