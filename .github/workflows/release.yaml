@@ -1,5 +1,5 @@
 ---
-name: Release new Collection Version
+name: Release Collection
 on: # yamllint disable-line rule:truthy
   workflow_dispatch:
 
