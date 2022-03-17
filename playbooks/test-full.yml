@@ -1,3 +1,8 @@
+---
+
+# Make sure to keep the tests in sync!
+# Rather use the tests than this playbook directly.
+
 - name: "Test all modules."
   hosts: all
   gather_facts: 'no'

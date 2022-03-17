@@ -2,17 +2,6 @@
 # Take this from playbooks/test-full.yml to ensure full coverage!
 # Be sure to remove header!
 
-- name: "Run activation module - 1."
-  activation:
-    server_url: "{{ server_url }}"
-    site: "{{ site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: 'true'
-    sites: "test"
-  delegate_to: localhost
-  run_once: 'true'
-
 - name: "Create folders."
   folder:
     server_url: "{{ server_url }}"
@@ -42,26 +31,13 @@
   run_once: 'yes'
   loop: "{{ checkmk_hosts }}"
 
-- name: "Discover hosts."
-  discovery:
-    server_url: "{{ server_url }}"
-    site: "{{ site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
-    state: "fix_all"
-  delegate_to: localhost
-  run_once: 'yes'
-  loop: "{{ checkmk_hosts }}"
-
-- name: "Run activation module - 2."
+- name: "Run activation."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: 'true'
-    sites: "test"
   delegate_to: localhost
   run_once: 'true'
 
@@ -82,14 +58,13 @@
   run_once: 'yes'
   loop: "{{ checkmk_hosts }}"
 
-- name: "Run activation module - 3."
+- name: "Run activation."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: 'true'
-    sites: "test"
   delegate_to: localhost
   run_once: 'true'
 
@@ -106,14 +81,13 @@
   run_once: 'yes'
   loop: "{{ checkmk_hosts }}"
 
-- name: "Run activation module - 4."
+- name: "Run activation."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: 'true'
-    sites: "test"
   delegate_to: localhost
   run_once: 'true'
 
@@ -143,13 +117,12 @@
   run_once: 'yes'
   loop: "{{ checkmk_folders }}"
 
-- name: "Run activation module - 5."
+- name: "Run activation."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: 'true'
-    sites: "test"
   delegate_to: localhost
   run_once: 'true'
