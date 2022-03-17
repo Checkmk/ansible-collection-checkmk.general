@@ -113,8 +113,9 @@ if you list the `tribe29.checkmk` collection in the playbook's [`collections`](h
 ```
 ### See Also:
 
-* [Checkmk Documentation](https://docs.checkmk.com/)
 * [Checkmk Website](https://checkmk.com)
+* [Checkmk Documentation](https://docs.checkmk.com/)
+* [Checkmk Community](https://forum.checkmk.com/)
 * [tribe29 - the checkmk company](https://tribe29.com)
 
 ## Contributing to this collection
