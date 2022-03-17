@@ -24,9 +24,9 @@ extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     sites:
-        description: The sites that should be activated.
-        required: true
-        type: str
+        description: The sites that should be activated. Omitting this option activates all sites.
+        default: []
+        type: raw
     force_foreign_changes:
         description: Wheather to active foreign changes.
         default: false
@@ -37,15 +37,29 @@ author:
 '''
 
 EXAMPLES = r'''
-# Pass in a message
-- name: "Activate changes."
+- name: "Activate changes on all sites."
+  tribe29.checkmk.activation:
+      server_url: "http://localhost/"
+      site: "my_site"
+      automation_user: "automation"
+      automation_secret: "$SECRET"
+
+- name: "Activate changes on a specific site."
+  tribe29.checkmk.activation:
+      server_url: "http://localhost/"
+      site: "my_site"
+      automation_user: "automation"
+      automation_secret: "$SECRET"
+      sites:
+        - "my_site"
+
+- name: "Activate changes including foreign changes."
   tribe29.checkmk.activation:
       server_url: "http://localhost/"
       site: "my_site"
       automation_user: "automation"
       automation_secret: "$SECRET"
       force_foreign_changes: 'true'
-      sites: "my_site"
 '''
 
 RETURN = r'''
@@ -80,10 +94,6 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args,
                            supports_check_mode=False)
-
-    if module.params['sites'] is None:
-        module.params['sites'] = {
-        }  # ToDo: How to pass empty array of strings?
 
     changed = False
     failed = False
