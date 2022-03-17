@@ -170,7 +170,8 @@ jobs:
             python: '3.10'
           - ansible: stable-2.11
             python: '3.10'
-            
+
+
     steps:
       - name: Check out code
         uses: actions/checkout@v2
