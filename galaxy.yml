@@ -9,7 +9,7 @@ namespace: tribe29
 name: checkmk
 
 # The version of the collection. Must be compatible with semantic versioning
-version: 0.0.1
+version: 0.0.2
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -49,7 +49,7 @@ tags: [tribe29, checkmk, monitoring]
 repository: https://github.com/tribe29/ansible-collection-tribe29.checkmk
 
 # The URL to any online docs
-documentation: https://github.com/tribe29/ansible-collection-tribe29.checkmk/tree/main/docs
+documentation: https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/README.md
 
 # The URL to the homepage of the collection/project
 homepage: https://github.com/tribe29/ansible-collection-tribe29.checkmk
