@@ -33,7 +33,6 @@ jobs:
 
       - name: Commit build changelogs
         run: |
-          cd build/src
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git checkout -B changelogs-compile
@@ -47,12 +46,6 @@ jobs:
           type: now
           target_branch: main
           github_token: ${{ github.token }}
-      
-      - name: Delete changelogs-compile branch
-        uses: dawidd6/action-delete-branch@v3
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
-          branches: changelogs-compile
 
       - name: Copy Files and Directories to Source
         run: |
@@ -107,3 +100,9 @@ jobs:
 
       # - name: changelogs-compile Ansible collection to Galaxy
       #   run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
+
+      - name: Delete changelogs-compile branch
+        uses: dawidd6/action-delete-branch@v3
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          branches: changelogs-compile
