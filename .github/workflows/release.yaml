@@ -96,5 +96,5 @@ jobs:
           asset_name: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
           asset_content_type: application/tar+gzip
 
-      # - name: changelogs-compile Ansible collection to Galaxy
-      #   run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
+      - name: Publish Ansible Collection to the Galaxy
+        run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
