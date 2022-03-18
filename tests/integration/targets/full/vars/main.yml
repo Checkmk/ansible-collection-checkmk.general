@@ -1,0 +1,43 @@
+---
+checkmk_version: 2.0.0p21
+download_url: "https://download.checkmk.com/checkmk/{{ checkmk_version }}/check-mk-raw-{{ checkmk_version }}_0.{{ ansible_distribution_release }}_amd64.deb"
+site: "integration"
+server_url: "http://127.0.0.1/"
+automation_user: "cmkadmin"
+automation_secret: "d7586df1-01db-3eda-9858-dbcf18d0c361"
+
+checkmk_folders:
+  - path: /test
+    title: Test
+  - path: /foo
+    title: Foo
+  - path: /bar
+    title: Bar
+  - path: /foo/bar
+    title: Bar
+  - path: /bar/foo
+    title: Foo
+  - path: /foo/bar/treasure
+    title: Treasure
+
+checkmk_hosts:
+  - name: test1.tld
+    folder: "/test"
+  - name: test2.tld
+    folder: "/foo" 
+  - name: test3.tld
+    folder: "/bar"
+  - name: test4.tld
+    folder: "/" 
+  - name: test5.tld
+    folder: "/foo/bar" 
+  - name: test6.tld
+    folder: "/bar/foo" 
+  - name: test7.tld
+    folder: "/" 
+  - name: test8.tld
+    folder: "/test" 
+  - name: test9.tld
+    folder: "/bar" 
+  - name: test10.tld
+    folder: "/foo"
