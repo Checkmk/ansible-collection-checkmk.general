@@ -10,7 +10,7 @@ with automating Checkmk through Ansible.
 ## Here be dragons!
 [![Ansible Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-test.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-test.yaml)
 
-**This is a work in progress! Do not use unless you know what you are doing!**  
+**This is a work in progress!**  
 Everything within this repository is subject to possibly heavy change
 and we cannot guarantee any stability at this point. You have been warned!
 
@@ -67,14 +67,14 @@ offline installation as follows:
 
     ansible-galaxy collection install /path/to/tribe29-checkmk-X.Y.Z.tar.gz
 
-You can also include it in a `requirements.yml` file using the format:
+You can also include it in a `requirements.yml` file and install it with
+`ansible-galaxy collection install -r requirements.yml`, using the format:
 ```yaml
 ---
 collections:
   - source: /path/to/tribe29-checkmk-X.Y.Z.tar.gz
     type: file
 ```
-and install it with `ansible-galaxy collection install -r requirements.yml`.
 
 ### From the Galaxy
 
@@ -89,6 +89,7 @@ You can also include it in a `requirements.yml` file and install it with
 ---
 collections:
   - name: tribe29.checkmk
+    version: X.Y.Z
 ```
 
 ## Using this collection
@@ -112,8 +113,10 @@ if you list the `tribe29.checkmk` collection in the playbook's [`collections`](h
         automation_user: "automation"
         automation_secret: "$SECRET"
         force_foreign_changes: 'true'
+        sites:
+          - "my_site"
 ```
-### See Also:
+### More information about Checkmk
 
 * [Checkmk Website](https://checkmk.com)
 * [Checkmk Documentation](https://docs.checkmk.com/)
@@ -136,7 +139,7 @@ See [CHANGELOG.rst](CHANGELOG.rst).
 ## Roadmap
 <!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
 This is merely a collection of possible additions to the role.
-Please do **not** consider a concrete planning document for the near future!
+Please do **not** consider a concrete planning document!
 
 - Modules
   - Monitoring
@@ -154,8 +157,11 @@ Please do **not** consider a concrete planning document for the near future!
     - Users
 - Lookup Plugins
   - Version
+- Roles
+  - Checkmk server installation
+  - Checkmk agent installation
 
-## More information
+## More information about Ansible
 
 - [Ansible Collection overview](https://github.com/ansible-collections/overview)
 - [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
