@@ -1,0 +1,118 @@
+---
+name: Release Collection
+on: # yamllint disable-line rule:truthy
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get current version
+        id: current_version
+        run: echo "::set-output name=version::$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)"
+
+      - name: Set up Python.
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Compile Collection Changelog
+        run: antsibull-changelog release
+
+      # https://github.com/marketplace/actions/create-pull-request
+      - name: Create Pull Request for docs
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: Update Changelogs
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: changelogs-update
+          delete-branch: true
+          title: '[Auto] Update changelogs'
+          body: |
+            Changelogs updated during *${{ steps.current_version.outputs.version }}* release.
+          assignees: robin-tribe29
+          reviewers: robin-tribe29
+          draft: false
+
+      - name: Copy Files and Directories to Source
+        run: |
+          mkdir -p build/src
+          cp $files build/src
+          cp -rf $directories build/src
+        env:
+          files: "CHANGELOG.rst LICENSE README.md ansible.cfg galaxy.yml"
+          # directories: "playbooks plugins roles vars"
+          directories: "changelogs docs meta playbooks plugins"
+
+      - name: Build Ansible Collection
+        run: ansible-galaxy collection build build/src --force
+
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.current_version.outputs.version }}
+          release_name: Release v${{ steps.current_version.outputs.version }}
+          body: |
+            # Ansible Collection: tribe29.checkmk
+
+            ## Installing locally
+            
+            You can install this collection locally as follows, if you download
+            the tarball from this release:
+
+                ansible-galaxy collection install /path/to/tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+
+            You can also include it in a `requirements.yml` file and install it with
+            `ansible-galaxy collection install -r requirements.yml`, using the format:
+            ```yaml
+            ---
+            collections:
+              - source: /path/to/tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+                type: file
+            ```
+
+            ### Installing from the Galaxy
+
+            You can install the Checkmk collection with the Ansible Galaxy CLI:
+
+                ansible-galaxy collection install tribe29.checkmk
+
+            You can also include it in a `requirements.yml` file and install it with
+            `ansible-galaxy collection install -r requirements.yml`, using the format:
+
+            ```yaml
+            ---
+            collections:
+              - name: tribe29.checkmk
+                version: ${{ steps.current_version.outputs.version }}
+            ```
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+          asset_name: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+          asset_content_type: application/tar+gzip
+
+      - name: Publish Ansible Collection to the Galaxy
+        run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}

@@ -3,7 +3,7 @@
 
 # Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
@@ -24,12 +24,12 @@ extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     sites:
-        description: The sites that should be activated.
-        required: true
-        type: str
+        description: The sites that should be activated. Omitting this option activates all sites.
+        default: []
+        type: raw
     force_foreign_changes:
         description: Wheather to active foreign changes.
-        default: False
+        default: false
         type: bool
 
 author:
@@ -37,19 +37,32 @@ author:
 '''
 
 EXAMPLES = r'''
-# Pass in a message
-- name: "Activate changes."
+- name: "Activate changes on all sites."
+  tribe29.checkmk.activation:
+      server_url: "http://localhost/"
+      site: "my_site"
+      automation_user: "automation"
+      automation_secret: "$SECRET"
+
+- name: "Activate changes on a specific site."
+  tribe29.checkmk.activation:
+      server_url: "http://localhost/"
+      site: "my_site"
+      automation_user: "automation"
+      automation_secret: "$SECRET"
+      sites:
+        - "my_site"
+
+- name: "Activate changes including foreign changes."
   tribe29.checkmk.activation:
       server_url: "http://localhost/"
       site: "my_site"
       automation_user: "automation"
       automation_secret: "$SECRET"
       force_foreign_changes: 'true'
-      sites: "test"
 '''
 
 RETURN = r'''
-# These are examples of possible return values, and in general should use other names for return values.
 http_code:
     description: The HTTP code the Checkmk API returns.
     type: int
@@ -72,8 +85,8 @@ def run_module():
         server_url=dict(type='str', required=True),
         site=dict(type='str', required=True),
         automation_user=dict(type='str', required=True),
-        automation_secret=dict(type='str', required=True),
-        sites=dict(type='str', required=True),
+        automation_secret=dict(type='str', required=True, no_log=True),
+        sites=dict(type='raw', default=[]),
         force_foreign_changes=dict(type='bool', default=False),
     )
 
@@ -81,12 +94,6 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args,
                            supports_check_mode=False)
-
-    if module.params['force_foreign_changes'] is None:
-        module.params['force_foreign_changes'] = False
-    if module.params['sites'] is None:
-        module.params['sites'] = {
-        }  # ToDo: How to pass empty array of strings?
 
     changed = False
     failed = False
@@ -96,6 +103,8 @@ def run_module():
     automation_user = module.params['automation_user']
     automation_secret = module.params['automation_secret']
     sites = module.params['sites']
+    if sites == {}:
+        sites = []
     force_foreign_changes = module.params['force_foreign_changes']
 
     http_code_mapping = {
@@ -125,12 +134,8 @@ def run_module():
 
     params = {
         'force_foreign_changes': force_foreign_changes,
-        'redirect':
-        True,  # ToDo: Do we need this? Does it need to be configurable?
-        # ToDo: make sites list iterable
-        # 'sites': {
-        #     'sitename'
-        # }
+        'redirect': True,  # ToDo: Do we need this? Does it need to be configurable?
+        'sites': sites
     }
 
     api_endpoint = '/domain-types/activation_run/actions/activate-changes/invoke'
