@@ -1,4 +1,7 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
+major_changes:
+  - First release to Ansible Galaxy.
+
 minor_changes:
   - Activation is now site aware.
 
