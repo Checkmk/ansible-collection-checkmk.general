@@ -1,15 +1,15 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 major_changes:
-  - Initial creation of collection structure and layout.
   - Add activation module.
   - Add discovery module.
   - Add folder module.
   - Add host module.
+  - Initial creation of collection structure and layout.
 
 known_issues:
-  - This release is still in development and a heavy work in progress.
-  - Discovery is not feature complete yet.
   - Activation is not site aware yet. All sites will be activated.
+  - Discovery is not feature complete yet.
+  - This release is still in development and a heavy work in progress.
 
 ## Line Format
 # When writing a changelog entry, use the following format:

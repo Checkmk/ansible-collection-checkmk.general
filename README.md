@@ -8,7 +8,9 @@ with automating Checkmk through Ansible.
 ---
 
 ## Here be dragons!
-**This is a work in progress! Do not use unless you know what you are doing!**  
+[![Ansible Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-test.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-test.yaml)
+
+**This is a work in progress!**  
 Everything within this repository is subject to possibly heavy change
 and we cannot guarantee any stability at this point. You have been warned!
 
@@ -22,10 +24,10 @@ Also, keep an eye on [this Checkmk forum post](https://forum.checkmk.com/t/check
 ## Getting help
 
 Please be aware, that although the content in this repository is maintained and
-curated by tribe29, this is fully open source and there is no commercial support
-to this whatsoever! We are happy to welcome you in our [Checkmk Community](https://forum.checkmk.com/)
-or to look at [issues](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)
-you create, but this is still a side project and we can only work on this on a **best effort basis**.
+curated by tribe29, this is fully open source and there is no commercial support to this whatsoever!  
+Of course you can reach out in the [Checkmk Community (using the 'ansible' tag)](https://forum.checkmk.com/tag/ansible)
+or create [issues](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc),
+but this is still a side project and we can only work on this on a **best effort basis**.
 
 ## Repository Structure
 
@@ -65,14 +67,14 @@ offline installation as follows:
 
     ansible-galaxy collection install /path/to/tribe29-checkmk-X.Y.Z.tar.gz
 
-You can also include it in a `requirements.yml` file using the format:
+You can also include it in a `requirements.yml` file and install it with
+`ansible-galaxy collection install -r requirements.yml`, using the format:
 ```yaml
 ---
 collections:
   - source: /path/to/tribe29-checkmk-X.Y.Z.tar.gz
     type: file
 ```
-and install it with `ansible-galaxy collection install -r requirements.yml`.
 
 ### From the Galaxy
 
@@ -87,6 +89,7 @@ You can also include it in a `requirements.yml` file and install it with
 ---
 collections:
   - name: tribe29.checkmk
+    version: X.Y.Z
 ```
 
 ## Using this collection
@@ -110,11 +113,14 @@ if you list the `tribe29.checkmk` collection in the playbook's [`collections`](h
         automation_user: "automation"
         automation_secret: "$SECRET"
         force_foreign_changes: 'true'
+        sites:
+          - "my_site"
 ```
-### See Also:
+### More information about Checkmk
 
-* [Checkmk Documentation](https://docs.checkmk.com/)
 * [Checkmk Website](https://checkmk.com)
+* [Checkmk Documentation](https://docs.checkmk.com/)
+* [Checkmk Community](https://forum.checkmk.com/)
 * [tribe29 - the checkmk company](https://tribe29.com)
 
 ## Contributing to this collection
@@ -133,7 +139,7 @@ See [CHANGELOG.rst](CHANGELOG.rst).
 ## Roadmap
 <!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
 This is merely a collection of possible additions to the role.
-Please do **not** consider a concrete planning document for the near future!
+Please do **not** consider a concrete planning document!
 
 - Modules
   - Monitoring
@@ -151,8 +157,11 @@ Please do **not** consider a concrete planning document for the near future!
     - Users
 - Lookup Plugins
   - Version
+- Roles
+  - Checkmk server installation
+  - Checkmk agent installation
 
-## More information
+## More information about Ansible
 
 - [Ansible Collection overview](https://github.com/ansible-collections/overview)
 - [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
@@ -160,4 +169,4 @@ Please do **not** consider a concrete planning document for the near future!
 - [Ansible Community code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
 
 ## Licensing
-To be done.
+See [LICENSE](LICENSE).
