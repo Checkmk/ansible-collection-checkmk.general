@@ -40,3 +40,15 @@ releases:
     fragments:
     - v0.0.2.yml
     release_date: '2022-03-17'
+  0.1.0:
+    changes:
+      known_issues:
+      - Discovery is not feature complete yet.
+      - This release is still in development and a heavy work in progress.
+      major_changes:
+      - First release to Ansible Galaxy.
+      minor_changes:
+      - Activation is now site aware.
+    fragments:
+    - v0.1.0.yml
+    release_date: '2022-03-18'
