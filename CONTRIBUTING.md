@@ -24,8 +24,12 @@ Dedicated requirements will be added here as suitable.
 
 ## Pull Requests
 
-Please open a [pull request](https://github.com/tribe29/ansible-collection-tribe29.checkmk/pulls?q=is%3Apr+is%3Aopen) if you have something to contribute.
-Dedicated requirements will be added here as suitable.
+Please open a [pull request](https://github.com/tribe29/ansible-collection-tribe29.checkmk/pulls?q=is%3Apr+is%3Aopen)
+if you have something to contribute.
+On pull request creation, checks will run and tell you,
+if your changes work with the collection. If errors are detected, please try to
+fix them and update your pull request accordingly.
+If you need help, feel free to ask for it.
 
 ## Code of Conduct
 
