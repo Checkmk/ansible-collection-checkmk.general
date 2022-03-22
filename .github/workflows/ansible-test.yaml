@@ -13,8 +13,9 @@ on:
       - main
       - devel
     paths-ignore:
-      - 'changelogs/**'
+      - '.github/ISSUE_TEMPLATE/*'
       - 'docs/**'
+      - 'changelogs/**'
       - '**.md'
       - '**.rst'
 
