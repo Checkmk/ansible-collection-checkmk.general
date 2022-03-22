@@ -25,6 +25,12 @@ $ ansible --version
 
 ```
 
+**Checkmk Version**
+<!-- Paste the version string, that can be found in the 'Help' menu. -->
+```console
+e.g. 2.X.YpZ (CRE)
+```
+
 **Collection Version**
 <!-- Paste verbatim output from`ansible-galaxy collection list` between triple backticks. -->
 ```console
