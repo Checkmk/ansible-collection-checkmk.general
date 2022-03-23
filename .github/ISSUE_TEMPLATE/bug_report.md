@@ -38,7 +38,7 @@ $ ansible-galaxy collection list
 
 ```
 **Environment**
-<!-- Provide all relevant information below, e.g. control node OS versions, Checkmk version, etc. -->
+<!-- Provide all relevant information below, e.g. control node OS versions, Python version, etc. -->
 
 **To Reproduce**
 Steps to reproduce the behavior:
