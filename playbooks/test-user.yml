@@ -5,7 +5,7 @@
     - ./vars/config.yml
     - ./vars/users.yml
   tasks:
-  - name: "Run activation module - 1."
+  - name: "Activate changes on site - 1."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -36,7 +36,7 @@
     run_once: 'yes'
     loop: "{{ checkmk_users }}"
 
-  - name: "Run activation module - 2."
+  - name: "Activate changes on site - 2."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -65,7 +65,7 @@
     run_once: 'yes'
     loop: "{{ checkmk_users }}"
 
-  - name: "Run activation module - 3."
+  - name: "Activate changes on site - 3."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -90,7 +90,7 @@
     run_once: 'yes'
     loop: "{{ checkmk_users }}"
 
-  - name: "Run activation module - 4."
+  - name: "Activate changes on site - 4."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
