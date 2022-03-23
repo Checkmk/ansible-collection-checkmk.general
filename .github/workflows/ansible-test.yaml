@@ -18,6 +18,16 @@ on:
       - 'changelogs/**'
       - '**.md'
       - '**.rst'
+  pull_request:
+    branches:
+      - main
+      - devel
+    paths-ignore:
+      - '.github/ISSUE_TEMPLATE/*'
+      - 'docs/**'
+      - 'changelogs/**'
+      - '**.md'
+      - '**.rst'
 
 env:
   NAMESPACE: tribe29
