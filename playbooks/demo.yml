@@ -4,7 +4,7 @@
   vars_files:
     - ./vars/config.yml
   tasks:
-  - name: "Run activation module - Showcase no changes."
+  - name: "Activate changes on site - Showcase no changes."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -28,7 +28,7 @@
     run_once: 'yes'
     loop: "{{ checkmk_folders }}"
 
-  - name: "Create hosts."
+  - name: "Create host."
     host:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -42,7 +42,7 @@
       state: "present"
     delegate_to: localhost
 
-  - name: "Discover hosts."
+  - name: "Discover services on host."
     discovery:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -58,7 +58,7 @@
         "Feel free to review the changes in your Checkmk site: {{ site }}."
         "Press <Enter> to continue."
 
-  - name: "Run activation module - Showcase creation of hosts and folders."
+  - name: "Activate changes on site - Showcase creation of hosts and folders."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -101,7 +101,7 @@
         "Feel free to review the changes in your Checkmk site: {{ site }}."
         "Press <Enter> to continue."
 
-  - name: "Run activation module - Showcase changes to existing objects."
+  - name: "Activate changes on site - Showcase changes to existing objects."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -112,7 +112,7 @@
     delegate_to: localhost
     run_once: 'true'
 
-  - name: "Delete Hosts."
+  - name: "Delete Host."
     host:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -137,7 +137,7 @@
     run_once: 'yes'
     loop: "{{ checkmk_folders }}"
 
-  - name: "Run activation module - 5."
+  - name: "Activate changes on site - Showcase host and folders were deleted"
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
