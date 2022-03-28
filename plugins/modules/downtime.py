@@ -221,7 +221,6 @@ def set_hostdowntime(module, base_url, headers):
 
 def set_servicedowntime(module, base_url, headers):
     api_endpoint = "/domain-types/downtime/collections/service"
-    get_hostdowntimes(module, base_url, headers)
     start_time, end_time = set_timestamps(module)
     params = {
         "start_time": start_time,
