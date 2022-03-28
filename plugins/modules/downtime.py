@@ -19,7 +19,8 @@ version_added: "0.2"
 
 description:
 - Manage downtimes within Checkmk.
-- idempotency for creation was made for hostdowntimes by only using the hostname and comment attributes. If this combination already exists as a downtime, the new downtime will not be created except using force. The creation of servicedowntimes is not idempotent at all. 
+- idempotency for creation was made for hostdowntimes by only using the hostname and comment attributes. If this combination already exists as a downtime,
+the new downtime will not be created except using force. The creation of servicedowntimes is not idempotent at all.
 
 todos:
 - implement idempotency for deletion
@@ -35,11 +36,13 @@ options:
     #    description: The type of downtime to create
     #  for simplicity, this is fixed to host
     duration:
-        description: Duration in seconds. When set, the downtime does not begin automatically at a nominated time, but when a real problem status appears for the host. Consequencely, the start_time/end_time is only the time window in which the scheduled downtime can begin.
+        description: Duration in seconds. When set, the downtime does not begin automatically at a nominated time, but when a real problem status appears for
+            the host. Consequencely, the start_time/end_time is only the time window in which the scheduled downtime can begin.
         type: int
         default: 0
     end_after:
-        description: the timedelta between start_time and end_time. if you want to use end_after you have to ommit end_time. for keys and values see https://docs.python.org/3/library/datetime.html#datetime.timedelta
+        description: the timedelta between start_time and end_time. if you want to use end_after you have to ommit end_time. for keys and values 
+            see https://docs.python.org/3/library/datetime.html#datetime.timedelta
         type: dictionary
         default: {}
     end_time:
@@ -55,7 +58,8 @@ options:
         type: array
         default: []
     start_after:
-        description: the timedelta between now and start_time. if you want to use start_after you have to ommit start_time. for keys and values see https://docs.python.org/3/library/datetime.html#datetime.timedelta
+        description: the timedelta between now and start_time. if you want to use start_after you have to ommit start_time. for keys and values see 
+            https://docs.python.org/3/library/datetime.html#datetime.timedelta
         type: dictionary
         default: {}
     start_time:
@@ -129,41 +133,47 @@ message:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
-import json, re
+import json
+import re
 from datetime import datetime, timedelta
+
 
 def exit_failed(module, msg):
     result = {"msg": msg, "changed": False, "failed": True}
     module.fail_json(**result)
 
+
 def exit_changed(module, msg):
     result = {"msg": msg, "changed": True, "failed": False}
     module.exit_json(**result)
+
 
 def exit_ok(module, msg):
     result = {"msg": msg, "changed": False, "failed": False}
     module.exit_json(**result)
 
+
 def set_timestamps(module):
     default_start_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-    default_end_time = (datetime.utcnow()+timedelta(minutes=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    default_end_time = (datetime.utcnow() + timedelta(minutes=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
     start_time = module.params.get("start_time")
-    end_time= module.params.get("end_time")
-    end_after= module.params.get("end_after")
-    start_after= module.params.get("start_after")
+    end_time = module.params.get("end_time")
+    end_after = module.params.get("end_after")
+    start_after = module.params.get("start_after")
     if start_time == '':
         if start_after == {}:
             start_time = default_start_time
         else:
-            start_time = (datetime.utcnow()+timedelta(**start_after)).strftime("%Y-%m-%dT%H:%M:%SZ")
+            start_time = (datetime.utcnow() + timedelta(**start_after)).strftime("%Y-%m-%dT%H:%M:%SZ")
     if end_time == '':
         if end_after == {}:
             end_time = default_end_time
         else:
-            start_time = re.sub('\+\d\d:\d\d$','Z', start_time)
+            start_time = re.sub(r'\+\d\d:\d\d$', 'Z', start_time)
             dt_start = datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%SZ')
-            end_time = (dt_start+timedelta(**end_after)).strftime("%Y-%m-%dT%H:%M:%SZ")
+            end_time = (dt_start + timedelta(**end_after)).strftime("%Y-%m-%dT%H:%M:%SZ")
     return [start_time, end_time]
+
 
 def get_hostdowntimes(module, base_url, headers):
     # this function gets the list of downtime comments which exists for the given host, it returns an array of comments
@@ -186,10 +196,11 @@ def get_hostdowntimes(module, base_url, headers):
         comments.append(dt["extensions"]["comment"])
     return comments
 
+
 def set_hostdowntime(module, base_url, headers):
     comments = get_hostdowntimes(module, base_url, headers)
     comment = module.params.get("comment")
-    if module.params.get("force") or not comment in comments:
+    if module.params.get("force") or comment not in comments:
         api_endpoint = "/domain-types/downtime/collections/host"
         start_time, end_time = set_timestamps(module)
         params = {
@@ -208,9 +219,9 @@ def set_hostdowntime(module, base_url, headers):
             module, url, module.jsonify(params), headers=headers, method="POST"
         )
     else:
-        msg = "downtime already exists for comment '%s' on the host '%s', you may use force attribute to create a new downtime with the same comment " % (comment, module.params.get("host_name"))
+        msg = "downtime already exists for comment '%s' on the host '%s', you may use force attribute to create a new downtime with the same comment " \
+        % (comment, module.params.get("host_name"))
         exit_ok(module, msg)
-
 
     if info["status"] != 204:
         exit_failed(
@@ -218,6 +229,7 @@ def set_hostdowntime(module, base_url, headers):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
+
 
 def set_servicedowntime(module, base_url, headers):
     api_endpoint = "/domain-types/downtime/collections/service"
@@ -245,6 +257,7 @@ def set_servicedowntime(module, base_url, headers):
             % (info["status"], info["body"]),
         )
 
+
 def remove_hostdowntime(module, base_url, headers):
     api_endpoint = "/domain-types/downtime/actions/delete/invoke"
     params = {
@@ -262,6 +275,7 @@ def remove_hostdowntime(module, base_url, headers):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
+
 
 def remove_servicedowntime(module, base_url, headers):
     api_endpoint = "/domain-types/downtime/actions/delete/invoke"
@@ -282,6 +296,7 @@ def remove_servicedowntime(module, base_url, headers):
             % (info["status"], info["body"]),
         )
 
+
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
@@ -297,7 +312,7 @@ def run_module():
         end_after=dict(type="dict", default={}),
         end_time=dict(type="str", default=''),
         force=dict(type="bool", default=False),
-        service_descriptions=dict(type='list', elements='str',default = []),
+        service_descriptions=dict(type='list', elements='str', default=[]),
         state=dict(type="str", default='present', choices=["present", "absent"]),
     )
 
