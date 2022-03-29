@@ -15,13 +15,15 @@
   run_once: 'yes'
   loop: "{{ checkmk_folders }}"
 
-- name: "Run activation."
+- name: "Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: 'true'
+    sites:
+      - "{{ site }}"
   delegate_to: localhost
   run_once: 'true'
 
@@ -38,12 +40,14 @@
   run_once: 'yes'
   loop: "{{ checkmk_folders }}"
 
-- name: "Run activation."
+- name: "Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: 'true'
+    sites:
+      - "{{ site }}"
   delegate_to: localhost
   run_once: 'true'
