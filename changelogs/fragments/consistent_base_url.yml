@@ -1,0 +1,6 @@
+minor_changes:
+  - The way how the API URL is being created is now more consistent. Thus, users can now skip the
+    trailing "/" in the "server_url" for all modules. Thanks to Jan Petto
+    (https://github.com/Edgxxar)!
+known_issues:
+  - We might extract the API call handling into a separate Python module.
