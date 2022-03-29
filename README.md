@@ -36,22 +36,22 @@ have a look at [STRUCTURE.md](docs/STRUCTURE.md).
 <!-- ### Inventory plugins
 Name | Description
 --- | ---
-[tribe29.checkmk.ec2](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.ec2_inventory.rst)|EC2 inventory source
-[tribe29.checkmk.rds](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.rds_inventory.rst)|rds instance source
+[tribe29.checkmk.ec2](https://github.com/tribe29/ansible-collection-tribe29.checkmk/tree/main/docs/tribe29.checkmk.ec2_inventory.rst)|EC2 inventory source
 
 ### Lookup plugins
 Name | Description
 --- | ---
-[tribe29.checkmk.account_attribute](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.account_attribute_lookup.rst)|Look up Checkmk account attributes.
-[tribe29.checkmk.secret](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.secret_lookup.rst)|Look up secrets stored in Checkmk Secrets Manager. -->
+[tribe29.checkmk.account_attribute](https://github.com/tribe29/ansible-collection-tribe29.checkmk/tree/main/docs/tribe29.checkmk.account_attribute_lookup.rst)|Look up Checkmk account attributes.
+-->
 
 ### Modules
 Name | Description
 --- | ---
-[tribe29.checkmk.activation](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.activation.md)|Activate changes.
-[tribe29.checkmk.discovery](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.discovery.md)|Discover services.
-[tribe29.checkmk.folder](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.folder.md)|Manage folders.
-[tribe29.checkmk.host](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.host.md)|Manage hosts.
+[tribe29.checkmk.activation](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/activation.py)|Activate changes.
+[tribe29.checkmk.discovery](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/discovery.py)|Discover services.
+[tribe29.checkmk.downtime](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/downtime.py)|Schedule downtimes on hosts and services.
+[tribe29.checkmk.folder](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/folder.py)|Manage folders.
+[tribe29.checkmk.host](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/host.py)|Manage hosts.
 <!--end collection content-->
 
 ## Installing this collection
@@ -140,7 +140,6 @@ Please do **not** consider a concrete planning document!
 - Modules
   - Monitoring
     - Acknowledgement
-    - Downtime
   - Setup
     - Agents
     - BI
