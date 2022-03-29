@@ -1,0 +1,182 @@
+---
+# Take this from playbooks/test-full.yml to ensure full coverage!
+# Be sure to remove header!
+
+- name: "Create folders."
+  folder:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    path: "{{ item.path }}"
+    title: "{{ item.title }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: 'yes'
+  loop: "{{ checkmk_folders }}"
+
+- name: "Create hosts."
+  host:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: 'yes'
+  loop: "{{ checkmk_hosts }}"
+
+- name: "Run activation."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: 'true'
+  delegate_to: localhost
+  run_once: 'true'
+
+  # services
+
+- name: "downtime 1 - on services with relative times"
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: downtime 1 - on services with relative timestamps
+    start_after:
+      hours: 2
+      minutes: 30
+    end_after:
+      hours: 1
+      minutes: 30
+    service_descriptions:
+      - "CPU utilization"
+      - "Memory"
+  loop: "{{ checkmk_hosts }}"
+
+- name: "downtime 2 - on services with absolute timestamps"
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: downtime 2 - on services with absolute timestamps
+    start_time: 2024-03-25T20:39:28Z
+    end_time: 2024-03-26T20:39:28Z
+    service_descriptions:
+      - "CPU utilization"
+      - "Memory"
+  loop: "{{ checkmk_hosts }}"
+
+- name: "downtime 3 - on services without timestamps"
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: downtime 3 - on services without timestamps
+    service_descriptions:
+      - "CPU utilization"
+      - Memory
+    end_after:
+      minutes: 1
+  loop: "{{ checkmk_hosts }}"
+
+# hosts
+
+- name: "downtime 4 - on host with relative times"
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: downtime 4 - on host with relative timestamps
+    #start_time: 2022-03-25T20:39:28Z
+    start_after:
+      hours: 2
+      minutes: 30
+    end_after:
+      hours: 1
+      minutes: 30
+    #force: yes
+  loop: "{{ checkmk_hosts }}"
+
+- name: "downtime 5 - on host with absolute timestamps"
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: downtime 5 - on host with absolute timestamps
+    start_time: 2024-03-25T20:39:28Z
+    end_time: 2024-03-26T20:39:28Z
+  loop: "{{ checkmk_hosts }}"
+
+- name: "downtime 6 - on host without timestamps"
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: downtime 6 - on host without timestamps
+  loop: "{{ checkmk_hosts }}"
+
+# delete services downtimes
+
+- name: "downtime delete 1 - service downtimes"
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    service_descriptions:
+      - "CPU utilization"
+      - Memory
+    state: absent
+  loop: "{{ checkmk_hosts }}"
+
+- name: "downtime delete 2 - host downtimes"
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    state: absent
+  loop: "{{ checkmk_hosts }}"
+
+
+
+- name: "Delete folders."
+  folder:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    path: "{{ item.path }}"
+    title: "{{ item.title }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: 'yes'
+  loop: "{{ checkmk_folders }}"
+
+- name: "Run activation without."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: 'true'
+  delegate_to: localhost
+  run_once: 'true'
