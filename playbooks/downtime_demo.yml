@@ -7,8 +7,6 @@
   gather_facts: no
   vars_files:
     - ./vars/config.yml
-  vars:
-    host_name: "{{ downtime_host }}"
   tasks:
 
   # services
@@ -19,7 +17,7 @@
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
-      host_name: "{{ host_name }}"
+      host_name: "{{ inventory_hostname }}"
       comment: downtime 1 - on services with relative timestamps
       start_after:
         hours: 2
@@ -37,7 +35,7 @@
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
-      host_name: "{{ host_name }}"
+      host_name: "{{ inventory_hostname }}"
       comment: downtime 2 - on services with absolute timestamps
       start_time: 2024-03-25T20:39:28Z
       end_time: 2024-03-26T20:39:28Z
@@ -51,7 +49,7 @@
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
-      host_name: "{{ host_name }}"
+      host_name: "{{ inventory_hostname }}"
       comment: downtime 3 - on services without timestamps
       service_descriptions:
         - "CPU utilization"
@@ -67,7 +65,7 @@
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
-      host_name: "{{ host_name }}"
+      host_name: "{{ inventory_hostname }}"
       comment: downtime 4 - on host with relative timestamps
       #start_time: 2022-03-25T20:39:28Z
       start_after:
@@ -84,7 +82,7 @@
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
-      host_name: "{{ host_name }}"
+      host_name: "{{ inventory_hostname }}"
       comment: downtime 5 - on host with absolute timestamps
       start_time: 2024-03-25T20:39:28Z
       end_time: 2024-03-26T20:39:28Z
@@ -95,7 +93,7 @@
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
-      host_name: "{{ host_name }}"
+      host_name: "{{ inventory_hostname }}"
       comment: downtime 6 - on host without timestamps
 
   # delete services downtimes
@@ -106,7 +104,7 @@
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
-      host_name: "{{ host_name }}"
+      host_name: "{{ inventory_hostname }}"
       service_descriptions:
         - "CPU utilization"
         - Memory
@@ -120,7 +118,7 @@
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
-      host_name: "{{ host_name }}"
+      host_name: "{{ inventory_hostname }}"
       state: absent
     tags:
       - delete
