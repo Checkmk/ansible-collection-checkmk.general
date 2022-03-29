@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-DOCUMENTATION = r"""
+DOCUMENTATION = r'''
 ---
 module: downtime
 
@@ -15,42 +15,48 @@ short_description: Manage downtimes in Checkmk.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "0.2"
+version_added: "0.2.0"
 
 description:
 - Manage downtimes within Checkmk.
-- idempotency for creation was made for hostdowntimes by only using the hostname and comment attributes. If this combination already exists as a downtime,
-the new downtime will not be created except using force. The creation of servicedowntimes is not idempotent at all.
+
+notes:
+- Idempotency for creation was made for hostdowntimes by only using the hostname and comment attributes.
+  If this combination already exists as a downtime, the new downtime will not be created except using force.
+  The creation of servicedowntimes is not idempotent at all.
 
 todos:
-- implement idempotency for deletion
-- fine tune deletion, so only delete dt by host and comment
+- Implement idempotency for deletion
+- Fine tune deletion, so only delete dt by host and comment
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     comment:
-        description: remarks for the downtime.
+        description: Remarks for the downtime.
         type: str
-    #downtime_type:
-    #    description: The type of downtime to create
-    #  for simplicity, this is fixed to host
+    # downtime_type:
+    #     description: The type of downtime to create. For simplicity, this is fixed to host.
     duration:
-        description: Duration in seconds. When set, the downtime does not begin automatically at a nominated time, but when a real problem status appears for
-            the host. Consequencely, the start_time/end_time is only the time window in which the scheduled downtime can begin.
+        description:
+        - Duration in seconds. When set, the downtime does not begin automatically at a nominated time,
+          but when a real problem status appears for the host.
+          Consequently, the start_time and end_time is only the time window in which the scheduled downtime can begin.
         type: int
         default: 0
     end_after:
-        description: the timedelta between start_time and end_time. if you want to use end_after you have to ommit end_time. for keys and values 
-            see https://docs.python.org/3/library/datetime.html#datetime.timedelta
+        description:
+        - The timedelta between start_time and end_time. if you want to use end_after you have to omit end_time.
+        - For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
         type: dictionary
         default: {}
     end_time:
-        description: The end datetime of the new downtime. The format has to conform to the ISO 8601 profile (like: 2017-07-21T17:32:28Z)
+        description:
+        - The end datetime of the new downtime. The format has to conform to the ISO 8601 profile I(like 2017-07-21T17:32:28Z)
         type: str
         default: 30 minutes after now
     force:
-        description: Force the creation of a downtime in case a hostname / comment combination already exists as a downtime.
+        description: Force the creation of a downtime in case a hostname and comment combination already exists as a downtime.
         type: bool
         default: false
     service_descriptions:
@@ -58,8 +64,9 @@ options:
         type: array
         default: []
     start_after:
-        description: the timedelta between now and start_time. if you want to use start_after you have to ommit start_time. for keys and values see 
-            https://docs.python.org/3/library/datetime.html#datetime.timedelta
+        description:
+        - The timedelta between now and start_time. If you want to use start_after you have to omit start_time.
+          For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
         type: dictionary
         default: {}
     start_time:
@@ -67,10 +74,13 @@ options:
         type: str
         default: now
     host_name:
-        description: the affected host.
+        description: The host to schedule the downtime on.
         required: true
         type: str
-    # recur: for simplicity always fixed
+    # recur:
+    #     description: Configure this downtime as a recurring downtime. For simplicity always fixed.
+    #     default: fixed
+    #     type: str
     state:
         description: The state of this downtime. If absent, all matching host/service-downtimes of the given host will be deleted.
         type: str
@@ -78,17 +88,17 @@ options:
         choices: [present, absent]
 
 author:
-    - Oliver Gaida
-"""
+    - Oliver Gaida (@ogaida)
+'''
 
-EXAMPLES = r"""
+EXAMPLES = r'''
 - name: set host-downtime
   downtime:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: pi4
+    host_name: my_host
     start_after:
       minutes: 5
     end_after:
@@ -101,7 +111,7 @@ EXAMPLES = r"""
     site: "{{ site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: pi4
+    host_name: my_host
     start_time: 2022-03-24T20:39:28Z
     end_time: 2022-03-24T20:40:28Z
     state: "present"
@@ -116,20 +126,20 @@ EXAMPLES = r"""
     site: "{{ site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: pi4
+    host_name: my_host
     service_descriptions:
       - "CPU utilization"
       - Memory
     state: absent
-"""
+'''
 
-RETURN = r"""
+RETURN = r'''
 message:
     description: The output message that the module generates. Contains the API response details in case of an error. No output in case of success.
     type: str
     returned: always
     sample: ''
-"""
+'''
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
@@ -155,7 +165,8 @@ def exit_ok(module, msg):
 
 def set_timestamps(module):
     default_start_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-    default_end_time = (datetime.utcnow() + timedelta(minutes=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    default_end_time = (datetime.utcnow() +
+                        timedelta(minutes=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
     start_time = module.params.get("start_time")
     end_time = module.params.get("end_time")
     end_after = module.params.get("end_after")
@@ -164,14 +175,17 @@ def set_timestamps(module):
         if start_after == {}:
             start_time = default_start_time
         else:
-            start_time = (datetime.utcnow() + timedelta(**start_after)).strftime("%Y-%m-%dT%H:%M:%SZ")
+            start_time = (
+                datetime.utcnow() +
+                timedelta(**start_after)).strftime("%Y-%m-%dT%H:%M:%SZ")
     if end_time == '':
         if end_after == {}:
             end_time = default_end_time
         else:
             start_time = re.sub(r'\+\d\d:\d\d$', 'Z', start_time)
             dt_start = datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%SZ')
-            end_time = (dt_start + timedelta(**end_after)).strftime("%Y-%m-%dT%H:%M:%SZ")
+            end_time = (dt_start +
+                        timedelta(**end_after)).strftime("%Y-%m-%dT%H:%M:%SZ")
     return [start_time, end_time]
 
 
@@ -179,17 +193,19 @@ def get_hostdowntimes(module, base_url, headers):
     # this function gets the list of downtime comments which exists for the given host, it returns an array of comments
     api_endpoint = "/domain-types/downtime/collections/all?host_name=%s" % module.params.get("host_name")
     url = base_url + api_endpoint
-    response, info = fetch_url(
-        module, url, data=None, headers=headers, method="GET"
-    )
+    response, info = fetch_url(module,
+                               url,
+                               data=None,
+                               headers=headers,
+                               method="GET")
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, " %
+            (info["status"], info["body"]),
         )
-    
+
     body = json.loads(response.read())
     comments = []
     for dt in body["value"]:
@@ -215,19 +231,21 @@ def set_hostdowntime(module, base_url, headers):
 
         url = base_url + api_endpoint
 
-        response, info = fetch_url(
-            module, url, module.jsonify(params), headers=headers, method="POST"
-        )
+        response, info = fetch_url(module,
+                                   url,
+                                   module.jsonify(params),
+                                   headers=headers,
+                                   method="POST")
     else:
-        msg = "downtime already exists for comment '%s' on the host '%s', you may use force attribute to create a new downtime with the same comment " \
-        % (comment, module.params.get("host_name"))
+        msg = "downtime already exists for comment '%s' on the host '%s', you may use force attribute to create a new downtime with the same comment " % (
+            comment, module.params.get("host_name"))
         exit_ok(module, msg)
 
     if info["status"] != 204:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, " %
+            (info["status"], info["body"]),
         )
 
 
@@ -246,15 +264,17 @@ def set_servicedowntime(module, base_url, headers):
     }
     url = base_url + api_endpoint
 
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )
+    response, info = fetch_url(module,
+                               url,
+                               module.jsonify(params),
+                               headers=headers,
+                               method="POST")
 
     if info["status"] != 204:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, " %
+            (info["status"], info["body"]),
         )
 
 
@@ -265,15 +285,17 @@ def remove_hostdowntime(module, base_url, headers):
         "host_name": module.params.get("host_name")
     }
     url = base_url + api_endpoint
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )
+    response, info = fetch_url(module,
+                               url,
+                               module.jsonify(params),
+                               headers=headers,
+                               method="POST")
 
     if info["status"] != 204:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, " %
+            (info["status"], info["body"]),
         )
 
 
@@ -285,15 +307,17 @@ def remove_servicedowntime(module, base_url, headers):
         "service_descriptions": module.params.get("service_descriptions")
     }
     url = base_url + api_endpoint
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )
+    response, info = fetch_url(module,
+                               url,
+                               module.jsonify(params),
+                               headers=headers,
+                               method="POST")
 
     if info["status"] != 204:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, " %
+            (info["status"], info["body"]),
         )
 
 
@@ -313,17 +337,22 @@ def run_module():
         end_time=dict(type="str", default=''),
         force=dict(type="bool", default=False),
         service_descriptions=dict(type='list', elements='str', default=[]),
-        state=dict(type="str", default='present', choices=["present", "absent"]),
+        state=dict(type="str",
+                   default='present',
+                   choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=module_args,
+                           supports_check_mode=False)
 
     # Use the parameters to initialize some common variables
     headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s"
-        % (
+        "Accept":
+        "application/json",
+        "Content-Type":
+        "application/json",
+        "Authorization":
+        "Bearer %s %s" % (
             module.params.get("automation_user"),
             module.params.get("automation_secret"),
         ),
