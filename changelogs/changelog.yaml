@@ -1,0 +1,54 @@
+ancestor: null
+releases:
+  0.0.1:
+    changes:
+      known_issues:
+      - Activation is not site aware yet. All sites will be activated.
+      - Discovery is not feature complete yet.
+      - This release is still in development and a heavy work in progress.
+      major_changes:
+      - Add activation module.
+      - Add discovery module.
+      - Add folder module.
+      - Add host module.
+      - Initial creation of collection structure and layout.
+    fragments:
+    - initial.yml
+    modules:
+    - description: Activate changes in Checkmk.
+      name: activation
+      namespace: ''
+    - description: discovery services in Checkmk.
+      name: discovery
+      namespace: ''
+    - description: Manage folders in Checkmk.
+      name: folder
+      namespace: ''
+    - description: Manage hosts in Checkmk.
+      name: host
+      namespace: ''
+    release_date: '2022-02-14'
+  0.0.2:
+    changes:
+      known_issues:
+      - Activation is not site aware yet. All sites will be activated.
+      - Discovery is not feature complete yet.
+      - This release is still in development and a heavy work in progress.
+      major_changes:
+      - Major overhaul of folder module.
+      - Major overhaul of host module.
+    fragments:
+    - v0.0.2.yml
+    release_date: '2022-03-17'
+  0.1.0:
+    changes:
+      known_issues:
+      - Discovery is not feature complete yet.
+      - This release is still in development and a heavy work in progress.
+      major_changes:
+      - First release to Ansible Galaxy.
+      minor_changes:
+      - Activation is now site aware.
+    fragments:
+    - v0.1.0.yml
+    release_date: '2022-03-18'
