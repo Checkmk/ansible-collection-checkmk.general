@@ -138,13 +138,13 @@ def run_module():
         'sites': sites
     }
 
+    base_url = "%s/%s/check_mk/api/1.0" % (
+        server_url,
+        site,
+    )
     api_endpoint = '/domain-types/activation_run/actions/activate-changes/invoke'
-    url = server_url + site + "/check_mk/api/1.0" + api_endpoint
-    response, info = fetch_url(module,
-                               url,
-                               module.jsonify(params),
-                               headers=headers,
-                               method='POST')
+    url = base_url + api_endpoint
+    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method='POST')
     http_code = info['status']
 
     # Kudos to Lars G.!
