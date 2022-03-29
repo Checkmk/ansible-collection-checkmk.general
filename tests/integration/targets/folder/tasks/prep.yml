@@ -13,8 +13,6 @@
   ansible.builtin.command: "omd create --no-tmpfs --admin-password {{ automation_secret }} {{ site }}"
   args:
     creates: "/omd/sites/{{ site }}"
-  register: omd_state_create
 
 - name: "Start site."
-  ansible.builtin.command: "omd start {{ site }}"
-  register: omd_state_start
+  ansible.builtin.shell: "omd status -b {{ site }} || omd start {{ site }}"

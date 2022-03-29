@@ -1,7 +1,4 @@
 ---
-# Take this from playbooks/test-full.yml to ensure full coverage!
-# Be sure to remove header!
-
 - name: "Create hosts."
   host:
     server_url: "{{ server_url }}"
@@ -11,8 +8,8 @@
     host_name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     attributes:
-            site: "{{ site }}"
-            ipaddress: 127.0.0.1
+      site: "{{ site }}"
+      ipaddress: 127.0.0.1
     state: "present"
   delegate_to: localhost
   run_once: 'yes'
@@ -25,7 +22,8 @@
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: 'false'
-    sites: "test"
+    sites:
+      - "{{ site }}"
   delegate_to: localhost
   run_once: 'true'
 
@@ -49,6 +47,7 @@
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: 'true'
-    sites: "test"
+    sites:
+      - "{{ site }}"
   delegate_to: localhost
   run_once: 'true'
