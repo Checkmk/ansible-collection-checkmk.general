@@ -22,7 +22,8 @@
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: 'true'
-    sites: "test"
+    sites:
+      - "{{ site }}"
   delegate_to: localhost
   run_once: 'true'
 
@@ -46,6 +47,7 @@
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: 'true'
-    sites: "test"
+    sites:
+      - "{{ site }}"
   delegate_to: localhost
   run_once: 'true'
