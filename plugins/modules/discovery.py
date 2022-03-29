@@ -73,8 +73,6 @@ message:
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 
-import pprint
-
 
 def run_module():
     module_args = dict(
@@ -118,12 +116,16 @@ def run_module():
         'Authorization': 'Bearer ' + automation_user + ' ' + automation_secret
     }
 
-    api_endpoint = '/objects/host/' + host_name + '/actions/discover_services/invoke'
     params = {
         'mode': state,
     }
-    url = server_url + site + "/check_mk/api/1.0" + api_endpoint
 
+    base_url = "%s/%s/check_mk/api/1.0" % (
+        server_url,
+        site,
+    )
+    api_endpoint = '/objects/host/' + host_name + '/actions/discover_services/invoke'
+    url = base_url + api_endpoint
     response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method='POST')
     http_code = info['status']
 

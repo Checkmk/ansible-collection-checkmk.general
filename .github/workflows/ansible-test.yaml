@@ -5,13 +5,30 @@
 # 3. If your collection depends on other collections ensure they are installed, see "Install collection dependencies"
 # If you need help please ask in #ansible-community on the Libera.chat IRC network
 
-name: CI
+name: Ansible Tests
 on:
-  # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
+  workflow_dispatch:
   push:
     branches:
       - main
       - devel
+    paths-ignore:
+      - '.github/ISSUE_TEMPLATE/*'
+      - 'docs/**'
+      - 'changelogs/**'
+      - '**.md'
+      - '**.rst'
+  pull_request:
+    branches:
+      - main
+      - devel
+    paths-ignore:
+      - '.github/ISSUE_TEMPLATE/*'
+      - 'docs/**'
+      - 'changelogs/**'
+      - '**.md'
+      - '**.rst'
+
 env:
   NAMESPACE: tribe29
   COLLECTION_NAME: checkmk 
@@ -30,8 +47,8 @@ jobs:
         ansible:
           # It's important that Sanity is tested against all stable-X.Y branches
           # Testing against `devel` may fail as new tests are added.
-        # - stable-2.9 # Only if your collection supports Ansible 2.9
-          - stable-2.10
+          # - stable-2.9 # Only if your collection supports Ansible 2.9
+          # - stable-2.10
           - stable-2.11
           - stable-2.12
           - devel
@@ -64,15 +81,15 @@ jobs:
         run: ansible-test sanity --docker -v --color --coverage
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      # ansible-test support producing code coverage date
-      - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+      # # ansible-test support producing code coverage date
+      # - name: Generate coverage report
+      #   run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+      #   working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      # See the reports at https://codecov.io/gh/GITHUBORG/REPONAME
-      - uses: codecov/codecov-action@v2
-        with:
-          fail_ci_if_error: false
+      # # See the reports at https://codecov.io/gh/GITHUBORG/REPONAME
+      # - uses: codecov/codecov-action@v2
+      #   with:
+      #     fail_ci_if_error: false
 
 ###
 # Unit tests (OPTIONAL)
@@ -147,12 +164,12 @@ jobs:
       matrix:
         ansible:
           # - stable-2.9 # Only if your collection supports Ansible 2.9
-          - stable-2.10
-          - stable-2.11
+          # - stable-2.10
+          # - stable-2.11
           - stable-2.12
-          - devel
+          # - devel
         python:
-          - '2.6'
+          # - '2.6'
           - '2.7'
           - '3.5'
           - '3.6'
@@ -171,7 +188,7 @@ jobs:
             python: '3.10'
           - ansible: stable-2.11
             python: '3.10'
-            
+
 
     steps:
       - name: Check out code
@@ -199,12 +216,12 @@ jobs:
         run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker --coverage
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      # ansible-test support producing code coverage date
-      - name: Generate coverage report
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+      # # ansible-test support producing code coverage date
+      # - name: Generate coverage report
+      #   run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+      #   working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      # See the reports at https://codecov.io/gh/GITHUBORG/REPONAME
-      - uses: codecov/codecov-action@v2
-        with:
-          fail_ci_if_error: false
+      # # See the reports at https://codecov.io/gh/GITHUBORG/REPONAME
+      # - uses: codecov/codecov-action@v2
+      #   with:
+      #     fail_ci_if_error: false

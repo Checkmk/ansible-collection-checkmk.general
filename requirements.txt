@@ -1,2 +1,2 @@
-ansible >= 5.1.0
+ansible >= 4.10.0
 antsibull-changelog >= 0.12.0

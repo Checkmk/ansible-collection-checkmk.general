@@ -6,5 +6,14 @@
   ansible.builtin.pause:
     seconds: 5
 
-- name: "Run tests."
-  ansible.builtin.import_tasks: test.yml
+- name: "Run activation tests."
+  ansible.builtin.import_tasks: activation.yml
+
+- name: "Run discovery tests."
+  ansible.builtin.import_tasks: discovery.yml
+
+- name: "Run host tests."
+  ansible.builtin.import_tasks: host.yml
+
+- name: "Run folder tests."
+  ansible.builtin.import_tasks: folder.yml

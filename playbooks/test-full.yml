@@ -1,17 +1,23 @@
+---
+
+# Make sure to keep the tests in sync!
+# Rather use the tests than this playbook directly.
+
 - name: "Test all modules."
   hosts: all
   gather_facts: 'no'
   vars_files:
     - ./vars/config.yml
   tasks:
-  - name: "Run activation module - 1."
+  - name: "Activate changes on site - 1."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
       force_foreign_changes: 'true'
-      sites: "test"
+      sites: 
+        - "{{ site }}"
     delegate_to: localhost
     run_once: 'true'
 
@@ -24,12 +30,11 @@
       path: "{{ item.path }}"
       title: "{{ item.title }}"
       state: "present"
-    register: testout
     delegate_to: localhost
     run_once: 'yes'
     loop: "{{ checkmk_folders }}"
 
-  - name: "Create hosts."
+  - name: "Create host."
     host:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -43,7 +48,7 @@
       state: "present"
     delegate_to: localhost
 
-  - name: "Discover hosts."
+  - name: "Discover services on host."
     discovery:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -55,14 +60,15 @@
       state: "refresh"
     delegate_to: localhost
 
-  - name: "Run activation module - 2."
+  - name: "Activate changes on site - 2."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
       force_foreign_changes: 'true'
-      sites: "test"
+      sites: 
+        - "{{ site }}"
     delegate_to: localhost
     run_once: 'true'
 
@@ -81,14 +87,15 @@
       state: "present"
     delegate_to: localhost
 
-  - name: "Run activation module - 3."
+  - name: "Activate changes on site - 3."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
       force_foreign_changes: 'true'
-      sites: "test"
+      sites: 
+        - "{{ site }}"
     delegate_to: localhost
     run_once: 'true'
 
@@ -103,18 +110,19 @@
       state: "present"
     delegate_to: localhost
 
-  - name: "Run activation module - 4."
+  - name: "Activate changes on site - 4."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
       force_foreign_changes: 'true'
-      sites: "test"
+      sites: 
+        - "{{ site }}"
     delegate_to: localhost
     run_once: 'true'
 
-  - name: "Delete Hosts."
+  - name: "Delete Host."
     host:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
@@ -134,18 +142,18 @@
       path: "{{ item.path }}"
       title: "{{ item.title }}"
       state: "absent"
-    register: testout
     delegate_to: localhost
     run_once: 'yes'
     loop: "{{ checkmk_folders }}"
 
-  - name: "Run activation module - 5."
+  - name: "Activate changes on site - 5."
     activation:
       server_url: "{{ server_url }}"
       site: "{{ site }}"
       automation_user: "{{ automation_user }}"
       automation_secret: "{{ automation_secret }}"
       force_foreign_changes: 'true'
-      sites: "test"
+      sites: 
+        - "{{ site }}"
     delegate_to: localhost
     run_once: 'true'

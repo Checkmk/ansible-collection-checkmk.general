@@ -1,6 +1,7 @@
 ---
-download_url: "https://download.checkmk.com/checkmk/2.0.0p20/check-mk-raw-2.0.0p20_0.bionic_amd64.deb"
-site: "test"
+checkmk_version: 2.0.0p21
+download_url: "https://download.checkmk.com/checkmk/{{ checkmk_version }}/check-mk-raw-{{ checkmk_version }}_0.{{ ansible_distribution_release }}_amd64.deb"
+site: "integration"
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7586df1-01db-3eda-9858-dbcf18d0c361"
