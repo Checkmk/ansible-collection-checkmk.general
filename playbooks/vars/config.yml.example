@@ -4,8 +4,6 @@ site: "$SITENAME"
 automation_user: "automation"
 automation_secret: "$SECRET"
 
-downtime_host: pi4
-
 checkmk_folders:
   - path: /test
     title: Test
