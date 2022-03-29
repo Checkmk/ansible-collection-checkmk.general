@@ -127,7 +127,6 @@ def cleanup_path(path):
 def get_current_folder_state(module, base_url, headers):
     current_state = "unknown"
     current_explicit_attributes = {}
-    current_folder = "/"
     etag = ""
 
     path_for_url = module.params["path"].replace("/", "~")
@@ -182,7 +181,6 @@ def set_folder_attributes(module, attributes, base_url, headers):
 
 def create_folder(module, attributes, base_url, headers):
     parent, foldername = cleanup_path(module.params["path"])
-    path_for_url = module.params["path"].replace("/", "~")
     title = module.params.get("title", foldername)
 
     api_endpoint = "/domain-types/folder_config/collections/all"

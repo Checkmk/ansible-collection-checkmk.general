@@ -5,6 +5,25 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.1.0
+======
+
+Major Changes
+-------------
+
+- First release to Ansible Galaxy.
+
+Minor Changes
+-------------
+
+- Activation is now site aware.
+
+Known Issues
+------------
+
+- Discovery is not feature complete yet.
+- This release is still in development and a heavy work in progress.
+
 v0.0.2
 ======
 
