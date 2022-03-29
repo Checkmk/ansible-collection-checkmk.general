@@ -25,7 +25,7 @@ notes:
   If this combination already exists as a downtime, the new downtime will not be created except using force.
   The creation of servicedowntimes is not idempotent at all.
 
-todos:
+todo:
 - Implement idempotency for deletion
 - Fine tune deletion, so only delete dt by host and comment
 
@@ -35,44 +35,49 @@ options:
     comment:
         description: Remarks for the downtime.
         type: str
+        default: 'Set by Ansible'
     # downtime_type:
     #     description: The type of downtime to create. For simplicity, this is fixed to host.
     duration:
         description:
         - Duration in seconds. When set, the downtime does not begin automatically at a nominated time,
-          but when a real problem status appears for the host.
-          Consequently, the start_time and end_time is only the time window in which the scheduled downtime can begin.
+          but when a non-OK status actually appears for the host.
+          Consequently, the start_time and end_time is only the time window in which the scheduled downtime can occur.
         type: int
         default: 0
     end_after:
         description:
-        - The timedelta between start_time and end_time. if you want to use end_after you have to omit end_time.
-        - For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
-        type: dictionary
+        - The timedelta between I(start_time) and I(end_time). If you want to use I(end_after) you have to omit I(end_time).
+          For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
+        type: dict
         default: {}
     end_time:
         description:
-        - The end datetime of the new downtime. The format has to conform to the ISO 8601 profile I(like 2017-07-21T17:32:28Z)
+        - The end datetime of the downtime. The format has to conform to the ISO 8601 profile I(e.g. 2017-07-21T17:32:28Z).
+          The built-in default is 30 minutes after now.
         type: str
-        default: 30 minutes after now
+        default: ''
     force:
         description: Force the creation of a downtime in case a hostname and comment combination already exists as a downtime.
         type: bool
         default: false
     service_descriptions:
-        description: Array of service-descriptions. If set only service-downtimes will be set. If omitted a host-downtime will be set.
-        type: array
+        description: Array of service descriptions. If set only service-downtimes will be set. If omitted a host downtime will be set.
+        type: list
+        elements: str
         default: []
     start_after:
         description:
-        - The timedelta between now and start_time. If you want to use start_after you have to omit start_time.
+        - The timedelta between now and I(start_time). If you want to use I(start_after) you have to omit I(start_time).
           For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
-        type: dictionary
+        type: dict
         default: {}
     start_time:
-        description: The start datetime of the new downtime. The format has to conform to the ISO 8601 profile.
+        description:
+        - The start datetime of the downtime. The format has to conform to the ISO 8601 profile I(e.g. 2017-07-21T17:32:28Z).
+          The built-in default is now.
         type: str
-        default: now
+        default: ''
     host_name:
         description: The host to schedule the downtime on.
         required: true
@@ -92,7 +97,7 @@ author:
 '''
 
 EXAMPLES = r'''
-- name: set host-downtime
+- name: "Schedule host downtime."
   downtime:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
@@ -105,7 +110,7 @@ EXAMPLES = r'''
       days: 7
       hours: 5
 
-- name: set service-downtimes
+- name: "Schedule service downtimes."
   downtime:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
@@ -118,9 +123,9 @@ EXAMPLES = r'''
     duration: 0
     service_descriptions:
       - "CPU utilization"
-      - Memory
+      - "Memory"
 
-- name: delete service-downtimes
+- name: "Delete service downtimes."
   tribe29.checkmk.downtime:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
@@ -129,7 +134,7 @@ EXAMPLES = r'''
     host_name: my_host
     service_descriptions:
       - "CPU utilization"
-      - Memory
+      - "Memory"
     state: absent
 '''
 
@@ -329,7 +334,7 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         host_name=dict(type="str", required=True),
-        comment=dict(type="str", default='dt set by ansible'),
+        comment=dict(type="str", default='Set by Ansible'),
         duration=dict(type="int", default=0),
         start_after=dict(type="dict", default={}),
         start_time=dict(type="str", default=''),
