@@ -12,6 +12,9 @@
 - name: "Run discovery tests."
   ansible.builtin.import_tasks: discovery.yml
 
+- name: "Run downtime tests."
+  ansible.builtin.import_tasks: downtime.yml
+
 - name: "Run host tests."
   ansible.builtin.import_tasks: host.yml
 
