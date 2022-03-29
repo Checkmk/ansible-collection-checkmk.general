@@ -1,0 +1,19 @@
+---
+- name: "Include Derivate specific Variables."
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: "Download Checkmk CRE Agent."
+  get_url:
+    url: "{{ checkmk_agent.url.cre }}"
+    dest: "{{ checkmk_agent.file.cre }}"
+  when: checkmk_edition == "cre"
+
+# Not implemented yet, need API
+- name: "Download Checkmk CEE Agent."
+  get_url:
+    url: "{{ checkmk_agent.url.cee }}"
+    dest: "{{ checkmk_agent.file.cre }}"
+  when: checkmk_edition == "cee"
+
+- name: "Run OS Family specific Tasks."
+  include_tasks: "{{ ansible_os_family }}.yml"
