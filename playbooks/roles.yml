@@ -1,0 +1,6 @@
+- name: "Run all roles."
+  hosts: vagrant
+  tasks:
+  - name: "Run agent role."
+    ansible.builtin.include_role:
+      name: agent
