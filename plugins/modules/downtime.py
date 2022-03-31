@@ -34,15 +34,11 @@ extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     comment:
-        description: Remarks for the downtime. If omitted in combination with state = present, the
-        default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
-        a host or host/service will be removed.
+        description:
+        - Remarks for the downtime. If omitted in combination with state = present, the
+          default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
+          a host or host/service will be removed.
         type: str
-        default: 'Set by Ansible'
-    downtime_type:
-        description: The type of downtime to create.
-        type: str
-        choices: [host, service]
     duration:
         description:
         - Duration in seconds. When set, the downtime does not begin automatically at a nominated time,
@@ -87,10 +83,6 @@ options:
         type: list
         elements: str
         default: []
-    # recur:
-    #     description: Configure this downtime as a recurring downtime. For simplicity always fixed.
-    #     default: fixed
-    #     type: str
     state:
         description: The state of this downtime. If absent, all matching host/service-downtimes of the given host will be deleted.
         type: str
@@ -159,7 +151,7 @@ import re
 from datetime import datetime, timedelta
 
 
-def exit(module, state, msg):
+def bail_out(module, state, msg):
     if state == "ok":
         result = {"msg": msg, "changed": False, "failed": False}
         module.exit_json(**result)
@@ -225,7 +217,7 @@ def _get_downtime_comments(module, base_url, headers):
     response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="GET")
 
     if info["status"] != 200:
-        exit(
+        bail_out(
             module,
             "failed",
             "Error calling API while getting downtimes for %s. HTTP code %d. Details: %s, "
@@ -412,14 +404,14 @@ def run_module():
     # Handle the host accordingly to above findings and desired state
     if state == "present":
         state, msg = set_downtime(module, base_url, headers)
-        exit(module, state, msg)
+        bail_out(module, state, msg)
 
     elif state == "absent":
         state, msg = remove_downtime(module, base_url, headers)
-        exit(module, state, msg)
+        bail_out(module, state, msg)
 
     else:
-        exit_failed(module, "Unknown error")
+        bail_out(module, "error", "Unknown error")
 
 
 def main():
