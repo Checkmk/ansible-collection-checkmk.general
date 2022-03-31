@@ -138,6 +138,56 @@
     comment: Schedule downtime on host without timestamps
   loop: "{{ checkmk_hosts }}"
 
+- name: "Delete service downtimes with comment."
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: Schedule downtime on services with relative timestamps
+    service_descriptions:
+      - "CPU utilization"
+      - "Memory"
+    state: absent
+  loop: "{{ checkmk_hosts }}"
+
+- name: "Delete host downtimes with comment."
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: Schedule downtime on host without timestamps
+    state: absent
+  loop: "{{ checkmk_hosts }}"
+
+- name: "Delete service downtimes with comment again."
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: Schedule downtime on services with relative timestamps
+    service_descriptions:
+      - "CPU utilization"
+      - "Memory"
+    state: absent
+  loop: "{{ checkmk_hosts }}"
+
+- name: "Delete host downtimes with commen again."
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: Schedule downtime on host without timestamps
+    state: absent
+  loop: "{{ checkmk_hosts }}"
+
 - name: "Delete service downtimes."
   downtime:
     server_url: "{{ server_url }}"
