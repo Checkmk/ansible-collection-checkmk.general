@@ -7,7 +7,22 @@
     automation_secret: "{{ automation_secret }}"
     host_name: "{{ item.name }}"
     folder: "{{ item.folder }}"
+    attributes:
+      site: "{{ site }}"
+      ipaddress: 127.0.0.1
     state: "present"
+  delegate_to: localhost
+  run_once: 'yes'
+  loop: "{{ checkmk_hosts }}"
+
+- name: "Discover hosts."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    state: "fix_all"
   delegate_to: localhost
   run_once: 'yes'
   loop: "{{ checkmk_hosts }}"
@@ -161,7 +176,7 @@
     state: absent
   loop: "{{ checkmk_hosts }}"
 
-- name: "Delete host downtimes with commen again."
+- name: "Delete host downtimes with comment again."
   downtime:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
@@ -195,7 +210,20 @@
     state: absent
   loop: "{{ checkmk_hosts }}"
 
-- name: "Run activation without."
+- name: "Delete hosts."
+  host:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: 'yes'
+  loop: "{{ checkmk_hosts }}"
+
+- name: "Run activation."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
