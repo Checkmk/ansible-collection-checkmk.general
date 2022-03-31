@@ -8,7 +8,12 @@
     dest: "{{ checkmk_agent.file.cre }}"
   when: checkmk_edition == "cre"
 
-# Not implemented yet, need API
+# Not implemented yet, needs API
+# https://docs.checkmk.com/master/de/agent_linux.html
+# root@linux# curl -OJG "mycmkserver/mysite/check_mk/api/1.0/domain-types/agent/actions/download/invoke"; \
+# --header 'Accept: application/octet-stream' \
+# --header 'Authorization: Bearer automation myautomationsecret' \
+# --data-urlencode 'os_type=linux_deb'
 - name: "Download Checkmk CEE Agent."
   get_url:
     url: "{{ checkmk_agent.url.cee }}"
