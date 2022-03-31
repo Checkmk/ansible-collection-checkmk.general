@@ -7,7 +7,6 @@ stays as stable as possible, if people are using the branch directly.
  -->
 
 ## Pull request type
-
 <!-- Please try to limit your pull request to one type, submit multiple pull requests if needed. -->
 
 Please check the type of change your PR introduces:
@@ -21,13 +20,11 @@ Please check the type of change your PR introduces:
 - [ ] Other (please describe):
 
 ## What is the current behavior?
-
 <!-- Please describe the current behavior that you are modifying, or link to a relevant issue. -->
 
 Issue Number: `e.g. #1`
 
 ## What is the new behavior?
-
 <!-- Please describe the behavior or changes that are being added by this PR. -->
 
 -
@@ -35,5 +32,4 @@ Issue Number: `e.g. #1`
 -
 
 ## Other information
-
 <!-- Any other information that is important to this PR such as screenshots of how the component looks before and after the change. -->
