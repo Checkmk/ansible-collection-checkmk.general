@@ -236,7 +236,7 @@ def _get_current_downtimes(module, base_url, headers):
             % (host_name, info["status"], info["body"]),
         )
 
-    body = json.loads(response.read())
+    body = json.loads(response.read().decode('utf-8'))
 
     if is_service:
         service_descriptions = []
