@@ -150,6 +150,11 @@ import json
 import re
 from datetime import datetime, timedelta
 
+try:
+    from urllib import urlencode
+except ImportError:  # For Python 3
+    from urllib.parse import urlencode
+
 
 def bail_out(module, state, msg):
     if state == "ok":
@@ -187,12 +192,14 @@ def _set_timestamps(module):
     return [start_time, end_time]
 
 
-def _get_downtime_comments(module, base_url, headers):
+def _get_current_downtimes(module, base_url, headers):
     service_descriptions = module.params.get("service_descriptions")
     host_name = module.params.get("host_name")
+    comment = module.params.get("comment")
     filters = []
+    is_service = len(service_descriptions) != 0
 
-    if len(service_descriptions) > 0:
+    if is_service:
         # Handle list of service descriptions
         service_descriptions = module.params.get("service_descriptions")
         if len(service_descriptions) > 1:
@@ -207,14 +214,19 @@ def _get_downtime_comments(module, base_url, headers):
             ]
         else:
             filters = ['{"op": "~", "left": "service_description", "right": "%s"}']
+        filters.append('{"op": "=", "left": "is_service", "right": "1"}')
+    else:
+        filters.append('{"op": "=", "left": "is_service", "right": "0"}')
 
     api_endpoint = "/domain-types/downtime/collections/all"
     filters.append('{"op": "~", "left": "host_name", "right": "%s"}' % host_name)
+    if comment:
+        filters.append('{"op": "~", "left": "comment", "right": "%s"}' % comment)
 
     params = {"query": '{"op": "and", "expr": [%s]}' % ", ".join(filters)}
 
-    url = base_url + api_endpoint
-    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="GET")
+    url = "%s%s?%s" % (base_url, api_endpoint, urlencode(params))
+    response, info = fetch_url(module, url, headers=headers, method="GET")
 
     if info["status"] != 200:
         bail_out(
@@ -225,10 +237,18 @@ def _get_downtime_comments(module, base_url, headers):
         )
 
     body = json.loads(response.read())
-    comments = []
-    for dt in body["value"]:
-        comments.append(dt["extensions"]["comment"])
-    return comments
+
+    if is_service:
+        service_descriptions = []
+        for dt in body["value"]:
+            service_descriptions.append(dt["title"].split(":")[1].strip())
+        return service_descriptions
+
+    else:
+        if len(body["value"]) > 0:
+            return ["HOST"]
+
+    return []
 
 
 def set_downtime(module, base_url, headers, service_description=None):
@@ -236,23 +256,34 @@ def set_downtime(module, base_url, headers, service_description=None):
     comment = module.params.get("comment", "Set by Ansible")
     host_name = module.params.get("host_name")
     service_descriptions = module.params.get("service_descriptions")
-    comments = _get_downtime_comments(module, base_url, headers)
+    is_host = len(service_descriptions) == 0
+    current_downtimes = _get_current_downtimes(module, base_url, headers)
 
-    if len(service_descriptions) > 0:
+    if is_host:
+        item = host_name
+        params = {
+            "downtime_type": "host",
+        }
+        api_endpoint = "/domain-types/downtime/collections/host"
+        if len(current_downtimes) != 0 and not module.params.get("force"):
+            return (
+                "ok",
+                "Downtime already exists for '%s' with comment '%s', you may use force attribute to create a new downtime with the same comment ."
+                % (item, comment),
+            )
+    else:
+        if not module.params.get("force"):
+            # Only consider services that do not have downtimes with that comment, yet
+            service_descriptions = [s for s in service_descriptions if s not in current_downtimes]
+
         item = "%s/[%s]" % (host_name, ", ".join(service_descriptions))
         params = {
             "service_descriptions": service_descriptions,
             "downtime_type": "service",
         }
         api_endpoint = "/domain-types/downtime/collections/service"
-    else:
-        item = (host_name,)
-        params = {
-            "downtime_type": "host",
-        }
-        api_endpoint = "/domain-types/downtime/collections/host"
 
-    if module.params.get("force") or comment not in comments:
+    if is_host or len(service_descriptions) > 0:
 
         start_time, end_time = _set_timestamps(module)
         params.update(
@@ -289,16 +320,20 @@ def set_downtime(module, base_url, headers, service_description=None):
 
 
 def remove_downtime(module, base_url, headers):
-    comments = _get_downtime_comments(module, base_url, headers)
     host_name = module.params.get("host_name")
     service_descriptions = module.params.get("service_descriptions")
     comment = module.params.get("comment")
+    current_downtimes = _get_current_downtimes(module, base_url, headers)
+    is_host = len(service_descriptions) == 0
     query_filters = []
 
-    if len(service_descriptions) > 0:
+    if is_host:
+        item = host_name
+
+    else:
         item = "%s/[%s]" % (host_name, ", ".join(service_descriptions))
         if len(service_descriptions) > 1:
-            query_filters = [
+            query_filters.append(
                 '{"op": "or", "expr": [%s]}'
                 % ", ".join(
                     [
@@ -306,52 +341,47 @@ def remove_downtime(module, base_url, headers):
                         for s in service_descriptions
                     ]
                 )
-            ]
-        else:
-            query_filters = ['{"op": "~", "left": "service_description", "right": "%s"}']
-
-    else:
-        item = host_name
-
-    if len(comments) == 0:
-        return "ok", "'%s' has no downtimes." % item
-    else:
-        if comment is None or comment in comments:
-            api_endpoint = "/domain-types/downtime/actions/delete/invoke"
-            url = base_url + api_endpoint
-
-            # Create the query
-            query_filters.append('{"op": "~", "left": "host_name", "right": "%s"}' % host_name)
-
-            # If no comment is given, remove all downtimes of a particular host/service
-            if comment is not None:
-                query_filters.append('{"op": "~", "left": "comment", "right": "%s"}' % comment)
-
-            params = {
-                "delete_type": "query",
-                "query": '{"op": "and", "expr": [%s]}' % ", ".join(query_filters),
-            }
-
-            response, info = fetch_url(
-                module, url, module.jsonify(params), headers=headers, method="POST"
             )
 
-            if info["status"] != 204:
-                return (
-                    "failed",
-                    "Error calling API while removing downtime from '%s' with comment '%s'. HTTP code %d. Details: %s, "
-                    % (
-                        item,
-                        comment,
-                        info["status"],
-                        info["body"],
-                    ),
-                )
-            else:
-                return "changed", "Downtime removed from '%s' with comment '%s'." % (item, comment)
-
         else:
-            return "ok", "Downtime doesn't exist for '%s' with comment '%s'." % (item, comment)
+            query_filters.append('{"op": "~", "left": "service_description", "right": "%s"}')
+
+    if len(current_downtimes) == 0:  # and comment is not None:
+        return "ok", "'%s' has no downtimes with comment '%s'." % (item, comment)
+
+    else:
+        api_endpoint = "/domain-types/downtime/actions/delete/invoke"
+        url = base_url + api_endpoint
+
+        # Create the query
+        query_filters.append('{"op": "~", "left": "host_name", "right": "%s"}' % host_name)
+
+        if comment is not None:
+            # If there's a comment, only delete downtimes that match that comment
+            query_filters.append('{"op": "~", "left": "comment", "right": "%s"}' % comment)
+
+        params = {
+            "delete_type": "query",
+            "query": '{"op": "and", "expr": [%s]}' % ", ".join(query_filters),
+        }
+
+        response, info = fetch_url(
+            module, url, module.jsonify(params), headers=headers, method="POST"
+        )
+
+        if info["status"] != 204:
+            return (
+                "failed",
+                "Error calling API while removing downtime from '%s' with comment '%s'. HTTP code %d. Details: %s, "
+                % (
+                    item,
+                    comment,
+                    info["status"],
+                    info["body"],
+                ),
+            )
+        else:
+            return "changed", "Downtime removed from '%s' with comment '%s'." % (item, comment)
 
 
 def run_module():
