@@ -52,3 +52,25 @@ releases:
     fragments:
     - v0.1.0.yml
     release_date: '2022-03-18'
+  0.2.0:
+    changes:
+      known_issues:
+      - Discovery module is not feature complete yet.
+      - Downtime module is not fully idempotent yet. This affects service downtimes
+        and deletions.
+      - This release is still in development and a heavy work in progress.
+      - We might extract the API call handling into a separate Python module.
+      major_changes:
+      - Add downtime module. Kudos to Oliver Gaida (https://github.com/ogaida)!
+      minor_changes:
+      - The way how the API URL is being created is now more consistent. Thus, users
+        can now skip the trailing "/" in the "server_url" for all modules. Thanks
+        to Jan Petto (https://github.com/Edgxxar)!
+    fragments:
+    - 0.2.0.yml
+    - consistent_base_url.yml
+    modules:
+    - description: Manage downtimes in Checkmk.
+      name: downtime
+      namespace: ''
+    release_date: '2022-04-04'
