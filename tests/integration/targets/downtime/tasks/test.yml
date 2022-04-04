@@ -67,8 +67,8 @@
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
     service_descriptions:
-      - "Check_MK"
-      - "Check_MK Discovery"
+      - "CPU load"
+      - "CPU utililization"
   loop: "{{ checkmk_hosts }}"
 
 - name: "Schedule downtime on services without timestamps."
@@ -80,8 +80,8 @@
     host_name: "{{ item.name }}"
     comment: Schedule downtime on services without timestamps
     service_descriptions:
-      - "Check_MK"
-      - "Check_MK Discovery"
+      - "Memory"
+      - "Uptime"
     end_after:
       minutes: 1
   loop: "{{ checkmk_hosts }}"
@@ -109,6 +109,31 @@
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     host_name: "{{ item.name }}"
+    comment: Schedule downtime on host with absolute timestamps
+    start_time: 2024-03-25T20:39:28Z
+    end_time: 2024-03-26T20:39:28Z
+  loop: "{{ checkmk_hosts }}"
+
+- name: "Schedule downtime on host with absolute timestamps. Again."
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: Schedule downtime on host with absolute timestamps
+    start_time: 2024-03-25T20:39:28Z
+    end_time: 2024-03-26T20:39:28Z
+  loop: "{{ checkmk_hosts }}"
+
+- name: "Schedule downtime on host with absolute timestamps. Again. With force."
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    force: "yes"
     comment: Schedule downtime on host with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
@@ -146,8 +171,8 @@
     host_name: "{{ item.name }}"
     comment: Schedule downtime on services with relative timestamps
     service_descriptions:
-      - "CPU utilization"
-      - "Memory"
+      - "Check_MK"
+      - "Check_MK Discovery"
     state: absent
   loop: "{{ checkmk_hosts }}"
 
@@ -171,8 +196,8 @@
     host_name: "{{ item.name }}"
     comment: Schedule downtime on services with relative timestamps
     service_descriptions:
-      - "CPU utilization"
-      - "Memory"
+      - "Check_MK"
+      - "Check_MK Discovery"
     state: absent
   loop: "{{ checkmk_hosts }}"
 
@@ -195,8 +220,10 @@
     automation_secret: "{{ automation_secret }}"
     host_name: "{{ item.name }}"
     service_descriptions:
-      - "Check_MK"
-      - "Check_MK Discovery"
+      - "CPU load"
+      - "CPU utililization"
+      - "Memory"
+      - "Uptime"
     state: absent
   loop: "{{ checkmk_hosts }}"
 
