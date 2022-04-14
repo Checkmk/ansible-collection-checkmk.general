@@ -8,11 +8,14 @@ with automating Checkmk through Ansible.
 ---
 
 ## Here be dragons!
-[![Ansible Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-test.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-test.yaml)
 
 **This is a work in progress!**  
 Everything within this repository is subject to possibly heavy change
 and we cannot guarantee any stability at this point. You have been warned!
+
+[![Ansible Sanity Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-sanity-tests.yaml)
+[![Ansible Integration Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-integration-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-integration-tests.yaml)
+<!-- [![Ansible Unit Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-unit-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-unit-tests.yaml) -->
 
 ---
 
