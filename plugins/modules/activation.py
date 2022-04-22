@@ -19,6 +19,7 @@ version_added: "0.0.1"
 
 description:
 - Activate changes within Checkmk.
+- This module only needs to be run once and not for every host. Use C(run_once).
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -43,6 +44,7 @@ EXAMPLES = r'''
       site: "my_site"
       automation_user: "automation"
       automation_secret: "$SECRET"
+  run_once: 'true'
 
 - name: "Activate changes on a specific site."
   tribe29.checkmk.activation:
@@ -52,6 +54,7 @@ EXAMPLES = r'''
       automation_secret: "$SECRET"
       sites:
         - "my_site"
+  run_once: 'true'
 
 - name: "Activate changes including foreign changes."
   tribe29.checkmk.activation:
@@ -60,6 +63,7 @@ EXAMPLES = r'''
       automation_user: "automation"
       automation_secret: "$SECRET"
       force_foreign_changes: 'true'
+  run_once: 'true'
 '''
 
 RETURN = r'''
@@ -98,14 +102,9 @@ def run_module():
     changed = False
     failed = False
     http_code = ''
-    server_url = module.params['server_url']
-    site = module.params['site']
-    automation_user = module.params['automation_user']
-    automation_secret = module.params['automation_secret']
     sites = module.params['sites']
     if sites == {}:
         sites = []
-    force_foreign_changes = module.params['force_foreign_changes']
 
     http_code_mapping = {
         # http_code: (changed, failed, "Message")
@@ -127,21 +126,26 @@ def run_module():
 
     # Declare headers including authentication to send to the Checkmk API
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + automation_user + ' ' + automation_secret
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer %s %s"
+        % (
+            module.params.get("automation_user", ""),
+            module.params.get("automation_secret", ""),
+        ),
     }
 
     params = {
-        'force_foreign_changes': force_foreign_changes,
+        'force_foreign_changes': module.params.get("force_foreign_changes", ""),
         'redirect': True,  # ToDo: Do we need this? Does it need to be configurable?
-        'sites': sites
+        'sites': sites,
     }
 
     base_url = "%s/%s/check_mk/api/1.0" % (
-        server_url,
-        site,
+        module.params.get("server_url", ""),
+        module.params.get("site", ""),
     )
+
     api_endpoint = '/domain-types/activation_run/actions/activate-changes/invoke'
     url = base_url + api_endpoint
     response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method='POST')
