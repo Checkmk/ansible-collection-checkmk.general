@@ -101,6 +101,10 @@ def run_module():
         404: (False, True, "Not Found: Host could not be found."),
         406: (False, True, "Not Acceptable."),
         415: (False, True, "Unsupported Media Type."),
+        500:
+        (False, True,
+         "General Server Error. This might be related to a host not being discoverable at all. Check the affected host in the UI."
+         ),
     }
 
     # Declare headers including authentication to send to the Checkmk API
