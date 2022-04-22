@@ -2,7 +2,7 @@
 minor_changes:
   - Improve construction of headers and base_url variables in discovery module.
   - Clean up variable assignments in discovery module.
-  - Introduce better handling of HTTP 500 errors in discovery module.
+  - Introduce quick fix for handling of HTTP 500 errors in discovery module.
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
