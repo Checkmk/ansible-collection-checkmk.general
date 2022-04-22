@@ -92,12 +92,6 @@ def run_module():
     changed = False
     failed = False
     http_code = ''
-    server_url = module.params['server_url']
-    site = module.params['site']
-    automation_user = module.params['automation_user']
-    automation_secret = module.params['automation_secret']
-    host_name = module.params['host_name']
-    state = module.params['state']
 
     http_code_mapping = {
         # http_code: (changed, failed, "Message")
@@ -113,18 +107,23 @@ def run_module():
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + automation_user + ' ' + automation_secret
+        "Authorization": "Bearer %s %s"
+        % (
+            module.params.get("automation_user", ""),
+            module.params.get("automation_secret", ""),
+        ),
     }
 
     params = {
-        'mode': state,
+        'mode': module.params.get("state", ""),
     }
 
     base_url = "%s/%s/check_mk/api/1.0" % (
-        server_url,
-        site,
+        module.params.get("server_url", ""),
+        module.params.get("site", ""),
     )
-    api_endpoint = '/objects/host/' + host_name + '/actions/discover_services/invoke'
+
+    api_endpoint = '/objects/host/' + module.params.get("host_name") + '/actions/discover_services/invoke'
     url = base_url + api_endpoint
     response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method='POST')
     http_code = info['status']
