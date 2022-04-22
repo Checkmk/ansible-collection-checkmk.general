@@ -74,3 +74,17 @@ releases:
       name: downtime
       namespace: ''
     release_date: '2022-04-04'
+  0.2.1:
+    changes:
+      minor_changes:
+      - Add hint, that running the activation module is required only once and not
+        per host.
+      - Clean up variable assignments in activation module.
+      - Clean up variable assignments in discovery module.
+      - Improve construction of headers and base_url variables in activation module.
+      - Improve construction of headers and base_url variables in discovery module.
+      - Introduce quick fix for handling of HTTP 500 errors in discovery module.
+    fragments:
+    - activation.yml
+    - discovery.yml
+    release_date: '2022-04-22'

@@ -5,6 +5,19 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.2.1
+======
+
+Minor Changes
+-------------
+
+- Add hint, that running the activation module is required only once and not per host.
+- Clean up variable assignments in activation module.
+- Clean up variable assignments in discovery module.
+- Improve construction of headers and base_url variables in activation module.
+- Improve construction of headers and base_url variables in discovery module.
+- Introduce quick fix for handling of HTTP 500 errors in discovery module.
+
 v0.2.0
 ======
 
