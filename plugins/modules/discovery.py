@@ -134,12 +134,12 @@ def run_module():
     url = base_url + api_endpoint
     response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="POST")
     http_code = info["status"]
-    http_body = json.loads(info["body"])["detail"]
 
     # Kudos to Lars G.!
     if http_code in http_code_mapping.keys():
         changed, failed, msg = http_code_mapping[http_code]
     else:
+        http_body = json.loads(info["body"])["detail"]
         changed, failed, msg = (False, True, "Error calling API.")
 
     if failed:
