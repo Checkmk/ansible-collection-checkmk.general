@@ -1,6 +1,6 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 minor_changes:
-  - Be more verbose in case of an API error.
+  - The discovery module will now be more verbose in case of an API error and print the actual error message from the API.
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
