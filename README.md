@@ -132,7 +132,8 @@ If you find problems, please open an issue or create a pull request against [thi
 See [Contributing to Ansible-maintained collections](https://docs.ansible.com/ansible/devel/community/contributing_maintained_collections.html#contributing-maintained-collections) for more details on how to contribute.
 
 You can also join our [Checkmk Community](https://forum.checkmk.com/)
-and have a look at the [dedicated post regarding Ansible](https://forum.checkmk.com/t/checkmk-goes-ansible/25428).
+and have a look at the [dedicated post regarding Ansible](https://forum.checkmk.com/t/checkmk-goes-ansible/25428)
+and [the 'ansible' tag](https://forum.checkmk.com/tag/ansible) in general.
 
 ## Release notes
 <!--Add a link to a changelog.rst file or an external docsite to cover this information. -->
