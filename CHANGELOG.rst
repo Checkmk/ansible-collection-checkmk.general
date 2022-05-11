@@ -5,6 +5,14 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.2.2
+======
+
+Minor Changes
+-------------
+
+- The discovery module will now be more verbose in case of an API error and print the actual error message from the API.
+
 v0.2.1
 ======
 
