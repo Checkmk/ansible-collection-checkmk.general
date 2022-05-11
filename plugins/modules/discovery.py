@@ -139,6 +139,7 @@ def run_module():
     if http_code in http_code_mapping.keys():
         changed, failed, msg = http_code_mapping[http_code]
     else:
+        http_body = json.loads(info["body"])["detail"]
         changed, failed, msg = (False, True, "Error calling API.")
 
     if failed:
