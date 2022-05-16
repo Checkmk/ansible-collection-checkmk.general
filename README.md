@@ -1,18 +1,20 @@
 # tribe29 Checkmk Collection
 
-Checkmk already provides the needed APIs to automate the 
-configuration of your monitoring. With this project we want to create
-and share modules and roles for Ansible to simplify your first steps
-with automating Checkmk through Ansible.
+Checkmk already provides the needed APIs to automate and 
+configure your monitoring. With this project we want to create
+and share modules and roles for Ansible to both simplify your first steps
+with automating Checkmk and keep your daily operations smooth and efficient.
 
 ---
 
 ## Here be dragons!
-[![Ansible Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-test.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-test.yaml)
 
-**This is a work in progress!**  
 Everything within this repository is subject to possibly heavy change
-and we cannot guarantee any stability at this point. You have been warned!
+and we cannot guarantee stability at this point. You have been warned!
+
+[![Ansible Sanity Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-sanity-tests.yaml)
+[![Ansible Integration Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-integration-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-integration-tests.yaml)
+<!-- [![Ansible Unit Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-unit-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-unit-tests.yaml) -->
 
 ---
 
@@ -23,7 +25,12 @@ Also, keep an eye on [this Checkmk forum post](https://forum.checkmk.com/t/check
 
 ## Getting help
 
-Please see [SUPPORT.md](SUPPORT.md).
+For documentation on the [included modules](#modules), run the following
+command substituting the $MODULE_NAME:
+
+    ansible-doc tribe29.checkmk.$MODULE_NAME
+
+For any form of support queries or requests refer to [SUPPORT.md](SUPPORT.md).
 
 ## Repository Structure
 
@@ -36,30 +43,29 @@ have a look at [STRUCTURE.md](docs/STRUCTURE.md).
 <!-- ### Inventory plugins
 Name | Description
 --- | ---
-[tribe29.checkmk.ec2](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.ec2_inventory.rst)|EC2 inventory source
-[tribe29.checkmk.rds](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.rds_inventory.rst)|rds instance source
+[tribe29.checkmk.ec2](https://github.com/tribe29/ansible-collection-tribe29.checkmk/tree/main/docs/tribe29.checkmk.ec2_inventory.rst)|EC2 inventory source
 
 ### Lookup plugins
 Name | Description
 --- | ---
-[tribe29.checkmk.account_attribute](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.account_attribute_lookup.rst)|Look up Checkmk account attributes.
-[tribe29.checkmk.secret](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.secret_lookup.rst)|Look up secrets stored in Checkmk Secrets Manager. -->
+[tribe29.checkmk.account_attribute](https://github.com/tribe29/ansible-collection-tribe29.checkmk/tree/main/docs/tribe29.checkmk.account_attribute_lookup.rst)|Look up Checkmk account attributes.
+-->
 
 ### Modules
 Name | Description
 --- | ---
-[tribe29.checkmk.activation](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.activation.md)|Activate changes.
-[tribe29.checkmk.discovery](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.discovery.md)|Discover services.
-[tribe29.checkmk.folder](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.folder.md)|Manage folders.
-[tribe29.checkmk.host](https://github.com/tribe29/ansible-collection-tribe29.checkmktree/main/docs/tribe29.checkmk.host.md)|Manage hosts.
+[tribe29.checkmk.activation](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/activation.py)|Activate changes.
+[tribe29.checkmk.discovery](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/discovery.py)|Discover services on hosts.
+[tribe29.checkmk.downtime](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/downtime.py)|Schedule downtimes on hosts and services.
+[tribe29.checkmk.folder](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/folder.py)|Manage folders.
+[tribe29.checkmk.host](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/host.py)|Manage hosts.
 <!--end collection content-->
 
 ## Installing this collection
 
 ### Locally
 
-You can install the Checkmk collection locally, if you acquired a tarball for
-offline installation as follows:
+You can install the Checkmk collection locally, if you acquired a tarball from the [releases page](https://github.com/tribe29/ansible-collection-tribe29.checkmk/releases) as follows:
 
     ansible-galaxy collection install /path/to/tribe29-checkmk-X.Y.Z.tar.gz
 
@@ -122,11 +128,12 @@ if you list the `tribe29.checkmk` collection in the playbook's [`collections`](h
 ## Contributing to this collection
 
 We welcome and appreciate community contributions to this collection.
-If you find problems, please open an issue or create a PR against the [tribe29 Checkmk collection repository](https://github.com/tribe29/ansible-collection-tribe29.checkmk).
+If you find problems, please open an issue or create a pull request against [this repository](https://github.com/tribe29/ansible-collection-tribe29.checkmk).
 See [Contributing to Ansible-maintained collections](https://docs.ansible.com/ansible/devel/community/contributing_maintained_collections.html#contributing-maintained-collections) for more details on how to contribute.
 
 You can also join our [Checkmk Community](https://forum.checkmk.com/)
-and have a look at the [dedicated post regarding Ansible](https://forum.checkmk.com/t/checkmk-goes-ansible/25428).
+and have a look at the [dedicated post regarding Ansible](https://forum.checkmk.com/t/checkmk-goes-ansible/25428)
+and [the 'ansible' tag](https://forum.checkmk.com/tag/ansible) in general.
 
 ## Release notes
 <!--Add a link to a changelog.rst file or an external docsite to cover this information. -->
@@ -140,7 +147,6 @@ Please do **not** consider a concrete planning document!
 - Modules
   - Monitoring
     - Acknowledgement
-    - Downtime
   - Setup
     - Agents
     - BI

@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: discovery
 
@@ -35,9 +35,9 @@ options:
 
 author:
     - Robin Gierse (@robin-tribe29)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # Create a single host.
 - name: "Add newly discovered services on host."
   tribe29.checkmk.discovery:
@@ -55,9 +55,9 @@ EXAMPLES = r'''
     automation_secret: "$SECRET"
     host_name: "my_host"
     state: "fix_all"
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 http_code:
     description: The HTTP code the Checkmk API returns.
     type: int
@@ -68,36 +68,34 @@ message:
     type: str
     returned: always
     sample: 'Host created.'
-'''
+"""
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
+import json
 
 
 def run_module():
     module_args = dict(
-        server_url=dict(type='str', required=True),
-        site=dict(type='str', required=True),
-        automation_user=dict(type='str', required=True),
-        automation_secret=dict(type='str', required=True, no_log=True),
-        host_name=dict(type='str', required=True),
-        state=dict(type='str', default='new', choices=['new', 'remove', 'fix_all', 'refresh', 'only_host_labels']),
+        server_url=dict(type="str", required=True),
+        site=dict(type="str", required=True),
+        automation_user=dict(type="str", required=True),
+        automation_secret=dict(type="str", required=True, no_log=True),
+        host_name=dict(type="str", required=True),
+        state=dict(
+            type="str",
+            default="new",
+            choices=["new", "remove", "fix_all", "refresh", "only_host_labels"],
+        ),
     )
 
-    result = dict(changed=False, failed=False, http_code='', msg='')
+    result = dict(changed=False, failed=False, http_code="", msg="")
 
-    module = AnsibleModule(argument_spec=module_args,
-                           supports_check_mode=False)
+    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
     changed = False
     failed = False
-    http_code = ''
-    server_url = module.params['server_url']
-    site = module.params['site']
-    automation_user = module.params['automation_user']
-    automation_secret = module.params['automation_secret']
-    host_name = module.params['host_name']
-    state = module.params['state']
+    http_code = ""
 
     http_code_mapping = {
         # http_code: (changed, failed, "Message")
@@ -107,40 +105,53 @@ def run_module():
         404: (False, True, "Not Found: Host could not be found."),
         406: (False, True, "Not Acceptable."),
         415: (False, True, "Unsupported Media Type."),
+        500: (False, True, "General Server Error."),
     }
 
     # Declare headers including authentication to send to the Checkmk API
     headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + automation_user + ' ' + automation_secret
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer %s %s"
+        % (
+            module.params.get("automation_user", ""),
+            module.params.get("automation_secret", ""),
+        ),
     }
 
     params = {
-        'mode': state,
+        "mode": module.params.get("state", ""),
     }
 
     base_url = "%s/%s/check_mk/api/1.0" % (
-        server_url,
-        site,
+        module.params.get("server_url", ""),
+        module.params.get("site", ""),
     )
-    api_endpoint = '/objects/host/' + host_name + '/actions/discover_services/invoke'
+
+    api_endpoint = (
+        "/objects/host/" + module.params.get("host_name") + "/actions/discover_services/invoke"
+    )
     url = base_url + api_endpoint
-    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method='POST')
-    http_code = info['status']
+    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="POST")
+    http_code = info["status"]
 
     # Kudos to Lars G.!
     if http_code in http_code_mapping.keys():
         changed, failed, msg = http_code_mapping[http_code]
     else:
-        changed, failed, msg = (False, True, 'Error calling API')
+        http_body = json.loads(info["body"])["detail"]
+        changed, failed, msg = (False, True, "Error calling API.")
 
-    result['msg'] = msg
-    result['changed'] = changed
-    result['failed'] = failed
-    result['http_code'] = http_code
+    if failed:
+        http_body = json.loads(info["body"])["detail"]
+        msg += " Details: %s" % http_body
 
-    if result['failed']:
+    result["msg"] = msg
+    result["changed"] = changed
+    result["failed"] = failed
+    result["http_code"] = http_code
+
+    if result["failed"]:
         module.fail_json(**result)
 
     module.exit_json(**result)
@@ -150,5 +161,5 @@ def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
