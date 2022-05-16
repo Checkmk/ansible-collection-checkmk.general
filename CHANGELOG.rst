@@ -5,6 +5,45 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.2.1
+======
+
+Minor Changes
+-------------
+
+- Add hint, that running the activation module is required only once and not per host.
+- Clean up variable assignments in activation module.
+- Clean up variable assignments in discovery module.
+- Improve construction of headers and base_url variables in activation module.
+- Improve construction of headers and base_url variables in discovery module.
+- Introduce quick fix for handling of HTTP 500 errors in discovery module.
+
+v0.2.0
+======
+
+Major Changes
+-------------
+
+- Add downtime module. Kudos to Oliver Gaida (https://github.com/ogaida)!
+
+Minor Changes
+-------------
+
+- The way how the API URL is being created is now more consistent. Thus, users can now skip the trailing "/" in the "server_url" for all modules. Thanks to Jan Petto (https://github.com/Edgxxar)!
+
+Known Issues
+------------
+
+- Discovery module is not feature complete yet.
+- Downtime module is not fully idempotent yet. This affects service downtimes and deletions.
+- This release is still in development and a heavy work in progress.
+- We might extract the API call handling into a separate Python module.
+
+New Modules
+-----------
+
+- tribe29.checkmk.downtime - Manage downtimes in Checkmk.
+
 v0.1.0
 ======
 

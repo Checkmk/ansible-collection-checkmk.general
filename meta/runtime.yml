@@ -6,6 +6,7 @@ action_groups:
   - discovery
   - folder
   - host
+  - downtime
 
 # plugin_routing:
 #   modules:
