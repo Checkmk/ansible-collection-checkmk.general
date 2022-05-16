@@ -1,5 +1,5 @@
 - name: "Test all modules."
-  hosts: all
+  hosts: test
   gather_facts: 'no'
   vars_files:
     - ./vars/config.yml
