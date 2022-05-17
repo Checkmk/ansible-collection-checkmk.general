@@ -1,4 +1,0 @@
----
-- name: "Run role."
-  ansible.builtin.include_role:
-    name: agent
