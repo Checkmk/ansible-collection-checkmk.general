@@ -1,2 +1,2 @@
 ---
-checkmk_site_url: "{{ checkmk_protocol }}://{{ checkmk_server }}/{{ checkmk_site }}"
+checkmk_agent_site_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}/{{ checkmk_agent_site }}"

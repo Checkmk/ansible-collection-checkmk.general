@@ -12,24 +12,24 @@ None.
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_version: "2.0.0p24"
+    checkmk_agent_version: "2.0.0p24"
 
 The Checkmk version of your site.
 
-    checkmk_edition: cre
+    checkmk_agent_edition: cre
 
 The edition you are using. Valid values are `cre` and `cee`.
 Note, that `cee` is not implemented yet.
 
-    checkmk_protocol: http
+    checkmk_agent_protocol: http
 
 The protocol used to connect to your Checkmk site.
 
-    checkmk_server: localhost
+    checkmk_agent_server: localhost
 
 The FQDN or IP address of your Checkmk server.
 
-    checkmk_site: my_site
+    checkmk_agent_site: my_site
 
 The name of your Checkmk site.
 

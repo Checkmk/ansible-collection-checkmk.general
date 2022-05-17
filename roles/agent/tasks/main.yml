@@ -4,9 +4,9 @@
 
 - name: "Download Checkmk CRE Agent."
   ansible.builtin.get_url:
-    url: "{{ checkmk_agent.url.cre }}"
-    dest: "{{ checkmk_agent.file.cre }}"
-  when: checkmk_edition == "cre"
+    url: "{{ checkmk_agent_agent.url.cre }}"
+    dest: "{{ checkmk_agent_agent.file.cre }}"
+  when: checkmk_agent_edition == "cre"
 
 - name: "Run OS Family specific Tasks."
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"

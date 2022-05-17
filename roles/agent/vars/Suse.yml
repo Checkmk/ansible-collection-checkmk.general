@@ -1,10 +1,10 @@
 ---
-checkmk_host_tmp_dir: "/tmp"
+checkmk_agent_host_tmp_dir: "/tmp"
 
-checkmk_agent:
+checkmk_agent_agent:
   url:
-    cre: "{{ checkmk_site_url }}/check_mk/agents/check-mk-agent-{{ checkmk_version }}-1.noarch.rpm"
-    cee: "{{ checkmk_site_url }}/check_mk/agents/check-mk-agent-{{ checkmk_version }}-1.noarch.rpm"
+    cre: "{{ checkmk_agent_site_url }}/check_mk/agents/check-mk-agent-{{ checkmk_agent_version }}-1.noarch.rpm"
+    cee: "{{ checkmk_agent_site_url }}/check_mk/agents/check-mk-agent-{{ checkmk_agent_version }}-1.noarch.rpm"
   file:
-    cre: "{{ checkmk_host_tmp_dir }}/check-mk-agent-{{ checkmk_version }}-1.noarch.rpm"
-    cee: "{{ checkmk_host_tmp_dir }}/check-mk-agent-{{ checkmk_version }}-1.noarch.rpm"
+    cre: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch.rpm"
+    cee: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch.rpm"
