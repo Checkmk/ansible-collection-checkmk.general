@@ -1,16 +1,8 @@
 ---
 - name: "Install Checkmk CRE Agent on RedHat Derivates."
   become: 'yes'
-  yum:
+  ansible.builtin.yum:
       name: "{{ checkmk_agent.file.cre }}"
       state: present
       disable_gpg_check: yes
   when: checkmk_edition == "cre"
-
-- name: "Install Checkmk CEE Agent on RedHat Derivates."
-  become: 'yes'
-  yum:
-      name: "{{ checkmk_agent.file.cee }}"
-      state: present
-      disable_gpg_check: yes
-  when: checkmk_edition == "cee"
