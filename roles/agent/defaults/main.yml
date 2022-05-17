@@ -1,7 +1,6 @@
 ---
-checkmk_version: "2.0.0p23"
+checkmk_version: "2.0.0p24"
 checkmk_edition: cre
 checkmk_protocol: http
 checkmk_server: localhost
 checkmk_site: my_site
-checkmk_site_url: "{{ checkmk_protocol }}://{{ checkmk_server }}/{{ checkmk_site }}"
