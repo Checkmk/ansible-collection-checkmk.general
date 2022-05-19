@@ -79,13 +79,12 @@ message:
     sample: 'Folder created.'
 """
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
+import sys
+import traceback
 
 # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
-from ansible.module_utils.basic import missing_required_lib
-import traceback
-import sys
+from ansible.module_utils.basic import AnsibleModule, missing_required_lib
+from ansible.module_utils.urls import fetch_url
 
 if sys.version[0] == "3":
     from pathlib import Path

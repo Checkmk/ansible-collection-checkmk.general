@@ -94,9 +94,10 @@ message:
     sample: 'Host created.'
 """
 
+import json
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
-import json
 
 
 def exit_failed(module, msg):

@@ -16,3 +16,6 @@ jobs:
       - name: Check format
         run: black --check --diff plugins
         if: always()
+      - name: Check imports
+        run: isort --check --diff plugins
+        if: always()
