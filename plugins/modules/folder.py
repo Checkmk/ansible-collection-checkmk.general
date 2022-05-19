@@ -81,13 +81,15 @@ message:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
+
 # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import missing_required_lib
 import traceback
 import sys
 
-if sys.version[0] == '3':
+if sys.version[0] == "3":
     from pathlib import Path
+
     PYTHON_VERSION = 3
 else:
     PYTHON_VERSION = 2
@@ -170,12 +172,15 @@ def set_folder_attributes(module, attributes, base_url, headers):
     }
     url = base_url + api_endpoint
 
-    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="PUT")
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="PUT"
+    )
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
 
 
@@ -192,12 +197,15 @@ def create_folder(module, attributes, base_url, headers):
     }
     url = base_url + api_endpoint
 
-    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="POST")
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="POST"
+    )
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
 
 
@@ -212,7 +220,8 @@ def delete_folder(module, base_url, headers):
     if info["status"] != 204:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
 
 
@@ -235,8 +244,9 @@ def run_module():
     if PYTHON_VERSION == 2 and not HAS_PATHLIB2_LIBRARY:
         # Needs: from ansible.module_utils.basic import missing_required_lib
         module.fail_json(
-            msg=missing_required_lib('pathlib2'),
-            exception=PATHLIB2_LIBRARY_IMPORT_ERROR)
+            msg=missing_required_lib("pathlib2"),
+            exception=PATHLIB2_LIBRARY_IMPORT_ERROR,
+        )
 
     # Use the parameters to initialize some common variables
     headers = {
@@ -279,7 +289,9 @@ def run_module():
         if len(msg_tokens) >= 1:
             exit_changed(module, " ".join(msg_tokens))
         else:
-            exit_ok(module, "Folder already present. All explicit attributes as desired.")
+            exit_ok(
+                module, "Folder already present. All explicit attributes as desired."
+            )
 
     elif state == "present" and current_state == "absent":
         create_folder(module, attributes, base_url, headers)
