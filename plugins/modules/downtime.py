@@ -144,11 +144,12 @@ message:
     sample: ''
 """
 
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
 import json
 import re
 from datetime import datetime, timedelta
+
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.urls import fetch_url
 
 try:
     from urllib import urlencode
