@@ -24,6 +24,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          python -m pip install --upgrade antsibull-docs
 
       - name: Compile Collection Changelog
         run: antsibull-changelog release
