@@ -5,6 +5,14 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.3.2
+======
+
+Minor Changes
+-------------
+
+- Add agent role. Currently supports the vanilla agent.
+
 v0.2.2
 ======
 

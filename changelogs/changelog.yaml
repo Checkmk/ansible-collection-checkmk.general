@@ -96,3 +96,10 @@ releases:
     fragments:
     - discovery.yml
     release_date: '2022-05-11'
+  0.3.2:
+    changes:
+      minor_changes:
+      - Add agent role. Currently supports the vanilla agent.
+    fragments:
+    - role-agent.yml
+    release_date: '2022-05-23'
