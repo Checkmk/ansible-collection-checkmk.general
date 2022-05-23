@@ -1,0 +1,8 @@
+---
+- name: "Install Checkmk CRE Agent on Suse Derivates."
+  become: 'yes'
+  ansible.builtin.zypper:
+      name: "{{ checkmk_agent_agent.file.cre }}"
+      state: present
+      disable_gpg_check: yes
+  when: checkmk_agent_edition == "cre"
