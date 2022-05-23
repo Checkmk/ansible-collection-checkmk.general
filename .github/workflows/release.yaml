@@ -8,6 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      #
+      # Prepare the environment.
+      #
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -25,8 +30,30 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      #
+      # First stage: Build and install collection to generate docs and changelogs.
+      #
+
+      - name: Copy Files and Directories to Source
+        run: |
+          mkdir -p build/src
+          cp $files build/src
+          cp -rf $directories build/src
+        env:
+          files: "CHANGELOG.rst LICENSE README.md ansible.cfg galaxy.yml"
+          directories: "changelogs docs meta playbooks plugins roles"
+
+      - name: Build Ansible Collection
+        run: ansible-galaxy collection build build/src --force
+
+      - name: Install Ansible Collection
+        run: ansible-galaxy collection install ./tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+
       - name: Compile Collection Changelog
         run: antsibull-changelog release
+
+      - name: Compile Collection Docs
+        run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ tribe29.checkmk
 
       # https://github.com/marketplace/actions/create-pull-request
       - name: Create Pull Request for docs
@@ -36,14 +63,18 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
-          branch: changelogs-update
+          branch: changelogs-docs-update
           delete-branch: true
-          title: '[Auto] Update changelogs'
+          title: '[Auto] Update changelogs and docs'
           body: |
-            Changelogs updated during *${{ steps.current_version.outputs.version }}* release.
+            Changelogs and docs updated during *${{ steps.current_version.outputs.version }}* release.
           assignees: robin-tribe29
           reviewers: robin-tribe29
           draft: false
+
+      #
+      # Second stage: Build the final version of the collection and release it.
+      #
 
       - name: Copy Files and Directories to Source
         run: |
@@ -52,8 +83,7 @@ jobs:
           cp -rf $directories build/src
         env:
           files: "CHANGELOG.rst LICENSE README.md ansible.cfg galaxy.yml"
-          # directories: "playbooks plugins roles vars"
-          directories: "changelogs docs meta playbooks plugins"
+          directories: "changelogs docs meta playbooks plugins roles"
 
       - name: Build Ansible Collection
         run: ansible-galaxy collection build build/src --force
@@ -65,7 +95,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.current_version.outputs.version }}
-          release_name: Release v${{ steps.current_version.outputs.version }}
+          release_name: v${{ steps.current_version.outputs.version }}
           body: |
             # Ansible Collection: tribe29.checkmk
 
