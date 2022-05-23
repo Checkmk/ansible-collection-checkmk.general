@@ -1,0 +1,42 @@
+- name: "Run all roles."
+  hosts: vagrant
+  vars_files:
+    - ./vars/config.yml
+
+  roles:
+    - agent
+
+  # tasks:
+  #   - name: "Create host."
+  #     host:
+  #       server_url: "{{ server_url }}"
+  #       site: "{{ site }}"
+  #       automation_user: "{{ automation_user }}"
+  #       automation_secret: "{{ automation_secret }}"
+  #       host_name: "{{ inventory_hostname }}"
+  #       folder: "{{ checkmk_folder_path }}"
+  #       attributes:
+  #               site: "{{ site }}"
+  #               ipaddress: "{{ ansible_host }}"
+  #       state: "present"
+  #     delegate_to: localhost
+  #   - name: "Discover services on host."
+  #     discovery:
+  #       server_url: "{{ server_url }}"
+  #       site: "{{ site }}"
+  #       automation_user: "{{ automation_user }}"
+  #       automation_secret: "{{ automation_secret }}"
+  #       host_name: "{{ inventory_hostname }}"
+  #       state: "fix_all"
+  #     delegate_to: localhost
+  #   - name: "Activate changes."
+  #     activation:
+  #       server_url: "{{ server_url }}"
+  #       site: "{{ site }}"
+  #       automation_user: "{{ automation_user }}"
+  #       automation_secret: "{{ automation_secret }}"
+  #       force_foreign_changes: 'true'
+  #       sites:
+  #       - "{{ site }}"
+  #     delegate_to: localhost
+  #     run_once: 'true'

@@ -1,0 +1,7 @@
+---
+- name: "Install Checkmk CRE Agent on Debian Derivates."
+  become: 'yes'
+  ansible.builtin.apt:
+      deb: "{{ checkmk_agent_agent.file.cre }}"
+      state: present
+  when: checkmk_agent_edition == "cre"
