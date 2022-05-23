@@ -2,6 +2,8 @@
 .*.swp
 .*.swo
 *~
+.vagrant/
+build/
 tests/output
 playbooks/vars/config.yml
 playbooks/test.yml
