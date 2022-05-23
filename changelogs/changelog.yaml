@@ -88,3 +88,11 @@ releases:
     - activation.yml
     - discovery.yml
     release_date: '2022-04-22'
+  0.2.2:
+    changes:
+      minor_changes:
+      - The discovery module will now be more verbose in case of an API error and
+        print the actual error message from the API.
+    fragments:
+    - discovery.yml
+    release_date: '2022-05-11'

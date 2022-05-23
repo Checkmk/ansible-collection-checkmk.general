@@ -94,9 +94,10 @@ message:
     sample: 'Host created.'
 """
 
+import json
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
-import json
 
 
 def exit_failed(module, msg):
@@ -233,8 +234,8 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         host_name=dict(type="str", required=True),
         attributes=dict(type="raw", default=[]),
-        folder=dict(type="str", default='/'),
-        state=dict(type="str", default='present', choices=["present", "absent"]),
+        folder=dict(type="str", default="/"),
+        state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
