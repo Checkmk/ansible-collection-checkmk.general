@@ -18,6 +18,7 @@ on:
       - 'changelogs/**'
       - '**.md'
       - '**.rst'
+      - 'roles/**'
 
 env:
   NAMESPACE: tribe29

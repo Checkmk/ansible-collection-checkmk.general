@@ -1,9 +1,10 @@
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 
 class ModuleDocFragment(object):
-    DOCUMENTATION = r'''
+    DOCUMENTATION = r"""
     options:
         server_url:
             description: The base url of your Checkmk server.
@@ -21,4 +22,4 @@ class ModuleDocFragment(object):
             description: The secret to authenticate your automation user.
             required: true
             type: str
-    '''
+    """
