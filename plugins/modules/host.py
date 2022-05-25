@@ -281,6 +281,9 @@ def run_module():
         headers["If-Match"] = etag
         msg_tokens = []
 
+        if current_folder.endswith("/"):
+            current_folder = current_folder.rstrip("/")
+
         if current_folder != module.params["folder"]:
             move_host(module, base_url, headers)
             msg_tokens.append("Host was moved.")
