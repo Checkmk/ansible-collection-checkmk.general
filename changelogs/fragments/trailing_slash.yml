@@ -1,6 +1,6 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 bugfixes:
-  - the host mnodule can now handle the trailing slash in the folder path returned by the REST API.
+  - The host module can now handle the trailing slash in the folder path returned by the REST API.
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
