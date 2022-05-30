@@ -143,8 +143,8 @@ def get_current_host_state(module, base_url, headers):
     else:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s. Body: %s"
-            % (info["status"], info["body"], body),
+            "Error calling API. HTTP code %d. Details: %s."
+            % (info["status"], info.get("body", "N/A")),
         )
 
     return current_state, current_explicit_attributes, current_folder, etag
@@ -280,6 +280,9 @@ def run_module():
     if state == "present" and current_state == "present":
         headers["If-Match"] = etag
         msg_tokens = []
+
+        if current_folder.endswith("/"):
+            current_folder = current_folder.rstrip("/")
 
         if current_folder != module.params["folder"]:
             move_host(module, base_url, headers)
