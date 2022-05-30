@@ -152,8 +152,8 @@ def get_current_folder_state(module, base_url, headers):
     else:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s. Body: %s"
-            % (info["status"], info["body"], body),
+            "Error calling API. HTTP code %d. Details: %s"
+            % (info["status"], info.get("body", "N/A")),
         )
 
     return current_state, current_explicit_attributes, etag

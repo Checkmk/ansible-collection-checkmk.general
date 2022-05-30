@@ -2,6 +2,7 @@
 .*.swp
 .*.swo
 *~
+tribe29-checkmk-*.tar.gz
 .vagrant/
 build/
 tests/output
