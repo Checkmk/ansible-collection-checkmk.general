@@ -12,7 +12,7 @@ None.
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_agent_version: "2.0.0p24"
+    checkmk_agent_version: "2.1.0"
 
 The Checkmk version of your site.
 
@@ -33,6 +33,16 @@ The FQDN or IP address of your Checkmk server.
 
 The name of your Checkmk site.
 
+    checkmk_agent_update: 'false'
+
+Register host for automatic updates. Make sure to have the server side prepared
+for automatic updates. Otherwise this will fail.
+
+    checkmk_agent_tls: 'false'
+
+Register for TLS encryption. Make sure to have the server side prepared
+for automatic updates. Otherwise this will fail.
+
 ## Dependencies
 
 <!-- A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles. -->
@@ -40,7 +50,8 @@ None.
 
 ## Example Playbook
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Including an example of how to use your role (for instance, with variables
+passed in as parameters) is always nice for users too:
 
     - hosts: all
       roles:
@@ -52,7 +63,9 @@ See [CONTRIBUTING](../../CONTRIBUTING).
 
 ## Disclaimer
 
-This role is provided AS IS and we can and will not guarantee that the role works as intended, nor can we be accountable for any damage or misconfiguration done by this role. Study the role thoroughly before using it.
+This role is provided AS IS and we can and will not guarantee that the role works
+as intended, nor can we be accountable for any damage or misconfiguration done
+by this role. Study the role thoroughly before using it.
 
 ## License
 
