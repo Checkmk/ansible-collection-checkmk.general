@@ -1,2 +1,3 @@
 ansible >= 4.10.0
 antsibull-changelog >= 0.12.0
+antsibull-docs >= 1.1.0
