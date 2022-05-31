@@ -103,3 +103,11 @@ releases:
     fragments:
     - role-agent.yml
     release_date: '2022-05-23'
+  0.3.3:
+    changes:
+      bugfixes:
+      - The host module can now handle the trailing slash in the folder path returned
+        by the REST API.
+    fragments:
+    - trailing_slash.yml
+    release_date: '2022-05-30'

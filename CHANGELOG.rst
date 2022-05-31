@@ -5,6 +5,14 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.3.3
+======
+
+Bugfixes
+--------
+
+- The host module can now handle the trailing slash in the folder path returned by the REST API.
+
 v0.3.2
 ======
 
