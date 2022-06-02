@@ -131,11 +131,13 @@ def run_module():
 
     api_endpoint = (
         "/objects/host/"
-        + module.params.get("host_name")s
+        + module.params.get("host_name")
         + "/actions/discover_services/invoke"
     )
     url = base_url + api_endpoint
-    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="POST")
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="POST"
+    )
     http_code = info["status"]
 
     # Kudos to Lars G.!
