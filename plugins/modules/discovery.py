@@ -130,26 +130,25 @@ def run_module():
     )
 
     api_endpoint = (
-        "/objects/host/"
-        + module.params.get("host_name")
-        + "/actions/discover_services/invoke"
+        "/objects/host/" + module.params.get("host_name") + "/actions/discover_services/invoke"
     )
     url = base_url + api_endpoint
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )
+    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="POST")
     http_code = info["status"]
 
     # Kudos to Lars G.!
     if http_code in http_code_mapping.keys():
         changed, failed, msg = http_code_mapping[http_code]
     else:
-        http_body = json.loads(info["body"])["detail"]
-        changed, failed, msg = (False, True, "Error calling API.")
+        changed, failed, msg = (
+            False,
+            True,
+            "Error calling API. HTTP Return Code is %d" % http_code,
+        )
 
     if failed:
-        http_body = json.loads(info["body"])["detail"]
-        msg += " Details: %s" % http_body
+        body = info.get("body", "N/A")
+        msg += " Details: %s" % body
 
     result["msg"] = msg
     result["changed"] = changed
