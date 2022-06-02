@@ -1,5 +1,5 @@
 ---
-- name: "Download Checkmk CEE Agent for {{ inventory_hostname }}."
+- name: "RedHat Derivates: Download host-specific Checkmk CEE Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ inventory_hostname }}&os_type=linux_rpm&agent_type=host_name"
     dest: "{{ checkmk_agent_agent.file.host }}"
@@ -13,7 +13,15 @@
   failed_when: 'false'
   changed_when: 'false'
 
-- name: "Download Checkmk CEE Agent GENERIC."
+- name: "RedHat Derivates: Install host-specific Checkmk CEE Agent."
+  become: 'yes'
+  ansible.builtin.yum:
+      name: "{{ checkmk_agent_agent.file.host }}"
+      state: present
+      disable_gpg_check: yes
+  when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status == 200
+
+- name: "RedHat Derivates: Download GENERIC Checkmk CEE Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_rpm&agent_type=generic"
     dest: "{{ checkmk_agent_agent.file.cee }}"
@@ -21,9 +29,9 @@
     headers:
       Authorization: "Bearer {{ automation_user }} {{ automation_secret }}"
       Accept: "application/octet-stream"
-  when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.failed | bool
+  when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status != 200
 
-- name: "Install Checkmk CRE Agent on RedHat Derivates."
+- name: "RedHat Derivates: Install Checkmk CRE Agent."
   become: 'yes'
   ansible.builtin.yum:
       name: "{{ checkmk_agent_agent.file.cre }}"
@@ -31,23 +39,15 @@
       disable_gpg_check: yes
   when: checkmk_agent_edition == "cre"
 
-- name: "Install Checkmk CEE Agent GENERIC on RedHat Derivates."
+- name: "RedHat Derivates: Install GENERIC Checkmk CEE Agent  on."
   become: 'yes'
   ansible.builtin.yum:
       name: "{{ checkmk_agent_agent.file.cee }}"
       state: present
       disable_gpg_check: yes
-  when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.failed | bool
+  when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status != 200
 
-- name: "Install Checkmk CEE Agent host-specific on RedHat Derivates."
-  become: 'yes'
-  ansible.builtin.yum:
-      name: "{{ checkmk_agent_agent.file.host }}"
-      state: present
-      disable_gpg_check: yes
-  when: (checkmk_agent_edition == "cee") and not checkmk_host_agent_download_state.failed | bool
-
-- name: "Install Checkmk CRE Agent on RedHat Derivates."
+- name: "RedHat Derivates: Install Checkmk CRE Agent."
   become: 'yes'
   ansible.builtin.yum:
       name: "{{ checkmk_agent_agent.file.cre }}"
