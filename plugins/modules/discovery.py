@@ -151,8 +151,8 @@ def run_module():
         )
 
     if failed:
-        body = info.get("body", "N/A")
-        msg += " Details: %s" % body
+        details = info.get("body", info.get("msg", "N/A"))
+        msg += " Details: %s" % details
 
     result["msg"] = msg
     result["changed"] = changed
