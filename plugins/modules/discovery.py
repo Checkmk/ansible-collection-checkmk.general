@@ -144,12 +144,15 @@ def run_module():
     if http_code in http_code_mapping.keys():
         changed, failed, msg = http_code_mapping[http_code]
     else:
-        http_body = json.loads(info["body"])["detail"]
-        changed, failed, msg = (False, True, "Error calling API.")
+        changed, failed, msg = (
+            False,
+            True,
+            "Error calling API. HTTP Return Code is %d" % http_code,
+        )
 
     if failed:
-        http_body = json.loads(info["body"])["detail"]
-        msg += " Details: %s" % http_body
+        body = info.get("body", "N/A")
+        msg += " Details: %s" % body
 
     result["msg"] = msg
     result["changed"] = changed
