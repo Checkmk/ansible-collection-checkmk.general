@@ -194,14 +194,17 @@ def set_user_attributes(module, user_attributes, base_url, headers):
     api_endpoint = "/objects/user_config/" + module.params.get("username")
     url = base_url + api_endpoint
 
-    #print("#####################")
-    #print(module.jsonify(user_attributes))
-    response, info = fetch_url(module, url, module.jsonify(user_attributes), headers=headers, method="PUT")
+    # print("#####################")
+    # print(module.jsonify(user_attributes))
+    response, info = fetch_url(
+        module, url, module.jsonify(user_attributes), headers=headers, method="PUT"
+    )
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
 
 
@@ -209,14 +212,31 @@ def create_user(module, user_attributes, base_url, headers):
     api_endpoint = "/domain-types/user_config/collections/all"
     url = base_url + api_endpoint
 
+    # Set the defaults
+    default_attributes = {
+        "auth_type": "password",
+        "disable_login": "False",
+        "contact_options": {"email": "", "fallback_contact": False},
+        "pager_address": "",
+        "idle_timeout": {"option": "global"},
+        "roles": ["user"],
+        "authorized_sites": {},
+        "contactgroups": ["all"],
+        "disable_notifications": {},
+        "language": "default",
+    }
+
+    explicit_attributes = {**default_attributes, **user_attributes}
+
     response, info = fetch_url(
-        module, url, module.jsonify(user_attributes), headers=headers, method="POST"
+        module, url, module.jsonify(explicit_attributes), headers=headers, method="POST"
     )
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
 
 
@@ -229,7 +249,8 @@ def delete_user(module, base_url, headers):
     if info["status"] != 204:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
 
 
@@ -245,31 +266,30 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         username=dict(required=True, type=str),
         fullname=dict(type=str),
-        auth_option=dict(
-            password=dict(type="str", default=""),
-            secret=dict(type="str", default=""),
-            auth_type=dict(type="str", default="password", choices=["password", "secret"]),
+        auth_type=dict(
+            password=dict(type="str"),
+            secret=dict(type="str"),
+            auth_type=dict(type="str", choices=["password", "secret"]),
         ),
-        disable_login=dict(type="bool", default=False),
+        disable_login=dict(type="bool"),
         contact_options=dict(
-            email=dict(type="str", default=""),
-            fallback_contact=dict(type="bool", default=False),
-            default={"email": "", "fallback_contact": False}
+            email=dict(type="str"), fallback_contact=dict(type="bool")
         ),
-        pager_address=dict(type="str", default=""),
+        pager_address=dict(type="str"),
         idle_timeout=dict(
             duration=dict(type="str"),
-            option=dict(
-                type="str", default="global", choices=["global", "disable", "individual"]
-            ),
-            default={'option': 'global'}
+            option=dict(type="str", choices=["global", "disable", "individual"]),
         ),
-        roles=dict(type="raw", default=["user"]),
-        authorized_sites=dict(type="raw", default={}),
-        contactgroups=dict(type="raw", default=["all"]),
-        disable_notifications=dict(type="raw", default={}),
-        language=dict(type="str", default="default", choices=["default", "en", "de", "ro"]),
-        state=dict(type="str", default="present", choices=["present", "absent", "reset_password"]),
+        roles=dict(type="raw"),
+        authorized_sites=dict(type="raw"),
+        contactgroups=dict(type="raw"),
+        disable_notifications=dict(type="raw"),
+        language=dict(type="str", choices=["default", "en", "de", "ro"]),
+        state=dict(
+            type="str",
+            default="present",
+            choices=["present", "absent", "reset_password"],
+        ),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
@@ -294,7 +314,7 @@ def run_module():
     state = module.params.pop("state")
 
     # Convert strings to dict wherever needed
-    for key in ["auth_option", "contact_options", "idle_timeout"]:
+    for key in ["auth_type", "contact_options", "idle_timeout"]:
         if type(module.params.get(key)) == str:
             new_value = ast.literal_eval(module.params.get(key))
             module.params[key] = new_value
@@ -302,7 +322,7 @@ def run_module():
     # Clone params and remove keys with empty values
     user_attributes = module.params.copy()
     for k, v in module.params.items():
-        #if v is None or v == "" or (k == "language" and v == "default"):
+        # if v is None or v == "" or (k == "language" and v == "default"):
         if k == "language" and v == "default":
             del user_attributes[k]
 
@@ -317,22 +337,24 @@ def run_module():
         user_attributes["authorized_sites"] = []
 
     ## Remove Ansible specific keys
-    #for k in [
+    # for k in [
     #    "server_url",
     #    "site",
     #    "automation_user",
     #    "automation_secret",
     #    "state",
-    #]:
+    # ]:
     #    del user_attributes[k]
 
     if user_attributes["fullname"] is None or "fullname" not in user_attributes:
-        #print("ääääääääääääääääääädding fullname!")
+        # print("ääääääääääääääääääädding fullname!")
         user_attributes["fullname"] = user_attributes["username"]
-        #print(user_attributes)
+        # print(user_attributes)
 
     # Determine the current state of this particular user
-    current_user_attributes, current_state, etag = get_current_user_state(module, base_url, headers)
+    current_user_attributes, current_state, etag = get_current_user_state(
+        module, base_url, headers
+    )
 
     # Handle the user accordingly to above findings and desired state
     if state in ["present", "reset_password"] and current_state == "present":
@@ -340,12 +362,12 @@ def run_module():
         msg_tokens = []
 
         if state != "reset_password":
-            del user_attributes["auth_option"]
+            del user_attributes["auth_type"]
 
         del user_attributes["username"]
         if user_attributes != {} and current_user_attributes != user_attributes:
-            #print(current_user_attributes)
-            #print(user_attributes)
+            # print(current_user_attributes)
+            # print(user_attributes)
             set_user_attributes(module, user_attributes, base_url, headers)
             msg_tokens.append("User attributes changed.")
 
