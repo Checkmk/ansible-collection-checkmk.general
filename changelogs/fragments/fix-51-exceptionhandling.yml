@@ -1,5 +1,5 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
-bugfixes
+bugfixes:
     - Improved the exception handling of the discovery module.
 # minor_changes:
 #   - Add agent role. Currently supports the vanilla agent.
