@@ -7,4 +7,4 @@ tribe29-checkmk-*.tar.gz
 build/
 tests/output
 playbooks/vars/config.yml
-playbooks/test.yml
+playbooks/test*.yml
