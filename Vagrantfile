@@ -68,7 +68,7 @@ Vagrant.configure("2") do |config|
       srv.ssh.insert_key = false
       srv.vm.provider "virtualbox" do |v|
           v.name = 'ansibuntu'
-          v.memory = 1024
+          v.memory = 2048
           v.cpus = 2
       end
       srv.vm.provision "shell",
@@ -82,7 +82,7 @@ Vagrant.configure("2") do |config|
       srv.ssh.insert_key = false
       srv.vm.provider "virtualbox" do |v|
           v.name = 'debsible'
-          v.memory = 1024
+          v.memory = 2048
           v.cpus = 2
       end
       srv.vm.provision "shell",
@@ -96,7 +96,7 @@ Vagrant.configure("2") do |config|
       srv.ssh.insert_key = false
       srv.vm.provider "virtualbox" do |v|
           v.name = 'anstream'
-          v.memory = 1024
+          v.memory = 2048
           v.cpus = 2
       end
       srv.vm.provision "shell",
@@ -110,7 +110,7 @@ Vagrant.configure("2") do |config|
     srv.ssh.insert_key = false
     srv.vm.provider "virtualbox" do |v|
         v.name = 'ansuse'
-        v.memory = 1024
+        v.memory = 2048
         v.cpus = 2
     end
     srv.vm.provision "shell",
