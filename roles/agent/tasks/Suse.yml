@@ -1,5 +1,53 @@
 ---
-- name: "Install Checkmk CRE Agent on Suse Derivates."
+- name: "Suse Derivates: Download host-specific Checkmk CEE Agent."
+  ansible.builtin.uri:
+    url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ inventory_hostname }}&os_type=linux_rpm&agent_type=host_name"
+    dest: "{{ checkmk_agent_agent.file.host }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ automation_user }} {{ automation_secret }}"
+      Accept: "application/octet-stream"
+  when: checkmk_agent_edition == "cee"
+  register: checkmk_host_agent_download_state
+  # This task may fail, as we fall back to the generic agent in that case
+  failed_when: 'false'
+  changed_when: 'false'
+
+- name: "Suse Derivates: Install host-specific Checkmk CEE Agent."
+  become: 'yes'
+  ansible.builtin.zypper:
+      name: "{{ checkmk_agent_agent.file.host }}"
+      state: present
+      disable_gpg_check: yes
+  when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status == 200
+
+- name: "Suse Derivates: Download GENERIC Checkmk CEE Agent."
+  ansible.builtin.uri:
+    url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_rpm&agent_type=generic"
+    dest: "{{ checkmk_agent_agent.file.cee }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ automation_user }} {{ automation_secret }}"
+      Accept: "application/octet-stream"
+  when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status != 200
+
+- name: "Suse Derivates: Install Checkmk CRE Agent."
+  become: 'yes'
+  ansible.builtin.zypper:
+      name: "{{ checkmk_agent_agent.file.cre }}"
+      state: present
+      disable_gpg_check: yes
+  when: checkmk_agent_edition == "cre"
+
+- name: "Suse Derivates: Install GENERIC Checkmk CEE Agent."
+  become: 'yes'
+  ansible.builtin.zypper:
+      name: "{{ checkmk_agent_agent.file.cee }}"
+      state: present
+      disable_gpg_check: yes
+  when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status != 200
+
+- name: "Suse Derivates: Install Checkmk CRE Agent."
   become: 'yes'
   ansible.builtin.zypper:
       name: "{{ checkmk_agent_agent.file.cre }}"

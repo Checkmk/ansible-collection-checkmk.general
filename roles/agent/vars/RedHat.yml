@@ -4,7 +4,8 @@ checkmk_agent_host_tmp_dir: "/tmp"
 checkmk_agent_agent:
   url:
     cre: "{{ checkmk_agent_site_url }}/check_mk/agents/check-mk-agent-{{ checkmk_agent_version }}-1.noarch.rpm"
-    cee: "{{ checkmk_agent_site_url }}/check_mk/agents/check-mk-agent-{{ checkmk_agent_version }}-1.noarch.rpm"
+    cee: "{{ checkmk_agent_site_url }}/check_mk/api/1.0/domain-types/agent/actions/download_by_host/invoke"
   file: 
-    cre: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch.rpm"
-    cee: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch.rpm"
+    cre: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-vanilla.rpm"
+    cee: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-generic.rpm"
+    host: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-{{ inventory_hostname }}.rpm"

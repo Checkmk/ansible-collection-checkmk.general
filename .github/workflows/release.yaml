@@ -56,10 +56,10 @@ jobs:
         run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ tribe29.checkmk
 
       # https://github.com/marketplace/actions/create-pull-request
-      - name: Create Pull Request for docs
+      - name: Create Pull Request for docs and changelog
         uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: Update Changelogs
+          commit-message: Update Docs and Changelogs
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
@@ -99,36 +99,9 @@ jobs:
           body: |
             # Ansible Collection: tribe29.checkmk
 
-            ## Installing locally
+            For information about this collection and how to install it, refer to the [README](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/README.md).
             
-            You can install this collection locally as follows, if you download
-            the tarball from this release:
-
-                ansible-galaxy collection install /path/to/tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
-
-            You can also include it in a `requirements.yml` file and install it with
-            `ansible-galaxy collection install -r requirements.yml`, using the format:
-            ```yaml
-            ---
-            collections:
-              - source: /path/to/tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
-                type: file
-            ```
-
-            ### Installing from the Galaxy
-
-            You can install the Checkmk collection with the Ansible Galaxy CLI:
-
-                ansible-galaxy collection install tribe29.checkmk
-
-            You can also include it in a `requirements.yml` file and install it with
-            `ansible-galaxy collection install -r requirements.yml`, using the format:
-
-            ```yaml
-            ---
-            collections:
-              - name: tribe29.checkmk
-                version: ${{ steps.current_version.outputs.version }}
+            For a detailed changelog, refer to the [CHANGELOG](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/CHANGELOG.rst).
             ```
           draft: false
           prerelease: false

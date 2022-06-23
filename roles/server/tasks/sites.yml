@@ -1,0 +1,46 @@
+- name: "Create Sites."
+  become: 'yes'
+  ansible.builtin.shell: "omd -V {{ item.version }}.{{ checkmk_server_edition }} create {{ item.name }}"
+  args:
+    creates: "/omd/sites/{{ item.name }}"
+  no_log: 'true'
+  loop: "{{ checkmk_server_sites }}"
+  when: item.state != "absent"
+  register: checkmk_server_sites_created
+
+- name: "Start Sites."
+  become: 'yes'
+  ansible.builtin.shell: "omd start {{ item.name }}"
+  args:
+    creates: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
+  no_log: 'true'
+  loop: "{{ checkmk_server_sites }}"
+  when: item.state == "started"
+  register: checkmk_server_sites_started
+
+- name: "Stop Sites."
+  become: 'yes'
+  ansible.builtin.shell: "omd stop {{ item.name }}"
+  args:
+    removes: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
+  no_log: 'true'
+  loop: "{{ checkmk_server_sites }}"
+  when: (item.state == "absent") or (item.state == "stopped")
+  register: checkmk_server_sites_stopped
+
+- name: "Destroy Sites."
+  become: 'yes'
+  ansible.builtin.shell: "yes yes | omd rm {{ item.name }}"
+  args:
+    removes: "/omd/sites/{{ item.name }}"
+  no_log: 'true'
+  loop: "{{ checkmk_server_sites }}"
+  when: item.state == "absent"
+  register: checkmk_server_sites_removed
+
+- name: "Update Site Admin Password."
+  become: 'yes'
+  ansible.builtin.shell: "echo '{{ item.admin_pw }}' | htpasswd -i /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin"
+  no_log: 'true'
+  loop: "{{ checkmk_server_sites }}"
+  when: item.state != "absent"
