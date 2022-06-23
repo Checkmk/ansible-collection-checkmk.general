@@ -1,0 +1,53 @@
+---
+- name: "Preflight - Fail if target host is not stable for this Role."
+  ansible.builtin.fail:
+    msg: "This role is not stable for the target operating system, {{ ansible_distribution }} {{ ansible_distribution_major_version }}."
+  when: (ansible_distribution is not defined) or
+        (ansible_distribution_version is not defined) or
+        (ansible_distribution+" "+ansible_distribution_major_version not in checkmk_server_server_stable_os)
+
+- name: "Include OS Family specific Variables."
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+
+- name: "Install Checkmk Prerequisites."
+  become: 'yes'
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "{{ checkmk_server_prerequisites}}"
+
+- name: "Download Checkmk Server Setup."
+  ansible.builtin.get_url:
+    url: "{{ checkmk_server_download_url }}"
+    dest: "/tmp/{{ checkmk_server_setup_file }}"
+    url_username: "{{ checkmk_server_download_user | default(omit) }}"
+    url_password: "{{ checkmk_server_download_pass | default(omit) }}"
+
+- name: "Download Checkmk GPG Key."
+  ansible.builtin.get_url:
+    url: "https://download.checkmk.com/checkmk/Check_MK-pubkey.gpg"
+    dest: "/tmp/Check_MK-pubkey.gpg"
+  when: checkmk_server_verify_setup | bool
+
+- name: "Import Checkmk GPG Key."
+  ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
+  when: checkmk_server_verify_setup | bool
+
+- name: "Verify Checkmk Setup."
+  ansible.builtin.command: dpkg-sig --verify "/tmp/{{ checkmk_server_setup_file }}"
+  register: checkmk_server_verify_state
+  changed_when: not checkmk_server_verify_state
+  failed_when: not checkmk_server_verify_state
+  when: checkmk_server_verify_setup | bool
+
+- name: "Print Verification Output."
+  debug:
+    msg: "{{ checkmk_server_verify_state.stdout_lines }} "
+
+- name: Include OS Family specific Playbook.
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Include Site Management Playbook.
+  ansible.builtin.include_tasks: "sites.yml"
+  when: checkmk_server_sites is defined

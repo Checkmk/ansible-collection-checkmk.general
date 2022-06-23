@@ -4,7 +4,8 @@ checkmk_agent_host_tmp_dir: "/tmp"
 checkmk_agent_agent:
   url:
     cre: "{{ checkmk_agent_site_url }}/check_mk/agents/check-mk-agent_{{ checkmk_agent_version }}-1_all.deb"
-    cee: "{{ checkmk_agent_site_url }}/check_mk/agents/check-mk-agent_{{ checkmk_agent_version }}-1_all.deb"
+    cee: "{{ checkmk_agent_site_url }}/check_mk/api/1.0/domain-types/agent/actions/download_by_host/invoke"
   file:
-    cre: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent_{{ checkmk_agent_version }}.deb"
-    cee: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent_{{ checkmk_agent_version }}.deb"
+    cre: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent_{{ checkmk_agent_version }}-vanilla.deb"
+    cee: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent_{{ checkmk_agent_version }}-generic.deb"
+    host: "{{ checkmk_agent_host_tmp_dir }}/check-mk-agent_{{ checkmk_agent_version }}-{{ inventory_hostname }}.deb"

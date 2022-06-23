@@ -59,6 +59,12 @@ Name | Description
 [tribe29.checkmk.downtime](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/downtime.py)|Schedule downtimes on hosts and services.
 [tribe29.checkmk.folder](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/folder.py)|Manage folders.
 [tribe29.checkmk.host](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/host.py)|Manage hosts.
+
+### Roles
+Name | Description
+--- | ---
+[tribe29.checkmk.agent](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/roles/agent/README.md)|Installs Checkmk agents.
+[tribe29.checkmk.server](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/roles/server/README.md)|Installs Checkmk servers.
 <!--end collection content-->
 
 ## Installing this collection
@@ -159,9 +165,6 @@ Please do **not** consider a concrete planning document!
     - Users
 - Lookup Plugins
   - Version
-- Roles
-  - Checkmk server installation
-  - Checkmk agent installation
 
 ## More information about Ansible
 
