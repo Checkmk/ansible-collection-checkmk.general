@@ -111,3 +111,18 @@ releases:
     fragments:
     - trailing_slash.yml
     release_date: '2022-05-30'
+  0.4.0:
+    changes:
+      bugfixes:
+      - Improved the exception handling of the discovery module.
+      minor_changes:
+      - Initial release of the Checkmk server role.
+      - The agent role now supports installing baked agents. It will try to install
+        the host-specific agent and fall back to the GENERIC agent.
+      - The agent role now supports registering hosts for automatic updates and TLS
+        encryption.
+    fragments:
+    - fix-51-exceptionhandling.yml
+    - role-agent-baked.yml
+    - role-server.yml
+    release_date: '2022-06-23'

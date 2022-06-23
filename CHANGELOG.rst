@@ -5,6 +5,21 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.4.0
+======
+
+Minor Changes
+-------------
+
+- Initial release of the Checkmk server role.
+- The agent role now supports installing baked agents. It will try to install the host-specific agent and fall back to the GENERIC agent.
+- The agent role now supports registering hosts for automatic updates and TLS encryption.
+
+Bugfixes
+--------
+
+- Improved the exception handling of the discovery module.
+
 v0.3.3
 ======
 

@@ -5,7 +5,7 @@
 Tribe29.Checkmk
 ===============
 
-Collection version 0.3.3
+Collection version 0.4.0
 
 .. contents::
    :local:
