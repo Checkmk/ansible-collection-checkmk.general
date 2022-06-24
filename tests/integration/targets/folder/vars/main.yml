@@ -1,6 +1,6 @@
 ---
-checkmk_version: "2.0.0p23"
-download_url: "https://download.checkmk.com/checkmk/{{ checkmk_version }}/check-mk-raw-{{ checkmk_version }}_0.bionic_amd64.deb"
+checkmk_version: "2.0.0p26"
+download_url: "https://download.checkmk.com/checkmk/{{ checkmk_version }}/check-mk-raw-{{ checkmk_version }}_0.{{ ansible_distribution_release }}_amd64.deb"
 site: "test"
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
