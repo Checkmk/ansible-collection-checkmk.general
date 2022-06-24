@@ -14,10 +14,10 @@
   changed_when: 'false'
 
 - name: "Debian Derivates: Install host-specific Checkmk CEE Agent."
-  become: 'yes'
+  become: true
   ansible.builtin.apt:
-      deb: "{{ checkmk_agent_agent.file.host }}"
-      state: present
+    deb: "{{ checkmk_agent_agent.file.host }}"
+    state: present
   when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status == 200
 
 - name: "Debian Derivates: Download GENERIC Checkmk CEE Agent."
@@ -31,15 +31,15 @@
   when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status != 200
 
 - name: "Debian Derivates: Install GENERIC Checkmk CEE Agent."
-  become: 'yes'
+  become: true
   ansible.builtin.apt:
-      deb: "{{ checkmk_agent_agent.file.cee }}"
-      state: present
+    deb: "{{ checkmk_agent_agent.file.cee }}"
+    state: present
   when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status != 200
 
 - name: "Debian Derivates: Install Checkmk CRE Agent."
-  become: 'yes'
+  become: true
   ansible.builtin.apt:
-      deb: "{{ checkmk_agent_agent.file.cre }}"
-      state: present
+    deb: "{{ checkmk_agent_agent.file.cre }}"
+    state: present
   when: checkmk_agent_edition == "cre"

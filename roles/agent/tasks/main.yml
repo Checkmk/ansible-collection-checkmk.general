@@ -6,13 +6,14 @@
   ansible.builtin.get_url:
     url: "{{ checkmk_agent_agent.url.cre }}"
     dest: "{{ checkmk_agent_agent.file.cre }}"
+    mode: 0640
   when: checkmk_agent_edition == "cre"
 
 - name: "Run OS Family specific Tasks."
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: "Register Agent for automatic Upates."
-  become: 'yes'
+  become: true
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ inventory_hostname }} \
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
@@ -21,8 +22,9 @@
   when: (checkmk_agent_edition == "cee") and checkmk_agent_update | bool
 
 - name: "Register Agent for TLS."
-  become: 'yes'
-  ansible.builtin.shell: cmk-agent-ctl register -H {{ inventory_hostname }} \
+  become: true
+  ansible.builtin.shell: |
+    cmk-agent-ctl register -H {{ inventory_hostname }} \
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} \
     -U {{ automation_user }} -P {{ automation_secret }} --trust-cert
   register: checkmk_host_agent_tls_state

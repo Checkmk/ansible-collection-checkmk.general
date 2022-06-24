@@ -10,17 +10,18 @@
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
 
 - name: "Install Checkmk Prerequisites."
-  become: 'yes'
+  become: true
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
   loop:
-    - "{{ checkmk_server_prerequisites}}"
+    - "{{ checkmk_server_prerequisites }}"
 
 - name: "Download Checkmk Server Setup."
   ansible.builtin.get_url:
     url: "{{ checkmk_server_download_url }}"
     dest: "/tmp/{{ checkmk_server_setup_file }}"
+    mode: 0640
     url_username: "{{ checkmk_server_download_user | default(omit) }}"
     url_password: "{{ checkmk_server_download_pass | default(omit) }}"
 
@@ -28,6 +29,7 @@
   ansible.builtin.get_url:
     url: "https://download.checkmk.com/checkmk/Check_MK-pubkey.gpg"
     dest: "/tmp/Check_MK-pubkey.gpg"
+    mode: 0640
   when: checkmk_server_verify_setup | bool
 
 - name: "Import Checkmk GPG Key."
@@ -42,7 +44,7 @@
   when: checkmk_server_verify_setup | bool
 
 - name: "Print Verification Output."
-  debug:
+  ansible.builtin.debug:
     msg: "{{ checkmk_server_verify_state.stdout_lines }} "
 
 - name: Include OS Family specific Playbook.

@@ -68,9 +68,13 @@ jobs:
           python-version: 3.8
 
       - name: Install ansible-lint
-        run: pip install ansible-lint
+        run: pip install ansible-lint yamllint
 
       # Run the linting
+      - name: Run yamllint on roles
+        run: yamllint -c .yamllint roles/
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
       - name: Run ansible-lint on roles
-        run: ansible-lint tribe29/checkmk/roles/
+        run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles/
         working-directory: ./ansible_collections/
