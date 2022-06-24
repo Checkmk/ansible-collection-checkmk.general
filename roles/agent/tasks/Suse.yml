@@ -14,11 +14,11 @@
   changed_when: 'false'
 
 - name: "Suse Derivates: Install host-specific Checkmk CEE Agent."
-  become: 'yes'
+  become: true
   ansible.builtin.zypper:
-      name: "{{ checkmk_agent_agent.file.host }}"
-      state: present
-      disable_gpg_check: yes
+    name: "{{ checkmk_agent_agent.file.host }}"
+    state: present
+    disable_gpg_check: true
   when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status == 200
 
 - name: "Suse Derivates: Download GENERIC Checkmk CEE Agent."
@@ -32,25 +32,25 @@
   when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status != 200
 
 - name: "Suse Derivates: Install Checkmk CRE Agent."
-  become: 'yes'
+  become: true
   ansible.builtin.zypper:
-      name: "{{ checkmk_agent_agent.file.cre }}"
-      state: present
-      disable_gpg_check: yes
+    name: "{{ checkmk_agent_agent.file.cre }}"
+    state: present
+    disable_gpg_check: true
   when: checkmk_agent_edition == "cre"
 
 - name: "Suse Derivates: Install GENERIC Checkmk CEE Agent."
-  become: 'yes'
+  become: true
   ansible.builtin.zypper:
-      name: "{{ checkmk_agent_agent.file.cee }}"
-      state: present
-      disable_gpg_check: yes
+    name: "{{ checkmk_agent_agent.file.cee }}"
+    state: present
+    disable_gpg_check: true
   when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status != 200
 
 - name: "Suse Derivates: Install Checkmk CRE Agent."
-  become: 'yes'
+  become: true
   ansible.builtin.zypper:
-      name: "{{ checkmk_agent_agent.file.cre }}"
-      state: present
-      disable_gpg_check: yes
+    name: "{{ checkmk_agent_agent.file.cre }}"
+    state: present
+    disable_gpg_check: true
   when: checkmk_agent_edition == "cre"
