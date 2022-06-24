@@ -9,19 +9,11 @@ name: Ansible Linting
 on:
   workflow_dispatch:
   push:
-    paths-ignore:
-      - '.github/ISSUE_TEMPLATE/*'
-      - 'docs/**'
-      - 'changelogs/**'
-      - '**.md'
-      - '**.rst'
+    paths:
+      - 'roles/'
   pull_request:
-    paths-ignore:
-      - '.github/ISSUE_TEMPLATE/*'
-      - 'docs/**'
-      - 'changelogs/**'
-      - '**.md'
-      - '**.rst'
+    paths:
+      - 'roles/'
 
 env:
   NAMESPACE: tribe29
@@ -46,9 +38,6 @@ jobs:
       fail-fast: false
       matrix:
         python:
-          - '2.7'
-          - '3.5'
-          - '3.6'
           - '3.7'
           - '3.8'
           - '3.9'
@@ -75,6 +64,20 @@ jobs:
         run: yamllint -c .yamllint roles/
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
+      - name: Run yamllint on playbooks
+        run: yamllint -c .yamllint playbooks/
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
       - name: Run ansible-lint on roles
         run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles/
         working-directory: ./ansible_collections/
+        env:
+          ANSIBLE_LIBRARY: "./tribe29/checkmk/plugins/modules"
+          ANSIBLE_ROLES_PATH: "./tribe29/checkmk/roles"
+
+      - name: Run ansible-lint on playbooks
+        run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/playbooks/
+        working-directory: ./ansible_collections/
+        env:
+          ANSIBLE_LIBRARY: "./tribe29/checkmk/plugins/modules"
+          ANSIBLE_ROLES_PATH: "./tribe29/checkmk/roles"
