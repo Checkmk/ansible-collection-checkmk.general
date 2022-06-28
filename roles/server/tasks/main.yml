@@ -32,20 +32,28 @@
     mode: 0640
   when: checkmk_server_verify_setup | bool
 
+- block:
+  - name: "Import Checkmk GPG Key."
+    ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
+    when: checkmk_server_verify_setup | bool
+
+  - name: "Verify Checkmk Setup."
+    ansible.builtin.command: dpkg-sig --verify "/tmp/{{ checkmk_server_setup_file }}"
+    register: checkmk_server_verify_state
+    changed_when: not checkmk_server_verify_state
+    failed_when: not checkmk_server_verify_state
+
+  - name: "Print Verification Output."
+    debug:
+      msg: "{{ checkmk_server_verify_state.stdout_lines }} "
+  when: checkmk_server_verify_setup | bool and ansible_os_family == "Debian"
+
 - name: "Import Checkmk GPG Key."
-  ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
-  when: checkmk_server_verify_setup | bool
-
-- name: "Verify Checkmk Setup."
-  ansible.builtin.command: dpkg-sig --verify "/tmp/{{ checkmk_server_setup_file }}"
-  register: checkmk_server_verify_state
-  changed_when: not checkmk_server_verify_state
-  failed_when: not checkmk_server_verify_state
-  when: checkmk_server_verify_setup | bool
-
-- name: "Print Verification Output."
-  ansible.builtin.debug:
-    msg: "{{ checkmk_server_verify_state.stdout_lines }} "
+  become: 'yes'
+  ansible.builtin.rpm_key:
+    key: "/tmp/Check_MK-pubkey.gpg"
+    state: present
+  when: checkmk_server_verify_setup | bool and ansible_os_family == "RedHat"
 
 - name: Include OS Family specific Playbook.
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
