@@ -8,7 +8,7 @@
 
 - name: "Import Legacy agent tasks."
   ansible.builtin.include_tasks: "legacy.yml"
-  when: ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{3,}') | int < 220 and checkmk_agent_prep_legacy | bool
+  when: ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220 and checkmk_agent_prep_legacy | bool
 
 - name: "Download Checkmk CRE Agent."
   ansible.builtin.get_url:
