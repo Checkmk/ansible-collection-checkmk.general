@@ -2,6 +2,14 @@
 - name: "Include Derivate specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
 
+- name: "Get RPM or APT package facts."
+  ansible.builtin.package_facts:
+    manager: "auto"
+
+- name: "Import Legacy agent tasks."
+  ansible.builtin.include_tasks: "legacy.yml"
+  when: ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{3,}') | int < 220 and checmmk_agent_prep_legacy | bool
+
 - name: "Download Checkmk CRE Agent."
   ansible.builtin.get_url:
     url: "{{ checkmk_agent_agent.url.cre }}"

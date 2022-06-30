@@ -1,0 +1,11 @@
+---
+- name: "Install xinetd"
+  ansible.builtin.package:
+    name: xinetd
+    state: present
+
+- name: "Enable xinetd"
+  ansible.builtin.service:
+    name: xinetd
+    state: started
+    enabled: true
