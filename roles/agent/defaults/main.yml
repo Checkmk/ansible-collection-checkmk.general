@@ -7,6 +7,7 @@ checkmk_agent_site: my_site
 checkmk_agent_add_host: 'false'
 checkmk_agent_update: 'false'
 checkmk_agent_tls: 'false'
+checkmk_agent_prep_legacy: 'false'
 checkmk_agent_discover: 'false'
 checkmk_agent_delegate_api_calls: localhost
 checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
