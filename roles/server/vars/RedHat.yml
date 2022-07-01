@@ -4,3 +4,7 @@ checkmk_server_setup_file: "check-mk-{{ checkmk_server_edition_mapping[checkmk_s
 checkmk_server_prerequisites:
   - epel-release
   - "{{ python_semanage_package }}"
+
+checkmk_server_ports:
+  - 80/tcp
+  - 8000/tcp
