@@ -46,7 +46,7 @@
   register: checkmk_host_agent_tls_state
   when: (checkmk_agent_edition == "cee") and checkmk_agent_tls | bool
 
-- name: Discover services
+- name: "Discover services and labels on host."
   tribe29.checkmk.discovery:
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}/"
     site: "{{ checkmk_agent_site }}"
