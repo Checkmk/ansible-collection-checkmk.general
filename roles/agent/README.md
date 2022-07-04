@@ -51,6 +51,10 @@ for automatic updates. Otherwise this will fail.
 Register for TLS encryption. Make sure to have the server side prepared
 for automatic updates. Otherwise this will fail.
 
+    checkmk_agent_configure_firewall: 'true'
+
+Automatically configure the firewall to allow access to the Checkmk agent.
+
     checkmk_agent_prep_legacy: 'false'
 
 Enable this to automatically install `xinetd` on hosts with systemd prior to version 220.

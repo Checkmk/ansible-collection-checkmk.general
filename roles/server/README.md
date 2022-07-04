@@ -37,6 +37,11 @@ Your credentials to the Checkmk customer portal.
 
 Cryptographically verify the downloaded setup file.
 
+    checkmk_server_configure_firewall: 'true'
+
+Automatically open the necessary ports on the Checkmk server for the
+web interface to be accessible.
+
     checkmk_server_sites:
       - name: test
         version: "{{ checkmk_server_version }}"
