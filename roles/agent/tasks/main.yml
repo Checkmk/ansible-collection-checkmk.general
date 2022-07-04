@@ -29,10 +29,10 @@
     folder: "{{ checkmk_agent_folder | default(omit) }}"
     host_name: "{{ checkmk_agent_host_name }}"
     attributes:
-      ipaddress: "{{ checkmk_agent_host_ip }}"
-      tag_agent: 'cmk-agent'
-  register: createResult
-  failed_when: createResult.failed is true and "The host is already part of the specified target folder" not in createResult.msg
+      ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
+      tag_agent: 'cmk-agent'  # ToDo: Do we want to hardcode this?
+  register: checkmk_agent_create_result
+  failed_when: checkmk_agent_create_result.failed is true and "The host is already part of the specified target folder" not in checkmk_agent_create_result.msg
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_add_host | bool
 
@@ -42,7 +42,7 @@
     cmk-update-agent register -H {{ inventory_hostname }} \
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
     -U {{ automation_user }} -S {{ automation_secret }}
-  register: checkmk_host_agent_update_state
+  register: checkmk_agent_update_state
   when: (checkmk_agent_edition == "cee") and checkmk_agent_update | bool
 
 - name: "Register Agent for TLS."
@@ -51,7 +51,7 @@
     cmk-agent-ctl register -H {{ inventory_hostname }} \
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} \
     -U {{ automation_user }} -P {{ automation_secret }} --trust-cert
-  register: checkmk_host_agent_tls_state
+  register: checkmk_agent_tls_state
   when: (checkmk_agent_edition == "cee") and checkmk_agent_tls | bool
 
 - name: "Discover services and labels on host."
