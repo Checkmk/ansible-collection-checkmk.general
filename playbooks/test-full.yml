@@ -6,10 +6,14 @@
 - name: "Test all modules."
   hosts: all
   gather_facts: 'no'
+
   vars_files:
     - ./vars/config.yml
+    - ./vars/users.yml
+
   tasks:
-    - name: "Activate changes on site - 1."
+    - name: "Activate Changes - 1."
+      tags: [activation, host, folder, discovery, user]
       activation:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -21,7 +25,28 @@
       delegate_to: localhost
       run_once: 'true'
 
+    - name: "Create users."
+      tags: [user]
+      user:  # noqa fqcn-builtins
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        username: "{{ item.username }}"
+        fullname: "{{ item.fullname }}"
+        auth_option: "{{ item.auth_option }}"
+        roles:
+          - "admin"
+        authorized_sites:
+          - "{{ site }}"
+        state: "present"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
+
     - name: "Create folders."
+      tags: [folder, host]
       folder:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -35,6 +60,7 @@
       loop: "{{ checkmk_folders }}"
 
     - name: "Create host."
+      tags: [host]
       host:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -49,6 +75,7 @@
       delegate_to: localhost
 
     - name: "Discover services on host."
+      tags: [discovery]
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -60,7 +87,8 @@
         state: "refresh"
       delegate_to: localhost
 
-    - name: "Activate changes on site - 2."
+    - name: "Activate Changes - 2."
+      tags: [activation, host, folder, discovery, user]
       activation:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -72,7 +100,26 @@
       delegate_to: localhost
       run_once: 'true'
 
+    - name: "Edit users."
+      tags: [user]
+      user:  # noqa fqcn-builtins
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        username: "{{ item.username }}"
+        contact_options: "{{ item.contact_options }}"
+        contactgroups: "{{ item.contactgroups }}"
+        # authorized_sites:
+        #    - "{{ site }}"
+        state: "present"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
+
     - name: "Change host attributes."
+      tags: [host]
       host:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -87,7 +134,8 @@
         state: "present"
       delegate_to: localhost
 
-    - name: "Activate changes on site - 3."
+    - name: "Activate Changes - 3."
+      tags: [activation, host, folder, discovery, user]
       activation:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -100,6 +148,7 @@
       run_once: 'true'
 
     - name: "Move host to another folder."
+      tags: [host]
       host:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -110,7 +159,8 @@
         state: "present"
       delegate_to: localhost
 
-    - name: "Activate changes on site - 4."
+    - name: "Activate Changes - 4."
+      tags: [activation, host, folder, discovery, user]
       activation:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -122,7 +172,22 @@
       delegate_to: localhost
       run_once: 'true'
 
+    - name: "Delete users."
+      tags: [user]
+      user:  # noqa fqcn-builtins
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        username: "{{ item.username }}"
+        state: "absent"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
+
     - name: "Delete Host."
+      tags: [host]
       host:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -134,6 +199,7 @@
       delegate_to: localhost
 
     - name: "Delete folders."
+      tags: [folder, host]
       folder:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -146,7 +212,8 @@
       run_once: 'yes'
       loop: "{{ checkmk_folders }}"
 
-    - name: "Activate changes on site - 5."
+    - name: "Activate Changes - 5."
+      tags: [activation, host, folder, discovery, user]
       activation:
         server_url: "{{ server_url }}"
         site: "{{ site }}"

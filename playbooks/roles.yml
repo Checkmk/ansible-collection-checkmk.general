@@ -1,8 +1,17 @@
-- name: "Run all roles."
+- name: "Run roles."
   hosts: vagrant
+
   vars_files:
     - ./vars/config.yml
 
-  roles:
-    - server
-    - agent
+  tasks:
+
+    - name: "Run server role."
+      tags: [server]
+      ansible.builtin.import_role:
+        name: server
+
+    - name: "Run agent role."
+      tags: [agent]
+      ansible.builtin.import_role:
+        name: agent
