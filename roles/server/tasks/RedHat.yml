@@ -28,4 +28,3 @@
   with_items:
     - "{{ checkmk_server_ports }}"
   when: checkmk_server_configure_firewall | bool
-  ignore_errors: true
