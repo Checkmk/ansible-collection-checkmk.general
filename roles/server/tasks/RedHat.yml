@@ -18,10 +18,6 @@
     state: true
     persistent: true
 
-- name: "Get service facts."
-  ansible.builtin.service_facts:
-  register: services_state
-
 - name: "Open port 80 for httpd."
   become: true
   ansible.posix.firewalld:
@@ -29,4 +25,6 @@
     permanent: true
     immediate: true
     state: enabled
-  when: services_state.ansible_facts.services['firewalld.service']['state'] == 'running'
+  with_items:
+    - "{{ checkmk_server_ports }}"
+  when: checkmk_server_configure_firewall | bool
