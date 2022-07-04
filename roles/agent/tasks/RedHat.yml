@@ -70,4 +70,4 @@
     when: checkmk_agent_server_ip is defined
     ignore_errors: true
     become: true
-  when: checkmk_agent_change_firewall | bool
+  when: checkmk_agent_configure_firewall | bool
