@@ -1,6 +1,7 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 minor_changes:
   - Add support for RedHat/CentOS 7 and 8 and compatible distributions to server role.
+  - Enable firewall management of the host to allow instant access to the web interface of the server.
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.

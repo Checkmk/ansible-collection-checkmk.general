@@ -1,6 +1,7 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 minor_changes:
   - Enable agent role to automatically add hosts to Checkmk during agent installation.
+  - Enable firewall management of the host to allow instant access to the agent.
 
 bugfixes:
   - Handle hosts, where systemd version is below 220. It is now possible to automatically install xinetd in those cases. This has to be enabled explicitely.
