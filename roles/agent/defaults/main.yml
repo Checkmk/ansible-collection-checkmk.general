@@ -6,4 +6,4 @@ checkmk_agent_server: localhost
 checkmk_agent_site: my_site
 checkmk_agent_update: 'false'
 checkmk_agent_tls: 'false'
-checkmk_agent_configure_firewall: 'false'
+checkmk_agent_configure_firewall: 'true'

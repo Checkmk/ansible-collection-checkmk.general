@@ -19,4 +19,4 @@ checkmk_server_sites: []
 #   version: "{{ checkmk_server_version }}"
 #   state: started
 #   admin_pw: test
-checkmk_server_configure_firewall: 'false'
+checkmk_server_configure_firewall: 'true'
