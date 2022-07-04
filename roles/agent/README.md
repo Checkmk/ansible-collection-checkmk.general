@@ -43,6 +43,30 @@ for automatic updates. Otherwise this will fail.
 Register for TLS encryption. Make sure to have the server side prepared
 for automatic updates. Otherwise this will fail.
 
+    checkmk_agent_prep_legacy: 'false'
+
+Enable this to automatically install `xinetd` on hosts with systemd prior to version 220.
+
+    checkmk_agent_add_host: 'false'
+
+Automatically add the host where the agent was installed to Checkmk.
+
+    checkmk_agent_discover: 'false'
+
+Automatically discover services on the host where the agent was installed.
+
+    checkmk_agent_delegate_api_calls: localhost
+
+Configure the host to which Checkmk API calls are delegated to.
+
+    checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+Define the hostname which will be used to add the host to Checkmk.
+
+    checkmk_agent_host_name: "{{ hostvars[inventory_hostname]['ansible_fqdn'] }}"
+
+Define the IP address which will be added to the host in Checkmk.
+
 ## Dependencies
 
 <!-- A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles. -->
