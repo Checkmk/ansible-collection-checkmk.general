@@ -21,7 +21,7 @@ jobs:
         run: echo "::set-output name=version::$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)"
 
       - name: Set up Python.
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
 
