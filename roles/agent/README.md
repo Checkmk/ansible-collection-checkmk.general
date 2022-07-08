@@ -33,6 +33,14 @@ The FQDN or IP address of your Checkmk server.
 
 The name of your Checkmk site.
 
+    checkmk_agent_user: automation
+
+The user used to authenticate against your Checkmk site.
+
+    checkmk_agent_pass: SECRET
+
+The password for the user used to authenticate against your Checkmk site.
+
     checkmk_agent_update: 'false'
 
 Register host for automatic updates. Make sure to have the server side prepared
@@ -42,6 +50,34 @@ for automatic updates. Otherwise this will fail.
 
 Register for TLS encryption. Make sure to have the server side prepared
 for automatic updates. Otherwise this will fail.
+
+    checkmk_agent_configure_firewall: 'true'
+
+Automatically configure the firewall to allow access to the Checkmk agent.
+
+    checkmk_agent_prep_legacy: 'false'
+
+Enable this to automatically install `xinetd` on hosts with systemd prior to version 220.
+
+    checkmk_agent_add_host: 'false'
+
+Automatically add the host where the agent was installed to Checkmk.
+
+    checkmk_agent_discover: 'false'
+
+Automatically discover services on the host where the agent was installed.
+
+    checkmk_agent_delegate_api_calls: localhost
+
+Configure the host to which Checkmk API calls are delegated to.
+
+    checkmk_agent_host_name: "{{ inventory_hostname }}"
+
+Define the hostname which will be used to add the host to Checkmk.
+
+    checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+Define an IP address which will be added to the host in Checkmk. This is optional, as long as the hostname is DNS-resolvable.
 
 ## Dependencies
 

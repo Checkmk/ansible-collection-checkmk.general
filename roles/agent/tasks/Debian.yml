@@ -8,17 +8,17 @@
       Authorization: "Bearer {{ automation_user }} {{ automation_secret }}"
       Accept: "application/octet-stream"
   when: checkmk_agent_edition == "cee"
-  register: checkmk_host_agent_download_state
+  register: checkmk_agent_download_state
   # This task may fail, as we fall back to the generic agent in that case
   failed_when: 'false'
   changed_when: 'false'
 
 - name: "Debian Derivates: Install host-specific Checkmk CEE Agent."
-  become: 'yes'
+  become: true
   ansible.builtin.apt:
-      deb: "{{ checkmk_agent_agent.file.host }}"
-      state: present
-  when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status == 200
+    deb: "{{ checkmk_agent_agent.file.host }}"
+    state: present
+  when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status == 200
 
 - name: "Debian Derivates: Download GENERIC Checkmk CEE Agent."
   ansible.builtin.uri:
@@ -28,18 +28,18 @@
     headers:
       Authorization: "Bearer {{ automation_user }} {{ automation_secret }}"
       Accept: "application/octet-stream"
-  when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status != 200
+  when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status != 200
 
 - name: "Debian Derivates: Install GENERIC Checkmk CEE Agent."
-  become: 'yes'
+  become: true
   ansible.builtin.apt:
-      deb: "{{ checkmk_agent_agent.file.cee }}"
-      state: present
-  when: (checkmk_agent_edition == "cee") and checkmk_host_agent_download_state.status != 200
+    deb: "{{ checkmk_agent_agent.file.cee }}"
+    state: present
+  when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status != 200
 
 - name: "Debian Derivates: Install Checkmk CRE Agent."
-  become: 'yes'
+  become: true
   ansible.builtin.apt:
-      deb: "{{ checkmk_agent_agent.file.cre }}"
-      state: present
+    deb: "{{ checkmk_agent_agent.file.cre }}"
+    state: present
   when: checkmk_agent_edition == "cre"

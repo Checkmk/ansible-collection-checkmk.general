@@ -2,28 +2,65 @@
 - name: "Include Derivate specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
 
+- name: "Get RPM or APT package facts."
+  ansible.builtin.package_facts:
+    manager: "auto"
+
+- name: "Import Legacy agent tasks."
+  ansible.builtin.include_tasks: "legacy.yml"
+  when: ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220 and checkmk_agent_prep_legacy | bool
+
 - name: "Download Checkmk CRE Agent."
   ansible.builtin.get_url:
     url: "{{ checkmk_agent_agent.url.cre }}"
     dest: "{{ checkmk_agent_agent.file.cre }}"
+    mode: 0640
   when: checkmk_agent_edition == "cre"
 
 - name: "Run OS Family specific Tasks."
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
 
+- name: "Create host on server."
+  tribe29.checkmk.host:
+    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}/"
+    site: "{{ checkmk_agent_site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    folder: "{{ checkmk_agent_folder | default(omit) }}"
+    host_name: "{{ checkmk_agent_host_name }}"
+    attributes:
+      ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
+      tag_agent: 'cmk-agent'  # ToDo: Do we want to hardcode this?
+  register: checkmk_agent_create_result
+  failed_when: checkmk_agent_create_result.failed is true and "The host is already part of the specified target folder" not in checkmk_agent_create_result.msg
+  delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
+  when: checkmk_agent_add_host | bool
+
 - name: "Register Agent for automatic Upates."
-  become: 'yes'
+  become: true
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ inventory_hostname }} \
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
     -U {{ automation_user }} -S {{ automation_secret }}
-  register: checkmk_host_agent_update_state
+  register: checkmk_agent_update_state
   when: (checkmk_agent_edition == "cee") and checkmk_agent_update | bool
 
 - name: "Register Agent for TLS."
-  become: 'yes'
-  ansible.builtin.shell: cmk-agent-ctl register -H {{ inventory_hostname }} \
+  become: true
+  ansible.builtin.shell: |
+    cmk-agent-ctl register -H {{ inventory_hostname }} \
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} \
     -U {{ automation_user }} -P {{ automation_secret }} --trust-cert
-  register: checkmk_host_agent_tls_state
+  register: checkmk_agent_tls_state
   when: (checkmk_agent_edition == "cee") and checkmk_agent_tls | bool
+
+- name: "Discover services and labels on host."
+  tribe29.checkmk.discovery:
+    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}/"
+    site: "{{ checkmk_agent_site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ checkmk_agent_host_name }}"
+    state: "fix_all"
+  delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
+  when: checkmk_agent_discover | bool
