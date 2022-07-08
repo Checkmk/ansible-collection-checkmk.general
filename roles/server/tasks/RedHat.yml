@@ -1,0 +1,30 @@
+---
+- name: "Enable powertools repository."
+  become: true
+  ansible.builtin.shell: dnf config-manager --set-enabled powertools  # noqa command-instead-of-shell
+  when: ansible_distribution_major_version == "8"
+
+- name: "Install Checkmk Server."
+  become: true
+  ansible.builtin.yum:
+    name: "/tmp/{{ checkmk_server_setup_file }}"
+    state: present
+    disable_gpg_check: '{{ not checkmk_server_verify_setup | bool }}'
+
+- name: "Enable httpd can network connect selinux boolean."
+  become: true
+  ansible.posix.seboolean:
+    name: httpd_can_network_connect
+    state: true
+    persistent: true
+
+- name: "Open port 80 for httpd."
+  become: true
+  ansible.posix.firewalld:
+    service: http
+    permanent: true
+    immediate: true
+    state: enabled
+  with_items:
+    - "{{ checkmk_server_ports }}"
+  when: checkmk_server_configure_firewall | bool
