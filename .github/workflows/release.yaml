@@ -57,7 +57,7 @@ jobs:
 
       # https://github.com/marketplace/actions/create-pull-request
       - name: Create Pull Request for docs and changelog
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         with:
           commit-message: Update Docs and Changelogs
           committer: GitHub <noreply@github.com>
