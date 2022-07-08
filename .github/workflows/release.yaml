@@ -64,6 +64,7 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           branch: changelogs-docs-update
+          base: devel
           delete-branch: true
           title: '[Auto] Update changelogs and docs'
           body: |
