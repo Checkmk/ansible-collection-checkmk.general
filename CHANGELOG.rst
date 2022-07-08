@@ -5,6 +5,23 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.5.0
+======
+
+Minor Changes
+-------------
+
+- Add support for RedHat/CentOS 7 and 8 and compatible distributions to server role.
+- Enable agent role to automatically add hosts to Checkmk during agent installation.
+- Enable firewall management of the host to allow instant access to the agent.
+- Enable firewall management of the host to allow instant access to the web interface of the server.
+- Introduce ansible linting for roles and fix findings.
+
+Bugfixes
+--------
+
+- Handle hosts, where systemd version is below 220. It is now possible to automatically install xinetd in those cases. This has to be enabled explicitely.
+
 v0.4.0
 ======
 
