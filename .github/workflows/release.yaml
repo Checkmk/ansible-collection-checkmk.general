@@ -14,14 +14,14 @@ jobs:
       #
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Get current version
         id: current_version
         run: echo "::set-output name=version::$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)"
 
       - name: Set up Python.
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
 
@@ -57,13 +57,14 @@ jobs:
 
       # https://github.com/marketplace/actions/create-pull-request
       - name: Create Pull Request for docs and changelog
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         with:
           commit-message: Update Docs and Changelogs
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           branch: changelogs-docs-update
+          base: devel
           delete-branch: true
           title: '[Auto] Update changelogs and docs'
           body: |
