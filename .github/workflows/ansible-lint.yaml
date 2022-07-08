@@ -50,7 +50,7 @@ jobs:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           # it is just required to run that once as "ansible-test integration" in the docker image
           # will run on all python versions it supports.
