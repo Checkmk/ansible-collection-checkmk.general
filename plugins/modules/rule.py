@@ -121,11 +121,11 @@ def exit_ok(module, msg, response):
     result = {"msg": msg, "changed": False, "failed": False, "response": response}
     module.exit_json(**result)
 
-def get_rules_in_ruleset(module, base_url, headers):
+def get_rules_in_ruleset(module, base_url, headers, ruleset):
     api_endpoint = "/domain-types/rule/collections/all"
 
     params = {
-        "ruleset_name": module.params.get("ruleset", ""),
+        "ruleset_name": ruleset,
     }
 
     url = "%s%s?%s" % (base_url, api_endpoint, urlencode(params))
@@ -157,8 +157,31 @@ def get_rule_by_id(module, base_url, headers, rule_id):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
-    return json.loads(response.read().decode("utf-8"))
+    return json.loads(response.read().decode("utf-8")).get("extensions")
 
+def create_rule(module, base_url, headers, folder, ruleset, rule):
+    api_endpoint = "/domain-types/rule/collections/all"
+
+    params = {
+        "ruleset": ruleset,
+        "folder": folder,
+        "properties": rule["properties"],
+        "value_raw": rule["value_raw"],
+        "conditions": rule["conditions"],
+    }
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="POST"
+    )
+
+    if info["status"] != 200:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+    return json.loads(response.read().decode("utf-8"))
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
@@ -169,7 +192,9 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         ruleset=dict(type="str", required=False),
         id=dict(type="str", required=False),
+        folder=dict(type="str", required=False, default="~"),
         enabled=dict(type="bool", default=True),
+        rule=dict(type="dict", required=False),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
@@ -190,15 +215,21 @@ def run_module():
         module.params.get("site", ""),
     )
 
+    rule = module.params.get("rule", "")
     rule_id = module.params.get("id", "")
     ruleset = module.params.get("ruleset", "")
+    folder = module.params.get("folder", "")
 
     if rule_id is None or rule_id == "":
         if ruleset is None or ruleset == "":
             exit_failed(module, "No ruleset specified.")
         else:
-            response = get_rules_in_ruleset(module, base_url, headers)
-            exit_ok(module, "Got rules in ruleset", response)
+            if rule is not None and rule != "":
+                response = create_rule(module, base_url, headers, folder, ruleset, rule)
+                exit_ok(module, "Created rule in ruleset", response)
+            else:
+                response = get_rules_in_ruleset(module, base_url, headers, ruleset)
+                exit_ok(module, "Got rules in ruleset", response)
     elif rule_id is not None and rule_id != "":
         response = get_rule_by_id(module, base_url, headers, rule_id)
         exit_ok(module, "Got rule by ID", response)
