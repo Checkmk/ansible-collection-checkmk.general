@@ -28,7 +28,7 @@ options:
         required: false
         type: str
     ruleset:
-        description: Name of the ruleset.
+        description: Name of the ruleset to manage.
         type: str
         required: true
 
@@ -166,8 +166,6 @@ def create_rule(
 ):
     api_endpoint = "/domain-types/rule/collections/all"
 
-    folder = module.params.get("folder", "")
-
     if folder is None or folder == "":
         folder = "~"
 
@@ -193,6 +191,38 @@ def create_rule(
         )
     return json.loads(response.read().decode("utf-8"))
 
+def delete_rule(module, base_url, headers, rule_id):
+    api_endpoint = "/objects/rule/"
+
+    url = "%s%s%s" % (base_url, api_endpoint, rule_id)
+
+    response, info = fetch_url(module, url, headers=headers, method="DELETE")
+
+    if info["status"] != 204:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+    return json.loads(response.read().decode("utf-8"))
+
+def update_rule(module, base_url, headers, rule_id, new_rule):
+
+    api_endpoint = "/objects/rule/" + rule_id
+
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(
+        module, url, module.jsonify(new_rule), headers=headers, method="PUT"
+    )
+
+    if info["status"] != 200:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+    return json.loads(response.read().decode("utf-8"))
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
@@ -229,9 +259,9 @@ def run_module():
     )
 
     # Get the variables
-    rule = module.params.get("rule", "")
     rule_id = module.params.get("id", "")
     ruleset = module.params.get("ruleset", "")
+    folder = module.params.get("folder", "")
     properties = module.params.get("properties", "")
     value_raw = module.params.get("value_raw", "")
     conditions = module.params.get("conditions", "")
@@ -246,9 +276,11 @@ def run_module():
                 value_raw is not None
                 and value_raw != ""
                 and conditions is not None
+                and conditions != ""
                 and properties is not None
+                and properties != ""
             ):
-                response = create_rule(module, base_url, headers, ruleset, rule)
+                response = create_rule(module, base_url, headers, folder, ruleset, properties, value_raw, conditions)
                 exit_changed(module, "Created rule in ruleset", response)
             # No action can be taken, just return the rules in the ruleset
             else:
@@ -256,8 +288,47 @@ def run_module():
                 exit_ok(module, "Got rules in ruleset", response)
     # If a rule ID was given, return the rule
     elif rule_id is not None and rule_id != "":
+        # Get the rule
         response = get_rule_by_id(module, base_url, headers, rule_id)
-        exit_ok(module, "Got rule by ID", response)
+        new_rule = response
+        # Apply any changes given
+        if (
+            folder is not None
+            and folder != ""
+        ):
+            if response.get("folder") != folder:
+                new_rule["folder"] = folder
+
+        if (
+            value_raw is not None
+            and value_raw != ""
+        ):
+            if response.get("value_raw") != value_raw:
+                new_rule["value_raw"] = value_raw
+
+        if (
+            conditions is not None
+            and conditions != ""
+        ):
+            if response.get("conditions") != conditions:
+                new_rule["conditions"] = conditions
+
+        if (
+            properties is not None
+            and properties != ""
+        ):
+            if response.get("properties") != properties:
+                new_rule["properties"] = properties
+
+        if (
+            new_rule != response
+        ):
+            response = update_rule(module, base_url, headers, rule_id, new_rule)
+            exit_changed(module, "Updated rule", response)
+
+            exit_failed(module, "Cannot update a rule with a rule ID.")
+        else:
+            exit_ok(module, "Got rule by ID", response)
     # Fallback
     else:
         exit_failed(module, "Unknown error")
