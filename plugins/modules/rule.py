@@ -172,7 +172,7 @@ def run_module():
         module.params.get("site", ""),
     )
 
-    rule_id = module.params.get("rule_id", "")
+    rule_id = module.params.get("id", "")
 
     if rule_id is None or rule_id == "":
         result = get_rules_in_ruleset(module, base_url, headers)
