@@ -107,6 +107,7 @@ try:
 except ImportError:  # For Python 3
     from urllib.parse import urlencode
 
+
 def exit_failed(module, msg):
     result = {"msg": msg, "changed": False, "failed": True}
     module.fail_json(**result)
@@ -120,6 +121,7 @@ def exit_changed(module, msg):
 def exit_ok(module, msg, response):
     result = {"msg": msg, "changed": False, "failed": False, "response": response}
     module.exit_json(**result)
+
 
 def get_rules_in_ruleset(module, base_url, headers, ruleset):
     api_endpoint = "/domain-types/rule/collections/all"
@@ -142,14 +144,13 @@ def get_rules_in_ruleset(module, base_url, headers, ruleset):
         )
     return json.loads(response.read().decode("utf-8"))
 
+
 def get_rule_by_id(module, base_url, headers, rule_id):
     api_endpoint = "/objects/rule/"
 
     url = "%s%s%s" % (base_url, api_endpoint, rule_id)
 
-    response, info = fetch_url(
-        module, url, headers=headers, method="GET"
-    )
+    response, info = fetch_url(module, url, headers=headers, method="GET")
 
     if info["status"] != 200:
         exit_failed(
@@ -159,7 +160,10 @@ def get_rule_by_id(module, base_url, headers, rule_id):
         )
     return json.loads(response.read().decode("utf-8")).get("extensions")
 
-def create_rule(module, base_url, headers, folder, ruleset, properties, value_raw, conditions):
+
+def create_rule(
+    module, base_url, headers, folder, ruleset, properties, value_raw, conditions
+):
     api_endpoint = "/domain-types/rule/collections/all"
 
     folder = module.params.get("folder", "")
@@ -188,6 +192,7 @@ def create_rule(module, base_url, headers, folder, ruleset, properties, value_ra
             % (info["status"], info["body"]),
         )
     return json.loads(response.read().decode("utf-8"))
+
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
@@ -237,7 +242,12 @@ def run_module():
             exit_failed(module, "No ruleset specified.")
         else:
             # Check if required params to create a rule are given
-            if value_raw is not None and value_raw != "" and conditions is not None and properties is not None:
+            if (
+                value_raw is not None
+                and value_raw != ""
+                and conditions is not None
+                and properties is not None
+            ):
                 response = create_rule(module, base_url, headers, ruleset, rule)
                 exit_changed(module, "Created rule in ruleset", response)
             # No action can be taken, just return the rules in the ruleset
