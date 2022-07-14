@@ -162,6 +162,11 @@ def get_rule_by_id(module, base_url, headers, rule_id):
 def create_rule(module, base_url, headers, folder, ruleset, properties, value_raw, conditions):
     api_endpoint = "/domain-types/rule/collections/all"
 
+    folder = module.params.get("folder", "")
+
+    if folder is None or folder == "":
+        folder = "~"
+
     params = {
         "ruleset": ruleset,
         "folder": folder,
@@ -169,14 +174,6 @@ def create_rule(module, base_url, headers, folder, ruleset, properties, value_ra
         "value_raw": value_raw,
         "conditions": conditions,
     }
-
-    # if "properties" in rule:
-    #     params["properties"] = rule["properties"]
-    # if "value_raw" in rule:
-    #     params["value_raw"] = rule["value_raw"]
-    # if "conditions" in rule:
-    #     params["conditions"] = rule["conditions"]
-
 
     url = base_url + api_endpoint
 
@@ -201,7 +198,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         ruleset=dict(type="str", required=False),
         id=dict(type="str", required=False),
-        folder=dict(type="str", required=False, default="~"),
+        folder=dict(type="str", required=False),
         enabled=dict(type="bool", default=True),
         properties=dict(type="dict", required=False),
         value_raw=dict(type="str", required=False),
@@ -230,7 +227,6 @@ def run_module():
     rule = module.params.get("rule", "")
     rule_id = module.params.get("id", "")
     ruleset = module.params.get("ruleset", "")
-    folder = module.params.get("folder", "")
     properties = module.params.get("properties", "")
     value_raw = module.params.get("value_raw", "")
     conditions = module.params.get("conditions", "")
@@ -240,12 +236,10 @@ def run_module():
             # Should fail if no ruleset and no ID is specified
             exit_failed(module, "No ruleset specified.")
         else:
-            # Check if folder for new rule was given
-            if folder is not None and folder != "":
-                # Check if required params are given
-                if value_raw is not None and value_raw != "" and conditions is not None and properties is not None:
-                    response = create_rule(module, base_url, headers, folder, ruleset, rule)
-                    exit_changed(module, "Created rule in ruleset", response)
+            # Check if required params to create a rule are given
+            if value_raw is not None and value_raw != "" and conditions is not None and properties is not None:
+                response = create_rule(module, base_url, headers, ruleset, rule)
+                exit_changed(module, "Created rule in ruleset", response)
             # No action can be taken, just return the rules in the ruleset
             else:
                 response = get_rules_in_ruleset(module, base_url, headers, ruleset)
