@@ -159,16 +159,25 @@ def get_rule_by_id(module, base_url, headers, rule_id):
         )
     return json.loads(response.read().decode("utf-8")).get("extensions")
 
-def create_rule(module, base_url, headers, folder, ruleset, rule):
+def create_rule(module, base_url, headers, folder, ruleset, properties, value_raw, conditions):
     api_endpoint = "/domain-types/rule/collections/all"
 
     params = {
         "ruleset": ruleset,
         "folder": folder,
-        "properties": rule["properties"],
-        "value_raw": rule["value_raw"],
-        "conditions": rule["conditions"],
+        "properties": properties,
+        "value_raw": value_raw,
+        "conditions": conditions,
     }
+
+    # if "properties" in rule:
+    #     params["properties"] = rule["properties"]
+    # if "value_raw" in rule:
+    #     params["value_raw"] = rule["value_raw"]
+    # if "conditions" in rule:
+    #     params["conditions"] = rule["conditions"]
+
+
     url = base_url + api_endpoint
 
     response, info = fetch_url(
@@ -194,7 +203,9 @@ def run_module():
         id=dict(type="str", required=False),
         folder=dict(type="str", required=False, default="~"),
         enabled=dict(type="bool", default=True),
-        rule=dict(type="dict", required=False),
+        properties=dict(type="dict", required=False),
+        value_raw=dict(type="str", required=False),
+        conditions=dict(type="dict", required=False),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
@@ -215,24 +226,35 @@ def run_module():
         module.params.get("site", ""),
     )
 
+    # Get the variables
     rule = module.params.get("rule", "")
     rule_id = module.params.get("id", "")
     ruleset = module.params.get("ruleset", "")
     folder = module.params.get("folder", "")
+    properties = module.params.get("properties", "")
+    value_raw = module.params.get("value_raw", "")
+    conditions = module.params.get("conditions", "")
 
     if rule_id is None or rule_id == "":
         if ruleset is None or ruleset == "":
+            # Should fail if no ruleset and no ID is specified
             exit_failed(module, "No ruleset specified.")
         else:
-            if rule is not None and rule != "":
-                response = create_rule(module, base_url, headers, folder, ruleset, rule)
-                exit_ok(module, "Created rule in ruleset", response)
+            # Check if folder for new rule was given
+            if folder is not None and folder != "":
+                # Check if required params are given
+                if value_raw is not None and value_raw != "" and conditions is not None and properties is not None:
+                    response = create_rule(module, base_url, headers, folder, ruleset, rule)
+                    exit_changed(module, "Created rule in ruleset", response)
+            # No action can be taken, just return the rules in the ruleset
             else:
                 response = get_rules_in_ruleset(module, base_url, headers, ruleset)
                 exit_ok(module, "Got rules in ruleset", response)
+    # If a rule ID was given, return the rule
     elif rule_id is not None and rule_id != "":
         response = get_rule_by_id(module, base_url, headers, rule_id)
         exit_ok(module, "Got rule by ID", response)
+    # Fallback
     else:
         exit_failed(module, "Unknown error")
 
