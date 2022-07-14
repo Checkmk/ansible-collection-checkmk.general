@@ -140,7 +140,25 @@ def get_rules_in_ruleset(module, base_url, headers):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
-    exit_ok(module, "Got rules in ruleset", json.loads(response.read().decode("utf-8")))
+    return json.loads(response.read().decode("utf-8"))
+
+def get_rule_by_id(module, base_url, headers, rule_id):
+    api_endpoint = "/objects/rule/"
+
+    url = "%s%s%s" % (base_url, api_endpoint, rule_id)
+
+    response, info = fetch_url(
+        module, url, headers=headers, method="GET"
+    )
+
+    if info["status"] != 200:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+    return json.loads(response.read().decode("utf-8"))
+
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
@@ -149,8 +167,8 @@ def run_module():
         site=dict(type="str", required=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        ruleset=dict(type="str", required=True),
-        rule_id=dict(type="str", required=False),
+        ruleset=dict(type="str", required=False),
+        id=dict(type="str", required=False),
         enabled=dict(type="bool", default=True),
     )
 
@@ -173,11 +191,17 @@ def run_module():
     )
 
     rule_id = module.params.get("id", "")
+    ruleset = module.params.get("ruleset", "")
 
     if rule_id is None or rule_id == "":
-        result = get_rules_in_ruleset(module, base_url, headers)
-        module.exit_json(**result)
-
+        if ruleset is None or ruleset == "":
+            exit_failed(module, "No ruleset specified.")
+        else:
+            response = get_rules_in_ruleset(module, base_url, headers)
+            exit_ok(module, "Got rules in ruleset", response)
+    elif rule_id is not None and rule_id != "":
+        response = get_rule_by_id(module, base_url, headers, rule_id)
+        exit_ok(module, "Got rule by ID", response)
     else:
         exit_failed(module, "Unknown error")
 
