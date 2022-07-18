@@ -170,40 +170,38 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
                 and sorted(r["extensions"]["properties"]) == sorted(rule["properties"])
                 and sorted(r["extensions"]["value_raw"]) == sorted(rule["value_raw"])
             ):
-                return r
+                return r["id"]
+    return None
 
 
 def create_rule(module, base_url, headers, ruleset, rule):
-    if get_existing_rule(module, base_url, headers, ruleset, rule) is None:
-        api_endpoint = "/domain-types/rule/collections/all"
+    api_endpoint = "/domain-types/rule/collections/all"
 
-        params = {
-            "ruleset": ruleset,
-            "folder": rule["folder"],
-            "properties": rule["properties"],
-            "value_raw": rule["value_raw"],
-            "conditions": rule["conditions"],
-        }
+    params = {
+        "ruleset": ruleset,
+        "folder": rule["folder"],
+        "properties": rule["properties"],
+        "value_raw": rule["value_raw"],
+        "conditions": rule["conditions"],
+    }
 
-        url = base_url + api_endpoint
+    url = base_url + api_endpoint
 
-        response, info = fetch_url(
-            module, url, module.jsonify(params), headers=headers, method="POST"
-        )
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="POST"
+    )
 
-        if info["status"] != 200:
-            exit_failed(
-                module,
-                "Error calling API. HTTP code %d. Details: %s, "
-                % (info["status"], info["body"]),
-            )
-        exit_changed(
+    if info["status"] != 200:
+        exit_failed(
             module,
-            "Created rule in ruleset",
-            json.loads(response.read().decode("utf-8")),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
-    else:
-        exit_ok(module, "Rule already exists in ruleset")
+    exit_changed(
+        module,
+        "Created rule in ruleset",
+        json.loads(response.read().decode("utf-8")),
+    )
 
 
 def delete_rule(module, base_url, headers, rule_id):
@@ -219,7 +217,6 @@ def delete_rule(module, base_url, headers, rule_id):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
-    return json.loads(response.read().decode("utf-8"))
 
 
 def run_module():
@@ -231,6 +228,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         ruleset=dict(type="str", required=True),
         rule=dict(type="dict", required=False),
+        state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
@@ -271,8 +269,20 @@ def run_module():
                 "host_labels": [],
                 "service_labels": [],
             }
+        rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
+        if rule_id is not None:
+            if module.params.get("state") == "absent":
+                delete_rule(module, base_url, headers, rule_id)
+                exit_changed(module, "Deleted rule")
+            else:
+                exit_ok(module, "Rule already exists")
+        else:
+            if module.params.get("state") == "present":
+                create_rule(module, base_url, headers, ruleset, rule)
+                exit_changed(module, "Created rule")
+            else:
+                exit_ok(module, "Rule did not exist")
 
-        create_rule(module, base_url, headers, ruleset, rule)
     # No action can be taken, just return the rules in the ruleset
     else:
         response = get_rules_in_ruleset(module, base_url, headers, ruleset)
