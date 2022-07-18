@@ -11,46 +11,68 @@ DOCUMENTATION = r"""
 ---
 module: host
 
-short_description: Manage hosts in Checkmk.
+short_description: Manage rules in Checkmk.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "0.6.0"
 
 description:
-- Manage rules within Checkmk. Will always return with json of the rule(s).
+- Manage rules within Checkmk.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
-    id:
-        description: ID of the rule to manage. If not specified, a list of rulesin the ruleset is returned
+    rule:
+        description: Definition of the rule as returned by the Checkmk API. When not given, the module will get all existing rules in the ruleset.
         required: false
-        type: str
+        type: dict
     ruleset:
         description: Name of the ruleset to manage.
         type: str
         required: true
+    state:
+        description: State of the rule.
+        choices: [present, absent]
+        default: present
+        type: str
+        
 
 author:
     - Robin Gierse (@robin-tribe29)
     - Lars Getwan (@lgetwan)
+    - diademiemi (@diademiemi)
 """
 
 EXAMPLES = r"""
-# Create a rule.
-- name: "Create a rule."
+# Create a rule in checkgroup_parameters:memory_percentage_used.
+- name: "Create a rule in checkgroup_parameters:memory_percentage_used."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    ruleset: "checkgroup_parameters:cpu_iowait"
-    import: |
-        {'levels_single': (40.0, 90.0),
-        'util': (30.0, 80.0)}
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule: 
+        conditions: {
+            "host_labels": [],
+            "host_name": {
+                "match_on": [
+                    "server3"
+                ],
+                "operator": "one_of"
+            },
+            "host_tags": [],
+            "service_labels": []
+        }
+        properties: {
+            "comment": "Warning at 80%\nCritical at 90%\n",
+            "description": "Allow higher memory usage",
+            "disabled": false,
+            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+        }
+        value_raw: "{'levels': [80.0, 90.0]}"
     state: "present"
-    enabled: true
 
 # List rules in ruleset.
 - name: "List rules in ruleset."
@@ -59,30 +81,30 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    ruleset: "checkgroup_parameters:cpu_iowait"
+    ruleset: "checkgroup_parameters:memory_percentage_used"
   register: rules
 
-# Export a rule.
-- name: "Export a rule."
+# Import first rule from this ruleset on a different site.
+- name: "Import a rule on a different site."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
-    site: "my_site"
+    site: "my_other_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    ruleset: "checkgroup_parameters:cpu_iowait"
-    id: "123e4567-e89b-12d3-a456-426614174000"
-  register: rule_export
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule: "{{ rules.response.value[0].extensions }}"
+    state: "present"
 
-# Disable a rule.
-- name: "Disable a rule."
+# Delete first rule in this ruleset.
+- name: "Delete a rule."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    ruleset: "checkgroup_parameters:cpu_iowait"
-    id: "123e4567-e89b-12d3-a456-426614174000"
-    enabled: false
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule: "{{ rules.response.value[0].extensions }}"
+    state: "absent"
 """
 
 RETURN = r"""
@@ -91,9 +113,9 @@ msg:
     type: str
     returned: always
     sample: 'Rule created.'
-results:
+response:
     description: API response the module may generate, such as rule exports.
-    type: str
+    type: dict
     returned: optional
 """
 
