@@ -108,17 +108,17 @@ except ImportError:  # For Python 3
     from urllib.parse import urlencode
 
 
-def exit_failed(module, msg):
-    result = {"msg": msg, "changed": False, "failed": True}
+def exit_failed(module, msg, response=None):
+    result = {"msg": msg, "changed": False, "failed": True, "response": response}
     module.fail_json(**result)
 
 
-def exit_changed(module, msg):
-    result = {"msg": msg, "changed": True, "failed": False}
+def exit_changed(module, msg, response=None):
+    result = {"msg": msg, "changed": True, "failed": False, "response": response}
     module.exit_json(**result)
 
 
-def exit_ok(module, msg, response):
+def exit_ok(module, msg, response=None):
     result = {"msg": msg, "changed": False, "failed": False, "response": response}
     module.exit_json(**result)
 
@@ -161,35 +161,50 @@ def get_rule_by_id(module, base_url, headers, rule_id):
     return json.loads(response.read().decode("utf-8")).get("extensions")
 
 
-def create_rule(
-    module, base_url, headers, folder, ruleset, properties, value_raw, conditions
-):
-    api_endpoint = "/domain-types/rule/collections/all"
+def get_existing_rule(module, base_url, headers, ruleset, rule):
+    rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
+    if rules is not None:
+        for r in rules.get("value"):
+            if (
+                sorted(r["extensions"]["conditions"]) == sorted(rule["conditions"])
+                and sorted(r["extensions"]["properties"]) == sorted(rule["properties"])
+                and sorted(r["extensions"]["value_raw"]) == sorted(rule["value_raw"])
+            ):
+                return r
 
-    if folder is None or folder == "":
-        folder = "~"
 
-    params = {
-        "ruleset": ruleset,
-        "folder": folder,
-        "properties": properties,
-        "value_raw": value_raw,
-        "conditions": conditions,
-    }
+def create_rule(module, base_url, headers, ruleset, rule):
+    if get_existing_rule(module, base_url, headers, ruleset, rule) is None:
+        api_endpoint = "/domain-types/rule/collections/all"
 
-    url = base_url + api_endpoint
+        params = {
+            "ruleset": ruleset,
+            "folder": rule["folder"],
+            "properties": rule["properties"],
+            "value_raw": rule["value_raw"],
+            "conditions": rule["conditions"],
+        }
 
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )
+        url = base_url + api_endpoint
 
-    if info["status"] != 200:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+        response, info = fetch_url(
+            module, url, module.jsonify(params), headers=headers, method="POST"
         )
-    return json.loads(response.read().decode("utf-8"))
+
+        if info["status"] != 200:
+            exit_failed(
+                module,
+                "Error calling API. HTTP code %d. Details: %s, "
+                % (info["status"], info["body"]),
+            )
+        exit_changed(
+            module,
+            "Created rule in ruleset",
+            json.loads(response.read().decode("utf-8")),
+        )
+    else:
+        exit_ok(module, "Rule already exists in ruleset")
+
 
 def delete_rule(module, base_url, headers, rule_id):
     api_endpoint = "/objects/rule/"
@@ -206,23 +221,6 @@ def delete_rule(module, base_url, headers, rule_id):
         )
     return json.loads(response.read().decode("utf-8"))
 
-def update_rule(module, base_url, headers, rule_id, new_rule):
-
-    api_endpoint = "/objects/rule/" + rule_id
-
-    url = base_url + api_endpoint
-
-    response, info = fetch_url(
-        module, url, module.jsonify(new_rule), headers=headers, method="PUT"
-    )
-
-    if info["status"] != 200:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
-        )
-    return json.loads(response.read().decode("utf-8"))
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
@@ -231,13 +229,8 @@ def run_module():
         site=dict(type="str", required=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        ruleset=dict(type="str", required=False),
-        id=dict(type="str", required=False),
-        folder=dict(type="str", required=False),
-        enabled=dict(type="bool", default=True),
-        properties=dict(type="dict", required=False),
-        value_raw=dict(type="str", required=False),
-        conditions=dict(type="dict", required=False),
+        ruleset=dict(type="str", required=True),
+        rule=dict(type="dict", required=False),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
@@ -259,79 +252,33 @@ def run_module():
     )
 
     # Get the variables
-    rule_id = module.params.get("id", "")
     ruleset = module.params.get("ruleset", "")
-    folder = module.params.get("folder", "")
-    properties = module.params.get("properties", "")
-    value_raw = module.params.get("value_raw", "")
-    conditions = module.params.get("conditions", "")
+    rule = module.params.get("rule", "")
 
-    if rule_id is None or rule_id == "":
-        if ruleset is None or ruleset == "":
-            # Should fail if no ruleset and no ID is specified
-            exit_failed(module, "No ruleset specified.")
-        else:
-            # Check if required params to create a rule are given
-            if (
-                value_raw is not None
-                and value_raw != ""
-                and conditions is not None
-                and conditions != ""
-                and properties is not None
-                and properties != ""
-            ):
-                response = create_rule(module, base_url, headers, folder, ruleset, properties, value_raw, conditions)
-                exit_changed(module, "Created rule in ruleset", response)
-            # No action can be taken, just return the rules in the ruleset
-            else:
-                response = get_rules_in_ruleset(module, base_url, headers, ruleset)
-                exit_ok(module, "Got rules in ruleset", response)
-    # If a rule ID was given, return the rule
-    elif rule_id is not None and rule_id != "":
-        # Get the rule
-        response = get_rule_by_id(module, base_url, headers, rule_id)
-        new_rule = response
-        # Apply any changes given
-        if (
-            folder is not None
-            and folder != ""
-        ):
-            if response.get("folder") != folder:
-                new_rule["folder"] = folder
+    if rule is not None:
 
-        if (
-            value_raw is not None
-            and value_raw != ""
-        ):
-            if response.get("value_raw") != value_raw:
-                new_rule["value_raw"] = value_raw
+        # Check if required params to create a rule are given
+        if rule.get("folder") is None or rule.get("folder") == "":
+            rule["folder"] = "/"
+        if rule.get("properties") is None or rule.get("properties") == "":
+            exit_failed(module, "Rule properties are required")
+        if rule.get("value_raw") is None or rule.get("value_raw") == "":
+            exit_failed(module, "Rule value_raw is required")
+        # Default to all hosts if conditions arent given
+        if rule.get("conditions") is None or rule.get("conditions") == "":
+            rule["conditions"] = {
+                "host_tags": [],
+                "host_labels": [],
+                "service_labels": [],
+            }
 
-        if (
-            conditions is not None
-            and conditions != ""
-        ):
-            if response.get("conditions") != conditions:
-                new_rule["conditions"] = conditions
-
-        if (
-            properties is not None
-            and properties != ""
-        ):
-            if response.get("properties") != properties:
-                new_rule["properties"] = properties
-
-        if (
-            new_rule != response
-        ):
-            response = update_rule(module, base_url, headers, rule_id, new_rule)
-            exit_changed(module, "Updated rule", response)
-
-            exit_failed(module, "Cannot update a rule with a rule ID.")
-        else:
-            exit_ok(module, "Got rule by ID", response)
-    # Fallback
+        create_rule(module, base_url, headers, ruleset, rule)
+    # No action can be taken, just return the rules in the ruleset
     else:
-        exit_failed(module, "Unknown error")
+        response = get_rules_in_ruleset(module, base_url, headers, ruleset)
+        exit_ok(module, "Got rules in ruleset", response)
+    # Fallback
+    exit_failed(module, "Unknown error")
 
 
 def main():
