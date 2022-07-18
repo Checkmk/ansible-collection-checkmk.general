@@ -184,14 +184,18 @@ def get_rule_by_id(module, base_url, headers, rule_id):
 
 
 def get_existing_rule(module, base_url, headers, ruleset, rule):
+    # Get rules in ruleset
     rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
     if rules is not None:
+        # Loop through all rules
         for r in rules.get("value"):
+            # Check if conditions, properties and values are the same
             if (
                 sorted(r["extensions"]["conditions"]) == sorted(rule["conditions"])
                 and sorted(r["extensions"]["properties"]) == sorted(rule["properties"])
                 and sorted(r["extensions"]["value_raw"]) == sorted(rule["value_raw"])
             ):
+                # If they are the same, return the ID
                 return r["id"]
     return None
 
@@ -219,12 +223,6 @@ def create_rule(module, base_url, headers, ruleset, rule):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
-    exit_changed(
-        module,
-        "Created rule in ruleset",
-        json.loads(response.read().decode("utf-8")),
-    )
-
 
 def delete_rule(module, base_url, headers, rule_id):
     api_endpoint = "/objects/rule/"
@@ -291,18 +289,25 @@ def run_module():
                 "host_labels": [],
                 "service_labels": [],
             }
+        # Get ID of rule that is the same as the given options
         rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
+        # If rule exists
         if rule_id is not None:
+            # If state is absent, delete the rule
             if module.params.get("state") == "absent":
                 delete_rule(module, base_url, headers, rule_id)
                 exit_changed(module, "Deleted rule")
+            # If state is present, do nothing
             else:
                 exit_ok(module, "Rule already exists")
+        # If rule does not exist
         else:
+            # If state is present, create the rule
             if module.params.get("state") == "present":
                 create_rule(module, base_url, headers, ruleset, rule)
                 exit_changed(module, "Created rule")
             else:
+                # If state is absent, do nothing
                 exit_ok(module, "Rule did not exist")
 
     # No action can be taken, just return the rules in the ruleset
