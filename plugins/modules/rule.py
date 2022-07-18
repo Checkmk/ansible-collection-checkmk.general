@@ -167,22 +167,6 @@ def get_rules_in_ruleset(module, base_url, headers, ruleset):
     return json.loads(response.read().decode("utf-8"))
 
 
-def get_rule_by_id(module, base_url, headers, rule_id):
-    api_endpoint = "/objects/rule/"
-
-    url = "%s%s%s" % (base_url, api_endpoint, rule_id)
-
-    response, info = fetch_url(module, url, headers=headers, method="GET")
-
-    if info["status"] != 200:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
-        )
-    return json.loads(response.read().decode("utf-8")).get("extensions")
-
-
 def get_existing_rule(module, base_url, headers, ruleset, rule):
     # Get rules in ruleset
     rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
@@ -223,6 +207,7 @@ def create_rule(module, base_url, headers, ruleset, rule):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
+
 
 def delete_rule(module, base_url, headers, rule_id):
     api_endpoint = "/objects/rule/"
