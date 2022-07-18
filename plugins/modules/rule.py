@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: host
+module: rule
 
 short_description: Manage rules in Checkmk.
 
@@ -36,7 +36,7 @@ options:
         choices: [present, absent]
         default: present
         type: str
-        
+
 
 author:
     - Robin Gierse (@robin-tribe29)
@@ -53,7 +53,7 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
-    rule: 
+    rule:
         conditions: {
             "host_labels": [],
             "host_name": {
