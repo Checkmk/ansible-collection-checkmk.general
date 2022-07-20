@@ -136,7 +136,8 @@ def run_module():
     )
     url = base_url + api_endpoint
     response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
+        module, url, module.jsonify(params), headers=headers, method="POST",
+        timeout=60
     )
     http_code = info["status"]
 
