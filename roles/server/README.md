@@ -49,9 +49,15 @@ web interface to be accessible.
         admin_pw: test
 
 A dictionary of sites, their version, admin password and state.
-This feature does not carry out updates though. If a site already exists,
-changing the version here does not change a thing.
-The version is only used during creation.
+If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
+Valid choices include `install`, `keepold` and `abort`.
+
+    checkmk_server_sites:
+      - name: test
+        version: "{{ checkmk_server_version }}"
+        update_conflict_resolution: install
+        state: started
+        admin_pw: test
 
 ## Dependencies
 
