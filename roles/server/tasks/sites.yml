@@ -12,6 +12,24 @@
   when: item.state != "absent"
   register: checkmk_server_sites_created
 
+- name: "Update Sites."
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    if [[ "$(omd version {{ item.name }} | egrep -o '[^ ]+$')" < "{{ item.version }}.{{ checkmk_server_edition }}" ]]
+      then
+        omd stop {{ item.name }}
+        omd -f -V {{ item.version }}.{{ checkmk_server_edition }} update --conflict {{ item.update_conflict_resolution }} {{ item.name }} 
+      else
+        echo "already up to date or version given is older than current."
+    fi
+  args:
+    executable: /bin/bash
+  loop: "{{ checkmk_server_sites }}"
+  changed_when: "'already up to date or version given is older than current.' not in checkmk_server_sites_updated.stdout"
+  when: item.state != "absent" and item.update_conflict_resolution is defined
+  register: checkmk_server_sites_updated
+
 - name: "Start Sites."
   become: true
   ansible.builtin.shell: |
@@ -61,3 +79,4 @@
   no_log: true
   loop: "{{ checkmk_server_sites }}"
   when: item.state != "absent"
+
