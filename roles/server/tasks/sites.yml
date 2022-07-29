@@ -79,4 +79,3 @@
   no_log: true
   loop: "{{ checkmk_server_sites }}"
   when: item.state != "absent"
-
