@@ -5,7 +5,7 @@
     dest: "{{ checkmk_agent_agent.file.host }}"
     method: GET
     headers:
-      Authorization: "Bearer {{ automation_user }} {{ automation_secret }}"
+      Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_pass }}"
       Accept: "application/octet-stream"
   when: checkmk_agent_edition == "cee"
   register: checkmk_agent_download_state
@@ -27,7 +27,7 @@
     dest: "{{ checkmk_agent_agent.file.cee }}"
     method: GET
     headers:
-      Authorization: "Bearer {{ automation_user }} {{ automation_secret }}"
+      Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_pass }}"
       Accept: "application/octet-stream"
   when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status != 200
 
