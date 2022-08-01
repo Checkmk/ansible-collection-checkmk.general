@@ -5,6 +5,15 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.5.1
+======
+
+Bugfixes
+--------
+
+- Fix leakage of admin password in server role.
+- Fix usage of 'automation_xxx' and 'checkmk_agent_xxx'. 'automation_xxx' variables can still be used for API authentication, but the behavior is more consistent now.
+
 v0.5.0
 ======
 
