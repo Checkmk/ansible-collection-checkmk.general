@@ -41,6 +41,14 @@ The user used to authenticate against your Checkmk site.
 
 The password for the user used to authenticate against your Checkmk site.
 
+    checkmk_agent_add_host: 'false'
+
+Automatically add the host where the agent was installed to Checkmk.
+
+    checkmk_agent_discover: 'false'
+
+Automatically discover services on the host where the agent was installed.
+
     checkmk_agent_update: 'false'
 
 Register host for automatic updates. Make sure to have the server side prepared
@@ -58,14 +66,6 @@ Automatically configure the firewall to allow access to the Checkmk agent.
     checkmk_agent_prep_legacy: 'false'
 
 Enable this to automatically install `xinetd` on hosts with systemd prior to version 220.
-
-    checkmk_agent_add_host: 'false'
-
-Automatically add the host where the agent was installed to Checkmk.
-
-    checkmk_agent_discover: 'false'
-
-Automatically discover services on the host where the agent was installed.
 
     checkmk_agent_delegate_api_calls: localhost
 
