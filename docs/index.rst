@@ -1,11 +1,12 @@
 
 
-.. _plugins_in_tribe29.checkmk:
 
-Tribe29.Checkmk
-===============
+.. _plugins_in_wti.remote:
 
-Collection version 0.5.1
+Wti.Remote
+==========
+
+Collection version 1.0.4
 
 .. contents::
    :local:
@@ -14,19 +15,18 @@ Collection version 0.5.1
 Description
 -----------
 
-The official Checkmk Ansible collection - brought to you by tribe29 - the Checkmk company.
+Modules for interacting with  WTI remote OOB and PDU devices
 
-**Authors:**
+**Author:**
 
-* Marcel Arentz (https://github.com/godspeed-you)
-* Robin Gierse (https://github.com/robin-tribe29)
-* Lars Getwan (https://github.com/lgetwan)
+* Ken Partridge <kenp@wti.com> (@wtinetworkgear)
 
 .. raw:: html
 
   <p class="ansible-links">
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
+    <a href="https://github.com/wtinetworkgear/wti-collection/issues" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
+    <a href="https://www.wti.com" aria-role="button" target="_blank" rel="noopener external">Homepage</a>
+    <a href="https://github.com/wtinetworkgear/wti-collection" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
   </p>
 
 
@@ -38,17 +38,7 @@ The official Checkmk Ansible collection - brought to you by tribe29 - the Checkm
 Plugin Index
 ------------
 
-These are the plugins in the tribe29.checkmk collection:
-
-
-Modules
-~~~~~~~
-
-* :ref:`activation module <ansible_collections.tribe29.checkmk.activation_module>` -- Activate changes in Checkmk.
-* :ref:`discovery module <ansible_collections.tribe29.checkmk.discovery_module>` -- Discover services in Checkmk.
-* :ref:`downtime module <ansible_collections.tribe29.checkmk.downtime_module>` -- Manage downtimes in Checkmk.
-* :ref:`folder module <ansible_collections.tribe29.checkmk.folder_module>` -- Manage folders in Checkmk.
-* :ref:`host module <ansible_collections.tribe29.checkmk.host_module>` -- Manage hosts in Checkmk.
+There are no plugins in the wti.remote collection with automatically generated documentation.
 
 
 
@@ -60,8 +50,12 @@ Modules
     :maxdepth: 1
     :hidden:
 
-    activation_module
-    discovery_module
-    downtime_module
-    folder_module
-    host_module
+ docs hosted here.
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+
+:maxdepth: 1
+    :hidden:
+

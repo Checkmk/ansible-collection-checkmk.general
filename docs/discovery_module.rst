@@ -1,3 +1,4 @@
+
 .. Document meta
 
 :orphan:
@@ -42,7 +43,7 @@ tribe29.checkmk.discovery module -- Discover services in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.5.1).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.5.2).
 
     You might already have this collection installed if you are using the ``ansible`` package.
     It is not included in ``ansible-core``.
