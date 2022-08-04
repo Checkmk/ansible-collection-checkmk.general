@@ -63,7 +63,7 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
-          branch: changelogs-docs-update
+          branch: changelogs-docs-update-devel
           base: devel
           delete-branch: true
           title: '[Auto] Update changelogs and docs'
@@ -80,7 +80,7 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
-          branch: changelogs-docs-update
+          branch: changelogs-docs-update-main
           base: main
           delete-branch: true
           title: '[Auto] Update changelogs and docs'
