@@ -6,12 +6,12 @@ checkmk_agent_server: localhost
 checkmk_agent_site: my_site
 checkmk_agent_user: "{{ automation_user | default('automation') }}"
 checkmk_agent_pass: "{{ automation_secret | default('SECRET') }}"
+checkmk_agent_add_host: 'false'
+checkmk_agent_discover: 'false'
 checkmk_agent_update: 'false'
 checkmk_agent_tls: 'false'
 checkmk_agent_configure_firewall: 'true'
 checkmk_agent_prep_legacy: 'false'
-checkmk_agent_add_host: 'false'
-checkmk_agent_discover: 'false'
 checkmk_agent_delegate_api_calls: localhost
 checkmk_agent_host_name: "{{ inventory_hostname }}"
 
