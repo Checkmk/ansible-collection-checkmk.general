@@ -59,6 +59,11 @@ Valid choices include `install`, `keepold` and `abort`.
         state: started
         admin_pw: test
 
+Directory to backup sites to when updating between versions.
+    checkmk_server_backup_dir: /opt/omd/sites
+
+Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
+    checkmk_server_backup_on_update: 'true'
 ## Dependencies
 
 <!-- A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles. -->
