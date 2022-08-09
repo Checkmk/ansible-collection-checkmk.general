@@ -1,5 +1,14 @@
 name: Python QA
-on: [push, pull_request]
+on: 
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+  push:
+    paths:
+      - '**.py'
+  pull_request:
+    paths:
+      - '**.py'
 jobs:
   run-qa:
     name: Run QA
