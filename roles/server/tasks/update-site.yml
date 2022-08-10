@@ -32,7 +32,7 @@
 - name: "Create backup of site."
   become: true
   ansible.builtin.shell: |
-      omd backup {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-backup-$(date +%Y%m%d-%H%M%S).zip
+      omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-backup-$(date +%Y%m%d-%H%M%S).tar
   args:
     executable: /bin/bash
   when: checkmk_server_backup_on_update
