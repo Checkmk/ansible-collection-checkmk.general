@@ -41,7 +41,7 @@
   become: true
   ansible.builtin.shell: |
       omd stop {{ item.item.name }}
-      omd -f -V {{ item.item.version }}.{{ checkmk_server_edition }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }} 
+      omd -f -V {{ item.item.version }}.{{ checkmk_server_edition }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
   args:
     executable: /bin/bash
   register: checkmk_server_sites_updated
