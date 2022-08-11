@@ -55,7 +55,7 @@ Valid choices include `install`, `keepold` and `abort`.
     checkmk_server_sites:
       - name: test
         version: "{{ checkmk_server_version }}"
-        update_conflict_resolution: install
+        update_conflict_resolution: abort
         state: started
         admin_pw: test
 
