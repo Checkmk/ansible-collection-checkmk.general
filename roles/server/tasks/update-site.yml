@@ -9,6 +9,8 @@
   ansible.builtin.shell: |
     set -o pipefail
     omd versions | egrep -o '{{ item.item.version }}.{{ checkmk_server_edition }}'
+  args:
+    executable: /bin/bash
   register: checkmk_server_sites_versions
 
 - name: "Short pause for patch update."
