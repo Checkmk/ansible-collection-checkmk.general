@@ -1,10 +1,13 @@
 ---
 - name: "Run preparations."
-  ansible.builtin.import_tasks: prep.yml
+  ansible.builtin.include_tasks: prep.yml
 
 - name: "Wait for site to be ready."
   ansible.builtin.pause:
     seconds: 5
 
-- name: "Run tests."
-  ansible.builtin.import_tasks: test.yml
+- name: "Testing."
+  ansible.builtin.include_tasks: test.yml
+  loop: "{{ checkmk_versions }}"
+  loop_control:
+    loop_var: outer_item
