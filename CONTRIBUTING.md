@@ -5,6 +5,7 @@
 General information about setting up your Python environment, testing modules,
 Ansible coding styles, and more can be found in the [Ansible Community Guide](
 https://docs.ansible.com/ansible/latest/community/index.html).
+See [Contributing to Ansible-maintained collections](https://docs.ansible.com/ansible/devel/community/contributing_maintained_collections.html#contributing-maintained-collections) for more details on how to contribute to collections in particular.
 
 ## A word of warning
 
@@ -41,7 +42,7 @@ There is several ways in which you can contribute:
 Everything helps, really!
 We do test everything to the best of our abilities, but nothing beats real world
 scenarios. Also if you can provide a bugfix yourself or you have an addition to
-the functionality, [pull request](#Pull-Requests) are appreciated.
+the functionality, [pull requests](#Pull-Requests) are appreciated.
 
 ### Changelog
 
