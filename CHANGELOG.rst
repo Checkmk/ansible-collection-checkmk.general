@@ -5,6 +5,15 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.5.2
+======
+
+Bugfixes
+--------
+
+- Fix usage of 'checkmk_agent_host_name'variable. Some tasks had 'inventory_hostname' hardcoded, which is not the desired behavior. This is fixed now.
+- Increase HTTP timeout for the discovery module, because the discovery can take some time depending on the discovered device.
+
 v0.5.1
 ======
 
