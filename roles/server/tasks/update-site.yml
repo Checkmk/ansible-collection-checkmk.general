@@ -12,6 +12,7 @@
   args:
     executable: /bin/bash
   register: checkmk_server_sites_versions
+  changed_when: false
 
 - name: "Short pause for patch update."
   ansible.builtin.pause:
@@ -34,7 +35,7 @@
 - name: "Create backup of site."
   become: true
   ansible.builtin.shell: |
-      omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-backup-$(date +%Y%m%d-%H%M%S).tar
+      omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
   args:
     executable: /bin/bash
   when: checkmk_server_backup_on_update
@@ -47,3 +48,4 @@
   args:
     executable: /bin/bash
   register: checkmk_server_sites_updated
+  changed_when: ("Finished update" in checkmk_server_sites_updated.stdout)
