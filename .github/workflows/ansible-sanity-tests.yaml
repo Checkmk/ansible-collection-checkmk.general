@@ -15,6 +15,7 @@ on:
       - 'changelogs/**'
       - '**.md'
       - '**.rst'
+      - 'roles/**'
   pull_request:
     paths-ignore:
       - '.github/ISSUE_TEMPLATE/*'
@@ -22,6 +23,7 @@ on:
       - 'changelogs/**'
       - '**.md'
       - '**.rst'
+      - 'roles/**'
 
 env:
   NAMESPACE: tribe29
