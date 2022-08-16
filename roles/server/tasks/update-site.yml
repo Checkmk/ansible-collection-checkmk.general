@@ -14,6 +14,14 @@
   register: checkmk_server_sites_versions
   changed_when: false
 
+- name: "Fail if this is a downgrade."
+  ansible.builtin.fail:
+    msg: |
+      Downgrading is not allowed since checkmk_server_allow_downgrades is set to false.
+  when:
+    checkmk_server_allow_downgrades is false
+    and item.item.version is version(item.stdout, '<')
+
 - name: "Short pause for patch update."
   ansible.builtin.pause:
     seconds: 5
