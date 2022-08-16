@@ -39,6 +39,10 @@ Cryptographically verify the downloaded setup file.
 
     checkmk_server_configure_firewall: 'true'
 
+Whether to allow downgrading a sites version.
+
+    checkmk_server_allow_downgrades: 'false'
+
 Automatically open the necessary ports on the Checkmk server for the
 web interface to be accessible.
 
