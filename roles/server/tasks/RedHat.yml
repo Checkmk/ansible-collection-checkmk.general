@@ -25,6 +25,4 @@
     permanent: true
     immediate: true
     state: enabled
-  with_items:
-    - "{{ checkmk_server_ports }}"
   when: checkmk_server_configure_firewall | bool
