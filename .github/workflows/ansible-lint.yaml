@@ -56,8 +56,11 @@ jobs:
           # will run on all python versions it supports.
           python-version: 3.9
 
-      - name: Install ansible-lint
+      - name: Install prerequisites
         run: pip install ansible-lint yamllint
+
+      - name: Install Checkmk collection
+        run: ansible-galaxy collection install tribe29.checkmk
 
       # Run the linting
       - name: Run yamllint on roles
