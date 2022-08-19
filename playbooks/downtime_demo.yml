@@ -9,7 +9,7 @@
     - ./vars/config.yml
   tasks:
 
-  # services
+    # services
 
     - name: "downtime 1 - on services with relative times"
       downtime:
@@ -74,7 +74,7 @@
         end_after:
           hours: 1
           minutes: 30
-        # force: yes
+          # force: yes
 
     - name: "downtime 5 - on host with absolute timestamps"
       downtime:
