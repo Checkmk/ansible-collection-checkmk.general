@@ -10,10 +10,10 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'roles/'
+      - 'roles/**'
   pull_request:
     paths:
-      - 'roles/'
+      - 'roles/**'
 
 env:
   NAMESPACE: tribe29
