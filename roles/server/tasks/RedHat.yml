@@ -18,13 +18,12 @@
     state: true
     persistent: true
 
-- name: "Open port 80 for httpd."
+- name: "Open firewall ports."
   become: true
   ansible.posix.firewalld:
-    service: http
+    port: "{{ item }}"
     permanent: true
     immediate: true
     state: enabled
-  with_items:
-    - "{{ checkmk_server_ports }}"
+  loop: "{{ checkmk_server_ports }}"
   when: checkmk_server_configure_firewall | bool
