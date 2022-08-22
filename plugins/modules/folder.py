@@ -99,6 +99,7 @@ else:
         PATHLIB2_LIBRARY_IMPORT_ERROR = traceback.format_exc()
     else:
         HAS_PATHLIB2_LIBRARY = True
+        PATHLIB2_LIBRARY_IMPORT_ERROR = None
 
 import json
 
