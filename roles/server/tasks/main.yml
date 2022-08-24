@@ -10,6 +10,7 @@
   ansible.builtin.include_vars: "{{ ansible_facts['os_family'] }}.yml"
 
 - name: "Install Checkmk Prerequisites."
+  become: true
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
@@ -20,21 +21,21 @@
     url: "{{ checkmk_server_download_url }}"
     dest: "/tmp/{{ checkmk_server_setup_file }}"
     mode: "0640"
-    url_username: "{{ checkmk_server_download_user|default(omit) }}"
-    url_password: "{{ checkmk_server_download_pass|default(omit) }}"
+    url_username: "{{ checkmk_server_download_user | default(omit) }}"
+    url_password: "{{ checkmk_server_download_pass | default(omit) }}"
 
 - name: "Download Checkmk GPG Key."
   ansible.builtin.get_url:
     url: "https://download.checkmk.com/checkmk/Check_MK-pubkey.gpg"
     dest: "/tmp/Check_MK-pubkey.gpg"
     mode: "0640"
-  when: checkmk_server_verify_setup|bool
+  when: checkmk_server_verify_setup | bool
 
 - name: "GPG Verification on Debian Derivates."
   block:
     - name: "Import Checkmk GPG Key."
       ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
-      when: checkmk_server_verify_setup|bool
+      when: checkmk_server_verify_setup | bool
 
     - name: "Verify Checkmk Setup."
       ansible.builtin.command: dpkg-sig --verify "/tmp/{{ checkmk_server_setup_file }}"
@@ -44,15 +45,15 @@
 
     - name: "Print Verification Output."
       ansible.builtin.debug:
-        msg: "{{ checkmk_server_verify_state.stdout_lines }} "
-      when: checkmk_server_verify_setup|bool and ansible_facts['os_family'] == "Debian"
+        msg: "{{ checkmk_server_verify_state.stdout_lines }}"
+      when: checkmk_server_verify_setup | bool and ansible_facts['os_family'] == "Debian"
 
 - name: "Import Checkmk GPG Key."
   become: true
   ansible.builtin.rpm_key:
     key: "/tmp/Check_MK-pubkey.gpg"
     state: present
-  when: checkmk_server_verify_setup|bool and ansible_facts['os_family'] == "RedHat"
+  when: checkmk_server_verify_setup | bool and ansible_facts['os_family'] == "RedHat"
 
 - name: Include OS Family specific Playbook.
   ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"
