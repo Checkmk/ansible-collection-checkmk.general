@@ -1,6 +1,6 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 major_changes:
-  - Add support for automatically updating Checkmk to the server role. Read the role's README for important information!
+  - Server role - Add support for automatically updating Checkmk. Read the role's README for important information!
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
