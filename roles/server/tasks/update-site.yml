@@ -46,7 +46,6 @@
 - name: "Create backup of site."
   become: true
   ansible.builtin.shell: |
-    set -o pipefail
     omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
   args:
     executable: /bin/bash
@@ -55,7 +54,6 @@
 - name: "Update Site."
   become: true
   ansible.builtin.shell: |
-    set -o pipefail
     omd stop {{ item.item.name }}
     omd -f -V {{ item.item.version }}.{{ checkmk_server_edition }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
   args:
