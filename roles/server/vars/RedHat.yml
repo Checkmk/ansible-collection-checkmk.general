@@ -1,4 +1,5 @@
 ---
+
 checkmk_server_setup_file: "check-mk-{{ checkmk_server_edition_mapping[checkmk_server_edition] }}-{{ checkmk_server_version }}-el{{ ansible_distribution_major_version }}-38.x86_64.rpm"  # noqa yaml[line-length]
 
 checkmk_server_ports:
@@ -12,7 +13,7 @@ _checkmk_server_prerequisites:
     - python3-libsemanage
     - dnf-plugins-core
   RedHat-7:
-    - epel-release         
+    - epel-release
     - libsemanage-python
     - yum-plugins-core
   RedHat-8:
