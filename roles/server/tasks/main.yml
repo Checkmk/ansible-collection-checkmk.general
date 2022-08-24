@@ -8,10 +8,14 @@
 
 - name: "Include OS Family specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - include_os_family_vars
 
 - name: "Include RHEL Version specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
   when: ansible_os_family == "RedHat"
+  tags:
+    - include_rhel_version_vars
 
 - name: "Install Checkmk Prerequisites."
   become: true
