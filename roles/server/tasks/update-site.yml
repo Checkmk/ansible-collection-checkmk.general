@@ -1,0 +1,62 @@
+---
+- name: "Fail if update conflict resolution method is not given."
+  ansible.builtin.fail:
+    msg: |
+      variable `update_conflict_resolution` is not given. See `omd update --help` for more information.
+  when: item.item.update_conflict_resolution is undefined
+
+- name: "Check if desired version is installed."
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd versions | egrep -o '{{ item.item.version }}.{{ checkmk_server_edition }}'
+  args:
+    executable: /bin/bash
+  register: checkmk_server_sites_versions
+  changed_when: false
+
+- name: "Fail if this is a downgrade."
+  ansible.builtin.fail:
+    msg: |
+      Downgrading is not allowed since checkmk_server_allow_downgrades is set to false.
+  when:
+    checkmk_server_allow_downgrades | bool is false
+    and item.stdout is version(item.item.version, '>')
+
+- name: "Short pause for patch update."
+  ansible.builtin.pause:
+    seconds: 5
+    prompt: |
+      Proceeding with updating site {{ item.item.name }} from version {{ item.stdout }} to version {{ item.item.version }}.{{ checkmk_server_edition }}.
+      This is a minor patch update.{% if checkmk_server_backup_on_update %} A backup will be created in {{ checkmk_server_backup_dir }}. {% endif %}
+      This can take a while! The site will be down during the update
+  when: |
+    item.item.version | regex_replace('p.*', '') == item.stdout | regex_replace('p.*', '')
+
+- name: "Long pause for major update."
+  ansible.builtin.pause:
+    seconds: 60
+    prompt: >
+      Proceeding with updating site {{ item.item.name }} from version {{ item.stdout }} to version {{ item.item.version }}.{{ checkmk_server_edition }}.\n
+      This is a major update. This can carry risks.
+      {% if checkmk_server_backup_on_update %} A backup will be created in {{ checkmk_server_backup_dir }}. {% endif %}\n
+      This can take a while! The site will be down during the update
+  when: |
+    item.item.version | regex_replace('p.*', '') != item.stdout | regex_replace('p.*', '')
+
+- name: "Create backup of site."
+  become: true
+  ansible.builtin.shell: |
+    omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
+  args:
+    executable: /bin/bash
+  when: checkmk_server_backup_on_update
+
+- name: "Update Site."
+  become: true
+  ansible.builtin.shell: |
+    omd stop {{ item.item.name }}
+    omd -f -V {{ item.item.version }}.{{ checkmk_server_edition }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
+  args:
+    executable: /bin/bash
+  register: checkmk_server_sites_updated
+  changed_when: ("Finished update" in checkmk_server_sites_updated.stdout)
