@@ -12,6 +12,23 @@
   when: item.state != "absent"
   register: checkmk_server_sites_created
 
+- name: "Get site version."
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd version {{ item.name }} | egrep -o '[^ ]+$'
+  args:
+    executable: /bin/bash
+  loop: "{{ checkmk_server_sites }}"
+  changed_when: "checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition"
+  when: item.state != "absent"
+  register: checkmk_server_sites_versions
+
+- name: "Include update site tasks."
+  ansible.builtin.include_tasks: update-site.yml
+  loop: "{{ checkmk_server_sites_versions.results }}"
+  when: "item.changed"
+
 - name: "Start Sites."
   become: true
   ansible.builtin.shell: |
