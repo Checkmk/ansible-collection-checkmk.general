@@ -15,6 +15,7 @@
 - name: "Get site version."
   become: true
   ansible.builtin.shell: |
+    set -o pipefail
     omd version {{ item.name }} | egrep -o '[^ ]+$'
   loop: "{{ checkmk_server_sites }}"
   changed_when: "checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition"
