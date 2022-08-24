@@ -5,6 +5,7 @@
     state: present
   tags:
     - install_package
+    - install_prerequisites
 
 - name: "Enable xinetd"
   ansible.builtin.service:
