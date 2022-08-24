@@ -39,6 +39,10 @@ Cryptographically verify the downloaded setup file.
 
     checkmk_server_configure_firewall: 'true'
 
+Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
+
+    checkmk_server_allow_downgrades: 'false'
+
 Automatically open the necessary ports on the Checkmk server for the
 web interface to be accessible.
 
@@ -49,10 +53,21 @@ web interface to be accessible.
         admin_pw: test
 
 A dictionary of sites, their version, admin password and state.
-This feature does not carry out updates though. If a site already exists,
-changing the version here does not change a thing.
-The version is only used during creation.
+If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
+Valid choices include `install`, `keepold` and `abort`.
 
+    checkmk_server_sites:
+      - name: test
+        version: "{{ checkmk_server_version }}"
+        update_conflict_resolution: abort
+        state: started
+        admin_pw: test
+
+Directory to backup sites to when updating between versions.
+    checkmk_server_backup_dir: /tmp
+
+Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
+    checkmk_server_backup_on_update: 'true'
 ## Dependencies
 
 <!-- A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles. -->
