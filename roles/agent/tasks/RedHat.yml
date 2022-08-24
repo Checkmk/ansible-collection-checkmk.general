@@ -12,6 +12,8 @@
   # This task may fail, as we fall back to the generic agent in that case
   failed_when: 'false'
   changed_when: 'false'
+  tags:
+    - download_package
 
 - name: "RedHat Derivates: Install host-specific Checkmk CEE Agent."
   become: true
@@ -20,6 +22,8 @@
     state: present
     disable_gpg_check: true
   when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status == 200
+  tags:
+    - install_package
 
 - name: "RedHat Derivates: Download GENERIC Checkmk CEE Agent."
   ansible.builtin.uri:
@@ -30,6 +34,8 @@
       Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_pass }}"
       Accept: "application/octet-stream"
   when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status != 200
+  tags:
+    - download_package
 
 - name: "RedHat Derivates: Install Checkmk CRE Agent."
   become: true
@@ -38,6 +44,8 @@
     state: present
     disable_gpg_check: true
   when: checkmk_agent_edition == "cre"
+  tags:
+    - install_package
 
 - name: "RedHat Derivates: Install GENERIC Checkmk CEE Agent."
   become: true
@@ -46,6 +54,8 @@
     state: present
     disable_gpg_check: true
   when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status != 200
+  tags:
+    - install_package
 
 - name: "RedHat Derivates: Install Checkmk CRE Agent."
   become: true
@@ -54,6 +64,8 @@
     state: present
     disable_gpg_check: true
   when: checkmk_agent_edition == "cre"
+  tags:
+    - install_package
 
 - name: "Configure Firewall for Agent."
   block:
