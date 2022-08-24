@@ -39,7 +39,7 @@ Cryptographically verify the downloaded setup file.
 
     checkmk_server_configure_firewall: 'true'
 
-Whether to allow downgrading a sites version.
+Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
 
     checkmk_server_allow_downgrades: 'false'
 
@@ -64,7 +64,7 @@ Valid choices include `install`, `keepold` and `abort`.
         admin_pw: test
 
 Directory to backup sites to when updating between versions.
-    checkmk_server_backup_dir: /opt/omd/sites
+    checkmk_server_backup_dir: /tmp
 
 Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
     checkmk_server_backup_on_update: 'true'
