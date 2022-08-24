@@ -3,9 +3,13 @@
   ansible.builtin.package:
     name: xinetd
     state: present
+  tags:
+    - install_package
 
 - name: "Enable xinetd"
   ansible.builtin.service:
     name: xinetd
     state: started
     enabled: true
+  tags:
+    - enable_service
