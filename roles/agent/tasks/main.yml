@@ -12,7 +12,9 @@
 
 - name: "Import Legacy agent tasks."
   ansible.builtin.include_tasks: "legacy.yml"
-  when: checkmk_agent_prep_legacy | bool and ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
+  when: |
+    checkmk_agent_prep_legacy | bool
+    and ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
 
 - name: "Download Checkmk CRE Agent."
   ansible.builtin.get_url:
@@ -38,7 +40,9 @@
     host_name: "{{ checkmk_agent_host_name }}"
     attributes: "{{ checkmk_agent_host_attributes }}"
   register: checkmk_agent_create_result
-  failed_when: checkmk_agent_create_result.failed is true and "The host is already part of the specified target folder" not in checkmk_agent_create_result.msg
+  failed_when: |
+    checkmk_agent_create_result.failed is true
+    and "The host is already part of the specified target folder" not in checkmk_agent_create_result.msg
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_add_host | bool
 
@@ -49,7 +53,9 @@
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
     -U {{ checkmk_agent_user }} -S {{ checkmk_agent_pass }}
   register: checkmk_agent_update_state
-  when: (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe") and checkmk_agent_update | bool
+  when: |
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_update | bool
 
 - name: "Register Agent for TLS."
   become: true
@@ -58,7 +64,9 @@
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} \
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_pass }} --trust-cert
   register: checkmk_agent_tls_state
-  when: (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe") and checkmk_agent_tls | bool
+  when: |
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_tls | bool
 
 - name: "Discover services and labels on host."
   tribe29.checkmk.discovery:
