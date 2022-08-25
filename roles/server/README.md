@@ -90,7 +90,7 @@ Tasks are tagged with the following tags:
 | `set-site-admin-pw` | Set the cmkadmin password of a site. |
 | `update-pause` | Pause with a warning when updating a site. |
 
-You can use Ansible to skip tasks, or only run certain tasks by using these tags.
+You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
 
 ## Dependencies
 
