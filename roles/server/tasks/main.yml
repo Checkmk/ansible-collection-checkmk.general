@@ -8,10 +8,14 @@
 
 - name: "Include OS Family specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - include-os-family-vars
 
 - name: "Include RHEL Version specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
   when: ansible_os_family == "RedHat"
+  tags:
+    - include-rhel-version-vars
 
 - name: "Install Checkmk Prerequisites."
   become: true
@@ -20,6 +24,9 @@
     state: present
   loop:
     - "{{ checkmk_server_prerequisites }}"
+  tags:
+    - install-package
+    - install-prerequisites
 
 - name: "Download Checkmk Server Setup."
   ansible.builtin.get_url:
@@ -28,6 +35,8 @@
     mode: 0640
     url_username: "{{ checkmk_server_download_user | default(omit) }}"
     url_password: "{{ checkmk_server_download_pass | default(omit) }}"
+  tags:
+    - download-package
 
 - name: "Download Checkmk GPG Key."
   ansible.builtin.get_url:
@@ -35,12 +44,16 @@
     dest: "/tmp/Check_MK-pubkey.gpg"
     mode: 0640
   when: checkmk_server_verify_setup | bool
+  tags:
+    - download-gpg-key
 
 - name: "GPG Verification on Debian Derivates."
   block:
     - name: "Import Checkmk GPG Key."
       ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
       when: checkmk_server_verify_setup | bool
+      tags:
+        - import-gpg-key
 
     - name: "Verify Checkmk Setup."
       ansible.builtin.command: dpkg-sig --verify "/tmp/{{ checkmk_server_setup_file }}"
@@ -59,6 +72,8 @@
     key: "/tmp/Check_MK-pubkey.gpg"
     state: present
   when: checkmk_server_verify_setup | bool and ansible_os_family == "RedHat"
+  tags:
+    - import-gpg-key
 
 - name: Include OS Family specific Playbook.
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
