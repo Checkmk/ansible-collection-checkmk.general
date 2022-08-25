@@ -79,6 +79,12 @@ Define the hostname which will be used to add the host to Checkmk.
 
 Define an IP address which will be added to the host in Checkmk. This is optional, as long as the hostname is DNS-resolvable.
 
+    checkmk_agent_host_attributes:
+        ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
+        tag_agent: 'cmk-agent'
+
+Define attributes with which the host will be added to Checkmk.
+
 ## Tags
 Tasks are tagged with the following tags:
 | Tag | Purpose |
