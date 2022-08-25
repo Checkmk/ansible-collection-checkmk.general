@@ -5,6 +5,25 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.6.0
+======
+
+Release Summary
+---------------
+
+Introducing upgrade management for Checkmk sites!
+
+Major Changes
+-------------
+
+- Server role - Add support for automatically updating Checkmk. Read the role's README for important information!
+
+Bugfixes
+--------
+
+- Agent role - Fix SELinux handling on RedHat.
+- Agent role - Fix firewall handling on RedHat.
+
 v0.5.2
 ======
 

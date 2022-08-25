@@ -1,5 +1,6 @@
 ---
 - name: "Install xinetd"
+  become: true
   ansible.builtin.package:
     name: xinetd
     state: present
@@ -8,6 +9,7 @@
     - install-prerequisites
 
 - name: "Enable xinetd"
+  become: true
   ansible.builtin.service:
     name: xinetd
     state: started
