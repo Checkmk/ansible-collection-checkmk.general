@@ -68,6 +68,30 @@ Directory to backup sites to when updating between versions.
 
 Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
     checkmk_server_backup_on_update: 'true'
+
+## Tags
+Tasks are tagged with the following tags:
+| Tag | Purpose |
+| ---- | ------- |
+| `download-package` | Download server package. |
+| `install-package` | Install server package with package manager. |
+| `install-prerequisites` | Install packages that are required for the role or server to work. |
+| `download-gpg-key` | Download Checkmk GPG key for verifying the package. |
+| `import-gpg-key` | Import the downloaded Checkmk GPG key for verifying the package. |
+| `include-os-family-vars` | Include OS family specific variables. |
+| `include-rhel-version-vars` | Include RHEL version specific variables. |
+| `set-selinux-boolean` | Set necessary SELinux booleans for Checkmk to work on SELinux enabled systems. |
+| `enable-powertools` | Enable the powertools repository on RHEL based systems. Required for some dependencies of Checkmk. |
+| `create-sites` | Create sites on the Checkmk server. |
+| `update-sites` | Update sites on the Checkmk server. |
+| `start-sites` | Start sites on the Checkmk server. |
+| `stop-sites` | Stop sites on the Checkmk server. |
+| `destroy-sites` | Destroy sites on the Checkmk server. |
+| `set-site-admin-pw` | Set the cmkadmin password of a site. |
+| `update-pause` | Pause with a warning when updating a site. |
+
+You can use Ansible to skip tasks, or only run certain tasks by using these tags.
+
 ## Dependencies
 
 <!-- A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles. -->
