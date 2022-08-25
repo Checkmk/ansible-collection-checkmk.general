@@ -4,8 +4,8 @@
     name: xinetd
     state: present
   tags:
-    - install_package
-    - install_prerequisites
+    - install-package
+    - install-prerequisites
 
 - name: "Enable xinetd"
   ansible.builtin.service:
@@ -13,4 +13,4 @@
     state: started
     enabled: true
   tags:
-    - enable_service
+    - enable-xinetd

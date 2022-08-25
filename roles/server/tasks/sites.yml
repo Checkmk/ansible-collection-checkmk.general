@@ -12,7 +12,7 @@
   when: item.state != "absent"
   register: checkmk_server_sites_created
   tags:
-    - create_sites
+    - create-sites
 
 - name: "Get site version."
   become: true
@@ -26,14 +26,14 @@
   when: item.state != "absent"
   register: checkmk_server_sites_versions
   tags:
-    - update_sites
+    - update-sites
 
 - name: "Include update site tasks."
   ansible.builtin.include_tasks: update-site.yml
   loop: "{{ checkmk_server_sites_versions.results }}"
   when: "item.changed"
   tags:
-    - update_sites
+    - update-sites
 
 - name: "Start Sites."
   become: true
@@ -48,7 +48,7 @@
   when: item.state == "started"
   register: checkmk_server_sites_started
   tags:
-    - start_sites
+    - start-sites
 
 - name: "Stop Sites."
   become: true
@@ -63,7 +63,7 @@
   when: (item.state == "absent") or (item.state == "stopped")
   register: checkmk_server_sites_stopped
   tags:
-    - stop_sites
+    - stop-sites
 
 - name: "Destroy Sites."
   become: true
@@ -78,7 +78,7 @@
   when: item.state == "absent"
   register: checkmk_server_sites_removed
   tags:
-    - destroy_sites
+    - destroy-sites
 
 - name: "Update Site Admin Password."
   become: true
@@ -91,4 +91,4 @@
   loop: "{{ checkmk_server_sites }}"
   when: item.state != "absent"
   tags:
-    - set_site_admin_pw
+    - set-site-admin-pw
