@@ -20,16 +20,16 @@ Vagrant.configure("2") do |config|
       $script = <<-SCRIPT
       apt-get update
       apt-get install -y python3-pip
-      pip install -r /vagrant/requirements.txt
-      ansible-galaxy collection install -f -r /vagrant/requirements.yml
-      wget "https://download.checkmk.com/checkmk/2.1.0p4/check-mk-raw-2.1.0p4_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
-      wget "https://download.checkmk.com/checkmk/2.1.0p4/check-mk-raw-2.1.0p4_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
+      wget "https://download.checkmk.com/checkmk/2.1.0p10/check-mk-raw-2.1.0p10_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
+      wget "https://download.checkmk.com/checkmk/2.1.0p10/check-mk-raw-2.1.0p10_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
       apt-get install -y /tmp/checkmk-stable.deb
       omd create --admin-password 'cmk' stable
       apt-get install -y /tmp/checkmk-beta.deb
       omd create --admin-password 'cmk' beta
       omd status -b stable || omd start stable
       omd status -b beta || omd start beta
+      pip install -r /vagrant/requirements.txt
+      ansible-galaxy collection install -f -r /vagrant/requirements.yml
       SCRIPT
       srv.vm.provision "shell", inline: $script
     end
