@@ -79,6 +79,18 @@ Define the hostname which will be used to add the host to Checkmk.
 
 Define an IP address which will be added to the host in Checkmk. This is optional, as long as the hostname is DNS-resolvable.
 
+## Tags
+Tasks are tagged with the following tags:
+| Tag | Purpose |
+| ---- | ------- |
+| `download-package` | Download agent package. |
+| `install-package` | Install agent package with package manager. |
+| `install-prerequisites` | Install packages that are required for the role or agent to work. |
+| `include-os-family-vars` | Include OS family specific variables. |
+| `include-os-family-tasks` | Include OS family specific tasks. |
+| `get-package-facts` | Get package facts, used in the role. |
+| `enable-xinetd` | Enable xinetd on hosts with systemd prior to version 220. |
+
 ## Dependencies
 
 <!-- A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles. -->
