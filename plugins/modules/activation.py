@@ -81,6 +81,7 @@ message:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
+import time
 
 
 def run_module():
@@ -167,6 +168,7 @@ def run_module():
     if result["failed"]:
         module.fail_json(**result)
 
+    time.sleep(10)
     module.exit_json(**result)
 
 
