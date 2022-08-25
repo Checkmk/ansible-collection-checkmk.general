@@ -21,7 +21,9 @@
     name: "{{ checkmk_agent_agent.file.host }}"
     state: present
     disable_gpg_check: true
-  when: (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe") and checkmk_agent_download_state.status == 200
+  when: |
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_download_state.status == 200
   tags:
     - install-package
 
@@ -33,7 +35,9 @@
     headers:
       Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_pass }}"
       Accept: "application/octet-stream"
-  when: (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe") and checkmk_agent_download_state.status != 200
+  when: |
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_download_state.status != 200
   tags:
     - download-package
 
@@ -53,7 +57,9 @@
     name: "{{ checkmk_agent_agent.file.cee }}"
     state: present
     disable_gpg_check: true
-  when: (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe") and checkmk_agent_download_state.status != 200
+  when: |
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_download_state.status != 200
   tags:
     - install-package
 
