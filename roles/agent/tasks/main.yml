@@ -1,14 +1,18 @@
 ---
 - name: "Include Derivate specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - include-os-family-vars
 
 - name: "Get RPM or APT package facts."
   ansible.builtin.package_facts:
     manager: "auto"
+  tags:
+    - get-package-facts
 
 - name: "Import Legacy agent tasks."
   ansible.builtin.include_tasks: "legacy.yml"
-  when: ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220 and checkmk_agent_prep_legacy | bool
+  when: checkmk_agent_prep_legacy | bool and ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
 
 - name: "Download Checkmk CRE Agent."
   ansible.builtin.get_url:
@@ -16,9 +20,13 @@
     dest: "{{ checkmk_agent_agent.file.cre }}"
     mode: 0640
   when: checkmk_agent_edition == "cre"
+  tags:
+    - download-package
 
 - name: "Run OS Family specific Tasks."
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+  tags:
+    - include-os-family-tasks
 
 - name: "Create host on server."
   tribe29.checkmk.host:
