@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
       omd status -b stable || omd start stable
       omd status -b beta || omd start beta
       pip install -r /vagrant/requirements.txt
-      ansible-galaxy collection install -f -r /vagrant/requirements.yml
+      sudo -u vagrant ansible-galaxy collection install -f -r /vagrant/requirements.yml
       SCRIPT
       srv.vm.provision "shell", inline: $script
     end
