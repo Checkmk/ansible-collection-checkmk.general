@@ -1,5 +1,5 @@
 ---
-- name: "Suse Derivates: Download host-specific Checkmk CEE Agent."
+- name: "Suse Derivates: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ inventory_hostname }}&os_type=linux_rpm&agent_type=host_name"
     dest: "{{ checkmk_agent_agent.file.host }}"
@@ -7,7 +7,7 @@
     headers:
       Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_pass }}"
       Accept: "application/octet-stream"
-  when: checkmk_agent_edition == "cee"
+  when: checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe"
   register: checkmk_agent_download_state
   # This task may fail, as we fall back to the generic agent in that case
   failed_when: 'false'
@@ -15,17 +15,19 @@
   tags:
     - download-package
 
-- name: "Suse Derivates: Install host-specific Checkmk CEE Agent."
+- name: "Suse Derivates: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.zypper:
     name: "{{ checkmk_agent_agent.file.host }}"
     state: present
     disable_gpg_check: true
-  when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status == 200
+  when: |
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_download_state.status == 200
   tags:
     - install-package
 
-- name: "Suse Derivates: Download GENERIC Checkmk CEE Agent."
+- name: "Suse Derivates: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_rpm&agent_type=generic"
     dest: "{{ checkmk_agent_agent.file.cee }}"
@@ -33,7 +35,9 @@
     headers:
       Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_pass }}"
       Accept: "application/octet-stream"
-  when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status != 200
+  when: |
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_download_state.status != 200
   tags:
     - download-package
 
@@ -47,13 +51,15 @@
   tags:
     - install-package
 
-- name: "Suse Derivates: Install GENERIC Checkmk CEE Agent."
+- name: "Suse Derivates: Install GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.zypper:
     name: "{{ checkmk_agent_agent.file.cee }}"
     state: present
     disable_gpg_check: true
-  when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status != 200
+  when: |
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_download_state.status != 200
   tags:
     - install-package
 
