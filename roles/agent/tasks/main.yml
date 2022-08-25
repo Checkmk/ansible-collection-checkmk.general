@@ -28,9 +28,7 @@
     automation_secret: "{{ checkmk_agent_pass }}"
     folder: "{{ checkmk_agent_folder | default(omit) }}"
     host_name: "{{ checkmk_agent_host_name }}"
-    attributes:
-      ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
-      tag_agent: 'cmk-agent'  # ToDo: Do we want to hardcode this?
+    attributes: "{{ checkmk_agent_host_attributes }}"
   register: checkmk_agent_create_result
   failed_when: checkmk_agent_create_result.failed is true and "The host is already part of the specified target folder" not in checkmk_agent_create_result.msg
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
