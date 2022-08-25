@@ -166,3 +166,17 @@ releases:
     - bugfix_agent_role.yml
     - bugfix_discovery_http_timeout.yml
     release_date: '2022-08-04'
+  0.6.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix SELinux handling on RedHat.
+      - Agent role - Fix firewall handling on RedHat.
+      major_changes:
+      - Server role - Add support for automatically updating Checkmk. Read the role's
+        README for important information!
+      release_summary: Introducing upgrade management for Checkmk sites!
+    fragments:
+    - bugfix_agent_role.yml
+    - release_summary.yml
+    - server_update_feature.yml
+    release_date: '2022-08-25'

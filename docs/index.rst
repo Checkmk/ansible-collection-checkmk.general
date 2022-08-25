@@ -1,11 +1,12 @@
 
 
+
 .. _plugins_in_tribe29.checkmk:
 
 Tribe29.Checkmk
 ===============
 
-Collection version 0.5.1
+Collection version 0.6.0
 
 .. contents::
    :local:

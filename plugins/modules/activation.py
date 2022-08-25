@@ -137,7 +137,7 @@ def run_module():
 
     params = {
         "force_foreign_changes": module.params.get("force_foreign_changes", ""),
-        "redirect": True,  # ToDo: Do we need this? Does it need to be configurable?
+        "redirect": False,
         "sites": sites,
     }
 

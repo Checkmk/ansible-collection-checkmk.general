@@ -16,21 +16,7 @@ the time available is limited. We will try to be as transparent as possible
 about what we will include but please do not feel discouraged, if an idea
 or proposal gets rejected. Instead go on and create something yourself,
 if you think your approach is viable! There is already a lot of great content
-out there and we love seeing you add to that plethora of content!
-
-## Submitting Issues
-
-If you encounter any bugs or have ideas for improvements feel free to open an [issue](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) or even better a [pull request](#Pull-Requests).
-Dedicated requirements will be added here as suitable.
-
-## Pull Requests
-
-Please open a [pull request](https://github.com/tribe29/ansible-collection-tribe29.checkmk/pulls?q=is%3Apr+is%3Aopen)
-if you have something to contribute.
-On pull request creation, checks will run and tell you,
-if your changes work with the collection. If errors are detected, please try to
-fix them and update your pull request accordingly.
-If you need help, feel free to ask for it.
+out there and we love seeing you add to that plethora of it!
 
 ## How to contribute
 
@@ -43,6 +29,20 @@ Everything helps, really!
 We do test everything to the best of our abilities, but nothing beats real world
 scenarios. Also if you can provide a bugfix yourself or you have an addition to
 the functionality, [pull requests](#Pull-Requests) are appreciated.
+
+### Submitting Issues
+
+If you encounter any bugs or have ideas for improvements feel free to open an [issue](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) or even better a [pull request](#Pull-Requests).
+Dedicated requirements will be added here as suitable.
+
+### Pull Requests
+
+Please open a [pull request](https://github.com/tribe29/ansible-collection-tribe29.checkmk/pulls?q=is%3Apr+is%3Aopen)
+if you have something to contribute.
+On pull request creation, checks will run and tell you,
+if your changes work with the collection. If errors are detected, please try to
+fix them and update your pull request accordingly.
+If you need help, do ask for it.
 
 ### Changelog
 
@@ -58,6 +58,26 @@ Documentation is still a work in progress.
 Module documentation is compiled during a release and stored as `docs/module.rst`,
 but this is not ideal yet. However, please use the inline documentation as seen
 in the existing modules when creating additional modules.
+
+## Style Guide
+
+### Commit messages
+
+* Use the present tense ("Add feature" not "Added feature")
+* Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
+* The first line is a short title (limit to 72 characters or less)
+* Write [good commit messages](https://chris.beams.io/posts/git-commit/)
+
+### Plugins
+Specifics to be done. Stick to general Ansible coding best practices and look out for sanity check gotchas.
+
+### Roles
+The following are guidelines to keep in mind, when changing roles.
+- Variables
+    - Use snake case (`snake_case_variable`)
+    - Do not prefix the variable with an underscore ( `_` )
+- Tags
+    - When tagging roles, separate single words with dashes (`my-custom-tag`)
 
 ## Releasing this collection
 Releasing this collection is automated using GitHub Actions.
