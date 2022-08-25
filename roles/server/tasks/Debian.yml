@@ -6,4 +6,4 @@
     update_cache: 'yes'
     state: present
   tags:
-    - install_package
+    - install-package

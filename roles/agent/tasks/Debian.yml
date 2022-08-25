@@ -13,7 +13,7 @@
   failed_when: 'false'
   changed_when: 'false'
   tags:
-    - download_package
+    - download-package
 
 - name: "Debian Derivates: Install host-specific Checkmk CEE Agent."
   become: true
@@ -22,7 +22,7 @@
     state: present
   when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status == 200
   tags:
-    - install_package
+    - install-package
 
 - name: "Debian Derivates: Download GENERIC Checkmk CEE Agent."
   ansible.builtin.uri:
@@ -34,7 +34,7 @@
       Accept: "application/octet-stream"
   when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status != 200
   tags:
-    - download_package
+    - download-package
 
 - name: "Debian Derivates: Install GENERIC Checkmk CEE Agent."
   become: true
@@ -43,7 +43,7 @@
     state: present
   when: (checkmk_agent_edition == "cee") and checkmk_agent_download_state.status != 200
   tags:
-    - install_package
+    - install-package
 
 - name: "Debian Derivates: Install Checkmk CRE Agent."
   become: true
@@ -52,4 +52,4 @@
     state: present
   when: checkmk_agent_edition == "cre"
   tags:
-    - install_package
+    - install-package

@@ -2,13 +2,13 @@
 - name: "Include Derivate specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
-    - include_os_family_vars
+    - include-os-family-vars
 
 - name: "Get RPM or APT package facts."
   ansible.builtin.package_facts:
     manager: "auto"
   tags:
-    - get_package_facts
+    - get-package-facts
 
 - name: "Import Legacy agent tasks."
   ansible.builtin.include_tasks: "legacy.yml"
@@ -21,12 +21,12 @@
     mode: 0640
   when: checkmk_agent_edition == "cre"
   tags:
-    - download_package
+    - download-package
 
 - name: "Run OS Family specific Tasks."
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
   tags:
-    - include_os_family_tasks
+    - include-os-family-tasks
 
 - name: "Create host on server."
   tribe29.checkmk.host:
