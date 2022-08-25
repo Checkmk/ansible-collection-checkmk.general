@@ -97,7 +97,7 @@ Tasks are tagged with the following tags:
 | `get-package-facts` | Get package facts, used in the role. |
 | `enable-xinetd` | Enable xinetd on hosts with systemd prior to version 220. |
 
-You can use Ansible to skip tasks, or only run certain tasks by using these tags.
+You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
 
 ## Dependencies
 
