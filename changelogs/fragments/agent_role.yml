@@ -2,6 +2,7 @@
 
 minor_changes:
   - Agent role - Host attributes can be fully customized now.
+  - Agent role - Check for agent updater and controller binaries. Skip registration if respective binary is missing.
 
 bugfixes:
   - Agent role - Support CFE properly.
