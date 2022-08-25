@@ -46,6 +46,16 @@
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_add_host | bool
 
+- name: "Check for Agent Updater Binary."
+  ansible.builtin.stat:
+    path: /usr/bin/cmk-update-agent
+  register: checkmk_agent_updater_binary
+
+- name: "Check for Agent Controller Binary."
+  ansible.builtin.stat:
+    path: /usr/bin/cmk-agent-ctl
+  register: checkmk_agent_controller_binary
+
 - name: "Register Agent for automatic Upates."
   become: true
   ansible.builtin.shell: |
@@ -55,6 +65,7 @@
   register: checkmk_agent_update_state
   when: |
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
 
 - name: "Register Agent for TLS."
@@ -66,6 +77,7 @@
   register: checkmk_agent_tls_state
   when: |
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
 
 - name: "Discover services and labels on host."
