@@ -3,6 +3,9 @@
 minor_changes:
   - Agent role - Host attributes can be fully customized now.
 
+bugfixes:
+  - Agent role - Support CFE properly.
+
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
 #   - Discovery module is not feature complete yet.
