@@ -11,7 +11,7 @@ with automating Checkmk and keep your daily operations smooth and efficient.
 
 This repository is provided as is and we cannot guarantee stability at this point.
 Additionally, there is no commercial support whatsoever!
-This is a open source endeavour, which we want to share and progress with the community.
+This is an open source endeavour, which we want to share and progress with the community.
 
 [![Ansible Sanity Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-sanity-tests.yaml)
 [![Ansible Integration Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-integration-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-integration-tests.yaml)

@@ -11,6 +11,29 @@
   loop: "{{ checkmk_server_sites }}"
   when: item.state != "absent"
   register: checkmk_server_sites_created
+  tags:
+    - create-sites
+
+- name: "Get site version."
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd version {{ item.name }} | egrep -o '[^ ]+$'
+  args:
+    executable: /bin/bash
+  loop: "{{ checkmk_server_sites }}"
+  changed_when: "checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition"
+  when: item.state != "absent"
+  register: checkmk_server_sites_versions
+  tags:
+    - update-sites
+
+- name: "Include update site tasks."
+  ansible.builtin.include_tasks: update-site.yml
+  loop: "{{ checkmk_server_sites_versions.results }}"
+  when: "item.changed"
+  tags:
+    - update-sites
 
 - name: "Start Sites."
   become: true
@@ -24,6 +47,8 @@
   loop: "{{ checkmk_server_sites }}"
   when: item.state == "started"
   register: checkmk_server_sites_started
+  tags:
+    - start-sites
 
 - name: "Stop Sites."
   become: true
@@ -37,6 +62,8 @@
   loop: "{{ checkmk_server_sites }}"
   when: (item.state == "absent") or (item.state == "stopped")
   register: checkmk_server_sites_stopped
+  tags:
+    - stop-sites
 
 - name: "Destroy Sites."
   become: true
@@ -50,6 +77,8 @@
   loop: "{{ checkmk_server_sites }}"
   when: item.state == "absent"
   register: checkmk_server_sites_removed
+  tags:
+    - destroy-sites
 
 - name: "Update Site Admin Password."
   become: true
@@ -61,3 +90,5 @@
   no_log: true
   loop: "{{ checkmk_server_sites }}"
   when: item.state != "absent"
+  tags:
+    - set-site-admin-pw
