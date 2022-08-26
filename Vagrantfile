@@ -36,7 +36,7 @@ Vagrant.configure("2") do |config|
 
     # Ubuntu
     config.vm.define "ansibuntu", autostart: false , primary: false do |srv|
-      srv.vm.box = "ubuntu/focal64"
+      srv.vm.box = "ubuntu/jammy64"
       srv.vm.network "private_network", ip: "192.168.56.61"
       srv.ssh.insert_key = false
       srv.vm.provider "virtualbox" do |v|

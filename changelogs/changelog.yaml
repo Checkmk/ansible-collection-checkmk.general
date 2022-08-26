@@ -180,3 +180,25 @@ releases:
     - release_summary.yml
     - server_update_feature.yml
     release_date: '2022-08-25'
+  0.7.0:
+    changes:
+      bugfixes:
+      - Activation module - Fix possible race condition. (#123).
+      - Activation module - Fix waiting for activation completion (#103).
+      - Agent role - Support CFE properly.
+      - Agent role - Support both normal and automation users properly.
+      minor_changes:
+      - Agent role - Check for agent updater and controller binaries. Skip registration
+        if respective binary is missing.
+      - Agent role - Host attributes can be fully customized now.
+      - Agent role - Label role. This enables skipping or running tasks exclusively.
+        See the README for a detailed list.
+      - Server role - Label role. This enables skipping or running tasks exclusively.
+        See the README for a detailed list.
+      release_summary: Lots of love for the agent role!
+    fragments:
+    - agent_role.yml
+    - bugfix_activation_module.yml
+    - release_summary.yml
+    - server_role.yml
+    release_date: '2022-08-26'
