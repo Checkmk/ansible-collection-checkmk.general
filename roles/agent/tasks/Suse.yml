@@ -46,6 +46,7 @@
   become: true
   ansible.builtin.zypper:
     name: "{{ checkmk_agent_agent.file.cre }}"
+    force: "{{ checkmk_agent_force_install | bool }}"
     state: present
     disable_gpg_check: true
   when: checkmk_agent_edition == "cre"
@@ -56,6 +57,7 @@
   become: true
   ansible.builtin.zypper:
     name: "{{ checkmk_agent_agent.file.cee }}"
+    force: "{{ checkmk_agent_force_install | bool }}"
     state: present
     disable_gpg_check: true
   when: |
@@ -68,6 +70,7 @@
   become: true
   ansible.builtin.zypper:
     name: "{{ checkmk_agent_agent.file.cre }}"
+    force: "{{ checkmk_agent_force_install | bool }}"
     state: present
     disable_gpg_check: true
   when: checkmk_agent_edition == "cre"
