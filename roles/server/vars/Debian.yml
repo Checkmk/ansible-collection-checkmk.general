@@ -6,4 +6,4 @@ checkmk_server_setup_file: >-
 
 checkmk_server_prerequisites:
   - freeipmi
-  - dpkg-sig
+  - gpg

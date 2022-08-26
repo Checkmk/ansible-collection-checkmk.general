@@ -1,7 +1,7 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 
 minor_changes:
-  - Server role - Fix setup file verification on Debian derivates. Using gpg instead dpkg-sig now.
+  - Server role - Label role. This enables skipping or running tasks exclusively. See the README for a detailed list.
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.

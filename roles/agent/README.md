@@ -69,6 +69,11 @@ for automatic updates. Otherwise this will fail.
 
 Automatically configure the firewall to allow access to the Checkmk agent.
 
+    checkmk_agent_force_install: 'false'
+
+Force the installation of the agent package, no matter the constraints.
+This means, downgrades become possible and unverified packages would be installed.
+
     checkmk_agent_prep_legacy: 'false'
 
 Enable this to automatically install `xinetd` on hosts with systemd prior to version 220.
