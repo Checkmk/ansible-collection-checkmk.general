@@ -37,9 +37,15 @@ The name of your Checkmk site.
 
 The user used to authenticate against your Checkmk site.
 
-    checkmk_agent_pass: SECRET
+    checkmk_agent_pass: "{{ automation_secret }}"
 
-The password for the user used to authenticate against your Checkmk site.
+The password for the normal user used to authenticate against your Checkmk site.
+This is mutually exclusive with `checkmk_agent_secret`!
+
+    checkmk_agent_secret: "{{ automation_secret }}"
+
+The secret for the automation user used to authenticate against your Checkmk site.
+This is mutually exclusive with `checkmk_agent_pass`!
 
     checkmk_agent_add_host: 'false'
 
@@ -78,6 +84,26 @@ Define the hostname which will be used to add the host to Checkmk.
     checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 
 Define an IP address which will be added to the host in Checkmk. This is optional, as long as the hostname is DNS-resolvable.
+
+    checkmk_agent_host_attributes:
+        ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
+        tag_agent: 'cmk-agent'
+
+Define attributes with which the host will be added to Checkmk.
+
+## Tags
+Tasks are tagged with the following tags:
+| Tag | Purpose |
+| ---- | ------- |
+| `download-package` | Download agent package. |
+| `install-package` | Install agent package with package manager. |
+| `install-prerequisites` | Install packages that are required for the role or agent to work. |
+| `include-os-family-vars` | Include OS family specific variables. |
+| `include-os-family-tasks` | Include OS family specific tasks. |
+| `get-package-facts` | Get package facts, used in the role. |
+| `enable-xinetd` | Enable xinetd on hosts with systemd prior to version 220. |
+
+You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
 
 ## Dependencies
 
