@@ -25,5 +25,5 @@ checkmk_server_prerequisites_per_distro:
     - dnf-plugins-core
 
 checkmk_server_prerequisites: >-
-  "{{ checkmk_server_prerequisites_per_distro[ansible_os_family + '-' + ansible_distribution_major_version] | default(
+  "{{ checkmk_server_prerequisites_per_distro[ansible_os_family+"-"+ansible_distribution_major_version] | default(
   checkmk_server_prerequisites_per_distro[ansible_os_family]) }}"
