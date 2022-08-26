@@ -1,53 +1,53 @@
 ---
-- name: "Create hosts."
+- name: "{{ outer_item.version }} - Create hosts."
   host:
     server_url: "{{ server_url }}"
-    site: "{{ site }}"
+    site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     host_name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     attributes:
-      site: "{{ site }}"
+      site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
   delegate_to: localhost
-  run_once: 'yes'
+  run_once: true
   loop: "{{ checkmk_hosts }}"
 
-- name: "Activate."
+- name: "{{ outer_item.version }} - Activate."
   activation:
     server_url: "{{ server_url }}"
-    site: "{{ site }}"
+    site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: 'true'
+    force_foreign_changes: true
     sites:
-      - "{{ site }}"
+      - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: 'true'
+  run_once: true
 
-- name: "Delete hosts."
+- name: "{{ outer_item.version }} - Delete hosts."
   host:
     server_url: "{{ server_url }}"
-    site: "{{ site }}"
+    site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     host_name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     state: "absent"
   delegate_to: localhost
-  run_once: 'yes'
+  run_once: true
   loop: "{{ checkmk_hosts }}"
 
-- name: "Activate."
+- name: "{{ outer_item.version }} - Activate."
   activation:
     server_url: "{{ server_url }}"
-    site: "{{ site }}"
+    site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: 'true'
+    force_foreign_changes: true
     sites:
-      - "{{ site }}"
+      - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: 'true'
+  run_once: true
