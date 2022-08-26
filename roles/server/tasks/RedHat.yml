@@ -3,6 +3,8 @@
   become: true
   ansible.builtin.shell: dnf config-manager --set-enabled powertools  # noqa command-instead-of-shell
   when: ansible_distribution_major_version == "8"
+  tags:
+    - enable-powertools
 
 - name: "Install Checkmk Server."
   become: true
@@ -10,6 +12,8 @@
     name: "/tmp/{{ checkmk_server_setup_file }}"
     state: present
     disable_gpg_check: '{{ not checkmk_server_verify_setup | bool }}'
+  tags:
+    - install-package
 
 - name: "Enable httpd can network connect selinux boolean."
   become: true
@@ -18,6 +22,8 @@
     state: true
     persistent: true
   when: ansible_facts.selinux.status == 'enabled'
+  tags:
+    - set-selinux-boolean
 
 - name: "Open firewall ports."
   become: true
