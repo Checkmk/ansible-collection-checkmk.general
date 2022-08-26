@@ -5,6 +5,30 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.7.0
+======
+
+Release Summary
+---------------
+
+Lots of love for the agent role!
+
+Minor Changes
+-------------
+
+- Agent role - Check for agent updater and controller binaries. Skip registration if respective binary is missing.
+- Agent role - Host attributes can be fully customized now.
+- Agent role - Label role. This enables skipping or running tasks exclusively. See the README for a detailed list.
+- Server role - Label role. This enables skipping or running tasks exclusively. See the README for a detailed list.
+
+Bugfixes
+--------
+
+- Activation module - Fix possible race condition. (#123).
+- Activation module - Fix waiting for activation completion (#103).
+- Agent role - Support CFE properly.
+- Agent role - Support both normal and automation users properly.
+
 v0.6.0
 ======
 
