@@ -31,6 +31,8 @@
       This can take a while! The site will be down during the update
   when: |
     item.item.version | regex_replace('p.*', '') == item.stdout | regex_replace('p.*', '')
+  tags:
+    - update-pause
 
 - name: "Long pause for major update."
   ansible.builtin.pause:
@@ -42,6 +44,8 @@
       This can take a while! The site will be down during the update
   when: |
     item.item.version | regex_replace('p.*', '') != item.stdout | regex_replace('p.*', '')
+  tags:
+    - update-pause
 
 - name: "Create backup of site."
   become: true
