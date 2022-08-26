@@ -1,6 +1,10 @@
 ---
-checkmk_version: "2.0.0p26"
-download_url: "https://download.checkmk.com/checkmk/{{ checkmk_version }}/check-mk-raw-{{ checkmk_version }}_0.{{ ansible_distribution_release }}_amd64.deb"
+checkmk_versions:
+  - version: "2.1.0p10"
+    site: "stable"
+  - version: "2.0.0p27"
+    site: "oldstable"
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
 site: "test"
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
@@ -16,14 +20,4 @@ checkmk_hosts:
   - name: test4.tld
     folder: "/"
   - name: test5.tld
-    folder: "/"
-  - name: test6.tld
-    folder: "/"
-  - name: test7.tld
-    folder: "/"
-  - name: test8.tld
-    folder: "/"
-  - name: test9.tld
-    folder: "/"
-  - name: test10.tld
     folder: "/"
