@@ -1,6 +1,6 @@
 ---
 
-checkmk_server_setup_file: >- 
+checkmk_server_setup_file: >-
   "check-mk-
   {{ checkmk_server_edition_mapping[checkmk_server_edition] }}-
   {{ checkmk_server_version }}-
@@ -12,7 +12,7 @@ checkmk_server_ports:
   - 443/tcp
   - 8000/tcp
 
-_checkmk_server_prerequisites:
+checkmk_server_prerequisites_per_distro:
   RedHat:
     - epel-release
     - python3-libsemanage
@@ -26,8 +26,4 @@ _checkmk_server_prerequisites:
     - python3-libsemanage
     - dnf-plugins-core
 
-checkmk_server_prerequisites: >- 
-  "{{ _checkmk_server_prerequisites[ansible_facts['os_family'] 
-  + '-' + 
-  ansible_facts['distribution_major_version'] | 
-  default (_checkmk_server_prerequisites[ansible_facts['os_family'] ) }}"
+checkmk_server_prerequisites: "{{ checkmk_server_prerequisites_per_distro[ansible_facts['os_family']+'-' +ansible_facts['distribution_major_version']] | default (checkmk_server_prerequisites_per_distro[ansible_facts['os_family']]) }}"
