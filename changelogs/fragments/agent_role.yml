@@ -6,6 +6,7 @@ minor_changes:
 
 bugfixes:
   - Agent role - Support CFE properly.
+  - Agent role - Support both normal and automation users properly.
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
