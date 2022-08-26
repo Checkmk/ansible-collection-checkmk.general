@@ -19,6 +19,7 @@
   become: true
   ansible.builtin.zypper:
     name: "{{ checkmk_agent_agent.file.host }}"
+    force: "{{ checkmk_agent_force_install | bool }}"
     state: present
     disable_gpg_check: true
   when: |
