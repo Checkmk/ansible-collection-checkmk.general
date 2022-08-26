@@ -12,14 +12,17 @@ checkmk_server_ports:
 
 checkmk_server_prerequisites_per_distro:
   RedHat:
+    - firewalld
     - epel-release
     - python3-libsemanage
     - dnf-plugins-core
   RedHat-7:
+    - firewalld 
     - epel-release
     - libsemanage-python
     - yum-plugins-core
   RedHat-8:
+    - firewalld
     - epel-release
     - python3-libsemanage
     - dnf-plugins-core

@@ -34,6 +34,13 @@
   tags:
     - set-selinux-boolean
 
+- name: "Make sure firewalld is started and enabled"
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+    enabled: true
+  when: checkmk_server_configure_firewall | bool
+
 - name: "Open firewall ports."
   become: true
   ansible.posix.firewalld:
