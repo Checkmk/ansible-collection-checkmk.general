@@ -16,7 +16,8 @@
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
-  loop: "{{ checkmk_server_prerequisites }}"
+  loop: 
+    - "{{ checkmk_server_prerequisites }}"
   tags:
     - install-package
     - install-prerequisites
