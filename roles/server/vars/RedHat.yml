@@ -24,5 +24,5 @@ checkmk_server_prerequisites_per_distro:
     - python3-libsemanage
     - dnf-plugins-core
 
-checkmk_server_prerequisites: "{{ checkmk_server_prerequisites_per_distro[ansible_facts.os_family ~ '-' ~ ansible_facts.distribution_major_version] | 
-  default(checkmk_server_prerequisites_per_distro[ansible_facts.os_family]) }}"
+checkmk_server_prerequisites: "{{ checkmk_server_prerequisites_per_distro[ansible_facts.os_family ~ '-' ~ ansible_facts.distribution_major_version] | default(
+  checkmk_server_prerequisites_per_distro[ansible_facts.os_family]) }}"
