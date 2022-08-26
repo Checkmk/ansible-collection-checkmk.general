@@ -11,15 +11,6 @@
   tags:
     - include-os-family-vars
 
-- name: "Install Checkmk Prerequisites."
-  become: true
-  ansible.builtin.package:
-    name: "{{ checkmk_server_prerequisites }}"
-    state: present
-  tags:
-    - install-package
-    - install-prerequisites
-
 - name: "Download Checkmk Server Setup."
   ansible.builtin.get_url:
     url: "{{ checkmk_server_download_url }}"
