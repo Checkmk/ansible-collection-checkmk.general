@@ -1,13 +1,7 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 
 minor_changes:
-  - Agent role - Host attributes can be fully customized now.
-  - Agent role - Check for agent updater and controller binaries. Skip registration if respective binary is missing.
-  - Agent role - Label role. This enables skipping or running tasks exclusively. See the README for a detailed list.
-
-bugfixes:
-  - Agent role - Support CFE properly.
-  - Agent role - Support both normal and automation users properly.
+  - Server role - Label role. This enables skipping or running tasks exclusively. See the README for a detailed list.
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.

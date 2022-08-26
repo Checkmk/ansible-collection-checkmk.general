@@ -2,6 +2,7 @@
 
 bugfixes:
   - Activation module - Fix waiting for activation completion (#103).
+  - Activation module - Fix possible race condition. (#123).
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
