@@ -37,9 +37,15 @@ The name of your Checkmk site.
 
 The user used to authenticate against your Checkmk site.
 
-    checkmk_agent_pass: SECRET
+    checkmk_agent_pass: "{{ automation_secret }}"
 
-The password for the user used to authenticate against your Checkmk site.
+The password for the normal user used to authenticate against your Checkmk site.
+This is mutually exclusive with `checkmk_agent_secret`!
+
+    checkmk_agent_secret: "{{ automation_secret }}"
+
+The secret for the automation user used to authenticate against your Checkmk site.
+This is mutually exclusive with `checkmk_agent_pass`!
 
     checkmk_agent_add_host: 'false'
 
