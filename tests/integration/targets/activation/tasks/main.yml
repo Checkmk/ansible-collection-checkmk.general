@@ -5,6 +5,8 @@
 - name: "Wait for site to be ready."
   ansible.builtin.pause:
     seconds: 5
+  when: "'OVERALL 1' in item.stdout_lines"
+  loop: "{{ site_status.results }}"
 
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml
