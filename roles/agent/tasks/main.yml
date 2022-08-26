@@ -56,7 +56,20 @@
     path: /usr/bin/cmk-agent-ctl
   register: checkmk_agent_controller_binary
 
-- name: "Register Agent for automatic Upates."
+- name: "Register Agent for automatic Upates using User Password."
+  become: true
+  ansible.builtin.shell: |
+    cmk-update-agent register -H {{ checkmk_agent_host_name }} \
+    -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
+    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_pass }}
+  register: checkmk_agent_update_state
+  when: |
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_updater_binary.stat.exists | bool
+    and checkmk_agent_update | bool
+    and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
+
+- name: "Register Agent for automatic Upates using Automation Secret."
   become: true
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
@@ -67,8 +80,9 @@
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
     and checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
+    and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
 
-- name: "Register Agent for TLS."
+- name: "Register Agent for TLS using User Password."
   become: true
   ansible.builtin.shell: |
     cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
@@ -79,6 +93,20 @@
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
     and checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
+    and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
+
+- name: "Register Agent for TLS using Automation Secret."
+  become: true
+  ansible.builtin.shell: |
+    cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
+    -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} \
+    -U {{ checkmk_agent_user }} -S {{ checkmk_agent_pass }} --trust-cert
+  register: checkmk_agent_tls_state
+  when: |
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    and checkmk_agent_controller_binary.stat.exists | bool
+    and checkmk_agent_tls | bool
+    and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
 
 - name: "Discover services and labels on host."
   tribe29.checkmk.discovery:
