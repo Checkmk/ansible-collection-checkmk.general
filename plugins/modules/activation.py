@@ -79,6 +79,8 @@ message:
     sample: 'Changes activated.'
 """
 
+import time
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 
@@ -166,6 +168,10 @@ def run_module():
 
     if result["failed"]:
         module.fail_json(**result)
+
+    # Work around a possible race condition in the activation process.
+    # The sleep can be removed, once this is stable on Checkmk's and.
+    time.sleep(3)
 
     module.exit_json(**result)
 
