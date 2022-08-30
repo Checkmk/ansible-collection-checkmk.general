@@ -29,6 +29,10 @@ The protocol used to connect to your Checkmk site.
 
 The FQDN or IP address of your Checkmk server.
 
+    checkmk_agent_server_validate_certs: 'true'
+
+Whether to validate the SSL certificate of the Checkmk server.
+
     checkmk_agent_site: my_site
 
 The name of your Checkmk site.
