@@ -10,10 +10,10 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'roles/'
+      - 'roles/**'
   pull_request:
     paths:
-      - 'roles/'
+      - 'roles/**'
 
 env:
   NAMESPACE: tribe29
@@ -54,10 +54,13 @@ jobs:
         with:
           # it is just required to run that once as "ansible-test integration" in the docker image
           # will run on all python versions it supports.
-          python-version: 3.8
+          python-version: 3.9
 
-      - name: Install ansible-lint
+      - name: Install prerequisites
         run: pip install ansible-lint yamllint
+
+      - name: Install Checkmk collection
+        run: ansible-galaxy collection install tribe29.checkmk
 
       # Run the linting
       - name: Run yamllint on roles

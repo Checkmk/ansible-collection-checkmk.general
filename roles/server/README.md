@@ -39,6 +39,10 @@ Cryptographically verify the downloaded setup file.
 
     checkmk_server_configure_firewall: 'true'
 
+Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
+
+    checkmk_server_allow_downgrades: 'false'
+
 Automatically open the necessary ports on the Checkmk server for the
 web interface to be accessible.
 
@@ -49,9 +53,44 @@ web interface to be accessible.
         admin_pw: test
 
 A dictionary of sites, their version, admin password and state.
-This feature does not carry out updates though. If a site already exists,
-changing the version here does not change a thing.
-The version is only used during creation.
+If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
+Valid choices include `install`, `keepold` and `abort`.
+
+    checkmk_server_sites:
+      - name: test
+        version: "{{ checkmk_server_version }}"
+        update_conflict_resolution: abort
+        state: started
+        admin_pw: test
+
+Directory to backup sites to when updating between versions.
+    checkmk_server_backup_dir: /tmp
+
+Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
+    checkmk_server_backup_on_update: 'true'
+
+## Tags
+Tasks are tagged with the following tags:
+| Tag | Purpose |
+| ---- | ------- |
+| `download-package` | Download server package. |
+| `install-package` | Install server package with package manager. |
+| `install-prerequisites` | Install packages that are required for the role or server to work. |
+| `download-gpg-key` | Download Checkmk GPG key for verifying the package. |
+| `import-gpg-key` | Import the downloaded Checkmk GPG key for verifying the package. |
+| `include-os-family-vars` | Include OS family specific variables. |
+| `include-rhel-version-vars` | Include RHEL version specific variables. |
+| `set-selinux-boolean` | Set necessary SELinux booleans for Checkmk to work on SELinux enabled systems. |
+| `enable-powertools` | Enable the powertools repository on RHEL based systems. Required for some dependencies of Checkmk. |
+| `create-sites` | Create sites on the Checkmk server. |
+| `update-sites` | Update sites on the Checkmk server. |
+| `start-sites` | Start sites on the Checkmk server. |
+| `stop-sites` | Stop sites on the Checkmk server. |
+| `destroy-sites` | Destroy sites on the Checkmk server. |
+| `set-site-admin-pw` | Set the cmkadmin password of a site. |
+| `update-pause` | Pause with a warning when updating a site. |
+
+You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
 
 ## Dependencies
 

@@ -1,0 +1,4 @@
+# https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
+
+# WARNING Found no release_summary section in the changelog for this release. While this is not required, we suggest to add one with basic information on the release.
+release_summary: "Introducing upgrade management for Checkmk sites!"

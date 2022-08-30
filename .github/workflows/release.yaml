@@ -56,15 +56,32 @@ jobs:
         run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ tribe29.checkmk
 
       # https://github.com/marketplace/actions/create-pull-request
-      - name: Create Pull Request for docs and changelog
+      - name: Create Pull Request for docs and changelog against devel branch
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: Update Docs and Changelogs
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
-          branch: changelogs-docs-update
+          branch: changelogs-docs-update-devel
           base: devel
+          delete-branch: true
+          title: '[Auto] Update changelogs and docs'
+          body: |
+            Changelogs and docs updated during *${{ steps.current_version.outputs.version }}* release.
+          assignees: robin-tribe29
+          reviewers: robin-tribe29
+          draft: false
+
+      - name: Create Pull Request for docs and changelog against main branch
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: Update Docs and Changelogs
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: changelogs-docs-update-main
+          base: main
           delete-branch: true
           title: '[Auto] Update changelogs and docs'
           body: |
