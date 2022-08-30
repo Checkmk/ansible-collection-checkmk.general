@@ -36,7 +36,10 @@ options:
         choices: [present, absent]
         default: present
         type: str
-
+    validate_certs:
+        description: Whether to validate the SSL certificate of the Checkmk server.
+        default: true
+        type: bool
 
 author:
     - Robin Gierse (@robin-tribe29)
