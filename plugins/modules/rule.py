@@ -15,22 +15,22 @@ short_description: Manage rules in Checkmk.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "0.6.0"
+version_added: "0.8.0"
 
 description:
-- Manage rules within Checkmk.
+- Manage rules within Checkmk. Importing rules from the output of the Checkmk API. Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     rule:
-        description: Definition of the rule as returned by the Checkmk API. When not given, the module will get all existing rules in the ruleset.
-        required: false
+        description: Definition of the rule as returned by the Checkmk API.
+        required: true
         type: dict
     ruleset:
         description: Name of the ruleset to manage.
-        type: str
         required: true
+        type: str
     state:
         description: State of the rule.
         choices: [present, absent]
@@ -74,27 +74,6 @@ EXAMPLES = r"""
         value_raw: "{'levels': [80.0, 90.0]}"
     state: "present"
 
-# List rules in ruleset.
-- name: "List rules in ruleset."
-  tribe29.checkmk.rule:
-    server_url: "http://localhost/"
-    site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
-  register: rules
-
-# Import first rule from this ruleset on a different site.
-- name: "Import a rule on a different site."
-  tribe29.checkmk.rule:
-    server_url: "http://localhost/"
-    site: "my_other_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
-    rule: "{{ rules.response.value[0].extensions }}"
-    state: "present"
-
 # Delete first rule in this ruleset.
 - name: "Delete a rule."
   tribe29.checkmk.rule:
@@ -103,7 +82,25 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
-    rule: "{{ rules.response.value[0].extensions }}"
+    rule: 
+        conditions: {
+            "host_labels": [],
+            "host_name": {
+                "match_on": [
+                    "server3"
+                ],
+                "operator": "one_of"
+            },
+            "host_tags": [],
+            "service_labels": []
+        }
+        properties: {
+            "comment": "Warning at 80%\nCritical at 90%\n",
+            "description": "Allow higher memory usage",
+            "disabled": false,
+            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+        }
+        value_raw: "{'levels': [80.0, 90.0]}"
     state: "absent"
 """
 
@@ -113,10 +110,6 @@ msg:
     type: str
     returned: always
     sample: 'Rule created.'
-response:
-    description: API response the module may generate, such as rule exports.
-    type: dict
-    returned: optional
 """
 
 import json
@@ -130,18 +123,18 @@ except ImportError:  # For Python 3
     from urllib.parse import urlencode
 
 
-def exit_failed(module, msg, response=None):
-    result = {"msg": msg, "changed": False, "failed": True, "response": response}
+def exit_failed(module, msg):
+    result = {"msg": msg, "changed": False, "failed": True}
     module.fail_json(**result)
 
 
-def exit_changed(module, msg, response=None):
-    result = {"msg": msg, "changed": True, "failed": False, "response": response}
+def exit_changed(module, msg):
+    result = {"msg": msg, "changed": True, "failed": False}
     module.exit_json(**result)
 
 
-def exit_ok(module, msg, response=None):
-    result = {"msg": msg, "changed": False, "failed": False, "response": response}
+def exit_ok(module, msg):
+    result = {"msg": msg, "changed": False, "failed": False}
     module.exit_json(**result)
 
 
@@ -232,7 +225,7 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         ruleset=dict(type="str", required=True),
-        rule=dict(type="dict", required=False),
+        rule=dict(type="dict", required=True),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
@@ -258,47 +251,41 @@ def run_module():
     ruleset = module.params.get("ruleset", "")
     rule = module.params.get("rule", "")
 
-    if rule is not None:
-
-        # Check if required params to create a rule are given
-        if rule.get("folder") is None or rule.get("folder") == "":
-            rule["folder"] = "/"
-        if rule.get("properties") is None or rule.get("properties") == "":
-            exit_failed(module, "Rule properties are required")
-        if rule.get("value_raw") is None or rule.get("value_raw") == "":
-            exit_failed(module, "Rule value_raw is required")
-        # Default to all hosts if conditions arent given
-        if rule.get("conditions") is None or rule.get("conditions") == "":
-            rule["conditions"] = {
-                "host_tags": [],
-                "host_labels": [],
-                "service_labels": [],
-            }
-        # Get ID of rule that is the same as the given options
-        rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
-        # If rule exists
-        if rule_id is not None:
-            # If state is absent, delete the rule
-            if module.params.get("state") == "absent":
-                delete_rule(module, base_url, headers, rule_id)
-                exit_changed(module, "Deleted rule")
-            # If state is present, do nothing
-            else:
-                exit_ok(module, "Rule already exists")
-        # If rule does not exist
+    # Check if required params to create a rule are given
+    if rule.get("folder") is None or rule.get("folder") == "":
+        rule["folder"] = "/"
+    if rule.get("properties") is None or rule.get("properties") == "":
+        exit_failed(module, "Rule properties are required")
+    if rule.get("value_raw") is None or rule.get("value_raw") == "":
+        exit_failed(module, "Rule value_raw is required")
+    # Default to all hosts if conditions arent given
+    if rule.get("conditions") is None or rule.get("conditions") == "":
+        rule["conditions"] = {
+            "host_tags": [],
+            "host_labels": [],
+            "service_labels": [],
+        }
+    # Get ID of rule that is the same as the given options
+    rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
+    # If rule exists
+    if rule_id is not None:
+        # If state is absent, delete the rule
+        if module.params.get("state") == "absent":
+            delete_rule(module, base_url, headers, rule_id)
+            exit_changed(module, "Deleted rule")
+        # If state is present, do nothing
         else:
-            # If state is present, create the rule
-            if module.params.get("state") == "present":
-                create_rule(module, base_url, headers, ruleset, rule)
-                exit_changed(module, "Created rule")
-            else:
-                # If state is absent, do nothing
-                exit_ok(module, "Rule did not exist")
-
-    # No action can be taken, just return the rules in the ruleset
+            exit_ok(module, "Rule already exists")
+    # If rule does not exist
     else:
-        response = get_rules_in_ruleset(module, base_url, headers, ruleset)
-        exit_ok(module, "Got rules in ruleset", response)
+        # If state is present, create the rule
+        if module.params.get("state") == "present":
+            create_rule(module, base_url, headers, ruleset, rule)
+            exit_changed(module, "Created rule")
+        else:
+            # If state is absent, do nothing
+            exit_ok(module, "Rule did not exist")
+
     # Fallback
     exit_failed(module, "Unknown error")
 
