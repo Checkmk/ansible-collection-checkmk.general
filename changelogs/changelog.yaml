@@ -144,3 +144,61 @@ releases:
     - linting.yml
     - server.yml
     release_date: '2022-07-08'
+  0.5.1:
+    changes:
+      bugfixes:
+      - Fix leakage of admin password in server role.
+      - Fix usage of 'automation_xxx' and 'checkmk_agent_xxx'. 'automation_xxx' variables
+        can still be used for API authentication, but the behavior is more consistent
+        now.
+    fragments:
+    - bugfix_admin_password_leak.yml
+    - bugfix_agent_role.yml
+    release_date: '2022-08-01'
+  0.5.2:
+    changes:
+      bugfixes:
+      - Fix usage of 'checkmk_agent_host_name'variable. Some tasks had 'inventory_hostname'
+        hardcoded, which is not the desired behavior. This is fixed now.
+      - Increase HTTP timeout for the discovery module, because the discovery can
+        take some time depending on the discovered device.
+    fragments:
+    - bugfix_agent_role.yml
+    - bugfix_discovery_http_timeout.yml
+    release_date: '2022-08-04'
+  0.6.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix SELinux handling on RedHat.
+      - Agent role - Fix firewall handling on RedHat.
+      major_changes:
+      - Server role - Add support for automatically updating Checkmk. Read the role's
+        README for important information!
+      release_summary: Introducing upgrade management for Checkmk sites!
+    fragments:
+    - bugfix_agent_role.yml
+    - release_summary.yml
+    - server_update_feature.yml
+    release_date: '2022-08-25'
+  0.7.0:
+    changes:
+      bugfixes:
+      - Activation module - Fix possible race condition. (#123).
+      - Activation module - Fix waiting for activation completion (#103).
+      - Agent role - Support CFE properly.
+      - Agent role - Support both normal and automation users properly.
+      minor_changes:
+      - Agent role - Check for agent updater and controller binaries. Skip registration
+        if respective binary is missing.
+      - Agent role - Host attributes can be fully customized now.
+      - Agent role - Label role. This enables skipping or running tasks exclusively.
+        See the README for a detailed list.
+      - Server role - Label role. This enables skipping or running tasks exclusively.
+        See the README for a detailed list.
+      release_summary: Lots of love for the agent role!
+    fragments:
+    - agent_role.yml
+    - bugfix_activation_module.yml
+    - release_summary.yml
+    - server_role.yml
+    release_date: '2022-08-26'

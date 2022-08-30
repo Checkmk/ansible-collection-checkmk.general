@@ -1,3 +1,4 @@
+
 .. Document meta
 
 :orphan:
@@ -42,11 +43,7 @@ tribe29.checkmk.folder module -- Manage folders in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.5.0).
-
-    You might already have this collection installed if you are using the ``ansible`` package.
-    It is not included in ``ansible-core``.
-    To check whether it is installed, run :code:`ansible-galaxy collection list`.
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.7.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 

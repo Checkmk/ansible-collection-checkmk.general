@@ -43,13 +43,10 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          # - stable-2.9 # Only if your collection supports Ansible 2.9
-          # - stable-2.10
-          # - stable-2.11
           - stable-2.12
-          # - devel
+          - stable-2.13
+          - devel
         python:
-          # - '2.6'
           - '2.7'
           - '3.5'
           - '3.6'
@@ -57,18 +54,13 @@ jobs:
           - '3.8'
           - '3.9'
           - '3.10'
+          - '3.11'
         exclude:
-          # Because ansible-test doesn't support Python 3.9 for Ansible 2.9
-          # and Python 3.10 is supported in 2.12 or later.
-          - ansible: stable-2.9
-            python: '3.9'
-          - ansible: stable-2.9
-            python: '3.10'
-          - ansible: stable-2.10
-            python: '3.10'
-          - ansible: stable-2.11
-            python: '3.10'
-
+          # Exclude unsupported sets.
+          - ansible: stable-2.12
+            python: '3.11'
+          - ansible: stable-2.13
+            python: '3.11'
 
     steps:
       - name: Check out code
@@ -81,7 +73,7 @@ jobs:
         with:
           # it is just required to run that once as "ansible-test integration" in the docker image
           # will run on all python versions it supports.
-          python-version: 3.8
+          python-version: 3.9
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check

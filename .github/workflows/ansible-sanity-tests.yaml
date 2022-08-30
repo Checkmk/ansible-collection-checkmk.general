@@ -15,6 +15,7 @@ on:
       - 'changelogs/**'
       - '**.md'
       - '**.rst'
+      - 'roles/**'
   pull_request:
     paths-ignore:
       - '.github/ISSUE_TEMPLATE/*'
@@ -22,6 +23,7 @@ on:
       - 'changelogs/**'
       - '**.md'
       - '**.rst'
+      - 'roles/**'
 
 env:
   NAMESPACE: tribe29
@@ -39,12 +41,9 @@ jobs:
     strategy:
       matrix:
         ansible:
-          # It's important that Sanity is tested against all stable-X.Y branches
-          # Testing against `devel` may fail as new tests are added.
-          # - stable-2.9 # Only if your collection supports Ansible 2.9
-          # - stable-2.10
           - stable-2.11
           - stable-2.12
+          - stable-2.13
           - devel
     runs-on: ubuntu-latest
     steps:
@@ -62,7 +61,7 @@ jobs:
         with:
           # it is just required to run that once as "ansible-test sanity" in the docker image
           # will run on all python versions it supports.
-          python-version: 3.8
+          python-version: 3.9
 
       # Install the head of the given branch (devel, stable-2.10)
       - name: Install ansible-base (${{ matrix.ansible }})

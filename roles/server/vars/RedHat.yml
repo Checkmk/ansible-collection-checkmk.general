@@ -7,4 +7,5 @@ checkmk_server_prerequisites:
 
 checkmk_server_ports:
   - 80/tcp
+  - 443/tcp
   - 8000/tcp

@@ -5,6 +5,67 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.7.0
+======
+
+Release Summary
+---------------
+
+Lots of love for the agent role!
+
+Minor Changes
+-------------
+
+- Agent role - Check for agent updater and controller binaries. Skip registration if respective binary is missing.
+- Agent role - Host attributes can be fully customized now.
+- Agent role - Label role. This enables skipping or running tasks exclusively. See the README for a detailed list.
+- Server role - Label role. This enables skipping or running tasks exclusively. See the README for a detailed list.
+
+Bugfixes
+--------
+
+- Activation module - Fix possible race condition. (#123).
+- Activation module - Fix waiting for activation completion (#103).
+- Agent role - Support CFE properly.
+- Agent role - Support both normal and automation users properly.
+
+v0.6.0
+======
+
+Release Summary
+---------------
+
+Introducing upgrade management for Checkmk sites!
+
+Major Changes
+-------------
+
+- Server role - Add support for automatically updating Checkmk. Read the role's README for important information!
+
+Bugfixes
+--------
+
+- Agent role - Fix SELinux handling on RedHat.
+- Agent role - Fix firewall handling on RedHat.
+
+v0.5.2
+======
+
+Bugfixes
+--------
+
+- Fix usage of 'checkmk_agent_host_name'variable. Some tasks had 'inventory_hostname' hardcoded, which is not the desired behavior. This is fixed now.
+- Increase HTTP timeout for the discovery module, because the discovery can take some time depending on the discovered device.
+
+v0.5.1
+======
+
+Bugfixes
+--------
+
+- Fix leakage of admin password in server role.
+- Fix usage of 'automation_xxx' and 'checkmk_agent_xxx'. 'automation_xxx' variables can still be used for API authentication, but the behavior is more consistent now.
+
 v0.5.0
 ======
 

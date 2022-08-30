@@ -9,8 +9,9 @@ with automating Checkmk and keep your daily operations smooth and efficient.
 
 ## Here be dragons!
 
-Everything within this repository is subject to possibly heavy change
-and we cannot guarantee stability at this point. You have been warned!
+This repository is provided as is and we cannot guarantee stability at this point.
+Additionally, there is no commercial support whatsoever!
+This is an open source endeavour, which we want to share and progress with the community.
 
 [![Ansible Sanity Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-sanity-tests.yaml)
 [![Ansible Integration Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-integration-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-integration-tests.yaml)
@@ -133,13 +134,7 @@ if you list the `tribe29.checkmk` collection in the playbook's [`collections`](h
 
 ## Contributing to this collection
 
-We welcome and appreciate community contributions to this collection.
-If you find problems, please open an issue or create a pull request against [this repository](https://github.com/tribe29/ansible-collection-tribe29.checkmk).
-See [Contributing to Ansible-maintained collections](https://docs.ansible.com/ansible/devel/community/contributing_maintained_collections.html#contributing-maintained-collections) for more details on how to contribute.
-
-You can also join our [Checkmk Community](https://forum.checkmk.com/)
-and have a look at the [dedicated post regarding Ansible](https://forum.checkmk.com/t/checkmk-goes-ansible/25428)
-and [the 'ansible' tag](https://forum.checkmk.com/tag/ansible) in general.
+See [CONTRIBUTING](CONTRIBUTING).
 
 ## Release notes
 <!--Add a link to a changelog.rst file or an external docsite to cover this information. -->
