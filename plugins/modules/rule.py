@@ -18,7 +18,7 @@ short_description: Manage rules in Checkmk.
 version_added: "0.8.0"
 
 description:
-- Manage rules within Checkmk. Importing rules from the output of the Checkmk API. 
+- Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
 - Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
