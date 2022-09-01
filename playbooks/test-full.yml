@@ -74,6 +74,18 @@
         state: "present"
       delegate_to: localhost
 
+    - name: "Create rule."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "{{ checkmk_ruleset }}"
+        rule: "{{ checkmk_rule }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
+
     - name: "Discover services on host."
       tags: [discovery]
       discovery:

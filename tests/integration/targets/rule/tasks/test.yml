@@ -1,0 +1,93 @@
+---
+# Take this from playbooks/test-full.yml to ensure full coverage!
+# Be sure to remove header!
+
+- name: "{{ outer_item.version }} - Create rule."
+  rule:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    ruleset: "{{ checkmk_ruleset }}"
+    rule: "{{ checkmk_rule }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Create rule."
+  rule:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    ruleset: "{{ checkmk_ruleset }}"
+    rule: "{{ checkmk_rule }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  register: rule_result
+
+- name: "{{ outer_item.version }} - Fail if changed."
+  fail:
+    msg: "Rule changed!"
+  when: "rule_result.changed"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Delete rule."
+  rule:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    ruleset: "{{ checkmk_ruleset }}"
+    rule: "{{ checkmk_rule }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_folders }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Delete rule."
+  rule:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    ruleset: "{{ checkmk_ruleset }}"
+    rule: "{{ checkmk_rule }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_folders }}"
+  register: rule_result
+
+- name: "{{ outer_item.version }} - Fail if changed."
+  fail:
+    msg: "Rule changed!"
+  when: "rule_result.changed"
+  delegate_to: localhost
+  run_once: true
