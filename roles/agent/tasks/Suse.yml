@@ -2,6 +2,7 @@
 - name: "Suse Derivates: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ inventory_hostname }}&os_type=linux_rpm&agent_type=host_name"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ checkmk_agent_agent.file.host }}"
     method: GET
     headers:
@@ -31,6 +32,7 @@
 - name: "Suse Derivates: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_rpm&agent_type=generic"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ checkmk_agent_agent.file.cee }}"
     method: GET
     headers:
