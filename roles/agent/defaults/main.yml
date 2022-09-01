@@ -3,6 +3,7 @@ checkmk_agent_version: "2.1.0p1"
 checkmk_agent_edition: cre
 checkmk_agent_protocol: http
 checkmk_agent_server: localhost
+checkmk_agent_port: "{% if checkmk_agent_protocol == 'https' %}443{% else %}80{% endif %}"
 checkmk_agent_site: my_site
 checkmk_agent_user: "{{ automation_user | default('automation') }}"
 
