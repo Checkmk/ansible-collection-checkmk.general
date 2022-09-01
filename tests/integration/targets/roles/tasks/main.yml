@@ -1,0 +1,16 @@
+---
+- name: "Run server role."
+  tags: [server]
+  ansible.builtin.include_role:
+    name: server
+  loop: "{{ checkmk_versions }}"
+  loop_control:
+    loop_var: outer_item
+
+- name: "Run agent role."
+  tags: [agent]
+  ansible.builtin.include_role:
+    name: agent
+  loop: "{{ checkmk_versions }}"
+  loop_control:
+    loop_var: outer_item
