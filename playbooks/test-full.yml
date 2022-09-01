@@ -13,7 +13,7 @@
 
   tasks:
     - name: "Activate Changes - 1."
-      tags: [activation, host, folder, discovery, user]
+      tags: [activation, host, folder, discovery, user, rule]
       activation:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -75,6 +75,7 @@
       delegate_to: localhost
 
     - name: "Create rule."
+      tags: [rule]
       rule:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -100,7 +101,7 @@
       delegate_to: localhost
 
     - name: "Activate Changes - 2."
-      tags: [activation, host, folder, discovery, user]
+      tags: [activation, host, folder, discovery, user, rule]
       activation:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -147,7 +148,7 @@
       delegate_to: localhost
 
     - name: "Activate Changes - 3."
-      tags: [activation, host, folder, discovery, user]
+      tags: [activation, host, folder, discovery, user, rule]
       activation:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -172,7 +173,7 @@
       delegate_to: localhost
 
     - name: "Activate Changes - 4."
-      tags: [activation, host, folder, discovery, user]
+      tags: [activation, host, folder, discovery, user, rule]
       activation:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -210,6 +211,19 @@
         state: "absent"
       delegate_to: localhost
 
+    - name: "Delete rule."
+      tags: [rule]
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "{{ checkmk_ruleset }}"
+        rule: "{{ checkmk_rule }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true
+
     - name: "Delete folders."
       tags: [folder, host]
       folder:
@@ -225,7 +239,7 @@
       loop: "{{ checkmk_folders }}"
 
     - name: "Activate Changes - 5."
-      tags: [activation, host, folder, discovery, user]
+      tags: [activation, host, folder, discovery, user, rule]
       activation:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
