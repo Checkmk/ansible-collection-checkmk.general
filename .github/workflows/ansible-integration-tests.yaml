@@ -5,7 +5,7 @@
 # 3. If your collection depends on other collections ensure they are installed, see "Install collection dependencies"
 # If you need help please ask in #ansible-community on the Libera.chat IRC network
 
-name: Ansible Integration Tests
+name: Ansible Integration Tests for Modules
 on:
   workflow_dispatch:
   pull_request:
@@ -38,7 +38,7 @@ jobs:
 
   integration:
     runs-on: ubuntu-latest
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    name: ${{ matrix.module }} (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
     strategy:
       fail-fast: false
       matrix:
@@ -55,6 +55,12 @@ jobs:
           - '3.9'
           - '3.10'
           - '3.11'
+        module:
+          - activation
+          - discovery
+          - downtime
+          - folder
+          - host
         exclude:
           # Exclude unsupported sets.
           - ansible: stable-2.12
@@ -85,7 +91,7 @@ jobs:
 
       # Run the integration tests
       - name: Run integration test
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker --coverage --exclude roles
+        run: ansible-test integration ${{ matrix.module }} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker --coverage
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       # # ansible-test support producing code coverage date
