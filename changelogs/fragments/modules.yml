@@ -1,9 +1,11 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 
 minor_changes:
-  - Agent role - Enable forced agent installation, skipping all possible constraints, like downgrades.
-  - Agent role - Make Checkmk server port for API calls configurable. By default the ports 80 and 443 are used according to the configured protocol.
-  - Agent role - Enable usage of the `validate_certs` option, available in all modules.
+  - Activation module - Make certificate validation of the Checkmk server configurable.
+  - Discovery module - Make certificate validation of the Checkmk server configurable.
+  - Downtime module - Make certificate validation of the Checkmk server configurable.
+  - Folder module - Make certificate validation of the Checkmk server configurable.
+  - Host module - Make certificate validation of the Checkmk server configurable.
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
