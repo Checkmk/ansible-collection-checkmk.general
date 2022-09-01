@@ -3,6 +3,7 @@
 minor_changes:
   - Agent role - Enable forced agent installation, skipping all possible constraints, like downgrades.
   - Agent role - Make Checkmk server port for API calls configurable. By default the ports 80 and 443 are used according to the configured protocol.
+  - Agent role - Add a boolean for whether to validate the SSL certificate of the Checkmk server used to retrieve agent packages.
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
