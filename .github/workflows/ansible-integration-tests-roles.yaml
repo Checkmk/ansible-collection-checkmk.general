@@ -63,5 +63,5 @@ jobs:
 
       # Run the integration tests
       - name: Run integration test
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --docker ${{ matrix.container }} --coverage
+        run: ansible-test integration roles -v --color --retry-on-error --continue-on-error --diff --docker ${{ matrix.container }} --coverage
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
