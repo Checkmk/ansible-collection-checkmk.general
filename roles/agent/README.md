@@ -29,6 +29,14 @@ The protocol used to connect to your Checkmk site.
 
 The FQDN or IP address of your Checkmk server.
 
+    checkmk_agent_server_validate_certs: 'true'
+
+Whether to validate the SSL certificate of the Checkmk server.
+
+    checkmk_agent_port: "{% if checkmk_agent_protocol == 'https' %}443{% else %}80{% endif %}"
+
+The port of the web interface of your Checkmk server. Defaults to port 80 for http and port 443 for https.
+
     checkmk_agent_site: my_site
 
 The name of your Checkmk site.
@@ -68,6 +76,11 @@ for automatic updates. Otherwise this will fail.
     checkmk_agent_configure_firewall: 'true'
 
 Automatically configure the firewall to allow access to the Checkmk agent.
+
+    checkmk_agent_force_install: 'false'
+
+Force the installation of the agent package, no matter the constraints.
+This means, downgrades become possible and unverified packages would be installed.
 
     checkmk_agent_prep_legacy: 'false'
 

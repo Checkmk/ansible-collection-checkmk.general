@@ -2,6 +2,7 @@
 - name: "Debian Derivates: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ inventory_hostname }}&os_type=linux_deb&agent_type=host_name"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ checkmk_agent_agent.file.host }}"
     method: GET
     headers:
@@ -19,6 +20,7 @@
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.host }}"
+    force: "{{ checkmk_agent_force_install | bool }}"
     state: present
   when: |
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
@@ -29,6 +31,7 @@
 - name: "Debian Derivates: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_deb&agent_type=generic"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ checkmk_agent_agent.file.cee }}"
     method: GET
     headers:
@@ -44,6 +47,7 @@
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.cee }}"
+    force: "{{ checkmk_agent_force_install | bool }}"
     state: present
   when: |
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
@@ -55,6 +59,7 @@
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.cre }}"
+    force: "{{ checkmk_agent_force_install | bool }}"
     state: present
   when: checkmk_agent_edition == "cre"
   tags:

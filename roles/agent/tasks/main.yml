@@ -19,6 +19,7 @@
 - name: "Download Checkmk CRE Agent."
   ansible.builtin.get_url:
     url: "{{ checkmk_agent_agent.url.cre }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ checkmk_agent_agent.file.cre }}"
     mode: 0640
   when: checkmk_agent_edition == "cre"
@@ -32,8 +33,9 @@
 
 - name: "Create host on server."
   tribe29.checkmk.host:
-    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}/"
+    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
     site: "{{ checkmk_agent_site }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
     automation_secret: "{{ checkmk_agent_pass }}"
     folder: "{{ checkmk_agent_folder | default(omit) }}"
@@ -110,8 +112,9 @@
 
 - name: "Discover services and labels on host."
   tribe29.checkmk.discovery:
-    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}/"
+    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
     site: "{{ checkmk_agent_site }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
     automation_secret: "{{ checkmk_agent_pass }}"
     host_name: "{{ checkmk_agent_host_name }}"
