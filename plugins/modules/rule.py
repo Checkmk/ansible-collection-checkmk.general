@@ -75,7 +75,7 @@ EXAMPLES = r"""
             "disabled": false,
             "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
-        value_raw: "{'levels': [80.0, 90.0]}"
+        value_raw: "{'levels': (80.0, 90.0)}"
     state: "present"
 
 # Delete first rule in this ruleset.
@@ -104,7 +104,7 @@ EXAMPLES = r"""
             "disabled": false,
             "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
-        value_raw: "{'levels': [80.0, 90.0]}"
+        value_raw: "{'levels': (80.0, 90.0)}"
     state: "absent"
 """
 
