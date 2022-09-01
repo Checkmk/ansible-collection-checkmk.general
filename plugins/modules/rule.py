@@ -60,7 +60,7 @@ EXAMPLES = r"""
             "host_labels": [],
             "host_name": {
                 "match_on": [
-                    "server3"
+                    "test1.tld"
                 ],
                 "operator": "one_of"
             },
@@ -89,7 +89,7 @@ EXAMPLES = r"""
             "host_labels": [],
             "host_name": {
                 "match_on": [
-                    "server3"
+                    "test1.tld"
                 ],
                 "operator": "one_of"
             },
