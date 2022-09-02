@@ -1,12 +1,12 @@
 ---
+
 checkmk_server_server_stable_os:
-  - Debian 11
-  - Ubuntu 20
-  - Ubuntu 22
-  - CentOS 7
-  - CentOS 8
-  - RHEL 7
-  - RHEL 8
+  - Debian-11
+  - Ubuntu-20
+  - CentOS-7
+  - CentOS-8
+  - RedHat-7
+  - RedHat-8
 
 checkmk_server_edition: cre
 checkmk_server_version: 2.1.0p1

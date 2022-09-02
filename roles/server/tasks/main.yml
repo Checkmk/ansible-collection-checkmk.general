@@ -4,35 +4,18 @@
     msg: "This role is not stable for the target operating system, {{ ansible_distribution }} {{ ansible_distribution_major_version }}."
   when: (ansible_distribution is not defined) or
         (ansible_distribution_version is not defined) or
-        (ansible_distribution+" "+ansible_distribution_major_version not in checkmk_server_server_stable_os)
+        (ansible_distribution+"-"+ansible_distribution_major_version not in checkmk_server_server_stable_os)
 
 - name: "Include OS Family specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-vars
 
-- name: "Include RHEL Version specific Variables."
-  ansible.builtin.include_vars: "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
-  when: ansible_os_family == "RedHat"
-  tags:
-    - include-rhel-version-vars
-
-- name: "Install Checkmk Prerequisites."
-  become: true
-  ansible.builtin.package:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - "{{ checkmk_server_prerequisites }}"
-  tags:
-    - install-package
-    - install-prerequisites
-
 - name: "Download Checkmk Server Setup."
   ansible.builtin.get_url:
     url: "{{ checkmk_server_download_url }}"
     dest: "/tmp/{{ checkmk_server_setup_file }}"
-    mode: 0640
+    mode: "0640"
     url_username: "{{ checkmk_server_download_user | default(omit) }}"
     url_password: "{{ checkmk_server_download_pass | default(omit) }}"
   tags:
@@ -42,7 +25,7 @@
   ansible.builtin.get_url:
     url: "https://download.checkmk.com/checkmk/Check_MK-pubkey.gpg"
     dest: "/tmp/Check_MK-pubkey.gpg"
-    mode: 0640
+    mode: "0640"
   when: checkmk_server_verify_setup | bool
   tags:
     - download-gpg-key
