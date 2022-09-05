@@ -72,7 +72,7 @@ EXAMPLES = r"""
     host_name: "my_host"
     attributes:
       alias: "My Host"
-      ip_address: "127.0.0.1"
+      ipaddress: "127.0.0.1"
     folder: "/"
     state: "present"
 
