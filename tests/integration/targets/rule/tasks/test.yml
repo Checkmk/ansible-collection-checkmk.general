@@ -1,7 +1,4 @@
 ---
-# Take this from playbooks/test-full.yml to ensure full coverage!
-# Be sure to remove header!
-
 - name: "{{ outer_item.version }} - Create rule."
   rule:
     server_url: "{{ server_url }}"
@@ -57,7 +54,6 @@
     state: "absent"
   delegate_to: localhost
   run_once: true
-  loop: "{{ checkmk_folders }}"
 
 - name: "{{ outer_item.version }} - Activate."
   activation:
@@ -82,7 +78,6 @@
     state: "absent"
   delegate_to: localhost
   run_once: true
-  loop: "{{ checkmk_folders }}"
   register: rule_result
 
 - name: "{{ outer_item.version }} - Fail if changed."
