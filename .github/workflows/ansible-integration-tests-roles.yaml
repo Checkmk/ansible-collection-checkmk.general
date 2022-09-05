@@ -70,7 +70,7 @@ jobs:
   debian:
     runs-on: ubuntu-latest
     container: debian:bullseye
-    name: I (Ubuntu+Ⓐ${{ matrix.ansible }})
+    name: I (Debian+Ⓐ${{ matrix.ansible }})
     strategy:
       fail-fast: false
       matrix:
@@ -91,6 +91,9 @@ jobs:
           # it is just required to run that once as "ansible-test integration" in the docker image
           # will run on all python versions it supports.
           python-version: 3.9
+
+      - name: Install pip
+        run: apt install python-pip
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
