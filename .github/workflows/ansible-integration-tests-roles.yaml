@@ -57,7 +57,7 @@ jobs:
           python-version: 3.9
 
       - name: Install pip3
-        run: apt install python3-pip
+        run: apt get update && apt-get install python3-pip
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
@@ -93,7 +93,7 @@ jobs:
           python-version: 3.9
 
       - name: Install pip3
-        run: apt install python3-pip
+        run: apt get update && apt-get install python3-pip
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
