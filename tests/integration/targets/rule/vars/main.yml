@@ -14,9 +14,7 @@ checkmk_rule:
   conditions: {
       "host_labels": [],
       "host_name": {
-          "match_on": [
-              "test1.tld"
-          ],
+          "match_on": [],
           "operator": "one_of"
       },
       "host_tags": [],
