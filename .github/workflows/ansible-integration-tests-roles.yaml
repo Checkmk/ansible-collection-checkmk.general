@@ -56,6 +56,9 @@ jobs:
           # will run on all python versions it supports.
           python-version: 3.9
 
+      - name: Install pip
+        run: apt install python-pip
+
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
