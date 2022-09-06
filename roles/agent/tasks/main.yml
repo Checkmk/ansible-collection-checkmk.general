@@ -43,8 +43,8 @@
     attributes: "{{ checkmk_agent_host_attributes }}"
   register: checkmk_agent_create_result
   failed_when: |
-    checkmk_agent_create_result.failed is true
-    and "The host is already part of the specified target folder" not in checkmk_agent_create_result.msg
+    (checkmk_agent_create_result.failed == true) and
+    ("The host is already part of the specified target folder" not in checkmk_agent_create_result.msg)
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_add_host | bool
 
