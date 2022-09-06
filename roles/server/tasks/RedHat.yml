@@ -1,4 +1,13 @@
 ---
+- name: "Install Checkmk Prerequisites."
+  become: true
+  ansible.builtin.yum:
+    name: "{{ checkmk_server_prerequisites }}"
+    state: present
+  tags:
+    - install-package
+    - install-prerequisites
+
 - name: "Enable powertools repository."
   become: true
   ansible.builtin.shell: dnf config-manager --set-enabled powertools  # noqa command-instead-of-shell
@@ -24,6 +33,13 @@
   when: ansible_facts.selinux.status == 'enabled'
   tags:
     - set-selinux-boolean
+
+- name: "Make sure firewalld is started and enabled"
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+    enabled: true
+  when: checkmk_server_configure_firewall | bool
 
 - name: "Open firewall ports."
   become: true

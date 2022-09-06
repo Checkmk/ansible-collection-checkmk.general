@@ -5,6 +5,22 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.8.0
+======
+
+Minor Changes
+-------------
+
+- Activation module - Make certificate validation of the Checkmk server configurable.
+- Agent role - Add a boolean for whether to validate the SSL certificate of the Checkmk server used to retrieve agent packages.
+- Agent role - Enable forced agent installation, skipping all possible constraints, like downgrades.
+- Agent role - Make Checkmk server port for API calls configurable. By default the ports 80 and 443 are used according to the configured protocol.
+- Discovery module - Make certificate validation of the Checkmk server configurable.
+- Downtime module - Make certificate validation of the Checkmk server configurable.
+- Folder module - Make certificate validation of the Checkmk server configurable.
+- Host module - Make certificate validation of the Checkmk server configurable.
+- Server role - Fix setup file verification on Debian derivates. Using gpg instead of dpkg-sig now.
+
 v0.7.0
 ======
 
