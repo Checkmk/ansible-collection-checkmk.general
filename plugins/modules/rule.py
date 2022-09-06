@@ -15,7 +15,7 @@ short_description: Manage rules in Checkmk.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "0.9.0"
+version_added: "0.10.0"
 
 description:
 - Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
