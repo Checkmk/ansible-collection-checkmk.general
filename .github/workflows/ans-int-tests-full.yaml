@@ -5,20 +5,11 @@
 # 3. If your collection depends on other collections ensure they are installed, see "Install collection dependencies"
 # If you need help please ask in #ansible-community on the Libera.chat IRC network
 
-name: Ansible Integration Tests for Modules
+name: Ansible Integration Tests for all Modules
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
-      - devel
-    paths-ignore:
-      - '.github/ISSUE_TEMPLATE/*'
-      - 'docs/**'
-      - 'changelogs/**'
-      - '**.md'
-      - '**.rst'
-      - 'roles/**'
+  schedule:
+    - cron: '0 0 * * *'
 
 env:
   NAMESPACE: tribe29
