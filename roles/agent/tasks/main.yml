@@ -102,7 +102,7 @@
   ansible.builtin.shell: |
     cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} \
-    -U {{ checkmk_agent_user }} -S {{ checkmk_agent_pass }} --trust-cert
+    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_pass }} --trust-cert
   register: checkmk_agent_tls_state
   when: |
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
