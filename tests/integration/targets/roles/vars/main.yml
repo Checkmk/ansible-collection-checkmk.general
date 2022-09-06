@@ -7,27 +7,15 @@ checkmk_versions:
     site: "oldstable"
 checkmk_edition: "cre"
 checkmk_version: "{{ outer_item.version }}"  # Used inside loops
-server_url: "http://127.0.0.1/"
+server_url: "http://localhost/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
-
-# checkmk_hosts:
-#   - name: test1.tld
-#     folder: "/"
-#   - name: test2.tld
-#     folder: "/"
-#   - name: test3.tld
-#     folder: "/"
-#   - name: test4.tld
-#     folder: "/"
-#   - name: test5.tld
-#     folder: "/"
 
 # Agent role
 checkmk_agent_version: "{{ checkmk_version }}"
 checkmk_agent_edition: "{{ checkmk_edition }}"
 checkmk_agent_protocol: http
-checkmk_agent_server: 127.0.0.1
+checkmk_agent_server: localhost
 checkmk_agent_site: "{{ outer_item.site }}"
 checkmk_agent_user: "{{ automation_user }}"
 checkmk_agent_pass: "{{ automation_secret }}"
