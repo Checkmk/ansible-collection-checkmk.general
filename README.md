@@ -60,6 +60,7 @@ Name | Description
 [tribe29.checkmk.downtime](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/downtime.py)|Schedule downtimes on hosts and services.
 [tribe29.checkmk.folder](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/folder.py)|Manage folders.
 [tribe29.checkmk.host](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/host.py)|Manage hosts.
+[tribe29.checkmk.rule](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rule.py)|Manage rules.
 
 ### Roles
 Name | Description
