@@ -33,7 +33,10 @@ jobs:
 
   ubuntu:
     runs-on: ubuntu-latest
-    container: ubuntu:22.04
+    container:
+      image: ubuntu:22.04
+      ports:
+          - 80:80
     name: I (Ubuntu+Ⓐ${{ matrix.ansible }})
     strategy:
       fail-fast: false
@@ -69,7 +72,10 @@ jobs:
 
   debian:
     runs-on: ubuntu-latest
-    container: debian:bullseye
+    container: 
+      image: debian:bullseye
+      ports:
+          - 80:80
     name: I (Debian+Ⓐ${{ matrix.ansible }})
     strategy:
       fail-fast: false
