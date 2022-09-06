@@ -31,7 +31,7 @@ options:
         choices: [present, absent]
         default: present
         type: str
-        
+
 author:
     - Stefan Mühling (@muehlings)
 """
