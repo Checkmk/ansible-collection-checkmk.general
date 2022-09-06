@@ -90,13 +90,22 @@ from ansible.module_utils.urls import fetch_url
 
 
 def read_host_tag_group(module, base_url, headers):
-    result = dict(changed=False, failed=False, http_code="", msg="", current_host_tag_group={}, etag="")
+    result = dict(
+        changed=False,
+        failed=False,
+        http_code="",
+        msg="",
+        current_host_tag_group={},
+        etag="",
+    )
 
     current_state = "unknown"
     current_host_tag_group = dict(title="", topic="", tags=[], ident="")
     etag = ""
 
-    api_endpoint = "/objects/host_tag_group/" + module.params.get("host_tag_group")["ident"]
+    api_endpoint = (
+        "/objects/host_tag_group/" + module.params.get("host_tag_group")["ident"]
+    )
     url = base_url + api_endpoint
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
@@ -106,7 +115,9 @@ def read_host_tag_group(module, base_url, headers):
     http_code = info["status"]
     try:
         response_content = response.read()
-        detail = str(json.loads(info["body"])["detail"]), str(json.loads(info["body"])["fields"])
+        detail = str(json.loads(info["body"])["detail"]), str(
+            json.loads(info["body"])["fields"]
+        )
     except Exception:
         detail = response_content
     msg = info["msg"]
@@ -122,9 +133,9 @@ def read_host_tag_group(module, base_url, headers):
         current_host_tag_group["title"] = json.loads(response_content).get("title", "")
         current_host_tag_group["ident"] = json.loads(response_content).get("id", "")
 
-        for d in current_host_tag_group['tags']:
-            d['ident'] = d.pop('id')
-            d.pop('aux_tags')
+        for d in current_host_tag_group["tags"]:
+            d["ident"] = d.pop("id")
+            d.pop("aux_tags")
 
     elif info["status"] == 404:
         current_state = "absent"
@@ -133,7 +144,7 @@ def read_host_tag_group(module, base_url, headers):
         failed = True
 
     result["current_host_tag_group"] = current_host_tag_group
-    result["msg"] = str(http_code) + ' - ' + msg
+    result["msg"] = str(http_code) + " - " + msg
     result["http_code"] = http_code
     result["state"] = current_state
     result["etag"] = etag
@@ -158,13 +169,15 @@ def create_host_tag_group(module, base_url, headers):
 
     http_code = info["status"]
     try:
-        detail = str(json.loads(info["body"])["detail"]), str(json.loads(info["body"])["fields"])
+        detail = str(json.loads(info["body"])["detail"]), str(
+            json.loads(info["body"])["fields"]
+        )
     except Exception:
-        detail = ''
+        detail = ""
     msg = info["msg"]
     # failed = ?
 
-    result["msg"] = str(http_code) + ' - ' + msg
+    result["msg"] = str(http_code) + " - " + msg
     result["changed"] = changed
     result["failed"] = failed
     result["http_code"] = http_code
@@ -192,13 +205,15 @@ def update_host_tag_group(module, base_url, headers, etag):
     )
     http_code = info["status"]
     try:
-        detail = str(json.loads(info["body"])["detail"]), str(json.loads(info["body"])["fields"])
+        detail = str(json.loads(info["body"])["detail"]), str(
+            json.loads(info["body"])["fields"]
+        )
     except Exception:
-        detail = ''
+        detail = ""
     msg = info["msg"]
     # failed = ?
 
-    result["msg"] = str(http_code) + ' - ' + msg
+    result["msg"] = str(http_code) + " - " + msg
     result["changed"] = changed
     result["failed"] = failed
     result["http_code"] = http_code
@@ -227,13 +242,15 @@ def delete_host_tag_group(module, base_url, headers, etag):
 
     http_code = info["status"]
     try:
-        detail = str(json.loads(info["body"])["detail"]), str(json.loads(info["body"])["fields"])
+        detail = str(json.loads(info["body"])["detail"]), str(
+            json.loads(info["body"])["fields"]
+        )
     except Exception:
-        detail = ''
+        detail = ""
     msg = info["msg"]
     # failed = ?
 
-    result["msg"] = str(http_code) + ' - ' + msg
+    result["msg"] = str(http_code) + " - " + msg
     result["changed"] = changed
     result["failed"] = failed
     result["http_code"] = http_code
@@ -278,11 +295,18 @@ def run_module():
 
     if result["etag"] != "":
         # host_tag_group is "present"
-        if module.params.get("state") == "absent": # host_tag_group needs to be deleted (DELETE)
+        if (
+            module.params.get("state") == "absent"
+        ):  # host_tag_group needs to be deleted (DELETE)
             result = delete_host_tag_group(module, base_url, headers, result["etag"])
             result["changed"] = True
-        elif module.params.get("state") == "present": # host_tag_group needs to be updated (PUT)
-            pairs = zip(module.params.get("host_tag_group")["tags"], result["current_host_tag_group"]["tags"])
+        elif (
+            module.params.get("state") == "present"
+        ):  # host_tag_group needs to be updated (PUT)
+            pairs = zip(
+                module.params.get("host_tag_group")["tags"],
+                result["current_host_tag_group"]["tags"],
+            )
             current_len = len(result["current_host_tag_group"]["tags"])
             current_etag = result["etag"]
             current_title = result["current_host_tag_group"]["title"]
@@ -301,7 +325,7 @@ def run_module():
                 changed_topic = True
             if changed_len or changed_content or changed_title or changed_topic:
                 result = update_host_tag_group(module, base_url, headers, current_etag)
-                result["changed"] = True # different length
+                result["changed"] = True  # different length
 
     else:
         # host_tag_group is "absent"
