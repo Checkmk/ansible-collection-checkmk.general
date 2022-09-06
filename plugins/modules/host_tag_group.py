@@ -25,7 +25,6 @@ extends_documentation_fragment: [tribe29.checkmk.common]
 options:
     host_tag_group:
         description: The host_tag_group to be created/modified/deleted as returned by the Checkmk API.
-        required: true
         type: raw
     state:
         description: State of the host_tag_group.
