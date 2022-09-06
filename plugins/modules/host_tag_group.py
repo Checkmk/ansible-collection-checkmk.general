@@ -24,25 +24,9 @@ extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     host_tag_group:
-        description: The host_tag_group to be created/modified/deleted.
-        default: []
-        type: list
-        ident:
-            description: The id of the host_tag_group to be created/modified/deleted.
-            default: ""
-            type: string
-        tags:
-            description: The list of the tags for the host_tag_group as dicts.
-            default: []
-            type: list(dicts)
-        title:
-            description: The title of the host_tag_group
-            default: ""
-            type: string
-        topic:
-            description: The topic of the host_tag_group
-            default: ""
-            type: string
+        description: The host_tag_group to be created/modified/deleted as returned by the Checkmk API.
+        default: {}
+        type: dict
 
 author:
     - Stefan Mühling (@muehlings)
