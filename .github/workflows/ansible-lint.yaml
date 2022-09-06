@@ -9,9 +9,15 @@ name: Ansible Linting
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
+      - devel
     paths:
       - 'roles/**'
   pull_request:
+    branches:
+      - main
+      - devel
     paths:
       - 'roles/**'
 
