@@ -24,6 +24,9 @@ extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     host_tag_group:
+        description: The host_tag_group to be created/modified/deleted.
+        default: []
+        type: list
         ident:
             description: The id of the host_tag_group to be created/modified/deleted.
             default: ""
