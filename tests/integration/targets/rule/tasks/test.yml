@@ -36,8 +36,8 @@
   run_once: true
   register: rule_result
 
-- name: "{{ outer_item.version }} - Fail if changed."
-  fail:
+- name: "{{ outer_item.version }} - Fail if changed."  # noqa no-handler
+  ansible.builtin.fail:
     msg: "Rule changed!"
   when: "rule_result.changed"
   delegate_to: localhost
@@ -80,8 +80,8 @@
   run_once: true
   register: rule_result
 
-- name: "{{ outer_item.version }} - Fail if changed."
-  fail:
+- name: "{{ outer_item.version }} - Fail if changed."  # noqa no-handler
+  ansible.builtin.fail:
     msg: "Rule changed!"
   when: "rule_result.changed"
   delegate_to: localhost
