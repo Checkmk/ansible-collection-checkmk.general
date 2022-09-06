@@ -28,4 +28,3 @@
     host_tag_group: "{{ host_tag_group }}"
     state: "absent"
   delegate_to: localhost
-
