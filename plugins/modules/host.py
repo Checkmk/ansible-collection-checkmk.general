@@ -40,6 +40,10 @@ options:
         type: str
         default: present
         choices: [present, absent]
+    validate_certs:
+        description: Whether to validate the SSL certificate of the Checkmk server.
+        default: true
+        type: bool
 
 author:
     - Robin Gierse (@robin-tribe29)
@@ -68,7 +72,7 @@ EXAMPLES = r"""
     host_name: "my_host"
     attributes:
       alias: "My Host"
-      ip_address: "127.0.0.1"
+      ipaddress: "127.0.0.1"
     folder: "/"
     state: "present"
 
@@ -230,6 +234,7 @@ def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
+        validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         host_name=dict(type="str", required=True),
