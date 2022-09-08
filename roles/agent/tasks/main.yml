@@ -70,6 +70,7 @@
     and checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
+    and (checkmk_agent_secret is not defined)
 
 - name: "Register Agent for automatic Upates using Automation Secret."
   become: true
@@ -96,6 +97,7 @@
     and checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
+    and (checkmk_agent_secret is not defined)
 
 - name: "Register Agent for TLS using Automation Secret."
   become: true
