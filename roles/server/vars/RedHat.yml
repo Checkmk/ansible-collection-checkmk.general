@@ -17,7 +17,6 @@ checkmk_server_prerequisites_per_distro:
     - firewalld
     - epel-release
     - libsemanage-python
-    - yum-plugins-core
   RedHat-8:
     - firewalld
     - epel-release
