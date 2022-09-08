@@ -1,15 +1,4 @@
 ---
-- name: "Install Checkmk Prerequisites."
-  become: true
-  ansible.builtin.apt:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - "{{ checkmk_server_prerequisites }}"
-  tags:
-    - install-package
-    - install-prerequisites
-
 - name: "Install Checkmk Server."
   become: true
   ansible.builtin.apt:
