@@ -7,7 +7,7 @@ checkmk_versions:
     site: "oldstable"
 checkmk_edition: "cre"
 checkmk_version: "{{ outer_item.version }}"  # Used inside loops
-server_url: "http://localhost/"
+server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
 
@@ -15,7 +15,7 @@ automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
 checkmk_agent_version: "{{ checkmk_version }}"
 checkmk_agent_edition: "{{ checkmk_edition }}"
 checkmk_agent_protocol: http
-checkmk_agent_server: localhost
+checkmk_agent_server: 127.0.0.1
 checkmk_agent_site: "{{ outer_item.site }}"
 checkmk_agent_user: "{{ automation_user }}"
 checkmk_agent_pass: "{{ automation_secret }}"

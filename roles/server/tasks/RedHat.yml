@@ -1,13 +1,4 @@
 ---
-- name: "Install Checkmk Prerequisites."
-  become: true
-  ansible.builtin.yum:
-    name: "{{ checkmk_server_prerequisites }}"
-    state: present
-  tags:
-    - install-package
-    - install-prerequisites
-
 - name: "Enable powertools repository."
   become: true
   ansible.builtin.shell: dnf config-manager --set-enabled powertools  # noqa command-instead-of-shell
