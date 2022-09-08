@@ -38,7 +38,6 @@ jobs:
           - '3.8'
           - '3.9'
           - '3.10'
-          - '3.11'
 
     steps:
       - name: Check out code
@@ -47,7 +46,7 @@ jobs:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -60,5 +59,6 @@ jobs:
       - name: Test with molecule
         run: |
           cd roles/agent/
-          molecule test
+          molecule test -s 2.0.0
+          molecule test -s 2.1.0
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
