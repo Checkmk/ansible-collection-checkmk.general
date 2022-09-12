@@ -229,6 +229,19 @@ def delete_host(module, base_url, headers):
         )
 
 
+def normalize_folder(folder):
+    if folder in ["", " ", "/", "//"]:
+        return "/"
+
+    if not folder.startswith("/"):
+        folder = "/%s" % folder
+
+    if folder.endswith("/"):
+        folder = folder.rstrip("/")
+
+    return folder
+
+
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
@@ -268,10 +281,7 @@ def run_module():
     state = module.params.get("state", "present")
 
     if "folder" in module.params:
-        if not module.params["folder"].startswith("/"):
-            module.params["folder"] = "/" + module.params["folder"]
-    else:
-        module.params["folder"] = "/"
+        module.params["folder"] = normalize_folder(module.params["folder"])
 
     # Determine the current state of this particular host
     (
@@ -286,8 +296,7 @@ def run_module():
         headers["If-Match"] = etag
         msg_tokens = []
 
-        if current_folder.endswith("/"):
-            current_folder = current_folder.rstrip("/")
+        current_folder = normalize_folder(current_folder)
 
         if current_folder != module.params["folder"]:
             move_host(module, base_url, headers)
