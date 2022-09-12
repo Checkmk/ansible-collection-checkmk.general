@@ -223,3 +223,15 @@ releases:
     - modules.yml
     - server_role.yml
     release_date: '2022-09-01'
+  0.9.0:
+    changes:
+      bugfixes:
+      - Host module - Do not raise an error, if a host already exists, or on updating
+        a host's attributes while the hosts stays in the same folder.
+      - Server role - Fix and enhance additional repository handling on RedHat derivates.
+      minor_changes:
+      - Server role - Improve OS support detection and enhance prerequisites installation.
+    fragments:
+    - host_module.yml
+    - server_role.yml
+    release_date: '2022-09-12'
