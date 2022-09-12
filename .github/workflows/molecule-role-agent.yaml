@@ -30,12 +30,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Checkmk ${{ matrix.checkmk }} + py${{ matrix.python }}
     strategy:
-      max-parallel: 4
       fail-fast: false
       matrix:
         python:
           - '2.7'
-          - '3.6'
           - '3.7'
           - '3.8'
           - '3.9'
