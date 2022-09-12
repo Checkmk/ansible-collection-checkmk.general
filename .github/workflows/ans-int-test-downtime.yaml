@@ -1,0 +1,65 @@
+# https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+
+name: Ansible Integration Tests for Downtime Module
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - devel
+    paths:
+      - 'plugins/modules/downtime.py'
+
+env:
+  NAMESPACE: tribe29
+  COLLECTION_NAME: checkmk 
+
+jobs:
+
+###
+# Integration tests (RECOMMENDED)
+#
+# https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
+
+  integration:
+    runs-on: ubuntu-latest
+    name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible:
+          - stable-2.12
+          - stable-2.13
+          - devel
+        python:
+          - '2.7'
+          - '3.6'
+          - '3.7'
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+        exclude:
+          # Exclude unsupported sets.
+          - ansible: stable-2.12
+            python: '3.11'
+          - ansible: stable-2.13
+            python: '3.11'
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - name: Run integration test
+        run: ansible-test integration downtime -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}

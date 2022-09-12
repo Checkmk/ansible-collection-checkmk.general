@@ -9,9 +9,15 @@ name: Ansible Linting
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
+      - devel
     paths:
       - 'roles/**'
   pull_request:
+    branches:
+      - main
+      - devel
     paths:
       - 'roles/**'
 
@@ -33,7 +39,7 @@ jobs:
 
   integration:
     runs-on: ubuntu-latest
-    name: I (Ⓐ${{ matrix.ansible }}+py${{ matrix.python }})
+    name: I py${{ matrix.python }})
     strategy:
       fail-fast: false
       matrix:
