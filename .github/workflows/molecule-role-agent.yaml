@@ -28,17 +28,18 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: Checkmk ${{ matrix.checkmk }} + py${{ matrix.python }}
     strategy:
       fail-fast: false
       matrix:
-        python-version:
+        python:
           - '2.7'
           - '3.6'
           - '3.7'
           - '3.8'
           - '3.9'
           - '3.10'
-        checkmk-version:
+        checkmk:
           - '2.0.0'
           - '2.1.0'
 
@@ -48,10 +49,10 @@ jobs:
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python }}
 
       - name: Install dependencies
         run: |
@@ -62,5 +63,5 @@ jobs:
       - name: Test with molecule
         run: |
           cd roles/agent/
-          molecule test -s ${{ matrix.checkmk-version }}
+          molecule test -s ${{ matrix.checkmk }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
