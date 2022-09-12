@@ -35,7 +35,11 @@ Your credentials to the Checkmk customer portal.
 
     checkmk_server_verify_setup: 'true'
 
-Cryptographically verify the downloaded setup file.
+Cryptographically verify the downloaded Checkmk setup file.
+
+    checkmk_server_epel_gpg_check: 'true'
+
+Cryptographically verify the downloaded epel-release package on RHEL 8.
 
     checkmk_server_configure_firewall: 'true'
 
@@ -81,7 +85,8 @@ Tasks are tagged with the following tags:
 | `include-os-family-vars` | Include OS family specific variables. |
 | `include-rhel-version-vars` | Include RHEL version specific variables. |
 | `set-selinux-boolean` | Set necessary SELinux booleans for Checkmk to work on SELinux enabled systems. |
-| `enable-powertools` | Enable the powertools repository on RHEL based systems. Required for some dependencies of Checkmk. |
+| `enable-repos` | Enable the required external repositories on RHEL based systems. Powertools on RHEL 7 and CentOS 8. CRB and EPEL on RHEL 8. |
+| `checkmk_server_epel_gpg_check` | Download and use GPG key verification for EPEL repository. |
 | `create-sites` | Create sites on the Checkmk server. |
 | `update-sites` | Update sites on the Checkmk server. |
 | `start-sites` | Start sites on the Checkmk server. |
