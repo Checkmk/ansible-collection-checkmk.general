@@ -43,7 +43,7 @@ tribe29.checkmk.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.8.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.9.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -461,7 +461,7 @@ Examples
         host_name: "my_host"
         attributes:
           alias: "My Host"
-          ip_address: "127.0.0.1"
+          ipaddress: "127.0.0.1"
         folder: "/"
         state: "present"
 
