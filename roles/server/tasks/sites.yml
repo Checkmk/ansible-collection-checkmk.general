@@ -21,6 +21,7 @@
     omd version {{ item.name }} | egrep -o '[^ ]+$'
   args:
     executable: /bin/bash
+  no_log: true
   loop: "{{ checkmk_server_sites }}"
   changed_when: "checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition"
   when: item.state != "absent"
