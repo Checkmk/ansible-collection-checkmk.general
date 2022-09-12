@@ -30,3 +30,5 @@ checkmk_server_backup_on_update: 'true'  # Not recommended to disable this optio
 checkmk_server_backup_dir: /tmp
 checkmk_server_backup_opts: '--no-past'
 checkmk_server_allow_downgrades: 'false'
+
+checkmk_server_epel_gpg_check: 'true'
