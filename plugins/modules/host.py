@@ -299,7 +299,6 @@ def run_module():
         current_folder = normalize_folder(current_folder)
 
         if current_folder != module.params["folder"]:
-            #exit_failed(module, "current: %s, new: %s" % (current_folder, module.params["folder"]))
             move_host(module, base_url, headers)
             msg_tokens.append("Host was moved.")
 
