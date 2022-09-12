@@ -10,18 +10,26 @@ checkmk_server_ports:
 checkmk_server_prerequisites_per_distro:
   RedHat:
     - firewalld
-    - epel-release
-    - python3-libsemanage
     - dnf-plugins-core
+    - python3-libsemanage
+  CentOS-7:
+    - firewalld
+    - dnf-plugins-core
+    - libsemanage-python
+  CentOS-8:
+    - firewalld
+    - dnf-plugins-core
+    - python3-libsemanage
   RedHat-7:
     - firewalld
-    - epel-release
     - libsemanage-python
   RedHat-8:
     - firewalld
-    - epel-release
-    - python3-libsemanage
     - dnf-plugins-core
+    - python3-libsemanage
 
-checkmk_server_prerequisites: "{{ checkmk_server_prerequisites_per_distro[ansible_facts.os_family ~ '-' ~ ansible_facts.distribution_major_version] | default(
-  checkmk_server_prerequisites_per_distro[ansible_facts.os_family]) }}"
+checkmk_server_prerequisites: "{{ checkmk_server_prerequisites_per_distro[ansible_facts.distribution ~ '-' ~ ansible_facts.distribution_major_version]
+  | default( checkmk_server_prerequisites_per_distro[ansible_facts.distribution]) }}"
+
+checkmk_server_epel_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts.distribution_major_version }}.noarch.rpm"
+checkmk_server_epel_gpg_key: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts.distribution_major_version }}"
