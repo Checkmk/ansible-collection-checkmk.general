@@ -1,7 +1,10 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 
+minor_changes:
+    - Server role - Improve OS support detection and enhance prerequisites installation.
+
 bugfixes:
-    - Fix Issue #99: The module can now handle changing host attributes while the host remains in the same folder.
+    - Server role - Fix and enhance additional repository handling on RedHat derivates.
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
