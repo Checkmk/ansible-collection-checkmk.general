@@ -1,5 +1,6 @@
 ---
-- block:
+- name: "Enable repositories on RHEL 8."
+  block:
 
   - name: "Enable CodeReady Linux Builder repo on RHEL 8."
     become: true
