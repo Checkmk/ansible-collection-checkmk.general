@@ -1,8 +1,34 @@
 ---
-checkmk_agent_version: "2.1.0p1"
+checkmk_agent_version: "2.1.0p11"
 checkmk_agent_edition: cre
 checkmk_agent_protocol: http
 checkmk_agent_server: localhost
+checkmk_agent_server_validate_certs: 'true'
+checkmk_agent_port: "{% if checkmk_agent_protocol == 'https' %}443{% else %}80{% endif %}"
 checkmk_agent_site: my_site
+checkmk_agent_user: "{{ automation_user | default('automation') }}"
+
+# Depending on which user you will be using, set the password or secret:
+# checkmk_agent_pass: "{{ automation_secret }}"
+# checkmk_agent_secret: "{{ automation_secret }}"
+
+checkmk_agent_add_host: 'false'
+checkmk_agent_discover: 'false'
 checkmk_agent_update: 'false'
 checkmk_agent_tls: 'false'
+checkmk_agent_configure_firewall: 'true'
+checkmk_agent_force_install: 'false'
+checkmk_agent_prep_legacy: 'false'
+checkmk_agent_delegate_api_calls: localhost
+checkmk_agent_host_name: "{{ inventory_hostname }}"
+checkmk_agent_host_attributes:
+  ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
+  tag_agent: 'cmk-agent'
+
+# If you trust your local hostnames, you could also use the following
+# to use the local hostname instead of the inventory hostname:
+# checkmk_agent_host_name: "{{ hostvars[inventory_hostname]['ansible_fqdn'] }}"
+# Checkmk does not need an IP address, as long as the hostname is DNS-resolvable
+
+# If that does not apply to your environment, you can configure the IP address below:
+# checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"

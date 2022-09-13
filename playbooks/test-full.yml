@@ -6,154 +6,247 @@
 - name: "Test all modules."
   hosts: all
   gather_facts: 'no'
+
   vars_files:
     - ./vars/config.yml
+    - ./vars/users.yml
+
   tasks:
-  - name: "Activate changes on site - 1."
-    activation:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      force_foreign_changes: 'true'
-      sites: 
-        - "{{ site }}"
-    delegate_to: localhost
-    run_once: 'true'
+    - name: "Activate Changes - 1."
+      tags: [activation, host, folder, discovery, user, rule]
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
 
-  - name: "Create folders."
-    folder:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      path: "{{ item.path }}"
-      title: "{{ item.title }}"
-      state: "present"
-    delegate_to: localhost
-    run_once: 'yes'
-    loop: "{{ checkmk_folders }}"
+    - name: "Create users."
+      tags: [user]
+      user:  # noqa fqcn-builtins
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        username: "{{ item.username }}"
+        fullname: "{{ item.fullname }}"
+        auth_option: "{{ item.auth_option }}"
+        roles:
+          - "admin"
+        authorized_sites:
+          - "{{ site }}"
+        state: "present"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
 
-  - name: "Create host."
-    host:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      host_name: "{{ inventory_hostname }}"
-      folder: "{{ checkmk_folder_path }}"
-      attributes:
-              site: "{{ site }}"
-              ipaddress: 127.0.0.1
-      state: "present"
-    delegate_to: localhost
+    - name: "Create folders."
+      tags: [folder, host]
+      folder:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
+        title: "{{ item.title }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_folders }}"
 
-  - name: "Discover services on host."
-    discovery:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      host_name: "{{ inventory_hostname }}"
-      # "refresh" is the only method working correctly, currently :-(
-      # See https://jira.lan.tribe29.com/browse/CMK-7200
-      state: "refresh"
-    delegate_to: localhost
+    - name: "Create host."
+      tags: [host]
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        attributes:
+          site: "{{ site }}"
+          ipaddress: 127.0.0.1
+        state: "present"
+      delegate_to: localhost
 
-  - name: "Activate changes on site - 2."
-    activation:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      force_foreign_changes: 'true'
-      sites: 
-        - "{{ site }}"
-    delegate_to: localhost
-    run_once: 'true'
+    - name: "Create rule."
+      tags: [rule]
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "{{ checkmk_ruleset }}"
+        rule: "{{ checkmk_rule }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
 
-  - name: "Change host attributes."
-    host:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      host_name: "{{ inventory_hostname }}"
-      folder: "{{ checkmk_folder_path }}"
-      attributes:
-              site: "{{ site }}"
-              alias: "Important Server"
-              ipaddress: 127.0.0.2
-      state: "present"
-    delegate_to: localhost
+    - name: "Discover services on host."
+      tags: [discovery]
+      discovery:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        # "refresh" is the only method working correctly, currently :-(
+        # See https://jira.lan.tribe29.com/browse/CMK-7200
+        state: "refresh"
+      delegate_to: localhost
 
-  - name: "Activate changes on site - 3."
-    activation:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      force_foreign_changes: 'true'
-      sites: 
-        - "{{ site }}"
-    delegate_to: localhost
-    run_once: 'true'
+    - name: "Activate Changes - 2."
+      tags: [activation, host, folder, discovery, user, rule]
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
 
-  - name: "Move host to another folder."
-    host:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      host_name: "{{ inventory_hostname }}"
-      folder: "/bar"
-      state: "present"
-    delegate_to: localhost
+    - name: "Edit users."
+      tags: [user]
+      user:  # noqa fqcn-builtins
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        username: "{{ item.username }}"
+        contact_options: "{{ item.contact_options }}"
+        contactgroups: "{{ item.contactgroups }}"
+        # authorized_sites:
+        #    - "{{ site }}"
+        state: "present"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
 
-  - name: "Activate changes on site - 4."
-    activation:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      force_foreign_changes: 'true'
-      sites: 
-        - "{{ site }}"
-    delegate_to: localhost
-    run_once: 'true'
+    - name: "Change host attributes."
+      tags: [host]
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        attributes:
+          site: "{{ site }}"
+          alias: "Important Server"
+          ipaddress: 127.0.0.2
+        state: "present"
+      delegate_to: localhost
 
-  - name: "Delete Host."
-    host:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      host_name: "{{ inventory_hostname }}"
-      folder: "{{ checkmk_folder_path }}"
-      state: "absent"
-    delegate_to: localhost
+    - name: "Activate Changes - 3."
+      tags: [activation, host, folder, discovery, user, rule]
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
 
-  - name: "Delete folders."
-    folder:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      path: "{{ item.path }}"
-      title: "{{ item.title }}"
-      state: "absent"
-    delegate_to: localhost
-    run_once: 'yes'
-    loop: "{{ checkmk_folders }}"
+    - name: "Move host to another folder."
+      tags: [host]
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        folder: "/bar"
+        state: "present"
+      delegate_to: localhost
 
-  - name: "Activate changes on site - 5."
-    activation:
-      server_url: "{{ server_url }}"
-      site: "{{ site }}"
-      automation_user: "{{ automation_user }}"
-      automation_secret: "{{ automation_secret }}"
-      force_foreign_changes: 'true'
-      sites: 
-        - "{{ site }}"
-    delegate_to: localhost
-    run_once: 'true'
+    - name: "Activate Changes - 4."
+      tags: [activation, host, folder, discovery, user, rule]
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
+
+    - name: "Delete users."
+      tags: [user]
+      user:  # noqa fqcn-builtins
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        username: "{{ item.username }}"
+        state: "absent"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
+
+    - name: "Delete Host."
+      tags: [host]
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        state: "absent"
+      delegate_to: localhost
+
+    - name: "Delete rule."
+      tags: [rule]
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "{{ checkmk_ruleset }}"
+        rule: "{{ checkmk_rule }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true
+
+    - name: "Delete folders."
+      tags: [folder, host]
+      folder:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
+        title: "{{ item.title }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_folders }}"
+
+    - name: "Activate Changes - 5."
+      tags: [activation, host, folder, discovery, user, rule]
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'

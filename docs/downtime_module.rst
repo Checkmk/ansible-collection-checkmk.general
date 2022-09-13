@@ -1,3 +1,4 @@
+
 .. Document meta
 
 :orphan:
@@ -42,11 +43,7 @@ tribe29.checkmk.downtime module -- Manage downtimes in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.4.0).
-
-    You might already have this collection installed if you are using the ``ansible`` package.
-    It is not included in ``ansible-core``.
-    To check whether it is installed, run :code:`ansible-galaxy collection list`.
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.9.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -226,7 +223,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Duration in seconds. When set, the downtime does not begin automatically at a nominated time, but when a non-OK status actually appears for the host. Consequently, the start_time and end_time is only the time window in which the scheduled downtime can occur.
+      Duration in seconds. When set, the downtime does not begin automatically at a nominated time, but when a non-OK status actually appears for the host. Consequently, the start\_time and end\_time is only the time window in which the scheduled downtime can occur.
 
 
       .. rst-class:: ansible-option-line
@@ -347,8 +344,8 @@ Parameters
 
       :ansible-option-choices:`Choices:`
 
-      - :ansible-option-default-bold:`no` :ansible-option-default:`← (default)`
-      - :ansible-option-choices-entry:`yes`
+      - :ansible-option-default-bold:`false` :ansible-option-default:`← (default)`
+      - :ansible-option-choices-entry:`true`
 
       .. raw:: html
 
@@ -606,6 +603,47 @@ Parameters
 
       - :ansible-option-default-bold:`present` :ansible-option-default:`← (default)`
       - :ansible-option-choices-entry:`absent`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
+
+      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-validate_certs:
+
+      .. rst-class:: ansible-option-title
+
+      **validate_certs**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-validate_certs" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Whether to validate the SSL certificate of the Checkmk server.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-default-bold:`true` :ansible-option-default:`← (default)`
 
       .. raw:: html
 

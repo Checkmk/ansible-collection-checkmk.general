@@ -1,46 +1,95 @@
+---
 - name: "Create Sites."
-  become: 'yes'
-  ansible.builtin.shell: "omd -V {{ item.version }}.{{ checkmk_server_edition }} create {{ item.name }}"
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd -V {{ item.version }}.{{ checkmk_server_edition }} create {{ item.name }}
   args:
+    executable: /bin/bash
     creates: "/omd/sites/{{ item.name }}"
-  no_log: 'true'
+  no_log: true
   loop: "{{ checkmk_server_sites }}"
   when: item.state != "absent"
   register: checkmk_server_sites_created
+  tags:
+    - create-sites
+
+- name: "Get site version."
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd version {{ item.name }} | egrep -o '[^ ]+$'
+  args:
+    executable: /bin/bash
+  no_log: true
+  loop: "{{ checkmk_server_sites }}"
+  changed_when: "checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition"
+  when: item.state != "absent"
+  register: checkmk_server_sites_versions
+  tags:
+    - update-sites
+
+- name: "Include update site tasks."
+  ansible.builtin.include_tasks: update-site.yml
+  loop: "{{ checkmk_server_sites_versions.results }}"
+  when: "item.changed"
+  tags:
+    - update-sites
 
 - name: "Start Sites."
-  become: 'yes'
-  ansible.builtin.shell: "omd start {{ item.name }}"
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd start {{ item.name }}
   args:
+    executable: /bin/bash
     creates: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
-  no_log: 'true'
+  no_log: true
   loop: "{{ checkmk_server_sites }}"
   when: item.state == "started"
   register: checkmk_server_sites_started
+  tags:
+    - start-sites
 
 - name: "Stop Sites."
-  become: 'yes'
-  ansible.builtin.shell: "omd stop {{ item.name }}"
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd stop {{ item.name }}
   args:
+    executable: /bin/bash
     removes: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
-  no_log: 'true'
+  no_log: true
   loop: "{{ checkmk_server_sites }}"
   when: (item.state == "absent") or (item.state == "stopped")
   register: checkmk_server_sites_stopped
+  tags:
+    - stop-sites
 
 - name: "Destroy Sites."
-  become: 'yes'
-  ansible.builtin.shell: "yes yes | omd rm {{ item.name }}"
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    (yes yes || true) | omd rm {{ item.name }}
   args:
+    executable: /bin/bash
     removes: "/omd/sites/{{ item.name }}"
-  no_log: 'true'
+  no_log: true
   loop: "{{ checkmk_server_sites }}"
   when: item.state == "absent"
   register: checkmk_server_sites_removed
+  tags:
+    - destroy-sites
 
 - name: "Update Site Admin Password."
-  become: 'yes'
-  ansible.builtin.shell: "echo '{{ item.admin_pw }}' | htpasswd -i /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin"
-  no_log: 'true'
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    echo '{{ item.admin_pw }}' | htpasswd -i /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
+  args:
+    executable: /bin/bash
+  no_log: true
   loop: "{{ checkmk_server_sites }}"
   when: item.state != "absent"
+  tags:
+    - set-site-admin-pw

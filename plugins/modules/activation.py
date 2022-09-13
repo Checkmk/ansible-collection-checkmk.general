@@ -32,6 +32,10 @@ options:
         description: Wheather to active foreign changes.
         default: false
         type: bool
+    validate_certs:
+        description: Whether to validate the SSL certificate of the Checkmk server.
+        default: true
+        type: bool
 
 author:
     - Robin Gierse (@robin-tribe29)
@@ -79,6 +83,8 @@ message:
     sample: 'Changes activated.'
 """
 
+import time
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 
@@ -88,6 +94,7 @@ def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
+        validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         sites=dict(type="raw", default=[]),
@@ -137,7 +144,7 @@ def run_module():
 
     params = {
         "force_foreign_changes": module.params.get("force_foreign_changes", ""),
-        "redirect": True,  # ToDo: Do we need this? Does it need to be configurable?
+        "redirect": False,
         "sites": sites,
     }
 
@@ -166,6 +173,10 @@ def run_module():
 
     if result["failed"]:
         module.fail_json(**result)
+
+    # Work around a possible race condition in the activation process.
+    # The sleep can be removed, once this is stable on Checkmk's and.
+    time.sleep(3)
 
     module.exit_json(**result)
 

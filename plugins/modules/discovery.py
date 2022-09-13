@@ -31,6 +31,10 @@ options:
         type: str
         default: new
         choices: [new, remove, fix_all, refresh, only_host_labels]
+    validate_certs:
+        description: Whether to validate the SSL certificate of the Checkmk server.
+        default: true
+        type: bool
     host_names:
         description: A list of host names for bulk discovery.
         type: list
@@ -115,6 +119,7 @@ def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
+        validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         host_name=dict(type="str"),
@@ -192,7 +197,7 @@ def run_module():
     url = base_url + api_endpoint
 
     response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
+        module, url, module.jsonify(params), headers=headers, method="POST", timeout=60
     )
     http_code = info["status"]
 

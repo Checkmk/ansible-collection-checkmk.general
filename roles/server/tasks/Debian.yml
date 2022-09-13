@@ -1,7 +1,9 @@
 ---
 - name: "Install Checkmk Server."
-  become: 'yes'
+  become: true
   ansible.builtin.apt:
     deb: "/tmp/{{ checkmk_server_setup_file }}"
     update_cache: 'yes'
     state: present
+  tags:
+    - install-package

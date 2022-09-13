@@ -29,9 +29,39 @@ The protocol used to connect to your Checkmk site.
 
 The FQDN or IP address of your Checkmk server.
 
+    checkmk_agent_server_validate_certs: 'true'
+
+Whether to validate the SSL certificate of the Checkmk server.
+
+    checkmk_agent_port: "{% if checkmk_agent_protocol == 'https' %}443{% else %}80{% endif %}"
+
+The port of the web interface of your Checkmk server. Defaults to port 80 for http and port 443 for https.
+
     checkmk_agent_site: my_site
 
 The name of your Checkmk site.
+
+    checkmk_agent_user: automation
+
+The user used to authenticate against your Checkmk site.
+
+    checkmk_agent_pass: "{{ automation_secret }}"
+
+The password for the normal user used to authenticate against your Checkmk site.
+This is mutually exclusive with `checkmk_agent_secret`!
+
+    checkmk_agent_secret: "{{ automation_secret }}"
+
+The secret for the automation user used to authenticate against your Checkmk site.
+This is mutually exclusive with `checkmk_agent_pass`!
+
+    checkmk_agent_add_host: 'false'
+
+Automatically add the host where the agent was installed to Checkmk.
+
+    checkmk_agent_discover: 'false'
+
+Automatically discover services on the host where the agent was installed.
 
     checkmk_agent_update: 'false'
 
@@ -42,6 +72,51 @@ for automatic updates. Otherwise this will fail.
 
 Register for TLS encryption. Make sure to have the server side prepared
 for automatic updates. Otherwise this will fail.
+
+    checkmk_agent_configure_firewall: 'true'
+
+Automatically configure the firewall to allow access to the Checkmk agent.
+
+    checkmk_agent_force_install: 'false'
+
+Force the installation of the agent package, no matter the constraints.
+This means, downgrades become possible and unverified packages would be installed.
+
+    checkmk_agent_prep_legacy: 'false'
+
+Enable this to automatically install `xinetd` on hosts with systemd prior to version 220.
+
+    checkmk_agent_delegate_api_calls: localhost
+
+Configure the host to which Checkmk API calls are delegated to.
+
+    checkmk_agent_host_name: "{{ inventory_hostname }}"
+
+Define the hostname which will be used to add the host to Checkmk.
+
+    checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+Define an IP address which will be added to the host in Checkmk. This is optional, as long as the hostname is DNS-resolvable.
+
+    checkmk_agent_host_attributes:
+        ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
+        tag_agent: 'cmk-agent'
+
+Define attributes with which the host will be added to Checkmk.
+
+## Tags
+Tasks are tagged with the following tags:
+| Tag | Purpose |
+| ---- | ------- |
+| `download-package` | Download agent package. |
+| `install-package` | Install agent package with package manager. |
+| `install-prerequisites` | Install packages that are required for the role or agent to work. |
+| `include-os-family-vars` | Include OS family specific variables. |
+| `include-os-family-tasks` | Include OS family specific tasks. |
+| `get-package-facts` | Get package facts, used in the role. |
+| `enable-xinetd` | Enable xinetd on hosts with systemd prior to version 220. |
+
+You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
 
 ## Dependencies
 

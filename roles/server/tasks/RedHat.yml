@@ -1,0 +1,104 @@
+---
+- name: "Enable repositories on RHEL 8."
+  block:
+
+  - name: "Enable CodeReady Linux Builder repo on RHEL 8."
+    become: true
+    community.general.rhsm_repository:
+      name: "codeready-builder-for-rhel-{{ ansible_facts.distribution_major_version }}-x86_64-rpms"
+      state: enabled
+    tags:
+      - enable-repos
+
+  - name: "Download EPEL GPG Key on RHEL 8."
+    ansible.builtin.get_url:
+      url: "{{ checkmk_server_epel_gpg_key }}"
+      dest: "/tmp/EPEL-pubkey.gpg"
+      mode: "0640"
+    when: checkmk_server_verify_setup | bool
+    tags:
+      - download-gpg-key
+      - enable-repos
+
+  - name: "Import Checkmk GPG Key on RHEL 8."
+    become: true
+    ansible.builtin.rpm_key:
+      key: "/tmp/EPEL-pubkey.gpg"
+      state: present
+    when: checkmk_server_epel_gpg_check | bool
+    tags:
+      - import-gpg-key
+      - enable-repos
+
+  - name: "Install epel-release from URL on RHEL 8."
+    become: true
+    ansible.builtin.yum:
+      name: "{{ checkmk_server_epel_url }}"
+      state: present
+      disable_gpg_check: "{{ not checkmk_server_epel_gpg_check | bool }}"
+    tags:
+      - enable-repos
+
+  when: |
+    ansible_facts.distribution == "RedHat"
+    and ansible_facts.distribution_major_version == "8"
+
+- name: "Enable powertools repository on CentOS 8."
+  become: true
+  ansible.builtin.shell: dnf config-manager --set-enabled powertools  # noqa command-instead-of-shell
+  when: | # RHEL needs epel and a package URL
+    ansible_facts.distribution != "RedHat"
+    and ansible_distribution_major_version == "8"
+  tags:
+    - enable-repos
+
+- name: "Enable powertools repository on RHEL 7."
+  become: true
+  community.general.rhsm_repository:
+    name: "{{ item }}"
+    state: enabled
+  loop:
+    - "rhel-7-server-optional-rpms"
+    - "rhel-7-server-extras-rpms"
+  when: |
+    ansible_facts.distribution == "RedHat"
+    and ansible_facts.distribution_major_version == "7"
+  tags:
+    - enable-repos
+
+- name: "Install Checkmk Server."
+  become: true
+  ansible.builtin.yum:
+    name: "/tmp/{{ checkmk_server_setup_file }}"
+    state: present
+    disable_gpg_check: '{{ not checkmk_server_verify_setup | bool }}'
+  tags:
+    - install-package
+
+- name: "Enable httpd can network connect selinux boolean."
+  become: true
+  ansible.posix.seboolean:
+    name: httpd_can_network_connect
+    state: true
+    persistent: true
+  when: ansible_facts.selinux.status == 'enabled'
+  tags:
+    - set-selinux-boolean
+
+- name: "Make sure firewalld is started and enabled"
+  become: true
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+    enabled: true
+  when: checkmk_server_configure_firewall | bool
+
+- name: "Open firewall ports."
+  become: true
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  loop: "{{ checkmk_server_ports }}"
+  when: checkmk_server_configure_firewall | bool

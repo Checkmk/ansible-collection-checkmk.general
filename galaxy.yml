@@ -9,7 +9,8 @@ namespace: tribe29
 name: checkmk
 
 # The version of the collection. Must be compatible with semantic versioning
-version: 0.4.0
+
+version: 0.10.0
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -29,7 +30,6 @@ description: "The official Checkmk Ansible collection - brought to you by tribe2
 # Either a single license or a list of licenses for content inside of a collection. Ansible Galaxy currently only
 # accepts L(SPDX,https://spdx.org/licenses/) licenses. This key is mutually exclusive with 'license_file'
 # license:
-# - 
 
 # The path to the license file for the collection. This path is relative to the root of the collection. This key is
 # mutually exclusive with 'license'
@@ -43,7 +43,9 @@ tags: [tribe29, checkmk, monitoring]
 # collection label 'namespace.name'. The value is a version range
 # L(specifiers,https://python-semanticversion.readthedocs.io/en/latest/#requirement-specification). Multiple version
 # range specifiers can be set and are separated by ','
-# dependencies: []
+dependencies:
+  "community.general": ">=5.0.0"
+  "ansible.posix": ">=1.4.0"
 
 # The URL of the originating SCM repository
 repository: https://github.com/tribe29/ansible-collection-tribe29.checkmk

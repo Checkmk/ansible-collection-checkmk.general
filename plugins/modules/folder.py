@@ -39,6 +39,10 @@ options:
         type: str
         default: present
         choices: [present, absent]
+    validate_certs:
+        description: Whether to validate the SSL certificate of the Checkmk server.
+        default: true
+        type: bool
 
 author:
     - Robin Gierse (@robin-tribe29)
@@ -99,6 +103,7 @@ else:
         PATHLIB2_LIBRARY_IMPORT_ERROR = traceback.format_exc()
     else:
         HAS_PATHLIB2_LIBRARY = True
+        PATHLIB2_LIBRARY_IMPORT_ERROR = None
 
 import json
 
@@ -228,6 +233,7 @@ def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
+        validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         path=dict(type="str", required=True),

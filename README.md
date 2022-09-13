@@ -9,11 +9,12 @@ with automating Checkmk and keep your daily operations smooth and efficient.
 
 ## Here be dragons!
 
-Everything within this repository is subject to possibly heavy change
-and we cannot guarantee stability at this point. You have been warned!
+This repository is provided as is and we cannot guarantee stability at this point.
+Additionally, there is no commercial support whatsoever!
+This is an open source endeavour, which we want to share and progress with the community.
 
 [![Ansible Sanity Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-sanity-tests.yaml)
-[![Ansible Integration Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-integration-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-integration-tests.yaml)
+[![Ansible Integration Tests for all Modules](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-tests-full.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-tests-full.yaml)
 <!-- [![Ansible Unit Tests](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-unit-tests.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ansible-unit-tests.yaml) -->
 
 ---
@@ -22,6 +23,12 @@ This repository is a successor to [ansible-checkmk](https://github.com/tribe29/a
 in a way, that we take the idea of the initial repository and translate it into
 todays format. We will try to keep you posted as best as we can.
 Also, keep an eye on [this Checkmk forum post](https://forum.checkmk.com/t/checkmk-goes-ansible/25428) for updates.
+
+## Dependencies
+ - [ansible.posix](https://github.com/ansible-collections/ansible.posix)
+ - [community.general](https://github.com/ansible-collections/community.general)
+
+Although the Ansible project notes, that collections should have no or very little dependencies, we want to make sure the  collection works for you out-of-the-box. Currently we only depend on very basic collections, which are most likely already installed in your environment. For version constraints, see [galaxy.yml](galaxy.yml).
 
 ## Getting help
 
@@ -52,19 +59,20 @@ Name | Description
 -->
 
 ### Modules
-Name | Description
---- | ---
-[tribe29.checkmk.activation](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/activation.py)|Activate changes.
-[tribe29.checkmk.discovery](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/discovery.py)|Discover services on hosts.
-[tribe29.checkmk.downtime](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/downtime.py)|Schedule downtimes on hosts and services.
-[tribe29.checkmk.folder](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/folder.py)|Manage folders.
-[tribe29.checkmk.host](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/host.py)|Manage hosts.
+Name | Description | Tests
+--- | --- | ---
+[tribe29.checkmk.activation](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/activation.py)|Activate changes.|[![Integration Tests for Activation Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-activation.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-activation.yaml)
+[tribe29.checkmk.discovery](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/discovery.py)|Discover services on hosts.|[![Integration Tests for Discovery Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-discovery.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-discovery.yaml)
+[tribe29.checkmk.downtime](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/downtime.py)|Schedule downtimes on hosts and services.|[![Integration Tests for Downtime Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-downtime.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-downtime.yaml)
+[tribe29.checkmk.folder](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/folder.py)|Manage folders.|[![Integration Tests for Folder Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-folder.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-folder.yaml)
+[tribe29.checkmk.host](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/host.py)|Manage hosts.|[![Integration Tests for Host Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-host.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-host.yaml)
+[tribe29.checkmk.rule](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rule.py)|Manage rules.|[![Integration Tests for Rule Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-rule.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-rule.yaml)
 
 ### Roles
-Name | Description
---- | ---
-[tribe29.checkmk.agent](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/roles/agent/README.md)|Installs Checkmk agents.
-[tribe29.checkmk.server](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/roles/server/README.md)|Installs Checkmk servers.
+Name | Description | Tests
+--- | --- | ---
+[tribe29.checkmk.agent](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/roles/agent/README.md)|Installs Checkmk agents.|[![Molecule Tests for Agent Role](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-agent.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-agent.yaml)
+[tribe29.checkmk.server](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/roles/server/README.md)|Installs Checkmk servers.|[![Molecule Tests for Server Role](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-server.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-server.yaml)
 <!--end collection content-->
 
 ## Installing this collection
@@ -133,13 +141,7 @@ if you list the `tribe29.checkmk` collection in the playbook's [`collections`](h
 
 ## Contributing to this collection
 
-We welcome and appreciate community contributions to this collection.
-If you find problems, please open an issue or create a pull request against [this repository](https://github.com/tribe29/ansible-collection-tribe29.checkmk).
-See [Contributing to Ansible-maintained collections](https://docs.ansible.com/ansible/devel/community/contributing_maintained_collections.html#contributing-maintained-collections) for more details on how to contribute.
-
-You can also join our [Checkmk Community](https://forum.checkmk.com/)
-and have a look at the [dedicated post regarding Ansible](https://forum.checkmk.com/t/checkmk-goes-ansible/25428)
-and [the 'ansible' tag](https://forum.checkmk.com/tag/ansible) in general.
+See [CONTRIBUTING](CONTRIBUTING).
 
 ## Release notes
 <!--Add a link to a changelog.rst file or an external docsite to cover this information. -->

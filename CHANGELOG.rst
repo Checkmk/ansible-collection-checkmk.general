@@ -5,6 +5,114 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.9.0
+======
+
+Minor Changes
+-------------
+
+- Server role - Improve OS support detection and enhance prerequisites installation.
+
+Bugfixes
+--------
+
+- Host module - Do not raise an error, if a host already exists, or on updating a host's attributes while the hosts stays in the same folder.
+- Server role - Fix and enhance additional repository handling on RedHat derivates.
+
+v0.8.0
+======
+
+Minor Changes
+-------------
+
+- Activation module - Make certificate validation of the Checkmk server configurable.
+- Agent role - Add a boolean for whether to validate the SSL certificate of the Checkmk server used to retrieve agent packages.
+- Agent role - Enable forced agent installation, skipping all possible constraints, like downgrades.
+- Agent role - Make Checkmk server port for API calls configurable. By default the ports 80 and 443 are used according to the configured protocol.
+- Discovery module - Make certificate validation of the Checkmk server configurable.
+- Downtime module - Make certificate validation of the Checkmk server configurable.
+- Folder module - Make certificate validation of the Checkmk server configurable.
+- Host module - Make certificate validation of the Checkmk server configurable.
+- Server role - Fix setup file verification on Debian derivates. Using gpg instead of dpkg-sig now.
+
+v0.7.0
+======
+
+Release Summary
+---------------
+
+Lots of love for the agent role!
+
+Minor Changes
+-------------
+
+- Agent role - Check for agent updater and controller binaries. Skip registration if respective binary is missing.
+- Agent role - Host attributes can be fully customized now.
+- Agent role - Label role. This enables skipping or running tasks exclusively. See the README for a detailed list.
+- Server role - Label role. This enables skipping or running tasks exclusively. See the README for a detailed list.
+
+Bugfixes
+--------
+
+- Activation module - Fix possible race condition. (#123).
+- Activation module - Fix waiting for activation completion (#103).
+- Agent role - Support CFE properly.
+- Agent role - Support both normal and automation users properly.
+
+v0.6.0
+======
+
+Release Summary
+---------------
+
+Introducing upgrade management for Checkmk sites!
+
+Major Changes
+-------------
+
+- Server role - Add support for automatically updating Checkmk. Read the role's README for important information!
+
+Bugfixes
+--------
+
+- Agent role - Fix SELinux handling on RedHat.
+- Agent role - Fix firewall handling on RedHat.
+
+v0.5.2
+======
+
+Bugfixes
+--------
+
+- Fix usage of 'checkmk_agent_host_name'variable. Some tasks had 'inventory_hostname' hardcoded, which is not the desired behavior. This is fixed now.
+- Increase HTTP timeout for the discovery module, because the discovery can take some time depending on the discovered device.
+
+v0.5.1
+======
+
+Bugfixes
+--------
+
+- Fix leakage of admin password in server role.
+- Fix usage of 'automation_xxx' and 'checkmk_agent_xxx'. 'automation_xxx' variables can still be used for API authentication, but the behavior is more consistent now.
+
+v0.5.0
+======
+
+Minor Changes
+-------------
+
+- Add support for RedHat/CentOS 7 and 8 and compatible distributions to server role.
+- Enable agent role to automatically add hosts to Checkmk during agent installation.
+- Enable firewall management of the host to allow instant access to the agent.
+- Enable firewall management of the host to allow instant access to the web interface of the server.
+- Introduce ansible linting for roles and fix findings.
+
+Bugfixes
+--------
+
+- Handle hosts, where systemd version is below 220. It is now possible to automatically install xinetd in those cases. This has to be enabled explicitely.
+
 v0.4.0
 ======
 
