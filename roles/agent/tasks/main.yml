@@ -42,6 +42,7 @@
     folder: "{{ checkmk_agent_folder | default(omit) }}"
     host_name: "{{ checkmk_agent_host_name }}"
     attributes: "{{ checkmk_agent_host_attributes }}"
+    state: "present"
   register: checkmk_agent_create_result
   failed_when: |
     checkmk_agent_create_result.failed is true
