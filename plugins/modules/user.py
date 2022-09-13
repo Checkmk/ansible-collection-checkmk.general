@@ -160,6 +160,133 @@ def exit_ok(module, msg):
     module.exit_json(**result)
 
 
+def log(msg):
+    LOG.append(msg)
+
+
+class UserAttributes():
+
+    default_attributes = {
+        "disable_login": False,
+        "contact_options": {
+            "email": "",
+            "fallback_contact": False
+        },
+        "idle_timeout": {
+            "option": "global"
+        },
+        "roles": [
+            "user"
+        ],
+        "contactgroups": [],
+        "pager_address": "",
+        "disable_notifications": {},
+        "enforce_password_change": False,
+        "interface_options": {
+            "interface_theme": "default",
+            "sidebar_position": "right",
+            "navigation_bar_icons": "hide",
+            "mega_menu_icons": "topic",
+            "show_mode": "default"
+        }
+    }
+
+
+    def __init__(self, attributes):
+        self.attributes = attributes
+
+
+    @classmethod
+    def from_api_response(cls, instance):
+        attributes = copy.deepcopy(instance.attributes)
+        attributes["name"] = instance.title
+
+        return cls(title, attributes)
+
+
+    @classmethod
+    def from_module(cls, module):
+        # module_args = dict(
+        #     server_url=dict(type="str", required=True),
+        #     site=dict(type="str", required=True),
+        #     automation_user=dict(type="str", required=True),
+        #     automation_secret=dict(type="str", required=True, no_log=True),
+        #   o username=dict(required=True, type=str),
+        #   o fullname=dict(type="str"),
+        #   o password=dict(type="str"),
+        #   o secret=dict(type="str"),
+        #   o auth_type=dict(type="str", choices=["password", "secret"]),
+        #   o disable_login=dict(type="bool"),
+        #   o email=dict(type="str"),
+        #   o fallback_contact=dict(type="bool"),
+        #   o pager_address=dict(type="str"),
+        #   + idle_timeout_duration=dict(type="str"),
+        #   + idle_timeout_option=dict(type="str", choices=["global", "disable", "individual"]),
+        #   + roles=dict(type="raw"),
+        #   + authorized_sites=dict(type="raw"),
+        #   + contactgroups=dict(type="raw"),
+        #   + disable_notifications=dict(type="raw"),
+        #   o language=dict(type="str", choices=["default", "en", "de", "ro"]),
+        #     state=dict(
+        #         type="str",
+        #         default="present",
+        #         choices=["present", "absent", "reset_password"],
+        #     ),
+        # )
+
+        attributes = default_attributes
+        attributes["name"] = module.params.username
+
+        if "fullname" in module.params:
+            attributes["fullname"] = module.params.fullname
+        if "disable_login" in module.params:
+            attributes["disable_login"] = module.params.disable_login == "True"
+        if "email" in module.params:
+            attributes["contact_options"]["email"] = module.params.email
+        if "fallback_contact" in module.params:
+            attributes["contact_options"]["fallback_contact"] = module.params.fallback_contact == "True"
+        if "pager_address" in module.params:
+            attributes["pager_address"] = module.params.pager_address
+        if "language" in module.params and module.params.language != "default":
+            attributes["language"] = module.params.language
+        if "" in module.params:
+            attributes[""] = module.params.
+
+        # Handle password or secret
+        # TODO: Handle enforce_password_change
+        if "authtype" in module.params or "password" in module.params or "secret" in module.params:
+            auth_option = {}
+            if module.params.authtype == "password" and "password" in module.params:
+                auth_option["password"] = module.params.password
+                auth_option["auth_type"] = "password"
+            elif module.params.authtype == "secret" and "secret" in module.params:
+                auth_option["secret"] = module.params.secret
+                auth_option["auth_type"] = "secret"
+            else:
+                log("Incomplete auth_type/password/secret combination.")
+                return
+            attributes["auth_option"] = auth_option
+
+        return cls(userid, attributes)
+
+        # TODO: handle idle_timeout_duration idle_timeout_option roles authorized_sites contactgroups disable_notifications
+
+    def is_equal_with(other_instance):
+        if self.userid != other_instance.userid:
+            return False
+
+        if self.title != other_instance.title:
+            return False
+
+        # TODO: Handle password/secret, as they are not part of the API response
+        # Idea: If they are set and complete, return "False", so the password will be updated.
+
+        if self.attributes != other_instance.attributes:
+            return False
+
+        return True
+
+
 def get_current_user_state(module, base_url, headers):
     extensions = {}
     etag = ""
@@ -215,24 +342,24 @@ def _normalize_attributes(user_attributes):
     ]
 
     explicit_attributes = {}
-    LOG.append(str(user_attributes.items()))
+    log(str(user_attributes.items()))
     for k, v in user_attributes.items():
-        LOG.append("processing %s (%s)" % (k,v))
+        log("processing %s (%s)" % (k,v))
         if k not in special_treatment:
             if v is None or v == "" or v == "None" or (k == "language" and v == "default"):
-                LOG.append("To be filled")
+                log("To be filled")
                 if k in default_attributes:
-                    LOG.append("Fill with default %s" % default_attributes[k])
+                    log("Fill with default %s" % default_attributes[k])
                     explicit_attributes[k] = default_attributes[k]
-                    LOG.append("Filled with default %s" % explicit_attributes[k])
+                    log("Filled with default %s" % explicit_attributes[k])
             else:
-                LOG.append("use what the user provided: %s" % v)
+                log("use what the user provided: %s" % v)
                 explicit_attributes[k] = v
 
     # The API expects "idle_timeout", "auth_option" and "contact options" in a slightly different structure, but we
     # want the Ansible module to be easier to use
     if "idle_timeout_option" in user_attributes or "idle_timeout_duration" in user_attributes:
-        LOG.append("processing idle_timeout: ")
+        log("processing idle_timeout: ")
         idle_timeout = {}
         for key in ["option", "duration"]:
             long_key = "idle_timeout_%s" % key
@@ -240,11 +367,11 @@ def _normalize_attributes(user_attributes):
                 idle_timeout[key] = user_attributes[long_key]
             else:
                 idle_timeout[key] = default_attributes[long_key]
-        LOG.append(str(idle_timeout))
+        log(str(idle_timeout))
         explicit_attributes["idle_timeout"] = idle_timeout
 
     if "auth_type" in user_attributes:
-        LOG.append("processing auth_option: ")
+        log("processing auth_option: ")
         auth_option = {
             "auth_type": user_attributes.get("auth_type", default_attributes["auth_type"]),
         }
@@ -252,22 +379,22 @@ def _normalize_attributes(user_attributes):
             auth_option["secret"] = user_attributes.get("password", default_attributes["password"])
         else:
             auth_option["password"] = user_attributes.get("password", default_attributes["password"])
-        LOG.append(str(auth_option))
+        log(str(auth_option))
         explicit_attributes["auth_option"] = auth_option
 
     if "email" in user_attributes or "fallback_contact" in user_attributes:
-        LOG.append("processing contact_options: ")
+        log("processing contact_options: ")
         contact_options = {}
         for key in ["email", "fallback_contact"]:
             if key in user_attributes and user_attributes[key] is not None and user_attributes[key] != "":
                 contact_options[key] = user_attributes[key]
             else:
                 contact_options[key] = default_attributes[key]
-        LOG.append(str(contact_options))
+        log(str(contact_options))
         explicit_attributes["contact_options"] = contact_options
 
-    LOG.append("explicit attributes: ")
-    LOG.append(str(explicit_attributes))
+    log("explicit attributes: ")
+    log(str(explicit_attributes))
 
     return explicit_attributes
 
@@ -414,10 +541,10 @@ def run_module():
         del user_attributes["username"]
         # TODO: normalize user attributes and then do a deep compare before deciding what to change.
         if user_attributes != {} and current_user_attributes != user_attributes:
-            LOG.append("current_user_attributes")
-            LOG.append(str(current_user_attributes))
-            LOG.append("user_attributes")
-            LOG.append(str(user_attributes))
+            log("current_user_attributes")
+            log(str(current_user_attributes))
+            log("user_attributes")
+            log(str(user_attributes))
             set_user_attributes(module, user_attributes, base_url, headers)
             msg_tokens.append("User attributes changed.")
 
