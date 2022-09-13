@@ -24,6 +24,12 @@ in a way, that we take the idea of the initial repository and translate it into
 todays format. We will try to keep you posted as best as we can.
 Also, keep an eye on [this Checkmk forum post](https://forum.checkmk.com/t/checkmk-goes-ansible/25428) for updates.
 
+## Dependencies
+ - [ansible.posix](https://github.com/ansible-collections/ansible.posix)
+ - [community.general](https://github.com/ansible-collections/community.general)
+
+Although the Ansible project notes, that collections should have no or very little dependencies, we want to make sure the  collection works for you out-of-the-box. Currently we only depend on very basic collections, which are most likely already installed in your environment. For version constraints, see [galaxy.yml](galaxy.yml).
+
 ## Getting help
 
 For documentation on the [included modules](#modules), run the following
