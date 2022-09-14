@@ -92,12 +92,7 @@ message:
 
 def read_tag_group(module, base_url, headers):
     result = dict(
-        changed=False,
-        failed=False,
-        http_code="",
-        msg="",
-        current_tag_group={},
-        etag=""
+        changed=False, failed=False, http_code="", msg="", current_tag_group={}, etag=""
     )
 
     current_state = "unknown"
@@ -109,19 +104,15 @@ def read_tag_group(module, base_url, headers):
     api_endpoint = "/objects/host_tag_group/" + ident
     url = base_url + api_endpoint
 
-    response, info = fetch_url(
-        module, url, data=None, headers=headers, method="GET"
-    )
+    response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
 
     response_content = ""
 
     http_code = info["status"]
     try:
         response_content = response.read()
-        detail = str(json.loads(
-            info["body"])["detail"]
-        ), str(json.loads(
-            info["body"])["fields"]
+        detail = str(json.loads(info["body"])["detail"]), str(
+            json.loads(info["body"])["fields"]
         )
     except Exception:
         detail = response_content
@@ -131,21 +122,15 @@ def read_tag_group(module, base_url, headers):
         current_state = "present"
         etag = info.get("etag", "")
 
-        extensions = json.loads(
-            response_content
-        ).get("extensions", {})
+        extensions = json.loads(response_content).get("extensions", {})
         current_tag_group["tags"] = extensions["tags"]
         current_tag_group["topic"] = extensions["topic"]
-        current_tag_group["title"] = json.loads(
-            response_content
-        ).get("title", "")
-        current_tag_group["ident"] = json.loads(
-            response_content
-        ).get("id", "")
+        current_tag_group["title"] = json.loads(response_content).get("title", "")
+        current_tag_group["ident"] = json.loads(response_content).get("id", "")
 
-        for d in current_tag_group['tags']:
-            d['ident'] = d.pop('id')
-            d.pop('aux_tags')
+        for d in current_tag_group["tags"]:
+            d["ident"] = d.pop("id")
+            d.pop("aux_tags")
 
     elif info["status"] == 404:
         current_state = "absent"
@@ -154,7 +139,7 @@ def read_tag_group(module, base_url, headers):
         failed = True
 
     result["current_tag_group"] = current_tag_group
-    result["msg"] = str(http_code) + ' - ' + msg
+    result["msg"] = str(http_code) + " - " + msg
     result["http_code"] = http_code
     result["state"] = current_state
     result["etag"] = etag
@@ -175,8 +160,8 @@ def create_tag_group(module, base_url, headers):
     tag_group["title"] = module.params.get("title", "")
     tag_group["topic"] = module.params.get("topic", "")
     tag_group["tags"] = module.params.get("choices", "")
-    for d in tag_group['tags']:
-        d['ident'] = d.pop('id')
+    for d in tag_group["tags"]:
+        d["ident"] = d.pop("id")
 
     api_endpoint = "/domain-types/host_tag_group/collections/all"
     url = base_url + api_endpoint
@@ -186,17 +171,18 @@ def create_tag_group(module, base_url, headers):
 
     http_code = info["status"]
     try:
-        detail = str(json.loads(
-            info["body"])["detail"]
-        ), str(json.loads(info["body"])["fields"])
+        response_content = response.read()
+        detail = str(json.loads(info["body"])["detail"]), str(
+            json.loads(info["body"])["fields"]
+        )
     except Exception:
-        detail = ''
+        detail = ""
     msg = info["msg"]
 
     if info["status"] != 200:
         failed = True
 
-    result["msg"] = str(http_code) + ' - ' + msg
+    result["msg"] = str(http_code) + " - " + msg
     result["changed"] = changed
     result["failed"] = failed
     result["http_code"] = http_code
@@ -230,17 +216,18 @@ def update_tag_group(module, base_url, headers, etag):
 
     http_code = info["status"]
     try:
-        detail = str(json.loads(
-            info["body"]
-        )["detail"]), str(json.loads(info["body"])["fields"])
+        response_content = response.read()
+        detail = str(json.loads(info["body"])["detail"]), str(
+            json.loads(info["body"])["fields"]
+        )
     except Exception:
-        detail = ''
+        detail = ""
     msg = info["msg"]
 
     if info["status"] != 200:
         failed = True
 
-    result["msg"] = str(http_code) + ' - ' + msg
+    result["msg"] = str(http_code) + " - " + msg
     result["changed"] = changed
     result["failed"] = failed
     result["http_code"] = http_code
@@ -262,8 +249,8 @@ def delete_tag_group(module, base_url, headers, etag):
     tag_group["title"] = module.params.get("title", "")
     tag_group["topic"] = module.params.get("topic", "")
     tag_group["tags"] = module.params.get("choices", "")
-    for d in tag_group['tags']:
-        d['ident'] = d.pop('id')
+    for d in tag_group["tags"]:
+        d["ident"] = d.pop("id")
 
     api_endpoint = "/objects/host_tag_group/" + ident
     url = base_url + api_endpoint
@@ -278,17 +265,18 @@ def delete_tag_group(module, base_url, headers, etag):
 
     http_code = info["status"]
     try:
-        detail = str(json.loads(
-            info["body"]
-        )["detail"]), str(json.loads(info["body"])["fields"])
+        response_content = response.read()
+        detail = str(json.loads(info["body"])["detail"]), str(
+            json.loads(info["body"])["fields"]
+        )
     except Exception:
-        detail = ''
+        detail = ""
     msg = info["msg"]
 
     if info["status"] != 204:
         failed = True
 
-    result["msg"] = str(http_code) + ' - ' + msg
+    result["msg"] = str(http_code) + " - " + msg
     result["changed"] = changed
     result["failed"] = failed
     result["http_code"] = http_code
@@ -359,7 +347,7 @@ def run_module():
             choices = module.params.get("choices")
             current_choices = result["current_tag_group"]["tags"]
             for d in current_choices:
-                d['id'] = d.pop('ident')
+                d["id"] = d.pop("ident")
             pairs = zip(choices, current_choices)
             current_len = len(current_choices)
             current_etag = result["etag"]
