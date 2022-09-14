@@ -34,19 +34,23 @@ options:
         description: The id of the tag_group to be created/
                      modified/deleted.
         default: ""
-        type: string
+        type: str
     title:
         description: The title of the tag_group
         default: ""
-        type: string
+        type: str
     topic:
         description: The topic of the tag_group
         default: ""
-        type: string
+        type: str
     choices:
         description: The list of the tags for the tag_group as dicts.
         default: []
-        type: list(dicts)
+        type: list
+    state:
+        description: The desired state
+        default: "present"
+        choices: ["present", "absent"]
 
 author:
     - Stefan Mühling (@muehlings)
