@@ -204,8 +204,8 @@ def update_tag_group(module, base_url, headers, etag):
     tag_group["title"] = module.params.get("title", "")
     tag_group["topic"] = module.params.get("topic", "")
     tag_group["tags"] = module.params.get("choices", "")
-    for d in tag_group['tags']:
-        d['ident'] = d.pop('id')
+    for d in tag_group["tags"]:
+        d["ident"] = d.pop("id")
 
     api_endpoint = "/objects/host_tag_group/" + ident
     url = base_url + api_endpoint
@@ -256,11 +256,7 @@ def delete_tag_group(module, base_url, headers, etag):
     url = base_url + api_endpoint
     headers["If-Match"] = etag
     response, info = fetch_url(
-        module,
-        url,
-        module.jsonify(tag_group),
-        headers=headers,
-        method="DELETE"
+        module, url, module.jsonify(tag_group), headers=headers, method="DELETE"
     )
 
     http_code = info["status"]
@@ -296,17 +292,10 @@ def run_module():
         id=dict(type="str", default=""),
         topic=dict(type="str", default=""),
         choices=dict(type="list", default=[]),
-        state=dict(
-            type="str",
-            default="present",
-            choices=["present", "absent"]
-        ),
+        state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(
-        argument_spec=module_args,
-        supports_check_mode=False
-    )
+    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
     # Declare headers including authentication to send to the Checkmk API
     headers = {
@@ -334,12 +323,7 @@ def run_module():
     if result["etag"] != "":
         # tag_group needs to be deleted (DELETE)
         if module.params.get("state") == "absent":
-            result = delete_tag_group(
-                module,
-                base_url,
-                headers,
-                result["etag"]
-            )
+            result = delete_tag_group(module, base_url, headers, result["etag"])
             msg_tokens.append("Tag group deleted.")
             result["changed"] = True
         # tag_group needs to be updated (PUT)
@@ -369,11 +353,13 @@ def run_module():
             if module.params.get("topic") != current_topic:
                 changed_topic = True
                 msg_tokens.append("Topic changed.")
-            if (changed_content is True or changed_len is True
-                    or changed_title is True or changed_topic is True):
-                result = update_tag_group(
-                    module, base_url, headers, current_etag
-                )
+            if (
+                changed_content is True
+                or changed_len is True
+                or changed_title is True
+                or changed_topic is True
+            ):
+                result = update_tag_group(module, base_url, headers, current_etag)
                 result["changed"] = True
             else:
                 msg_tokens.append("Tag group as desired. Nothing to do.")
