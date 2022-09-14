@@ -1,6 +1,6 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 bugfixes:
-    - Fix for 150 - host.py is now correctly setting the default folder when getting the current host state.
+    - Host module - Now correctly setting the default folder when getting the current host state.
 # minor_changes:
 #   - Add agent role. Currently supports the vanilla agent.
 
