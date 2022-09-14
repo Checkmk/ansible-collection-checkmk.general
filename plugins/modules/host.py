@@ -137,7 +137,7 @@ def get_current_host_state(module, base_url, headers):
         etag = info.get("etag", "")
         extensions = body.get("extensions", {})
         current_explicit_attributes = extensions.get("attributes", {})
-        current_folder = "%s" % extensions.get("folder", "")
+        current_folder = "%s" % extensions.get("folder", "/")
         if "meta_data" in current_explicit_attributes:
             del current_explicit_attributes["meta_data"]
 
