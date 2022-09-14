@@ -8,4 +8,3 @@ download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
-
