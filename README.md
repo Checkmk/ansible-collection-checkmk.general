@@ -160,11 +160,9 @@ Please do **not** consider a concrete planning document!
     - BI
     - Contact Groups
     - Host Groups
-    - Host Tag Groups
     - Passwords
     - Service Groups
     - Time Periods
-    - Users
 - Lookup Plugins
   - Version
 
