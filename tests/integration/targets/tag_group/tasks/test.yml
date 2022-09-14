@@ -1,0 +1,65 @@
+---
+- name: "{{ outer_item.version }} - Create tag_group."
+  tribe29.checkmk.tag_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    id: Virtualization
+    title: Virtualization
+    topic: My_Tag_Group
+    choices:
+    - id: No_Virtualization
+      title: No Virtualization
+    - id: ESXi
+      title: ESXi
+    - id: vCenter
+      title: vCenter
+    - id: HyperV
+      title: Hyper
+    - id: KVM
+      title: KVM
+    state: "present"
+  delegate_to: localhost
+
+- name: "{{ outer_item.version }} - Update tag_group."
+  tribe29.checkmk.tag_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    id: Virtualization
+    title: Hypervisors
+    topic: My_Tag_Group
+    choices:
+    - id: No_Virtualization
+      title: No Virtualization
+    - id: ESXi
+      title: ESXi
+    - id: vCenter
+      title: vCenter
+    - id: HyperV
+      title: Hyper
+    state: "present"
+  delegate_to: localhost
+
+- name: "{{ outer_item.version }} - Delete tag_group."
+  tribe29.checkmk.tag_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    id: Virtualization
+    title: Hypervisors
+    topic: My_Tag_Group
+    choices:
+    - id: No_Virtualization
+      title: No Virtualization
+    - id: ESXi
+      title: ESXi
+    - id: vCenter
+      title: vCenter
+    - id: HyperV
+      title: Hyper
+    state: "absent"
+  delegate_to: localhost
