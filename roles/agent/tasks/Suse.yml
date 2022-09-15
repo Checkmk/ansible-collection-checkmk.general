@@ -41,7 +41,7 @@
   when: |
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
     and checkmk_agent_download_state.status != 200
-  retries: 3
+  retries: 5
   tags:
     - download-package
 
