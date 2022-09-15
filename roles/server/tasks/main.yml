@@ -29,7 +29,7 @@
     mode: "0640"
     url_username: "{{ checkmk_server_download_user | default(omit) }}"
     url_password: "{{ checkmk_server_download_pass | default(omit) }}"
-  retries: 5
+  retries: 3
   tags:
     - download-package
 
@@ -39,7 +39,7 @@
     dest: "/tmp/Check_MK-pubkey.gpg"
     mode: "0640"
   when: checkmk_server_verify_setup | bool
-  retries: 5
+  retries: 3
   tags:
     - download-gpg-key
 
