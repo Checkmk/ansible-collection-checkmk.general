@@ -2,6 +2,7 @@
 
 minor_changes:
     - Server role - Improve OS support detection and enhance prerequisites installation.
+    - Server role - Add handlers to ensure the system apache is started after installation.
 
 bugfixes:
     - Server role - Fix and enhance additional repository handling on RedHat derivates.
