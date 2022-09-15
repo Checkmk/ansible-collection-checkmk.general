@@ -11,6 +11,12 @@
   tags:
     - include-os-family-vars
 
+- name: "Update APT Cache."
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+  when: ansible_os_family == "Debian"
+
 - name: "Install Checkmk Prerequisites."
   become: true
   ansible.builtin.package:
