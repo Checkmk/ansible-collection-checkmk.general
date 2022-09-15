@@ -23,6 +23,7 @@
     dest: "{{ checkmk_agent_agent.file.cre }}"
     mode: 0640
   when: checkmk_agent_edition == "cre"
+  retries: 3
   tags:
     - download-package
 
