@@ -1,8 +1,0 @@
----
-- name: "Install Checkmk Server."
-  become: true
-  ansible.builtin.zypper:
-    name: "/tmp/{{ checkmk_server_setup_file }}"
-    update_cache: 'yes'
-    state: present
-  notify: start httpd
