@@ -5,7 +5,7 @@
 # 3. If your collection depends on other collections ensure they are installed, see "Install collection dependencies"
 # If you need help please ask in #ansible-community on the Libera.chat IRC network
 
-name: Ansible Integration Tests for Roles
+name: Ansible Integration Tests for Agent Role
 on:
   workflow_dispatch:
   pull_request:
@@ -13,7 +13,7 @@ on:
       - main
       - devel
     paths:
-      - 'roles/**'
+      - 'roles/agent/**'
 
 env:
   NAMESPACE: tribe29
@@ -67,7 +67,7 @@ jobs:
 
       # Run the integration tests
       - name: Run integration test
-        run: ansible-test integration roles -v --color --retry-on-error --continue-on-error --diff
+        run: ansible-test integration agent -v --color --retry-on-error --continue-on-error --diff
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
   debian:
@@ -106,5 +106,5 @@ jobs:
 
       # Run the integration tests
       - name: Run integration test
-        run: ansible-test integration roles -v --color --retry-on-error --continue-on-error --diff
+        run: ansible-test integration agent -v --color --retry-on-error --continue-on-error --diff
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
