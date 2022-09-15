@@ -36,6 +36,12 @@
       ansible.builtin.include_role:
         name: server
 
+    - name: "Wait for Site to be ready."
+      ansible.builtin.wait_for:
+        port: 80
+        host: 127.0.0.1
+        timeout: 600
+
     - name: "Run agent role."
       ansible.builtin.include_role:
         name: agent
