@@ -5,9 +5,12 @@
   vars_files:
     - ./vars/config.yml
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       #- ./vars/users.yml
 >>>>>>> 04a61c9 (Continuously developing the user.py)
+=======
+>>>>>>> 422eabf (Continuously developing the user.py)
   tasks:
     - name: "Activate changes on site - 1."
       activation:
@@ -31,9 +34,13 @@
         fullname: "{{ item.fullname }}"
         auth_type: "{{ item.auth_type }}"
 <<<<<<< HEAD
+<<<<<<< HEAD
         password: "{{ item.password }}"
 =======
 >>>>>>> 04a61c9 (Continuously developing the user.py)
+=======
+        password: "{{ item.password }}"
+>>>>>>> 422eabf (Continuously developing the user.py)
         roles:
           - "admin"
         authorized_sites:
@@ -83,10 +90,14 @@
       run_once: 'true'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     - name: "Reset password of users."
 =======
     - name: "Delete users."
 >>>>>>> 04a61c9 (Continuously developing the user.py)
+=======
+    - name: "Reset password of users."
+>>>>>>> 422eabf (Continuously developing the user.py)
       cmk_user:  # noqa fqcn-builtins
         server_url: "{{ server_url }}"
         site: "{{ site }}"
