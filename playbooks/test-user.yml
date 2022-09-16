@@ -1,0 +1,104 @@
+---
+- name: "Test user module."
+  hosts: all
+  gather_facts: 'no'
+  vars_files:
+    - ./vars/config.yml
+      #- ./vars/users.yml
+  tasks:
+    - name: "Activate changes on site - 1."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
+
+    - name: "Create users."
+      cmk_user:  # noqa fqcn-builtins
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        username: "{{ item.username }}"
+        fullname: "{{ item.fullname }}"
+        auth_type: "{{ item.auth_type }}"
+        roles:
+          - "admin"
+        authorized_sites:
+          - "{{ site }}"
+        state: "present"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
+
+    - name: "Activate changes on site - 2."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
+
+    - name: "Edit users."
+      cmk_user:  # noqa fqcn-builtins
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        username: "{{ item.username }}"
+        contact_options: "{{ item.contact_options }}"
+        contactgroups: "{{ item.contactgroups }}"
+        # authorized_sites:
+        #    - "{{ site }}"
+        state: "present"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
+
+    - name: "Activate changes on site - 3."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
+
+    - name: "Delete users."
+      cmk_user:  # noqa fqcn-builtins
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        username: "{{ item.username }}"
+        state: "absent"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
+
+    - name: "Activate changes on site - 4."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
