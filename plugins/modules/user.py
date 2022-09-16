@@ -4,6 +4,7 @@
 # Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
+import copy
 
 __metaclass__ = type
 
@@ -205,111 +206,101 @@ class UserAttributes():
 
 
     @classmethod
-    def from_api_response(cls, instance):
-        attributes = copy.deepcopy(instance.attributes)
-        attributes["name"] = instance.title
+    def from_api_response(cls, api_attributes, username):
+        attributes = copy.deepcopy(api_attributes)
+        attributes["name"] = username
 
         return cls(attributes)
 
 
     @classmethod
-    def from_module(cls, module):
+    def from_module(cls, params):
 
-        attributes = default_attributes
-        attributes["name"] = module.params.username
+        attributes = cls.default_attributes
+        attributes["name"] = params["username"]
 
-        if "fullname" in module.params:
-            attributes["fullname"] = module.params.fullname
-        if "disable_login" in module.params:
-            attributes["disable_login"] = module.params.disable_login == "True"
-        if "pager_address" in module.params:
-            attributes["pager_address"] = module.params.pager_address
-        if "language" in module.params and module.params.language != "default":
-            attributes["language"] = module.params.language
+        if "fullname" in params:
+            attributes["fullname"] = params["fullname"]
+        if "disable_login" in params:
+            attributes["disable_login"] = params["disable_login"] == "True"
+        if "pager_address" in params:
+            attributes["pager_address"] = params["pager_address"]
+        if "language" in params and params["language"] != "default":
+            attributes["language"] = params["language"]
 
-        if "authtype" in module.params or "password" in module.params or "secret" in module.params:
+        if "authtype" in params or "password" in params or "secret" in params:
             auth_option = {}
-            if module.params.authtype == "password" and "password" in module.params:
-                auth_option["password"] = module.params.password
+            if params["auth_type"] == "password" and "password" in params:
+                auth_option["password"] = params["password"]
                 auth_option["auth_type"] = "password"
-                auth_option["enforce_password_change"] = module.params.enforce_password_change == "True"
-            elif module.params.authtype == "secret" and "secret" in module.params:
-                auth_option["secret"] = module.params.secret
+                auth_option["enforce_password_change"] = params["enforce_password_change"] == "True"
+            elif params["authtype"] == "secret" and "secret" in params:
+                auth_option["secret"] = params["secret"]
                 auth_option["auth_type"] = "secret"
             else:
                 log("Incomplete auth_type/password/secret combination.")
                 return
             attributes["auth_option"] = auth_option
 
-        if "idle_timeout_option" in module.params:
+        if "idle_timeout_option" in params:
             idle_timeout = {}
-            idle_timeout["idle_timeout_option"] = module.params.idle_timeout_option
-            if module.params.idle_timeout_option == "individual":
-                if "idle_timeout_duration" in module.params:
-                    idle_timeout["idle_timeout_duration"] = module.params.idle_timeout_duration
+            idle_timeout["idle_timeout_option"] = params["idle_timeout_option"]
+            if params["idle_timeout_option"] == "individual":
+                if "idle_timeout_duration" in params:
+                    idle_timeout["idle_timeout_duration"] = params["idle_timeout_duration"]
                 else:
                     idle_timeout["idle_timeout_duration"] = 3600
             attributes["idle_timeout"] = idle_timeout
 
-        if "email" in module.params:
+        if "email" in params:
             contact_options = {}
-            contact_options["email"] = module.params.email
-            if "fallback_contact" in module.params:
-                contact_options["fallback_contact"] = module.params.fallback_contact == "True"
+            contact_options["email"] = params["email"]
+            if "fallback_contact" in params:
+                contact_options["fallback_contact"] = params["fallback_contact"] == "True"
             attributes["contact_options"] = contact_options
 
-        if "disable_notifications" in module.params:
+        if "disable_notifications" in params and params["disable_notifications"] is not None:
             disable_notifications = {}
             try:
-                disable_notifications = json.loads(module.params.disable_notifications)
+                disable_notifications = json.loads(params["disable_notifications"])
             except json.decoder.JSONDecodeError:
                 log("json.decoder.JSONDecodeError while parsing disable_notifications.")
                 return
             attributes["disable_notifications"] = disable_notifications
 
-        if "roles" in module.params:
-            roles = []
-            try:
-                roles = json.loads(module.params.roles)
-            except json.decoder.JSONDecodeError:
-                log("json.decoder.JSONDecodeError while parsing roles.")
-                return
-            attributes["roles"] = roles
+        if "roles" in params:
+            #roles = []
+            #try:
+            #    roles = params["roles"]
+            #except json.decoder.JSONDecodeError:
+            #    log("json.decoder.JSONDecodeError while parsing roles.")
+            #    return
+            attributes["roles"] = params["roles"]
 
-        if "contactgroups" in module.params:
-            contactgroups = []
-            try:
-                contactgroups = json.loads(module.params.contactgroups)
-            except json.decoder.JSONDecodeError:
-                log("json.decoder.JSONDecodeError while parsing contactgroups.")
-                return
-            attributes["contactgroups"] = contactgroups
+        if "contactgroups" in params:
+            #contactgroups = []
+            #try:
+            #    contactgroups = json.loads(params["contactgroups"])
+            #except json.decoder.JSONDecodeError:
+            #    log("json.decoder.JSONDecodeError while parsing contactgroups.")
+            #    return
+            attributes["contactgroups"] = params["contactgroups"]
 
 
-        if "authorized_sites" in module.params:
-            authorized_sites = []
-            try:
-                authorized_sites = json.loads(module.params.authorized_sites)
-            except json.decoder.JSONDecodeError:
-                log("json.decoder.JSONDecodeError while parsing authorized_sites.")
-                return
-            attributes["authorized_sites"] = authorized_sites
+        if "authorized_sites" in params:
+            #authorized_sites = []
+            #try:
+            #    authorized_sites = json.loads(params["authorized_sites"])
+            #except json.decoder.JSONDecodeError:
+            #    log("json.decoder.JSONDecodeError while parsing authorized_sites.")
+            #    return
+            attributes["authorized_sites"] = params["authorized_sites"]
 
         return cls(attributes)
 
 
     def is_equal_with(self, other_instance):
-        if self.userid != other_instance.userid:
-            return False:
-
-
-        if self.title != other_instance.title:
-            return False
-
-        if self.attributes != other_instance.attributes:
-            return False
-
-        return True
+        return self.attributes != other_instance.attributes
 
 
 def get_current_user_state(module, base_url, headers):
@@ -326,6 +317,7 @@ def get_current_user_state(module, base_url, headers):
         current_state = "present"
         etag = info.get("etag", "")
         extensions = body.get("extensions", {})
+        username = body.get("title", "")
 
     elif info["status"] == 404:
         current_state = "absent"
@@ -337,7 +329,7 @@ def get_current_user_state(module, base_url, headers):
             % (info["status"], info["body"], body),
         )
 
-    return extensions, current_state, etag
+    return extensions, username, current_state, etag
 
 
 def _normalize_attributes(user_attributes):
@@ -427,12 +419,13 @@ def set_user_attributes(module, user_attributes, base_url, headers):
     api_endpoint = "/objects/user_config/" + module.params.get("username")
     url = base_url + api_endpoint
 
-    explicit_attributes = _normalize_attributes(user_attributes)
+    #explicit_attributes = _normalize_attributes(user_attributes)
+    attributes = user_attributes.attributes
 
     # print("#####################")
     # print(module.jsonify(user_attributes))
     response, info = fetch_url(
-        module, url, module.jsonify(explicit_attributes), headers=headers, method="PUT"
+        module, url, module.jsonify(attributes), headers=headers, method="PUT"
     )
 
     if info["status"] != 200:
@@ -450,10 +443,11 @@ def create_user(module, user_attributes, base_url, headers):
     if user_attributes["fullname"] is None or "fullname" not in user_attributes:
         user_attributes["fullname"] = user_attributes["username"]
 
-    explicit_attributes = _normalize_attributes(user_attributes)
+    #explicit_attributes = _normalize_attributes(user_attributes)
+    attributes = user_attributes.attributes
 
     response, info = fetch_url(
-        module, url, module.jsonify(explicit_attributes), headers=headers, method="POST"
+        module, url, module.jsonify(attributes), headers=headers, method="POST"
     )
 
     if info["status"] != 200:
@@ -534,53 +528,62 @@ def run_module():
     # Determine desired state and attributes
     state = module.params.pop("state")
 
-    # Clone params and remove keys with empty values
-    user_attributes = module.params.copy()
-    for k, v in module.params.items():
-        # if v is None or v == "" or (k == "language" and v == "default"):
-        if k == "language" and v == "default":
-            del user_attributes[k]
+    new_attributes = UserAttributes.from_module(module.params)
 
-    # Convert dicts to list wherewver needed
-    if user_attributes["roles"] == {}:
-        user_attributes["roles"] = []
+    ## Clone params and remove keys with empty values
+    #user_attributes = module.params.copy()
+    #for k, v in module.params.items():
+    #    # if v is None or v == "" or (k == "language" and v == "default"):
+    #    if k == "language" and v == "default":
+    #        del user_attributes[k]
 
-    if user_attributes["contactgroups"] == {}:
-        user_attributes["contactgroups"] = []
+    ## Convert dicts to list wherewver needed
+    #if user_attributes["roles"] == {}:
+    #    user_attributes["roles"] = []
 
-    if user_attributes["authorized_sites"] == {}:
-        user_attributes["authorized_sites"] = []
+    #if user_attributes["contactgroups"] == {}:
+    #    user_attributes["contactgroups"] = []
+
+    #if user_attributes["authorized_sites"] == {}:
+    #    user_attributes["authorized_sites"] = []
 
     # Determine the current state of this particular user
-    current_user_attributes, current_state, etag = get_current_user_state(
+    _attributes, _username, current_state, etag = get_current_user_state(
         module, base_url, headers
     )
+
+    current_attributes = UserAttributes.from_api_response(_attributes, _username)
 
     # Handle the user accordingly to above findings and desired state
     if state in ["present", "reset_password"] and current_state == "present":
         headers["If-Match"] = etag
-        msg_tokens = []
 
-        if state != "reset_password":
-            del user_attributes["auth_type"]
-
-        del user_attributes["username"]
-        # TODO: normalize user attributes and then do a deep compare before deciding what to change.
-        if user_attributes != {} and current_user_attributes != user_attributes:
-            log("current_user_attributes")
-            log(str(current_user_attributes))
-            log("user_attributes")
-            log(str(user_attributes))
-            set_user_attributes(module, user_attributes, base_url, headers)
-            msg_tokens.append("User attributes changed.")
-
-        if len(msg_tokens) >= 1:
-            exit_changed(module, " ".join(msg_tokens))
+        if not new_attributes.is_equal_with(current_attributes):
+            set_user_attributes(module, new_attributes, base_url, headers)
+            exit_changed(module, "User attributes changed.")
         else:
             exit_ok(module, "User already present. All explicit attributes as desired.")
 
+        #if state != "reset_password":
+        #    del user_attributes["auth_type"]
+
+        #del user_attributes["username"]
+        ## TODO: normalize user attributes and then do a deep compare before deciding what to change.
+        #if user_attributes != {} and current_user_attributes != user_attributes:
+        #    log("current_user_attributes")
+        #    log(str(current_user_attributes))
+        #    log("user_attributes")
+        #    log(str(user_attributes))
+        #    set_user_attributes(module, user_attributes, base_url, headers)
+        #    log("User attributes changed.")
+
+        #if len(msg_tokens) >= 1:
+        #    exit_changed(module, " ".join(msg_tokens))
+        #else:
+        #    exit_ok(module, "User already present. All explicit attributes as desired.")
+
     elif state == "present" and current_state == "absent":
-        create_user(module, user_attributes, base_url, headers)
+        create_user(module, new_attributes, base_url, headers)
         exit_changed(module, "User created.")
 
     elif state == "absent" and current_state == "absent":
