@@ -4,7 +4,7 @@
   gather_facts: 'no'
   vars_files:
     - ./vars/config.yml
-    - ./vars/users.yml
+      #- ./vars/users.yml
   tasks:
     - name: "Activate changes on site - 1."
       activation:
@@ -19,14 +19,14 @@
       run_once: 'true'
 
     - name: "Create users."
-      user:  # noqa fqcn-builtins
+      cmk_user:  # noqa fqcn-builtins
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
         username: "{{ item.username }}"
         fullname: "{{ item.fullname }}"
-        auth_option: "{{ item.auth_option }}"
+        auth_type: "{{ item.auth_type }}"
         roles:
           - "admin"
         authorized_sites:
@@ -50,7 +50,7 @@
       run_once: 'true'
 
     - name: "Edit users."
-      user:  # noqa fqcn-builtins
+      cmk_user:  # noqa fqcn-builtins
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
@@ -79,7 +79,7 @@
       run_once: 'true'
 
     - name: "Delete users."
-      user:  # noqa fqcn-builtins
+      cmk_user:  # noqa fqcn-builtins
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
