@@ -4,7 +4,6 @@
   gather_facts: 'no'
   vars_files:
     - ./vars/config.yml
-      #- ./vars/users.yml
   tasks:
     - name: "Activate changes on site - 1."
       activation:
@@ -24,9 +23,10 @@
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        username: "{{ item.username }}"
+        name: "{{ item.name }}"
         fullname: "{{ item.fullname }}"
         auth_type: "{{ item.auth_type }}"
+        password: "{{ item.password }}"
         roles:
           - "admin"
         authorized_sites:
@@ -55,11 +55,8 @@
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        username: "{{ item.username }}"
-        contact_options: "{{ item.contact_options }}"
+        name: "{{ item.name }}"
         contactgroups: "{{ item.contactgroups }}"
-        # authorized_sites:
-        #    - "{{ site }}"
         state: "present"
       register: testout
       delegate_to: localhost
@@ -78,20 +75,46 @@
       delegate_to: localhost
       run_once: 'true'
 
-    - name: "Delete users."
+    - name: "Reset password of users."
       cmk_user:  # noqa fqcn-builtins
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        username: "{{ item.username }}"
-        state: "absent"
+        name: "{{ item.name }}"
+        password: "{{ item.newpassword }}"
+        state: "reset_password"
       register: testout
       delegate_to: localhost
       run_once: 'yes'
       loop: "{{ checkmk_users }}"
 
     - name: "Activate changes on site - 4."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
+
+    - name: "Delete users."
+      cmk_user:  # noqa fqcn-builtins
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        state: "absent"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
+
+    - name: "Activate changes on site - 5."
       activation:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
