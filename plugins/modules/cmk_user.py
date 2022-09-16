@@ -164,7 +164,11 @@ def log(msg):
     LOG.append(msg)
 
 
+<<<<<<< HEAD
 class User():
+=======
+class UserAttributes():
+>>>>>>> 266c970 (Continuously developing the user.py)
 
     default_attributes = {
         "disable_login": False,
@@ -181,7 +185,11 @@ class User():
         "contactgroups": [],
         "pager_address": "",
         "disable_notifications": {},
+<<<<<<< HEAD
         #"enforce_password_change": False,
+=======
+        "enforce_password_change": False,
+>>>>>>> 266c970 (Continuously developing the user.py)
         ### Only available in >2.1.0:
         # "interface_options": {
         #     "interface_theme": "default",
@@ -193,11 +201,16 @@ class User():
     }
 
 
+<<<<<<< HEAD
     def __init__(self, username, state="present", attributes=None, etag=None):
+=======
+    def __init__(self, attributes=None):
+>>>>>>> 266c970 (Continuously developing the user.py)
         if attributes is None:
             self.attributes = self.default_attributes
         else:
             self.attributes = attributes
+<<<<<<< HEAD
         self.state = state
         self.username = username
         self.etag = etag
@@ -222,12 +235,23 @@ class User():
         attributes = copy.deepcopy(api_attributes)
 
         return cls(module.params["name"], state, attributes, etag)
+=======
+
+
+    @classmethod
+    def from_api_response(cls, api_attributes, username):
+        attributes = copy.deepcopy(api_attributes)
+        attributes["name"] = username
+
+        return cls(attributes)
+>>>>>>> 266c970 (Continuously developing the user.py)
 
 
     @classmethod
     def from_module(cls, params):
 
         attributes = cls.default_attributes
+<<<<<<< HEAD
 
         attributes["username"] = params["name"]
 
@@ -256,6 +280,26 @@ class User():
                 auth_option["auth_type"] = "password"
                 auth_option["enforce_password_change"] = params["enforce_password_change"] == "True"
             elif params.get("auth_type") == "secret" or _exists("secret"):
+=======
+        attributes["name"] = params["username"]
+
+        if "fullname" in params:
+            attributes["fullname"] = params["fullname"]
+        if "disable_login" in params:
+            attributes["disable_login"] = params["disable_login"] == "True"
+        if "pager_address" in params:
+            attributes["pager_address"] = params["pager_address"]
+        if "language" in params and params["language"] != "default":
+            attributes["language"] = params["language"]
+
+        if "authtype" in params or "password" in params or "secret" in params:
+            auth_option = {}
+            if params["auth_type"] == "password" and "password" in params:
+                auth_option["password"] = params["password"]
+                auth_option["auth_type"] = "password"
+                auth_option["enforce_password_change"] = params["enforce_password_change"] == "True"
+            elif params["authtype"] == "secret" and "secret" in params:
+>>>>>>> 266c970 (Continuously developing the user.py)
                 auth_option["secret"] = params["secret"]
                 auth_option["auth_type"] = "secret"
             else:
@@ -263,7 +307,11 @@ class User():
                 return
             attributes["auth_option"] = auth_option
 
+<<<<<<< HEAD
         if _exists("idle_timeout_option"):
+=======
+        if "idle_timeout_option" in params:
+>>>>>>> 266c970 (Continuously developing the user.py)
             idle_timeout = {}
             idle_timeout["idle_timeout_option"] = params["idle_timeout_option"]
             if params["idle_timeout_option"] == "individual":
@@ -273,14 +321,22 @@ class User():
                     idle_timeout["idle_timeout_duration"] = 3600
             attributes["idle_timeout"] = idle_timeout
 
+<<<<<<< HEAD
         if _exists("email"):
+=======
+        if "email" in params:
+>>>>>>> 266c970 (Continuously developing the user.py)
             contact_options = {}
             contact_options["email"] = params["email"]
             if "fallback_contact" in params:
                 contact_options["fallback_contact"] = params["fallback_contact"] == "True"
             attributes["contact_options"] = contact_options
 
+<<<<<<< HEAD
         if _exists("disable_notifications"):
+=======
+        if "disable_notifications" in params and params["disable_notifications"] is not None:
+>>>>>>> 266c970 (Continuously developing the user.py)
             disable_notifications = {}
             try:
                 disable_notifications = json.loads(params["disable_notifications"])
@@ -289,7 +345,11 @@ class User():
                 return
             attributes["disable_notifications"] = disable_notifications
 
+<<<<<<< HEAD
         if _exists("roles"):
+=======
+        if "roles" in params:
+>>>>>>> 266c970 (Continuously developing the user.py)
             #roles = []
             #try:
             #    roles = params["roles"]
@@ -298,7 +358,11 @@ class User():
             #    return
             attributes["roles"] = params["roles"]
 
+<<<<<<< HEAD
         if _exists("contactgroups"):
+=======
+        if "contactgroups" in params:
+>>>>>>> 266c970 (Continuously developing the user.py)
             #contactgroups = []
             #try:
             #    contactgroups = json.loads(params["contactgroups"])
@@ -308,7 +372,11 @@ class User():
             attributes["contactgroups"] = params["contactgroups"]
 
 
+<<<<<<< HEAD
         if _exists("authorized_sites"):
+=======
+        if "authorized_sites" in params:
+>>>>>>> 266c970 (Continuously developing the user.py)
             #authorized_sites = []
             #try:
             #    authorized_sites = json.loads(params["authorized_sites"])
@@ -317,6 +385,7 @@ class User():
             #    return
             attributes["authorized_sites"] = params["authorized_sites"]
 
+<<<<<<< HEAD
         return cls(params["name"], state=params["state"], attributes=attributes)
 
 
@@ -325,6 +394,16 @@ class User():
 
 
 def get_current_user_state(module, api_params):
+=======
+        return cls(attributes)
+
+
+    def is_equal_with(self, other_instance):
+        return self.attributes != other_instance.attributes
+
+
+def get_current_user_state(module, base_url, headers):
+>>>>>>> 266c970 (Continuously developing the user.py)
     extensions = {}
     etag = ""
 
@@ -338,6 +417,7 @@ def get_current_user_state(module, api_params):
         current_state = "present"
         etag = info.get("etag", "")
         extensions = body.get("extensions", {})
+        username = body.get("title", "")
 
     elif info["status"] == 404:
         current_state = "absent"
@@ -349,7 +429,7 @@ def get_current_user_state(module, api_params):
             % (info["status"], info["body"], body),
         )
 
-    return extensions, current_state, etag
+    return extensions, username, current_state, etag
 
 
 def _normalize_attributes(user_attributes):
@@ -440,9 +520,19 @@ def set_user_attributes(module, desired_user, api_params):
     url = api_params["base_url"] + api_endpoint
     desired_attributes = desired_user.attributes
 
+<<<<<<< HEAD
     log("set_user_attributes: %s" % str(module.jsonify(desired_attributes)))
     response, info = fetch_url(
         module, url, module.jsonify(desired_attributes), headers=api_params["headers"], method="PUT"
+=======
+    #explicit_attributes = _normalize_attributes(user_attributes)
+    attributes = user_attributes.attributes
+
+    # print("#####################")
+    # print(module.jsonify(user_attributes))
+    response, info = fetch_url(
+        module, url, module.jsonify(attributes), headers=headers, method="PUT"
+>>>>>>> 266c970 (Continuously developing the user.py)
     )
 
     if info["status"] != 200:
@@ -461,11 +551,19 @@ def create_user(module, desired_user, api_params):
     if desired_attributes["fullname"] is None or "fullname" not in desired_attributes:
         desired_attributes["fullname"] = desired_attributes["username"]
 
+<<<<<<< HEAD
     #explicit_attributes = _normalize_attributes(desired_attributes)
     #attributes = desired_attributes
 
     response, info = fetch_url(
         module, url, module.jsonify(desired_attributes), headers=api_params["headers"], method="POST"
+=======
+    #explicit_attributes = _normalize_attributes(user_attributes)
+    attributes = user_attributes.attributes
+
+    response, info = fetch_url(
+        module, url, module.jsonify(attributes), headers=headers, method="POST"
+>>>>>>> 266c970 (Continuously developing the user.py)
     )
 
     if info["status"] != 200:
@@ -552,11 +650,40 @@ def run_module():
     #exit_ok(module, "early exit")
     desired_state = desired_user.state
 
+<<<<<<< HEAD
     current_user = User.from_api_response(module, api_params)
     current_state = current_user.state
     log("current_user: %s" % str(current_user))
+=======
+    new_attributes = UserAttributes.from_module(module.params)
+
+    ## Clone params and remove keys with empty values
+    #user_attributes = module.params.copy()
+    #for k, v in module.params.items():
+    #    # if v is None or v == "" or (k == "language" and v == "default"):
+    #    if k == "language" and v == "default":
+    #        del user_attributes[k]
+
+    ## Convert dicts to list wherewver needed
+    #if user_attributes["roles"] == {}:
+    #    user_attributes["roles"] = []
+
+    #if user_attributes["contactgroups"] == {}:
+    #    user_attributes["contactgroups"] = []
+
+    #if user_attributes["authorized_sites"] == {}:
+    #    user_attributes["authorized_sites"] = []
+
+    # Determine the current state of this particular user
+    _attributes, _username, current_state, etag = get_current_user_state(
+        module, base_url, headers
+    )
+>>>>>>> 266c970 (Continuously developing the user.py)
+
+    current_attributes = UserAttributes.from_api_response(_attributes, _username)
 
     # Handle the user accordingly to above findings and desired state
+<<<<<<< HEAD
     if desired_state in ["present", "reset_password"] and current_state == "present":
         # TODO: set_user_attributes funktioniert noch nicht richtig.
         # Test in ansible_210: user löschen und dann Playbook ausführen:
@@ -565,12 +692,42 @@ def run_module():
 
         if not desired_user.is_equal_with(current_user) or desired_state == "reset_password":
             set_user_attributes(module, desired_user, api_params)
+=======
+    if state in ["present", "reset_password"] and current_state == "present":
+        headers["If-Match"] = etag
+
+        if not new_attributes.is_equal_with(current_attributes):
+            set_user_attributes(module, new_attributes, base_url, headers)
+>>>>>>> 266c970 (Continuously developing the user.py)
             exit_changed(module, "User attributes changed.")
         else:
             exit_ok(module, "User already present. All explicit attributes as desired.")
 
+<<<<<<< HEAD
     elif desired_state == "present" and current_state == "absent":
         create_user(module, desired_user, api_params)
+=======
+        #if state != "reset_password":
+        #    del user_attributes["auth_type"]
+
+        #del user_attributes["username"]
+        ## TODO: normalize user attributes and then do a deep compare before deciding what to change.
+        #if user_attributes != {} and current_user_attributes != user_attributes:
+        #    log("current_user_attributes")
+        #    log(str(current_user_attributes))
+        #    log("user_attributes")
+        #    log(str(user_attributes))
+        #    set_user_attributes(module, user_attributes, base_url, headers)
+        #    log("User attributes changed.")
+
+        #if len(msg_tokens) >= 1:
+        #    exit_changed(module, " ".join(msg_tokens))
+        #else:
+        #    exit_ok(module, "User already present. All explicit attributes as desired.")
+
+    elif state == "present" and current_state == "absent":
+        create_user(module, new_attributes, base_url, headers)
+>>>>>>> 266c970 (Continuously developing the user.py)
         exit_changed(module, "User created.")
 
     elif desired_state == "absent" and current_state == "absent":
