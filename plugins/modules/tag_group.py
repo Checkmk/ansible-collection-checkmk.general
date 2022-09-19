@@ -296,7 +296,7 @@ def run_module():
         title=dict(type="str", default=""),
         id=dict(type="str", default=""),
         topic=dict(type="str", default=""),
-        choices=dict(type="list", elements='dict', default=[]),
+        choices=dict(type="list", elements="dict", default=[]),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
