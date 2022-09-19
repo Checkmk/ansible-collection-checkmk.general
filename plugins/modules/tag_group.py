@@ -7,11 +7,6 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
-import json
-
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
-
 __metaclass__ = type
 
 DOCUMENTATION = r"""
@@ -47,6 +42,7 @@ options:
         description: The list of the tags for the tag_group as dicts.
         default: []
         type: list
+        elements: dict
     state:
         description: The desired state
         default: "present"
@@ -93,6 +89,12 @@ message:
     returned: always
     sample: 'OK'
 """
+
+
+import json
+
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.urls import fetch_url
 
 
 def read_tag_group(module, base_url, headers):
