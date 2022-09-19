@@ -348,7 +348,7 @@ def run_module():
             changed_content = False
             changed_title = False
             changed_topic = False
-            if not all([a == b for a, b in pairs]):
+            if not all(a == b for a, b in pairs):
                 changed_content = True
                 msg_tokens.append("Content of choices changed.")
             if len(module.params.get("choices")) != current_len:
