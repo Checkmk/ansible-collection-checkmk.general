@@ -1,0 +1,25 @@
+---
+# Install Check_MK Agent on Windows
+
+- name: Get current agent version
+  ansible.builtin.win_shell: |
+      $checkmk = "C:\Program Files (x86)\check_mk\check_mk_agent.exe"
+      If (Test-Path $checkmk) {
+          (Get-Item $checkmk).VersionInfo.ProductVersion
+          } Else {
+          "No agent installed"}
+  register: checkmk_agent_agent_version
+  changed_when: checkmk_agent_agent_version.stdout_lines[0] != checkmk_agent_version
+
+- name: Download agent -> {{ checkmk_agent_agent.url }}
+  ansible.builtin.win_get_url:
+    url: "{{ checkmk_agent_agent.url }}"
+    dest: "{{ checkmk_agent_host_tmp_dir }}"
+  when: checkmk_agent_agent_version.changed
+
+- name: "Install Checkmk Agent."
+  ansible.builtin.win_package:
+    path: "{{ checkmk_agent_agent.file }}"
+    state: present
+    wait: true
+  when: checkmk_agent_agent_version.changed
