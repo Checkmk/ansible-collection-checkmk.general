@@ -1,0 +1,10 @@
+---
+checkmk_agent_host_tmp_dir: "C:\\Temp"
+
+checkmk_agent_agent:
+  url:
+    cre: "{{ checkmk_agent_site_url }}/check_mk/agents/windows/check_mk_agent.msi"
+    cee: "{{ checkmk_agent_site_url }}/check_mk/agents/windows/check_mk_agent.msi"
+  file:
+    cre: "{{ checkmk_agent_host_tmp_dir }}\\check_mk_agent.msi"
+    cee: "{{ checkmk_agent_host_tmp_dir }}\\check_mk_agent.msi"
