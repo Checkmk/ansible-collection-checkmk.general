@@ -1,2 +1,4 @@
 ---
 checkmk_agent_site_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/{{ checkmk_agent_site }}"
+
+checkmk_agent_auth: "{% if checkmk_agent_secret is defined and checkmk_agent_secret | length  %}{{ checkmk_agent_secret }}{% else %}{{ checkmk_agent_pass }}{% endif %}"   # noqa yaml[line-length]
