@@ -1,0 +1,51 @@
+---
+checkmk_versions:
+  - version: "2.1.0p11"
+    site: "stable"
+  - version: "2.0.0p28"
+    site: "oldstable"
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
+server_url: "http://127.0.0.1/"
+automation_user: "cmkadmin"
+automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
+
+checkmk_host_groups:
+  - name: test1.tld
+    folder: "/"
+  - name: test2.tld
+    folder: "/"
+  - name: test3.tld
+    folder: "/"
+  - name: test4.tld
+    folder: "/"
+  - name: test5.tld
+    folder: "/"
+
+checkmk_host_groups_create:
+  - name:  "test1.tld"
+    title: "Test_1"
+  - name:  "test2.tld"
+    title: "Test_2"
+  - name:  "test3.tld"
+    title: "Test_3"
+  - name:  "test4.tld"
+    title: "Test_4"
+  - name:  "test5.tld"
+    title: "Test_5"
+
+# 2 and 3 remains unchanged, good for idempotency check
+checkmk_host_groups_modify:
+  - name:  "test1.tld"
+    title: "Test_one"
+  - name:  "test2.tld"
+    title: "Test_2"
+  - name:  "test3.tld"
+    title: "Test_3"
+  - name:  "test4.tld"
+    title: "Test_four"
+  - name:  "test5.tld"
+    title: "Test_five"
+
+checkmk_host_groups_delete:
+  - name:  "test1.tld"
+  - name:  "test3.tld"
