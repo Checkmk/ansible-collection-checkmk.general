@@ -2,12 +2,12 @@ requires_ansible: '>=2.11.1'
 
 action_groups:
   checkmk:
-  - activation
-  - discovery
-  - folder
-  - host
-  - downtime
-  - rule
+    - activation
+    - discovery
+    - folder
+    - host
+    - downtime
+    - rule
 
 # plugin_routing:
 #   modules:
