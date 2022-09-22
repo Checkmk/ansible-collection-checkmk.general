@@ -5,6 +5,6 @@
     deb: "/tmp/{{ checkmk_server_setup_file }}"
     update_cache: 'yes'
     state: present
-  notify: start apache
+  notify: Start Apache
   tags:
     - install-package
