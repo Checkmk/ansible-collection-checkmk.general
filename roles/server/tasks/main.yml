@@ -4,7 +4,7 @@
     msg: "This role is not stable for the target operating system, {{ ansible_distribution }} {{ ansible_distribution_major_version }}."
   when: (ansible_distribution is not defined) or
         (ansible_distribution_version is not defined) or
-        (ansible_distribution+"-"+ansible_distribution_major_version not in checkmk_server_server_stable_os)
+        (ansible_distribution + "-" + ansible_distribution_major_version not in checkmk_server_server_stable_os)
 
 - name: "Include OS Family specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
