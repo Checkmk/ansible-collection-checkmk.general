@@ -9,18 +9,6 @@ server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
 
-checkmk_host_groups:
-  - name: test1.tld
-    folder: "/"
-  - name: test2.tld
-    folder: "/"
-  - name: test3.tld
-    folder: "/"
-  - name: test4.tld
-    folder: "/"
-  - name: test5.tld
-    folder: "/"
-
 checkmk_host_groups_create:
   - name:  "test1.tld"
     title: "Test_1"
