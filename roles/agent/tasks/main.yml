@@ -38,7 +38,7 @@
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
-    automation_secret: "{{ checkmk_agent_pass }}"
+    automation_secret: "{{ checkmk_agent_auth }}"
     folder: "{{ checkmk_agent_folder | default(omit) }}"
     host_name: "{{ checkmk_agent_host_name }}"
     attributes: "{{ checkmk_agent_host_attributes }}"
@@ -65,7 +65,7 @@
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
-    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_pass }}
+    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }}
   register: checkmk_agent_update_state
   when: |
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
@@ -79,7 +79,7 @@
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
-    -U {{ checkmk_agent_user }} -S {{ checkmk_agent_pass }}
+    -U {{ checkmk_agent_user }} -S {{ checkmk_agent_auth }}
   register: checkmk_agent_update_state
   when: |
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
@@ -87,32 +87,18 @@
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
 
-- name: "Register Agent for TLS using User Password."
+- name: "Register Agent for TLS."
   become: true
   ansible.builtin.shell: |
     cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} \
-    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_pass }} --trust-cert
+    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }} --trust-cert
   register: checkmk_agent_tls_state
   when: |
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
     and checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
-    and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
-    and (checkmk_agent_secret is not defined)
-
-- name: "Register Agent for TLS using Automation Secret."
-  become: true
-  ansible.builtin.shell: |
-    cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} \
-    -U {{ checkmk_agent_user }} -S {{ checkmk_agent_pass }} --trust-cert
-  register: checkmk_agent_tls_state
-  when: |
-    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
-    and checkmk_agent_controller_binary.stat.exists | bool
-    and checkmk_agent_tls | bool
-    and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
+    and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
 
 - name: "Discover services and labels on host."
   tribe29.checkmk.discovery:
@@ -120,7 +106,7 @@
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
-    automation_secret: "{{ checkmk_agent_pass }}"
+    automation_secret: "{{ checkmk_agent_auth }}"
     host_name: "{{ checkmk_agent_host_name }}"
     state: "fix_all"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
