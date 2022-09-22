@@ -91,7 +91,7 @@
     state: "absent"
   delegate_to: localhost
   run_once: true
-  loop: "{{ checkmk_host_groups_delete }}"
+  loop: "{{ checkmk_host_groups_create }}"
 
 - name: "{{ outer_item.version }} - Activate."
   activation:
