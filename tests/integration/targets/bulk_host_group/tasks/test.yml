@@ -1,0 +1,62 @@
+---
+- name: "{{ outer_item.version }} - Create host groups."
+  bulk_host_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_groups: "{{ checkmk_host_groups_create }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Modify part of host groups (also checks for idempotency!)."
+  bulk_host_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_groups: "{{ checkmk_host_groups_modify }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Delete host groups."
+  bulk_host_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_groups: "{{ checkmk_host_groups_delete }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Delete host groups that were created at the beginning (also check for idempotency)."
+  bulk_host_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_groups: "{{ checkmk_host_groups_create }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
