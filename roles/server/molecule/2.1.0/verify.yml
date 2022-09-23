@@ -1,0 +1,14 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+
+  - name: "Test Server is running."
+    ansible.builtin.uri:
+      url: "{{ server_url }}/{{ checkmk_site }}/"
+    register: checkmk_server_url_state
+
+  - name: "Verify Server is running."
+    ansible.builtin.assert:
+      that: checkmk_server_url_state.status == 200
