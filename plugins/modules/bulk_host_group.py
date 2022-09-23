@@ -20,9 +20,9 @@ description:
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
-    hostgroups:
-        description: List of host_groups with (list of "name": , "title": pairs), elements host group name and title to be created/modified/deleted.
-        If "title" field is not defined or empty then the value in "name" is used.
+    host_groups:
+        description: List of host group name and title pairs to be created/modified/deleted.
+        If "title" field is not defined or empty, then the value in "name" filed is used.
         required: true
         type: list
     state:
