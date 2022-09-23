@@ -27,7 +27,7 @@ options:
             - list of dicts with elements of host group name and title (alias) to be created/modified/deleted.
               If title is omitted, it defaults to the host group name.
         default: []
-        type: list(dicts)
+        type: raw
     state:
         description: The state of your host group.
         type: str
