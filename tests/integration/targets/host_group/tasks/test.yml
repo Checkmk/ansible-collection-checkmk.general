@@ -5,8 +5,8 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
-    folder: "{{ item.title }}"
+    host_group_name: "{{ item.name }}"
+    title: "{{ item.title }}"
     attributes:
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
@@ -33,8 +33,8 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
-    folder: "{{ item.title }}"
+    host_group_name: "{{ item.name }}"
+    title: "{{ item.title }}"
     attributes:
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
@@ -56,13 +56,12 @@
   run_once: true
 
 - name: "{{ outer_item.version }} - Delete host groups."
-  host:
+  host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
-    folder: "{{ item.title }}"
+    host_group_name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
   run_once: true
@@ -81,13 +80,12 @@
   run_once: true
 
 - name: "{{ outer_item.version }} - Delete host groups that were created at the beginning (also check for idempotency)."
-  host:
+  host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
-    folder: "{{ item.title }}"
+    host_group_name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
   run_once: true
