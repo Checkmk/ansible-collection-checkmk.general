@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 from __future__ import absolute_import, division, print_function
 
