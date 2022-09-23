@@ -25,11 +25,11 @@ options:
     host_groups:
         name:
             description: name of the host group to be created/modified/deleted.
-            required: true
+            default: ""
             type: str
         title:
             description: title (alias) of the host group to be created/modified. If omitted defaults to the host group name.
-            required: false
+            default: ""
             type: str
     state:
         description: The state of your host group.
@@ -41,6 +41,8 @@ options:
         default: true
         type: bool
 
+author:
+    - Michael Sekania (@msekania)
 """
 
 EXAMPLES = r"""
@@ -76,7 +78,7 @@ EXAMPLES = r"""
     state: "present"
 
 # delete several host groups.
-- name: "Create several host groups."
+- name: "Delete several host groups."
   tribe29.checkmk.bulk_host_group:
     server_url: "http://localhost/"
     site: "my_site"
@@ -86,11 +88,6 @@ EXAMPLES = r"""
       - name: "my_host_group_one"
       - name: "my_host_group_two"
     state: "absent"
-
-author:
-    - Robin Gierse (@robin-tribe29)
-    - Lars Getwan (@lgetwan)
-    - Michael Sekania (@msekania)
 """
 
 RETURN = r"""
