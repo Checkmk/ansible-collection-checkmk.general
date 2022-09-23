@@ -23,19 +23,14 @@ extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     host_groups:
-        description: List of host group name and title pairs to be created/modified/deleted.
-        required: true
-        type: list
-        elements: dict
-        sub-options:
-            name:
-                description: name of the host group to be created/modified/deleted.
-                required: true
-                type: str
-            title:
-                description: title (alias) of the host group to be created/modified. If omitted/empty defaults to the host group name.
-                required: false
-                type: str
+        name:
+            description: name of the host group to be created/modified/deleted.
+            required: true
+            type: str
+        title:
+            description: title (alias) of the host group to be created/modified. If omitted defaults to the host group name.
+            required: false
+            type: str
     state:
         description: The state of your host group.
         type: str
@@ -79,10 +74,6 @@ EXAMPLES = r"""
       - name: "my_host_group_test"
         title: ""
     state: "present"
-
-# for host group my_host_group_two title will be my_host_group_two (dafault behaviour)
-# for host group my_host_group_test title will be my_host_group_test (dafault behaviour)
-
 
 # delete several host groups.
 - name: "Create several host groups."
@@ -146,7 +137,7 @@ def get_current_host_groups(module, base_url, headers):
         current_groups = [
             {
                 "name": el.get("href").rsplit("/", 1)[-1],
-                "title": el.get("title") or el.get("name"),
+                "title": el.get("title", el.get("name")),
             }
             for el in tmp
         ]
@@ -167,7 +158,7 @@ def move_host_groups(module, base_url, host_groups, headers):
             {
                 "name": el.get("name"),
                 "attributes": {
-                    "alias": (el.get("title") or el.get("name")),
+                    "alias": el.get("title", el.get("name")),
                 },
             }
             for el in host_groups
@@ -193,7 +184,7 @@ def create_host_groups(module, base_url, host_groups, headers):
         "entries": [
             {
                 "name": el.get("name"),
-                "alias": (el.get("title") or el.get("name")),
+                "alias": el.get("title", el.get("name")),
             }
             for el in host_groups
         ],
@@ -238,15 +229,7 @@ def run_module():
         validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        host_groups=dict(
-            type="list",
-            elements="dict",
-            required=True,
-            options=dict(
-                name=dict(type="str", required=True),
-                title=dict(type="str", required=False, default=""),
-            ),
-        ),
+        host_groups=dict(type="raw", default=[]),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
