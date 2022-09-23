@@ -35,8 +35,13 @@ plugins:
       name: host
       namespace: ''
       version_added: 0.0.1
+    rule:
+      description: Manage rules in Checkmk.
+      name: rule
+      namespace: ''
+      version_added: 0.10.0
   netconf: {}
   shell: {}
   strategy: {}
   vars: {}
-version: 0.8.0
+version: 0.10.0

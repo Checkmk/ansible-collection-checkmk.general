@@ -72,6 +72,7 @@
     name: "/tmp/{{ checkmk_server_setup_file }}"
     state: present
     disable_gpg_check: '{{ not checkmk_server_verify_setup | bool }}'
+  notify: Start httpd
   tags:
     - install-package
 

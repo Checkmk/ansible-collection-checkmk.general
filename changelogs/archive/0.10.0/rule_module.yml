@@ -1,0 +1,7 @@
+# https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
+
+major_changes:
+  - Add rule module.
+
+known_issues:
+  - Rule exports made with Checkmk API on server versions <2.1.0p10 will not import correctly.
