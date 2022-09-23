@@ -281,7 +281,7 @@ def run_module():
 
         if len(intersection_list) > 0:
             # determines difference between lists according to 'name' and 'title' pair
-            current_groups_dict = {el["name"]: el["title"] for el in current_groups}
+            current_groups_dict = dict((el["name"], el["title"]) for el in current_groups)
             remainings_list = [el for el in intersection_list if el.get("title") != current_groups_dict[el.get("name")]]
 
             if len(remainings_list) > 0:
