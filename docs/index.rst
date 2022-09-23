@@ -6,7 +6,7 @@
 Tribe29.Checkmk
 ===============
 
-Collection version 0.9.0
+Collection version 0.10.0
 
 .. contents::
    :local:
@@ -50,6 +50,7 @@ Modules
 * :ref:`downtime module <ansible_collections.tribe29.checkmk.downtime_module>` -- Manage downtimes in Checkmk.
 * :ref:`folder module <ansible_collections.tribe29.checkmk.folder_module>` -- Manage folders in Checkmk.
 * :ref:`host module <ansible_collections.tribe29.checkmk.host_module>` -- Manage hosts in Checkmk.
+* :ref:`rule module <ansible_collections.tribe29.checkmk.rule_module>` -- Manage rules in Checkmk.
 
 
 
@@ -66,3 +67,4 @@ Modules
     downtime_module
     folder_module
     host_module
+    rule_module

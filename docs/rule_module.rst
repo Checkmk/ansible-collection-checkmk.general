@@ -27,7 +27,7 @@
 
 .. Anchors
 
-.. _ansible_collections.tribe29.checkmk.host_module:
+.. _ansible_collections.tribe29.checkmk.rule_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -37,7 +37,7 @@
 
 .. Title
 
-tribe29.checkmk.host module -- Manage hosts in Checkmk.
+tribe29.checkmk.rule module -- Manage rules in Checkmk.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
@@ -47,11 +47,11 @@ tribe29.checkmk.host module -- Manage hosts in Checkmk.
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
-    To use it in a playbook, specify: :code:`tribe29.checkmk.host`.
+    To use it in a playbook, specify: :code:`tribe29.checkmk.rule`.
 
 .. version_added
 
-.. versionadded:: tribe29.checkmk 0.0.1
+.. versionadded:: tribe29.checkmk 0.10.0
 
 .. contents::
    :local:
@@ -65,7 +65,8 @@ Synopsis
 
 .. Description
 
-- Manage hosts within Checkmk.
+- Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
+- Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
 
 
 .. Aliases
@@ -97,47 +98,9 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-attributes"></div>
-
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-attributes:
-
-      .. rst-class:: ansible-option-title
-
-      **attributes**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-attributes" title="Permalink to this option"></a>
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-type:`any`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The attributes of your host as described in the API documentation.
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`{}`
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-automation_secret:
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -171,7 +134,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-automation_user:
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -203,21 +166,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-folder"></div>
+        <div class="ansibleOptionAnchor" id="parameter-rule"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-folder:
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule:
 
       .. rst-class:: ansible-option-title
 
-      **folder**
+      **rule**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-folder" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-rule" title="Permalink to this option"></a>
 
       .. rst-class:: ansible-option-type-line
 
-      :ansible-option-type:`string`
+      :ansible-option-type:`dictionary` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -227,12 +190,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The folder your host is located in.
+      Definition of the rule as returned by the Checkmk API.
 
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"/"`
 
       .. raw:: html
 
@@ -241,17 +200,17 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+        <div class="ansibleOptionAnchor" id="parameter-ruleset"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-host_name:
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-ruleset:
 
       .. rst-class:: ansible-option-title
 
-      **host_name**
+      **ruleset**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-ruleset" title="Permalink to this option"></a>
 
       .. rst-class:: ansible-option-type-line
 
@@ -265,7 +224,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The host you want to manage.
+      Name of the ruleset to manage.
 
 
       .. raw:: html
@@ -277,7 +236,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-server_url:
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -311,7 +270,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-site:
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -345,7 +304,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-state:
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -367,7 +326,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The state of your host.
+      State of the rule.
 
 
       .. rst-class:: ansible-option-line
@@ -386,7 +345,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-validate_certs:
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -440,43 +399,63 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    # Create a host.
-    - name: "Create a host."
-      tribe29.checkmk.host:
+    # Create a rule in checkgroup_parameters:memory_percentage_used.
+    - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
+      tribe29.checkmk.rule:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_name: "my_host"
-        folder: "/"
+        ruleset: "checkgroup_parameters:memory_percentage_used"
+        rule:
+            conditions: {
+                "host_labels": [],
+                "host_name": {
+                    "match_on": [
+                        "test1.tld"
+                    ],
+                    "operator": "one_of"
+                },
+                "host_tags": [],
+                "service_labels": []
+            }
+            properties: {
+                "comment": "Warning at 80%\nCritical at 90%\n",
+                "description": "Allow higher memory usage",
+                "disabled": false,
+                "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+            }
+            value_raw: "{'levels': (80.0, 90.0)}"
         state: "present"
 
-    # Create a host with IP.
-    - name: "Create a host with IP address."
-      tribe29.checkmk.host:
+    # Delete first rule in this ruleset.
+    - name: "Delete a rule."
+      tribe29.checkmk.rule:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_name: "my_host"
-        attributes:
-          alias: "My Host"
-          ipaddress: "127.0.0.1"
-        folder: "/"
-        state: "present"
-
-    # Create a host which is monitored on a distinct site.
-    - name: "Create a host which is monitored on a distinct site."
-      tribe29.checkmk.host:
-        server_url: "http://localhost/"
-        site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
-        host_name: "my_host"
-        attributes:
-          site: "my_remote_site"
-        folder: "/"
-        state: "present"
+        ruleset: "checkgroup_parameters:memory_percentage_used"
+        rule:
+            conditions: {
+                "host_labels": [],
+                "host_name": {
+                    "match_on": [
+                        "test1.tld"
+                    ],
+                    "operator": "one_of"
+                },
+                "host_tags": [],
+                "service_labels": []
+            }
+            properties: {
+                "comment": "Warning at 80%\nCritical at 90%\n",
+                "description": "Allow higher memory usage",
+                "disabled": false,
+                "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+            }
+            value_raw: "{'levels': (80.0, 90.0)}"
+        state: "absent"
 
 
 
@@ -503,17 +482,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-message"></div>
+        <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__return-message:
+      .. _ansible_collections.tribe29.checkmk.rule_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
-      **message**
+      **msg**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
+        <a class="ansibleOptionLink" href="#return-msg" title="Permalink to this return value"></a>
 
       .. rst-class:: ansible-option-type-line
 
@@ -537,7 +516,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` "Host created."
+      :ansible-option-sample-bold:`Sample:` "Rule created."
 
 
       .. raw:: html
@@ -554,8 +533,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- Robin Gierse (@robin-tribe29)
-- Lars Getwan (@lgetwan)
+- diademiemi (@diademiemi)
 
 
 
