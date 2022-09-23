@@ -21,9 +21,19 @@ extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     host_groups:
-        description: List of host group name and title pairs to be created/modified/deleted. Empty "title" field defaults in value of "name".
+        description: List of host group name and title pairs to be created/modified/deleted.
         required: true
         type: list
+        elements: dict
+        options:
+            name:
+                description: name of the host group to be created/modified/deleted.
+                required: true
+                type: str
+            title:
+                description: title (alias) of the host group to be created/modified. If omitted/empty defaults to the host group name.
+                required: false
+                type: str
     state:
         description: The state of your host group.
         type: str
