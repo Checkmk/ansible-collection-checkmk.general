@@ -130,9 +130,10 @@ def get_current_host_groups(module, base_url, headers):
         tmp = body.get("value", [])
         current_groups = [
             {
-                "name": el.get("href").rsplit('/', 1)[-1],
+                "name": el.get("href").rsplit("/", 1)[-1],
                 "title": el.get("title") or el.get("name"),
-            } for el in tmp
+            }
+            for el in tmp
         ]
     else:
         exit_failed(
@@ -152,7 +153,7 @@ def move_host_groups(module, base_url, host_groups, headers):
                 "name": el.get("name"),
                 "attributes": {
                     "alias": (el.get("title") or el.get("name")),
-                }
+                },
             }
             for el in host_groups
         ],
@@ -178,7 +179,8 @@ def create_host_groups(module, base_url, host_groups, headers):
             {
                 "name": el.get("name"),
                 "alias": (el.get("title") or el.get("name")),
-            } for el in host_groups
+            }
+            for el in host_groups
         ],
     }
     url = base_url + api_endpoint
@@ -198,7 +200,7 @@ def create_host_groups(module, base_url, host_groups, headers):
 def delete_host_groups(module, base_url, host_groups, headers):
     api_endpoint = "/domain-types/host_group_config/actions/bulk-delete/invoke"
     params = {
-        "entries": [el['name'] for el in host_groups],
+        "entries": [el["name"] for el in host_groups],
     }
     url = base_url + api_endpoint
 
@@ -277,16 +279,30 @@ def run_module():
 
         if len(difference_list) > 0:
             create_host_groups(module, base_url, difference_list, headers)
-            msg_tokens.append("Host groups: " + " ".join([el["name"] for el in difference_list]) + " were created.")
+            msg_tokens.append(
+                "Host groups: "
+                + " ".join([el["name"] for el in difference_list])
+                + " were created."
+            )
 
         if len(intersection_list) > 0:
             # determines difference between lists according to 'name' and 'title' pair
-            current_groups_dict = dict((el["name"], el["title"]) for el in current_groups)
-            remainings_list = [el for el in intersection_list if el.get("title") != current_groups_dict[el.get("name")]]
+            current_groups_dict = dict(
+                (el["name"], el["title"]) for el in current_groups
+            )
+            remainings_list = [
+                el
+                for el in intersection_list
+                if el.get("title") != current_groups_dict[el.get("name")]
+            ]
 
             if len(remainings_list) > 0:
                 changed = move_host_groups(module, base_url, remainings_list, headers)
-                msg_tokens.append("Host groups: " + " ".join([el["name"] for el in remainings_list]) + " were updated.")
+                msg_tokens.append(
+                    "Host groups: "
+                    + " ".join([el["name"] for el in remainings_list])
+                    + " were updated."
+                )
 
         if len(msg_tokens) >= 1:
             exit_changed(module, " ".join(msg_tokens))
@@ -298,7 +314,12 @@ def run_module():
         if len(intersection_list) > 0:
             # extra check if title-s (alias-es) match.
             delete_host_groups(module, base_url, intersection_list, headers)
-            exit_changed(module, "Host groups: " + " ".join([el["name"] for el in intersection_list]) + " were deleted.")
+            exit_changed(
+                module,
+                "Host groups: "
+                + " ".join([el["name"] for el in intersection_list])
+                + " were deleted."
+            )
 
     else:
         exit_failed(module, "Unknown error")
