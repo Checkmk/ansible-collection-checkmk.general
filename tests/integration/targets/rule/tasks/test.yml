@@ -1,0 +1,92 @@
+---
+- name: "{{ outer_item.version }} - Create rules."
+  rule:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    ruleset: "{{ item.ruleset }}"
+    rule: "{{ item.rule }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_rules }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Create rules."
+  rule:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    ruleset: "{{ item.ruleset }}"
+    rule: "{{ item.rule }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  register: rule_result
+  loop: "{{ checkmk_rules }}"
+
+- name: "{{ outer_item.version }} - Fail if changed."  # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Rule changed!"
+  when: "rule_result.changed"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Delete rules."
+  rule:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    ruleset: "{{ item.ruleset }}"
+    rule: "{{ item.rule }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_rules }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Delete rules."
+  rule:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    ruleset: "{{ item.ruleset }}"
+    rule: "{{ item.rule }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+  register: rule_result
+  loop: "{{ checkmk_rules }}"
+
+- name: "{{ outer_item.version }} - Fail if changed."  # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Rule changed!"
+  when: "rule_result.changed"
+  delegate_to: localhost
+  run_once: true

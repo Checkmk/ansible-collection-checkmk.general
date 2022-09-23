@@ -49,8 +49,8 @@ If you need help, do ask for it.
 When changing this collection, please make sure to write a log of what you did.
 To do so, create a `.yml` file in the folder `changelogs/fragments`.
 The name does not matter, as the changelog is compiled of all fragments
-during build-time. For reference regarding the file format, you can take a look
-at files in the folder `changelogs/archive`.
+during build-time. For reference regarding the file format, take a look
+at the file `changelogs/template.yml`.
 
 ### Documentation
 
