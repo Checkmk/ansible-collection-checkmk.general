@@ -318,7 +318,7 @@ def run_module():
                 module,
                 "Host groups: "
                 + " ".join([el["name"] for el in intersection_list])
-                + " were deleted."
+                + " were deleted.",
             )
 
     else:
