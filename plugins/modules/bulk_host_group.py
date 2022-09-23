@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
+
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
@@ -25,7 +27,7 @@ options:
         required: true
         type: list
         elements: dict
-        options:
+        sub-options:
             name:
                 description: name of the host group to be created/modified/deleted.
                 required: true
@@ -94,6 +96,10 @@ EXAMPLES = r"""
       - name: "my_host_group_two"
     state: "absent"
 
+author:
+    - Robin Gierse (@robin-tribe29)
+    - Lars Getwan (@lgetwan)
+    - Michael Sekania (@msekania)
 """
 
 RETURN = r"""
