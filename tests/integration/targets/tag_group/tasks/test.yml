@@ -9,16 +9,16 @@
     title: Virtualization
     topic: My_Tag_Group
     choices:
-    - id: No_Virtualization
-      title: No Virtualization
-    - id: ESXi
-      title: ESXi
-    - id: vCenter
-      title: vCenter
-    - id: HyperV
-      title: Hyper
-    - id: KVM
-      title: KVM
+      - id: No_Virtualization
+        title: No Virtualization
+      - id: ESXi
+        title: ESXi
+      - id: vCenter
+        title: vCenter
+      - id: HyperV
+        title: Hyper
+      - id: KVM
+        title: KVM
     state: "present"
   delegate_to: localhost
 
@@ -32,14 +32,14 @@
     title: Hypervisors
     topic: My_Tag_Group
     choices:
-    - id: No_Virtualization
-      title: No Virtualization
-    - id: ESXi
-      title: ESXi
-    - id: vCenter
-      title: vCenter
-    - id: HyperV
-      title: Hyper
+      - id: No_Virtualization
+        title: No Virtualization
+      - id: ESXi
+        title: ESXi
+      - id: vCenter
+        title: vCenter
+      - id: HyperV
+        title: Hyper
     state: "present"
   delegate_to: localhost
 
@@ -53,13 +53,13 @@
     title: Hypervisors
     topic: My_Tag_Group
     choices:
-    - id: No_Virtualization
-      title: No Virtualization
-    - id: ESXi
-      title: ESXi
-    - id: vCenter
-      title: vCenter
-    - id: HyperV
-      title: Hyper
+      - id: No_Virtualization
+        title: No Virtualization
+      - id: ESXi
+        title: ESXi
+      - id: vCenter
+        title: vCenter
+      - id: HyperV
+        title: Hyper
     state: "absent"
   delegate_to: localhost
