@@ -8,21 +8,20 @@ DOCUMENTATION = r"""
 ---
 module: bulk_host_group
 
-short_description: Manage host groups in Checkmk.
+short_description: Manage host groups in Checkmk (bulk version).
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "0.0.1"
 
 description:
-- Bulk manage host groups within Checkmk.
+- Manage host groups in Checkmk (bulk version).
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     host_groups:
-        description: List of host group name and title pairs to be created/modified/deleted.
-        If "title" field is not defined or empty, then the value in "name" filed is used.
+        description: List of host group name and title pairs to be created/modified/deleted. Empty "title" field defaults in value of "name".
         required: true
         type: list
     state:
