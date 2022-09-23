@@ -5,6 +5,20 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.9.0
+======
+
+Minor Changes
+-------------
+
+- Server role - Improve OS support detection and enhance prerequisites installation.
+
+Bugfixes
+--------
+
+- Host module - Do not raise an error, if a host already exists, or on updating a host's attributes while the hosts stays in the same folder.
+- Server role - Fix and enhance additional repository handling on RedHat derivates.
+
 v0.8.0
 ======
 

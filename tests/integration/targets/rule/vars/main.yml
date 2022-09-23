@@ -1,0 +1,47 @@
+---
+checkmk_versions:
+  - version: "2.1.0p10"
+    site: "stable"
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
+site: "test"
+server_url: "http://127.0.0.1/"
+automation_user: "cmkadmin"
+automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
+
+checkmk_rules:
+  - ruleset: "usewalk_hosts"
+    rule:
+      conditions: {
+        "host_labels": [],
+        "host_tags": [
+          {
+            "key": "snmp_ds",
+            "operator": "is_not",
+            "value": "no-snmp"
+          }
+        ],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "{{ ansible_date_time.iso8601 }} Set by Ansible",
+        "disabled": false,
+      }
+      value_raw: "True"
+  - ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      conditions: {
+        "host_labels": [],
+        "host_name": {
+          "match_on": [],
+          "operator": "one_of"
+        },
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 80%\nCritical at 90%\n",
+        "description": "Allow higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (80.0, 90.0)}"
