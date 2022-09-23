@@ -52,6 +52,24 @@ releases:
     fragments:
     - v0.1.0.yml
     release_date: '2022-03-18'
+  0.10.0:
+    changes:
+      bugfixes:
+      - Host module - Now correctly setting the default folder when getting the current
+        host state.
+      known_issues:
+      - Rule exports made with Checkmk API on server versions <2.1.0p10 will not import
+        correctly.
+      major_changes:
+      - Add rule module.
+    fragments:
+    - fix-150-default-folder.yml
+    - rule_module.yml
+    modules:
+    - description: Manage rules in Checkmk.
+      name: rule
+      namespace: ''
+    release_date: '2022-09-23'
   0.2.0:
     changes:
       known_issues:
