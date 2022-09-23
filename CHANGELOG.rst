@@ -5,6 +5,43 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.10.0
+=======
+
+Major Changes
+-------------
+
+- Add rule module.
+
+Bugfixes
+--------
+
+- Host module - Now correctly setting the default folder when getting the current host state.
+
+Known Issues
+------------
+
+- Rule exports made with Checkmk API on server versions <2.1.0p10 will not import correctly.
+
+New Modules
+-----------
+
+- tribe29.checkmk.rule - Manage rules in Checkmk.
+
+v0.9.0
+======
+
+Minor Changes
+-------------
+
+- Server role - Improve OS support detection and enhance prerequisites installation.
+
+Bugfixes
+--------
+
+- Host module - Do not raise an error, if a host already exists, or on updating a host's attributes while the hosts stays in the same folder.
+- Server role - Fix and enhance additional repository handling on RedHat derivates.
+
 v0.8.0
 ======
 

@@ -4,12 +4,18 @@
     msg: "This role is not stable for the target operating system, {{ ansible_distribution }} {{ ansible_distribution_major_version }}."
   when: (ansible_distribution is not defined) or
         (ansible_distribution_version is not defined) or
-        (ansible_distribution+"-"+ansible_distribution_major_version not in checkmk_server_server_stable_os)
+        (ansible_distribution + "-" + ansible_distribution_major_version not in checkmk_server_server_stable_os)
 
 - name: "Include OS Family specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-vars
+
+- name: "Update APT Cache."
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+  when: ansible_os_family == "Debian"
 
 - name: "Install Checkmk Prerequisites."
   become: true
@@ -29,6 +35,7 @@
     mode: "0640"
     url_username: "{{ checkmk_server_download_user | default(omit) }}"
     url_password: "{{ checkmk_server_download_pass | default(omit) }}"
+  retries: 3
   tags:
     - download-package
 
@@ -38,6 +45,7 @@
     dest: "/tmp/Check_MK-pubkey.gpg"
     mode: "0640"
   when: checkmk_server_verify_setup | bool
+  retries: 3
   tags:
     - download-gpg-key
 
@@ -77,3 +85,7 @@
 - name: Include Site Management Playbook.
   ansible.builtin.include_tasks: "sites.yml"
   when: checkmk_server_sites is defined
+
+- name: "Flush Handlers."
+  ansible.builtin.meta:
+    flush_handlers
