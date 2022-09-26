@@ -342,7 +342,13 @@ def run_module():
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(argument_spec=module_args, mutually_exclusive=[('host_groups', 'host_group_name'),], supports_check_mode=False)
+    module = AnsibleModule(
+        argument_spec=module_args,
+        mutually_exclusive=[
+            ('host_groups', 'host_group_name'),
+        ],
+        supports_check_mode=False
+    )
 
     # Use the parameters to initialize some common variables
     headers = {
