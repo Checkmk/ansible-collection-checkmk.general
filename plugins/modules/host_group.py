@@ -342,7 +342,7 @@ def run_module():
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    #module = AnsibleModule(argument_spec=module_args, required_one_of=[('host_groups', 'host_group_name'),], supports_check_mode=False)
+    # module = AnsibleModule(argument_spec=module_args, required_one_of=[('host_groups', 'host_group_name'),], supports_check_mode=False)
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
     # Use the parameters to initialize some common variables
@@ -364,14 +364,21 @@ def run_module():
     # Determine desired state
     state = module.params.get("state", "present")
 
-    if "host_groups" in module.params and module.params.get("host_groups") and len(module.params.get("host_groups", [])) > 0:
-        if "host_group_name" in module.params and module.params.get("host_group_name", ""):
+    if (
+        "host_groups" in module.params
+        and module.params.get("host_groups")
+        and len(module.params.get("host_groups", [])) > 0
+    ):
+        if "host_group_name" in module.paramsand module.params.get(
+            "host_group_name", ""
+        ):
             exit_failed(module, "one shoudl define 'host_groups' or 'host_group_name'")
 
-        #module.fail_json(module.params.get("title", ""))
-
         if "title" in module.params and module.params.get("title", ""):
-            exit_failed(module, "'title' has only effect when 'host_group_name' is defined and not 'host_groups'")
+            exit_failed(
+                module,
+                "'title' has only effect when 'host_group_name' is defined and not 'host_groups'",
+            )
 
         host_groups = module.params.get("host_groups")
 
@@ -385,7 +392,9 @@ def run_module():
         listofnames = set([el.get("name") for el in current_groups])
 
         intersection_list = [el for el in host_groups if el.get("name") in listofnames]
-        difference_list = [el for el in host_groups if not el.get("name") in listofnames]
+        difference_list = [
+            el for el in host_groups if not el.get("name") in listofnames
+        ]
 
         # Handle the host group accordingly to above findings and desired state
         if state == "present":
@@ -414,7 +423,9 @@ def run_module():
                 ]
 
                 if len(remainings_list) > 0:
-                    changed = update_host_groups(module, base_url, remainings_list, headers)
+                    changed = update_host_groups(
+                        module, base_url, remainings_list, headers
+                    )
                     msg_tokens.append(
                         "Host groups: "
                         + " ".join([el["name"] for el in remainings_list])
@@ -440,9 +451,13 @@ def run_module():
 
         else:
             exit_failed(module, "Unknown error")
-    elif "host_group_name" in module.params and module.params.get("host_group_name", ""):
+    elif "host_group_name" in module.params and module.params.get(
+        "host_group_name", ""
+    ):
         if "host_groups" in module.params and module.params.get("host_groups"):
-            exit_failed(module, "one shoudl define 'host_groups' or 'host_group_name'")
+            exit_failed(
+                module, "one shoudl define 'host_groups' or 'host_group_name'"
+            )
 
         # Determine the current state of this particular host group
         (
