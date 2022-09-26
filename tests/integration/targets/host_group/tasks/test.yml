@@ -6,11 +6,26 @@
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     host_group_name: "{{ item.name }}"
-    title: "{{ item.title }}"
+    title: "{{ item.title | default(item.name) }}"
     state: "present"
   delegate_to: localhost
   run_once: true
   loop: "{{ checkmk_host_groups_create }}"
+
+- name: "{{ outer_item.version }} - Should fail because of 'host_groups', Create host groups."
+  host_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_group_name: "{{ item.name }}"
+    title: "{{ item.title | default(item.name) }}"
+    host_groups: checkmk_host_groups_create
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_host_groups_create }}"
+  ignore_errors: True
 
 - name: "{{ outer_item.version }} - Activate."
   activation:
@@ -30,7 +45,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_group_name: "{{ item.name }}"
+    host_group_name: "{{ item.name | default(item.name) }}"
     title: "{{ item.title }}"
     state: "present"
   delegate_to: localhost
@@ -84,6 +99,88 @@
   delegate_to: localhost
   run_once: true
   loop: "{{ checkmk_host_groups_create }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Bulk create host groups."
+  host_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_groups: "{{ checkmk_host_groups_create }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Should fail because of 'host_group_name', Bulk create host groups."
+  host_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_groups: "{{ checkmk_host_groups_create }}"
+    host_group_name: "test"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  ignore_errors: True
+
+- name: "{{ outer_item.version }} - Should fail because of 'title', Bulk create host groups."
+  host_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_groups: "{{ checkmk_host_groups_create }}"
+    title: "Test"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  ignore_errors: True
+
+- name: "{{ outer_item.version }} - Bulk modify part of host groups (also checks for idempotency!)."
+  host_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_groups: "{{ checkmk_host_groups_modify }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Bulk delete host groups."
+  host_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_groups: "{{ checkmk_host_groups_delete }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Bulk delete host groups that were created at the beginning (also check for idempotency)."
+  host_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_groups: "{{ checkmk_host_groups_create }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
 
 - name: "{{ outer_item.version }} - Activate."
   activation:
