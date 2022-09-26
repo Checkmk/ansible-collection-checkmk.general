@@ -345,9 +345,12 @@ def run_module():
     module = AnsibleModule(
         argument_spec=module_args,
         mutually_exclusive=[
-            ('host_groups', 'host_group_name'),
+            ("host_groups", "host_group_name"),
         ],
-        supports_check_mode=False
+        required_one_of=[
+            ("host_groups", "host_group_name"),
+        ],
+        supports_check_mode=False,
     )
 
     # Use the parameters to initialize some common variables
