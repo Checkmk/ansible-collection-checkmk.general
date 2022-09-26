@@ -7,9 +7,6 @@
     automation_secret: "{{ automation_secret }}"
     host_group_name: "{{ item.name }}"
     title: "{{ item.title }}"
-    attributes:
-      site: "{{ outer_item.site }}"
-      ipaddress: 127.0.0.1
     state: "present"
   delegate_to: localhost
   run_once: true
@@ -35,9 +32,6 @@
     automation_secret: "{{ automation_secret }}"
     host_group_name: "{{ item.name }}"
     title: "{{ item.title }}"
-    attributes:
-      site: "{{ outer_item.site }}"
-      ipaddress: 127.0.0.1
     state: "present"
   delegate_to: localhost
   run_once: true
