@@ -369,8 +369,8 @@ def run_module():
         and module.params.get("host_groups")
         and len(module.params.get("host_groups", [])) > 0
     ):
-        if ("host_group_name" in module.params
-            and module.params.get("host_group_name", "")
+        if "host_group_name" in module.params and module.params.get(
+            "host_group_name", ""
         ):
             exit_failed(module, "one shoudl define 'host_groups' or 'host_group_name'")
 
@@ -455,9 +455,7 @@ def run_module():
         "host_group_name", ""
     ):
         if "host_groups" in module.params and module.params.get("host_groups"):
-            exit_failed(
-                module, "one shoudl define 'host_groups' or 'host_group_name'"
-            )
+            exit_failed(module, "one shoudl define 'host_groups' or 'host_group_name'")
 
         # Determine the current state of this particular host group
         (
@@ -494,7 +492,9 @@ def run_module():
         else:
             exit_failed(module, "Unknown error")
     else:
-        exit_failed(module, "One shoudl define either 'host_groups' or 'host_group_name'")
+        exit_failed(
+            module, "One shoudl define either 'host_groups' or 'host_group_name'"
+        )
 
 
 def main():
