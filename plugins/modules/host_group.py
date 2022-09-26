@@ -342,8 +342,7 @@ def run_module():
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    # module = AnsibleModule(argument_spec=module_args, required_one_of=[('host_groups', 'host_group_name'),], supports_check_mode=False)
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=module_args, mutually_exclusive=[('host_groups', 'host_group_name'),], supports_check_mode=False)
 
     # Use the parameters to initialize some common variables
     headers = {
@@ -369,11 +368,6 @@ def run_module():
         and module.params.get("host_groups")
         and len(module.params.get("host_groups", [])) > 0
     ):
-        if "host_group_name" in module.params and module.params.get(
-            "host_group_name", ""
-        ):
-            exit_failed(module, "one shoudl define 'host_groups' or 'host_group_name'")
-
         if "title" in module.params and module.params.get("title", ""):
             exit_failed(
                 module,
@@ -454,9 +448,6 @@ def run_module():
     elif "host_group_name" in module.params and module.params.get(
         "host_group_name", ""
     ):
-        if "host_groups" in module.params and module.params.get("host_groups"):
-            exit_failed(module, "one shoudl define 'host_groups' or 'host_group_name'")
-
         # Determine the current state of this particular host group
         (
             current_state,
