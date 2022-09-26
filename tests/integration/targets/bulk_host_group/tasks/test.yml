@@ -6,9 +6,6 @@
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     host_groups: "{{ checkmk_host_groups_create }}"
-    attributes:
-      site: "{{ outer_item.site }}"
-      ipaddress: 127.0.0.1
     state: "present"
   delegate_to: localhost
   run_once: true
@@ -20,9 +17,6 @@
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     host_groups: "{{ checkmk_host_groups_modify }}"
-    attributes:
-      site: "{{ outer_item.site }}"
-      ipaddress: 127.0.0.1
     state: "present"
   delegate_to: localhost
   run_once: true
