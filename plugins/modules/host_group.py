@@ -369,8 +369,8 @@ def run_module():
         and module.params.get("host_groups")
         and len(module.params.get("host_groups", [])) > 0
     ):
-        if "host_group_name" in module.paramsand module.params.get(
-            "host_group_name", ""
+        if ("host_group_name" in module.params
+            and module.params.get("host_group_name", "")
         ):
             exit_failed(module, "one shoudl define 'host_groups' or 'host_group_name'")
 
