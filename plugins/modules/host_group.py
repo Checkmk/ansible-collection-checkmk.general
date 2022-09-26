@@ -221,9 +221,7 @@ def run_module():
         if len(msg_tokens) >= 1:
             exit_changed(module, " ".join(msg_tokens))
         else:
-            exit_ok(
-                module, "Host group already present."
-            )
+            exit_ok(module, "Host group already present.")
 
     elif state == "present" and current_state == "absent":
         create_host_group(module, base_url, headers)
