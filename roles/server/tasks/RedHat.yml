@@ -1,16 +1,8 @@
 ---
-- name: "Enable repositories on RHEL 8."
+- name: "Enable repositories on CentOS & RHEL 8."
   block:
 
-  - name: "Enable CodeReady Linux Builder repo on RHEL 8."
-    become: true
-    community.general.rhsm_repository:
-      name: "codeready-builder-for-rhel-{{ ansible_facts.distribution_major_version }}-x86_64-rpms"
-      state: enabled
-    tags:
-      - enable-repos
-
-  - name: "Download EPEL GPG Key on RHEL 8."
+  - name: "Download EPEL GPG Key on CentOS & RHEL 8."
     ansible.builtin.get_url:
       url: "{{ checkmk_server_epel_gpg_key }}"
       dest: "/tmp/EPEL-pubkey.gpg"
@@ -30,7 +22,7 @@
       - import-gpg-key
       - enable-repos
 
-  - name: "Install epel-release from URL on RHEL 8."
+  - name: "Install epel-release from URL on CentOS & RHEL 8."
     become: true
     ansible.builtin.yum:
       name: "{{ checkmk_server_epel_url }}"
@@ -39,6 +31,17 @@
     tags:
       - enable-repos
 
+  when: |
+    (ansible_facts.distribution == "RedHat" or ansible_facts.distribution == "CentOS")
+    and ansible_facts.distribution_major_version == "8"
+
+- name: "Enable CodeReady Linux Builder repo on RHEL 8."
+  become: true
+  community.general.rhsm_repository:
+    name: "codeready-builder-for-rhel-{{ ansible_facts.distribution_major_version }}-x86_64-rpms"
+    state: enabled
+  tags:
+    - enable-repos
   when: |
     ansible_facts.distribution == "RedHat"
     and ansible_facts.distribution_major_version == "8"
