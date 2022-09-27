@@ -12,14 +12,19 @@ None.
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_agent_version: "2.1.0p1"
+    checkmk_agent_version: "2.1.0p13"
 
 The Checkmk version of your site.
 
     checkmk_agent_edition: cre
 
-The edition you are using. Valid values are `cre` and `cee`.
-Note, that `cee` is not implemented yet.
+The edition you are using. Valid values are `cre`, `cfe`, `cee` and `cme`.
+- `cre`: Raw Edition, fully open source.
+- `cfe`: Free Edition, enterprise features, but limited hosts.
+- `cee`: Enterprise Edition, full enterprise features.
+- `cme`: Managed Edition, for service providers.
+
+For details about the editions see: https://checkmk.com/product/editions
 
     checkmk_agent_protocol: http
 
@@ -47,13 +52,13 @@ The user used to authenticate against your Checkmk site.
 
     checkmk_agent_pass: "{{ automation_secret }}"
 
-The password for the normal user used to authenticate against your Checkmk site.
-This is mutually exclusive with `checkmk_agent_secret`!
+The password for the normal user used to authenticate against your Checkmk site.  
+This is mutually exclusive with `checkmk_agent_secret`.
 
     checkmk_agent_secret: "{{ automation_secret }}"
 
-The secret for the automation user used to authenticate against your Checkmk site.
-This is mutually exclusive with `checkmk_agent_pass`!
+The secret for the automation user used to authenticate against your Checkmk site.  
+This is mutually exclusive with `checkmk_agent_pass`.
 
     checkmk_agent_add_host: 'false'
 
