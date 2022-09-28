@@ -8,6 +8,8 @@ action_groups:
     - host
     - downtime
     - rule
+    - tag_group
+    - host_group
 
 # plugin_routing:
 #   modules:
