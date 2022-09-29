@@ -297,7 +297,9 @@ def create_contact_groups(module, base_url, contact_groups, headers):
 
 
 def delete_single_contact_group(module, base_url, headers):
-    api_endpoint = "/objects/contact_group_config/" + module.params["contact_group_name"]
+    api_endpoint = (
+        "/objects/contact_group_config/" + module.params["contact_group_name"]
+    )
     url = base_url + api_endpoint
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
@@ -394,7 +396,9 @@ def run_module():
 
         listofnames = set([el.get("name") for el in current_groups])
 
-        intersection_list = [el for el in contact_groups if el.get("name") in listofnames]
+        intersection_list = [
+            el for el in contact_groups if el.get("name") in listofnames
+        ]
         difference_list = [
             el for el in contact_groups if not el.get("name") in listofnames
         ]
