@@ -9,7 +9,10 @@
       Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_auth }}"
       Accept: "application/octet-stream"
   become: false
-  when: checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe"
+  when: |
+    checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme"
   register: checkmk_agent_download_state
   # This task may fail, as we fall back to the generic agent in that case
   failed_when: 'false'
@@ -24,7 +27,9 @@
     force: "{{ checkmk_agent_force_install | bool }}"
     state: present
   when: |
-    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
     and checkmk_agent_download_state.status == 200
   tags:
     - install-package
@@ -40,7 +45,9 @@
       Accept: "application/octet-stream"
   become: false
   when: |
-    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
     and checkmk_agent_download_state.status != 200
   retries: 3
   tags:
@@ -53,7 +60,9 @@
     force: "{{ checkmk_agent_force_install | bool }}"
     state: present
   when: |
-    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
     and checkmk_agent_download_state.status != 200
   tags:
     - install-package
