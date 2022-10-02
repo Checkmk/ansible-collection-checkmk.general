@@ -70,7 +70,9 @@
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }}
   register: checkmk_agent_update_state
   when: |
-    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
     and checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
@@ -84,7 +86,9 @@
     -U {{ checkmk_agent_user }} -S {{ checkmk_agent_auth }}
   register: checkmk_agent_update_state
   when: |
-    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
     and checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
@@ -97,7 +101,9 @@
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }} --trust-cert
   register: checkmk_agent_tls_state
   when: |
-    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
     and checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
