@@ -8,6 +8,7 @@
     headers:
       Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_auth }}"
       Accept: "application/octet-stream"
+  become: false
   when: checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe"
   register: checkmk_agent_download_state
   # This task may fail, as we fall back to the generic agent in that case
@@ -37,6 +38,7 @@
     headers:
       Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_auth }}"
       Accept: "application/octet-stream"
+  become: false
   when: |
     (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe")
     and checkmk_agent_download_state.status != 200
