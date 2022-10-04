@@ -67,7 +67,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    hostgroups:
+    host_groups:
       - name: "my_host_group_one"
         title: "My Host Group One"
       - name: "my_host_group_two"
@@ -83,7 +83,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    hostgroups:
+    host_groups:
       - name: "my_host_group_one"
         title: "My Host Group One"
       - name: "my_host_group_two"
@@ -107,7 +107,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    hostgroups:
+    host_groups:
       - name: "my_host_group_one"
       - name: "my_host_group_two"
     state: "absent"
