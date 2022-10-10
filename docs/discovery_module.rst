@@ -18,8 +18,7 @@
 .. role:: ansible-option-versionadded
 .. role:: ansible-option-aliases
 .. role:: ansible-option-choices
-.. role:: ansible-option-choices-entry
-.. role:: ansible-option-default
+.. role:: ansible-option-choices-default-mark
 .. role:: ansible-option-default-bold
 .. role:: ansible-option-configuration
 .. role:: ansible-option-returned-bold
@@ -43,7 +42,7 @@ tribe29.checkmk.discovery module -- Discover services in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.10.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.11.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -51,7 +50,9 @@ tribe29.checkmk.discovery module -- Discover services in Checkmk.
 
 .. version_added
 
-.. versionadded:: tribe29.checkmk 0.0.1
+.. rst-class:: ansible-version-added
+
+New in tribe29.checkmk 0.0.1
 
 .. contents::
    :local:
@@ -298,11 +299,12 @@ Parameters
 
       :ansible-option-choices:`Choices:`
 
-      - :ansible-option-default-bold:`new` :ansible-option-default:`← (default)`
-      - :ansible-option-choices-entry:`remove`
-      - :ansible-option-choices-entry:`fix\_all`
-      - :ansible-option-choices-entry:`refresh`
-      - :ansible-option-choices-entry:`only\_host\_labels`
+      - :ansible-option-choices-entry-default:`"new"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"remove"`
+      - :ansible-option-choices-entry:`"fix\_all"`
+      - :ansible-option-choices-entry:`"refresh"`
+      - :ansible-option-choices-entry:`"only\_host\_labels"`
+
 
       .. raw:: html
 
@@ -343,7 +345,8 @@ Parameters
       :ansible-option-choices:`Choices:`
 
       - :ansible-option-choices-entry:`false`
-      - :ansible-option-default-bold:`true` :ansible-option-default:`← (default)`
+      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
 
       .. raw:: html
 
@@ -444,7 +447,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` 200
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`200`
 
 
       .. raw:: html
@@ -489,7 +492,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` "Host created."
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Host created."`
 
 
       .. raw:: html
