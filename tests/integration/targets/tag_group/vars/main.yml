@@ -1,0 +1,10 @@
+---
+checkmk_versions:
+  - version: "2.1.0p11"
+    site: "stable"
+  - version: "2.0.0p28"
+    site: "oldstable"
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
+server_url: "http://127.0.0.1/"
+automation_user: "cmkadmin"
+automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
