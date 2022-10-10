@@ -26,7 +26,7 @@
 
 .. Anchors
 
-.. _ansible_collections.tribe29.checkmk.activation_module:
+.. _ansible_collections.tribe29.checkmk.tag_group_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -36,8 +36,8 @@
 
 .. Title
 
-tribe29.checkmk.activation module -- Activate changes in Checkmk.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+tribe29.checkmk.tag_group module -- Manage tag\_group within Checkmk
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -46,13 +46,13 @@ tribe29.checkmk.activation module -- Activate changes in Checkmk.
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
-    To use it in a playbook, specify: :code:`tribe29.checkmk.activation`.
+    To use it in a playbook, specify: :code:`tribe29.checkmk.tag_group`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in tribe29.checkmk 0.0.1
+New in tribe29.checkmk 0.11.0
 
 .. contents::
    :local:
@@ -66,8 +66,7 @@ Synopsis
 
 .. Description
 
-- Activate changes within Checkmk.
-- This module only needs to be run once and not for every host. Use \ :literal:`run\_once`\ .
+- Manage tag\_group within Checkmk.
 
 
 .. Aliases
@@ -101,7 +100,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-automation_secret:
+      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -135,7 +134,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-automation_user:
+      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -167,21 +166,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-force_foreign_changes"></div>
+        <div class="ansibleOptionAnchor" id="parameter-choices"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-force_foreign_changes:
+      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-choices:
 
       .. rst-class:: ansible-option-title
 
-      **force_foreign_changes**
+      **choices**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-force_foreign_changes" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-choices" title="Permalink to this option"></a>
 
       .. rst-class:: ansible-option-type-line
 
-      :ansible-option-type:`boolean`
+      :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
 
       .. raw:: html
 
@@ -191,16 +190,50 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Wheather to active foreign changes.
+      The list of the tags for the tag\_group as dicts.
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-choices:`Choices:`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
 
-      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
-      - :ansible-option-choices-entry:`true`
+      .. raw:: html
 
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-id"></div>
+
+      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-id:
+
+      .. rst-class:: ansible-option-title
+
+      **id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-id" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The id of the tag\_group to be created/ modified/deleted.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`""`
 
       .. raw:: html
 
@@ -211,7 +244,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-server_url:
+      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -245,7 +278,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-site:
+      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -277,21 +310,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-sites"></div>
+        <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-sites:
+      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
-      **sites**
+      **state**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-sites" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
 
       .. rst-class:: ansible-option-type-line
 
-      :ansible-option-type:`any`
+      :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -301,12 +334,16 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The sites that should be activated. Omitting this option activates all sites.
+      The desired state
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`"present"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"absent"`
+
 
       .. raw:: html
 
@@ -315,21 +352,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
+        <div class="ansibleOptionAnchor" id="parameter-title"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-validate_certs:
+      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-title:
 
       .. rst-class:: ansible-option-title
 
-      **validate_certs**
+      **title**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-validate_certs" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-title" title="Permalink to this option"></a>
 
       .. rst-class:: ansible-option-type-line
 
-      :ansible-option-type:`boolean`
+      :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -339,16 +376,50 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Whether to validate the SSL certificate of the Checkmk server.
+      The title of the tag\_group
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-choices:`Choices:`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`""`
 
-      - :ansible-option-choices-entry:`false`
-      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+      .. raw:: html
 
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-topic"></div>
+
+      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-topic:
+
+      .. rst-class:: ansible-option-title
+
+      **topic**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-topic" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The topic of the tag\_group
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`""`
 
       .. raw:: html
 
@@ -372,32 +443,27 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    - name: "Activate changes on all sites."
-      tribe29.checkmk.activation:
-          server_url: "http://localhost/"
-          site: "my_site"
-          automation_user: "automation"
-          automation_secret: "$SECRET"
-      run_once: 'true'
-
-    - name: "Activate changes on a specific site."
-      tribe29.checkmk.activation:
-          server_url: "http://localhost/"
-          site: "my_site"
-          automation_user: "automation"
-          automation_secret: "$SECRET"
-          sites:
-            - "my_site"
-      run_once: 'true'
-
-    - name: "Activate changes including foreign changes."
-      tribe29.checkmk.activation:
-          server_url: "http://localhost/"
-          site: "my_site"
-          automation_user: "automation"
-          automation_secret: "$SECRET"
-          force_foreign_changes: 'true'
-      run_once: 'true'
+    - name: "Create tag_group"
+      tribe29.checkmk.tag_group:
+        server_url: "https://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        id: Virtualization
+        title: Virtualization
+        topic: My_Tags
+        choices:
+            - id: No_Virtualization
+              title: No Virtualization
+            - id: ESXi
+              title: ESXi
+            - id: vCenter
+              title: vCenter
+            - id: HyperV
+              title: HyperV
+            - id: KVM
+              title: KVM
+      state: present
 
 
 
@@ -426,7 +492,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-http_code"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__return-http_code:
+      .. _ansible_collections.tribe29.checkmk.tag_group_module__return-http_code:
 
       .. rst-class:: ansible-option-title
 
@@ -471,7 +537,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-message"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__return-message:
+      .. _ansible_collections.tribe29.checkmk.tag_group_module__return-message:
 
       .. rst-class:: ansible-option-title
 
@@ -503,7 +569,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Changes activated."`
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"OK"`
 
 
       .. raw:: html
@@ -520,7 +586,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- Robin Gierse (@robin-tribe29)
+- Stefan Mühling (@muehlings)
 
 
 
