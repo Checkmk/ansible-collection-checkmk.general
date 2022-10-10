@@ -29,7 +29,7 @@
   tags:
     - update-sites
 
-- name: "Include update site tasks."
+- name: "Include update site tasks."  # noqa no-handler
   ansible.builtin.include_tasks: update-site.yml
   loop: "{{ checkmk_server_sites_versions.results }}"
   when: "item.changed"
