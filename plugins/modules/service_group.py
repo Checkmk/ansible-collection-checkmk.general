@@ -299,7 +299,9 @@ def create_service_groups(module, base_url, service_groups, headers):
 
 
 def delete_single_service_group(module, base_url, headers):
-    api_endpoint = "/objects/service_group_config/" + module.params["service_group_name"]
+    api_endpoint = (
+        "/objects/service_group_config/" + module.params["service_group_name"]
+    )
     url = base_url + api_endpoint
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
@@ -396,7 +398,9 @@ def run_module():
 
         listofnames = set([el.get("name") for el in current_groups])
 
-        intersection_list = [el for el in service_groups if el.get("name") in listofnames]
+        intersection_list = [
+            el for el in service_groups if el.get("name") in listofnames
+        ]
         difference_list = [
             el for el in service_groups if not el.get("name") in listofnames
         ]
