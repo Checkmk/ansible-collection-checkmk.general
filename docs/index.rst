@@ -6,7 +6,7 @@
 Tribe29.Checkmk
 ===============
 
-Collection version 0.10.0
+Collection version 0.11.0
 
 .. contents::
    :local:
@@ -22,6 +22,10 @@ The official Checkmk Ansible collection - brought to you by tribe29 - the Checkm
 * Marcel Arentz (https://github.com/godspeed-you)
 * Robin Gierse (https://github.com/robin-tribe29)
 * Lars Getwan (https://github.com/lgetwan)
+
+**Supported ansible-core versions:**
+
+* 2.11.1 or newer
 
 .. raw:: html
 
@@ -50,7 +54,9 @@ Modules
 * :ref:`downtime module <ansible_collections.tribe29.checkmk.downtime_module>` -- Manage downtimes in Checkmk.
 * :ref:`folder module <ansible_collections.tribe29.checkmk.folder_module>` -- Manage folders in Checkmk.
 * :ref:`host module <ansible_collections.tribe29.checkmk.host_module>` -- Manage hosts in Checkmk.
+* :ref:`host_group module <ansible_collections.tribe29.checkmk.host_group_module>` -- Manage host groups in Checkmk (bulk version).
 * :ref:`rule module <ansible_collections.tribe29.checkmk.rule_module>` -- Manage rules in Checkmk.
+* :ref:`tag_group module <ansible_collections.tribe29.checkmk.tag_group_module>` -- Manage tag\_group within Checkmk
 
 
 
@@ -67,4 +73,6 @@ Modules
     downtime_module
     folder_module
     host_module
+    host_group_module
     rule_module
+    tag_group_module
