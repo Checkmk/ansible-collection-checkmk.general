@@ -5,6 +5,27 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.11.0
+=======
+
+Major Changes
+-------------
+
+- Add host_group module.
+- Add tag_group module.
+
+Minor Changes
+-------------
+
+- Agent role - (Actually in v0.10.0) Fix authentication handling, where several tasks would fail, when using a secret.
+- Agent role - Add support for CME.
+
+New Modules
+-----------
+
+- tribe29.checkmk.host_group - Manage host groups in Checkmk (bulk version).
+- tribe29.checkmk.tag_group - Manage tag_group within Checkmk
+
 v0.10.0
 =======
 
