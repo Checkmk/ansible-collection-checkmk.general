@@ -1,0 +1,23 @@
+My_Site:
+  hosts:
+    debian:
+      ansible_host: 127.0.0.1
+      checkmk_agent_host_attributes:
+        ipaddress: '{{ansible_host}}'
+          #        tag_Operating_System: Linux
+
+  vars:
+    checkmk_agent_add_host: true
+    checkmk_agent_discover: true
+    checkmk_agent_edition: cme
+    checkmk_agent_host_ip: '{{ ansible_host }}'
+    checkmk_agent_host_name: '{{ inventory_hostname }}'
+    checkmk_agent_user: automation
+    checkmk_agent_pass: $AUTOMATION_SECRET
+    checkmk_agent_protocol: http
+    checkmk_agent_server: 127.0.0.1
+    checkmk_agent_port: 80
+    checkmk_agent_site: My_Site
+    checkmk_agent_version: 2.0.0p22
+    ansible_user: root 
+    ansible_password: $SECRET
