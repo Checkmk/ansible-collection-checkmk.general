@@ -1,0 +1,68 @@
+---
+- name: "({{ansible_system}}): Get RPM or APT package facts."
+  ansible.builtin.package_facts:
+    manager: "auto"
+  tags:
+    - get-package-facts
+
+- name: "({{ansible_system}}): Import Legacy agent tasks."
+  ansible.builtin.include_tasks: "legacy.yml"
+  when: |
+    checkmk_agent_prep_legacy | bool
+    and ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
+
+- name: "({{ansible_system}}): Download Checkmk CRE agent."
+  ansible.builtin.get_url:
+    url: "{{ checkmk_agent_agent.url.cre }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    dest: "{{ checkmk_agent_agent.file.cre }}"
+    mode: 0640
+  when: checkmk_agent_edition == "cre"
+  retries: 3
+  tags:
+    - download-package
+
+- name: "({{ansible_os_family}}): Run OS Family specific tasks."
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+  tags:
+    - include-os-family-tasks
+
+- name: "({{ansible_system}}): Check for Agent Updater Binary."
+  ansible.builtin.stat:
+    path: /usr/bin/cmk-update-agent
+  register: checkmk_agent_updater_binary
+
+- name: "({{ansible_system}}): Check for Agent Controller Binary."
+  ansible.builtin.stat:
+    path: /usr/bin/cmk-agent-ctl
+  register: checkmk_agent_controller_binary
+
+- name: "({{ansible_system}}): Register Agent for automatic Updates using User Password."
+  become: true
+  ansible.builtin.shell: |
+    cmk-update-agent register -H {{ checkmk_agent_host_name }} \
+    -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
+    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }}
+  register: checkmk_agent_update_state
+  when:
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe" or checkmk_agent_edition == "cme") and checkmk_agent_updater_binary.stat.exists and checkmk_agent_update and (checkmk_agent_pass is defined and checkmk_agent_pass) and (checkmk_agent_secret is not defined)
+
+- name: "({{ansible_system}}): Register Agent for automatic Updates using Automation Secret."
+  become: true
+  ansible.builtin.shell: |
+    cmk-update-agent register -H {{ checkmk_agent_host_name }} \
+    -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
+    -U {{ checkmk_agent_user }} -S {{ checkmk_agent_auth }}
+  register: checkmk_agent_update_state
+  when: 
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe" or checkmk_agent_edition == "cme") and checkmk_agent_updater_binary.stat.exists and checkmk_agent_update and (checkmk_agent_secret is defined and checkmk_agent_secret)
+
+- name: "({{ansible_system}}): Register Agent for TLS."
+  become: true
+  ansible.builtin.shell: |
+    cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
+    -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} \
+    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }} --trust-cert
+  register: checkmk_agent_tls_state
+  when: 
+    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe" or checkmk_agent_edition == "cme") and checkmk_agent_controller_binary.stat.exists and checkmk_agent_tls and (checkmk_agent_auth is defined and checkmk_agent_auth)
