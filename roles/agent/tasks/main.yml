@@ -1,12 +1,11 @@
 ---
-- name: "Include Derivative specific Variables."
+- name: "({{ ansible_os_family }}): Include Derivate specific vars."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-vars
 
-- name: "Get RPM or APT package facts."
-  ansible.builtin.package_facts:
-    manager: "auto"
+- name: "({{ ansible_system }}): Include OS specific tasks."
+  ansible.builtin.include_tasks: "{{ ansible_system }}.yml"
   tags:
     - get-package-facts
 
@@ -127,7 +126,7 @@
     and checkmk_agent_tls | bool
     and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
 
-- name: "Discover services and labels on host."
+- name: "({{ ansible_os_family }}): Discover services and labels on host."
   become: false
   checkmk.general.discovery:
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"

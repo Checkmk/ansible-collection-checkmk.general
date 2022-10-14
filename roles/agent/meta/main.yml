@@ -46,6 +46,9 @@ galaxy_info:
     - name: SLES
       versions:
         - all
+    - name: Windows
+      versions:
+        - all
 
   galaxy_tags: [checkmk, monitoring, agent]
   # List tags for your role here, one per line. A tag is a keyword that describes

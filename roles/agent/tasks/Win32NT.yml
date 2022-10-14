@@ -1,0 +1,16 @@
+---
+- name: "({{ ansible_system }}): Download Checkmk CRE Agent."
+  ansible.builtin.win_get_url:
+    url: "{{ checkmk_agent_agent.url.cre }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    dest: "{{ checkmk_agent_agent.file.cre }}"
+  when: checkmk_agent_edition == "cre"
+  retries: 3
+  tags:
+    - download-package
+
+- name: "({{ ansible_os_family }}): Run OS Family specific tasks."
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+  tags:
+    - include-os-family-tasks
+
