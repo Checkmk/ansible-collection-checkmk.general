@@ -10,6 +10,7 @@ action_groups:
     - rule
     - tag_group
     - host_group
+    - contact_group
 
 # plugin_routing:
 #   modules:

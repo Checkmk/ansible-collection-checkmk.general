@@ -14,7 +14,7 @@ short_description: Manage contact groups in Checkmk (bulk version).
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "0.0.1"
+version_added: "0.12.0"
 
 description:
 - Manage contact groups in Checkmk.
