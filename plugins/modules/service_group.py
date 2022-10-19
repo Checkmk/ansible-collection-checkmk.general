@@ -16,7 +16,7 @@ short_description: Manage service groups in Checkmk (bulk version).
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "0.11.0"
+version_added: "0.12.0"
 
 description:
 - Manage service groups in Checkmk.
