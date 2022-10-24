@@ -24,15 +24,15 @@ description:
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
-    service_group_name:
+    name:
         description: The name of the service group to be created/modified/deleted.
         type: str
     title:
-        description: The title (alias) of your service group. If omitted defaults to the service_group_name.
+        description: The title (alias) of your service group. If omitted defaults to the name.
         type: str
     service_groups:
         description:
-            - instead of 'service_group_name', 'title' a list of dicts with elements of service group name and title (alias) to be created/modified/deleted.
+            - instead of 'name', 'title' a list of dicts with elements of service group name and title (alias) to be created/modified/deleted.
               If title is omitted in entry, it defaults to the service group name.
         default: []
         type: raw
@@ -58,7 +58,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    service_group_name: "my_service_group"
+    name: "my_service_group"
     title: "My Service Group"
     state: "present"
 
@@ -99,7 +99,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    service_group_name: "my_service_group"
+    name: "my_service_group"
     state: "absent"
 
 # Delete several service groups.
@@ -149,9 +149,9 @@ def get_current_single_service_group(module, base_url, headers):
     current_state = "unknown"
     current_title = ""
     etag = ""
-    service_group_name = module.params["service_group_name"]
+    name = module.params["name"]
 
-    api_endpoint = "/objects/service_group_config/" + service_group_name
+    api_endpoint = "/objects/service_group_config/" + name
     url = base_url + api_endpoint
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
@@ -160,7 +160,7 @@ def get_current_single_service_group(module, base_url, headers):
         body = json.loads(response.read())
         current_state = "present"
         etag = info.get("etag", "")
-        current_title = body.get("title", service_group_name)
+        current_title = body.get("title", name)
 
     elif info["status"] == 404:
         current_state = "absent"
@@ -204,11 +204,11 @@ def get_current_service_groups(module, base_url, headers):
 
 
 def update_single_service_group(module, base_url, headers):
-    service_group_name = module.params["service_group_name"]
+    name = module.params["name"]
 
-    api_endpoint = "/objects/service_group_config/" + service_group_name
+    api_endpoint = "/objects/service_group_config/" + name
     params = {
-        "alias": module.params.get("title", service_group_name),
+        "alias": module.params.get("title", name),
     }
     url = base_url + api_endpoint
 
@@ -252,12 +252,12 @@ def update_service_groups(module, base_url, service_groups, headers):
 
 
 def create_single_service_group(module, base_url, headers):
-    service_group_name = module.params["service_group_name"]
+    name = module.params["name"]
 
     api_endpoint = "/domain-types/service_group_config/collections/all"
     params = {
-        "name": service_group_name,
-        "alias": module.params.get("title", service_group_name),
+        "name": name,
+        "alias": module.params.get("title", name),
     }
     url = base_url + api_endpoint
 
@@ -300,7 +300,7 @@ def create_service_groups(module, base_url, service_groups, headers):
 
 def delete_single_service_group(module, base_url, headers):
     api_endpoint = (
-        "/objects/service_group_config/" + module.params["service_group_name"]
+        "/objects/service_group_config/" + module.params["name"]
     )
     url = base_url + api_endpoint
 
@@ -340,7 +340,7 @@ def run_module():
         validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        service_group_name=dict(type="str", required=False),
+        name=dict(type="str", required=False),
         title=dict(type="str", required=False),
         service_groups=dict(type="raw", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
@@ -349,10 +349,10 @@ def run_module():
     module = AnsibleModule(
         argument_spec=module_args,
         mutually_exclusive=[
-            ("service_groups", "service_group_name"),
+            ("service_groups", "name"),
         ],
         required_one_of=[
-            ("service_groups", "service_group_name"),
+            ("service_groups", "name"),
         ],
         supports_check_mode=False,
     )
@@ -384,7 +384,7 @@ def run_module():
         if "title" in module.params and module.params.get("title", ""):
             exit_failed(
                 module,
-                "'title' has only effect when 'service_group_name' is defined and not 'service_groups'",
+                "'title' has only effect when 'name' is defined and not 'service_groups'",
             )
 
         service_groups = module.params.get("service_groups")
@@ -460,8 +460,8 @@ def run_module():
 
         else:
             exit_failed(module, "Unknown error")
-    elif "service_group_name" in module.params and module.params.get(
-        "service_group_name", ""
+    elif "name" in module.params and module.params.get(
+        "name", ""
     ):
         # Determine the current state of this particular service group
         (
@@ -499,7 +499,7 @@ def run_module():
             exit_failed(module, "Unknown error")
     else:
         exit_failed(
-            module, "One shoudl define either 'service_groups' or 'service_group_name'"
+            module, "One shoudl define either 'service_groups' or 'name'"
         )
 
 
