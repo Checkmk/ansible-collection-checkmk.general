@@ -299,9 +299,7 @@ def create_service_groups(module, base_url, service_groups, headers):
 
 
 def delete_single_service_group(module, base_url, headers):
-    api_endpoint = (
-        "/objects/service_group_config/" + module.params["name"]
-    )
+    api_endpoint = "/objects/service_group_config/" + module.params["name"]
     url = base_url + api_endpoint
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
@@ -460,9 +458,7 @@ def run_module():
 
         else:
             exit_failed(module, "Unknown error")
-    elif "name" in module.params and module.params.get(
-        "name", ""
-    ):
+    elif "name" in module.params and module.params.get("name", ""):
         # Determine the current state of this particular service group
         (
             current_state,
@@ -498,9 +494,7 @@ def run_module():
         else:
             exit_failed(module, "Unknown error")
     else:
-        exit_failed(
-            module, "One shoudl define either 'service_groups' or 'name'"
-        )
+        exit_failed(module, "One shoudl define either 'service_groups' or 'name'")
 
 
 def main():
