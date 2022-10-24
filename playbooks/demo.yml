@@ -104,7 +104,7 @@
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        contact_group_name: "{{ item.name }}"
+        name: "{{ item.name }}"
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
@@ -135,7 +135,7 @@
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        contact_group_name: "{{ item.name }}"
+        name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
       run_once: true
