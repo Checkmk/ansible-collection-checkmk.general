@@ -22,15 +22,15 @@ description:
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
-    contact_group_name:
+    name:
         description: The name of the contact group to be created/modified/deleted.
         type: str
     title:
-        description: The title (alias) of your contact group. If omitted defaults to the contact_group_name.
+        description: The title (alias) of your contact group. If omitted defaults to the name.
         type: str
     contact_groups:
         description:
-            - instead of 'contact_group_name', 'title' a list of dicts with elements of contact group name and title (alias) to be created/modified/deleted.
+            - instead of 'name', 'title' a list of dicts with elements of contact group name and title (alias) to be created/modified/deleted.
               If title is omitted in entry, it defaults to the contact group name.
         default: []
         type: raw
@@ -56,7 +56,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    contact_group_name: "my_contact_group"
+    name: "my_contact_group"
     title: "My Contact Group"
     state: "present"
 
@@ -97,7 +97,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    contact_group_name: "my_contact_group"
+    name: "my_contact_group"
     state: "absent"
 
 # Delete several contact groups.
@@ -147,9 +147,9 @@ def get_current_single_contact_group(module, base_url, headers):
     current_state = "unknown"
     current_title = ""
     etag = ""
-    contact_group_name = module.params["contact_group_name"]
+    name = module.params["name"]
 
-    api_endpoint = "/objects/contact_group_config/" + contact_group_name
+    api_endpoint = "/objects/contact_group_config/" + name
     url = base_url + api_endpoint
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
@@ -158,7 +158,7 @@ def get_current_single_contact_group(module, base_url, headers):
         body = json.loads(response.read())
         current_state = "present"
         etag = info.get("etag", "")
-        current_title = body.get("title", contact_group_name)
+        current_title = body.get("title", name)
 
     elif info["status"] == 404:
         current_state = "absent"
@@ -202,11 +202,11 @@ def get_current_contact_groups(module, base_url, headers):
 
 
 def update_single_contact_group(module, base_url, headers):
-    contact_group_name = module.params["contact_group_name"]
+    name = module.params["name"]
 
-    api_endpoint = "/objects/contact_group_config/" + contact_group_name
+    api_endpoint = "/objects/contact_group_config/" + name
     params = {
-        "alias": module.params.get("title", contact_group_name),
+        "alias": module.params.get("title", name),
     }
     url = base_url + api_endpoint
 
@@ -250,12 +250,12 @@ def update_contact_groups(module, base_url, contact_groups, headers):
 
 
 def create_single_contact_group(module, base_url, headers):
-    contact_group_name = module.params["contact_group_name"]
+    name = module.params["name"]
 
     api_endpoint = "/domain-types/contact_group_config/collections/all"
     params = {
-        "name": contact_group_name,
-        "alias": module.params.get("title", contact_group_name),
+        "name": name,
+        "alias": module.params.get("title", name),
     }
     url = base_url + api_endpoint
 
@@ -298,7 +298,7 @@ def create_contact_groups(module, base_url, contact_groups, headers):
 
 def delete_single_contact_group(module, base_url, headers):
     api_endpoint = (
-        "/objects/contact_group_config/" + module.params["contact_group_name"]
+        "/objects/contact_group_config/" + module.params["name"]
     )
     url = base_url + api_endpoint
 
@@ -338,7 +338,7 @@ def run_module():
         validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        contact_group_name=dict(type="str", required=False),
+        name=dict(type="str", required=False),
         title=dict(type="str", required=False),
         contact_groups=dict(type="raw", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
@@ -347,10 +347,10 @@ def run_module():
     module = AnsibleModule(
         argument_spec=module_args,
         mutually_exclusive=[
-            ("contact_groups", "contact_group_name"),
+            ("contact_groups", "name"),
         ],
         required_one_of=[
-            ("contact_groups", "contact_group_name"),
+            ("contact_groups", "name"),
         ],
         supports_check_mode=False,
     )
@@ -382,7 +382,7 @@ def run_module():
         if "title" in module.params and module.params.get("title", ""):
             exit_failed(
                 module,
-                "'title' has only effect when 'contact_group_name' is defined and not 'contact_groups'",
+                "'title' has only effect when 'name' is defined and not 'contact_groups'",
             )
 
         contact_groups = module.params.get("contact_groups")
@@ -458,9 +458,7 @@ def run_module():
 
         else:
             exit_failed(module, "Unknown error")
-    elif "contact_group_name" in module.params and module.params.get(
-        "contact_group_name", ""
-    ):
+    elif "name" in module.params and module.params.get("name", ""):
         # Determine the current state of this particular contact group
         (
             current_state,
@@ -496,9 +494,7 @@ def run_module():
         else:
             exit_failed(module, "Unknown error")
     else:
-        exit_failed(
-            module, "One shoudl define either 'contact_groups' or 'contact_group_name'"
-        )
+        exit_failed(module, "One shoudl define either 'contact_groups' or 'name'")
 
 
 def main():
