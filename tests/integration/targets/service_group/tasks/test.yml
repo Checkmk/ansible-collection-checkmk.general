@@ -25,7 +25,7 @@
   delegate_to: localhost
   run_once: true
   loop: "{{ checkmk_service_groups_create }}"
-  ignore_errors: True
+  ignore_errors: true
 
 - name: "{{ outer_item.version }} - Activate."
   activation:
@@ -134,7 +134,7 @@
     state: "present"
   delegate_to: localhost
   run_once: true
-  ignore_errors: True
+  ignore_errors: true
 
 - name: "{{ outer_item.version }} - Should fail because of 'title', Bulk create service groups."
   service_group:
@@ -147,7 +147,7 @@
     state: "present"
   delegate_to: localhost
   run_once: true
-  ignore_errors: True
+  ignore_errors: true
 
 - name: "{{ outer_item.version }} - Bulk modify part of service groups (also checks for idempotency!)."
   service_group:
