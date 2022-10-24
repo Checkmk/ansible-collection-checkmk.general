@@ -17,7 +17,7 @@
       delegate_to: localhost
       run_once: 'true'
 
-    - name: "Create folders."
+    - name: "Create folder."
       folder:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -98,6 +98,19 @@
         state: "present"
       delegate_to: localhost
 
+    - name: "Create contact groups."
+      contact_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        contact_group_name: "{{ item.name }}"
+        title: "{{ item.title | default(item.name) }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_contact_groups_create }}"
+
     - name: "Pause to review second set of changes."
       ansible.builtin.pause:
         prompt: |
@@ -115,6 +128,18 @@
           - "{{ site }}"
       delegate_to: localhost
       run_once: 'true'
+
+    - name: "Delete contact groups."
+      contact_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        contact_group_name: "{{ item.name }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_contact_groups_create }}"
 
     - name: "Delete Host."
       host:
