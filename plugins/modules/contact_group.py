@@ -297,9 +297,7 @@ def create_contact_groups(module, base_url, contact_groups, headers):
 
 
 def delete_single_contact_group(module, base_url, headers):
-    api_endpoint = (
-        "/objects/contact_group_config/" + module.params["name"]
-    )
+    api_endpoint = "/objects/contact_group_config/" + module.params["name"]
     url = base_url + api_endpoint
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
