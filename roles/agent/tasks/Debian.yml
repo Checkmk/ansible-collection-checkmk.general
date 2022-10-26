@@ -8,15 +8,12 @@
     headers:
       Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_auth }}"
       Accept: "application/octet-stream"
-<<<<<<< HEAD
   when: |
     checkmk_agent_edition == "cee" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme"
-=======
   become: false
   when: checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe"
->>>>>>> aaa609e... Add explicit 'become: false' to download jobs.
   register: checkmk_agent_download_state
   # This task may fail, as we fall back to the generic agent in that case
   failed_when: 'false'
