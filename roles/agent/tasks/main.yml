@@ -22,8 +22,21 @@
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ checkmk_agent_agent.file.cre }}"
     mode: 0640
+  delegate_to: "{{ checkmk_agent_delegate_download }}"
+  become: false
   when: checkmk_agent_edition == "cre"
   retries: 3
+  tags:
+    - download-package
+
+- name: "Transfer Checkmk CRE client to remote node"
+  ansible.builtin.copy:
+    src: "{{ checkmk_agent_agent.file.cre }}"
+    dest: "{{ checkmk_agent_agent.file.cre }}"
+    mode: 0644
+  when:
+    - checkmk_agent_edition == "cre"
+    - checkmk_agent_delegate_download != inventory_hostname
   tags:
     - download-package
 
