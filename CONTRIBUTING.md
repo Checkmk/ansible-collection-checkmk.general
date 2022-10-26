@@ -20,10 +20,11 @@ out there and we love seeing you add to that plethora of it!
 
 ## How to contribute
 
-There is several ways in which you can contribute:
+There are several ways in which you can contribute:
 
 1. Submit an [issue](#Submitting-Issues).
 2. Create a [pull request](#Pull-Requests).
+3. Pick an [issue, which needs help](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
 
 Everything helps, really!
 We do test everything to the best of our abilities, but nothing beats real world
