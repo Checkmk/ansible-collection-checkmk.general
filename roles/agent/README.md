@@ -95,6 +95,10 @@ Enable this to automatically install `xinetd` on hosts with systemd prior to ver
 
 Configure the host to which Checkmk API calls are delegated to.
 
+    checkmk_agent_delegate_download: "{{ inventory_hostname }}"
+
+Configure the host to which Checkmk API dowloads are delegated to. After download the files are transfered to the remote node.
+
     checkmk_agent_host_name: "{{ inventory_hostname }}"
 
 Define the hostname which will be used to add the host to Checkmk.
