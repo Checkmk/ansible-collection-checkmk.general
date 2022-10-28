@@ -24,15 +24,15 @@ description:
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
-    host_group_name:
+    name:
         description: The name of the host group to be created/modified/deleted.
         type: str
     title:
-        description: The title (alias) of your host group. If omitted defaults to the host_group_name.
+        description: The title (alias) of your host group. If omitted defaults to the name.
         type: str
-    host_groups:
+    groups:
         description:
-            - instead of 'host_group_name', 'title' a list of dicts with elements of host group name and title (alias) to be created/modified/deleted.
+            - instead of 'name', 'title' a list of dicts with elements of host group name and title (alias) to be created/modified/deleted.
               If title is omitted in entry, it defaults to the host group name.
         default: []
         type: raw
@@ -58,7 +58,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    host_group_name: "my_host_group"
+    name: "my_host_group"
     title: "My Host Group"
     state: "present"
 
@@ -69,7 +69,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    host_groups:
+    groups:
       - name: "my_host_group_one"
         title: "My Host Group One"
       - name: "my_host_group_two"
@@ -85,7 +85,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    host_groups:
+    groups:
       - name: "my_host_group_one"
         title: "My Host Group One"
       - name: "my_host_group_two"
@@ -99,7 +99,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    host_group_name: "my_host_group"
+    name: "my_host_group"
     state: "absent"
 
 # Delete several host groups.
@@ -109,7 +109,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    host_groups:
+    groups:
       - name: "my_host_group_one"
       - name: "my_host_group_two"
     state: "absent"
@@ -149,9 +149,9 @@ def get_current_single_host_group(module, base_url, headers):
     current_state = "unknown"
     current_title = ""
     etag = ""
-    host_group_name = module.params["host_group_name"]
+    name = module.params["name"]
 
-    api_endpoint = "/objects/host_group_config/" + host_group_name
+    api_endpoint = "/objects/host_group_config/" + name
     url = base_url + api_endpoint
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
@@ -160,7 +160,7 @@ def get_current_single_host_group(module, base_url, headers):
         body = json.loads(response.read())
         current_state = "present"
         etag = info.get("etag", "")
-        current_title = body.get("title", host_group_name)
+        current_title = body.get("title", name)
 
     elif info["status"] == 404:
         current_state = "absent"
@@ -204,11 +204,11 @@ def get_current_host_groups(module, base_url, headers):
 
 
 def update_single_host_group(module, base_url, headers):
-    host_group_name = module.params["host_group_name"]
+    name = module.params["name"]
 
-    api_endpoint = "/objects/host_group_config/" + host_group_name
+    api_endpoint = "/objects/host_group_config/" + name
     params = {
-        "alias": module.params.get("title", host_group_name),
+        "alias": module.params.get("title", name),
     }
     url = base_url + api_endpoint
 
@@ -224,7 +224,7 @@ def update_single_host_group(module, base_url, headers):
         )
 
 
-def update_host_groups(module, base_url, host_groups, headers):
+def update_host_groups(module, base_url, groups, headers):
     api_endpoint = "/domain-types/host_group_config/actions/bulk-update/invoke"
     params = {
         "entries": [
@@ -234,7 +234,7 @@ def update_host_groups(module, base_url, host_groups, headers):
                     "alias": el.get("title", el.get("name")),
                 },
             }
-            for el in host_groups
+            for el in groups
         ],
     }
     url = base_url + api_endpoint
@@ -252,12 +252,12 @@ def update_host_groups(module, base_url, host_groups, headers):
 
 
 def create_single_host_group(module, base_url, headers):
-    host_group_name = module.params["host_group_name"]
+    name = module.params["name"]
 
     api_endpoint = "/domain-types/host_group_config/collections/all"
     params = {
-        "name": host_group_name,
-        "alias": module.params.get("title", host_group_name),
+        "name": name,
+        "alias": module.params.get("title", name),
     }
     url = base_url + api_endpoint
 
@@ -273,7 +273,7 @@ def create_single_host_group(module, base_url, headers):
         )
 
 
-def create_host_groups(module, base_url, host_groups, headers):
+def create_host_groups(module, base_url, groups, headers):
     api_endpoint = "/domain-types/host_group_config/actions/bulk-create/invoke"
     params = {
         "entries": [
@@ -281,7 +281,7 @@ def create_host_groups(module, base_url, host_groups, headers):
                 "name": el.get("name"),
                 "alias": el.get("title", el.get("name")),
             }
-            for el in host_groups
+            for el in groups
         ],
     }
     url = base_url + api_endpoint
@@ -299,7 +299,7 @@ def create_host_groups(module, base_url, host_groups, headers):
 
 
 def delete_single_host_group(module, base_url, headers):
-    api_endpoint = "/objects/host_group_config/" + module.params["host_group_name"]
+    api_endpoint = "/objects/host_group_config/" + module.params["name"]
     url = base_url + api_endpoint
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
@@ -312,10 +312,10 @@ def delete_single_host_group(module, base_url, headers):
         )
 
 
-def delete_host_groups(module, base_url, host_groups, headers):
+def delete_host_groups(module, base_url, groups, headers):
     api_endpoint = "/domain-types/host_group_config/actions/bulk-delete/invoke"
     params = {
-        "entries": [el["name"] for el in host_groups],
+        "entries": [el["name"] for el in groups],
     }
     url = base_url + api_endpoint
 
@@ -338,19 +338,19 @@ def run_module():
         validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        host_group_name=dict(type="str", required=False),
+        name=dict(type="str", required=False),
         title=dict(type="str", required=False),
-        host_groups=dict(type="raw", required=False),
+        groups=dict(type="raw", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
     module = AnsibleModule(
         argument_spec=module_args,
         mutually_exclusive=[
-            ("host_groups", "host_group_name"),
+            ("groups", "name"),
         ],
         required_one_of=[
-            ("host_groups", "host_group_name"),
+            ("groups", "name"),
         ],
         supports_check_mode=False,
     )
@@ -375,31 +375,29 @@ def run_module():
     state = module.params.get("state", "present")
 
     if (
-        "host_groups" in module.params
-        and module.params.get("host_groups")
-        and len(module.params.get("host_groups", [])) > 0
+        "groups" in module.params
+        and module.params.get("groups")
+        and len(module.params.get("groups", [])) > 0
     ):
         if "title" in module.params and module.params.get("title", ""):
             exit_failed(
                 module,
-                "'title' has only effect when 'host_group_name' is defined and not 'host_groups'",
+                "'title' has only effect when 'name' is defined and not 'groups'",
             )
 
-        host_groups = module.params.get("host_groups")
+        groups = module.params.get("groups")
 
         # Determine which host groups do already exest
         current_groups = get_current_host_groups(module, base_url, headers)
 
         # Determine intersection and difference with input, according to 'name' only
-        if len(set([el.get("name") for el in host_groups])) != len(host_groups):
+        if len(set([el.get("name") for el in groups])) != len(groups):
             exit_failed(module, "two or more entries with the same name!")
 
         listofnames = set([el.get("name") for el in current_groups])
 
-        intersection_list = [el for el in host_groups if el.get("name") in listofnames]
-        difference_list = [
-            el for el in host_groups if not el.get("name") in listofnames
-        ]
+        intersection_list = [el for el in groups if el.get("name") in listofnames]
+        difference_list = [el for el in groups if not el.get("name") in listofnames]
 
         # Handle the host group accordingly to above findings and desired state
         if state == "present":
@@ -456,8 +454,8 @@ def run_module():
 
         else:
             exit_failed(module, "Unknown error")
-    elif "host_group_name" in module.params and module.params.get(
-        "host_group_name", ""
+    elif "name" in module.params and module.params.get(
+        "name", ""
     ):
         # Determine the current state of this particular host group
         (
@@ -495,7 +493,7 @@ def run_module():
             exit_failed(module, "Unknown error")
     else:
         exit_failed(
-            module, "One shoudl define either 'host_groups' or 'host_group_name'"
+            module, "One shoudl define either 'groups' or 'name'"
         )
 
 
