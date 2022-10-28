@@ -32,10 +32,6 @@ options:
         type: str
         default: new
         choices: [new, remove, fix_all, refresh, only_host_labels]
-    validate_certs:
-        description: Whether to validate the SSL certificate of the Checkmk server.
-        default: true
-        type: bool
 
 author:
     - Robin Gierse (@robin-tribe29)
