@@ -454,9 +454,7 @@ def run_module():
 
         else:
             exit_failed(module, "Unknown error")
-    elif "name" in module.params and module.params.get(
-        "name", ""
-    ):
+    elif "name" in module.params and module.params.get("name", ""):
         # Determine the current state of this particular host group
         (
             current_state,
@@ -492,9 +490,7 @@ def run_module():
         else:
             exit_failed(module, "Unknown error")
     else:
-        exit_failed(
-            module, "One shoudl define either 'groups' or 'name'"
-        )
+        exit_failed(module, "One shoudl define either 'groups' or 'name'")
 
 
 def main():
