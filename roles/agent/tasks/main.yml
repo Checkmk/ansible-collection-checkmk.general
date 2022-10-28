@@ -22,7 +22,10 @@
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ checkmk_agent_agent.file.cre }}"
     mode: 0640
+<<<<<<< HEAD
   delegate_to: "{{ checkmk_agent_delegate_download }}"
+=======
+>>>>>>> aaa609e... Add explicit 'become: false' to download jobs.
   become: false
   when: checkmk_agent_edition == "cre"
   retries: 3
@@ -56,6 +59,7 @@
     host_name: "{{ checkmk_agent_host_name }}"
     attributes: "{{ checkmk_agent_host_attributes }}"
     state: "present"
+  become: false
   register: checkmk_agent_create_result
   failed_when: |
     (checkmk_agent_create_result.failed == true) and
