@@ -394,12 +394,8 @@ def run_module():
 
         listofnames = set([el.get("name") for el in current_groups])
 
-        intersection_list = [
-            el for el in groups if el.get("name") in listofnames
-        ]
-        difference_list = [
-            el for el in groups if not el.get("name") in listofnames
-        ]
+        intersection_list = [el for el in groups if el.get("name") in listofnames]
+        difference_list = [el for el in groups if not el.get("name") in listofnames]
 
         # Handle the contact group accordingly to above findings and desired state
         if state == "present":
