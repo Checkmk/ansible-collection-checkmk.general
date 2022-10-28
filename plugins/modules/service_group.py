@@ -30,7 +30,7 @@ options:
     title:
         description: The title (alias) of your service group. If omitted defaults to the name.
         type: str
-    service_groups:
+    groups:
         description:
             - instead of 'name', 'title' a list of dicts with elements of service group name and title (alias) to be created/modified/deleted.
               If title is omitted in entry, it defaults to the service group name.
@@ -69,7 +69,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    service_groups:
+    groups:
       - name: "my_service_group_one"
         title: "My Service Group One"
       - name: "my_service_group_two"
@@ -85,7 +85,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    service_groups:
+    groups:
       - name: "my_service_group_one"
         title: "My Service Group One"
       - name: "my_service_group_two"
@@ -109,7 +109,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    service_groups:
+    groups:
       - name: "my_service_group_one"
       - name: "my_service_group_two"
     state: "absent"
@@ -224,7 +224,7 @@ def update_single_service_group(module, base_url, headers):
         )
 
 
-def update_service_groups(module, base_url, service_groups, headers):
+def update_service_groups(module, base_url, groups, headers):
     api_endpoint = "/domain-types/service_group_config/actions/bulk-update/invoke"
     params = {
         "entries": [
@@ -234,7 +234,7 @@ def update_service_groups(module, base_url, service_groups, headers):
                     "alias": el.get("title", el.get("name")),
                 },
             }
-            for el in service_groups
+            for el in groups
         ],
     }
     url = base_url + api_endpoint
@@ -273,7 +273,7 @@ def create_single_service_group(module, base_url, headers):
         )
 
 
-def create_service_groups(module, base_url, service_groups, headers):
+def create_service_groups(module, base_url, groups, headers):
     api_endpoint = "/domain-types/service_group_config/actions/bulk-create/invoke"
     params = {
         "entries": [
@@ -281,7 +281,7 @@ def create_service_groups(module, base_url, service_groups, headers):
                 "name": el.get("name"),
                 "alias": el.get("title", el.get("name")),
             }
-            for el in service_groups
+            for el in groups
         ],
     }
     url = base_url + api_endpoint
@@ -312,10 +312,10 @@ def delete_single_service_group(module, base_url, headers):
         )
 
 
-def delete_service_groups(module, base_url, service_groups, headers):
+def delete_service_groups(module, base_url, groups, headers):
     api_endpoint = "/domain-types/service_group_config/actions/bulk-delete/invoke"
     params = {
-        "entries": [el["name"] for el in service_groups],
+        "entries": [el["name"] for el in groups],
     }
     url = base_url + api_endpoint
 
@@ -340,17 +340,17 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         name=dict(type="str", required=False),
         title=dict(type="str", required=False),
-        service_groups=dict(type="raw", required=False),
+        groups=dict(type="raw", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
     module = AnsibleModule(
         argument_spec=module_args,
         mutually_exclusive=[
-            ("service_groups", "name"),
+            ("groups", "name"),
         ],
         required_one_of=[
-            ("service_groups", "name"),
+            ("groups", "name"),
         ],
         supports_check_mode=False,
     )
@@ -375,33 +375,29 @@ def run_module():
     state = module.params.get("state", "present")
 
     if (
-        "service_groups" in module.params
-        and module.params.get("service_groups")
-        and len(module.params.get("service_groups", [])) > 0
+        "groups" in module.params
+        and module.params.get("groups")
+        and len(module.params.get("groups", [])) > 0
     ):
         if "title" in module.params and module.params.get("title", ""):
             exit_failed(
                 module,
-                "'title' has only effect when 'name' is defined and not 'service_groups'",
+                "'title' has only effect when 'name' is defined and not 'groups'",
             )
 
-        service_groups = module.params.get("service_groups")
+        groups = module.params.get("groups")
 
         # Determine which service groups do already exest
         current_groups = get_current_service_groups(module, base_url, headers)
 
         # Determine intersection and difference with input, according to 'name' only
-        if len(set([el.get("name") for el in service_groups])) != len(service_groups):
+        if len(set([el.get("name") for el in groups])) != len(groups):
             exit_failed(module, "two or more entries with the same name!")
 
         listofnames = set([el.get("name") for el in current_groups])
 
-        intersection_list = [
-            el for el in service_groups if el.get("name") in listofnames
-        ]
-        difference_list = [
-            el for el in service_groups if not el.get("name") in listofnames
-        ]
+        intersection_list = [el for el in groups if el.get("name") in listofnames]
+        difference_list = [el for el in groups if not el.get("name") in listofnames]
 
         # Handle the service group accordingly to above findings and desired state
         if state == "present":
@@ -494,7 +490,7 @@ def run_module():
         else:
             exit_failed(module, "Unknown error")
     else:
-        exit_failed(module, "One shoudl define either 'service_groups' or 'name'")
+        exit_failed(module, "One shoudl define either 'groups' or 'name'")
 
 
 def main():
