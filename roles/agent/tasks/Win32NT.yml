@@ -13,4 +13,3 @@
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-tasks
-
