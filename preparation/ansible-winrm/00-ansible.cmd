@@ -2,7 +2,6 @@
 set CURRENT_PATH=%~dp0
 echo %CURRENT_PATH%
 
-
 rem https://stackoverflow.com/questions/4051883/batch-script-how-to-check-for-admin-rights
 goto check_Permissions
 
