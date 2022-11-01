@@ -38,4 +38,3 @@
     state: "fix_all"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_discover | bool
-
