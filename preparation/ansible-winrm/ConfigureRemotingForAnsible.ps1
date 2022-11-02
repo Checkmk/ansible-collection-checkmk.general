@@ -298,14 +298,14 @@ Else {
 # https://github.com/ansible/ansible/issues/42978
 $token_path = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
 $token_prop_name = "LocalAccountTokenFilterPolicy"
-$token_key = Get-Item -Path $token_path
+$token_key = Get-Item -LiteralPath $token_path
 $token_value = $token_key.GetValue($token_prop_name, $null)
 if ($token_value -ne 1) {
     Write-Verbose "Setting LocalAccountTOkenFilterPolicy to 1"
     if ($null -ne $token_value) {
-        Remove-ItemProperty -Path $token_path -Name $token_prop_name
+        Remove-ItemProperty -LiteralPath $token_path -Name $token_prop_name
     }
-    New-ItemProperty -Path $token_path -Name $token_prop_name -Value 1 -PropertyType DWORD > $null
+    New-ItemProperty -LiteralPath $token_path -Name $token_prop_name -Value 1 -PropertyType DWORD > $null
 }
 
 # Make sure there is a SSL listener.
