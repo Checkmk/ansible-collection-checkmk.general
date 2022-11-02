@@ -16,5 +16,5 @@ pause
     ) else (
         echo Failure: Current permissions inadequate. You need to run this script as administrator!
     )
-    
-    pause >nul
+
+pause >nul
