@@ -26,7 +26,7 @@
     checkmk_agent_edition == "cee" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme"
- 
+
 - name: "({{ ansible_os_family }}): Install Checkmk Agent."
   ansible.builtin.win_package:
     path: "{{ checkmk_agent_agent.file.cee }}"
