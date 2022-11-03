@@ -1,1 +1,2 @@
 *.yml linguist-detectable
+*.cmd text eol=crlf
