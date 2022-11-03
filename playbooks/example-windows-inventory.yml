@@ -1,35 +1,30 @@
+---
 My_Site:
   hosts:
     win10:
       ansible_host: 192.168.128.101
       checkmk_agent_host_attributes:
         ipaddress: '{{ansible_host}}'
-          #        tag_Operating_System: Windows
     win11:
       ansible_host: 192.168.128.100
       checkmk_agent_host_attributes:
         ipaddress: '{{ansible_host}}'
-          #        tag_Operating_System: Windows
     win2k12:
       ansible_host: 192.168.128.103
       checkmk_agent_host_attributes:
         ipaddress: '{{ansible_host}}'
-          #        tag_Operating_System: Windows
     win2k16:
       ansible_host: 192.168.128.102
       checkmk_agent_host_attributes:
         ipaddress: '{{ansible_host}}'
-          #        tag_Operating_System: Windows
     win2k19:
       ansible_host: 192.168.128.105
       checkmk_agent_host_attributes:
         ipaddress: '{{ansible_host}}'
-          #        tag_Operating_System: Windows
     win2k22:
       ansible_host: 192.168.128.104
       checkmk_agent_host_attributes:
         ipaddress: '{{ansible_host}}'
-          #        tag_Operating_System: Windows
 
   vars:
     checkmk_agent_add_host: true
@@ -45,12 +40,7 @@ My_Site:
     checkmk_agent_site: My_Site
     checkmk_agent_version: 2.0.0p22
     ansible_user: Administrator
-    ansible_password: $SECRET 
+    ansible_password: $SECRET
     ansible_connection: winrm
-    ansible_winrm_transport: ntlm 
+    ansible_winrm_transport: ntlm
     ansible_winrm_server_cert_validation: ignore
-
-# Windows host (powershell):
-# Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
-# .\ConfigureRemotingForAnsible.ps1
-# winrm quickconfig 
