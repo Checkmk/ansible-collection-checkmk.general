@@ -1,10 +1,10 @@
+---
 My_Site:
   hosts:
     debian:
       ansible_host: 127.0.0.1
       checkmk_agent_host_attributes:
         ipaddress: '{{ansible_host}}'
-          #        tag_Operating_System: Linux
 
   vars:
     checkmk_agent_add_host: true
@@ -19,5 +19,5 @@ My_Site:
     checkmk_agent_port: 80
     checkmk_agent_site: My_Site
     checkmk_agent_version: 2.0.0p22
-    ansible_user: root 
+    ansible_user: root
     ansible_password: $SECRET
