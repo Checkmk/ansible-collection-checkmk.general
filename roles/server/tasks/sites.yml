@@ -85,7 +85,12 @@
   become: true
   ansible.builtin.shell: |
     set -o pipefail
+    # before 2.1:
     echo '{{ item.admin_pw }}' | htpasswd -i /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
+    # since 2.1:
+    #echo '{{ item.admin_pw }}' | htpasswd -B -C 12 /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
+    # since 2.1p16/17:
+    # cmk-passwd
   args:
     executable: /bin/bash
   no_log: true
