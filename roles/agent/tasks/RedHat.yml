@@ -95,7 +95,7 @@
       when: checkmk_agent_server_ip is not defined and checkmk_agent_server | ipaddr()
 
     - name: "Allow Checkmk services access to the agent."
-      ansible.builtin.firewalld:
+      ansible.posix.firewalld:
         permanent: 'yes'
         immediate: 'yes'
         state: enabled
