@@ -33,8 +33,8 @@ options:
         default: /
     attributes:
         description: 
-            - The attributes of your host as described in the API documentation.
-              B(Attention: This option OVERWRITES all existing attributes!)
+        - The attributes of your host as described in the API documentation.
+            B(Attention: This option OVERWRITES all existing attributes!)
         type: raw
         default: {}
     state:
