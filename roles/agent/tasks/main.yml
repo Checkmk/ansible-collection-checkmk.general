@@ -1,5 +1,5 @@
 ---
-- name: "Include Derivate specific Variables."
+- name: "Include Derivative specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-vars

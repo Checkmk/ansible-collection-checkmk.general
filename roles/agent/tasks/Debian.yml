@@ -1,5 +1,5 @@
 ---
-- name: "Debian Derivates: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "Debian Derivatives: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ inventory_hostname }}&os_type=linux_deb&agent_type=host_name"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -20,7 +20,7 @@
   tags:
     - download-package
 
-- name: "Debian Derivates: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "Debian Derivatives: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.host }}"
@@ -34,7 +34,7 @@
   tags:
     - install-package
 
-- name: "Debian Derivates: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "Debian Derivatives: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_deb&agent_type=generic"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -53,7 +53,7 @@
   tags:
     - download-package
 
-- name: "Debian Derivates: Install GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "Debian Derivatives: Install GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.cee }}"
@@ -67,7 +67,7 @@
   tags:
     - install-package
 
-- name: "Debian Derivates: Install Checkmk CRE Agent."
+- name: "Debian Derivatives: Install Checkmk CRE Agent."
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.cre }}"
