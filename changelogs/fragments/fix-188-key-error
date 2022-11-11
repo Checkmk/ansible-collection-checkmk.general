@@ -1,0 +1,4 @@
+# https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
+bugfixes:
+    - Downtime module - A human-readable error message is now printed if there's an API error.
+
