@@ -175,9 +175,7 @@ def bail_out(module, state, msg):
 
 def _set_timestamps(module):
     default_start_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-    default_end_time = (datetime.utcnow() + timedelta(minutes=30)).strftime(
-        "%Y-%m-%dT%H:%M:%SZ"
-    )
+    default_end_time = (datetime.utcnow() + timedelta(minutes=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
     start_time = module.params.get("start_time")
     end_time = module.params.get("end_time")
     end_after = module.params.get("end_after")
@@ -195,9 +193,7 @@ def _set_timestamps(module):
         else:
             start_time = re.sub(r"\+\d\d:\d\d$", "Z", start_time)
             dt_start = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ")
-            end_time = (dt_start + timedelta(**end_after)).strftime(
-                "%Y-%m-%dT%H:%M:%SZ"
-            )
+            end_time = (dt_start + timedelta(**end_after)).strftime("%Y-%m-%dT%H:%M:%SZ")
     return [start_time, end_time]
 
 
@@ -242,7 +238,7 @@ def _get_current_downtimes(module, base_url, headers):
             module,
             "failed",
             "Error calling API while getting downtimes for %s. HTTP code %d. Details: %s, "
-            % (host_name, info["status"], info["body"]),
+            % (host_name, info["status"], info.get("body", str(info))),
         )
 
     body = json.loads(response.read().decode("utf-8"))
@@ -283,9 +279,7 @@ def set_downtime(module, base_url, headers, service_description=None):
     else:
         if not module.params.get("force"):
             # Only consider services that do not have downtimes with that comment, yet
-            service_descriptions = [
-                s for s in service_descriptions if s not in current_downtimes
-            ]
+            service_descriptions = [s for s in service_descriptions if s not in current_downtimes]
 
         item = "%s/[%s]" % (host_name, ", ".join(service_descriptions))
         params = {
@@ -318,7 +312,7 @@ def set_downtime(module, base_url, headers, service_description=None):
             return (
                 "failed",
                 "Error calling API while adding downtime for '%s' with comment '%s'. HTTP code %d.  Details: %s, "
-                % (item, comment, info["status"], info["body"]),
+                % (item, comment, info["status"], info.get("body", str(info))),
             )
 
         return "changed", "Downtime added for '%s' with comment '%s'." % (item, comment)
@@ -355,9 +349,7 @@ def remove_downtime(module, base_url, headers):
             )
 
         else:
-            query_filters.append(
-                '{"op": "~", "left": "service_description", "right": "%s"}'
-            )
+            query_filters.append('{"op": "~", "left": "service_description", "right": "%s"}')
 
     if len(current_downtimes) == 0:  # and comment is not None:
         return "ok", "'%s' has no downtimes with comment '%s'." % (item, comment)
@@ -367,15 +359,11 @@ def remove_downtime(module, base_url, headers):
         url = base_url + api_endpoint
 
         # Create the query
-        query_filters.append(
-            '{"op": "~", "left": "host_name", "right": "%s"}' % host_name
-        )
+        query_filters.append('{"op": "~", "left": "host_name", "right": "%s"}' % host_name)
 
         if comment is not None:
             # If there's a comment, only delete downtimes that match that comment
-            query_filters.append(
-                '{"op": "~", "left": "comment", "right": "%s"}' % comment
-            )
+            query_filters.append('{"op": "~", "left": "comment", "right": "%s"}' % comment)
 
         params = {
             "delete_type": "query",
@@ -390,12 +378,7 @@ def remove_downtime(module, base_url, headers):
             return (
                 "failed",
                 "Error calling API while removing downtime from '%s' with comment '%s'. HTTP code %d. Details: %s, "
-                % (
-                    item,
-                    comment,
-                    info["status"],
-                    info["body"],
-                ),
+                % (item, comment, info["status"], info.get("body", str(info))),
             )
         else:
             return "changed", "Downtime removed from '%s' with comment '%s'." % (
