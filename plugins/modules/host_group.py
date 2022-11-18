@@ -336,7 +336,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         host_group_name=dict(type="str", required=False),
         title=dict(type="str", required=False),
-        host_groups=dict(type="raw", required=False),
+        host_groups=dict(type="raw", required=False, default=[]),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
