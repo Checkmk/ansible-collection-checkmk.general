@@ -18,7 +18,7 @@ short_description: Manage folders in Checkmk.
 version_added: "0.0.1"
 
 description:
-- Manage folders within Checkmk.
+    - Manage folders within Checkmk.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -33,7 +33,7 @@ options:
     attributes:
         description: The attributes of your folder as described in the API documentation.
         type: raw
-        default: {}
+        default: []
     state:
         description: The state of your folder.
         type: str

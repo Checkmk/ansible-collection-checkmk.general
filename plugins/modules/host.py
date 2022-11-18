@@ -36,7 +36,7 @@ options:
             - The attributes of your host as described in the API documentation.
               B(Attention! This option OVERWRITES all existing attributes!)
         type: raw
-        default: {}
+        default: []
     state:
         description: The state of your host.
         type: str
