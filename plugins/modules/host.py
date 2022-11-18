@@ -18,7 +18,7 @@ short_description: Manage hosts in Checkmk.
 version_added: "0.0.1"
 
 description:
-- Manage hosts within Checkmk.
+    - Manage hosts within Checkmk.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -33,8 +33,8 @@ options:
         default: /
     attributes:
         description:
-        - The attributes of your host as described in the API documentation.
-            B(Attention: This option OVERWRITES all existing attributes!)
+            - The attributes of your host as described in the API documentation.
+              B(Attention! This option OVERWRITES all existing attributes!)
         type: raw
         default: {}
     state:
