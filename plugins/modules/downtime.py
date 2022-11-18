@@ -242,7 +242,7 @@ def _get_current_downtimes(module, base_url, headers):
             module,
             "failed",
             "Error calling API while getting downtimes for %s. HTTP code %d. Details: %s, "
-            % (host_name, info["status"], info["body"]),
+            % (host_name, info["status"], info.get("body", str(info))),
         )
 
     body = json.loads(response.read().decode("utf-8"))
@@ -318,7 +318,7 @@ def set_downtime(module, base_url, headers, service_description=None):
             return (
                 "failed",
                 "Error calling API while adding downtime for '%s' with comment '%s'. HTTP code %d.  Details: %s, "
-                % (item, comment, info["status"], info["body"]),
+                % (item, comment, info["status"], info.get("body", str(info))),
             )
 
         return "changed", "Downtime added for '%s' with comment '%s'." % (item, comment)
@@ -390,12 +390,7 @@ def remove_downtime(module, base_url, headers):
             return (
                 "failed",
                 "Error calling API while removing downtime from '%s' with comment '%s'. HTTP code %d. Details: %s, "
-                % (
-                    item,
-                    comment,
-                    info["status"],
-                    info["body"],
-                ),
+                % (item, comment, info["status"], info.get("body", str(info))),
             )
         else:
             return "changed", "Downtime removed from '%s' with comment '%s'." % (
