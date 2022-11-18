@@ -18,44 +18,44 @@ short_description: Manage downtimes in Checkmk.
 version_added: "0.2.0"
 
 description:
-- Manage downtimes within Checkmk.
+    - Manage downtimes within Checkmk.
 
 notes:
-- Idempotency for creation was made for hostdowntimes by only using the hostname and comment attributes.
-  If this combination already exists as a downtime, the new downtime will not be created except using force.
-  The creation of servicedowntimes works accordingly, with hostname, service description and
-  comment.
+    - Idempotency for creation was made for hostdowntimes by only using the hostname and comment attributes.
+      If this combination already exists as a downtime, the new downtime will not be created except using force.
+      The creation of servicedowntimes works accordingly, with hostname, service description and
+      comment.
 
 todo:
-- Implement idempotency for deletion
-- Fine tune deletion, so only delete dt by host and comment
+    - Implement idempotency for deletion
+    - Fine tune deletion, so only delete dt by host and comment
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     comment:
         description:
-        - Remarks for the downtime. If omitted in combination with state = present, the
-          default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
-          a host or host/service will be removed.
+            - Remarks for the downtime. If omitted in combination with state = present, the
+              default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
+              a host or host/service will be removed.
         type: str
     duration:
         description:
-        - Duration in seconds. When set, the downtime does not begin automatically at a nominated time,
-          but when a non-OK status actually appears for the host.
-          Consequently, the start_time and end_time is only the time window in which the scheduled downtime can occur.
+            - Duration in seconds. When set, the downtime does not begin automatically at a nominated time,
+              but when a non-OK status actually appears for the host.
+              Consequently, the start_time and end_time is only the time window in which the scheduled downtime can occur.
         type: int
         default: 0
     end_after:
         description:
-        - The timedelta between I(start_time) and I(end_time). If you want to use I(end_after) you have to omit I(end_time).
-          For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
+            - The timedelta between I(start_time) and I(end_time). If you want to use I(end_after) you have to omit I(end_time).
+              For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
         type: dict
         default: {}
     end_time:
         description:
-        - The end datetime of the downtime. The format has to conform to the ISO 8601 profile I(e.g. 2017-07-21T17:32:28Z).
-          The built-in default is 30 minutes after now.
+            - The end datetime of the downtime. The format has to conform to the ISO 8601 profile I(e.g. 2017-07-21T17:32:28Z).
+              The built-in default is 30 minutes after now.
         type: str
         default: ''
     force:
@@ -64,14 +64,14 @@ options:
         default: false
     start_after:
         description:
-        - The timedelta between now and I(start_time). If you want to use I(start_after) you have to omit I(start_time).
-          For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
+            - The timedelta between now and I(start_time). If you want to use I(start_after) you have to omit I(start_time).
+              For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
         type: dict
         default: {}
     start_time:
         description:
-        - The start datetime of the downtime. The format has to conform to the ISO 8601 profile I(e.g. 2017-07-21T17:32:28Z).
-          The built-in default is now.
+            - The start datetime of the downtime. The format has to conform to the ISO 8601 profile I(e.g. 2017-07-21T17:32:28Z).
+              The built-in default is now.
         type: str
         default: ''
     host_name:
@@ -88,10 +88,6 @@ options:
         type: str
         default: present
         choices: [present, absent]
-    validate_certs:
-        description: Whether to validate the SSL certificate of the Checkmk server.
-        default: true
-        type: bool
 
 author:
     - Oliver Gaida (@ogaida)
@@ -242,7 +238,7 @@ def _get_current_downtimes(module, base_url, headers):
             module,
             "failed",
             "Error calling API while getting downtimes for %s. HTTP code %d. Details: %s, "
-            % (host_name, info["status"], info["body"]),
+            % (host_name, info["status"], info.get("body", str(info))),
         )
 
     body = json.loads(response.read().decode("utf-8"))
@@ -318,7 +314,7 @@ def set_downtime(module, base_url, headers, service_description=None):
             return (
                 "failed",
                 "Error calling API while adding downtime for '%s' with comment '%s'. HTTP code %d.  Details: %s, "
-                % (item, comment, info["status"], info["body"]),
+                % (item, comment, info["status"], info.get("body", str(info))),
             )
 
         return "changed", "Downtime added for '%s' with comment '%s'." % (item, comment)
@@ -390,12 +386,7 @@ def remove_downtime(module, base_url, headers):
             return (
                 "failed",
                 "Error calling API while removing downtime from '%s' with comment '%s'. HTTP code %d. Details: %s, "
-                % (
-                    item,
-                    comment,
-                    info["status"],
-                    info["body"],
-                ),
+                % (item, comment, info["status"], info.get("body", str(info))),
             )
         else:
             return "changed", "Downtime removed from '%s' with comment '%s'." % (
