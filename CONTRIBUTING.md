@@ -20,10 +20,11 @@ out there and we love seeing you add to that plethora of it!
 
 ## How to contribute
 
-There is several ways in which you can contribute:
+There are several ways in which you can contribute:
 
 1. Submit an [issue](#Submitting-Issues).
 2. Create a [pull request](#Pull-Requests).
+3. Pick an [issue, which needs help](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
 
 Everything helps, really!
 We do test everything to the best of our abilities, but nothing beats real world
@@ -84,7 +85,7 @@ Releasing this collection is automated using GitHub Actions.
 Before running the action `Release Collection` against the `main` branch, the
 following needs to be done:
 
-1. Update the collection version in `galaxy.yml`. Look for `version:`.
+1. Update the collection version in `galaxy.yml` and `requirements.yml`. Look for `version:`.
 2. Double check `changelogs/fragments` if all changes have a changelog.
 3. After all changes have been performed, merge them into the `main` branch.
 4. Release the collection by running the action `Release Collection` against the `main` branch.
