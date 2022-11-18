@@ -5,6 +5,31 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.12.0
+=======
+
+Major Changes
+-------------
+
+- Add contact_group module.
+
+Minor Changes
+-------------
+
+- Agent role - Add option to download agent setup to control node and then upload to target.
+- Downtime module - Improve readability of messages in case of API errors.
+
+Bugfixes
+--------
+
+- Agent role - Fix timeouts on tasks delegated_to localhost.
+- Downtime module - A human-readable error message is now printed if there's an API error.
+
+New Modules
+-----------
+
+- tribe29.checkmk.contact_group - Manage contact groups in Checkmk (bulk version).
+
 v0.11.0
 =======
 
