@@ -61,7 +61,7 @@ Bugfixes
 --------
 
 - Host module - Do not raise an error, if a host already exists, or on updating a host's attributes while the hosts stays in the same folder.
-- Server role - Fix and enhance additional repository handling on RedHat derivates.
+- Server role - Fix and enhance additional repository handling on RedHat derivatives.
 
 v0.8.0
 ======
@@ -77,7 +77,7 @@ Minor Changes
 - Downtime module - Make certificate validation of the Checkmk server configurable.
 - Folder module - Make certificate validation of the Checkmk server configurable.
 - Host module - Make certificate validation of the Checkmk server configurable.
-- Server role - Fix setup file verification on Debian derivates. Using gpg instead of dpkg-sig now.
+- Server role - Fix setup file verification on Debian derivatives. Using gpg instead of dpkg-sig now.
 
 v0.7.0
 ======

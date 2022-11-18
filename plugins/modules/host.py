@@ -18,7 +18,7 @@ short_description: Manage hosts in Checkmk.
 version_added: "0.0.1"
 
 description:
-- Manage hosts within Checkmk.
+    - Manage hosts within Checkmk.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -32,20 +32,16 @@ options:
         type: str
         default: /
     attributes:
-        description: 
+        description:
             - The attributes of your host as described in the API documentation.
-              B(Attention: This option OVERWRITES all existing attributes!)
+              B(Attention! This option OVERWRITES all existing attributes!)
         type: raw
-        default: {}
+        default: []
     state:
         description: The state of your host.
         type: str
         default: present
         choices: [present, absent]
-    validate_certs:
-        description: Whether to validate the SSL certificate of the Checkmk server.
-        default: true
-        type: bool
 
 author:
     - Robin Gierse (@robin-tribe29)

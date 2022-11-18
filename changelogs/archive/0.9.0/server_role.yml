@@ -5,7 +5,7 @@ minor_changes:
     - Server role - Add handlers to ensure the system apache is started after installation.
 
 bugfixes:
-    - Server role - Fix and enhance additional repository handling on RedHat derivates.
+    - Server role - Fix and enhance additional repository handling on RedHat derivatives.
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
