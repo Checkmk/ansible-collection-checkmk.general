@@ -15,6 +15,11 @@ plugins:
       name: activation
       namespace: ''
       version_added: 0.0.1
+    contact_group:
+      description: Manage contact groups in Checkmk (bulk version).
+      name: contact_group
+      namespace: ''
+      version_added: 0.12.0
     discovery:
       description: Discover services in Checkmk.
       name: discovery
@@ -54,4 +59,4 @@ plugins:
   shell: {}
   strategy: {}
   vars: {}
-version: 0.11.0
+version: 0.12.0
