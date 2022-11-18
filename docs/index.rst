@@ -6,7 +6,7 @@
 Tribe29.Checkmk
 ===============
 
-Collection version 0.11.0
+Collection version 0.12.0
 
 .. contents::
    :local:
@@ -50,6 +50,7 @@ Modules
 ~~~~~~~
 
 * :ref:`activation module <ansible_collections.tribe29.checkmk.activation_module>` -- Activate changes in Checkmk.
+* :ref:`contact_group module <ansible_collections.tribe29.checkmk.contact_group_module>` -- Manage contact groups in Checkmk (bulk version).
 * :ref:`discovery module <ansible_collections.tribe29.checkmk.discovery_module>` -- Discover services in Checkmk.
 * :ref:`downtime module <ansible_collections.tribe29.checkmk.downtime_module>` -- Manage downtimes in Checkmk.
 * :ref:`folder module <ansible_collections.tribe29.checkmk.folder_module>` -- Manage folders in Checkmk.
@@ -69,6 +70,7 @@ Modules
     :hidden:
 
     activation_module
+    contact_group_module
     discovery_module
     downtime_module
     folder_module

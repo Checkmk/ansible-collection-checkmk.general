@@ -42,7 +42,7 @@ tribe29.checkmk.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.11.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.12.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -122,12 +122,12 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The attributes of your host as described in the API documentation.
+      The attributes of your host as described in the API documentation. \ :strong:`Attention! This option OVERWRITES all existing attributes!`\ 
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`{}`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
 
       .. raw:: html
 

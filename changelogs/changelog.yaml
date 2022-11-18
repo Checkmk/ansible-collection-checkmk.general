@@ -91,6 +91,27 @@ releases:
       name: tag_group
       namespace: ''
     release_date: '2022-10-10'
+  0.12.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix timeouts on tasks delegated_to localhost.
+      - Downtime module - A human-readable error message is now printed if there's
+        an API error.
+      major_changes:
+      - Add contact_group module.
+      minor_changes:
+      - Agent role - Add option to download agent setup to control node and then upload
+        to target.
+      - Downtime module - Improve readability of messages in case of API errors.
+    fragments:
+    - bugfixes.yml
+    - contact_group_module.yml
+    - fix-188-key-error.yml
+    modules:
+    - description: Manage contact groups in Checkmk (bulk version).
+      name: contact_group
+      namespace: ''
+    release_date: '2022-11-18'
   0.2.0:
     changes:
       known_issues:
@@ -255,8 +276,8 @@ releases:
       - Downtime module - Make certificate validation of the Checkmk server configurable.
       - Folder module - Make certificate validation of the Checkmk server configurable.
       - Host module - Make certificate validation of the Checkmk server configurable.
-      - Server role - Fix setup file verification on Debian derivatives. Using gpg instead
-        of dpkg-sig now.
+      - Server role - Fix setup file verification on Debian derivatives. Using gpg
+        instead of dpkg-sig now.
     fragments:
     - agent_role.yml
     - modules.yml
