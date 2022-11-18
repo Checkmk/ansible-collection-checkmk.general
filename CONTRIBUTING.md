@@ -85,7 +85,7 @@ Releasing this collection is automated using GitHub Actions.
 Before running the action `Release Collection` against the `main` branch, the
 following needs to be done:
 
-1. Update the collection version in `galaxy.yml`. Look for `version:`.
+1. Update the collection version in `galaxy.yml` and `requirements.yml`. Look for `version:`.
 2. Double check `changelogs/fragments` if all changes have a changelog.
 3. After all changes have been performed, merge them into the `main` branch.
 4. Release the collection by running the action `Release Collection` against the `main` branch.
