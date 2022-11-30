@@ -1,5 +1,5 @@
 ---
-checkmk_agent_host_tmp_dir: "C:\\Temp"
+checkmk_agent_host_tmp_dir: "C:\\Windows\\Temp"
 
 checkmk_agent_agent:
   url:

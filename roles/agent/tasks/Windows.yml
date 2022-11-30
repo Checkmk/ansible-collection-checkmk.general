@@ -1,9 +1,9 @@
 ---
 # Install Check_MK Agent on Windows
 
-- name: Get current agent version
+- name: "({{ ansible_os_family }}): Get current Checkmk agent version."
   ansible.builtin.win_shell: |
-      $checkmk = "C:\Program Files (x86)\check_mk\check_mk_agent.exe"
+      $checkmk = "C:\Program Files (x86)\checkmk\service\check_mk_agent.exe"
       If (Test-Path $checkmk) {
           (Get-Item $checkmk).VersionInfo.ProductVersion
           } Else {
@@ -11,15 +11,23 @@
   register: checkmk_agent_agent_version
   changed_when: checkmk_agent_agent_version.stdout_lines[0] != checkmk_agent_version
 
-- name: Download agent -> {{ checkmk_agent_agent.url }}
+# Works with dedicated firewall rule or with transparent proxy
+- name: "({{ ansible_os_family }}): Download Checkmk agent -> {{ checkmk_agent_agent.url.cee }}."
   ansible.builtin.win_get_url:
-    url: "{{ checkmk_agent_agent.url }}"
+    url: "{{ checkmk_agent_agent.url.cee }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ checkmk_agent_host_tmp_dir }}"
-  when: checkmk_agent_agent_version.changed
+    method: GET
+    headers:
+      #      Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_auth }}"
+      Accept: "application/octet-stream"
 
-- name: "Install Checkmk Agent."
+  when: |
+    checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme"
+
+- name: "({{ ansible_os_family }}): Install Checkmk Agent."
   ansible.builtin.win_package:
-    path: "{{ checkmk_agent_agent.file }}"
+    path: "{{ checkmk_agent_agent.file.cee }}"
     state: present
-    wait: true
-  when: checkmk_agent_agent_version.changed

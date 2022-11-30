@@ -1,0 +1,1 @@
+powershell Set-NetFirewallRule -name "FPS-ICMP4-ERQ-In*" -Enabled true
