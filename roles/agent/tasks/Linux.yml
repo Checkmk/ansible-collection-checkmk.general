@@ -22,7 +22,7 @@
   tags:
     - download-package
 
-- name: "({{ansible_os_family}}): Run OS Family specific tasks."
+- name: "{{ ansible_os_family }}: Run OS Family specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-tasks

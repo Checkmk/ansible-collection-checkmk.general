@@ -1,5 +1,5 @@
 ---
-- name: "({{ansible_os_family}}) Derivates: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivates: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ checkmk_agent_host_name }}&os_type=linux_deb&agent_type=host_name"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -21,7 +21,7 @@
   tags:
     - download-package
 
-- name: "Debian Derivates: Transfer host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivates: Transfer host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.host }}"
     dest: "{{ checkmk_agent_agent.file.host }}"
@@ -35,7 +35,7 @@
   tags:
     - download-package
 
-- name: "({{ansible_os_family}}) Derivates: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivates: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.host }}"
@@ -49,7 +49,7 @@
   tags:
     - install-package
 
-- name: "({{ansible_os_family}}) Derivates: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivates: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_deb&agent_type=generic"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -83,7 +83,7 @@
   tags:
     - download-package
 
-- name: "({{ansible_os_family}}) Derivates: Install GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivates: Install GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.cee }}"
@@ -97,7 +97,7 @@
   tags:
     - install-package
 
-- name: "({{ansible_os_family}}) Derivates: Install Checkmk CRE Agent."
+- name: "{{ ansible_os_family }} Derivates: Install Checkmk CRE Agent."
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.cre }}"
