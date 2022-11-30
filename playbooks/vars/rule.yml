@@ -1,3 +1,4 @@
+---
 checkmk_ruleset: "checkgroup_parameters:memory_percentage_used"
 
 checkmk_rule:

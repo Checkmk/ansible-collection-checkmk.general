@@ -52,6 +52,66 @@ releases:
     fragments:
     - v0.1.0.yml
     release_date: '2022-03-18'
+  0.10.0:
+    changes:
+      bugfixes:
+      - Host module - Now correctly setting the default folder when getting the current
+        host state.
+      known_issues:
+      - Rule exports made with Checkmk API on server versions <2.1.0p10 will not import
+        correctly.
+      major_changes:
+      - Add rule module.
+    fragments:
+    - fix-150-default-folder.yml
+    - rule_module.yml
+    modules:
+    - description: Manage rules in Checkmk.
+      name: rule
+      namespace: ''
+    release_date: '2022-09-23'
+  0.11.0:
+    changes:
+      major_changes:
+      - Add host_group module.
+      - Add tag_group module.
+      minor_changes:
+      - Agent role - (Actually in v0.10.0) Fix authentication handling, where several
+        tasks would fail, when using a secret.
+      - Agent role - Add support for CME.
+    fragments:
+    - agent_role.yml
+    - host_group_module.yml
+    - tag_group_module.yml
+    modules:
+    - description: Manage host groups in Checkmk (bulk version).
+      name: host_group
+      namespace: ''
+    - description: Manage tag_group within Checkmk
+      name: tag_group
+      namespace: ''
+    release_date: '2022-10-10'
+  0.12.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix timeouts on tasks delegated_to localhost.
+      - Downtime module - A human-readable error message is now printed if there's
+        an API error.
+      major_changes:
+      - Add contact_group module.
+      minor_changes:
+      - Agent role - Add option to download agent setup to control node and then upload
+        to target.
+      - Downtime module - Improve readability of messages in case of API errors.
+    fragments:
+    - bugfixes.yml
+    - contact_group_module.yml
+    - fix-188-key-error.yml
+    modules:
+    - description: Manage contact groups in Checkmk (bulk version).
+      name: contact_group
+      namespace: ''
+    release_date: '2022-11-18'
   0.2.0:
     changes:
       known_issues:
@@ -216,8 +276,8 @@ releases:
       - Downtime module - Make certificate validation of the Checkmk server configurable.
       - Folder module - Make certificate validation of the Checkmk server configurable.
       - Host module - Make certificate validation of the Checkmk server configurable.
-      - Server role - Fix setup file verification on Debian derivates. Using gpg instead
-        of dpkg-sig now.
+      - Server role - Fix setup file verification on Debian derivatives. Using gpg
+        instead of dpkg-sig now.
     fragments:
     - agent_role.yml
     - modules.yml
@@ -228,7 +288,7 @@ releases:
       bugfixes:
       - Host module - Do not raise an error, if a host already exists, or on updating
         a host's attributes while the hosts stays in the same folder.
-      - Server role - Fix and enhance additional repository handling on RedHat derivates.
+      - Server role - Fix and enhance additional repository handling on RedHat derivatives.
       minor_changes:
       - Server role - Improve OS support detection and enhance prerequisites installation.
     fragments:

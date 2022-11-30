@@ -1,0 +1,195 @@
+---
+- name: "{{ outer_item.version }} - Create contact groups."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    title: "{{ item.title | default(item.name) }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_contact_groups_create }}"
+
+- name: "{{ outer_item.version }} - Should fail because of 'groups', Create contact groups."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    title: "{{ item.title | default(item.name) }}"
+    groups: checkmk_contact_groups_create
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_contact_groups_create }}"
+  ignore_errors: true
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Modify part of contact groups (also checks for idempotency!)."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name | default(item.name) }}"
+    title: "{{ item.title }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_contact_groups_modify }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Delete contact groups."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_contact_groups_delete }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Delete contact groups that were created at the beginning (also check for idempotency)."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_contact_groups_create }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Bulk create contact groups."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    groups: "{{ checkmk_contact_groups_create }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Should fail because of 'name', Bulk create contact groups."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    groups: "{{ checkmk_contact_groups_create }}"
+    name: "test"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  ignore_errors: true
+
+- name: "{{ outer_item.version }} - Should fail because of 'title', Bulk create contact groups."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    groups: "{{ checkmk_contact_groups_create }}"
+    title: "Test"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  ignore_errors: true
+
+- name: "{{ outer_item.version }} - Bulk modify part of contact groups (also checks for idempotency!)."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    groups: "{{ checkmk_contact_groups_modify }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Bulk delete contact groups."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    groups: "{{ checkmk_contact_groups_delete }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Bulk delete contact groups that were created at the beginning (also check for idempotency)."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    groups: "{{ checkmk_contact_groups_create }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true

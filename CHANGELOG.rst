@@ -5,6 +5,75 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.12.0
+=======
+
+Major Changes
+-------------
+
+- Add contact_group module.
+
+Minor Changes
+-------------
+
+- Agent role - Add option to download agent setup to control node and then upload to target.
+- Downtime module - Improve readability of messages in case of API errors.
+
+Bugfixes
+--------
+
+- Agent role - Fix timeouts on tasks delegated_to localhost.
+- Downtime module - A human-readable error message is now printed if there's an API error.
+
+New Modules
+-----------
+
+- tribe29.checkmk.contact_group - Manage contact groups in Checkmk (bulk version).
+
+v0.11.0
+=======
+
+Major Changes
+-------------
+
+- Add host_group module.
+- Add tag_group module.
+
+Minor Changes
+-------------
+
+- Agent role - (Actually in v0.10.0) Fix authentication handling, where several tasks would fail, when using a secret.
+- Agent role - Add support for CME.
+
+New Modules
+-----------
+
+- tribe29.checkmk.host_group - Manage host groups in Checkmk (bulk version).
+- tribe29.checkmk.tag_group - Manage tag_group within Checkmk
+
+v0.10.0
+=======
+
+Major Changes
+-------------
+
+- Add rule module.
+
+Bugfixes
+--------
+
+- Host module - Now correctly setting the default folder when getting the current host state.
+
+Known Issues
+------------
+
+- Rule exports made with Checkmk API on server versions <2.1.0p10 will not import correctly.
+
+New Modules
+-----------
+
+- tribe29.checkmk.rule - Manage rules in Checkmk.
+
 v0.9.0
 ======
 
@@ -17,7 +86,7 @@ Bugfixes
 --------
 
 - Host module - Do not raise an error, if a host already exists, or on updating a host's attributes while the hosts stays in the same folder.
-- Server role - Fix and enhance additional repository handling on RedHat derivates.
+- Server role - Fix and enhance additional repository handling on RedHat derivatives.
 
 v0.8.0
 ======
@@ -33,7 +102,7 @@ Minor Changes
 - Downtime module - Make certificate validation of the Checkmk server configurable.
 - Folder module - Make certificate validation of the Checkmk server configurable.
 - Host module - Make certificate validation of the Checkmk server configurable.
-- Server role - Fix setup file verification on Debian derivates. Using gpg instead of dpkg-sig now.
+- Server role - Fix setup file verification on Debian derivatives. Using gpg instead of dpkg-sig now.
 
 v0.7.0
 ======

@@ -7,7 +7,42 @@
 - name: "({{ ansible_system }}): Include OS specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_system }}.yml"
   tags:
-    - include-system-tasks
+    - get-package-facts
+
+- name: "Import Legacy agent tasks."
+  ansible.builtin.include_tasks: "legacy.yml"
+  when: |
+    checkmk_agent_prep_legacy | bool
+    and ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
+
+- name: "Download Checkmk CRE Agent."
+  ansible.builtin.get_url:
+    url: "{{ checkmk_agent_agent.url.cre }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    dest: "{{ checkmk_agent_agent.file.cre }}"
+    mode: 0640
+  delegate_to: "{{ checkmk_agent_delegate_download }}"
+  become: false
+  when: checkmk_agent_edition == "cre"
+  retries: 3
+  tags:
+    - download-package
+
+- name: "Transfer Checkmk CRE agent to remote node"
+  ansible.builtin.copy:
+    src: "{{ checkmk_agent_agent.file.cre }}"
+    dest: "{{ checkmk_agent_agent.file.cre }}"
+    mode: 0644
+  when:
+    - checkmk_agent_edition == "cre"
+    - checkmk_agent_delegate_download != inventory_hostname
+  tags:
+    - download-package
+
+- name: "Run OS Family specific Tasks."
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+  tags:
+    - include-os-family-tasks
 
 - name: "Create host on server."
   tribe29.checkmk.host:
@@ -20,6 +55,7 @@
     host_name: "{{ checkmk_agent_host_name }}"
     attributes: "{{ checkmk_agent_host_attributes }}"
     state: "present"
+  become: false
   register: checkmk_agent_create_result
   failed_when: |
     (checkmk_agent_create_result.failed == true) and
