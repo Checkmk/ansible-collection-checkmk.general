@@ -7,7 +7,7 @@
 - name: "({{ ansible_system }}): Include OS specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_system }}.yml"
   tags:
-    - get-package-facts
+    - include-system-tasks
 
 - name: Populate service facts.
   ansible.builtin.service_facts:
