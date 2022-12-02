@@ -11,6 +11,7 @@ action_groups:
     - tag_group
     - host_group
     - service_group
+    - contact_group
 
 # plugin_routing:
 #   modules:

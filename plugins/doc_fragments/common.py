@@ -22,4 +22,8 @@ class ModuleDocFragment(object):
             description: The secret to authenticate your automation user.
             required: true
             type: str
+        validate_certs:
+            description: Whether to validate the SSL certificate of the Checkmk server.
+            default: true
+            type: bool
     """
