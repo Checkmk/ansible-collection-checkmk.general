@@ -6,7 +6,7 @@
 Tribe29.Checkmk
 ===============
 
-Collection version 0.12.0
+Collection version 0.13.0
 
 .. contents::
    :local:
@@ -57,13 +57,10 @@ Modules
 * :ref:`host module <ansible_collections.tribe29.checkmk.host_module>` -- Manage hosts in Checkmk.
 * :ref:`host_group module <ansible_collections.tribe29.checkmk.host_group_module>` -- Manage host groups in Checkmk (bulk version).
 * :ref:`rule module <ansible_collections.tribe29.checkmk.rule_module>` -- Manage rules in Checkmk.
+* :ref:`service_group module <ansible_collections.tribe29.checkmk.service_group_module>` -- Manage service groups in Checkmk (bulk version).
 * :ref:`tag_group module <ansible_collections.tribe29.checkmk.tag_group_module>` -- Manage tag\_group within Checkmk
 
 
-
-.. seealso::
-
-    List of :ref:`collections <list_of_collections>` with docs hosted here.
 
 .. toctree::
     :maxdepth: 1
@@ -77,4 +74,5 @@ Modules
     host_module
     host_group_module
     rule_module
+    service_group_module
     tag_group_module
