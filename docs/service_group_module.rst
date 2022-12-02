@@ -26,7 +26,7 @@
 
 .. Anchors
 
-.. _ansible_collections.tribe29.checkmk.activation_module:
+.. _ansible_collections.tribe29.checkmk.service_group_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -36,8 +36,8 @@
 
 .. Title
 
-tribe29.checkmk.activation module -- Activate changes in Checkmk.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+tribe29.checkmk.service_group module -- Manage service groups in Checkmk (bulk version).
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -46,13 +46,13 @@ tribe29.checkmk.activation module -- Activate changes in Checkmk.
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
-    To use it in a playbook, specify: :code:`tribe29.checkmk.activation`.
+    To use it in a playbook, specify: :code:`tribe29.checkmk.service_group`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in tribe29.checkmk 0.0.1
+New in tribe29.checkmk 0.12.0
 
 .. contents::
    :local:
@@ -66,8 +66,7 @@ Synopsis
 
 .. Description
 
-- Activate changes within Checkmk.
-- This module only needs to be run once and not for every host. Use \ :literal:`run\_once`\ .
+- Manage service groups in Checkmk.
 
 
 .. Aliases
@@ -101,7 +100,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-automation_secret:
+      .. _ansible_collections.tribe29.checkmk.service_group_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -135,7 +134,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-automation_user:
+      .. _ansible_collections.tribe29.checkmk.service_group_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -167,21 +166,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-force_foreign_changes"></div>
+        <div class="ansibleOptionAnchor" id="parameter-groups"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-force_foreign_changes:
+      .. _ansible_collections.tribe29.checkmk.service_group_module__parameter-groups:
 
       .. rst-class:: ansible-option-title
 
-      **force_foreign_changes**
+      **groups**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-force_foreign_changes" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-groups" title="Permalink to this option"></a>
 
       .. rst-class:: ansible-option-type-line
 
-      :ansible-option-type:`boolean`
+      :ansible-option-type:`any`
 
       .. raw:: html
 
@@ -191,15 +190,45 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Wheather to active foreign changes.
+      instead of 'name', 'title' a list of dicts with elements of service group name and title (alias) to be created/modified/deleted. If title is omitted in entry, it defaults to the service group name.
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-choices:`Choices:`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
 
-      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
-      - :ansible-option-choices-entry:`true`
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-name"></div>
+
+      .. _ansible_collections.tribe29.checkmk.service_group_module__parameter-name:
+
+      .. rst-class:: ansible-option-title
+
+      **name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The name of the service group to be created/modified/deleted.
 
 
       .. raw:: html
@@ -211,7 +240,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-server_url:
+      .. _ansible_collections.tribe29.checkmk.service_group_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -245,7 +274,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-site:
+      .. _ansible_collections.tribe29.checkmk.service_group_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -277,21 +306,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-sites"></div>
+        <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-sites:
+      .. _ansible_collections.tribe29.checkmk.service_group_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
-      **sites**
+      **state**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-sites" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
 
       .. rst-class:: ansible-option-type-line
 
-      :ansible-option-type:`any`
+      :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -301,12 +330,50 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The sites that should be activated. Omitting this option activates all sites.
+      The state of your service group.
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`"present"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"absent"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-title"></div>
+
+      .. _ansible_collections.tribe29.checkmk.service_group_module__parameter-title:
+
+      .. rst-class:: ansible-option-title
+
+      **title**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-title" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The title (alias) of your service group. If omitted defaults to the name.
+
 
       .. raw:: html
 
@@ -317,7 +384,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__parameter-validate_certs:
+      .. _ansible_collections.tribe29.checkmk.service_group_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -372,32 +439,68 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    - name: "Activate changes on all sites."
-      tribe29.checkmk.activation:
-          server_url: "http://localhost/"
-          site: "my_site"
-          automation_user: "automation"
-          automation_secret: "$SECRET"
-      run_once: 'true'
+    # Create a single service group.
+    - name: "Create a single service group."
+      tribe29.checkmk.service_group:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        name: "my_service_group"
+        title: "My Service Group"
+        state: "present"
 
-    - name: "Activate changes on a specific site."
-      tribe29.checkmk.activation:
-          server_url: "http://localhost/"
-          site: "my_site"
-          automation_user: "automation"
-          automation_secret: "$SECRET"
-          sites:
-            - "my_site"
-      run_once: 'true'
+    # Create several service groups.
+    - name: "Create several service groups."
+      tribe29.checkmk.service_group:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        groups:
+          - name: "my_service_group_one"
+            title: "My Service Group One"
+          - name: "my_service_group_two"
+            title: "My Service Group Two"
+          - name: "my_service_group_test"
+            title: "My Test"
+        state: "present"
 
-    - name: "Activate changes including foreign changes."
-      tribe29.checkmk.activation:
-          server_url: "http://localhost/"
-          site: "my_site"
-          automation_user: "automation"
-          automation_secret: "$SECRET"
-          force_foreign_changes: 'true'
-      run_once: 'true'
+    # Create several service groups.
+    - name: "Create several service groups."
+      tribe29.checkmk.service_group:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        groups:
+          - name: "my_service_group_one"
+            title: "My Service Group One"
+          - name: "my_service_group_two"
+          - name: "my_service_group_test"
+        state: "present"
+
+    # Delete a single service group.
+    - name: "Create a single service group."
+      tribe29.checkmk.service_group:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        name: "my_service_group"
+        state: "absent"
+
+    # Delete several service groups.
+    - name: "Delete several service groups."
+      tribe29.checkmk.service_group:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        groups:
+          - name: "my_service_group_one"
+          - name: "my_service_group_two"
+        state: "absent"
 
 
 
@@ -424,54 +527,9 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-http_code"></div>
-
-      .. _ansible_collections.tribe29.checkmk.activation_module__return-http_code:
-
-      .. rst-class:: ansible-option-title
-
-      **http_code**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#return-http_code" title="Permalink to this return value"></a>
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-type:`integer`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The HTTP code the Checkmk API returns.
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-returned-bold:`Returned:` always
-
-      .. rst-class:: ansible-option-line
-      .. rst-class:: ansible-option-sample
-
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`200`
-
-
-      .. raw:: html
-
-        </div>
-
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-message"></div>
 
-      .. _ansible_collections.tribe29.checkmk.activation_module__return-message:
+      .. _ansible_collections.tribe29.checkmk.service_group_module__return-message:
 
       .. rst-class:: ansible-option-title
 
@@ -503,7 +561,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Changes activated."`
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Service group created."`
 
 
       .. raw:: html
@@ -520,7 +578,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- Robin Gierse (@robin-tribe29)
+- Michael Sekania (@msekania)
 
 
 
