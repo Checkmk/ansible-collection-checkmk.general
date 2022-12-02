@@ -39,6 +39,7 @@ jobs:
   sanity:
     name: Sanity (Ⓐ${{ matrix.ansible }})
     strategy:
+      fail-fast: false
       matrix:
         ansible:
           - stable-2.11
