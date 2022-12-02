@@ -6,6 +6,7 @@ plugins:
   callback: {}
   cliconf: {}
   connection: {}
+  filter: {}
   httpapi: {}
   inventory: {}
   lookup: {}
@@ -50,6 +51,11 @@ plugins:
       name: rule
       namespace: ''
       version_added: 0.10.0
+    service_group:
+      description: Manage service groups in Checkmk (bulk version).
+      name: service_group
+      namespace: ''
+      version_added: 0.12.0
     tag_group:
       description: Manage tag_group within Checkmk
       name: tag_group
@@ -58,5 +64,6 @@ plugins:
   netconf: {}
   shell: {}
   strategy: {}
+  test: {}
   vars: {}
-version: 0.12.0
+version: 0.13.0
