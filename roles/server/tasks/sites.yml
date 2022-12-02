@@ -81,20 +81,30 @@
   tags:
     - destroy-sites
 
-- name: "Update Site Admin Password."
+- name: "Update Site Admin Password for Checkmk < 2.1."
   become: true
   ansible.builtin.shell: |
     set -o pipefail
-    # before 2.1:
     echo '{{ item.admin_pw }}' | htpasswd -i /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
-    # since 2.1:
-    #echo '{{ item.admin_pw }}' | htpasswd -B -C 12 /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
-    # since 2.1p16/17:
-    # cmk-passwd
   args:
     executable: /bin/bash
   no_log: true
   loop: "{{ checkmk_server_sites }}"
-  when: item.state != "absent"
+  when: (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '<'))
+  tags:
+    - set-site-admin-pw
+
+# In the future this should be done with 'cmk-passwd' available from 2.1.0p16 (https://checkmk.com/werk/14389)
+# To keep things simple, we do it in a more generic way here, which works in all 2.1 releases
+- name: "Update Site Admin Password for Checkmk >= 2.1."
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    echo '{{ item.admin_pw }}' | htpasswd -i -B -C 12 /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
+  args:
+    executable: /bin/bash
+  no_log: true
+  loop: "{{ checkmk_server_sites }}"
+  when: (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '>='))
   tags:
     - set-site-admin-pw
