@@ -27,7 +27,9 @@ options:
     name:
         description: The name of the host group to be created/modified/deleted.
         type: str
-    host_group_name: depricated alias of name
+    host_group_name:
+        description:  depricated alias of name
+        type: str
     title:
         description: The title (alias) of your host group. If omitted defaults to the name.
         type: str
@@ -37,7 +39,10 @@ options:
               If title is omitted in entry, it defaults to the host group name.
         default: []
         type: raw
-    host_groups: depricated alias of group
+    host_groups:
+        description: depricated alias of group
+        default: []
+        type: raw
     state:
         description: The state of your host group.
         type: str
