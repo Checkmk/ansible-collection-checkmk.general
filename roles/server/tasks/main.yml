@@ -49,7 +49,7 @@
   tags:
     - download-gpg-key
 
-- name: "GPG Verification on Debian Derivates."
+- name: "GPG Verification on Debian Derivatives."
   block:
     - name: "Import Checkmk GPG Key."
       ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
