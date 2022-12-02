@@ -28,7 +28,6 @@ options:
         description: The name of the host group to be created/modified/deleted.
         type: str
         aliases: [host_group_name]
-        deprecated_aliases=[{"name": "host_group_name"}]
     title:
         description: The title (alias) of your host group. If omitted defaults to the name.
         type: str
@@ -39,7 +38,6 @@ options:
         default: []
         type: raw
         aliases: [host_groups]
-        deprecated_aliases=[{"name": "host_group"}]
     state:
         description: The state of your host group.
         type: str
@@ -342,7 +340,7 @@ def run_module():
             type="str",
             required=False,
             aliases=["host_group_name"],
-            deprecated_aliases=[{"name": "host_group_name"}]
+            deprecated_aliases=[{"name": "host_group_name"}],
         ),
         title=dict(type="str", required=False),
         groups=dict(
@@ -350,7 +348,7 @@ def run_module():
             required=False,
             default=[],
             aliases=["host_groups"],
-            deprecated_aliases=[{"name": "host_groups"}]
+            deprecated_aliases=[{"name": "host_groups"}],
         ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
