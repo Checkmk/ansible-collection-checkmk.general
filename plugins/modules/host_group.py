@@ -334,9 +334,9 @@ def run_module():
         validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        name=dict(type="str", required=False, aliases=['host_group_name']),
+        name=dict(type="str", required=False, aliases=["host_group_name"]),
         title=dict(type="str", required=False),
-        groups=dict(type="raw", required=False, default=[], aliases=['host_groups']),
+        groups=dict(type="raw", required=False, default=[], aliases=["host_groups"]),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
