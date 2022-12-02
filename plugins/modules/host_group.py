@@ -340,7 +340,7 @@ def run_module():
             type="str",
             required=False,
             aliases=["host_group_name"],
-            deprecated_aliases=[{"name": "host_group_name"}],
+            deprecated_aliases=[{"name": "host_group_name", "version": "0.15.0", "collection_name": "tribe29"}],
         ),
         title=dict(type="str", required=False),
         groups=dict(
@@ -348,7 +348,7 @@ def run_module():
             required=False,
             default=[],
             aliases=["host_groups"],
-            deprecated_aliases=[{"name": "host_groups"}],
+            deprecated_aliases=[{"name": "host_groups", "version": "0.15.0", "collection_name": "tribe29" }],
         ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
