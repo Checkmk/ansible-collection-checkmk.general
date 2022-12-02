@@ -112,6 +112,16 @@ releases:
       name: contact_group
       namespace: ''
     release_date: '2022-11-18'
+  0.13.0:
+    changes:
+      major_changes:
+      - Add service_group module.
+      minor_changes:
+      - Agent role - Now supports new password hashing according to L(Werk 14391,https://checkmk.com/werk/14391)
+    fragments:
+    - new-passwd-hashing.yml
+    - service_group_module.yml
+    release_date: '2022-12-02'
   0.2.0:
     changes:
       known_issues:
