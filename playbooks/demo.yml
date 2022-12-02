@@ -54,6 +54,19 @@
         state: "fix_all"
       delegate_to: localhost
 
+    - name: "Create service groups."
+      service_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        title: "{{ item.title | default(item.name) }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_service_groups_create }}"
+
     - name: "Pause to review first set of changes."
       ansible.builtin.pause:
         prompt: |
@@ -128,6 +141,18 @@
           - "{{ site }}"
       delegate_to: localhost
       run_once: 'true'
+
+    - name: "Delete service groups."
+      service_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_service_groups_create }}"
 
     - name: "Delete contact groups."
       contact_group:
