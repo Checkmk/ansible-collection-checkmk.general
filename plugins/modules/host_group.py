@@ -334,9 +334,9 @@ def run_module():
         validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        name=dict(type="str", required=False),
+        name=dict(type="str", required=False, aliases=['host_group_name']),
         title=dict(type="str", required=False),
-        groups=dict(type="raw", required=False, default=[]),
+        groups=dict(type="raw", required=False, default=[], aliases=['host_groups']),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
@@ -378,7 +378,7 @@ def run_module():
         if "title" in module.params and module.params.get("title", ""):
             exit_failed(
                 module,
-                "'title' has only effect when 'name' is defined and not 'groups'",
+                "'title' has only effect when 'name' (depricated alias 'host_group_name') is defined and not 'groups' (depricated alias 'host_groups')",
             )
 
         groups = module.params.get("groups")
