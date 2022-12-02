@@ -20,8 +20,8 @@ Vagrant.configure("2") do |config|
       $script = <<-SCRIPT
       apt-get update
       apt-get install -y python3-pip ca-certificates curl gnupg lsb-release
-      wget "https://download.checkmk.com/checkmk/2.1.0p13/check-mk-raw-2.1.0p13_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
-      wget "https://download.checkmk.com/checkmk/2.1.0p13/check-mk-raw-2.1.0p13_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
+      wget "https://download.checkmk.com/checkmk/2.1.0p17/check-mk-raw-2.1.0p17_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
+      wget "https://download.checkmk.com/checkmk/2.1.0p17/check-mk-raw-2.1.0p17_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
       apt-get install -y /tmp/checkmk-stable.deb
       omd create --admin-password 'd7589df1-01db-4eda-9858-dbcff8d0c361' stable
       apt-get install -y /tmp/checkmk-beta.deb

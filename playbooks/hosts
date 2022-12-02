@@ -8,3 +8,13 @@ test7.tld checkmk_folder_path="/"
 test8.tld checkmk_folder_path="/test" 
 test9.tld checkmk_folder_path="/bar" 
 test10.tld checkmk_folder_path="/foo"
+
+[vagrant]
+ansibuntu ansible_host=192.168.56.61
+debsible ansible_host=192.168.56.62
+anstream ansible_host=192.168.56.63
+ansuse ansible_host=192.168.56.64
+ansles ansible_host=192.168.56.65
+
+[vagrant:vars]
+ansible_user=vagrant
