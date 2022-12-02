@@ -5,6 +5,19 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.13.0
+=======
+
+Major Changes
+-------------
+
+- Add service_group module.
+
+Minor Changes
+-------------
+
+- Agent role - Now supports new password hashing according to L(Werk 14391,https://checkmk.com/werk/14391)
+
 v0.12.0
 =======
 
