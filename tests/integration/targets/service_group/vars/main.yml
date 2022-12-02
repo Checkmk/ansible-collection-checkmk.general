@@ -9,7 +9,7 @@ server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
 
-checkmk_contact_groups_create:
+checkmk_service_groups_create:
   - name: "test1"
     title: "Test_1"
   - name: "test2"
@@ -20,7 +20,7 @@ checkmk_contact_groups_create:
     title: "Test_5"
 
 # 2 and 3 remains unchanged, good for idempotency check
-checkmk_contact_groups_modify:
+checkmk_service_groups_modify:
   - name: "test1"
     title: "Test_one"
   - name: "test2"
@@ -32,6 +32,6 @@ checkmk_contact_groups_modify:
   - name: "test5"
     title: "Test_five"
 
-checkmk_contact_groups_delete:
+checkmk_service_groups_delete:
   - name: "test1"
   - name: "test3"
