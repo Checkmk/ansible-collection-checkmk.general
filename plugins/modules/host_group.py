@@ -38,6 +38,7 @@ options:
         default: []
         type: raw
         aliases: [host_groups]
+
     state:
         description: The state of your host group.
         type: str
@@ -380,12 +381,12 @@ def run_module():
         if "title" in module.params and module.params.get("title", ""):
             exit_failed(
                 module,
-                "'title' has only effect when 'name' (depricated alias 'host_group_name') is defined and not 'groups' (depricated alias 'host_groups')",
+                "'title' has only effect when 'name' (deprecated alias 'host_group_name') is defined and not 'groups' (deprecated alias 'host_groups')",
             )
 
         groups = module.params.get("groups")
 
-        # Determine which host groups do already exest
+        # Determine which host groups do already exist
         current_groups = get_current_host_groups(module, base_url, headers)
 
         # Determine intersection and difference with input, according to 'name' only
@@ -488,7 +489,7 @@ def run_module():
         else:
             exit_failed(module, "Unknown error")
     else:
-        exit_failed(module, "One shoudl define either 'groups' or 'name'")
+        exit_failed(module, "One should define either 'groups' or 'name'")
 
 
 def main():
