@@ -38,7 +38,6 @@ options:
         default: []
         type: raw
         aliases: [host_groups]
-
     state:
         description: The state of your host group.
         type: str
