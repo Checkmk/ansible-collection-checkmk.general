@@ -293,6 +293,7 @@ def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
+        validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         title=dict(type="str", default=""),
