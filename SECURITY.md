@@ -1,9 +1,12 @@
 # Security Policy
 
+## Disambiguation
+This policy solely applies to the Checkmk Ansible Collection, not Checkmk itself!
+For Checkmk itself, please refer to [this Vulnerability disclosure policy](https://checkmk.com/responsible-disclosure-policy)
 ## Supported Versions
 
 Please always use the latest available version!  
-Versions in here are used solely for stability, so your Ansible configuration
+Versions in this repository are used solely for stability, so your Ansible configuration
 does not break.  
 However, we cannot and will not support older versions, especially security-wise.  
 If you find a vulnerability, please report it as stated below,
