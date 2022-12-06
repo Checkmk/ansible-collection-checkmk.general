@@ -16,7 +16,7 @@ Major Changes
 Minor Changes
 -------------
 
-- Agent role - Now supports new password hashing according to L(Werk 14391,https://checkmk.com/werk/14391)
+- Agent role - Now supports new password hashing according to Werk 14391: https://checkmk.com/werk/14391
 
 v0.12.0
 =======
