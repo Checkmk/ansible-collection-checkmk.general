@@ -15,3 +15,4 @@ Collection Version | Checkmk Versions | Remarks
 --- | --- | ---
 0.12.0 | 2.1.0p11, 2.0.0p28 | None
 0.13.0 | 2.1.0p17, 2.0.0p31 | None
+0.14.0 | 2.1.0p17, 2.0.0p31 | None
