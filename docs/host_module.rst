@@ -42,7 +42,7 @@ tribe29.checkmk.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.13.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.14.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
