@@ -42,7 +42,7 @@ tribe29.checkmk.host_group module -- Manage host groups in Checkmk (bulk version
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.13.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.14.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -166,17 +166,67 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-host_group_name"></div>
+        <div class="ansibleOptionAnchor" id="parameter-groups"></div>
+        <div class="ansibleOptionAnchor" id="parameter-host_groups"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-host_group_name:
+      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-groups:
+      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-host_groups:
 
       .. rst-class:: ansible-option-title
 
-      **host_group_name**
+      **groups**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-host_group_name" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-groups" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-aliases:`aliases: host_groups`
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`any`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      instead of 'name', 'title' a list of dicts with elements of host group name and title (alias) to be created/modified/deleted. If title is omitted in entry, it defaults to the host group name.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-name"></div>
+        <div class="ansibleOptionAnchor" id="parameter-host_group_name"></div>
+
+      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-host_group_name:
+      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-name:
+
+      .. rst-class:: ansible-option-title
+
+      **name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-aliases:`aliases: host_group_name`
 
       .. rst-class:: ansible-option-type-line
 
@@ -192,44 +242,6 @@ Parameters
 
       The name of the host group to be created/modified/deleted.
 
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-host_groups"></div>
-
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-host_groups:
-
-      .. rst-class:: ansible-option-title
-
-      **host_groups**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-host_groups" title="Permalink to this option"></a>
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-type:`any`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      instead of 'host\_group\_name', 'title' a list of dicts with elements of host group name and title (alias) to be created/modified/deleted. If title is omitted in entry, it defaults to the host group name.
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
 
       .. raw:: html
 
@@ -372,7 +384,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The title (alias) of your host group. If omitted defaults to the host\_group\_name.
+      The title (alias) of your host group. If omitted defaults to the name.
 
 
       .. raw:: html
@@ -446,7 +458,7 @@ Examples
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_group_name: "my_host_group"
+        name: "my_host_group"
         title: "My Host Group"
         state: "present"
 
@@ -457,7 +469,7 @@ Examples
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_groups:
+        groups:
           - name: "my_host_group_one"
             title: "My Host Group One"
           - name: "my_host_group_two"
@@ -473,7 +485,7 @@ Examples
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_groups:
+        groups:
           - name: "my_host_group_one"
             title: "My Host Group One"
           - name: "my_host_group_two"
@@ -487,7 +499,7 @@ Examples
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_group_name: "my_host_group"
+        name: "my_host_group"
         state: "absent"
 
     # Delete several host groups.
@@ -497,7 +509,7 @@ Examples
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_groups:
+        groups:
           - name: "my_host_group_one"
           - name: "my_host_group_two"
         state: "absent"
