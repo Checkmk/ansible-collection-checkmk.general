@@ -5,6 +5,9 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.14.0
+=======
+
 v0.13.0
 =======
 
@@ -16,7 +19,6 @@ Major Changes
 Minor Changes
 -------------
 
-- Agent role - Now supports new password hashing according to Werk 14391: https://checkmk.com/werk/14391
 
 v0.12.0
 =======
