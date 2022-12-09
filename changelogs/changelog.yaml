@@ -116,12 +116,13 @@ releases:
     changes:
       major_changes:
       - Add service_group module.
-      minor_changes:
-      - Agent role - Now supports new password hashing according to Werk 14391: https://checkmk.com/werk/14391
+      minor_changes: []
     fragments:
     - new-passwd-hashing.yml
     - service_group_module.yml
     release_date: '2022-12-02'
+  0.14.0:
+    release_date: '2022-12-09'
   0.2.0:
     changes:
       known_issues:
