@@ -199,6 +199,56 @@ def create_rule(module, base_url, headers, ruleset, rule):
             % (info["status"], info["body"]),
         )
 
+    rule_id = json.loads(response.read().decode("utf-8"))["id"]
+    return rule_id
+
+def get_rule_etag(module, base_url, headers, rule_id):
+    api_endpoint = "/objects/rule/" + rule_id
+
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, headers=headers, method="GET")
+
+    if info["status"] not in [200, 204]:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+    print(" RULE ETAG : %s" % info["etag"])
+    return info["etag"]
+
+def move_rule(module, base_url, headers, rule_id, position):
+
+    # position parameter valid formats:
+    # 
+    # position: { "position": "bottom_of_folder" }
+    # position: { "position": "top_of_folder" }
+    # position: { "position": "after_specific_rule", "rule_id" : string }
+    # position: { "position": "before_specific_rule", "rule_id" : string }
+
+    if ( position.get("position") not in [ "bottom_of_folder", "top_of_folder", "after_specific_rule",  "before_specific_rule" ]
+        or ( position.get("position") in [ "after_specific_rule",  "before_specific_rule" ]
+            and ( position.get("rule_id") is None or position.get("rule_id") == "" )
+        )
+    ): exit_failed(module, "Position parameter format is not valid")
+
+    api_endpoint = "/objects/rule/" + rule_id + "/actions/move/invoke"
+
+    rule_etag = get_rule_etag(module, base_url, headers, rule_id)
+    headers["If-Match"] = rule_etag
+
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(
+        module, url, module.jsonify(position), headers=headers, method="POST")
+
+    if info["status"] not in [200, 204]:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
 
 def delete_rule(module, base_url, headers, rule_id):
     api_endpoint = "/objects/rule/"
@@ -225,6 +275,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         ruleset=dict(type="str", required=True),
         rule=dict(type="dict", required=True),
+        position=dict(type="dict", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
@@ -279,7 +330,12 @@ def run_module():
     else:
         # If state is present, create the rule
         if module.params.get("state") == "present":
-            create_rule(module, base_url, headers, ruleset, rule)
+            rule_id = create_rule(module, base_url, headers, ruleset, rule)
+            # move the rule into position if specified
+            if module.params.get("position") is not None:
+                position = module.params.get("position")
+                position["folder"] = rule["folder"]
+                move_rule(module, base_url, headers, rule_id, position)
             exit_changed(module, "Created rule")
         else:
             # If state is absent, do nothing
