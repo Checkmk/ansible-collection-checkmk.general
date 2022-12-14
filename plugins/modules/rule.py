@@ -32,6 +32,14 @@ options:
         description: Name of the ruleset to manage.
         required: true
         type: str
+    position:
+        description: Position of the rule in the folder
+        required: false
+        type: dict
+        choices: [{"position":"bottom_of_folder"}, 
+                  {"position":"top_of_folder"},
+                  {"position":"after_specific_rule", "rule_id":string},
+                  {"position":"before_specific_rule", "rule_id":string}]
     state:
         description: State of the rule.
         choices: [present, absent]
@@ -51,6 +59,7 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
+    position: { "top_of_folder" }
     rule:
         conditions: {
             "host_labels": [],
@@ -215,17 +224,9 @@ def get_rule_etag(module, base_url, headers, rule_id):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
-    print(" RULE ETAG : %s" % info["etag"])
     return info["etag"]
 
 def move_rule(module, base_url, headers, rule_id, position):
-
-    # position parameter valid formats:
-    # 
-    # position: { "position": "bottom_of_folder" }
-    # position: { "position": "top_of_folder" }
-    # position: { "position": "after_specific_rule", "rule_id" : string }
-    # position: { "position": "before_specific_rule", "rule_id" : string }
 
     if ( position.get("position") not in [ "bottom_of_folder", "top_of_folder", "after_specific_rule",  "before_specific_rule" ]
         or ( position.get("position") in [ "after_specific_rule",  "before_specific_rule" ]
