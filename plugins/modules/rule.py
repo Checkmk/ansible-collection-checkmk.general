@@ -232,16 +232,14 @@ def get_rule_etag(module, base_url, headers, rule_id):
 def move_rule(module, base_url, headers, rule, rule_id, position):
     api_endpoint = "/objects/rule/" + rule_id + "/actions/move/invoke"
 
-    if (
-        position.get("position") not in [
+    if position.get("position") not in [
             "bottom_of_folder",
             "top_of_folder",
             "after_specific_rule",
             "before_specific_rule",
-        ] or (
+    ] or (
             position.get("position") in ["after_specific_rule", "before_specific_rule"]
             and (position.get("rule_id") is None or position.get("rule_id") == "")
-        )
     ):
         exit_failed(module, "Position parameter format is not valid")
 
