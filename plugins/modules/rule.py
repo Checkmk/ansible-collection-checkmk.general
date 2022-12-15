@@ -36,10 +36,11 @@ options:
         description: Position of the rule in the folder
         required: false
         type: dict
-        choices: [{"position":"bottom_of_folder"}, 
-                  {"position":"top_of_folder"},
-                  {"position":"after_specific_rule", "rule_id":string},
-                  {"position":"before_specific_rule", "rule_id":string}]
+        choices:
+            - {"position": "bottom_of_folder"} 
+            - {"position": "top_of_folder"}
+            - {"position": "after_specific_rule", "rule_id": str}
+            - {"position": "before_specific_rule", "rule_id": str}
     state:
         description: State of the rule.
         choices: [present, absent]
@@ -211,6 +212,7 @@ def create_rule(module, base_url, headers, ruleset, rule):
     rule_id = json.loads(response.read().decode("utf-8"))["id"]
     return rule_id
 
+
 def get_rule_etag(module, base_url, headers, rule_id):
     api_endpoint = "/objects/rule/" + rule_id
 
@@ -226,23 +228,35 @@ def get_rule_etag(module, base_url, headers, rule_id):
         )
     return info["etag"]
 
-def move_rule(module, base_url, headers, rule_id, position):
 
-    if ( position.get("position") not in [ "bottom_of_folder", "top_of_folder", "after_specific_rule",  "before_specific_rule" ]
-        or ( position.get("position") in [ "after_specific_rule",  "before_specific_rule" ]
-            and ( position.get("rule_id") is None or position.get("rule_id") == "" )
-        )
-    ): exit_failed(module, "Position parameter format is not valid")
-
+def move_rule(module, base_url, headers, rule_id, rule, position):
     api_endpoint = "/objects/rule/" + rule_id + "/actions/move/invoke"
+
+    if (
+        position.get("position") not in [
+            "bottom_of_folder",
+            "top_of_folder",
+            "after_specific_rule",
+            "before_specific_rule",
+        ] or (
+            position.get("position") in ["after_specific_rule", "before_specific_rule"]
+            and (position.get("rule_id") is None or position.get("rule_id") == "")
+        )
+    ):
+        exit_failed(module, "Position parameter format is not valid")
 
     rule_etag = get_rule_etag(module, base_url, headers, rule_id)
     headers["If-Match"] = rule_etag
 
     url = base_url + api_endpoint
 
+    # although we already have the rule id and an etag
+    # we still need to specify a folder
+    position["folder"] = rule.get("folder")
+
     response, info = fetch_url(
-        module, url, module.jsonify(position), headers=headers, method="POST")
+        module, url, module.jsonify(position), headers=headers, method="POST"
+    )
 
     if info["status"] not in [200, 204]:
         exit_failed(
@@ -250,6 +264,7 @@ def move_rule(module, base_url, headers, rule_id, position):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
+
 
 def delete_rule(module, base_url, headers, rule_id):
     api_endpoint = "/objects/rule/"
@@ -335,8 +350,7 @@ def run_module():
             # move the rule into position if specified
             if module.params.get("position") is not None:
                 position = module.params.get("position")
-                position["folder"] = rule["folder"]
-                move_rule(module, base_url, headers, rule_id, position)
+                move_rule(module, base_url, headers, rule, rule_id, position)
             exit_changed(module, "Created rule")
         else:
             # If state is absent, do nothing
