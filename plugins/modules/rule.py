@@ -55,7 +55,7 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
-    position: { "top_of_folder" }
+    position: { "position": "top_of_folder" }
     rule:
         conditions: {
             "host_labels": [],
