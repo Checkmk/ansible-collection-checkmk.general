@@ -229,7 +229,7 @@ def get_rule_etag(module, base_url, headers, rule_id):
     return info["etag"]
 
 
-def move_rule(module, base_url, headers, rule_id, rule, position):
+def move_rule(module, base_url, headers, rule, rule_id, position):
     api_endpoint = "/objects/rule/" + rule_id + "/actions/move/invoke"
 
     if (
