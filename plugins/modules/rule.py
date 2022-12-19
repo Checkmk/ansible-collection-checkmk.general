@@ -109,10 +109,14 @@ EXAMPLES = r"""
 
 RETURN = r"""
 msg:
-    description: The output message that the module generates. Contains the API response details in case of an error.
+    description: The output message that the module generates. Contains the API status details in case of an error.
     type: str
     returned: always
     sample: 'Rule created.'
+content:
+    description: The Response body from the API when creating or moving a rule, or when a rule already exists.
+    type: dict
+    returned: when rule exists, is created or moved
 """
 
 import json
@@ -126,18 +130,18 @@ except ImportError:  # For Python 3
     from urllib.parse import urlencode
 
 
-def exit_failed(module, msg):
-    result = {"msg": msg, "changed": False, "failed": True}
+def exit_failed(module, msg, content={}):
+    result = {"msg": msg, "content": content, "changed": False, "failed": True}
     module.fail_json(**result)
 
 
-def exit_changed(module, msg):
-    result = {"msg": msg, "changed": True, "failed": False}
+def exit_changed(module, msg, content={}):
+    result = {"msg": msg, "content": content, "changed": True, "failed": False}
     module.exit_json(**result)
 
 
-def exit_ok(module, msg):
-    result = {"msg": msg, "changed": False, "failed": False}
+def exit_ok(module, msg, content={}):
+    result = {"msg": msg, "content": content, "changed": False, "failed": False}
     module.exit_json(**result)
 
 
@@ -176,7 +180,7 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
                 and sorted(r["extensions"]["value_raw"]) == sorted(rule["value_raw"])
             ):
                 # If they are the same, return the ID
-                return r["id"]
+                return r
     return None
 
 
@@ -204,8 +208,7 @@ def create_rule(module, base_url, headers, ruleset, rule):
             % (info["status"], info["body"]),
         )
 
-    rule_id = json.loads(response.read().decode("utf-8"))["id"]
-    return rule_id
+    return json.loads(response.read().decode("utf-8"))
 
 
 def get_rule_etag(module, base_url, headers, rule_id):
@@ -256,6 +259,8 @@ def move_rule(module, base_url, headers, rule_id, position):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
+
+    return json.loads(response.read().decode("utf-8"))
 
 
 def delete_rule(module, base_url, headers, rule_id):
@@ -323,8 +328,11 @@ def run_module():
             "host_labels": [],
             "service_labels": [],
         }
+
     # Get ID of rule that is the same as the given options
-    rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
+    content = get_existing_rule(module, base_url, headers, ruleset, rule)
+    rule_id = content.get("id")
+
     # If rule exists
     if rule_id is not None:
         # If state is absent, delete the rule
@@ -333,18 +341,19 @@ def run_module():
             exit_changed(module, "Deleted rule")
         # If state is present, do nothing
         else:
-            exit_ok(module, "Rule already exists")
+            exit_ok(module, "Rule already exists", content)
     # If rule does not exist
     else:
         # If state is present, create the rule
         if module.params.get("state") == "present":
-            rule_id = create_rule(module, base_url, headers, ruleset, rule)
+            content = create_rule(module, base_url, headers, ruleset, rule)
             # move the rule into position if specified
             if module.params.get("position") is not None:
+                rule_id = content.get("id")
                 position = module.params.get("position")
                 position["folder"] = rule.get("folder")
-                move_rule(module, base_url, headers, rule_id, position)
-            exit_changed(module, "Created rule")
+                content = move_rule(module, base_url, headers, rule_id, position)
+            exit_changed(module, "Created rule", content)
         else:
             # If state is absent, do nothing
             exit_ok(module, "Rule did not exist")
