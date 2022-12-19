@@ -55,7 +55,7 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
-    position: { "position": "top_of_folder" }
+    position: { "name": "top_of_folder" }
     rule:
         conditions: {
             "host_labels": [],
@@ -224,26 +224,27 @@ def get_rule_etag(module, base_url, headers, rule_id):
     return info["etag"]
 
 
-def move_rule(module, base_url, headers, rule, rule_id, position):
+def move_rule(module, base_url, headers, rule_id, position):
     api_endpoint = "/objects/rule/" + rule_id + "/actions/move/invoke"
 
-    if position.get("position") not in [
+    if position.get("name") not in [
         "bottom_of_folder",
         "top_of_folder",
         "after_specific_rule",
         "before_specific_rule",
     ] or (
-        position.get("position") in ["after_specific_rule", "before_specific_rule"]
+        position.get("name") in ["after_specific_rule", "before_specific_rule"]
         and (position.get("rule_id") is None or position.get("rule_id") == "")
     ):
-        exit_failed(module, "Position parameter format is not valid")
+        exit_failed(module, "Position parameter mismatch")
+
+    if position.get("folder") is None or position.get("folder") == "":
+        exit_failed(module, "Position folder parameter is missing")
 
     rule_etag = get_rule_etag(module, base_url, headers, rule_id)
     headers["If-Match"] = rule_etag
 
     url = base_url + api_endpoint
-
-    position["folder"] = rule.get("folder")
 
     response, info = fetch_url(
         module, url, module.jsonify(position), headers=headers, method="POST"
@@ -341,7 +342,8 @@ def run_module():
             # move the rule into position if specified
             if module.params.get("position") is not None:
                 position = module.params.get("position")
-                move_rule(module, base_url, headers, rule, rule_id, position)
+                position["folder"] = rule.get("folder")
+                move_rule(module, base_url, headers, rule_id, position)
             exit_changed(module, "Created rule")
         else:
             # If state is absent, do nothing
