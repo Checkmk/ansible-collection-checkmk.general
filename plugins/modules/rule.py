@@ -33,7 +33,15 @@ options:
         required: true
         type: str
     position:
-        description: Position of the rule in the folder
+        description:
+            - Position of the rule in the list. Valid formats:
+
+              {"position": "top_of_folder"}
+              {"position": "bottom_of_folder"}
+              {"position": "before_specific_rule", rule_id: str}
+              {"position": "after_specific_rule", rule_id: str}
+
+              The rule_id can be obtained from the output of a previously created rule.
         required: false
         type: dict
     state:
@@ -76,6 +84,11 @@ EXAMPLES = r"""
         }
         value_raw: "{'levels': (80.0, 90.0)}"
     state: "present"
+    register: response
+
+- name: Show the ID of the new rule
+  debug:
+    msg: "RULE ID : {{ response.content.id }}"
 
 # Delete first rule in this ruleset.
 - name: "Delete a rule."
@@ -113,6 +126,7 @@ msg:
     type: str
     returned: always
     sample: 'Rule created.'
+
 content:
     description: The Response body from the API when creating or moving a rule, or when a rule already exists.
     type: dict
@@ -179,7 +193,7 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
                 and sorted(r["extensions"]["properties"]) == sorted(rule["properties"])
                 and sorted(r["extensions"]["value_raw"]) == sorted(rule["value_raw"])
             ):
-                # If they are the same, return the ID
+                # If they are the same, return the content
                 return r
     return None
 
