@@ -55,7 +55,7 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
-    position: { "name": "top_of_folder" }
+    position: { "position": "top_of_folder" }
     rule:
         conditions: {
             "host_labels": [],
@@ -230,13 +230,13 @@ def get_rule_etag(module, base_url, headers, rule_id):
 def move_rule(module, base_url, headers, rule_id, position):
     api_endpoint = "/objects/rule/" + rule_id + "/actions/move/invoke"
 
-    if position.get("name") not in [
+    if position.get("position") not in [
         "bottom_of_folder",
         "top_of_folder",
         "after_specific_rule",
         "before_specific_rule",
     ] or (
-        position.get("name") in ["after_specific_rule", "before_specific_rule"]
+        position.get("position") in ["after_specific_rule", "before_specific_rule"]
         and (position.get("rule_id") is None or position.get("rule_id") == "")
     ):
         exit_failed(module, "Position parameter mismatch")
@@ -331,7 +331,10 @@ def run_module():
 
     # Get ID of rule that is the same as the given options
     content = get_existing_rule(module, base_url, headers, ruleset, rule)
-    rule_id = content.get("id")
+    if content is not None:
+        rule_id = content.get("id")
+    else:
+        rule_id = None
 
     # If rule exists
     if rule_id is not None:
