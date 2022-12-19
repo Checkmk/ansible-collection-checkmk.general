@@ -34,16 +34,24 @@ options:
         type: str
     position:
         description:
-            - Position of the rule in the list. Valid formats:
-
-              {"position": "top_of_folder"}
-              {"position": "bottom_of_folder"}
-              {"position": "before_specific_rule", rule_id: str}
-              {"position": "after_specific_rule", rule_id: str}
-
-              The rule_id can be obtained from the output of a previously created rule.
+          - Where to put the rule in the existing list of rules.
+          - By default rules are created at the bottom of the list.
         required: false
         type: dict
+        suboptions:
+            position:
+                description: Position in the list
+                required: true
+                type: str
+                choices:
+                    - top_of_folder
+                    - bottom_of_folder
+                    - before_specific_rule
+                    - after_specific_rule
+            rule_id:
+                description:
+                    - Rule ID to use with before and after_specific_rule 
+                type: str
     state:
         description: State of the rule.
         choices: [present, absent]
@@ -56,6 +64,7 @@ author:
 
 EXAMPLES = r"""
 # Create a rule in checkgroup_parameters:memory_percentage_used.
+# Put it at the top of the list
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
@@ -63,7 +72,7 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
-    position: { "position": "top_of_folder" }
+    position: {"position": "top_of_folder"}
     rule:
         conditions: {
             "host_labels": [],
@@ -89,6 +98,40 @@ EXAMPLES = r"""
 - name: Show the ID of the new rule
   debug:
     msg: "RULE ID : {{ response.content.id }}"
+
+# Create another  rule in checkgroup_parameters:memory_percentage_used.
+# Put it after the rule created above.
+- name: "Create a rule in checkgroup_parameters:memory_percentage_used."
+  tribe29.checkmk.rule:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    position: {
+        "position": "after_specific_rule",
+        "rule_id": "{{ response.content.id }}"
+    }
+    rule:
+        conditions: {
+            "host_labels": [],
+            "host_name": {
+                "match_on": [
+                    "test2.tld"
+                ],
+                "operator": "one_of"
+            },
+            "host_tags": [],
+            "service_labels": []
+        }
+        properties: {
+            "comment": "Warning at 85%\nCritical at 99%\n",
+            "description": "Allow even higher memory usage",
+            "disabled": false,
+            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+        }
+        value_raw: "{'levels': (85.0, 99.0)}"
+    state: "present"
 
 # Delete first rule in this ruleset.
 - name: "Delete a rule."
