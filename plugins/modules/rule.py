@@ -331,13 +331,10 @@ def run_module():
 
     # Get ID of rule that is the same as the given options
     content = get_existing_rule(module, base_url, headers, ruleset, rule)
-    if content is not None:
-        rule_id = content.get("id")
-    else:
-        rule_id = None
 
     # If rule exists
-    if rule_id is not None:
+    if content is not None:
+        rule_id = content.get("id")
         # If state is absent, delete the rule
         if module.params.get("state") == "absent":
             delete_rule(module, base_url, headers, rule_id)
