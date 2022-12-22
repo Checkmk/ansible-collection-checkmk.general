@@ -24,7 +24,7 @@
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
         path: "{{ item.path }}"
-        title: "{{ item.title }}"
+        name: "{{ item.name }}"
         state: "present"
       delegate_to: localhost
       run_once: 'yes'
@@ -36,7 +36,7 @@
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        host_name: "{{ inventory_hostname }}"
+        name: "{{ inventory_hostname }}"
         folder: "{{ checkmk_folder_path }}"
         attributes:
           site: "{{ site }}"
@@ -91,7 +91,7 @@
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        host_name: "{{ inventory_hostname }}"
+        name: "{{ inventory_hostname }}"
         folder: "{{ checkmk_folder_path }}"
         attributes:
           site: "{{ site }}"
@@ -106,7 +106,7 @@
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        host_name: "{{ inventory_hostname }}"
+        name: "{{ inventory_hostname }}"
         folder: "/bar"
         state: "present"
       delegate_to: localhost
@@ -172,7 +172,7 @@
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        host_name: "{{ inventory_hostname }}"
+        name: "{{ inventory_hostname }}"
         folder: "{{ checkmk_folder_path }}"
         state: "absent"
       delegate_to: localhost
@@ -184,7 +184,7 @@
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
         path: "{{ item.path }}"
-        title: "{{ item.title }}"
+        name: "{{ item.name }}"
         state: "absent"
       register: testout
       delegate_to: localhost
