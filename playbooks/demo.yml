@@ -130,6 +130,128 @@
           "Feel free to review the changes in your Checkmk site: {{ site }}."
           "Press <Enter> to continue."
 
+    - name: "Downtime 1 - on services with relative times"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 1 - on services with relative timestamps
+        start_after:
+          hours: 2
+          minutes: 30
+        end_after:
+          hours: 1
+          minutes: 30
+        service_descriptions:
+          - "CPU utilization"
+          - Memory
+      delegate_to: localhost
+
+    - name: "Downtime 2 - on services with absolute timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 2 - on services with absolute timestamps
+        start_time: 2024-03-25T20:39:28Z
+        end_time: 2024-03-26T20:39:28Z
+        service_descriptions:
+          - "CPU utilization"
+          - Memory
+      delegate_to: localhost
+
+    - name: "Downtime 3 - on services without timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 3 - on services without timestamps
+        service_descriptions:
+          - "CPU utilization"
+          - Memory
+        end_after:
+          minutes: 1
+      delegate_to: localhost
+
+    - name: "Downtime 4 - on host with relative times"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 4 - on host with relative timestamps
+        start_after:
+          hours: 2
+          minutes: 30
+        end_after:
+          hours: 1
+          minutes: 30
+      delegate_to: localhost
+
+    - name: "Downtime 5 - on host with absolute timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 5 - on host with absolute timestamps
+        start_time: 2024-03-25T20:39:28Z
+        end_time: 2024-03-26T20:39:28Z
+      delegate_to: localhost
+
+    - name: "Downtime 6 - on host without timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 6 - on host without timestamps
+      delegate_to: localhost
+
+    - name: "Pause to review second set of changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+
+    - name: "Downtime delete 1 - service downtimes"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        service_descriptions:
+          - "CPU utilization"
+          - Memory
+        state: absent
+      delegate_to: localhost
+
+    - name: "Downtime delete 2 - host downtimes"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        state: absent
+      delegate_to: localhost
+
+    - name: "Pause to review second set of changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+
     - name: "Activate changes on site - Showcase changes to existing objects."
       activation:
         server_url: "{{ server_url }}"
