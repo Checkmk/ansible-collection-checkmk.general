@@ -3,6 +3,7 @@
 ## Disambiguation
 This policy solely applies to the Checkmk Ansible Collection, not Checkmk itself!
 For Checkmk itself, please refer to [this Vulnerability disclosure policy](https://checkmk.com/responsible-disclosure-policy)
+
 ## Supported Versions
 
 Please always use the latest available version!  

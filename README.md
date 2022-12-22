@@ -145,7 +145,7 @@ if you list the `tribe29.checkmk` collection in the playbook's [`collections`](h
 
 ## Contributing to this collection
 
-See [CONTRIBUTING](CONTRIBUTING).
+See [CONTRIBUTING](CONTRIBUTING.md).
 
 ## Release notes
 <!--Add a link to a changelog.rst file or an external docsite to cover this information. -->
@@ -162,10 +162,7 @@ Please do **not** consider a concrete planning document!
   - Setup
     - Agents
     - BI
-    - Contact Groups
-    - Host Groups
     - Passwords
-    - Service Groups
     - Time Periods
 - Lookup Plugins
   - Version
