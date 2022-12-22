@@ -11,14 +11,14 @@ automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
 
 checkmk_folders:
   - path: /test
-    title: Test
+    name: Test
   - path: /foo
-    title: Foo
+    name: Foo
   - path: /bar
-    title: Bar
+    name: Bar
   - path: /foo/bar
-    title: Bar
+    name: Bar
   - path: /bar/foo
-    title: Foo
+    name: Foo
   - path: /foo/bar/treasure
-    title: Treasure
+    name: Treasure
