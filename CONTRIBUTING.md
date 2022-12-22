@@ -70,7 +70,19 @@ in the existing modules when creating additional modules.
 * Write [good commit messages](https://chris.beams.io/posts/git-commit/)
 
 ### Plugins
-Specifics to be done. Stick to general Ansible coding best practices and look out for sanity check gotchas.
+In general, stick to Ansible coding best practices and look out for test gotchas.
+
+**Module Options**
+
+There are different approaches to the module options, depending on the nature of the module:
+
+**Approach 1**: The module only interacts with one class of objects. For example the `host_group` module only ever interacts with host groups. Hence the module options should stay as simple as possible, e.g. `name` instead of `host_group_name` for the name of the host group.
+
+**Approach 2**: The module interacts with more than one class of objects. For example the `downtime` module can interact both with hosts and with services. Hence the module options need to be more precise than in *Approach 1*. For example `host_name` and `service_description` instead of just `name`, as that would not make clear with which class ob objects we are interacting.
+
+**Aliases**
+
+It is possible to implement an alias for a module option. This should be used rather carefully to not clutter the options. However, they can be an option, if one is uncertain how to name an option, or to deprecate an option, before actually removing it. If in doubt, feel free to ask for review in your PR.
 
 ### Roles
 The following are guidelines to keep in mind, when changing roles.

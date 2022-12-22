@@ -8,6 +8,11 @@ tribe29.checkmk Release Notes
 v0.14.0
 =======
 
+Deprecated Features
+-------------------
+
+- host_group module - The module was released with the module options `host_group_name` and `host_groups`. These have ben renamed to `name` and `groups` to align with our standards. The old names will be removed in a future release.
+
 v0.13.0
 =======
 
