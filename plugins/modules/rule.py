@@ -25,26 +25,16 @@ extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     rule:
-        description:
-            - Definition of the rule as returned by the Checkmk API.
-            - Mutually exclusive with "rule_id".
+        description: Definition of the rule as returned by the Checkmk API.
         type: dict
     ruleset:
-        description:
-            - Name of the ruleset to manage.
-            - Mutually exclusive with "rule_id".
-            - Required when "rule:" is used.
+        description: Name of the ruleset to manage.
         type: str
-    rule_id:
-        description:
-            - ID of an existing rule we want to move.
-            - Required if "rule:" is not used.
-            - Mutually exclusive with "rule_id".
-        type: str 
     move:
         description:
           - Move the rule at the specified location.
-          - By default rules are created at the bottom of the list.
+          - By default rules are created at the bottom of the folder.
+          - Mutually exclusive with I(state: absent)
         type: dict
         suboptions:
             position:
@@ -58,14 +48,13 @@ options:
                     - "after"
             rule_id:
                 description:
-                    - Put the rule "before" or "after" this rule_id.
-                    - Required when "position" is "before" or "after"
+                    - Put the created/moved rule C(before) or C(after) this rule_id.
+                    - Required when I(position) is C(before) or C(after).
+                    - Mutually exclusive with I(position: before) and I(after) 
                 type: str
             folder:
                 description:
                     - Folder the rule should be moved to.
-                    - the same folder is used. 
-                    - Required if other than "/", when "rule:" is not used.
     state:
         description: State of the rule.
         choices: [present, absent]
@@ -77,8 +66,8 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a rule in checkgroup_parameters:memory_percentage_used.
-# Put it at the top of the list
+# Create a rule in checkgroup_parameters:memory_percentage_used
+# and move it at the top of the folder.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
@@ -86,7 +75,6 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
-    move: {"position": "top"}
     rule:
         conditions: {
             "host_labels": [],
@@ -106,6 +94,8 @@ EXAMPLES = r"""
             "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
         value_raw: "{'levels': (80.0, 90.0)}"
+    move: 
+        position: "top"
     state: "present"
     register: response
 
@@ -122,9 +112,6 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
-    move:
-        position: "after",
-        rule_id: "{{ response.content.id }}"
     rule:
         conditions: {
             "host_labels": [],
@@ -144,10 +131,13 @@ EXAMPLES = r"""
             "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
         value_raw: "{'levels': (85.0, 99.0)}"
+    move:
+        position: "after"
+        rule_id: "{{ response.content.id }}"
     state: "present"
     register: content
 
-# TODO: Move a rule "123456789abcdef" to folder "test" after rule "987654321fedcba" 
+# TODO: Move a rule "123456789abcdef" after rule "987654321fedcba"
 - name: "Move an existing rule at specified location."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
@@ -156,9 +146,20 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     rule_id: "123456789abcdef"
     move:
-        folder: "test" 
         position: "after"
         rule_id: "987654321fedcba"
+
+# TODO: Move rule "123456789abcdef" at the top of folder "~test"
+- name: "Move an existing rule in another folder."
+  tribe29.checkmk.rule:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    rule_id: "123456789abcdef"
+    move:
+        position: "top"
+        folder: "~test"
 
 # TODO: delete rule "123456789abcdef" 
 - name: "Delete a rule by ID."
