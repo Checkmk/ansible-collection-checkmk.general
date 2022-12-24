@@ -224,17 +224,17 @@ except ImportError:  # For Python 3
     from urllib.parse import urlencode
 
 
-def exit_failed(module, msg, content={}):
+def exit_failed(module, msg, content=None):
     result = {"msg": msg, "content": content, "changed": False, "failed": True}
     module.fail_json(**result)
 
 
-def exit_changed(module, msg, content={}):
+def exit_changed(module, msg, content=None):
     result = {"msg": msg, "content": content, "changed": True, "failed": False}
     module.exit_json(**result)
 
 
-def exit_ok(module, msg, content={}):
+def exit_ok(module, msg, content=None):
     result = {"msg": msg, "content": content, "changed": False, "failed": False}
     module.exit_json(**result)
 
