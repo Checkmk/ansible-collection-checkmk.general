@@ -36,11 +36,11 @@ options:
         description:
           - Move the rule at the specified location.
           - By default rules are created at the bottom of the folder.
-          - Mutually exclusive with state: absent.
+          - Mutually exclusive with I(state=absent).
         type: dict
         suboptions:
             position:
-                description: Position of the rule in the folder. 
+                description: Position of the rule in the folder.
                 required: true
                 type: str
                 choices:
@@ -50,9 +50,9 @@ options:
                     - "after"
             rule_id:
                 description:
-                    - Put the created/moved rule before or after this rule_id.
-                    - Required when position is before or after.
-                    - Mutually exclusive with position: before and after. 
+                    - Put the created/moved rule C(before) or C(after) this rule_id.
+                    - Required when I(position) is C(before) or C(after).
+                    - Mutually exclusive with I(position=before) and I(after). 
                 type: str
             folder:
                 description:
