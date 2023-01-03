@@ -26,9 +26,11 @@ extends_documentation_fragment: [tribe29.checkmk.common]
 options:
     rule:
         description: Definition of the rule as returned by the Checkmk API.
+        required: true
         type: dict
     ruleset:
         description: Name of the ruleset to manage.
+        required: true
         type: str
     move:
         description:
