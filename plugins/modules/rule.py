@@ -52,7 +52,7 @@ options:
                 description:
                     - Put the created/moved rule C(before) or C(after) this rule_id.
                     - Required when I(position) is C(before) or C(after).
-                    - Mutually exclusive with I(position=before) and I(after). 
+                    - Mutually exclusive with I(position=before) and I(after).
                 type: str
             folder:
                 description:
@@ -96,7 +96,7 @@ EXAMPLES = r"""
             "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
         value_raw: "{'levels': (80.0, 90.0)}"
-    move: 
+    move:
         position: "top"
     state: "present"
     register: response
@@ -163,7 +163,7 @@ EXAMPLES = r"""
         position: "top"
         folder: "~test"
 
-# TODO: delete rule "123456789abcdef" 
+# TODO: delete rule "123456789abcdef"
 - name: "Delete a rule by ID."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
@@ -327,7 +327,7 @@ def get_rule_etag(module, base_url, headers, rule_id):
 def move_rule(module, base_url, headers, rule_id, move):
     api_endpoint = "/objects/rule/" + rule_id + "/actions/move/invoke"
 
-    if move.get("position") not in ["bottom", "top", "after", "before",] or (
+    if move.get("position") not in ["bottom", "top", "after", "before"] or (
         move.get("position") in ["after", "before"]
         and (move.get("rule_id") is None or move.get("rule_id") == "")
     ):
