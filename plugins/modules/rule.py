@@ -103,10 +103,10 @@ EXAMPLES = r"""
 
 - name: Show the ID of the new rule
   debug:
-    msg: "RULE ID : {{ response.content.id }}"
+    msg: "RULE ID : {{ response.id }}"
 
-# Create another  rule in checkgroup_parameters:memory_percentage_used.
-# Put it after the rule created above.
+# Create another rule in checkgroup_parameters:memory_percentage_used
+# and put it after the rule created above.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
@@ -135,42 +135,43 @@ EXAMPLES = r"""
         value_raw: "{'levels': (85.0, 99.0)}"
     move:
         position: "after"
-        rule_id: "{{ response.content.id }}"
+        rule_id: "{{ response.id }}"
     state: "present"
-    register: content
 
-# TODO: Move a rule "123456789abcdef" after rule "987654321fedcba"
+# TODO: Move rule "5edbdf02-325e-4101-a132-fcb4ee6835a4"
+# after rule "1f97bc43-52dc-4f1a-ab7b-c2e9553958ab"
 - name: "Move an existing rule at specified location."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    rule_id: "123456789abcdef"
+    rule_id: "5edbdf02-325e-4101-a132-fcb4ee6835a4"
     move:
         position: "after"
-        rule_id: "987654321fedcba"
+        rule_id: "1f97bc43-52dc-4f1a-ab7b-c2e9553958ab"
 
-# TODO: Move rule "123456789abcdef" at the top of folder "~test"
+# TODO: Move rule "5edbdf02-325e-4101-a132-fcb4ee6835a4"
+# at the top of folder "~test"
 - name: "Move an existing rule in another folder."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    rule_id: "123456789abcdef"
+    rule_id: "5edbdf02-325e-4101-a132-fcb4ee6835a4"
     move:
         position: "top"
         folder: "~test"
 
-# TODO: delete rule "123456789abcdef"
+# TODO: delete rule "5edbdf02-325e-4101-a132-fcb4ee6835a4"
 - name: "Delete a rule by ID."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    rule_id: "123456789abcdef"
+    rule_id: "5edbdf02-325e-4101-a132-fcb4ee6835a4"
     state: absent
 
 # Delete the rule decribed.
@@ -210,10 +211,11 @@ msg:
     returned: always
     sample: 'Rule created.'
 
-content:
-    description: The Response body from the API when creating or moving a rule, or when a rule already exists.
-    type: dict
+id:
+    description: The ID of the rule, when it is created or when it already exists.
+    type: str
     returned: when rule exists, is created or moved
+    sample: "1f97bc43-52dc-4f1a-ab7b-c2e9553958ab"
 """
 
 import json
@@ -227,18 +229,18 @@ except ImportError:  # For Python 3
     from urllib.parse import urlencode
 
 
-def exit_failed(module, msg, content=None):
-    result = {"msg": msg, "content": content, "changed": False, "failed": True}
+def exit_failed(module, msg, id=""):
+    result = {"msg": msg, "id": id, "changed": False, "failed": True}
     module.fail_json(**result)
 
 
-def exit_changed(module, msg, content=None):
-    result = {"msg": msg, "content": content, "changed": True, "failed": False}
+def exit_changed(module, msg, id=""):
+    result = {"msg": msg, "id": id, "changed": True, "failed": False}
     module.exit_json(**result)
 
 
-def exit_ok(module, msg, content=None):
-    result = {"msg": msg, "content": content, "changed": False, "failed": False}
+def exit_ok(module, msg, id=""):
+    result = {"msg": msg, "id": id, "changed": False, "failed": False}
     module.exit_json(**result)
 
 
@@ -276,8 +278,8 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
                 and sorted(r["extensions"]["properties"]) == sorted(rule["properties"])
                 and sorted(r["extensions"]["value_raw"]) == sorted(rule["value_raw"])
             ):
-                # If they are the same, return the content
-                return r
+                # If they are the same, return the ID
+                return r["id"]
     return None
 
 
@@ -305,7 +307,9 @@ def create_rule(module, base_url, headers, ruleset, rule):
             % (info["status"], info["body"]),
         )
 
-    return json.loads(response.read().decode("utf-8"))
+    r = json.loads(response.read().decode("utf-8"))
+
+    return r["id"]
 
 
 def get_rule_etag(module, base_url, headers, rule_id):
@@ -367,7 +371,9 @@ def move_rule(module, base_url, headers, rule_id, move):
             % (info["status"], info["body"]),
         )
 
-    return json.loads(response.read().decode("utf-8"))
+    r = json.loads(response.read().decode("utf-8"))
+
+    return r["id"]
 
 
 def delete_rule(module, base_url, headers, rule_id):
@@ -437,32 +443,30 @@ def run_module():
         }
 
     # Get ID of rule that is the same as the given options
-    content = get_existing_rule(module, base_url, headers, ruleset, rule)
+    rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
 
     # If rule exists
-    if content is not None:
-        rule_id = content.get("id")
+    if rule_id is not None:
         # If state is absent, delete the rule
         if module.params.get("state") == "absent":
             delete_rule(module, base_url, headers, rule_id)
             exit_changed(module, "Deleted rule")
         # If state is present, do nothing
         else:
-            exit_ok(module, "Rule already exists", content)
+            exit_ok(module, "Rule already exists", rule_id)
     # If rule does not exist
     else:
         # If state is present, create the rule
         if module.params.get("state") == "present":
-            content = create_rule(module, base_url, headers, ruleset, rule)
+            rule_id = create_rule(module, base_url, headers, ruleset, rule)
             # If specified, move rule
             if module.params.get("move") is not None:
-                rule_id = content.get("id")
                 move = module.params.get("move")
                 move["folder"] = rule.get("folder")
-                content = move_rule(module, base_url, headers, rule_id, move)
-                exit_changed(module, "Created and moved rule", content)
+                rule_id = move_rule(module, base_url, headers, rule_id, move)
+                exit_changed(module, "Created and moved rule", rule_id)
             else:
-                exit_changed(module, "Created rule", content)
+                exit_changed(module, "Created rule", rule_id)
         # If state is absent, do nothing
         else:
             exit_ok(module, "Rule did not exist")
