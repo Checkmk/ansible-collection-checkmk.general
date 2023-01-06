@@ -1,3 +1,6 @@
 breaking_changes:
   - Agent role - Remove host attribute `tag_agent` from the defaults.
     Should not be a breaking change, but be aware of it.
+
+minor_changes:
+  - Agent role - Respect the variable `checkmk_agent_host_name` when downloading host specific agents.
