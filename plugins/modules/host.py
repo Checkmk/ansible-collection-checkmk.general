@@ -23,10 +23,11 @@ description:
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
-    host_name:
+    name:
         description: The host you want to manage.
         required: true
         type: str
+        aliases: [host_name]
     folder:
         description: The folder your host is located in.
         type: str
@@ -56,7 +57,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    host_name: "my_host"
+    name: "my_host"
     folder: "/"
     state: "present"
 
@@ -67,7 +68,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    host_name: "my_host"
+    name: "my_host"
     attributes:
       alias: "My Host"
       ipaddress: "127.0.0.1"
@@ -81,7 +82,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    host_name: "my_host"
+    name: "my_host"
     attributes:
       site: "my_remote_site"
     folder: "/"
@@ -123,7 +124,7 @@ def get_current_host_state(module, base_url, headers):
     current_folder = "/"
     etag = ""
 
-    api_endpoint = "/objects/host_config/" + module.params.get("host_name")
+    api_endpoint = "/objects/host_config/" + module.params.get("name")
     parameters = "?effective_attributes=true"
     url = base_url + api_endpoint + parameters
 
@@ -153,7 +154,7 @@ def get_current_host_state(module, base_url, headers):
 
 
 def set_host_attributes(module, attributes, base_url, headers):
-    api_endpoint = "/objects/host_config/" + module.params.get("host_name")
+    api_endpoint = "/objects/host_config/" + module.params.get("name")
     params = {
         "attributes": attributes,
     }
@@ -173,7 +174,7 @@ def set_host_attributes(module, attributes, base_url, headers):
 
 def move_host(module, base_url, headers):
     api_endpoint = "/objects/host_config/%s/actions/move/invoke" % module.params.get(
-        "host_name"
+        "name"
     )
     params = {
         "target_folder": module.params.get("folder", "/"),
@@ -196,7 +197,7 @@ def create_host(module, attributes, base_url, headers):
     api_endpoint = "/domain-types/host_config/collections/all"
     params = {
         "folder": module.params.get("folder", "/"),
-        "host_name": module.params.get("host_name"),
+        "host_name": module.params.get("name"),
         "attributes": attributes,
     }
     url = base_url + api_endpoint
@@ -214,7 +215,7 @@ def create_host(module, attributes, base_url, headers):
 
 
 def delete_host(module, base_url, headers):
-    api_endpoint = "/objects/host_config/" + module.params.get("host_name")
+    api_endpoint = "/objects/host_config/" + module.params.get("name")
     url = base_url + api_endpoint
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
@@ -248,7 +249,18 @@ def run_module():
         validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        host_name=dict(type="str", required=True),
+        name=dict(
+            type="str",
+            required=True,
+            aliases=["host_name"],
+            deprecated_aliases=[
+                {
+                    "name": "host_name",
+                    "date": "2024-01-01",
+                    "collection_name": "tribe29.checkmk",
+                }
+            ],
+        ),
         attributes=dict(type="raw", default=[]),
         folder=dict(type="str", default="/"),
         state=dict(type="str", default="present", choices=["present", "absent"]),

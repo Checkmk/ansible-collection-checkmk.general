@@ -1,3 +1,4 @@
+[test]
 test1.tld checkmk_folder_path="/test" 
 test2.tld checkmk_folder_path="/foo" 
 test3.tld checkmk_folder_path="/bar" 
