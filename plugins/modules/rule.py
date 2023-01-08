@@ -275,8 +275,7 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
         for r in rules.get("value"):
             # Check if conditions, properties and values are the same
             if (
-                r["folder"] == rule["folder"]
-                and sorted(r["extensions"]["conditions"]) == sorted(rule["conditions"])
+                sorted(r["extensions"]["conditions"]) == sorted(rule["conditions"])
                 and sorted(r["extensions"]["properties"]) == sorted(rule["properties"])
                 and sorted(r["extensions"]["value_raw"]) == sorted(rule["value_raw"])
             ):
