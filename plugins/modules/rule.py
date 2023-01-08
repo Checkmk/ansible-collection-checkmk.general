@@ -448,6 +448,7 @@ def run_module():
                 exit_failed(module, "Position does not support 'folder'")
         if module.params.get("state") == "present":
             if move.get("position") in ["top", "bottom"]:
+                # always move the rule within the creation folder
                 if move.get("folder") is not None:
                     exit_failed(
                         module, "Position 'folder' is not valid with 'state=present'"
