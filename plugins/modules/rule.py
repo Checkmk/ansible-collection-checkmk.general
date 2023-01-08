@@ -453,8 +453,8 @@ def run_module():
                         module, "Position 'folder' is not valid with 'state=present'"
                     )
                 move["folder"] = rule.get("folder")
-            if move.get("rule_id") is not None:
-                exit_failed(module, "Position does not support 'rule_id'")
+                if move.get("rule_id") is not None:
+                    exit_failed(module, "Position does not support 'rule_id'")
 
     # Get ID of rule that is the same as the given options
     rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
