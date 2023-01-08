@@ -57,7 +57,7 @@ options:
             folder:
                 description:
                     - Folder the rule should be moved to.
-                    - Mutually exclusive with I(state=present). 
+                    - Mutually exclusive with I(state=present).
     state:
         description: State of the rule.
         choices: [present, absent]
