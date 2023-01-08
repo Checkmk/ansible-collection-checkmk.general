@@ -57,6 +57,7 @@ options:
             folder:
                 description:
                     - Folder the rule should be moved to.
+                    - Mutually exclusive with I(state=present). 
     state:
         description: State of the rule.
         choices: [present, absent]
@@ -331,15 +332,6 @@ def get_rule_etag(module, base_url, headers, rule_id):
 def move_rule(module, base_url, headers, rule_id, move):
     api_endpoint = "/objects/rule/" + rule_id + "/actions/move/invoke"
 
-    if move.get("position") not in ["bottom", "top", "after", "before"] or (
-        move.get("position") in ["after", "before"]
-        and (move.get("rule_id") is None or move.get("rule_id") == "")
-    ):
-        exit_failed(module, "Position parameter mismatch")
-
-    if move.get("folder") is None or move.get("folder") == "":
-        exit_failed(module, "Position folder parameter is missing")
-
     api_keywords = {
         "top": "top_of_folder",
         "bottom": "bottom_of_folder",
@@ -442,6 +434,28 @@ def run_module():
             "service_labels": [],
         }
 
+    # Check if the move param is correct and set defaults
+    move = module.params.get("move")
+    if move is not None:
+        if module.params.get("state") == "absent":
+            exit_failed(module, "Param 'move' is invalid when 'state=absent'")
+        if move.get("position") not in ["bottom", "top", "after", "before"]:
+            exit_failed(module, "Unknown position keyword")
+        if move.get("position") in ["after", "before"]:
+            if move.get("rule_id") is None or move.get("rule_id") == "":
+                exit_failed(module, "Position requires 'rule_id'")
+            if move.get("folder") is not None:
+                exit_failed(module, "Position does not support 'folder'")
+        if module.params.get("state") == "present":
+            if move.get("position") in ["top", "bottom"]:
+                if move.get("folder") is not None:
+                    exit_failed(
+                        module, "Position 'folder' is not valid with 'state=present'"
+                    )
+                move["folder"] = rule.get("folder")
+            if move.get("rule_id") is not None:
+                exit_failed(module, "Position does not support 'rule_id'")
+
     # Get ID of rule that is the same as the given options
     rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
 
@@ -460,13 +474,9 @@ def run_module():
         if module.params.get("state") == "present":
             rule_id = create_rule(module, base_url, headers, ruleset, rule)
             # If specified, move rule
-            if module.params.get("move") is not None:
-                move = module.params.get("move")
-                move["folder"] = rule.get("folder")
+            if move is not None:
                 rule_id = move_rule(module, base_url, headers, rule_id, move)
-                exit_changed(module, "Created and moved rule", rule_id)
-            else:
-                exit_changed(module, "Created rule", rule_id)
+            exit_changed(module, "Created rule", rule_id)
         # If state is absent, do nothing
         else:
             exit_ok(module, "Rule did not exist")
