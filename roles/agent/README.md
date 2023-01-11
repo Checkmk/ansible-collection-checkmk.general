@@ -46,6 +46,14 @@ The port of the web interface of your Checkmk server. Defaults to port 80 for ht
 
 The name of your Checkmk site.
 
+    checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
+
+The server you want to use for registration tasks (Agent updates and TLS encryption). Defaults to {{ checkmk_agent_server }}.
+
+    checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
+
+The server you want to use for registration tasks (Agent updates and TLS encryption). Defaults to {{ checkmk_agent_site }}.
+
     checkmk_agent_user: automation
 
 The user used to authenticate against your Checkmk site.
