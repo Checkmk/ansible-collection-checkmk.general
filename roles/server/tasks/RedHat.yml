@@ -2,34 +2,34 @@
 - name: "Enable repositories on CentOS & RHEL 8."
   block:
 
-  - name: "Download EPEL GPG Key on CentOS & RHEL 8."
-    ansible.builtin.get_url:
-      url: "{{ checkmk_server_epel_gpg_key }}"
-      dest: "/tmp/EPEL-pubkey.gpg"
-      mode: "0640"
-    when: checkmk_server_verify_setup | bool
-    tags:
-      - download-gpg-key
-      - enable-repos
+    - name: "Download EPEL GPG Key on CentOS & RHEL 8."
+      ansible.builtin.get_url:
+        url: "{{ checkmk_server_epel_gpg_key }}"
+        dest: "/tmp/EPEL-pubkey.gpg"
+        mode: "0640"
+      when: checkmk_server_verify_setup | bool
+      tags:
+        - download-gpg-key
+        - enable-repos
 
-  - name: "Import Checkmk GPG Key on RHEL 8."
-    become: true
-    ansible.builtin.rpm_key:
-      key: "/tmp/EPEL-pubkey.gpg"
-      state: present
-    when: checkmk_server_epel_gpg_check | bool
-    tags:
-      - import-gpg-key
-      - enable-repos
+    - name: "Import Checkmk GPG Key on RHEL 8."
+      become: true
+      ansible.builtin.rpm_key:
+        key: "/tmp/EPEL-pubkey.gpg"
+        state: present
+      when: checkmk_server_epel_gpg_check | bool
+      tags:
+        - import-gpg-key
+        - enable-repos
 
-  - name: "Install epel-release from URL on CentOS & RHEL 8."
-    become: true
-    ansible.builtin.yum:
-      name: "{{ checkmk_server_epel_url }}"
-      state: present
-      disable_gpg_check: "{{ not checkmk_server_epel_gpg_check | bool }}"
-    tags:
-      - enable-repos
+    - name: "Install epel-release from URL on CentOS & RHEL 8."
+      become: true
+      ansible.builtin.yum:
+        name: "{{ checkmk_server_epel_url }}"
+        state: present
+        disable_gpg_check: "{{ not checkmk_server_epel_gpg_check | bool }}"
+      tags:
+        - enable-repos
 
   when: |
     (ansible_facts.distribution == "RedHat" or ansible_facts.distribution == "CentOS")
