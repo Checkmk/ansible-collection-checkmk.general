@@ -12,7 +12,7 @@ None.
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_agent_version: "2.1.0p13"
+    checkmk_agent_version: "2.1.0p18"
 
 The Checkmk version of your site.
 
@@ -63,6 +63,14 @@ This is mutually exclusive with `checkmk_agent_pass`.
     checkmk_agent_add_host: 'false'
 
 Automatically add the host where the agent was installed to Checkmk.
+
+    checkmk_agent_host_name: "{{ inventory_hostname }}"
+
+The hostname to use, when adding the host to Checkmk.
+
+    checkmk_agent_folder: "/"
+
+The folder into which the automatically created host will be places.
 
     checkmk_agent_discover: 'false'
 

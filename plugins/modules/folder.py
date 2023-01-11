@@ -27,9 +27,10 @@ options:
         description: The full path to the folder you want to manage. Pay attention to the leading C(/) and avoid trailing C(/).
         required: true
         type: str
-    title:
-        description: The title of your folder. If omitted defaults to the folder name.
+    name:
+        description: The name of your folder. If omitted defaults to the folder name.
         type: str
+        aliases: [title]
     attributes:
         description: The attributes of your folder as described in the API documentation.
         type: raw
@@ -54,7 +55,7 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     path: "/my_folder"
-    title: "My Folder"
+    name: "My Folder"
     state: "present"
 
 # Create a folder who's hosts should be hosted on a remote site.
@@ -65,7 +66,7 @@ EXAMPLES = r"""
     automation_user: "automation"
     automation_secret: "$SECRET"
     path: "/my_remote_folder"
-    title: "My Remote Folder"
+    name: "My Remote Folder"
     attributes:
       site: "my_remote_site"
     state: "present"
@@ -163,11 +164,11 @@ def get_current_folder_state(module, base_url, headers):
 def set_folder_attributes(module, attributes, base_url, headers):
     parent, foldername = cleanup_path(module.params["path"])
     path_for_url = module.params["path"].replace("/", "~")
-    title = module.params.get("title", foldername)
+    name = module.params.get("name", foldername)
 
     api_endpoint = "/objects/folder_config/" + path_for_url
     params = {
-        "title": title,
+        "name": name,
         "attributes": attributes,
     }
     url = base_url + api_endpoint
@@ -186,12 +187,12 @@ def set_folder_attributes(module, attributes, base_url, headers):
 
 def create_folder(module, attributes, base_url, headers):
     parent, foldername = cleanup_path(module.params["path"])
-    title = module.params.get("title", foldername)
+    name = module.params.get("name", foldername)
 
     api_endpoint = "/domain-types/folder_config/collections/all"
     params = {
         "name": foldername,
-        "title": title,
+        "title": name,
         "parent": parent,
         "attributes": attributes,
     }
@@ -233,7 +234,11 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         path=dict(type="str", required=True),
-        title=dict(type="str"),
+        name=dict(
+            type="str",
+            required=False,
+            aliases=["title"],
+        ),
         attributes=dict(type="raw", default=[]),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
