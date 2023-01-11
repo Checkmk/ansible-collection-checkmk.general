@@ -96,7 +96,7 @@ author:
 
 EXAMPLES = r"""
 - name: "Schedule host downtime."
-  downtime:
+  tribe29.checkmk.downtime:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
     automation_user: "{{ automation_user }}"
@@ -109,7 +109,7 @@ EXAMPLES = r"""
       hours: 5
 
 - name: "Schedule service downtimes for two given services."
-  downtime:
+  tribe29.checkmk.downtime:
     server_url: "{{ server_url }}"
     site: "{{ site }}"
     automation_user: "{{ automation_user }}"
