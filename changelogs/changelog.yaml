@@ -130,6 +130,26 @@ releases:
     fragments:
     - host_group.yml
     release_date: '2022-12-09'
+  0.15.0:
+    changes:
+      breaking_changes:
+      - Agent role - Remove host attribute `tag_agent` from the defaults. Should not
+        be a breaking change, but be aware of it.
+      major_changes:
+      - The folder module now uses `name` instead of `title`. The latter is retained
+        as an alias until further notice.
+      - The host module now uses `name` instead of `host_name`. The latter is retained
+        as an alias but will be removed with a future release.
+      minor_changes:
+      - Agent role - Respect the variable `checkmk_agent_host_name` when downloading
+        host specific agents.
+      - The playbooks shipped with the collection were cleaned up and update. Just
+        for awareness.
+    fragments:
+    - agent_role.yml
+    - module_options.yml
+    - playbooks.yml
+    release_date: '2023-01-11'
   0.2.0:
     changes:
       known_issues:
