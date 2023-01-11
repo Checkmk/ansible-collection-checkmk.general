@@ -1,7 +1,7 @@
 ---
 - name: "Debian Derivatives: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
-    url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ inventory_hostname }}&os_type=linux_deb&agent_type=host_name"
+    url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ checkmk_agent_host_name }}&os_type=linux_deb&agent_type=host_name"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ checkmk_agent_agent.file.host }}"
     method: GET
