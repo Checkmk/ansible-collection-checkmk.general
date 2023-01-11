@@ -5,6 +5,26 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.15.0
+=======
+
+Major Changes
+-------------
+
+- The folder module now uses `name` instead of `title`. The latter is retained as an alias until further notice.
+- The host module now uses `name` instead of `host_name`. The latter is retained as an alias but will be removed with a future release.
+
+Minor Changes
+-------------
+
+- Agent role - Respect the variable `checkmk_agent_host_name` when downloading host specific agents.
+- The playbooks shipped with the collection were cleaned up and update. Just for awareness.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Agent role - Remove host attribute `tag_agent` from the defaults. Should not be a breaking change, but be aware of it.
+
 v0.14.0
 =======
 
