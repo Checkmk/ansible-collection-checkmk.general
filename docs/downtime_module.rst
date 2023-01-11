@@ -42,7 +42,7 @@ tribe29.checkmk.downtime module -- Manage downtimes in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.14.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.15.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -677,7 +677,7 @@ Examples
 
     
     - name: "Schedule host downtime."
-      downtime:
+      tribe29.checkmk.downtime:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
@@ -690,7 +690,7 @@ Examples
           hours: 5
 
     - name: "Schedule service downtimes for two given services."
-      downtime:
+      tribe29.checkmk.downtime:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"

@@ -42,7 +42,7 @@ tribe29.checkmk.folder module -- Manage folders in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.14.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.15.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -204,6 +204,46 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-name"></div>
+        <div class="ansibleOptionAnchor" id="parameter-title"></div>
+
+      .. _ansible_collections.tribe29.checkmk.folder_module__parameter-name:
+      .. _ansible_collections.tribe29.checkmk.folder_module__parameter-title:
+
+      .. rst-class:: ansible-option-title
+
+      **name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-aliases:`aliases: title`
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The name of your folder. If omitted defaults to the folder name.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-path"></div>
 
       .. _ansible_collections.tribe29.checkmk.folder_module__parameter-path:
@@ -348,40 +388,6 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-title"></div>
-
-      .. _ansible_collections.tribe29.checkmk.folder_module__parameter-title:
-
-      .. rst-class:: ansible-option-title
-
-      **title**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-title" title="Permalink to this option"></a>
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The title of your folder. If omitted defaults to the folder name.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
       .. _ansible_collections.tribe29.checkmk.folder_module__parameter-validate_certs:
@@ -447,7 +453,7 @@ Examples
         automation_user: "automation"
         automation_secret: "$SECRET"
         path: "/my_folder"
-        title: "My Folder"
+        name: "My Folder"
         state: "present"
 
     # Create a folder who's hosts should be hosted on a remote site.
@@ -458,7 +464,7 @@ Examples
         automation_user: "automation"
         automation_secret: "$SECRET"
         path: "/my_remote_folder"
-        title: "My Remote Folder"
+        name: "My Remote Folder"
         attributes:
           site: "my_remote_site"
         state: "present"

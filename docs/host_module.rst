@@ -42,7 +42,7 @@ tribe29.checkmk.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.14.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.15.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -242,17 +242,23 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-name"></div>
         <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
 
       .. _ansible_collections.tribe29.checkmk.host_module__parameter-host_name:
+      .. _ansible_collections.tribe29.checkmk.host_module__parameter-name:
 
       .. rst-class:: ansible-option-title
 
-      **host_name**
+      **name**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-aliases:`aliases: host_name`
 
       .. rst-class:: ansible-option-type-line
 
@@ -450,7 +456,7 @@ Examples
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_name: "my_host"
+        name: "my_host"
         folder: "/"
         state: "present"
 
@@ -461,7 +467,7 @@ Examples
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_name: "my_host"
+        name: "my_host"
         attributes:
           alias: "My Host"
           ipaddress: "127.0.0.1"
@@ -475,7 +481,7 @@ Examples
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_name: "my_host"
+        name: "my_host"
         attributes:
           site: "my_remote_site"
         folder: "/"
