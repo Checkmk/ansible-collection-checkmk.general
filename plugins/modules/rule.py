@@ -28,36 +28,55 @@ options:
         description: Definition of the rule as returned by the Checkmk API.
         required: true
         type: dict
+        suboptions:
+            location:
+                description:
+                  - Location of the rule within a folder.
+                  - By default rules are created at the bottom of the "/" folder.
+                  - Has no effect when I(state=absent).
+                type: dict
+                suboptions:
+                    position:
+                        description: Position of the rule in the folder.
+                        type: str
+                        choices:
+                            - "top"
+                            - "bottom"
+                            - "before"
+                            - "after"
+                        default: "bottom"
+                    rule_id:
+                        description:
+                            - Put the rule C(before) or C(after) this rule_id.
+                            - Required when I(position) is C(before) or C(after).
+                            - Mutually exclusive with I(position=top) and I(bottom).
+                        type: str
+                    folder:
+                        description:
+                            - Put the rule at the C(top) or C(bottom) of this folder.
+                            - Required when I(position) is C(top) or C(bottom).
+                            - Mutually exclusive with I(position=before) and I(after).
+                        default: "/"
+                        type: str
+            folder:
+                description:
+                  - Folder the rule should belong to.
+                  - Deprecated, use I(location) instead.
+                  - Mutually exclusive with I(location).
+                type: str
+            conditions:
+                description: Conditions of the rule.
+                type: dict
+            properties:
+                description: Properties of the rule.
+                type: dict
+            value_raw:
+                description: Rule values as exported from the UI.
+                type: str
     ruleset:
         description: Name of the ruleset to manage.
         required: true
         type: str
-    move:
-        description:
-          - Move the rule at the specified location.
-          - By default rules are created at the bottom of the folder.
-          - Mutually exclusive with I(state=absent).
-        type: dict
-        suboptions:
-            position:
-                description: Position of the rule in the folder.
-                required: true
-                type: str
-                choices:
-                    - "top"
-                    - "bottom"
-                    - "before"
-                    - "after"
-            rule_id:
-                description:
-                    - Put the created/moved rule C(before) or C(after) this rule_id.
-                    - Required when I(position) is C(before) or C(after).
-                    - Mutually exclusive with I(position=before) and I(after).
-                type: str
-            folder:
-                description:
-                    - Folder the rule should be moved to.
-                    - Mutually exclusive with I(state=present).
     state:
         description: State of the rule.
         choices: [present, absent]
@@ -70,7 +89,7 @@ author:
 
 EXAMPLES = r"""
 # Create a rule in checkgroup_parameters:memory_percentage_used
-# and move it at the top of the folder.
+# at the top of the main folder.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
@@ -97,8 +116,9 @@ EXAMPLES = r"""
             "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
         value_raw: "{'levels': (80.0, 90.0)}"
-    move:
-        position: "top"
+        location:
+            folder: "/"
+            position: "top"
     state: "present"
     register: response
 
@@ -134,48 +154,12 @@ EXAMPLES = r"""
             "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
         value_raw: "{'levels': (85.0, 99.0)}"
-    move:
-        position: "after"
-        rule_id: "{{ response.id }}"
+        location:
+            position: "after"
+            rule_id: "{{ response.id }}"
     state: "present"
 
-# TODO: Move rule "5edbdf02-325e-4101-a132-fcb4ee6835a4"
-# after rule "1f97bc43-52dc-4f1a-ab7b-c2e9553958ab"
-- name: "Move an existing rule at specified location."
-  tribe29.checkmk.rule:
-    server_url: "http://localhost/"
-    site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
-    rule_id: "5edbdf02-325e-4101-a132-fcb4ee6835a4"
-    move:
-        position: "after"
-        rule_id: "1f97bc43-52dc-4f1a-ab7b-c2e9553958ab"
-
-# TODO: Move rule "5edbdf02-325e-4101-a132-fcb4ee6835a4"
-# at the top of folder "~test"
-- name: "Move an existing rule in another folder."
-  tribe29.checkmk.rule:
-    server_url: "http://localhost/"
-    site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
-    rule_id: "5edbdf02-325e-4101-a132-fcb4ee6835a4"
-    move:
-        position: "top"
-        folder: "~test"
-
-# TODO: delete rule "5edbdf02-325e-4101-a132-fcb4ee6835a4"
-- name: "Delete a rule by ID."
-  tribe29.checkmk.rule:
-    server_url: "http://localhost/"
-    site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
-    rule_id: "5edbdf02-325e-4101-a132-fcb4ee6835a4"
-    state: absent
-
-# Delete the rule decribed.
+# Delete the rule described.
 - name: "Delete a rule."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
@@ -215,7 +199,7 @@ msg:
 id:
     description: The ID of the rule, when it is created or when it already exists.
     type: str
-    returned: when rule exists, is created or moved
+    returned: when rule exists, is created
     sample: "1f97bc43-52dc-4f1a-ab7b-c2e9553958ab"
 """
 
@@ -329,7 +313,7 @@ def get_rule_etag(module, base_url, headers, rule_id):
     return info["etag"]
 
 
-def move_rule(module, base_url, headers, rule_id, move):
+def move_rule(module, base_url, headers, rule_id, location):
     api_endpoint = "/objects/rule/" + rule_id + "/actions/move/invoke"
 
     api_keywords = {
@@ -340,15 +324,14 @@ def move_rule(module, base_url, headers, rule_id, move):
     }
 
     params = {
-        "position": api_keywords.get(move.get("position")),
+        "position": api_keywords[location["position"]],
     }
-    if move.get("position") in ["after", "before"]:
-        params["rule_id"] = move.get("rule_id")
+    if location["position"] in ["after", "before"]:
+        params["rule_id"] = location["rule_id"]
     else:
-        params["folder"] = move.get("folder")
+        params["folder"] = location["folder"]
 
-    rule_etag = get_rule_etag(module, base_url, headers, rule_id)
-    headers["If-Match"] = rule_etag
+    headers["If-Match"] = get_rule_etag(module, base_url, headers, rule_id)
 
     url = base_url + api_endpoint
 
@@ -392,8 +375,40 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         ruleset=dict(type="str", required=True),
-        rule=dict(type="dict", required=True),
-        move=dict(type="dict", required=False),
+        rule=dict(
+            type="dict",
+            required=True,
+            options=dict(
+                folder=dict(type="str"),
+                conditions=dict(type="dict"),
+                properties=dict(type="dict"),
+                value_raw=dict(type="str"),
+                location=dict(
+                    type="dict",
+                    options=dict(
+                        position=dict(
+                            type="str",
+                            choices=["top", "bottom", "before", "after"],
+                            default="bottom",
+                        ),
+                        folder=dict(
+                            type="str",
+                            default="/",
+                        ),
+                        rule_id=dict(type="str"),
+                    ),
+                    required_if=[
+                        ("position", "top", ("folder",)),
+                        ("position", "bottom", ("folder",)),
+                        ("position", "before", ("rule_id",)),
+                        ("position", "after", ("rule_id",)),
+                    ],
+                    mutually_exclusive=[("folder", "rule_id")],
+                    apply_defaults=True,
+                ),
+            ),
+            mutually_exclusive=[("folder", "location")],
+        ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
@@ -418,10 +433,11 @@ def run_module():
     # Get the variables
     ruleset = module.params.get("ruleset", "")
     rule = module.params.get("rule", "")
+    location = rule.get("location")
 
     # Check if required params to create a rule are given
     if rule.get("folder") is None or rule.get("folder") == "":
-        rule["folder"] = "/"
+        rule["folder"] = location["folder"]
     if rule.get("properties") is None or rule.get("properties") == "":
         exit_failed(module, "Rule properties are required")
     if rule.get("value_raw") is None or rule.get("value_raw") == "":
@@ -433,29 +449,6 @@ def run_module():
             "host_labels": [],
             "service_labels": [],
         }
-
-    # Check if the move param is correct and set defaults
-    move = module.params.get("move")
-    if move is not None:
-        if module.params.get("state") == "absent":
-            exit_failed(module, "Param 'move' is invalid when 'state=absent'")
-        if move.get("position") not in ["bottom", "top", "after", "before"]:
-            exit_failed(module, "Unknown position keyword")
-        if move.get("position") in ["after", "before"]:
-            if move.get("rule_id") is None or move.get("rule_id") == "":
-                exit_failed(module, "Position requires 'rule_id'")
-            if move.get("folder") is not None:
-                exit_failed(module, "Position does not support 'folder'")
-        if module.params.get("state") == "present":
-            if move.get("position") in ["top", "bottom"]:
-                # always move the rule within the creation folder
-                if move.get("folder") is not None:
-                    exit_failed(
-                        module, "Position 'folder' is not valid with 'state=present'"
-                    )
-                move["folder"] = rule.get("folder")
-                if move.get("rule_id") is not None:
-                    exit_failed(module, "Position does not support 'rule_id'")
 
     # Get ID of rule that is the same as the given options
     rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
@@ -474,9 +467,9 @@ def run_module():
         # If state is present, create the rule
         if module.params.get("state") == "present":
             rule_id = create_rule(module, base_url, headers, ruleset, rule)
-            # If specified, move rule
-            if move is not None:
-                rule_id = move_rule(module, base_url, headers, rule_id, move)
+            # Move rule to specified location, if it's not default
+            if location["position"] != "bottom":
+                rule_id = move_rule(module, base_url, headers, rule_id, location)
             exit_changed(module, "Created rule", rule_id)
         # If state is absent, do nothing
         else:
