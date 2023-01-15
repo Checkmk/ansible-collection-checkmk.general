@@ -33,11 +33,13 @@ options:
                 description:
                   - Location of the rule within a folder.
                   - By default rules are created at the bottom of the "/" folder.
-                  - Has no effect when I(state=absent).
+                  - Mutually exclusive with I(folder).
                 type: dict
                 suboptions:
                     position:
-                        description: Position of the rule in the folder.
+                        description:
+                            - Position of the rule in the folder.
+                            - Has no effect when I(state=absent).
                         type: str
                         choices:
                             - "top"
@@ -49,18 +51,19 @@ options:
                         description:
                             - Put the rule C(before) or C(after) this rule_id.
                             - Required when I(position) is C(before) or C(after).
-                            - Mutually exclusive with I(position=top) and I(bottom).
+                            - Mutually exclusive with I(folder).
                         type: str
                     folder:
                         description:
-                            - Put the rule at the C(top) or C(bottom) of this folder.
+                            - Folder of the rule.
                             - Required when I(position) is C(top) or C(bottom).
-                            - Mutually exclusive with I(position=before) and I(after).
+                            - Required when I(state=absent).
+                            - Mutually exclusive with I(rule_id).
                         default: "/"
                         type: str
             folder:
                 description:
-                  - Folder the rule should belong to.
+                  - Folder of the rule.
                   - Deprecated, use I(location) instead.
                   - Mutually exclusive with I(location).
                 type: str
@@ -159,7 +162,7 @@ EXAMPLES = r"""
             rule_id: "{{ response.id }}"
     state: "present"
 
-# Delete the rule described.
+# Delete the first rule.
 - name: "Delete a rule."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
@@ -197,10 +200,10 @@ msg:
     sample: 'Rule created.'
 
 id:
-    description: The ID of the rule, when it is created or when it already exists.
+    description: The ID of the rule.
     type: str
-    returned: when rule exists, is created
-    sample: "1f97bc43-52dc-4f1a-ab7b-c2e9553958ab"
+    returned: when the rule is created or when it already exists
+    sample: '1f97bc43-52dc-4f1a-ab7b-c2e9553958ab'
 """
 
 import json
@@ -449,6 +452,9 @@ def run_module():
             "host_labels": [],
             "service_labels": [],
         }
+    if module.params.get("state") == "absent":
+        if location.get("rule_id") is not None:
+            exit_failed(module, "rule_id in location is invalid with state=absent")
 
     # Get ID of rule that is the same as the given options
     rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
