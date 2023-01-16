@@ -69,6 +69,7 @@ EXAMPLES = r"""
             "disabled": false,
             "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
+        folder: "/"
         value_raw: "{'levels': (80.0, 90.0)}"
     state: "present"
 
@@ -168,7 +169,8 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
             if (
                 sorted(r["extensions"]["conditions"]) == sorted(rule["conditions"])
                 and sorted(r["extensions"]["properties"]) == sorted(rule["properties"])
-                and sorted(r["extensions"]["value_raw"]) == sorted(rule["value_raw"])
+                and r["extensions"]["folder"] == rule["folder"]
+                and r["extensions"]["value_raw"] == rule["value_raw"]
             ):
                 # If they are the same, return the ID
                 return r["id"]
