@@ -18,10 +18,10 @@ Vagrant.configure("2") do |config|
         v.cpus = 4
       end
       $script = <<-SCRIPT
-      apt-get -y update --quiet
-      apt-get -y install python3.9 python3-pip ca-certificates curl gnupg lsb-release
-      wget "https://download.checkmk.com/checkmk/2.1.0p24/check-mk-raw-2.1.0p24_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
-      wget "https://download.checkmk.com/checkmk/2.2.0-$(date +%Y.%m.%d)/check-mk-raw-2.2.0-$(date +%Y.%m.%d)_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
+      apt-get update
+      apt-get install -y python3-pip ca-certificates curl gnupg lsb-release
+      wget "https://download.checkmk.com/checkmk/2.1.0p19/check-mk-raw-2.1.0p19_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
+      wget "https://download.checkmk.com/checkmk/2.1.0p19/check-mk-raw-2.1.0p19_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
       apt-get install -y /tmp/checkmk-stable.deb
       omd create --admin-password 'd7589df1-01db-4eda-9858-dbcff8d0c361' stable
       apt-get install -y /tmp/checkmk-beta.deb
@@ -113,5 +113,27 @@ end
     srv.vm.provision "shell",
         inline: "zypper --quiet up -y"
 end
+
+    # Windows
+    config.vm.define "ansidows", autostart: false , primary: false do |srv|
+        srv.vm.box = "gusztavvargadr/windows-10"
+        srv.vm.network "private_network", ip: "192.168.56.66"
+        srv.vm.boot_timeout = 180
+        srv.vm.guest = :windows
+        srv.winrm.username = "vagrant"
+        srv.winrm.password = "vagrant"
+        srv.vm.communicator = "winrm"
+        srv.vm.hostname = "ansidows"
+        srv.vm.network "forwarded_port", guest: 3389, host: 3391
+        srv.vm.network "forwarded_port", guest: 5985, host: 5987, id: "winrm", auto_correct: true
+        srv.winrm.timeout =   1800 # 30 minutes
+        srv.vm.provider "virtualbox" do |srv|
+            srv.name = 'ansidows'
+            srv.memory = 4096
+            srv.cpus = 4
+            srv.gui = true
+        end
+        srv.vm.provision "shell", path: "./preparation/ansible-winrm/ConfigureRemotingForAnsible.ps1", privileged: true
+    end
 
 end
