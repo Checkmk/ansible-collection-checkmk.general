@@ -109,7 +109,7 @@
   become: true
   ansible.builtin.shell: |
     cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_site }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }} --trust-cert
   register: checkmk_agent_tls_state
   when: |

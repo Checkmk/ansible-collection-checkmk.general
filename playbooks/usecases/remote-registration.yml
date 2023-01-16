@@ -1,0 +1,56 @@
+---
+- name: "Register hosts against a remote site. Both for updates and TLS."
+  hosts: vagrant
+  vars:
+    # Basic server and authentication information.
+    # You have to provide the distributed setup yourself.
+    server_url: "http://localhost/"
+    checkmk_agent_version: "2.1.0p19"
+    checkmk_agent_edition: "cre"
+    checkmk_agent_user: "cmkadmin"
+    checkmk_agent_pass: "password"
+    # Here comes the part, where we get into remote registration
+    checkmk_agent_protocol: http
+    # The following should be set to the central site.
+    # This where you configure the host objects.
+    # Currently the agent package is also pulled from here.
+    checkmk_agent_server: localhost
+    checkmk_agent_site: "local"
+    # The following should be pointed to the respective remote site.
+    # This is where the registration will happen.
+    checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
+    checkmk_agent_registration_site: remote
+    # The folder might differ from your remote site name,
+    # as it is the technical path. Check your configuration for this information.
+    checkmk_agent_folder: "/remote"
+    # These options need to be enabled for all registrations to work.
+    # You can however disable the one you do not want to perform.
+    # But the host needs to be added in any case.
+    checkmk_agent_update: 'true'
+    checkmk_agent_tls: 'true'
+    checkmk_agent_add_host: 'true'
+    # These are some generic agent options you might want to configure.
+    checkmk_agent_discover: 'true'
+    checkmk_agent_force_install: 'true'
+    checkmk_agent_delegate_api_calls: localhost
+    checkmk_agent_delegate_download: "{{ inventory_hostname }}"
+    checkmk_agent_host_name: "{{ inventory_hostname }}"
+    checkmk_agent_host_folder: "{{ site }}"
+    checkmk_agent_host_ip: "{{ ansible_host }}"
+    checkmk_agent_host_attributes:
+      ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
+  roles:
+    - agent
+  post_tasks:
+    - name: "Activate changes."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ checkmk_agent_site }}"
+        automation_user: "{{ checkmk_agent_user }}"
+        automation_secret: "{{ checkmk_agent_pass }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ checkmk_agent_site }}"
+          - "{{ checkmk_agent_registration_site }}"
+      delegate_to: localhost
+      run_once: 'true'
