@@ -157,6 +157,13 @@ passed in as parameters) is always nice for users too:
       roles:
          - tribe29.checkmk.agent
 
+## Use Cases
+This is a brief collection of use cases, that outline how this role can be used.
+It should give you an idea of what is possible, but also what things to consider.
+
+### Agent registration against a remote site
+See [remote-registration.yml](../../playbooks/usecases/remote-registration.yml).
+
 ## Contributing
 
 See [CONTRIBUTING](../../CONTRIBUTING).
