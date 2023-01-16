@@ -16,6 +16,7 @@ debsible ansible_host=192.168.56.62
 anstream ansible_host=192.168.56.63
 ansuse ansible_host=192.168.56.64
 ansles ansible_host=192.168.56.65
+ansidows ansible_host=192.168.56.66 ansible_password=vagrant ansible_connection=winrm ansible_winrm_transport=basic ansible_winrm_server_cert_validation=ignore
 
 [vagrant:vars]
 ansible_user=vagrant
