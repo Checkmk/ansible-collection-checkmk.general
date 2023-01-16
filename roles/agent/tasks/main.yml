@@ -10,6 +10,9 @@
   tags:
     - get-package-facts
 
+- name: Populate service facts.
+  ansible.builtin.service_facts:
+
 - name: "Import Legacy agent tasks."
   ansible.builtin.include_tasks: "legacy.yml"
   when: |
