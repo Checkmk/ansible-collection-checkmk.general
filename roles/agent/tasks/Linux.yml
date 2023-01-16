@@ -48,9 +48,9 @@
     (checkmk_agent_edition == "cee" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
-    and checkmk_agent_updater_binary.stat.exists
-    and checkmk_agent_update
-    and (checkmk_agent_pass is defined and checkmk_agent_pass)
+    and checkmk_agent_updater_binary.stat.exists | bool
+    and checkmk_agent_update | bool
+    and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
     and (checkmk_agent_secret is not defined)
 
 - name: "({{ ansible_system }}): Register Agent for automatic Updates using Automation Secret."
@@ -64,9 +64,9 @@
     (checkmk_agent_edition == "cee" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
-    and checkmk_agent_updater_binary.stat.exists
-    and checkmk_agent_update
-    and (checkmk_agent_secret is defined and checkmk_agent_secret)
+    and checkmk_agent_updater_binary.stat.exists | bool
+    and checkmk_agent_update | bool
+    and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
 
 - name: "({{ ansible_system }}): Register Agent for TLS."
   become: true
@@ -79,6 +79,6 @@
     (checkmk_agent_edition == "cee" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
-    and checkmk_agent_controller_binary.stat.exists
-    and checkmk_agent_tls
-    and (checkmk_agent_auth is defined and checkmk_agent_auth)
+    and checkmk_agent_controller_binary.stat.exists | bool
+    and checkmk_agent_tls | bool
+    and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
