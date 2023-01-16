@@ -5,3 +5,4 @@ ansible-lint >= 5.4.0
 jinja2 >= 3.0.0
 molecule >= 3.5.0
 molecule-docker >= 1.1.0
+pywinrm>=0.3.0
