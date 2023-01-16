@@ -1,5 +1,5 @@
 ---
-- name: "({{ansible_system}}): Install xinetd"
+- name: "({{ ansible_system }}): Install xinetd"
   become: true
   ansible.builtin.package:
     name: xinetd
@@ -8,7 +8,7 @@
     - install-package
     - install-prerequisites
 
-- name: "({{ansible_system}}): Enable xinetd"
+- name: "({{ ansible_system }}): Enable xinetd"
   become: true
   ansible.builtin.service:
     name: xinetd
