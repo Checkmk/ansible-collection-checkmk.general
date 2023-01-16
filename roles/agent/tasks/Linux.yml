@@ -44,8 +44,14 @@
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }}
   register: checkmk_agent_update_state
-  when:
-    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe" or checkmk_agent_edition == "cme") and checkmk_agent_updater_binary.stat.exists and checkmk_agent_update and (checkmk_agent_pass is defined and checkmk_agent_pass) and (checkmk_agent_secret is not defined)
+  when: |
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
+    and checkmk_agent_updater_binary.stat.exists
+    and checkmk_agent_update
+    and (checkmk_agent_pass is defined and checkmk_agent_pass)
+    and (checkmk_agent_secret is not defined)
 
 - name: "({{ ansible_system }}): Register Agent for automatic Updates using Automation Secret."
   become: true
@@ -54,8 +60,13 @@
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
     -U {{ checkmk_agent_user }} -S {{ checkmk_agent_auth }}
   register: checkmk_agent_update_state
-  when:
-    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe" or checkmk_agent_edition == "cme") and checkmk_agent_updater_binary.stat.exists and checkmk_agent_update and (checkmk_agent_secret is defined and checkmk_agent_secret)
+  when: |
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
+    and checkmk_agent_updater_binary.stat.exists
+    and checkmk_agent_update
+    and (checkmk_agent_secret is defined and checkmk_agent_secret)
 
 - name: "({{ ansible_system }}): Register Agent for TLS."
   become: true
@@ -64,5 +75,10 @@
     -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} \
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }} --trust-cert
   register: checkmk_agent_tls_state
-  when:
-    (checkmk_agent_edition == "cee" or checkmk_agent_edition == "cfe" or checkmk_agent_edition == "cme") and checkmk_agent_controller_binary.stat.exists and checkmk_agent_tls and (checkmk_agent_auth is defined and checkmk_agent_auth)
+  when: |
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
+    and checkmk_agent_controller_binary.stat.exists
+    and checkmk_agent_tls
+    and (checkmk_agent_auth is defined and checkmk_agent_auth)
