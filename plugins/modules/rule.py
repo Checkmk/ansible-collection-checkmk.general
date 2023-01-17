@@ -28,6 +28,54 @@ options:
         description: Definition of the rule as returned by the Checkmk API.
         required: true
         type: dict
+        suboptions:
+            location:
+                description:
+                  - Location of the rule within a folder.
+                  - By default rules are created at the bottom of the "/" folder.
+                  - Mutually exclusive with I(folder).
+                type: dict
+                suboptions:
+                    position:
+                        description:
+                            - Position of the rule in the folder.
+                            - Has no effect when I(state=absent).
+                        type: str
+                        choices:
+                            - "top"
+                            - "bottom"
+                            - "before"
+                            - "after"
+                        default: "bottom"
+                    rule_id:
+                        description:
+                            - Put the rule C(before) or C(after) this rule_id.
+                            - Required when I(position) is C(before) or C(after).
+                            - Mutually exclusive with I(folder).
+                        type: str
+                    folder:
+                        description:
+                            - Folder of the rule.
+                            - Required when I(position) is C(top) or C(bottom).
+                            - Required when I(state=absent).
+                            - Mutually exclusive with I(rule_id).
+                        default: "/"
+                        type: str
+            folder:
+                description:
+                  - Folder of the rule.
+                  - Deprecated, use I(location) instead.
+                  - Mutually exclusive with I(location).
+                type: str
+            conditions:
+                description: Conditions of the rule.
+                type: dict
+            properties:
+                description: Properties of the rule.
+                type: dict
+            value_raw:
+                description: Rule values as exported from the UI.
+                type: str
     ruleset:
         description: Name of the ruleset to manage.
         required: true
@@ -43,7 +91,8 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a rule in checkgroup_parameters:memory_percentage_used.
+# Create a rule in checkgroup_parameters:memory_percentage_used
+# at the top of the main folder.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
@@ -71,9 +120,50 @@ EXAMPLES = r"""
         }
         folder: "/"
         value_raw: "{'levels': (80.0, 90.0)}"
+        location:
+            folder: "/"
+            position: "top"
+    state: "present"
+    register: response
+
+- name: Show the ID of the new rule
+  debug:
+    msg: "RULE ID : {{ response.id }}"
+
+# Create another rule in checkgroup_parameters:memory_percentage_used
+# and put it after the rule created above.
+- name: "Create a rule in checkgroup_parameters:memory_percentage_used."
+  tribe29.checkmk.rule:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+        conditions: {
+            "host_labels": [],
+            "host_name": {
+                "match_on": [
+                    "test2.tld"
+                ],
+                "operator": "one_of"
+            },
+            "host_tags": [],
+            "service_labels": []
+        }
+        properties: {
+            "comment": "Warning at 85%\nCritical at 99%\n",
+            "description": "Allow even higher memory usage",
+            "disabled": false,
+            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+        }
+        value_raw: "{'levels': (85.0, 99.0)}"
+        location:
+            position: "after"
+            rule_id: "{{ response.id }}"
     state: "present"
 
-# Delete first rule in this ruleset.
+# Delete the first rule.
 - name: "Delete a rule."
   tribe29.checkmk.rule:
     server_url: "http://localhost/"
@@ -105,10 +195,16 @@ EXAMPLES = r"""
 
 RETURN = r"""
 msg:
-    description: The output message that the module generates. Contains the API response details in case of an error.
+    description: The output message that the module generates. Contains the API status details in case of an error.
     type: str
     returned: always
     sample: 'Rule created.'
+
+id:
+    description: The ID of the rule.
+    type: str
+    returned: when the rule is created or when it already exists
+    sample: '1f97bc43-52dc-4f1a-ab7b-c2e9553958ab'
 """
 
 import json
@@ -122,18 +218,18 @@ except ImportError:  # For Python 3
     from urllib.parse import urlencode
 
 
-def exit_failed(module, msg):
-    result = {"msg": msg, "changed": False, "failed": True}
+def exit_failed(module, msg, id=""):
+    result = {"msg": msg, "id": id, "changed": False, "failed": True}
     module.fail_json(**result)
 
 
-def exit_changed(module, msg):
-    result = {"msg": msg, "changed": True, "failed": False}
+def exit_changed(module, msg, id=""):
+    result = {"msg": msg, "id": id, "changed": True, "failed": False}
     module.exit_json(**result)
 
 
-def exit_ok(module, msg):
-    result = {"msg": msg, "changed": False, "failed": False}
+def exit_ok(module, msg, id=""):
+    result = {"msg": msg, "id": id, "changed": False, "failed": False}
     module.exit_json(**result)
 
 
@@ -201,6 +297,64 @@ def create_rule(module, base_url, headers, ruleset, rule):
             % (info["status"], info["body"]),
         )
 
+    r = json.loads(response.read().decode("utf-8"))
+
+    return r["id"]
+
+
+def get_rule_etag(module, base_url, headers, rule_id):
+    api_endpoint = "/objects/rule/" + rule_id
+
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, headers=headers, method="GET")
+
+    if info["status"] not in [200, 204]:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+    return info["etag"]
+
+
+def move_rule(module, base_url, headers, rule_id, location):
+    api_endpoint = "/objects/rule/" + rule_id + "/actions/move/invoke"
+
+    api_keywords = {
+        "top": "top_of_folder",
+        "bottom": "bottom_of_folder",
+        "before": "before_specific_rule",
+        "after": "after_specific_rule",
+    }
+
+    params = {
+        "position": api_keywords[location["position"]],
+    }
+    if location["position"] in ["after", "before"]:
+        params["rule_id"] = location["rule_id"]
+    else:
+        params["folder"] = location["folder"]
+
+    headers["If-Match"] = get_rule_etag(module, base_url, headers, rule_id)
+
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="POST"
+    )
+
+    if info["status"] not in [200, 204]:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+
+    r = json.loads(response.read().decode("utf-8"))
+
+    return r["id"]
+
 
 def delete_rule(module, base_url, headers, rule_id):
     api_endpoint = "/objects/rule/"
@@ -226,7 +380,47 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         ruleset=dict(type="str", required=True),
-        rule=dict(type="dict", required=True),
+        rule=dict(
+            type="dict",
+            required=True,
+            options=dict(
+                folder=dict(type="str"),
+                conditions=dict(type="dict"),
+                properties=dict(type="dict"),
+                value_raw=dict(type="str"),
+                location=dict(
+                    type="dict",
+                    options=dict(
+                        position=dict(
+                            type="str",
+                            choices=["top", "bottom", "before", "after"],
+                            default="bottom",
+                        ),
+                        folder=dict(
+                            type="str",
+                            default="/",
+                        ),
+                        rule_id=dict(type="str"),
+                    ),
+                    required_if=[
+                        ("position", "top", ("folder",)),
+                        ("position", "bottom", ("folder",)),
+                        ("position", "before", ("rule_id",)),
+                        ("position", "after", ("rule_id",)),
+                    ],
+                    mutually_exclusive=[("folder", "rule_id")],
+                    apply_defaults=True,
+                    deprecated_aliases=[
+                        dict(
+                            name="folder",
+                            collection_name="tribe29.checkmk",
+                            version="1.0.0",
+                        ),
+                    ],
+                ),
+            ),
+            mutually_exclusive=[("folder", "location")],
+        ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
@@ -251,10 +445,11 @@ def run_module():
     # Get the variables
     ruleset = module.params.get("ruleset", "")
     rule = module.params.get("rule", "")
+    location = rule.get("location")
 
     # Check if required params to create a rule are given
     if rule.get("folder") is None or rule.get("folder") == "":
-        rule["folder"] = "/"
+        rule["folder"] = location["folder"]
     if rule.get("properties") is None or rule.get("properties") == "":
         exit_failed(module, "Rule properties are required")
     if rule.get("value_raw") is None or rule.get("value_raw") == "":
@@ -266,8 +461,13 @@ def run_module():
             "host_labels": [],
             "service_labels": [],
         }
+    if module.params.get("state") == "absent":
+        if location.get("rule_id") is not None:
+            exit_failed(module, "rule_id in location is invalid with state=absent")
+
     # Get ID of rule that is the same as the given options
     rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
+
     # If rule exists
     if rule_id is not None:
         # If state is absent, delete the rule
@@ -276,15 +476,18 @@ def run_module():
             exit_changed(module, "Deleted rule")
         # If state is present, do nothing
         else:
-            exit_ok(module, "Rule already exists")
+            exit_ok(module, "Rule already exists", rule_id)
     # If rule does not exist
     else:
         # If state is present, create the rule
         if module.params.get("state") == "present":
-            create_rule(module, base_url, headers, ruleset, rule)
-            exit_changed(module, "Created rule")
+            rule_id = create_rule(module, base_url, headers, ruleset, rule)
+            # Move rule to specified location, if it's not default
+            if location["position"] != "bottom":
+                rule_id = move_rule(module, base_url, headers, rule_id, location)
+            exit_changed(module, "Created rule", rule_id)
+        # If state is absent, do nothing
         else:
-            # If state is absent, do nothing
             exit_ok(module, "Rule did not exist")
 
     # Fallback
