@@ -104,7 +104,7 @@ end
     srv.vm.network "private_network", ip: "192.168.56.65"
     srv.ssh.insert_key = false
     srv.vm.provider "virtualbox" do |v|
-        v.name = 'ansuse'
+        v.name = 'ansles'
         v.memory = 2048
         v.cpus = 2
     end
