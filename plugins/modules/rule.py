@@ -90,6 +90,7 @@ options:
                     host_labels:
                         description: Match host labels.
                         type: list
+                        default: []
                         elements: dict
                         suboptions:
                             key:
@@ -107,6 +108,7 @@ options:
                     host_tags:
                         description: Match host tags.
                         type: list
+                        default: []
                         elements: dict
                         suboptions:
                             key:
@@ -126,6 +128,7 @@ options:
                     service_labels:
                         description: Match service labels.
                         type: list
+                        default: []
                         elements: dict
                         suboptions:
                             key:
