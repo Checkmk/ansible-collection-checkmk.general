@@ -408,6 +408,13 @@ def run_module():
                     ],
                     mutually_exclusive=[("folder", "rule_id")],
                     apply_defaults=True,
+                    deprecated_aliases=[
+                        dict(
+                            name="folder",
+                            collection_name="tribe29.checkmk",
+                            version="1.0.0",
+                        ),
+                    ],
                 ),
             ),
             mutually_exclusive=[("folder", "location")],
