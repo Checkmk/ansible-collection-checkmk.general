@@ -52,7 +52,7 @@ The server you want to use for registration tasks (Agent updates and TLS encrypt
 
     checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
 
-The server you want to use for registration tasks (Agent updates and TLS encryption). Defaults to {{ checkmk_agent_site }}.
+The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to {{ checkmk_agent_site }}.
 
     checkmk_agent_user: automation
 
