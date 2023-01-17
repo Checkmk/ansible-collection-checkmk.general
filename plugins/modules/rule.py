@@ -177,15 +177,12 @@ EXAMPLES = r"""
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
         conditions: {
-            "host_labels": [],
             "host_name": {
                 "match_on": [
                     "test1.tld"
                 ],
                 "operator": "one_of"
             },
-            "host_tags": [],
-            "service_labels": []
         }
         properties: {
             "comment": "Warning at 80%\nCritical at 90%\n",
@@ -193,7 +190,6 @@ EXAMPLES = r"""
             "disabled": false,
             "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
-        folder: "/"
         value_raw: "{'levels': (80.0, 90.0)}"
         location:
             folder: "/"
@@ -216,15 +212,12 @@ EXAMPLES = r"""
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
         conditions: {
-            "host_labels": [],
             "host_name": {
                 "match_on": [
                     "test2.tld"
                 ],
                 "operator": "one_of"
             },
-            "host_tags": [],
-            "service_labels": []
         }
         properties: {
             "comment": "Warning at 85%\nCritical at 99%\n",
@@ -248,15 +241,12 @@ EXAMPLES = r"""
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
         conditions: {
-            "host_labels": [],
             "host_name": {
                 "match_on": [
                     "test1.tld"
                 ],
                 "operator": "one_of"
             },
-            "host_tags": [],
-            "service_labels": []
         }
         properties: {
             "comment": "Warning at 80%\nCritical at 90%\n",
