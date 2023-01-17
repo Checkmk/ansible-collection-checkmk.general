@@ -88,6 +88,7 @@ options:
 
 author:
     - diademiemi (@diademiemi)
+    - Geoffroy Stévenne (@geof77)
 """
 
 EXAMPLES = r"""
@@ -253,6 +254,28 @@ def get_rules_in_ruleset(module, base_url, headers, ruleset):
             % (info["status"], info["body"]),
         )
     return json.loads(response.read().decode("utf-8"))
+
+
+def get_existing_rule(module, base_url, headers, ruleset, rule):
+    # Get rules in ruleset
+    rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
+
+    def _dicts_are_equal(d1, d2):
+        return all(d1.get(k) == d2.get(k) for k in list(d1.keys()) + list(d2.keys()))
+
+    if rules is not None:
+        # Loop through all rules
+        for r in rules.get("value"):
+            if (
+                _dicts_are_equal(r["extensions"]["conditions"], rule["conditions"])
+                and _dicts_are_equal(r["extensions"]["properties"], rule["properties"])
+                and r["extensions"]["folder"] == rule["folder"]
+                and r["extensions"]["value_raw"] == rule["value_raw"]
+
+            ):
+                # If they are the same, return the ID
+                return r["id"]
+    return None
 
 
 def get_existing_rule(module, base_url, headers, ruleset, rule):
