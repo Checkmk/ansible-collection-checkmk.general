@@ -70,12 +70,84 @@ options:
             conditions:
                 description: Conditions of the rule.
                 type: dict
+                suboptions:
+                    host_name:
+                        description: Match host names.
+                        type: dict
+                        suboptions:
+                            match_on:
+                                description:
+                                    - Regular expressions matching host names.
+                                type: list
+                                elements: str
+                            operator:
+                                description:
+                                    - How the hosts should be matched.
+                                type: str
+                                choices:
+                                    - "one_of"
+                                    - "none_of"
+                    host_labels:
+                        description: Match host labels.
+                        type: list
+                        elements: dict
+                        suboptions:
+                            key:
+                                description: The key of the label.
+                                type: str
+                            operator:
+                                description: Match operator.
+                                type: str
+                                choices:
+                                    - "is"
+                                    - "is_not"
+                            value:
+                                description: The value of the label.
+                                type: str
+                    host_tags:
+                        description: Match host tags.
+                        type: list
+                        elements: dict
+                        suboptions:
+                            key:
+                                description: The name of the tag.
+                                type: str
+                            operator:
+                                description: Match operator.
+                                type: str
+                                choices:
+                                    - "is"
+                                    - "is_not"
+                                    - "one_of"
+                                    - "none_of"
+                            value:
+                                description: Value of the tag.
+                                type: str
+                    service_labels:
+                        description: Match service labels.
+                        type: list
+                        elements: dict
+                        suboptions:
+                            key:
+                                description: The key of the label.
+                                type: str
+                            operator:
+                                description: Match operator.
+                                type: str
+                                choices:
+                                    - "is"
+                                    - "is_not"
+                            value:
+                                description: The value of the label.
+                                type: str
             properties:
                 description: Properties of the rule.
                 type: dict
+                required: true
             value_raw:
                 description: Rule values as exported from the UI.
                 type: str
+                required: true
     ruleset:
         description: Name of the ruleset to manage.
         required: true
@@ -385,9 +457,18 @@ def run_module():
             required=True,
             options=dict(
                 folder=dict(type="str"),
-                conditions=dict(type="dict"),
-                properties=dict(type="dict"),
-                value_raw=dict(type="str"),
+                conditions=dict(
+                    type="dict",
+                    options=dict(
+                        host_labels=dict(type="list", default=[], elements="dict"),
+                        host_name=dict(type="dict", default=None),
+                        host_tags=dict(type="list", default=[], elements="dict"),
+                        service_labels=dict(type="list", default=[], elements="dict"),
+                    ),
+                    apply_defaults=True,
+                ),
+                properties=dict(type="dict", required=True),
+                value_raw=dict(type="str", required=True),
                 location=dict(
                     type="dict",
                     options=dict(
@@ -450,17 +531,9 @@ def run_module():
     # Check if required params to create a rule are given
     if rule.get("folder") is None or rule.get("folder") == "":
         rule["folder"] = location["folder"]
-    if rule.get("properties") is None or rule.get("properties") == "":
-        exit_failed(module, "Rule properties are required")
-    if rule.get("value_raw") is None or rule.get("value_raw") == "":
-        exit_failed(module, "Rule value_raw is required")
-    # Default to all hosts if conditions arent given
-    if rule.get("conditions") is None or rule.get("conditions") == "":
-        rule["conditions"] = {
-            "host_tags": [],
-            "host_labels": [],
-            "service_labels": [],
-        }
+    # "null" host_name causes an API error, must be removed
+    if rule["conditions"]["host_name"] is None:
+        del rule["conditions"]["host_name"]
     if module.params.get("state") == "absent":
         if location.get("rule_id") is not None:
             exit_failed(module, "rule_id in location is invalid with state=absent")
