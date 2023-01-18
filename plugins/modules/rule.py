@@ -343,7 +343,7 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     if rules is not None:
         # Loop through all rules
         for r in rules.get("value"):
-            e=r["extensions"]
+            e = r["extensions"]
             # Check if conditions, properties and values are the same
             if (
                 e["folder"] == rule["folder"]
