@@ -343,12 +343,13 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     if rules is not None:
         # Loop through all rules
         for r in rules.get("value"):
+            e=r["extensions"]
             # Check if conditions, properties and values are the same
             if (
-                sorted(r["extensions"]["conditions"]) == sorted(rule["conditions"])
-                and sorted(r["extensions"]["properties"]) == sorted(rule["properties"])
-                and r["extensions"]["folder"] == rule["folder"]
-                and r["extensions"]["value_raw"] == rule["value_raw"]
+                e["folder"] == rule["folder"]
+                and e["conditions"] == rule["conditions"]
+                and e["properties"]["disabled"] == rule["properties"]["disabled"]
+                and eval(e["value_raw"]) == eval(rule["value_raw"])
             ):
                 # If they are the same, return the ID
                 return r["id"]
