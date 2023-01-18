@@ -366,6 +366,10 @@ def create_rule(module, base_url, headers, ruleset, rule):
         "conditions": rule["conditions"],
     }
 
+    # some "null" or empty fields cause API errors, must be removed
+    for i in ["conditions", "properties"]:
+        params[i] = {k:params[i][k] for k in params[i] if params[i][k] is not None}
+
     url = base_url + api_endpoint
 
     response, info = fetch_url(
@@ -482,7 +486,7 @@ def run_module():
                     options=dict(
                         description=dict(type="str", default=""),
                         comment=dict(type="str", default=""),
-                        documentation_url=dict(type="str", default=""),
+                        documentation_url=dict(type="str", default=None),
                         disabled=dict(type="bool", default=False),
                     ),
                     apply_defaults=True,
@@ -550,9 +554,6 @@ def run_module():
     # Check if required params to create a rule are given
     if rule.get("folder") is None or rule.get("folder") == "":
         rule["folder"] = location["folder"]
-    # "null" host_name causes an API error, must be removed
-    if rule["conditions"]["host_name"] is None:
-        del rule["conditions"]["host_name"]
     if module.params.get("state") == "absent":
         if location.get("rule_id") is not None:
             exit_failed(module, "rule_id in location is invalid with state=absent")
