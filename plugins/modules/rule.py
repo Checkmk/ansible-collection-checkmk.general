@@ -150,12 +150,15 @@ options:
                     description:
                         description: A description for this rule.
                         type: str
+                        default: ""
                     comment:
                         description: Any comment string.
                         type: str
+                        default: ""
                     documentation_url:
                         description: An URL which explains this rule.
                         type: str
+                        default: ""
                     disabled:
                         description:
                             - When set to False, the rule will be evaluated.
@@ -477,9 +480,9 @@ def run_module():
                 properties=dict(
                     type="dict",
                     options=dict(
-                        description=dict(type="str"),
-                        comment=dict(type="str"),
-                        documentation_url=dict(type="str"),
+                        description=dict(type="str", default=""),
+                        comment=dict(type="str", default=""),
+                        documentation_url=dict(type="str", default=""),
                         disabled=dict(type="bool", default=False),
                     ),
                     apply_defaults=True,
