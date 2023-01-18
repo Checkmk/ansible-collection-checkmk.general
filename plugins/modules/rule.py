@@ -368,7 +368,7 @@ def create_rule(module, base_url, headers, ruleset, rule):
 
     # some "null" or empty fields cause API errors, must be removed
     for i in ["conditions", "properties"]:
-        params[i] = {k:params[i][k] for k in params[i] if params[i][k] is not None}
+        params[i] = {k: params[i][k] for k in params[i] if params[i][k] is not None}
 
     url = base_url + api_endpoint
 
