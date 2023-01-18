@@ -146,7 +146,21 @@ options:
             properties:
                 description: Properties of the rule.
                 type: dict
-                required: true
+                suboptions:
+                    description:
+                        description: A description for this rule.
+                        type: str
+                    comment:
+                        description: Any comment string.
+                        type: str
+                    documentation_url:
+                        description: An URL which explains this rule.
+                        type: str
+                    disabled:
+                        description:
+                            - When set to False, the rule will be evaluated.
+                        type: bool
+                        default: false
             value_raw:
                 description: Rule values as exported from the UI.
                 type: str
@@ -460,7 +474,16 @@ def run_module():
                     ),
                     apply_defaults=True,
                 ),
-                properties=dict(type="dict", required=True),
+                properties=dict(
+                    type="dict",
+                    options=dict(
+                        description=dict(type="str"),
+                        comment=dict(type="str"),
+                        documentation_url=dict(type="str"),
+                        disabled=dict(type="bool", default=False),
+                    ),
+                    apply_defaults=True,
+                ),
                 value_raw=dict(type="str", required=True),
                 location=dict(
                     type="dict",
