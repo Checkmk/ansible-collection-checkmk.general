@@ -20,6 +20,7 @@ version_added: "0.10.0"
 description:
 - Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
 - Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
+- Currently, the idempotency of this module is restricted: To check if an equal rule already exists, only folder, conditions and properties are used. value_raw is currently not being compared.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -243,12 +244,15 @@ def get_rules_in_ruleset(module, base_url, headers, ruleset):
 
     url = "%s%s?%s" % (base_url, api_endpoint, urlencode(params))
 
-    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="GET")
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="GET"
+    )
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
     return json.loads(response.read().decode("utf-8"))
 
@@ -257,35 +261,14 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     # Get rules in ruleset
     rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
 
-    def _dicts_are_equal(d1, d2):
-        return all(d1.get(k) == d2.get(k) for k in list(d1.keys()) + list(d2.keys()))
-
     if rules is not None:
         # Loop through all rules
         for r in rules.get("value"):
             if (
-                _dicts_are_equal(r["extensions"]["conditions"], rule["conditions"])
-                and _dicts_are_equal(r["extensions"]["properties"], rule["properties"])
+                r["extensions"]["conditions"] == rule["conditions"]
+                and r["extensions"]["properties"] == rule["properties"]
                 and r["extensions"]["folder"] == rule["folder"]
-                and r["extensions"]["value_raw"] == rule["value_raw"]
-            ):
-                # If they are the same, return the ID
-                return r["id"]
-    return None
-
-
-def get_existing_rule(module, base_url, headers, ruleset, rule):
-    # Get rules in ruleset
-    rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
-    if rules is not None:
-        # Loop through all rules
-        for r in rules.get("value"):
-            # Check if conditions, properties and values are the same
-            if (
-                sorted(r["extensions"]["conditions"]) == sorted(rule["conditions"])
-                and sorted(r["extensions"]["properties"]) == sorted(rule["properties"])
-                and r["extensions"]["folder"] == rule["folder"]
-                and r["extensions"]["value_raw"] == rule["value_raw"]
+                # and r["extensions"]["value_raw"] == rule["value_raw"]
             ):
                 # If they are the same, return the ID
                 return r["id"]
@@ -305,12 +288,15 @@ def create_rule(module, base_url, headers, ruleset, rule):
 
     url = base_url + api_endpoint
 
-    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="POST")
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="POST"
+    )
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
 
     r = json.loads(response.read().decode("utf-8"))
@@ -328,7 +314,8 @@ def get_rule_etag(module, base_url, headers, rule_id):
     if info["status"] not in [200, 204]:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
     return info["etag"]
 
@@ -355,12 +342,15 @@ def move_rule(module, base_url, headers, rule_id, location):
 
     url = base_url + api_endpoint
 
-    response, info = fetch_url(module, url, module.jsonify(params), headers=headers, method="POST")
+    response, info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="POST"
+    )
 
     if info["status"] not in [200, 204]:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
 
     r = json.loads(response.read().decode("utf-8"))
@@ -378,7 +368,8 @@ def delete_rule(module, base_url, headers, rule_id):
     if info["status"] != 204:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, " % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
         )
 
 
