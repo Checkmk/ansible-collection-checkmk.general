@@ -72,17 +72,21 @@ options:
                 type: dict
                 suboptions:
                     host_name:
-                        description: Match host names.
+                        description:
+                            - Match host names.
+                            - Must not be empty.
                         type: dict
                         suboptions:
                             match_on:
                                 description:
                                     - Regular expressions matching host names.
+                                    - Must not be empty.
                                 type: list
                                 elements: str
                             operator:
                                 description:
                                     - How the hosts should be matched.
+                                    - Requires a non-empty I(match_on)
                                 type: str
                                 choices:
                                     - "one_of"
@@ -383,8 +387,8 @@ def create_rule(module, base_url, headers, ruleset, rule):
     r = json.loads(response.read().decode("utf-8"))
 
     # for debugging
-    #rsp = {"p": params, "r": r["extensions"], "failed": "True", "changed": False}
-    #module.exit_json(**rsp)
+    # rsp = {"p": params, "r": r["extensions"], "failed": "True", "changed": False}
+    # module.exit_json(**rsp)
 
     return r["id"]
 
@@ -481,9 +485,13 @@ def run_module():
                             default=None,
                             options=dict(
                                 match_on=dict(type="list", elements="str"),
-                                operator=dict(type="str", choices=["one_of", "none_of"]),
+                                operator=dict(
+                                    type="str", choices=["one_of", "none_of"]
+                                ),
                             ),
-                            required_together=[("match_on", "operator"),],
+                            required_together=[
+                                ("match_on", "operator"),
+                            ],
                         ),
                         host_tags=dict(type="list", default=[], elements="dict"),
                         service_labels=dict(type="list", default=[], elements="dict"),
@@ -562,9 +570,13 @@ def run_module():
 
     # some "null" or empty fields cause API errors, must be removed
     for i in ["conditions", "properties"]:
-        rule[i] = {k: rule[i][k] for k in rule[i] if rule[i][k]}
+        rule[i] = {
+           k: rule[i][k]
+           for k in rule[i]
+           if rule[i][k] is not None and rule[i][k] != ""
+        }
 
-    if rule["host_name"] and not rule["host_name"]["match_on"]:
+    if rule.get("host_name") and not rule["host_name"]["match_on"]:
         exit_failed(module, "match_on in host_name is empty")
 
     # Check if required params to create a rule are given
