@@ -511,7 +511,7 @@ def run_module():
         if deleted:
             exit_changed(module, "Rule deleted")
         else:
-            exit_ok(module, "Rule did not exist")
+            exit_ok(module, "Rule does not exist")
     # If state is present, create the rule
     elif module.params.get("state") == "present":
         (rule_id, created) = create_rule(module, base_url, headers, ruleset, rule)
