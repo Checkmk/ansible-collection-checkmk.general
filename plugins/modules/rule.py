@@ -320,7 +320,7 @@ def create_rule(module, base_url, headers, ruleset, rule):
 
     # if existing rule, delete new rule and return existing id
     if e:
-        delete_rule(module, base_url, headers, r["id"])
+        delete_rule_by_id(module, base_url, headers, r["id"])
         return (e["id"], existed)
 
     # else return new rule id
@@ -530,7 +530,7 @@ def run_module():
             if location["position"] != "bottom":
                 move_rule(module, base_url, headers, rule_id, location)
             exit_changed(module, "Created rule", rule_id)
-        exit_ok("Rule already exists")
+        exit_ok(module,"Rule already exists")
 
     # Fallback
     exit_failed(module, "Unknown error")
