@@ -520,7 +520,7 @@ def run_module():
             if location["position"] != "bottom":
                 move_rule(module, base_url, headers, rule_id, location)
             exit_changed(module, "Rule created", rule_id)
-        exit_ok(module, "Rule already exists")
+        exit_ok(module, "Rule already exists", rule_id)
 
     # Fallback
     exit_failed(module, "Unknown error")
