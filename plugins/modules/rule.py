@@ -265,7 +265,8 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
             if (
                 r["id"] != rule["id"]
                 and r["extensions"]["conditions"] == rule["extensions"]["conditions"]
-                and r["extensions"]["properties"] == rule["extensions"]["properties"]
+                and r["extensions"]["properties"]["disabled"]
+                == rule["extensions"]["properties"]["disabled"]
                 and r["extensions"]["folder"] == rule["extensions"]["folder"]
                 and r["extensions"]["value_raw"] == rule["extensions"]["value_raw"]
             ):
@@ -519,7 +520,7 @@ def run_module():
             if location["position"] != "bottom":
                 move_rule(module, base_url, headers, rule_id, location)
             exit_changed(module, "Rule created", rule_id)
-        exit_ok(module,"Rule already exists")
+        exit_ok(module, "Rule already exists")
 
     # Fallback
     exit_failed(module, "Unknown error")
