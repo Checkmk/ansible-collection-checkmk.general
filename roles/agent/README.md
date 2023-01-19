@@ -68,6 +68,11 @@ This is mutually exclusive with `checkmk_agent_secret`.
 The secret for the automation user used to authenticate against your Checkmk site.  
 This is mutually exclusive with `checkmk_agent_pass`.
 
+    checkmk_agent_auto_activate: 'false'
+
+Enable automatic activation of changes on all sites.
+This is disabled by default, as it might be unexpected.
+
     checkmk_agent_add_host: 'false'
 
 Automatically add the host where the agent was installed to Checkmk.
