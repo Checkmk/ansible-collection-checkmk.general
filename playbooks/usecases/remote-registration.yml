@@ -1,10 +1,13 @@
 ---
+# This playbook uses the inventory from the 'playbooks/hosts' file and expects
+# an expects an existing site with the below configuration and hosts of the group
+# 'vagrant'.
+
 - name: "Register hosts against a remote site. Both for updates and TLS."
   hosts: vagrant
   vars:
     # Basic server and authentication information.
     # You have to provide the distributed setup yourself.
-    server_url: "http://localhost/"
     checkmk_agent_version: "2.1.0p19"
     checkmk_agent_edition: "cre"
     checkmk_agent_user: "cmkadmin"
@@ -14,18 +17,19 @@
     # The following should be set to the central site.
     # This where you configure the host objects.
     # Currently the agent package is also pulled from here.
-    checkmk_agent_server: localhost
-    checkmk_agent_site: "local"
+    checkmk_agent_server: 192.168.56.1
+    checkmk_agent_site: "ansible"
     # The following should be pointed to the respective remote site.
     # This is where the registration will happen.
     checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
-    checkmk_agent_registration_site: remote
+    checkmk_agent_registration_site: ansible_remote_1
     # The folder might differ from your remote site name,
     # as it is the technical path. Check your configuration for this information.
-    checkmk_agent_folder: "/remote"
+    checkmk_agent_folder: "/remote_1"
     # These options need to be enabled for all registrations to work.
     # You can however disable the one you do not want to perform.
-    # But the host needs to be added in any case.
+    # But the host needs to be added and changes activated in any case.
+    checkmk_agent_auto_activate: 'true'
     checkmk_agent_update: 'true'
     checkmk_agent_tls: 'true'
     checkmk_agent_add_host: 'true'
@@ -41,16 +45,3 @@
       ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
   roles:
     - agent
-  post_tasks:
-    - name: "Activate changes."
-      activation:
-        server_url: "{{ server_url }}"
-        site: "{{ checkmk_agent_site }}"
-        automation_user: "{{ checkmk_agent_user }}"
-        automation_secret: "{{ checkmk_agent_pass }}"
-        force_foreign_changes: 'true'
-        sites:
-          - "{{ checkmk_agent_site }}"
-          - "{{ checkmk_agent_registration_site }}"
-      delegate_to: localhost
-      run_once: 'true'
