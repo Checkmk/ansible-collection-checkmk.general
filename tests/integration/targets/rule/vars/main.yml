@@ -31,7 +31,6 @@ checkmk_rules:
     rule:
       conditions: {
         "host_labels": [],
-        "host_name": {},
         "host_tags": [],
         "service_labels": []
       }
