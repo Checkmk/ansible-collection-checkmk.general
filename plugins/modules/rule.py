@@ -18,8 +18,10 @@ short_description: Manage rules in Checkmk.
 version_added: "0.10.0"
 
 description:
-- Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
-- Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
+    - Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
+    - Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
+    - Currently, the idempotency of this module is restricted.
+    - To check if an equal rule already exists, only folder, conditions and properties are used. value_raw is currently not being compared.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -88,6 +90,7 @@ options:
 
 author:
     - diademiemi (@diademiemi)
+    - Geoffroy Stévenne (@geof77)
 """
 
 EXAMPLES = r"""
@@ -258,15 +261,15 @@ def get_rules_in_ruleset(module, base_url, headers, ruleset):
 def get_existing_rule(module, base_url, headers, ruleset, rule):
     # Get rules in ruleset
     rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
+
     if rules is not None:
         # Loop through all rules
         for r in rules.get("value"):
-            # Check if conditions, properties and values are the same
             if (
-                sorted(r["extensions"]["conditions"]) == sorted(rule["conditions"])
-                and sorted(r["extensions"]["properties"]) == sorted(rule["properties"])
+                r["extensions"]["conditions"] == rule["conditions"]
+                and r["extensions"]["properties"] == rule["properties"]
                 and r["extensions"]["folder"] == rule["folder"]
-                and r["extensions"]["value_raw"] == rule["value_raw"]
+                # and r["extensions"]["value_raw"] == rule["value_raw"]
             ):
                 # If they are the same, return the ID
                 return r["id"]
