@@ -340,7 +340,7 @@ def delete_rule(module, base_url, headers, ruleset, rule):
         delete_rule_by_id(module, base_url, headers, e["id"])
         return deleted
     else:
-        delete_rule_by_id(module, base_url, headers, e["id"])
+        delete_rule_by_id(module, base_url, headers, r["id"])
         return not deleted
 
 
