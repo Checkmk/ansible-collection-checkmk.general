@@ -262,7 +262,8 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
         # Loop through all rules
         for r in rules.get("value"):
             if (
-                r["extensions"]["conditions"] == rule["extensions"]["conditions"]
+                r["id"] != rule["id"]
+                and r["extensions"]["conditions"] == rule["extensions"]["conditions"]
                 and r["extensions"]["properties"] == rule["extensions"]["properties"]
                 and r["extensions"]["folder"] == rule["extensions"]["folder"]
                 and r["extensions"]["value_raw"] == rule["extensions"]["value_raw"]
