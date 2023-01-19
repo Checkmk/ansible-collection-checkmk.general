@@ -18,10 +18,10 @@ short_description: Manage rules in Checkmk.
 version_added: "0.10.0"
 
 description:
-- Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
-- Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
-- Currently, the idempotency of this module is restricted:
-  To check if an equal rule already exists, only folder, conditions and properties are used. value_raw is currently not being compared.
+    - Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
+    - Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
+    - Currently, the idempotency of this module is restricted.
+    - To check if an equal rule already exists, only folder, conditions and properties are used. value_raw is currently not being compared.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
