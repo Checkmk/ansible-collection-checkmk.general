@@ -1,6 +1,7 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 bugfixes:
-    - Rule module - Compare the keys AND values of dicts when checking for existing rules.
+    - Rule module - Compare the complete dicts, and not only their keys when checking for existing rules.
+    - Rule module - Currently, value_raw is not being checked when comparing rules.
 
 # minor_changes:
 #   - Add agent role. Currently supports the vanilla agent.
