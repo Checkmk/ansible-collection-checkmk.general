@@ -261,19 +261,18 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     if rules is not None:
         # Loop through all rules
         for r in rules.get("value"):
-            # Check if conditions, properties and values are the same
             if (
-                sorted(r["extensions"]["conditions"]) == sorted(rule["conditions"])
-                and sorted(r["extensions"]["properties"]) == sorted(rule["properties"])
-                and r["extensions"]["folder"] == rule["folder"]
-                and r["extensions"]["value_raw"] == rule["value_raw"]
+                r["extensions"]["conditions"] == rule["extensions"]["conditions"]
+                and r["extensions"]["properties"] == rule["extensions"]["properties"]
+                and r["extensions"]["folder"] == rule["extensions"]["folder"]
+                and r["extensions"]["value_raw"] == rule["extensions"]["value_raw"]
             ):
                 # If they are the same, return the ID
-                return r["id"]
+                return r
     return None
 
 
-def create_rule(module, base_url, headers, ruleset, rule):
+def get_api_repr(module, base_url, headers, ruleset, rule):
     api_endpoint = "/domain-types/rule/collections/all"
 
     params = {
@@ -299,7 +298,74 @@ def create_rule(module, base_url, headers, ruleset, rule):
 
     r = json.loads(response.read().decode("utf-8"))
 
-    return r["id"]
+    return r
+
+
+def create_rule(module, base_url, headers, ruleset, rule):
+
+    existed = False
+    created = True
+
+    # get API representation of the rule
+    r = get_api_repr(module, base_url, headers, ruleset, rule)
+
+    #rsp = {"r": r, "changed": False, "failed": True}
+    #module.exit_json(**rsp)
+
+    # compare the API output to existing rules
+    e = get_existing_rule(module, base_url, headers, ruleset, r)
+
+    #rsp = {"e": e, "r": r, "changed": False, "failed": True}
+    #module.exit_json(**rsp)
+
+    # if existing rule, delete new rule and return existing id
+    if e:
+        delete_rule(module, base_url, headers, r["id"])
+        return (e["id"], existed)
+
+    # else return new rule id
+    return (r["id"], created)
+
+
+def delete_rule(module, base_url, headers, ruleset, rule):
+
+    existed = True
+
+    # get API representation of the rule
+    r = get_api_repr(module, base_url, headers, ruleset, rule)
+
+    #rsp = {"r": r, "changed": False, "failed": True}
+    #module.exit_json(**rsp)
+
+    # compare the API output to existing rules
+    e = get_existing_rule(module, base_url, headers, ruleset, r)
+
+    #rsp = {"e": e, "r": r, "changed": False, "failed": True}
+    #module.exit_json(**rsp)
+
+    # if existing rule, delete both
+    if e:
+        delete_rule_by_id(module, base_url, headers, r["id"])
+        delete_rule_by_id(module, base_url, headers, e["id"])
+        return existed
+    else:
+        delete_rule_by_id(module, base_url, headers, e["id"])
+        return not existed
+
+
+def delete_rule_by_id(module, base_url, headers, rule_id):
+    api_endpoint = "/objects/rule/"
+
+    url = "%s%s%s" % (base_url, api_endpoint, rule_id)
+
+    response, info = fetch_url(module, url, headers=headers, method="DELETE")
+
+    if info["status"] != 204:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
 
 
 def get_rule_etag(module, base_url, headers, rule_id):
@@ -354,21 +420,6 @@ def move_rule(module, base_url, headers, rule_id, location):
     r = json.loads(response.read().decode("utf-8"))
 
     return r["id"]
-
-
-def delete_rule(module, base_url, headers, rule_id):
-    api_endpoint = "/objects/rule/"
-
-    url = "%s%s%s" % (base_url, api_endpoint, rule_id)
-
-    response, info = fetch_url(module, url, headers=headers, method="DELETE")
-
-    if info["status"] != 204:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
-        )
 
 
 def run_module():
@@ -465,30 +516,21 @@ def run_module():
         if location.get("rule_id") is not None:
             exit_failed(module, "rule_id in location is invalid with state=absent")
 
-    # Get ID of rule that is the same as the given options
-    rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
-
-    # If rule exists
-    if rule_id is not None:
-        # If state is absent, delete the rule
-        if module.params.get("state") == "absent":
-            delete_rule(module, base_url, headers, rule_id)
+    # If state is absent, delete the rule
+    if module.params.get("state") == "absent":
+        deleted = delete_rule(module, base_url, headers, ruleset, rule)
+        if deleted:
             exit_changed(module, "Deleted rule")
-        # If state is present, do nothing
-        else:
-            exit_ok(module, "Rule already exists", rule_id)
-    # If rule does not exist
-    else:
-        # If state is present, create the rule
-        if module.params.get("state") == "present":
-            rule_id = create_rule(module, base_url, headers, ruleset, rule)
-            # Move rule to specified location, if it's not default
-            if location["position"] != "bottom":
-                rule_id = move_rule(module, base_url, headers, rule_id, location)
-            exit_changed(module, "Created rule", rule_id)
-        # If state is absent, do nothing
         else:
             exit_ok(module, "Rule did not exist")
+    elif module.params.get("state") == "present":
+        (rule_id, created) = create_rule(module, base_url, headers, ruleset, rule)
+        if created:
+            # Move rule to specified location, if it's not default
+            if location["position"] != "bottom":
+                move_rule(module, base_url, headers, rule_id, location)
+            exit_changed(module, "Created rule", rule_id)
+        exit_ok("Rule already exists")
 
     # Fallback
     exit_failed(module, "Unknown error")
