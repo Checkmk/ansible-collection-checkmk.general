@@ -1,4 +1,4 @@
-ansible >= 7.0.0
+ansible >= 6.7.0
 antsibull-changelog >= 0.16.0
 antsibull-docs >= 1.5.0
 ansible-lint >= 6.0.0
