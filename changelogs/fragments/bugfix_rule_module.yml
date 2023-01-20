@@ -1,6 +1,6 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 bugfixes:
-    - Rule module - Now take the folder into account when checking for existing rules.
+    - Rule module - Now properly comparing the specified rule with the existing ones to achieve idempotency.
 
 # minor_changes:
 #   - Add agent role. Currently supports the vanilla agent.
