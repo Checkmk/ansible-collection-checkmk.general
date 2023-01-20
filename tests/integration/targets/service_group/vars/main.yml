@@ -1,6 +1,6 @@
 ---
 checkmk_versions:
-  - version: "2.1.0p18"
+  - version: "2.1.0p19"
     site: "stable"
   - version: "2.0.0p32"
     site: "oldstable"

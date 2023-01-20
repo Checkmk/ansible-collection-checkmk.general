@@ -46,6 +46,14 @@ The port of the web interface of your Checkmk server. Defaults to port 80 for ht
 
 The name of your Checkmk site.
 
+    checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
+
+The server you want to use for registration tasks (Agent updates and TLS encryption). Defaults to {{ checkmk_agent_server }}.
+
+    checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
+
+The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to {{ checkmk_agent_site }}.
+
     checkmk_agent_user: automation
 
 The user used to authenticate against your Checkmk site.
@@ -59,6 +67,11 @@ This is mutually exclusive with `checkmk_agent_secret`.
 
 The secret for the automation user used to authenticate against your Checkmk site.  
 This is mutually exclusive with `checkmk_agent_pass`.
+
+    checkmk_agent_auto_activate: 'false'
+
+Enable automatic activation of changes on all sites.
+This is disabled by default, as it might be unexpected.
 
     checkmk_agent_add_host: 'false'
 
@@ -148,6 +161,13 @@ passed in as parameters) is always nice for users too:
     - hosts: all
       roles:
          - tribe29.checkmk.agent
+
+## Use Cases
+This is a brief collection of use cases, that outline how this role can be used.
+It should give you an idea of what is possible, but also what things to consider.
+
+### Agent registration against a remote site
+See [remote-registration.yml](../../playbooks/usecases/remote-registration.yml).
 
 ## Contributing
 

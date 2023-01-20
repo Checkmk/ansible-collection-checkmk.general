@@ -1,7 +1,7 @@
-ansible >= 4.10.0
-antsibull-changelog >= 0.12.0
-antsibull-docs >= 1.1.0
-ansible-lint >= 5.4.0
+ansible >= 6.7.0
+antsibull-changelog >= 0.16.0
+antsibull-docs >= 1.5.0
+ansible-lint >= 6.0.0
 jinja2 >= 3.0.0
 molecule >= 3.5.0
 molecule-docker >= 1.1.0
