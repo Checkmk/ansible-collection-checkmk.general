@@ -164,7 +164,7 @@ options:
                     documentation_url:
                         description: An URL which explains this rule.
                         type: str
-                        default: ""
+                        default: null
                     disabled:
                         description:
                             - When set to False, the rule will be evaluated.
@@ -200,25 +200,23 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_name": {
-                "match_on": [
-                    "test1.tld"
-                ],
-                "operator": "one_of"
-            },
-        }
-        properties: {
-            "comment": "Warning at 80%\nCritical at 90%\n",
-            "description": "Allow higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
-        }
-        value_raw: "{'levels': (80.0, 90.0)}"
-        location:
-            folder: "/"
-            position: "top"
-    state: "present"
+      conditions:
+        host_name:
+          match_on:
+            - test1.tld
+          operator: one_of
+      properties:
+        comment: "Warning at 80%\nCritical at 90%\n"
+        description: "Allow higher memory usage"
+        disabled: false
+        documentation_url: "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+      value_raw: "{
+        'levels': (80.0, 90.0)
+      }"
+      location:
+        folder: "/"
+        position: "top"
+    state: present
     register: response
 
 - name: Show the ID of the new rule
@@ -235,25 +233,23 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_name": {
-                "match_on": [
-                    "test2.tld"
-                ],
-                "operator": "one_of"
-            },
-        }
-        properties: {
-            "comment": "Warning at 85%\nCritical at 99%\n",
-            "description": "Allow even higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
-        }
-        value_raw: "{'levels': (85.0, 99.0)}"
-        location:
-            position: "after"
-            rule_id: "{{ response.id }}"
-    state: "present"
+      conditions:
+        host_name:
+          match_on:
+            - test2.tld
+          operator: one_of
+      properties:
+        comment: "Warning at 85%\nCritical at 99%\n"
+        description: "Allow even higher memory usage"
+        disabled: false
+        documentation_url: "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+      value_raw: "{
+        'levels': (85.0, 99.0)
+      }"
+      location:
+        position: "after"
+        rule_id: "{{ response.id }}"
+    state: present
 
 # Delete the first rule.
 - name: "Delete a rule."
@@ -264,22 +260,70 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_name": {
-                "match_on": [
-                    "test1.tld"
-                ],
-                "operator": "one_of"
-            },
-        }
-        properties: {
-            "comment": "Warning at 80%\nCritical at 90%\n",
-            "description": "Allow higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
-        }
-        value_raw: "{'levels': (80.0, 90.0)}"
-    state: "absent"
+      conditions:
+        host_name:
+          match_on:
+            - test1.tld
+          operator: one_of
+        properties:
+          comment: "Warning at 80%\nCritical at 90%\n"
+          description: "Allow higher memory usage"
+          disabled: false
+          documentation_url: "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+        value_raw: "{
+          'levels': (80.0, 90.0)
+        }"
+    state: absent
+
+# Complete rule creation example
+- name: Create a service discovery rule
+  tribe29.checkmk.rule:
+    server_url: "http://localhost/"
+    site: "{{ my_site }}"
+    automation_user: "automation"
+    automation_secret: "{{ cmk_automation_secret }}"
+    ruleset: "periodic_discovery"
+    rule:
+      location:
+        folder: "/"
+        position: "top"
+      properties:
+        comment: "{{ ansible_managed }}"
+        description: "Discover services every 6 minutes"
+        documentation_url: "https://example.tld/docs"
+        disabled: false
+      conditions:
+        host_tags:
+          - key: "sometag"
+            operator: "is"
+            value: "somevalue"
+          - key: "anothertag"
+            operator: "is_not"
+            value: "anothervalue"
+        host_labels:
+          - key: "cmk/os_family"
+            operator: "is"
+            value: "linux"
+        service_labels:
+          - key: "robotmk"
+            operator: "is"
+            value: "yes"
+      value_raw: "{
+        'check_interval': 6.0,
+        'inventory_rediscovery': {
+          'activation': True,
+          'excluded_time': [],
+          'group_time': 900,
+          'mode': 2,
+          'service_filters': ('combined', {'service_whitelist': ['^E2E.*']})
+        },
+        'severity_new_host_label': 0,
+        'severity_unmonitored': 0,
+        'severity_vanished': 0
+      }"
+    state: present
+  register: robotmk_rule
+
 """
 
 RETURN = r"""
@@ -584,9 +628,10 @@ def run_module():
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
+    # check args and initialize module
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
-    # Use the parameters to initialize some common variables
+    # initialize API request variables
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
@@ -596,34 +641,37 @@ def run_module():
             module.params.get("automation_secret", ""),
         ),
     }
-
     base_url = "%s/%s/check_mk/api/1.0" % (
         module.params.get("server_url", ""),
         module.params.get("site", ""),
     )
 
-    # Get the variables
+    # get the rule definition
     ruleset = module.params.get("ruleset", "")
     rule = module.params.get("rule", "")
     location = rule.get("location")
 
-    # some "null" or empty fields cause API errors, must be removed
+    # some "null" or empty params cause API errors and must be removed
     for i in ["conditions", "properties"]:
-        rule[i] = {
-            k: rule[i][k]
-            for k in rule[i]
-            if rule[i][k] is not None and rule[i][k] != ""
-        }
+        r = filter(lambda k: k[1] is not None and k[1] != "", rule[i].items())
+        rule[i] = dict(r)
+    del r
 
-    if rule.get("host_name") and not rule["host_name"]["match_on"]:
-        exit_failed(module, "match_on in host_name is empty")
+    # if match_on is empty, a rule that will never be evaluated is created
+    if (
+        rule["conditions"].get("host_name") is not None
+        and not rule["conditions"]["host_name"]["match_on"]
+    ):
+        exit_failed(module, "match_on in host_name cannot be empty")
 
-    # Check if required params to create a rule are given
-    if rule.get("folder") is None or rule.get("folder") == "":
-        rule["folder"] = location["folder"]
+    # location.rule_id is not valid when state == absent
     if module.params.get("state") == "absent":
         if location.get("rule_id") is not None:
             exit_failed(module, "rule_id in location is invalid with state=absent")
+
+    # init rule folder param from location.folder
+    if rule.get("folder") is None or rule.get("folder") == "":
+        rule["folder"] = location["folder"]
 
     # If state is absent, delete the rule
     if module.params.get("state") == "absent":
@@ -636,7 +684,7 @@ def run_module():
     elif module.params.get("state") == "present":
         (rule_id, created) = create_rule(module, base_url, headers, ruleset, rule)
         if created:
-            # Move rule to specified location, if it's not default
+            # Move rule to the specified location if it's not the default
             if location["position"] != "bottom":
                 move_rule(module, base_url, headers, rule_id, location)
             exit_changed(module, "Rule created", rule_id)
