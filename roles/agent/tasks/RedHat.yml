@@ -107,14 +107,14 @@
   tags:
     - install-package
 
-- name: "Configure Firewall for Agent."
+- name: "RedHat Derivatives: Configure Firewall for Agent."
   block:
-    - name: "Check if checkmk_agent_server is an IP address."
+    - name: "RedHat Derivatives: Check if checkmk_agent_server is an IP address."
       ansible.builtin.set_fact:
         checkmk_agent_server_ip: "{{ checkmk_agent_server }}"
-      when: checkmk_agent_server_ip is not defined and checkmk_agent_server | ipaddr()
+      when: checkmk_agent_server_ip is not defined and checkmk_agent_server | ansible.utils.ipaddr()
 
-    - name: "Allow Checkmk services access to the agent."
+    - name: "RedHat Derivatives: Allow Checkmk services access to the agent."
       ansible.posix.firewalld:
         permanent: 'yes'
         immediate: 'yes'
@@ -122,4 +122,4 @@
         rich_rule: 'rule family="ipv4" source address={{ checkmk_agent_server_ip }} port port="6556" protocol="tcp" accept'
       when: checkmk_agent_server_ip is defined
       become: true
-  when: checkmk_agent_configure_firewall | bool
+  when: checkmk_agent_configure_firewall | bool and "firewalld.service" in ansible_facts.services
