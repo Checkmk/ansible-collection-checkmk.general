@@ -42,7 +42,7 @@ tribe29.checkmk.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.15.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.16.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -197,6 +197,314 @@ Parameters
       .. raw:: html
 
         </div>
+    
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rule/conditions"></div>
+
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/conditions:
+
+      .. rst-class:: ansible-option-title
+
+      **conditions**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rule/conditions" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`dictionary`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Conditions of the rule.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rule/folder"></div>
+
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/folder:
+
+      .. rst-class:: ansible-option-title
+
+      **folder**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rule/folder" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Folder of the rule.
+
+      Deprecated, use \ :emphasis:`location`\  instead.
+
+      Mutually exclusive with \ :emphasis:`location`\ .
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rule/location"></div>
+
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/location:
+
+      .. rst-class:: ansible-option-title
+
+      **location**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rule/location" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`dictionary`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Location of the rule within a folder.
+
+      By default rules are created at the bottom of the "/" folder.
+
+      Mutually exclusive with \ :emphasis:`folder`\ .
+
+
+      .. raw:: html
+
+        </div>
+    
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rule/location/folder"></div>
+
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/location/folder:
+
+      .. rst-class:: ansible-option-title
+
+      **folder**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rule/location/folder" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Folder of the rule.
+
+      Required when \ :emphasis:`position`\  is \ :literal:`top`\  or \ :literal:`bottom`\ .
+
+      Required when \ :emphasis:`state=absent`\ .
+
+      Mutually exclusive with \ :emphasis:`rule\_id`\ .
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"/"`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rule/location/position"></div>
+
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/location/position:
+
+      .. rst-class:: ansible-option-title
+
+      **position**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rule/location/position" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Position of the rule in the folder.
+
+      Has no effect when \ :emphasis:`state=absent`\ .
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"top"`
+      - :ansible-option-choices-entry-default:`"bottom"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"before"`
+      - :ansible-option-choices-entry:`"after"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rule/location/rule_id"></div>
+
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/location/rule_id:
+
+      .. rst-class:: ansible-option-title
+
+      **rule_id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rule/location/rule_id" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Put the rule \ :literal:`before`\  or \ :literal:`after`\  this rule\_id.
+
+      Required when \ :emphasis:`position`\  is \ :literal:`before`\  or \ :literal:`after`\ .
+
+      Mutually exclusive with \ :emphasis:`folder`\ .
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rule/properties"></div>
+
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/properties:
+
+      .. rst-class:: ansible-option-title
+
+      **properties**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rule/properties" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`dictionary`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Properties of the rule.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rule/value_raw"></div>
+
+      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/value_raw:
+
+      .. rst-class:: ansible-option-title
+
+      **value_raw**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rule/value_raw" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Rule values as exported from the UI.
+
+
+      .. raw:: html
+
+        </div>
+
 
   * - .. raw:: html
 
@@ -390,6 +698,15 @@ Parameters
 
 .. Notes
 
+Notes
+-----
+
+.. note::
+   - To achieve idempotency, this module is comparing the specified rule with the already existing rules based on conditions, folder, value\_raw and enabled/disabled.
+   - To be able to compare the value\_raw, which is internally stored in python format, the module has to do a workaround: it is creating the specified rule, and then compares this rule with all existing rules.
+   - Then, in case of \ :emphasis:`state=absent`\ , it will delete both rules: the specified one and the duplicate found.
+   - Or, in case of \ :emphasis:`state=present`\ , it will delete the new rule, if a duplicate is already there, and keep it if not.
+   - This obviously leads to more rules being added and removed as one might expect. That's also visible in the pending changes and audit log.
 
 .. Seealso
 
@@ -402,7 +719,8 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    # Create a rule in checkgroup_parameters:memory_percentage_used.
+    # Create a rule in checkgroup_parameters:memory_percentage_used
+    # at the top of the main folder.
     - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
       tribe29.checkmk.rule:
         server_url: "http://localhost/"
@@ -428,10 +746,52 @@ Examples
                 "disabled": false,
                 "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
             }
+            folder: "/"
             value_raw: "{'levels': (80.0, 90.0)}"
+            location:
+                folder: "/"
+                position: "top"
+        state: "present"
+        register: response
+
+    - name: Show the ID of the new rule
+      debug:
+        msg: "RULE ID : {{ response.id }}"
+
+    # Create another rule in checkgroup_parameters:memory_percentage_used
+    # and put it after the rule created above.
+    - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
+      tribe29.checkmk.rule:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        ruleset: "checkgroup_parameters:memory_percentage_used"
+        rule:
+            conditions: {
+                "host_labels": [],
+                "host_name": {
+                    "match_on": [
+                        "test2.tld"
+                    ],
+                    "operator": "one_of"
+                },
+                "host_tags": [],
+                "service_labels": []
+            }
+            properties: {
+                "comment": "Warning at 85%\nCritical at 99%\n",
+                "description": "Allow even higher memory usage",
+                "disabled": false,
+                "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+            }
+            value_raw: "{'levels': (85.0, 99.0)}"
+            location:
+                position: "after"
+                rule_id: "{{ response.id }}"
         state: "present"
 
-    # Delete first rule in this ruleset.
+    # Delete the first rule.
     - name: "Delete a rule."
       tribe29.checkmk.rule:
         server_url: "http://localhost/"
@@ -485,6 +845,51 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-id"></div>
+
+      .. _ansible_collections.tribe29.checkmk.rule_module__return-id:
+
+      .. rst-class:: ansible-option-title
+
+      **id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-id" title="Permalink to this return value"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The ID of the rule.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"1f97bc43-52dc-4f1a-ab7b-c2e9553958ab"`
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-msg"></div>
 
       .. _ansible_collections.tribe29.checkmk.rule_module__return-msg:
@@ -509,7 +914,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-cell">
 
-      The output message that the module generates. Contains the API response details in case of an error.
+      The output message that the module generates. Contains the API status details in case of an error.
 
 
       .. rst-class:: ansible-option-line
@@ -537,6 +942,7 @@ Authors
 ~~~~~~~
 
 - diademiemi (@diademiemi)
+- Geoffroy Stévenne (@geof77)
 
 
 
