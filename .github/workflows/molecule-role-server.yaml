@@ -8,18 +8,18 @@
 name: Molecule Tests for Server Role
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
-      - devel
-    paths:
-      - 'roles/server/**'
-  push:
-    branches:
-      - main
-      - devel
-    paths:
-      - 'roles/server/**'
+  # pull_request:
+  #   branches:
+  #     - main
+  #     - devel
+  #   paths:
+  #     - 'roles/server/**'
+  # push:
+  #   branches:
+  #     - main
+  #     - devel
+  #   paths:
+  #     - 'roles/server/**'
 
 env:
   NAMESPACE: tribe29

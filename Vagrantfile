@@ -31,7 +31,6 @@ Vagrant.configure("2") do |config|
       pip install -r /vagrant/requirements.txt
       sudo -u vagrant ansible-galaxy collection install -f -r /vagrant/requirements.yml
       mkdir -p /home/vagrant/ansible_collections/tribe29/checkmk
-      rsync -avzh /vagrant/* /home/vagrant/ansible_collections/tribe29/checkmk/
       mkdir -p /etc/apt/keyrings
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -40,6 +39,7 @@ Vagrant.configure("2") do |config|
       usermod -aG docker vagrant
       SCRIPT
       srv.vm.provision "shell", inline: $script
+      srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/tribe29/checkmk/"
     end
 
     # Ubuntu
