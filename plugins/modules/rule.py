@@ -352,7 +352,6 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     if rules is not None:
         # Loop through all rules
         for r in rules.get("value"):
-            # Check if conditions, properties and values are the same
             if (
                 r["id"] != rule["id"]
                 and r["extensions"]["conditions"] == rule["extensions"]["conditions"]
@@ -611,9 +610,9 @@ def run_module():
     # some "null" or empty fields cause API errors, must be removed
     for i in ["conditions", "properties"]:
         rule[i] = {
-           k: rule[i][k]
-           for k in rule[i]
-           if rule[i][k] is not None and rule[i][k] != ""
+            k: rule[i][k]
+            for k in rule[i]
+            if rule[i][k] is not None and rule[i][k] != ""
         }
 
     if rule.get("host_name") and not rule["host_name"]["match_on"]:
