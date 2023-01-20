@@ -1,6 +1,6 @@
 ---
 checkmk_versions:
-  - version: "2.1.0p18"
+  - version: "2.1.0p19"
     site: "stable"
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
 site: "test"
@@ -31,10 +31,6 @@ checkmk_rules:
     rule:
       conditions: {
         "host_labels": [],
-        "host_name": {
-          "match_on": [],
-          "operator": "one_of"
-        },
         "host_tags": [],
         "service_labels": []
       }
