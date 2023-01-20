@@ -20,8 +20,6 @@ version_added: "0.10.0"
 description:
     - Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
     - Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
-    - Currently, the idempotency of this module is restricted.
-    - To check if an equal rule already exists, only folder, conditions and properties are used. value_raw is currently not being compared.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -91,6 +89,19 @@ options:
 author:
     - diademiemi (@diademiemi)
     - Geoffroy Stévenne (@geof77)
+
+notes:
+    - "To achieve idempotency, this module is comparing the specified rule with the already existing
+      rules based on conditions, folder, value_raw and enabled/disabled."
+    - "To be able to compare the value_raw, which is internally stored in python format, the module
+      has to do a workaround: it is creating the specified rule, and then compares this rule with
+      all existing rules."
+    - "Then, in case of I(state=absent), it will delete both rules: the specified one and the duplicate
+      found."
+    - "Or, in case of I(state=present), it will delete the new rule, if a duplicate is already there,
+      and keep it if not."
+    - "This obviously leads to more rules being added and removed as one might expect. That's also
+      visible in the pending changes and audit log."
 """
 
 EXAMPLES = r"""
