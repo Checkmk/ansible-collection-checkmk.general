@@ -58,7 +58,7 @@ options:
                     folder:
                         description:
                             - The path name of the rule's folder.
-                            - Path delimiters can be either '~', '/' or '\'. Please use the one most appropriate for your quoting/escaping needs.
+                            - Path delimiters can be either '~', '/' or '\'.
                             - Allowed when I(position) is C(top) or C(bottom).
                             - Allowed when I(state=absent).
                             - Mutually exclusive with I(rule_id).
@@ -169,7 +169,10 @@ options:
                                 required: true
                                 type: str
             properties:
-                description: Properties of the rule.
+                description:
+                    - Properties of the rule.
+                    - Only I(disabled) is used for matching rules before creation or deletion. This means you cannot create identical rules with different
+                      description, comment and documentation_url values. This also means these parameters are ignored when selecting a rule to be deleted.
                 type: dict
                 suboptions:
                     description:
@@ -291,11 +294,6 @@ EXAMPLES = r"""
           match_on:
             - test1.tld
           operator: one_of
-        properties:
-          comment: "Warning at 80%\nCritical at 90%\n"
-          description: "Allow higher memory usage"
-          disabled: false
-          documentation_url: "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         value_raw: "{
           'levels': (80.0, 90.0)
         }"
