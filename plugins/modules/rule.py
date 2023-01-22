@@ -35,7 +35,7 @@ options:
                 description:
                   - Location of the rule within a folder.
                   - By default rules are created at the bottom of the "/" folder.
-                  - Mutually exclusive with I(folder).
+                  - Mutually exclusive with I(folder) in I(rule).
                 type: dict
                 suboptions:
                     position:
@@ -51,77 +51,67 @@ options:
                         default: "bottom"
                     rule_id:
                         description:
-                            - Put the rule C(before) or C(after) this rule_id.
+                            - The UUID of the rule this rule should be put C(before) or C(after).
                             - Required when I(position) is C(before) or C(after).
-                            - Mutually exclusive with I(folder).
+                            - Mutually exclusive with I(folder) and I(state=absent).
                         type: str
                     folder:
                         description:
-                            - Folder of the rule.
-                            - Required when I(position) is C(top) or C(bottom).
-                            - Required when I(state=absent).
+                            - The path name of the rule's folder.
+                            - Path delimiters can be either '~', '/' or '\'. Please use the one most appropriate for your quoting/escaping needs.
+                            - Allowed when I(position) is C(top) or C(bottom).
+                            - Allowed when I(state=absent).
                             - Mutually exclusive with I(rule_id).
                         default: "/"
                         type: str
             folder:
                 description:
-                  - Folder of the rule.
+                  - The path name of the rule's folder.
                   - Deprecated, use I(location) instead.
                   - Mutually exclusive with I(location).
                 type: str
             conditions:
-                description: Conditions of the rule.
+                description: Conditions under which the rule should apply.
                 type: dict
                 suboptions:
                     host_name:
                         description:
-                            - Match host names.
-                            - Must not be empty.
+                            - Host names the rule should or should not apply to.
+                            - Do not specify this option if you want the rule to apply for all hosts specified by the given tags.
+                            - If specified, all suboptions are required and must not be empty.
                         type: dict
+                        default: null
                         suboptions:
                             match_on:
                                 description:
-                                    - Regular expressions matching host names.
-                                    - Must not be empty.
+                                    - Either explicit host names or, with '~' as the first character, regular expressions matching the beginning of host names.
+                                    - Case sensitive.
+                                required: true
                                 type: list
                                 elements: str
                             operator:
-                                description:
-                                    - How the hosts should be matched.
-                                    - Requires a non-empty I(match_on)
+                                description: How the hosts should be matched.
+                                required: true
                                 type: str
                                 choices:
                                     - "one_of"
                                     - "none_of"
-                    host_labels:
-                        description: Match host labels.
-                        type: list
-                        default: []
-                        elements: dict
-                        suboptions:
-                            key:
-                                description: The key of the label.
-                                type: str
-                            operator:
-                                description: Match operator.
-                                type: str
-                                choices:
-                                    - "is"
-                                    - "is_not"
-                            value:
-                                description: The value of the label.
-                                type: str
                     host_tags:
-                        description: Match host tags.
+                        description:
+                            - The rule will only be applied to hosts fulfilling all the host tag conditions listed here, even if they appear in the list of
+                              explicit host names.
+                            - If specified, all suboptions are required and must not be empty.
                         type: list
                         default: []
                         elements: dict
                         suboptions:
                             key:
                                 description: The name of the tag.
+                                required: true
                                 type: str
                             operator:
                                 description: Match operator.
+                                required: true
                                 type: str
                                 choices:
                                     - "is"
@@ -130,24 +120,53 @@ options:
                                     - "none_of"
                             value:
                                 description: Value of the tag.
+                                required: true
                                 type: str
-                    service_labels:
-                        description: Match service labels.
+                    host_labels:
+                        description:
+                            - Further restrict this rule by applying host label conditions.
+                            - If specified, all suboptions are required and must not be empty.
                         type: list
                         default: []
                         elements: dict
                         suboptions:
                             key:
                                 description: The key of the label.
+                                required: true
                                 type: str
                             operator:
                                 description: Match operator.
+                                type: str
+                                required: true
+                                choices:
+                                    - "is"
+                                    - "is_not"
+                            value:
+                                description: The value of the label.
+                                required: true
+                                type: str
+                    service_labels:
+                        description:
+                            - Restrict the application of the rule, by checking against service label conditions.
+                            - If specified, all suboptions are required and must not be empty.
+                        type: list
+                        default: []
+                        elements: dict
+                        suboptions:
+                            key:
+                                description: The key of the label.
+                                required: true
+                                type: str
+                            operator:
+                                description: Match operator.
+                                required: true
                                 type: str
                                 choices:
                                     - "is"
                                     - "is_not"
                             value:
                                 description: The value of the label.
+                                required: true
                                 type: str
             properties:
                 description: Properties of the rule.
@@ -162,7 +181,12 @@ options:
                         type: str
                         default: ""
                     documentation_url:
-                        description: An URL which explains this rule.
+                        description:
+                            - A valid URL pointing to documentation or any other page.
+                            - You can use either
+                                * global URLs beginning with 'http(s)://'
+                                * absolute local urls beginning with '/'
+                                * relative URLs, relative to 'check_mk/'
                         type: str
                         default: null
                     disabled:
@@ -171,7 +195,9 @@ options:
                         type: bool
                         default: false
             value_raw:
-                description: Rule values as exported from the UI.
+                description:
+                    - A string representing rule values as exported from the GUI.
+                    - The string must contain valid Python syntax.
                 type: str
                 required: true
     ruleset:
@@ -322,8 +348,6 @@ EXAMPLES = r"""
         'severity_vanished': 0
       }"
     state: present
-  register: robotmk_rule
-
 """
 
 RETURN = r"""
@@ -341,14 +365,17 @@ id:
 """
 
 import json
+import re
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 
 try:
     from urllib import urlencode
+    from urllib import urlparse
 except ImportError:  # For Python 3
     from urllib.parse import urlencode
+    from urllib.parse import urlparse
 
 
 def exit_failed(module, msg, id=""):
@@ -545,6 +572,60 @@ def move_rule(module, base_url, headers, rule_id, location):
     r = json.loads(response.read().decode("utf-8"))
 
 
+def is_allowed_url(url):
+    try:
+        parsed = urlparse(url)
+    except ValueError:
+        return False
+    if parsed.scheme and parsed.scheme not in ["http", "https"]:
+        return False
+    return True
+
+
+def init_rule(module):
+    # Get the rule from params
+    rule = module.params.get("rule")
+
+    # Some "null" or empty params cause API errors and must be removed
+    for i in ["conditions", "properties"]:
+        r = filter(lambda k: k[1] is not None and k[1] != "", rule[i].items())
+        rule[i] = dict(r)
+
+    # If match_on is empty, a rule that will never be evaluated is created
+    if (
+        rule["conditions"].get("host_name") is not None
+        and not rule["conditions"]["host_name"]["match_on"]
+    ):
+        exit_failed(module, "match_on in host_name cannot be empty")
+
+    # Location.rule_id is not valid when state == absent
+    if (
+        rule["location"].get("rule_id") is not None
+        and module.params.get("state") == "absent"
+    ):
+        exit_failed(module, "rule_id in location is invalid with state=absent")
+
+    # Check if documentaion_url format is allowed
+    if rule["properties"].get("documentation_url") is not None and not is_allowed_url(
+        rule["properties"]["documentation_url"]
+    ):
+        exit_failed(module, "documentation_url in conditions has an invalid format")
+
+    # Copy rule folder param from location.folder
+    if rule.get("folder") is None:
+        rule["folder"] = rule["location"]["folder"]
+
+    # Check if folder string format is valid
+    if not re.match(
+        # regex from API documentation
+        "(?:(?:[~\\/]|(?:[~\\/][-_ a-zA-Z0-9.]+)+[~\\/]?)|[0-9a-fA-F]{32})",
+        rule["folder"],
+    ):
+        exit_failed(module, "folder has an invalid format")
+
+    return rule
+
+
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
@@ -562,24 +643,62 @@ def run_module():
                 conditions=dict(
                     type="dict",
                     options=dict(
-                        host_labels=dict(type="list", default=[], elements="dict"),
+                        host_labels=dict(
+                            type="list",
+                            elements="dict",
+                            default=[],
+                            options=dict(
+                                key=dict(type="str", required=True, no_log=False),
+                                operator=dict(
+                                    type="str", required=True, choices=["is", "is_not"]
+                                ),
+                                value=dict(
+                                    type="str",
+                                    required=True,
+                                ),
+                            ),
+                        ),
                         host_name=dict(
                             type="dict",
                             default=None,
                             options=dict(
-                                match_on=dict(type="list", elements="str"),
+                                match_on=dict(
+                                    type="list", required=True, elements="str"
+                                ),
                                 operator=dict(
-                                    type="str", choices=["one_of", "none_of"]
+                                    type="str",
+                                    required=True,
+                                    choices=["one_of", "none_of"],
                                 ),
                             ),
-                            required_together=[
-                                ("match_on", "operator"),
-                            ],
                         ),
-                        host_tags=dict(type="list", default=[], elements="dict"),
-                        service_labels=dict(type="list", default=[], elements="dict"),
+                        host_tags=dict(
+                            type="list",
+                            elements="dict",
+                            default=[],
+                            options=dict(
+                                key=dict(type="str", required=True, no_log=False),
+                                operator=dict(
+                                    required=True,
+                                    type="str",
+                                    choices=["is", "is_not", "one_of", "none_of"],
+                                ),
+                                value=dict(type="str", required=True),
+                            ),
+                        ),
+                        service_labels=dict(
+                            type="list",
+                            elements="dict",
+                            default=[],
+                            options=dict(
+                                key=dict(type="str", required=True, no_log=False),
+                                operator=dict(
+                                    type="str", required=True, choices=["is", "is_not"]
+                                ),
+                                value=dict(type="str", required=True),
+                            ),
+                        ),
                     ),
-                    apply_defaults=True,
                 ),
                 properties=dict(
                     type="dict",
@@ -589,7 +708,6 @@ def run_module():
                         documentation_url=dict(type="str", default=None),
                         disabled=dict(type="bool", default=False),
                     ),
-                    apply_defaults=True,
                 ),
                 value_raw=dict(type="str", required=True),
                 location=dict(
@@ -648,30 +766,8 @@ def run_module():
 
     # get the rule definition
     ruleset = module.params.get("ruleset", "")
-    rule = module.params.get("rule", "")
+    rule = init_rule(module)
     location = rule.get("location")
-
-    # some "null" or empty params cause API errors and must be removed
-    for i in ["conditions", "properties"]:
-        r = filter(lambda k: k[1] is not None and k[1] != "", rule[i].items())
-        rule[i] = dict(r)
-    del r
-
-    # if match_on is empty, a rule that will never be evaluated is created
-    if (
-        rule["conditions"].get("host_name") is not None
-        and not rule["conditions"]["host_name"]["match_on"]
-    ):
-        exit_failed(module, "match_on in host_name cannot be empty")
-
-    # location.rule_id is not valid when state == absent
-    if module.params.get("state") == "absent":
-        if location.get("rule_id") is not None:
-            exit_failed(module, "rule_id in location is invalid with state=absent")
-
-    # init rule folder param from location.folder
-    if rule.get("folder") is None or rule.get("folder") == "":
-        rule["folder"] = location["folder"]
 
     # If state is absent, delete the rule
     if module.params.get("state") == "absent":
@@ -685,7 +781,7 @@ def run_module():
         (rule_id, created) = create_rule(module, base_url, headers, ruleset, rule)
         if created:
             # Move rule to the specified location if it's not the default
-            if location["position"] != "bottom":
+            if location is not None and location["position"] != "bottom":
                 move_rule(module, base_url, headers, rule_id, location)
             exit_changed(module, "Rule created", rule_id)
         exit_ok(module, "Rule already exists", rule_id)
