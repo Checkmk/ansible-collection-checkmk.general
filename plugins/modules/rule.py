@@ -372,6 +372,7 @@ from ansible.module_utils.urls import fetch_url
 
 try:
     from urllib import urlencode
+
     from urlparse import urlparse
 except ImportError:  # For Python 3
     from urllib.parse import urlencode, urlparse
