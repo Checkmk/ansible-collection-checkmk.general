@@ -173,6 +173,13 @@ releases:
     - playbooks.yml
     - rule_module.yml
     release_date: '2023-01-20'
+  0.16.1:
+    changes:
+      bugfixes:
+      - Agent role - Fix erroneous usage of "checkmk_agent_pass" in activation handler.
+    fragments:
+    - agent.yml
+    release_date: '2023-01-23'
   0.2.0:
     changes:
       known_issues:

@@ -5,6 +5,14 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.16.1
+=======
+
+Bugfixes
+--------
+
+- Agent role - Fix erroneous usage of "checkmk_agent_pass" in activation handler.
+
 v0.16.0
 =======
 
