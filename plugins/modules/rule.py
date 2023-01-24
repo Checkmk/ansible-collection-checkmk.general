@@ -458,7 +458,6 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
-
     # Use the parameters to initialize some common variables
     headers = {
         "Accept": "application/json",
@@ -479,7 +478,6 @@ def run_module():
     ruleset = module.params.get("ruleset", "")
     rule = module.params.get("rule", "")
     location = rule.get("location")
-
 
     # Check if required params to create a rule are given
     if rule.get("folder") is None or rule.get("folder") == "":
