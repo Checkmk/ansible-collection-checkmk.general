@@ -74,10 +74,8 @@ options:
                 description: Properties of the rule.
                 type: dict
             value_raw:
-                description:
-                    - Rule values as exported from the GUI.
-                    - The object exported by the GUI is a string, it will be converted to a dict by ansible's argument parsing.
-                type: dict
+                description: Rule values as exported from the GUI.
+                type: str
     ruleset:
         description: Name of the ruleset to manage.
         required: true
@@ -286,7 +284,7 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
                 == rule["properties"]["disabled"]
                 and r["extensions"]["folder"] == rule["folder"]
                 and safe_eval(r["extensions"]["value_raw"])
-                == rule["value_raw"]
+                == safe_eval(rule["value_raw"])
             ):
                 # If they are the same, return the ID
                 return r
@@ -329,15 +327,13 @@ def create_rule(module, base_url, headers, ruleset, rule):
 
 
 def delete_rule(module, base_url, headers, ruleset, rule):
-
-    deleted = True
-
+    changed = True
     e = get_existing_rule(module, base_url, headers, ruleset, rule)
     if e:
         delete_rule_by_id(module, base_url, headers, e["id"])
-        return deleted
+        return changed
     else:
-        return not deleted
+        return not changed
 
 
 def delete_rule_by_id(module, base_url, headers, rule_id):
@@ -423,7 +419,7 @@ def run_module():
                 folder=dict(type="str"),
                 conditions=dict(type="dict"),
                 properties=dict(type="dict"),
-                value_raw=dict(type="dict"),
+                value_raw=dict(type="str"),
                 location=dict(
                     type="dict",
                     options=dict(
@@ -462,6 +458,7 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
+
     # Use the parameters to initialize some common variables
     headers = {
         "Accept": "application/json",
@@ -482,6 +479,7 @@ def run_module():
     ruleset = module.params.get("ruleset", "")
     rule = module.params.get("rule", "")
     location = rule.get("location")
+
 
     # Check if required params to create a rule are given
     if rule.get("folder") is None or rule.get("folder") == "":
