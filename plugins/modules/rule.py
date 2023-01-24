@@ -224,8 +224,8 @@ id:
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
 from ansible.module_utils.common.validation import safe_eval
+from ansible.module_utils.urls import fetch_url
 
 try:
     from urllib import urlencode
