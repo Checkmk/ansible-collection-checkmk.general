@@ -225,6 +225,7 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
+from ansible.module_utils.common.validation import safe_eval
 
 try:
     from urllib import urlencode
@@ -278,12 +279,12 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
         # Loop through all rules
         for r in rules.get("value"):
             if (
-                r["id"] != rule["id"]
-                and r["extensions"]["conditions"] == rule["extensions"]["conditions"]
+                r["extensions"]["conditions"] == rule["conditions"]
                 and r["extensions"]["properties"]["disabled"]
-                == rule["extensions"]["properties"]["disabled"]
-                and r["extensions"]["folder"] == rule["extensions"]["folder"]
-                and r["extensions"]["value_raw"] == rule["extensions"]["value_raw"]
+                == rule["properties"]["disabled"]
+                and r["extensions"]["folder"] == rule["folder"]
+                and safe_eval(r["extensions"]["value_raw"])
+                == safe_eval(rule["value_raw"])
             ):
                 # If they are the same, return the ID
                 return r
@@ -291,8 +292,13 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     return None
 
 
-def get_api_repr(module, base_url, headers, ruleset, rule):
+def create_rule(module, base_url, headers, ruleset, rule):
     api_endpoint = "/domain-types/rule/collections/all"
+
+    changed = True
+    e = get_existing_rule(module, base_url, headers, ruleset, rule)
+    if e:
+        return (e["id"], not changed)
 
     params = {
         "ruleset": ruleset,
@@ -317,45 +323,18 @@ def get_api_repr(module, base_url, headers, ruleset, rule):
 
     r = json.loads(response.read().decode("utf-8"))
 
-    return r
-
-
-def create_rule(module, base_url, headers, ruleset, rule):
-
-    created = True
-
-    # get API representation of the rule
-    r = get_api_repr(module, base_url, headers, ruleset, rule)
-
-    # compare the API output to existing rules
-    e = get_existing_rule(module, base_url, headers, ruleset, r)
-
-    # if existing rule found, delete new rule and return existing id
-    if e:
-        delete_rule_by_id(module, base_url, headers, r["id"])
-        return (e["id"], not created)
-
-    # else return new rule id
-    return (r["id"], created)
+    return (r["id"], changed)
 
 
 def delete_rule(module, base_url, headers, ruleset, rule):
 
     deleted = True
 
-    # get API representation of the rule
-    r = get_api_repr(module, base_url, headers, ruleset, rule)
-
-    # compare the API output to existing rules
-    e = get_existing_rule(module, base_url, headers, ruleset, r)
-
-    # if existing rule found, delete both
+    e = get_existing_rule(module, base_url, headers, ruleset, rule)
     if e:
-        delete_rule_by_id(module, base_url, headers, r["id"])
         delete_rule_by_id(module, base_url, headers, e["id"])
         return deleted
     else:
-        delete_rule_by_id(module, base_url, headers, r["id"])
         return not deleted
 
 
