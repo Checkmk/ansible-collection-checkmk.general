@@ -74,8 +74,10 @@ options:
                 description: Properties of the rule.
                 type: dict
             value_raw:
-                description: Rule values as exported from the UI.
-                type: str
+                description:
+                    - Rule values as exported from the GUI.
+                    - The object exported by the GUI is a string, it will be converted to a dict by ansible's argument parsing.
+                type: dict
     ruleset:
         description: Name of the ruleset to manage.
         required: true
@@ -284,7 +286,7 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
                 == rule["properties"]["disabled"]
                 and r["extensions"]["folder"] == rule["folder"]
                 and safe_eval(r["extensions"]["value_raw"])
-                == safe_eval(rule["value_raw"])
+                == rule["value_raw"]
             ):
                 # If they are the same, return the ID
                 return r
@@ -421,7 +423,7 @@ def run_module():
                 folder=dict(type="str"),
                 conditions=dict(type="dict"),
                 properties=dict(type="dict"),
-                value_raw=dict(type="str"),
+                value_raw=dict(type="dict"),
                 location=dict(
                     type="dict",
                     options=dict(
