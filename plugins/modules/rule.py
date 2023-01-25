@@ -93,15 +93,6 @@ author:
 notes:
     - "To achieve idempotency, this module is comparing the specified rule with the already existing
       rules based on conditions, folder, value_raw and enabled/disabled."
-    - "To be able to compare the value_raw, which is internally stored in python format, the module
-      has to do a workaround: it is creating the specified rule, and then compares this rule with
-      all existing rules."
-    - "Then, in case of I(state=absent), it will delete both rules: the specified one and the duplicate
-      found."
-    - "Or, in case of I(state=present), it will delete the new rule, if a duplicate is already there,
-      and keep it if not."
-    - "This obviously leads to more rules being added and removed as one might expect. That's also
-      visible in the pending changes and audit log."
 """
 
 EXAMPLES = r"""
