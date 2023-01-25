@@ -299,6 +299,9 @@ def create_rule(module, base_url, headers, ruleset, rule):
     if e:
         return (e["id"], not changed)
 
+    if module.check_mode:
+        return (None, changed)
+
     params = {
         "ruleset": ruleset,
         "folder": rule["folder"],
@@ -329,7 +332,8 @@ def delete_rule(module, base_url, headers, ruleset, rule):
     changed = True
     e = get_existing_rule(module, base_url, headers, ruleset, rule)
     if e:
-        delete_rule_by_id(module, base_url, headers, e["id"])
+        if not module.check_mode:
+            delete_rule_by_id(module, base_url, headers, e["id"])
         return changed
     else:
         return not changed
@@ -455,7 +459,7 @@ def run_module():
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
     # Use the parameters to initialize some common variables
     headers = {
@@ -508,7 +512,7 @@ def run_module():
         (rule_id, created) = create_rule(module, base_url, headers, ruleset, rule)
         if created:
             # Move rule to specified location, if it's not default
-            if location["position"] != "bottom":
+            if location["position"] != "bottom" and not module.check_mode:
                 move_rule(module, base_url, headers, rule_id, location)
             exit_changed(module, "Rule created", rule_id)
         exit_ok(module, "Rule already exists", rule_id)
