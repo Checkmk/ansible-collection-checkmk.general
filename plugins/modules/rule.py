@@ -74,7 +74,7 @@ options:
                 description: Properties of the rule.
                 type: dict
             value_raw:
-                description: Rule values as exported from the GUI.
+                description: Rule values as exported from the web interface.
                 type: str
     ruleset:
         description: Name of the ruleset to manage.
