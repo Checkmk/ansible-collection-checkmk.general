@@ -275,16 +275,24 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     # Get rules in ruleset
     rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
 
+    (value_mod, exc) = safe_eval(rule["value_raw"], include_exceptions=True)
+    if exc is not None:
+        exit_failed(module, "value_raw in rule has invalid format")
+
     if rules is not None:
         # Loop through all rules
         for r in rules.get("value"):
+            (value_api, exc) = safe_eval(
+                r["extensions"]["value_raw"], include_exceptions=True
+            )
+            if exc is not None:
+                exit_failed("Error deserializing value_raw from API")
             if (
-                r["extensions"]["conditions"] == rule["conditions"]
+                r["extensions"]["folder"] == rule["folder"]
+                and r["extensions"]["conditions"] == rule["conditions"]
                 and r["extensions"]["properties"]["disabled"]
                 == rule["properties"]["disabled"]
-                and r["extensions"]["folder"] == rule["folder"]
-                and safe_eval(r["extensions"]["value_raw"])
-                == safe_eval(rule["value_raw"])
+                and value_api == value_mod
             ):
                 # If they are the same, return the ID
                 return r
