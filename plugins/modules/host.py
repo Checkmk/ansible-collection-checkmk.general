@@ -18,23 +18,26 @@ short_description: Manage hosts in Checkmk.
 version_added: "0.0.1"
 
 description:
-- Manage hosts within Checkmk.
+    - Manage hosts within Checkmk.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
-    host_name:
+    name:
         description: The host you want to manage.
         required: true
         type: str
+        aliases: [host_name]
     folder:
         description: The folder your host is located in.
         type: str
         default: /
     attributes:
-        description: The attributes of your host as described in the API documentation.
+        description:
+            - The attributes of your host as described in the API documentation.
+              B(Attention! This option OVERWRITES all existing attributes!)
         type: raw
-        default: {}
+        default: []
     nodes:
         description: 
         - The cluster nodes where the newly created host should be the cluster-container of.
@@ -65,7 +68,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    host_name: "my_host"
+    name: "my_host"
     folder: "/"
     state: "present"
 
@@ -76,10 +79,10 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    host_name: "my_host"
+    name: "my_host"
     attributes:
       alias: "My Host"
-      ip_address: "127.0.0.1"
+      ipaddress: "127.0.0.1"
     folder: "/"
     state: "present"
 
@@ -90,7 +93,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    host_name: "my_host"
+    name: "my_host"
     attributes:
       site: "my_remote_site"
     folder: "/"
@@ -181,7 +184,7 @@ def get_current_host_state(module, base_url, headers):
     current_cluster = False
     current_cluster_nodes = []
 
-    api_endpoint = "/objects/host_config/" + module.params.get("host_name")
+    api_endpoint = "/objects/host_config/" + module.params.get("name")
     parameters = "?effective_attributes=true"
     url = base_url + api_endpoint + parameters
 
@@ -193,7 +196,7 @@ def get_current_host_state(module, base_url, headers):
         etag = info.get("etag", "")
         extensions = body.get("extensions", {})
         current_explicit_attributes = extensions.get("attributes", {})
-        current_folder = "%s" % extensions.get("folder", "")
+        current_folder = "%s" % extensions.get("folder", "/")
         if "meta_data" in current_explicit_attributes:
             del current_explicit_attributes["meta_data"]
         current_cluster = extensions.get("is_cluster")
@@ -213,7 +216,7 @@ def get_current_host_state(module, base_url, headers):
 
 
 def set_host_attributes(module, attributes, base_url, headers):
-    api_endpoint = "/objects/host_config/" + module.params.get("host_name")
+    api_endpoint = "/objects/host_config/" + module.params.get("name")
     params = {
         "attributes": attributes,
     }
@@ -233,7 +236,7 @@ def set_host_attributes(module, attributes, base_url, headers):
 
 def move_host(module, base_url, headers):
     api_endpoint = "/objects/host_config/%s/actions/move/invoke" % module.params.get(
-        "host_name"
+        "name"
     )
     params = {
         "target_folder": module.params.get("folder", "/"),
@@ -256,7 +259,7 @@ def create_host(module, attributes, base_url, headers):
     api_endpoint = "/domain-types/host_config/collections/all"
     params = {
         "folder": module.params.get("folder", "/"),
-        "host_name": module.params.get("host_name"),
+        "host_name": module.params.get("name"),
         "attributes": attributes,
     }
     url = base_url + api_endpoint
@@ -273,11 +276,38 @@ def create_host(module, attributes, base_url, headers):
         )
 
 
+def delete_host(module, base_url, headers):
+    api_endpoint = "/objects/host_config/" + module.params.get("name")
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
+
+    if info["status"] != 204:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+
+
+def normalize_folder(folder):
+    if folder in ["", " ", "/", "//"]:
+        return "/"
+
+    if not folder.startswith("/"):
+        folder = "/%s" % folder
+
+    if folder.endswith("/"):
+        folder = folder.rstrip("/")
+
+    return folder
+
+
 def create_cluster_host(module, attributes, base_url, headers):
     api_endpoint = "/domain-types/host_config/collections/clusters"
     params = {
         "folder": module.params.get("folder", "/"),
-        "host_name": module.params.get("host_name"),
+        "host_name": module.params.get("name"),
         "attributes": attributes,
         "nodes": module.params.get("nodes"),
     }
@@ -296,7 +326,7 @@ def create_cluster_host(module, attributes, base_url, headers):
 
 
 def update_cluster_nodes(module, base_url, headers):
-    api_endpoint = "/objects/host_config/%s/properties/nodes" % module.params.get("host_name")
+    api_endpoint = "/objects/host_config/%s/properties/nodes" % module.params.get("name")
     params = {
         "nodes": module.params.get("nodes"),
     }
@@ -314,28 +344,26 @@ def update_cluster_nodes(module, base_url, headers):
         )
 
 
-def delete_host(module, base_url, headers):
-    api_endpoint = "/objects/host_config/" + module.params.get("host_name")
-    url = base_url + api_endpoint
-
-    response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
-
-    if info["status"] != 204:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
-        )
-
-
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
+        validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        host_name=dict(type="str", required=True),
+        name=dict(
+            type="str",
+            required=True,
+            aliases=["host_name"],
+            deprecated_aliases=[
+                {
+                    "name": "host_name",
+                    "date": "2024-01-01",
+                    "collection_name": "tribe29.checkmk",
+                }
+            ],
+        ),
         attributes=dict(type="raw", default=[]),
         folder=dict(type="str", default="/"),
         nodes=dict(type="list",elements="str", default=[]),
@@ -367,10 +395,8 @@ def run_module():
     state = module.params.get("state", "present")
 
     if "folder" in module.params:
-        if not module.params["folder"].startswith("/"):
-            module.params["folder"] = "/" + module.params["folder"]
-    else:
-        module.params["folder"] = "/"
+        module.params["folder"] = normalize_folder(module.params["folder"])
+
 
     # make sure if state is 'cluster' that nodes are set
     cluster_nodes = module.params.get("nodes", [])
@@ -392,6 +418,9 @@ def run_module():
         headers["If-Match"] = etag
         msg_tokens = []
 
+        current_folder = normalize_folder(current_folder)
+
+
         # Should this option be necessary to re-create a host if host_type is different?
         #if state == "cluster" and current_cluster == False:
         #    delete_host(module, base_url, headers)
@@ -403,10 +432,6 @@ def run_module():
         #    create_host(module, attributes, base_url, headers)
         #    exit_changed(module, "Former cluster created as host.")
 
-            
-
-        if current_folder.endswith("/"):
-            current_folder = current_folder.rstrip("/")
 
         if current_folder != module.params["folder"]:
             move_host(module, base_url, headers)
