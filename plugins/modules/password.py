@@ -30,6 +30,7 @@ options:
             - The unique identifier for the password.
             - Optional. Will be generated out of name.
         type: str
+        default: ""
     password:
         description:
             - Define the password.
