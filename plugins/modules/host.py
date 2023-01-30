@@ -44,6 +44,7 @@ options:
         - This applies only when C(state) is set to C(cluster).
         type: list
         elements: str
+        default: []
         version_added: "0.17.0"
     state:
         description:
