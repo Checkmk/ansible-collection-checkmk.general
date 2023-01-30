@@ -39,14 +39,14 @@ options:
         type: raw
         default: []
     nodes:
-        description: 
+        description:
         - The cluster nodes where the newly created host should be the cluster-container of.
         - This applies only when C(state) is set to C(cluster).
         type: list
         elements: str
         version_added: "0.17.0"
     state:
-        description: 
+        description:
         - The state of your host.
         - If C(cluster) a cluster will be created.
         type: str
@@ -157,8 +157,9 @@ message:
 
 import json
 
-from ansible.module_utils.urls import fetch_url
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.urls import fetch_url
+
 
 
 def exit_failed(module, msg):
