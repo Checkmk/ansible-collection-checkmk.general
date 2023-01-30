@@ -2,7 +2,7 @@
 
 # Copyright: (c) 2018, Mathias Buresch <mathias.buresch@de.clara.net>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
@@ -20,14 +20,16 @@ description: Manage passwords in the Checkmk password store.
 
 options:
     name:
-        description: 
-            - Title/name of the password.
+        description:
+            - Name/title of the password.
         required: true
         type: str
+        aliases: [title]
     ident:
         description:
             - The unique identifier for the password.
             - Optional. Will be generated out of name.
+        type: str
     password:
         description:
             - Define the password.
@@ -113,9 +115,7 @@ def get_password(module, base_url, headers, norm_id):
     api_endpoint = "/objects/password/" + module.params.get("id", norm_id)
     url = base_url + api_endpoint
 
-    response, info = fetch_url(
-        module, url, data=None, headers=headers, method="GET"
-    )
+    response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
 
     if info["status"] == 200:
         body = json.loads(response.read())
@@ -164,7 +164,7 @@ def update_password(module, base_url, headers, norm_id):
     params = {
         "title": module.params.get("name"),
         "password": module.params.get("password"),
-        "owner": module.params.get("owner")
+        "owner": module.params.get("owner"),
     }
     url = base_url + api_endpoint
 
@@ -184,9 +184,7 @@ def delete_password(module, base_url, headers, norm_id):
     api_endpoint = "/objects/password/" + module.params.get("id", norm_id)
     url = base_url + api_endpoint
 
-    response, info = fetch_url(
-        module, url, data=None, headers=headers, method="DELETE"
-    )
+    response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
 
     if info["status"] != 204:
         exit_failed(
@@ -207,7 +205,7 @@ def run_module():
         ident=dict(type="str", default=""),
         name=dict(type="str", required=True, aliases=["title"]),
         password=dict(type="str", no_log=True),
-        owner=dict(type="str", default="admin"),
+        owner=dict(type="str"),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
