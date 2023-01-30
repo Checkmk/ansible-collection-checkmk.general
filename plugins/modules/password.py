@@ -88,8 +88,8 @@ message:
 import json
 import re
 
-from ansible.module_utils.urls import fetch_url
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.urls import fetch_url
 
 
 def exit_failed(module, msg):
