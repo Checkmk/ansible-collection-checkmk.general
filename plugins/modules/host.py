@@ -161,7 +161,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 
 
-
 def exit_failed(module, msg):
     result = {"msg": msg, "changed": False, "failed": True}
     module.fail_json(**result)
