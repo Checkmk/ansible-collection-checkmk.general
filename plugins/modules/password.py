@@ -6,7 +6,7 @@ from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: password
 
@@ -50,7 +50,7 @@ extends_documentation_fragment:
 
 author:
     - Mathias Buresch (@elwood218)
-'''
+"""
 
 EXAMPLES = r"""
 # Add a password.
@@ -74,14 +74,14 @@ EXAMPLES = r"""
     state: "absent"
 """
 
-RETURN = r'''
+RETURN = r"""
 # These are examples of possible return values, and in general should use other names for return values.
 message:
     description: The output message that the test module generates.
     type: str
     returned: always
     sample: 'goodbye'
-'''
+"""
 
 import json
 import re
@@ -114,7 +114,8 @@ def get_password(module, base_url, headers, norm_id):
     url = base_url + api_endpoint
 
     response, info = fetch_url(
-        module, url, data=None, headers=headers, method="GET")
+        module, url, data=None, headers=headers, method="GET"
+    )
 
     if info["status"] == 200:
         body = json.loads(response.read())
@@ -142,7 +143,7 @@ def create_password(module, base_url, headers, norm_id):
         "ident": module.params.get("id", norm_id),
         "title": module.params.get("name"),
         "password": module.params.get("password"),
-        "owner": module.params.get("owner")
+        "owner": module.params.get("owner"),
     }
     url = base_url + api_endpoint
 
@@ -184,7 +185,8 @@ def delete_password(module, base_url, headers, norm_id):
     url = base_url + api_endpoint
 
     response, info = fetch_url(
-        module, url, data=None, headers=headers, method="DELETE")
+        module, url, data=None, headers=headers, method="DELETE"
+    )
 
     if info["status"] != 204:
         exit_failed(
@@ -204,19 +206,16 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         ident=dict(type="str", default=""),
         name=dict(type="str", required=True, aliases=["title"]),
-        password=dict(type='str', no_log=True),
+        password=dict(type="str", no_log=True),
         owner=dict(type="str", default="admin"),
-        state=dict(type="str", default="present",
-                   choices=["present", "absent"]),
+        state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(argument_spec=module_args,
-                           supports_check_mode=False)
+    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
     # Normalize id
     if module.params.get("ident") == "":
-        norm_id = re.sub(r' ', '-', module.params.get("name"))
-        # norm_id = re.sub(r' ','-',module.get.params("name").lower())
+        norm_id = re.sub(r" ", "-", module.params.get("name"))
     else:
         norm_id = ""
 
@@ -243,7 +242,7 @@ def run_module():
     (
         current_state,
         etag,
-        current_owner
+        current_owner,
     ) = get_password(module, base_url, headers, norm_id)
 
     # Handle the password accordingly to above findings and desired state
