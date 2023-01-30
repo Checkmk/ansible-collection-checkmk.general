@@ -3,6 +3,7 @@
 # Copyright: (c) 2018, Mathias Buresch <mathias.buresch@de.clara.net>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
+
 __metaclass__ = type
 
 DOCUMENTATION = r'''
@@ -85,8 +86,8 @@ message:
 import json
 import re
 
-from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
+from ansible.module_utils.basic import AnsibleModule
 
 
 def exit_failed(module, msg):
@@ -112,7 +113,8 @@ def get_password(module, base_url, headers, norm_id):
     api_endpoint = "/objects/password/" + module.params.get("id", norm_id)
     url = base_url + api_endpoint
 
-    response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
+    response, info = fetch_url(
+        module, url, data=None, headers=headers, method="GET")
 
     if info["status"] == 200:
         body = json.loads(response.read())
@@ -181,7 +183,8 @@ def delete_password(module, base_url, headers, norm_id):
     api_endpoint = "/objects/password/" + module.params.get("id", norm_id)
     url = base_url + api_endpoint
 
-    response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
+    response, info = fetch_url(
+        module, url, data=None, headers=headers, method="DELETE")
 
     if info["status"] != 204:
         exit_failed(
@@ -203,18 +206,19 @@ def run_module():
         name=dict(type="str", required=True, aliases=["title"]),
         password=dict(type='str', no_log=True),
         owner=dict(type="str", default="admin"),
-        state=dict(type="str", default="present", choices=["present", "absent"]),
+        state=dict(type="str", default="present",
+                   choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=module_args,
+                           supports_check_mode=False)
 
     # Normalize id
-    if module.params.get("ident") == "":   
-        norm_id = re.sub(r' ','-',module.params.get("name"))
-        #norm_id = re.sub(r' ','-',module.get.params("name").lower())
+    if module.params.get("ident") == "":
+        norm_id = re.sub(r' ', '-', module.params.get("name"))
+        # norm_id = re.sub(r' ','-',module.get.params("name").lower())
     else:
         norm_id = ""
-
 
     # Use the parameters to initialize some common variables
     headers = {
@@ -245,17 +249,16 @@ def run_module():
     # Handle the password accordingly to above findings and desired state
     if state == "present" and current_state == "present":
         headers["If-Match"] = etag
-        #msg_tokens = []
+        # msg_tokens = []
         exit_ok(module, "Password already exists.")
 
-
-        #if module.params.get("owner") != current_owner:
+        # if module.params.get("owner") != current_owner:
         #    update_password(module, base_url, headers, norm_id)
         #    msg_tokens.append("Ownership changed.")
-            
-        #if len(msg_tokens) >= 1:
+
+        # if len(msg_tokens) >= 1:
         #    exit_changed(module, " ".join(msg_tokens))
-        #else:
+        # else:
         #    exit_ok(module, "")
 
     elif state == "present" and current_state == "absent":
