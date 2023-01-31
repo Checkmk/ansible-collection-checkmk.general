@@ -567,8 +567,6 @@ def move_rule(module, base_url, headers, rule_id, location):
             % (info["status"], info["body"]),
         )
 
-    r = json.loads(response.read().decode("utf-8"))
-
 
 def is_allowed_url(url):
     try:
@@ -616,7 +614,7 @@ def init_rule(module):
     # Check if folder string format is valid
     if not re.match(
         # regex from API documentation
-        "(?:(?:[~\\/]|(?:[~\\/][-_ a-zA-Z0-9.]+)+[~\\/]?)|[0-9a-fA-F]{32})",
+        r"(?:(?:[~\\/]|(?:[~\\/][-_ a-zA-Z0-9.]+)+[~\\/]?)|[0-9a-fA-F]{32})",
         rule["folder"],
     ):
         exit_failed(module, "folder has an invalid format")
