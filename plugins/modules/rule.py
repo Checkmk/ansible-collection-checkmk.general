@@ -602,9 +602,11 @@ def init_rule(module):
         exit_failed(module, "rule_id in location is invalid with state=absent")
 
     # Check if documentaion_url format is allowed
-    if rule["properties"].get(  #
-        "documentation_url"
-    ) is not None and not is_allowed_url(rule["properties"]["documentation_url"]):
+    if (
+        #
+        rule["properties"].get("documentation_url") is not None
+        and not is_allowed_url(rule["properties"]["documentation_url"])
+    ):
         exit_failed(module, "documentation_url in conditions has an invalid format")
 
     # Copy rule folder param from location.folder
