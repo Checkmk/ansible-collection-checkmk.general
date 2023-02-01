@@ -625,7 +625,7 @@ def init_rule(module):
 
 
 def run_module():
-    # define available arguments/parameters a user can pass to the module
+    # Define available arguments/parameters a user can pass to the module
     #
     # NOTE on default values for conditions and properties:
     #
@@ -752,10 +752,10 @@ def run_module():
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    # check args and initialize module
+    # Check args and initialize module
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
-    # initialize API request variables
+    # Initialize API request variables
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
@@ -770,7 +770,7 @@ def run_module():
         module.params.get("site", ""),
     )
 
-    # get the rule definition
+    # Get the rule definition
     ruleset = module.params.get("ruleset", "")
     rule = init_rule(module)
     location = rule.get("location")
