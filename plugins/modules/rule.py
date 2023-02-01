@@ -584,7 +584,7 @@ def init_rule(module):
 
     # Some "null" or empty params cause API errors and must be removed
     for i in ["conditions", "properties"]:
-        r = filter(lambda k: k[1] is not None and k[1] != "", rule[i].items())
+        r = filter(lambda k: k[1] is not None, rule[i].items())
         rule[i] = dict(r)
 
     # If match_on is empty, a rule that will never be evaluated is created
@@ -602,9 +602,9 @@ def init_rule(module):
         exit_failed(module, "rule_id in location is invalid with state=absent")
 
     # Check if documentaion_url format is allowed
-    if rule["properties"].get("documentation_url") is not None and not is_allowed_url(
-        rule["properties"]["documentation_url"]
-    ):
+    if rule["properties"].get(  #
+        "documentation_url"
+    ) is not None and not is_allowed_url(rule["properties"]["documentation_url"]):
         exit_failed(module, "documentation_url in conditions has an invalid format")
 
     # Copy rule folder param from location.folder
@@ -624,6 +624,12 @@ def init_rule(module):
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
+    #
+    # NOTE on default values for conditions and properties:
+    #
+    #   default=None means omit from the API request
+    #   any other value means include in the request, even if empty
+    #
     module_args = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
@@ -641,8 +647,8 @@ def run_module():
                     options=dict(
                         host_labels=dict(
                             type="list",
-                            elements="dict",
                             default=[],
+                            elements="dict",
                             options=dict(
                                 key=dict(type="str", required=True, no_log=False),
                                 operator=dict(
@@ -670,8 +676,8 @@ def run_module():
                         ),
                         host_tags=dict(
                             type="list",
-                            elements="dict",
                             default=[],
+                            elements="dict",
                             options=dict(
                                 key=dict(type="str", required=True, no_log=False),
                                 operator=dict(
@@ -684,8 +690,8 @@ def run_module():
                         ),
                         service_labels=dict(
                             type="list",
-                            elements="dict",
                             default=[],
+                            elements="dict",
                             options=dict(
                                 key=dict(type="str", required=True, no_log=False),
                                 operator=dict(
@@ -695,15 +701,17 @@ def run_module():
                             ),
                         ),
                     ),
+                    apply_defaults=True,
                 ),
                 properties=dict(
                     type="dict",
                     options=dict(
-                        description=dict(type="str", default=""),
-                        comment=dict(type="str", default=""),
+                        description=dict(type="str", default=None),
+                        comment=dict(type="str", default=None),
                         documentation_url=dict(type="str", default=None),
                         disabled=dict(type="bool", default=False),
                     ),
+                    apply_defaults=True,
                 ),
                 value_raw=dict(type="str", required=True),
                 location=dict(
