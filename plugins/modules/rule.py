@@ -178,11 +178,11 @@ options:
                     description:
                         description: A description for this rule.
                         type: str
-                        default: ""
+                        default: null
                     comment:
                         description: Any comment string.
                         type: str
-                        default: ""
+                        default: null
                     documentation_url:
                         description:
                             - A valid URL pointing to documentation or any other page.
