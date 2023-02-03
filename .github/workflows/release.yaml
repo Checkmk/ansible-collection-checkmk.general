@@ -19,7 +19,10 @@ jobs:
 
       - name: Get current version
         id: current_version
-        run: echo "::set-output name=version::$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)"
+        # FIXME (https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/)
+        # run: echo "::set-output name=version::$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)"
+        run: echo "{version}={$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)}" >> $GITHUB_OUTPUT
+        #echo "{version}={$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)}" >> $GITHUB_OUTPUT
 
       - name: Set up Python.
         uses: actions/setup-python@v4
@@ -56,40 +59,40 @@ jobs:
       - name: Compile Collection Docs
         run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ tribe29.checkmk
 
-      # https://github.com/marketplace/actions/create-pull-request
-      - name: Create Pull Request for docs and changelog against devel branch
-        uses: peter-evans/create-pull-request@v4
-        with:
-          commit-message: Update Docs and Changelogs
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          signoff: false
-          branch: changelogs-docs-update-devel
-          base: devel
-          delete-branch: true
-          title: '[Auto] Update changelogs and docs'
-          body: |
-            Changelogs and docs updated during *${{ steps.current_version.outputs.version }}* release.
-          assignees: robin-tribe29
-          reviewers: robin-tribe29
-          draft: false
+      # # https://github.com/marketplace/actions/create-pull-request
+      # - name: Create Pull Request for docs and changelog against devel branch
+      #   uses: peter-evans/create-pull-request@v4
+      #   with:
+      #     commit-message: Update Docs and Changelogs
+      #     committer: GitHub <noreply@github.com>
+      #     author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+      #     signoff: false
+      #     branch: changelogs-docs-update-devel
+      #     base: devel
+      #     delete-branch: true
+      #     title: '[Auto] Update changelogs and docs'
+      #     body: |
+      #       Changelogs and docs updated during *${{ steps.current_version.outputs.version }}* release.
+      #     assignees: robin-tribe29
+      #     reviewers: robin-tribe29
+      #     draft: false
 
-      - name: Create Pull Request for docs and changelog against main branch
-        uses: peter-evans/create-pull-request@v4
-        with:
-          commit-message: Update Docs and Changelogs
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          signoff: false
-          branch: changelogs-docs-update-main
-          base: main
-          delete-branch: true
-          title: '[Auto] Update changelogs and docs'
-          body: |
-            Changelogs and docs updated during *${{ steps.current_version.outputs.version }}* release.
-          assignees: robin-tribe29
-          reviewers: robin-tribe29
-          draft: false
+      # - name: Create Pull Request for docs and changelog against main branch
+      #   uses: peter-evans/create-pull-request@v4
+      #   with:
+      #     commit-message: Update Docs and Changelogs
+      #     committer: GitHub <noreply@github.com>
+      #     author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+      #     signoff: false
+      #     branch: changelogs-docs-update-main
+      #     base: main
+      #     delete-branch: true
+      #     title: '[Auto] Update changelogs and docs'
+      #     body: |
+      #       Changelogs and docs updated during *${{ steps.current_version.outputs.version }}* release.
+      #     assignees: robin-tribe29
+      #     reviewers: robin-tribe29
+      #     draft: false
 
       #
       # Second stage: Build the final version of the collection and release it.
@@ -107,34 +110,34 @@ jobs:
       - name: Build Ansible Collection
         run: ansible-galaxy collection build build/src --force
 
-      - name: Create Release
-        id: create-release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ steps.current_version.outputs.version }}
-          release_name: v${{ steps.current_version.outputs.version }}
-          body: |
-            # Ansible Collection: tribe29.checkmk
+      # - name: Create Release
+      #   id: create-release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v${{ steps.current_version.outputs.version }}
+      #     release_name: v${{ steps.current_version.outputs.version }}
+      #     body: |
+      #       # Ansible Collection: tribe29.checkmk
 
-            For information about this collection and how to install it, refer to the [README](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/README.md).
+      #       For information about this collection and how to install it, refer to the [README](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/README.md).
             
-            For a detailed changelog, refer to the [CHANGELOG](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/CHANGELOG.rst).
-            ```
-          draft: false
-          prerelease: false
+      #       For a detailed changelog, refer to the [CHANGELOG](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/CHANGELOG.rst).
+      #       ```
+      #     draft: false
+      #     prerelease: false
 
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
-          asset_name: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
-          asset_content_type: application/tar+gzip
+      # - name: Upload Release Asset
+      #   id: upload-release-asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create-release.outputs.upload_url }}
+      #     asset_path: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+      #     asset_name: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+      #     asset_content_type: application/tar+gzip
 
-      - name: Publish Ansible Collection to the Galaxy
-        run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
+      # - name: Publish Ansible Collection to the Galaxy
+      #   run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
