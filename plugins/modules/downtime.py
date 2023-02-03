@@ -176,8 +176,17 @@ def _set_timestamps(module):
     )
     start_time = module.params.get("start_time")
     end_time = module.params.get("end_time")
+
     end_after = module.params.get("end_after")
+    # TODO: Once, Python2.6 is no longer used, better use this:
+    #  end_after = {k: int(v) for k, v in end_after.items()}
+    end_after = dict([(k, int(v)) for k, v in end_after.items()])
+
     start_after = module.params.get("start_after")
+    # TODO: Once, Python2.6 is no longer used, better use this:
+    #  start_after = {k: int(v) for k, v in start_after.items()}
+    start_after = dict([(k, int(v)) for k, v in start_after.items()])
+
     if start_time == "":
         if start_after == {}:
             start_time = default_start_time
