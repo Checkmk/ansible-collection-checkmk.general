@@ -26,6 +26,7 @@ checkmk_agent_delegate_api_calls: localhost
 checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 checkmk_agent_host_name: "{{ inventory_hostname }}"
 checkmk_agent_folder: "{{ checkmk_folder_path | default('/') }}"
+checkmk_agent_force_foreign_changes: 'false'
 checkmk_agent_host_attributes:
   ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
 
