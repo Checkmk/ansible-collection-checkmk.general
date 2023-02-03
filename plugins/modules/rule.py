@@ -392,6 +392,9 @@ def move_rule(module, base_url, headers, rule_id, location):
 
     url = base_url + api_endpoint
 
+    if module.check_mode:
+        return
+
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="POST"
     )
@@ -512,7 +515,7 @@ def run_module():
         (rule_id, created) = create_rule(module, base_url, headers, ruleset, rule)
         if created:
             # Move rule to specified location, if it's not default
-            if location["position"] != "bottom" and not module.check_mode:
+            if location["position"] != "bottom":
                 move_rule(module, base_url, headers, rule_id, location)
             exit_changed(module, "Rule created", rule_id)
         exit_ok(module, "Rule already exists", rule_id)
