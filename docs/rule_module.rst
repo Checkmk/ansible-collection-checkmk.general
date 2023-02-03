@@ -42,7 +42,7 @@ tribe29.checkmk.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.16.1).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.16.2).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
