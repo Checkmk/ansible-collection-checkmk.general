@@ -56,6 +56,25 @@
       - "Check_MK Discovery"
   loop: "{{ checkmk_hosts }}"
 
+- name: "{{ outer_item.version }} - Schedule downtime on services with relative times in strings."
+  downtime:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    comment: Schedule downtime on services with relative timestamps in strings
+    start_after:
+      hours: "2"
+      minutes: "30"
+    end_after:
+      hours: "1"
+      minutes: "30"
+    service_descriptions:
+      - "Check_MK"
+      - "Check_MK Discovery"
+  loop: "{{ checkmk_hosts }}"
+
 - name: "{{ outer_item.version }} - Schedule downtime on services with absolute timestamps."
   downtime:
     server_url: "{{ server_url }}"
