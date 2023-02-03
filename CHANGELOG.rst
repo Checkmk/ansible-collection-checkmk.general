@@ -5,6 +5,20 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.16.2
+=======
+
+Release Summary
+---------------
+
+Bugfix Release
+
+Bugfixes
+--------
+
+- Agent role - Add explicit "become: false" to the "Discover services and labels on host." task.
+- Downtime module - Fix handling of parameters start_after and end_after.
+
 v0.16.1
 =======
 
