@@ -126,6 +126,7 @@
     and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
 
 - name: "Discover services and labels on host."
+  become: false
   tribe29.checkmk.discovery:
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
     site: "{{ checkmk_agent_site }}"
