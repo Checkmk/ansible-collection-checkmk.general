@@ -19,7 +19,7 @@
     msg: |
       Downgrading is not allowed since checkmk_server_allow_downgrades is set to false.
   when:
-    checkmk_server_allow_downgrades is defined 
+    checkmk_server_allow_downgrades is defined
     and not checkmk_server_allow_downgrades | bool
     and item.stdout is version(item.item.version, '>')
 
