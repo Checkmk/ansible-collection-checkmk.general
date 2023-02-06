@@ -447,9 +447,7 @@ def run_module():
                 ]
 
                 if len(remainings_list) > 0:
-                    update_host_groups(
-                        module, base_url, remainings_list, headers
-                    )
+                    update_host_groups(module, base_url, remainings_list, headers)
                     msg_tokens.append(
                         "Host groups: "
                         + " ".join([el["name"] for el in remainings_list])
