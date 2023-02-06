@@ -339,7 +339,7 @@ def delete_rule_by_id(module, base_url, headers, rule_id):
 
     url = "%s%s%s" % (base_url, api_endpoint, rule_id)
 
-    _, info = fetch_url(module, url, headers=headers, method="DELETE")
+    info = fetch_url(module, url, headers=headers, method="DELETE")[1]
 
     if info["status"] != 204:
         exit_failed(
@@ -354,7 +354,7 @@ def get_rule_etag(module, base_url, headers, rule_id):
 
     url = base_url + api_endpoint
 
-    _, info = fetch_url(module, url, headers=headers, method="GET")
+    info = fetch_url(module, url, headers=headers, method="GET")[1]
 
     if info["status"] not in [200, 204]:
         exit_failed(
@@ -387,9 +387,9 @@ def move_rule(module, base_url, headers, rule_id, location):
 
     url = base_url + api_endpoint
 
-    _, info = fetch_url(
+    info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="POST"
-    )
+    )[1]
 
     if info["status"] not in [200, 204]:
         exit_failed(
