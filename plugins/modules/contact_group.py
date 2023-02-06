@@ -424,7 +424,7 @@ def run_module():
                 ]
 
                 if len(remainings_list) > 0:
-                    changed = update_contact_groups(
+                    update_contact_groups(
                         module, base_url, remainings_list, headers
                     )
                     msg_tokens.append(
