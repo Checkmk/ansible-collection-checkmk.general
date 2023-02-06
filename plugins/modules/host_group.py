@@ -447,7 +447,7 @@ def run_module():
                 ]
 
                 if len(remainings_list) > 0:
-                    changed = update_host_groups(
+                    update_host_groups(
                         module, base_url, remainings_list, headers
                     )
                     msg_tokens.append(

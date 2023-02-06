@@ -426,7 +426,7 @@ def run_module():
                 ]
 
                 if len(remainings_list) > 0:
-                    changed = update_service_groups(
+                    update_service_groups(
                         module, base_url, remainings_list, headers
                     )
                     msg_tokens.append(
