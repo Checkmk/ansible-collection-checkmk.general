@@ -23,6 +23,7 @@ The edition you want to install. Valid values are
 - `cre`
 - `cfe`
 - `cee`
+- `cce`
 - `cme`
 
 Note, that you need credentials, to download the `enterprise` and `managed` versions.
