@@ -120,6 +120,7 @@
         immediate: 'yes'
         state: enabled
         rich_rule: 'rule family="ipv4" source address={{ checkmk_agent_server_ip }} port port="6556" protocol="tcp" accept'
+        zone: "{{ checkmk_agent_configure_firewall_zone | default('public') }}"
       when: checkmk_agent_server_ip is defined
       become: true
   when: checkmk_agent_configure_firewall | bool and "firewalld.service" in ansible_facts.services
