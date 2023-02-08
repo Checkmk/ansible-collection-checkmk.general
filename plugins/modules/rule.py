@@ -398,8 +398,6 @@ def move_rule(module, base_url, headers, rule_id, location):
             % (info["status"], info["body"]),
         )
 
-    # r = json.loads(response.read().decode("utf-8"))
-
 
 def run_module():
     # define available arguments/parameters a user can pass to the module

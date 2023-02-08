@@ -442,13 +442,6 @@ def run_module():
         module.params.get("site"),
     )
 
-    # # Decide if host- or service-downtime depending on elements of service_descriptions
-    # service_descriptions = module.params.get("service_descriptions")
-    # if service_descriptions == []:
-    #     hostdowntime = True
-    # else:
-    #     hostdowntime = False
-
     # here, we need only the state param
     state = module.params.get("state", "present")
 
