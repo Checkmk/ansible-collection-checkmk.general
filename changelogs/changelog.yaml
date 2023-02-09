@@ -150,6 +150,48 @@ releases:
     - module_options.yml
     - playbooks.yml
     release_date: '2023-01-11'
+  0.16.0:
+    changes:
+      bugfixes:
+      - Rule module - Now properly comparing the specified rule with the existing
+        ones to achieve idempotency.
+      known_issues:
+      - Rule module - comparing the specified rule with the existing ones leads to
+        additional changes in CMK's audit log
+      minor_changes:
+      - Agent role - Enable automatic activation of changes when needed for this role.
+        Refer to the README for details.
+      - Agent role - Enable registration for TLS and agent updates on remote sites.
+      - Agent role - RedHat - Only try to configure firewalld, if the systemd service
+        is present.
+      - Playbooks - Add use case playbook for registering agents on remote sites.
+      - Rule module - Now its possible to choose a position when creating a rule.
+        The ID of the created rule is returned in the task's response.
+    fragments:
+    - agent.yml
+    - bugfix_rule_module.yml
+    - playbooks.yml
+    - rule_module.yml
+    release_date: '2023-01-20'
+  0.16.1:
+    changes:
+      bugfixes:
+      - Agent role - Fix erroneous usage of "checkmk_agent_pass" in activation handler.
+    fragments:
+    - agent.yml
+    release_date: '2023-01-23'
+  0.16.2:
+    changes:
+      bugfixes:
+      - 'Agent role - Add explicit "become: false" to the "Discover services and labels
+        on host." task.'
+      - Downtime module - Fix handling of parameters start_after and end_after.
+      release_summary: Bugfix Release
+    fragments:
+    - agent.yml
+    - downtime.yml
+    - summary.yml
+    release_date: '2023-02-03'
   0.2.0:
     changes:
       known_issues:

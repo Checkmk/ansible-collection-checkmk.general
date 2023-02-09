@@ -1,3 +1,4 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
-- minor_changes:
-  - Playbooks - Add use case playbook for registering agents on remote sites.
+
+bugfixes:
+  - Agent role - Fix erroneous usage of "checkmk_agent_pass" in activation handler.

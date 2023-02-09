@@ -5,6 +5,50 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.16.2
+=======
+
+Release Summary
+---------------
+
+Bugfix Release
+
+Bugfixes
+--------
+
+- Agent role - Add explicit "become: false" to the "Discover services and labels on host." task.
+- Downtime module - Fix handling of parameters start_after and end_after.
+
+v0.16.1
+=======
+
+Bugfixes
+--------
+
+- Agent role - Fix erroneous usage of "checkmk_agent_pass" in activation handler.
+
+v0.16.0
+=======
+
+Minor Changes
+-------------
+
+- Agent role - Enable automatic activation of changes when needed for this role. Refer to the README for details.
+- Agent role - Enable registration for TLS and agent updates on remote sites.
+- Agent role - RedHat - Only try to configure firewalld, if the systemd service is present.
+- Playbooks - Add use case playbook for registering agents on remote sites.
+- Rule module - Now its possible to choose a position when creating a rule. The ID of the created rule is returned in the task's response.
+
+Bugfixes
+--------
+
+- Rule module - Now properly comparing the specified rule with the existing ones to achieve idempotency.
+
+Known Issues
+------------
+
+- Rule module - comparing the specified rule with the existing ones leads to additional changes in CMK's audit log
+
 v0.15.0
 =======
 

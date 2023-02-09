@@ -1,0 +1,6 @@
+# https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
+
+minor_changes:
+  - Agent role - Enable registration for TLS and agent updates on remote sites.
+  - Agent role - Enable automatic activation of changes when needed for this role. Refer to the README for details.
+  - Agent role - RedHat - Only try to configure firewalld, if the systemd service is present.

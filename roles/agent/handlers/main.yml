@@ -5,8 +5,8 @@
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}"
     site: "{{ checkmk_agent_site }}"
     automation_user: "{{ checkmk_agent_user }}"
-    automation_secret: "{{ checkmk_agent_pass }}"
-    force_foreign_changes: 'false'
+    automation_secret: "{{ checkmk_agent_auth }}"
+    force_foreign_changes: "{{ checkmk_agent_force_foreign_changes }}"
   delegate_to: localhost
   run_once: 'true'
   when: checkmk_agent_auto_activate | bool

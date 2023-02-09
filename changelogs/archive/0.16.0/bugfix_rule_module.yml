@@ -1,12 +1,13 @@
 # https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
 bugfixes:
-    - Rule module - Now take the folder into account when checking for existing rules.
+  - Rule module - Now properly comparing the specified rule with the existing ones to achieve idempotency.
 
 # minor_changes:
 #   - Add agent role. Currently supports the vanilla agent.
 
-# known_issues:
-#   - This release is still in development and a heavy work in progress.
+known_issues:
+  - Rule module - comparing the specified rule with the existing ones leads to additional changes in CMK's audit log
+
 #   - Discovery module is not feature complete yet.
 #   - Downtime module is not fully idempotent yet. This affects service downtimes and deletions.
 

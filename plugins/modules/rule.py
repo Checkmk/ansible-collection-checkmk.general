@@ -20,8 +20,6 @@ version_added: "0.10.0"
 description:
     - Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
     - Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
-    - Currently, the idempotency of this module is restricted.
-    - To check if an equal rule already exists, only folder, conditions and properties are used. value_raw is currently not being compared.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -199,7 +197,7 @@ options:
                         default: false
             value_raw:
                 description:
-                    - A string representing rule values as exported from the GUI.
+                    - A string representing rule values as exported from the web interface.
                     - The string must contain valid Python syntax.
                 type: str
                 required: true
@@ -216,6 +214,10 @@ options:
 author:
     - diademiemi (@diademiemi)
     - Geoffroy Stévenne (@geof77)
+
+notes:
+    - "To achieve idempotency, this module is comparing the specified rule with the already existing
+      rules based on conditions, folder, value_raw and enabled/disabled."
 """
 
 EXAMPLES = r"""
@@ -366,6 +368,7 @@ import json
 import re
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.validation import safe_eval
 from ansible.module_utils.urls import fetch_url
 
 try:
@@ -418,16 +421,24 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     # Get rules in ruleset
     rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
 
+    (value_mod, exc) = safe_eval(rule["value_raw"], include_exceptions=True)
+    if exc is not None:
+        exit_failed(module, "value_raw in rule has invalid format")
+
     if rules is not None:
         # Loop through all rules
         for r in rules.get("value"):
+            (value_api, exc) = safe_eval(
+                r["extensions"]["value_raw"], include_exceptions=True
+            )
+            if exc is not None:
+                exit_failed("Error deserializing value_raw from API")
             if (
-                r["id"] != rule["id"]
-                and r["extensions"]["conditions"] == rule["extensions"]["conditions"]
+                r["extensions"]["folder"] == rule["folder"]
+                and r["extensions"]["conditions"] == rule["conditions"]
                 and r["extensions"]["properties"]["disabled"]
-                == rule["extensions"]["properties"]["disabled"]
-                and r["extensions"]["folder"] == rule["extensions"]["folder"]
-                and r["extensions"]["value_raw"] == rule["extensions"]["value_raw"]
+                == rule["properties"]["disabled"]
+                and value_api == value_mod
             ):
                 # If they are the same, return the ID
                 return r
@@ -435,8 +446,13 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     return None
 
 
-def get_api_repr(module, base_url, headers, ruleset, rule):
+def create_rule(module, base_url, headers, ruleset, rule):
     api_endpoint = "/domain-types/rule/collections/all"
+
+    changed = True
+    e = get_existing_rule(module, base_url, headers, ruleset, rule)
+    if e:
+        return (e["id"], not changed)
 
     params = {
         "ruleset": ruleset,
@@ -461,46 +477,17 @@ def get_api_repr(module, base_url, headers, ruleset, rule):
 
     r = json.loads(response.read().decode("utf-8"))
 
-    return r
-
-
-def create_rule(module, base_url, headers, ruleset, rule):
-
-    created = True
-
-    # get API representation of the rule
-    r = get_api_repr(module, base_url, headers, ruleset, rule)
-
-    # compare the API output to existing rules
-    e = get_existing_rule(module, base_url, headers, ruleset, r)
-
-    # if existing rule found, delete new rule and return existing id
-    if e:
-        delete_rule_by_id(module, base_url, headers, r["id"])
-        return (e["id"], not created)
-
-    # else return new rule id
-    return (r["id"], created)
+    return (r["id"], changed)
 
 
 def delete_rule(module, base_url, headers, ruleset, rule):
-
-    deleted = True
-
-    # get API representation of the rule
-    r = get_api_repr(module, base_url, headers, ruleset, rule)
-
-    # compare the API output to existing rules
-    e = get_existing_rule(module, base_url, headers, ruleset, r)
-
-    # if existing rule found, delete both
+    changed = True
+    e = get_existing_rule(module, base_url, headers, ruleset, rule)
     if e:
-        delete_rule_by_id(module, base_url, headers, r["id"])
         delete_rule_by_id(module, base_url, headers, e["id"])
-        return deleted
+        return changed
     else:
-        delete_rule_by_id(module, base_url, headers, r["id"])
-        return not deleted
+        return not changed
 
 
 def delete_rule_by_id(module, base_url, headers, rule_id):
