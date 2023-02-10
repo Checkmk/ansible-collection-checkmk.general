@@ -42,7 +42,7 @@ tribe29.checkmk.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.16.2).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.17.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -498,7 +498,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      Rule values as exported from the UI.
+      Rule values as exported from the web interface.
 
 
       .. raw:: html
@@ -703,10 +703,6 @@ Notes
 
 .. note::
    - To achieve idempotency, this module is comparing the specified rule with the already existing rules based on conditions, folder, value\_raw and enabled/disabled.
-   - To be able to compare the value\_raw, which is internally stored in python format, the module has to do a workaround: it is creating the specified rule, and then compares this rule with all existing rules.
-   - Then, in case of \ :emphasis:`state=absent`\ , it will delete both rules: the specified one and the duplicate found.
-   - Or, in case of \ :emphasis:`state=present`\ , it will delete the new rule, if a duplicate is already there, and keep it if not.
-   - This obviously leads to more rules being added and removed as one might expect. That's also visible in the pending changes and audit log.
 
 .. Seealso
 

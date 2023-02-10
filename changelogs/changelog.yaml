@@ -192,6 +192,26 @@ releases:
     - downtime.yml
     - summary.yml
     release_date: '2023-02-03'
+  0.17.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix delegation of activation in handler.
+      minor_changes:
+      - Agent role - Make forcing of foreign changes on activation by handler configurable.
+      - Rule module - Improve rule comparison logic. No dummy rule is necessary for
+        comparison anymore.
+      - contact_group module - Fix Ansible Galaxy linting findings.
+      - discovery module - Fix Ansible Galaxy linting findings.
+      - downtime module - Fix Ansible Galaxy linting findings.
+      - host_group module - Fix Ansible Galaxy linting findings.
+      - rule module - Fix Ansible Galaxy linting findings.
+      - service_group module - Fix Ansible Galaxy linting findings.
+      release_summary: Collected bugfixes.
+    fragments:
+    - agent.yml
+    - release.yml
+    - rule.yml
+    release_date: '2023-02-10'
   0.2.0:
     changes:
       known_issues:
