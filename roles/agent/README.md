@@ -12,16 +12,17 @@ None.
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_agent_version: "2.1.0p18"
+    checkmk_agent_version: "2.1.0p21"
 
 The Checkmk version of your site.
 
     checkmk_agent_edition: cre
 
-The edition you are using. Valid values are `cre`, `cfe`, `cee` and `cme`.
+The edition you are using. Valid values are `cre`, `cfe`, `cee`, `cce` and `cme`.
 - `cre`: Raw Edition, fully open source.
 - `cfe`: Free Edition, enterprise features, but limited hosts.
 - `cee`: Enterprise Edition, full enterprise features.
+- `cce`: Cloud Edition, for cloud natives.
 - `cme`: Managed Edition, for service providers.
 
 For details about the editions see: https://checkmk.com/product/editions

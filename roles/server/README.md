@@ -12,21 +12,23 @@ None.
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_server_version: "2.1.0p1"
+    checkmk_server_version: "2.1.0p21"
 
 The Checkmk version of your site.
 
     checkmk_server_edition: cre
 
-The edition you want to install. Valid values are
+The edition you want to use. Valid values are `cre`, `cfe`, `cee`, `cce` and `cme`.
 
-- `cre`
-- `cfe`
-- `cee`
-- `cce`
-- `cme`
+- `cre`: Raw Edition, fully open source.
+- `cfe`: Free Edition, enterprise features, but limited hosts.
+- `cee`: Enterprise Edition, full enterprise features.
+- `cce`: Cloud Edition, for cloud natives.
+- `cme`: Managed Edition, for service providers.
 
-Note, that you need credentials, to download the `enterprise` and `managed` versions.
+For details about the editions see: https://checkmk.com/product/editions
+
+Note, that you need credentials, to download all editions apart from `cre` and `cfe`.  
 See below variables, to set those.
 
     checkmk_server_download_user: []
