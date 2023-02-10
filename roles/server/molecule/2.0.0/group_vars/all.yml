@@ -2,7 +2,7 @@
 # General
 checkmk_version: "2.0.0p33"
 checkmk_edition: "cre"
-checkmk_site: "stable"
+checkmk_site: "my_site"
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
