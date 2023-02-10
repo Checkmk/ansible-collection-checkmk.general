@@ -41,3 +41,34 @@ checkmk_rules:
         "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
       }
       value_raw: "{'levels': (80.0, 90.0)}"
+  - ruleset: "periodic_discovery"
+    rule:
+      location:
+          position: "top"
+          folder: "/"
+      properties:
+        comment: "Created by Ansible"
+        description: "Perform Service Discovery every 5 minutes"
+        disabled: false
+      conditions:
+        host_tags: []
+        service_labels: []
+        host_labels:
+          - key: "robotmk"
+            operator: "is"
+            value: "yes"
+      value_raw: "{
+        'check_interval': 5.0,
+        'inventory_rediscovery': {
+          'activation': True,
+          'excluded_time': [],
+          'group_time': 900,
+          'mode': 2,
+          'service_filters':(
+            'combined', {'service_whitelist': ['^E2E.*']}
+          )
+        },
+        'severity_new_host_label': 0,
+        'severity_unmonitored': 0,
+        'severity_vanished': 0
+      }"

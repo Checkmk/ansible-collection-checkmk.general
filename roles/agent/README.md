@@ -134,6 +134,10 @@ Define an IP address which will be added to the host in Checkmk. This is optiona
 
 Define attributes with which the host will be added to Checkmk.
 
+    checkmk_agent_force_foreign_changes: 'false'
+
+Allow forcing foreign changes on activation by handler.
+
 ## Tags
 Tasks are tagged with the following tags:
 | Tag | Purpose |
