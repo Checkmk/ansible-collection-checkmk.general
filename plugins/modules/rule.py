@@ -230,6 +230,8 @@ def exit_failed(module, msg, id=""):
 
 
 def exit_changed(module, msg, id=""):
+    if module.check_mode:
+        msg = msg + " (check_mode: no changes made)"
     result = {"msg": msg, "id": id, "changed": True, "failed": False}
     module.exit_json(**result)
 
