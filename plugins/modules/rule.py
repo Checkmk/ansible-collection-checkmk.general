@@ -277,7 +277,7 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
                 r["extensions"]["value_raw"], include_exceptions=True
             )
             if exc is not None:
-                exit_failed("Error deserializing value_raw from API")
+                exit_failed(module, "Error deserializing value_raw from API")
             if (
                 r["extensions"]["folder"] == rule["folder"]
                 and r["extensions"]["conditions"] == rule["conditions"]
@@ -331,8 +331,7 @@ def delete_rule(module, base_url, headers, ruleset, rule):
     if e:
         delete_rule_by_id(module, base_url, headers, e["id"])
         return changed
-    else:
-        return not changed
+    return not changed
 
 
 def delete_rule_by_id(module, base_url, headers, rule_id):
@@ -340,7 +339,7 @@ def delete_rule_by_id(module, base_url, headers, rule_id):
 
     url = "%s%s%s" % (base_url, api_endpoint, rule_id)
 
-    response, info = fetch_url(module, url, headers=headers, method="DELETE")
+    info = fetch_url(module, url, headers=headers, method="DELETE")[1]
 
     if info["status"] != 204:
         exit_failed(
@@ -355,7 +354,7 @@ def get_rule_etag(module, base_url, headers, rule_id):
 
     url = base_url + api_endpoint
 
-    response, info = fetch_url(module, url, headers=headers, method="GET")
+    info = fetch_url(module, url, headers=headers, method="GET")[1]
 
     if info["status"] not in [200, 204]:
         exit_failed(
@@ -388,9 +387,9 @@ def move_rule(module, base_url, headers, rule_id, location):
 
     url = base_url + api_endpoint
 
-    response, info = fetch_url(
+    info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="POST"
-    )
+    )[1]
 
     if info["status"] not in [200, 204]:
         exit_failed(
@@ -398,8 +397,6 @@ def move_rule(module, base_url, headers, rule_id, location):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
-
-    r = json.loads(response.read().decode("utf-8"))
 
 
 def run_module():
