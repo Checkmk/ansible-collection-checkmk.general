@@ -132,6 +132,10 @@ Define an IP address which will be added to the host in Checkmk. This is optiona
         ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
         tag_agent: 'cmk-agent'
 
+Force foreign changes to be accepted:
+
+    checkmk_agent_force_foreign_changes: 'false'
+
 Define attributes with which the host will be added to Checkmk.
 
 ## Tags
