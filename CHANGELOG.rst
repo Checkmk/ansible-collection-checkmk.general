@@ -5,13 +5,38 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.17.0
+=======
+
+Release Summary
+---------------
+
+Collected bugfixes.
+
+Minor Changes
+-------------
+
+- Agent role - Make forcing of foreign changes on activation by handler configurable.
+- Rule module - Improve rule comparison logic. No dummy rule is necessary for comparison anymore.
+- contact_group module - Fix Ansible Galaxy linting findings.
+- discovery module - Fix Ansible Galaxy linting findings.
+- downtime module - Fix Ansible Galaxy linting findings.
+- host_group module - Fix Ansible Galaxy linting findings.
+- rule module - Fix Ansible Galaxy linting findings.
+- service_group module - Fix Ansible Galaxy linting findings.
+
+Bugfixes
+--------
+
+- Agent role - Fix delegation of activation in handler.
+
 v0.16.2
 =======
 
 Release Summary
 ---------------
 
-Bugfix Release
+Bugfix Release.
 
 Bugfixes
 --------
