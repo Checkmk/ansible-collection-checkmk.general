@@ -1,0 +1,9 @@
+release_summary: "Collected bugfixes."
+
+minor_changes:
+  - "contact_group module - Fix Ansible Galaxy linting findings."
+  - "discovery module - Fix Ansible Galaxy linting findings."
+  - "downtime module - Fix Ansible Galaxy linting findings."
+  - "host_group module - Fix Ansible Galaxy linting findings."
+  - "rule module - Fix Ansible Galaxy linting findings."
+  - "service_group module - Fix Ansible Galaxy linting findings."

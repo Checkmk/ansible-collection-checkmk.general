@@ -186,7 +186,7 @@ releases:
       - 'Agent role - Add explicit "become: false" to the "Discover services and labels
         on host." task.'
       - Downtime module - Fix handling of parameters start_after and end_after.
-      release_summary: Bugfix Release
+      release_summary: Bugfix Release.
     fragments:
     - agent.yml
     - downtime.yml
