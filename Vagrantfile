@@ -14,14 +14,14 @@ Vagrant.configure("2") do |config|
       srv.ssh.insert_key = false
       srv.vm.provider "virtualbox" do |v|
         v.name = 'ansible-collection'
-        v.memory = 4096
+        v.memory = 6144
         v.cpus = 2
       end
       $script = <<-SCRIPT
       apt-get update
       apt-get install -y python3-pip ca-certificates curl gnupg lsb-release
-      wget "https://download.checkmk.com/checkmk/2.1.0p18/check-mk-raw-2.1.0p18_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
-      wget "https://download.checkmk.com/checkmk/2.1.0p18/check-mk-raw-2.1.0p18_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
+      wget "https://download.checkmk.com/checkmk/2.1.0p21/check-mk-raw-2.1.0p21_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
+      wget "https://download.checkmk.com/checkmk/2.1.0p21/check-mk-raw-2.1.0p21_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
       apt-get install -y /tmp/checkmk-stable.deb
       omd create --admin-password 'd7589df1-01db-4eda-9858-dbcff8d0c361' stable
       apt-get install -y /tmp/checkmk-beta.deb
