@@ -42,7 +42,7 @@ tribe29.checkmk.service_group module -- Manage service groups in Checkmk (bulk v
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.17.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.17.1).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
