@@ -8,5 +8,5 @@
     automation_secret: "{{ checkmk_agent_auth }}"
     force_foreign_changes: "{{ checkmk_agent_force_foreign_changes }}"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
-  run_once: 'true'
+  run_once: true  # noqa run-once
   when: checkmk_agent_auto_activate | bool
