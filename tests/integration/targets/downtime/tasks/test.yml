@@ -12,7 +12,7 @@
       ipaddress: 127.0.0.1
     state: "present"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - Discover hosts."
@@ -24,7 +24,7 @@
     host_name: "{{ item.name }}"
     state: "fix_all"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - Run activation."
@@ -35,7 +35,7 @@
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: true
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true
 
 - name: "{{ outer_item.version }} - Schedule downtime on services with relative times."
   downtime:
@@ -266,7 +266,7 @@
     folder: "{{ item.folder }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - Run activation."
@@ -277,4 +277,4 @@
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: true
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true
