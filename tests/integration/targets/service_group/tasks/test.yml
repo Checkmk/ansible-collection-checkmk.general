@@ -9,7 +9,7 @@
     title: "{{ item.title | default(item.name) }}"
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
   loop: "{{ checkmk_service_groups_create }}"
 
 - name: "{{ outer_item.version }} - Should fail because of 'groups', Create service groups."
@@ -23,7 +23,7 @@
     groups: checkmk_service_groups_create
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
   loop: "{{ checkmk_service_groups_create }}"
   ignore_errors: true
 
@@ -37,7 +37,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
 
 - name: "{{ outer_item.version }} - Modify part of service groups (also checks for idempotency!)."
   service_group:
@@ -49,7 +49,7 @@
     title: "{{ item.title }}"
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
   loop: "{{ checkmk_service_groups_modify }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -62,7 +62,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
 
 - name: "{{ outer_item.version }} - Delete service groups."
   service_group:
@@ -73,7 +73,7 @@
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
   loop: "{{ checkmk_service_groups_delete }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -86,7 +86,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
 
 - name: "{{ outer_item.version }} - Delete service groups that were created at the beginning (also check for idempotency)."
   service_group:
@@ -97,7 +97,7 @@
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
   loop: "{{ checkmk_service_groups_create }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -110,7 +110,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
 
 - name: "{{ outer_item.version }} - Bulk create service groups."
   service_group:
@@ -121,7 +121,7 @@
     groups: "{{ checkmk_service_groups_create }}"
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
 
 - name: "{{ outer_item.version }} - Should fail because of 'name', Bulk create service groups."
   service_group:
@@ -133,7 +133,7 @@
     name: "test"
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
   ignore_errors: true
 
 - name: "{{ outer_item.version }} - Should fail because of 'title', Bulk create service groups."
@@ -146,7 +146,7 @@
     title: "Test"
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
   ignore_errors: true
 
 - name: "{{ outer_item.version }} - Bulk modify part of service groups (also checks for idempotency!)."
@@ -158,7 +158,7 @@
     groups: "{{ checkmk_service_groups_modify }}"
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
 
 - name: "{{ outer_item.version }} - Bulk delete service groups."
   service_group:
@@ -169,7 +169,7 @@
     groups: "{{ checkmk_service_groups_delete }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
 
 - name: "{{ outer_item.version }} - Bulk delete service groups that were created at the beginning (also check for idempotency)."
   service_group:
@@ -180,7 +180,7 @@
     groups: "{{ checkmk_service_groups_create }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
 
 - name: "{{ outer_item.version }} - Activate."
   activation:
@@ -192,4 +192,4 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once
