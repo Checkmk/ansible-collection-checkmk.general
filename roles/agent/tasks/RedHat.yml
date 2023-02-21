@@ -25,7 +25,7 @@
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.host }}"
     dest: "{{ checkmk_agent_agent.file.host }}"
-    mode: "0644"
+    mode: 0644
   when: |
     (checkmk_agent_edition == "cee" or
     checkmk_agent_edition == "cfe" or
@@ -73,7 +73,7 @@
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.cee }}"
     dest: "{{ checkmk_agent_agent.file.cee }}"
-    mode: "0644"
+    mode: 0644
   when: |
     (checkmk_agent_edition == "cee" or
     checkmk_agent_edition == "cfe" or
@@ -108,7 +108,6 @@
     - install-package
 
 - name: "RedHat Derivatives: Configure Firewall for Agent."
-  when: checkmk_agent_configure_firewall | bool and "firewalld.service" in ansible_facts.services
   block:
     - name: "RedHat Derivatives: Check if checkmk_agent_server is an IP address."
       ansible.builtin.set_fact:
@@ -123,3 +122,4 @@
         rich_rule: 'rule family="ipv4" source address={{ checkmk_agent_server_ip }} port port="6556" protocol="tcp" accept'
       when: checkmk_agent_server_ip is defined
       become: true
+  when: checkmk_agent_configure_firewall | bool and "firewalld.service" in ansible_facts.services

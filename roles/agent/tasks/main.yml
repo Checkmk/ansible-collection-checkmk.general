@@ -24,7 +24,7 @@
     url: "{{ checkmk_agent_agent.url.cre }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ checkmk_agent_agent.file.cre }}"
-    mode: "0640"
+    mode: 0640
   delegate_to: "{{ checkmk_agent_delegate_download }}"
   become: false
   when: checkmk_agent_edition == "cre"
@@ -36,7 +36,7 @@
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.cre }}"
     dest: "{{ checkmk_agent_agent.file.cre }}"
-    mode: "0644"
+    mode: 0644
   when:
     - checkmk_agent_edition == "cre"
     - checkmk_agent_delegate_download != inventory_hostname
@@ -78,7 +78,7 @@
     path: /usr/bin/cmk-agent-ctl
   register: checkmk_agent_controller_binary
 
-- name: "Register Agent for automatic Upates using User Password."  # noqa no-changed-when
+- name: "Register Agent for automatic Upates using User Password."
   become: true
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
@@ -94,7 +94,7 @@
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
     and (checkmk_agent_secret is not defined)
 
-- name: "Register Agent for automatic Upates using Automation Secret."  # noqa no-changed-when
+- name: "Register Agent for automatic Upates using Automation Secret."
   become: true
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
@@ -113,7 +113,7 @@
   ansible.builtin.meta:
     flush_handlers
 
-- name: "Register Agent for TLS."  # noqa no-changed-when
+- name: "Register Agent for TLS."
   become: true
   ansible.builtin.shell: |
     cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
