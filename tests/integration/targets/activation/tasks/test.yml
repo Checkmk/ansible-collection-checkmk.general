@@ -12,7 +12,7 @@
       ipaddress: 127.0.0.1
     state: "present"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -25,7 +25,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true
 
 - name: "{{ outer_item.version }} - Delete hosts."
   host:
@@ -37,7 +37,7 @@
     folder: "{{ item.folder }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - Activate forcing foreign changes."
@@ -50,4 +50,4 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true
