@@ -67,7 +67,7 @@ jobs:
         run: pip install ansible-lint yamllint
 
       - name: Install Checkmk collection
-        run: ansible-galaxy collection install tribe29.checkmk
+        run: ansible-galaxy collection install --timeout 120 tribe29.checkmk
 
       # Run the linting
       - name: Run yamllint on roles

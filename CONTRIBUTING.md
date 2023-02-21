@@ -92,6 +92,44 @@ The following are guidelines to keep in mind, when changing roles.
 - Tags
     - When tagging roles, separate single words with dashes (`my-custom-tag`)
 
+## Tests
+We strive to provide the best possible quality with this collection, hence we have implemented tests, that verify different aspects of code quality.
+We urge you to run the following tests locally as applicable, so the turnaround on your pull request ist as low as possible.
+
+### Sanity
+[Ansible Sanity Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html) enforce Ansible coding standards and requirements facilitating static code analysis. The `ansible-test` tool comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
+We recommend using the `--docker` option, so you get the best results, as that uses a Docker image crafted and maintained by the Ansible project.
+
+To run the tests locally, use the following command in the project root:
+
+    ansible-test sanity --docker
+
+You can also run a subset by mentioning them as follows. See `tests/integration/targets` for potential test targets).
+
+    ansible-test sanity $TEST_CASE --docker
+
+### Integration
+[Ansible Integration Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html) run test cases created by the maintainers of this project, to ensure the collection actually does what is intended. The `ansible-test` tool comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
+We strongly recommend using the `--docker` option, so you do not modify your local system with the tests.
+
+To run all tests locally, use the following command in the project root:
+
+    ansible-test integration --docker
+
+You can also run a subset by mentioning them as follows. See `ansible-test sanity --list-tests` for available tests). We strongly recommend to run all tests though.
+
+    ansible-test integration $TEST_CASE --docker
+
+### Molecule
+To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/testing-your-ansible-roles-molecule). It can be installed using the `requirements.txt`in this project or manually. The tests are crafted by the maintainers of this project to reflect real world scenarios a role would be used in. To run the tests, you need to navigate to the role directory and choose a scenario. At the time of writing those are named after the supported Checkmk versions: `2.0.0`and `2.1.0`.
+
+    cd roles/server/
+    molecule test -s 2.0.0
+    molecule test -s 2.1.0
+
+### Unit
+There are currently no unit tests.
+
 ## Releasing this collection
 Releasing this collection is automated using GitHub Actions.
 Before running the action `Release Collection` against the `main` branch, the

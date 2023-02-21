@@ -1,5 +1,8 @@
 ---
 - name: "Enable repositories on CentOS & RHEL 8."
+  when: |
+    (ansible_facts.distribution == "RedHat" or ansible_facts.distribution == "CentOS")
+    and ansible_facts.distribution_major_version == "8"
   block:
 
     - name: "Download EPEL GPG Key on CentOS & RHEL 8."
@@ -31,10 +34,6 @@
       tags:
         - enable-repos
 
-  when: |
-    (ansible_facts.distribution == "RedHat" or ansible_facts.distribution == "CentOS")
-    and ansible_facts.distribution_major_version == "8"
-
 - name: "Enable CodeReady Linux Builder repo on RHEL 8."
   become: true
   community.general.rhsm_repository:
@@ -46,7 +45,7 @@
     ansible_facts.distribution == "RedHat"
     and ansible_facts.distribution_major_version == "8"
 
-- name: "Enable powertools repository on CentOS 8."
+- name: "Enable powertools repository on CentOS 8."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: dnf config-manager --set-enabled powertools  # noqa command-instead-of-shell
   when: | # RHEL needs epel and a package URL
