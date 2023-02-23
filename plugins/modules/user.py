@@ -186,16 +186,7 @@ class User:
         "contactgroups": [],
         "pager_address": "",
         "disable_notifications": {},
-        # "enforce_password_change": False,
-        ### Only available in >2.1.0:
-        # "interface_options": {
-        #     "interface_theme": "default",
-        #     "sidebar_position": "right",
-        #     "navigation_bar_icons": "hide",
-        #     "mega_menu_icons": "topic",
-        #     "show_mode": "default"
-        # }
-    }
+    
 
     def __init__(self, username, state="present", attributes=None, etag=None):
         if attributes is None:
@@ -296,30 +287,12 @@ class User:
             attributes["disable_notifications"] = disable_notifications
 
         if _exists("roles"):
-            # roles = []
-            # try:
-            #    roles = params["roles"]
-            # except json.decoder.JSONDecodeError:
-            #    log("json.decoder.JSONDecodeError while parsing roles.")
-            #    return
             attributes["roles"] = params["roles"]
 
         if _exists("contactgroups"):
-            # contactgroups = []
-            # try:
-            #    contactgroups = json.loads(params["contactgroups"])
-            # except json.decoder.JSONDecodeError:
-            #    log("json.decoder.JSONDecodeError while parsing contactgroups.")
-            #    return
             attributes["contactgroups"] = params["contactgroups"]
 
         if _exists("authorized_sites"):
-            # authorized_sites = []
-            # try:
-            #    authorized_sites = json.loads(params["authorized_sites"])
-            # except json.decoder.JSONDecodeError:
-            #    log("json.decoder.JSONDecodeError while parsing authorized_sites.")
-            #    return
             attributes["authorized_sites"] = params["authorized_sites"]
 
         return cls(params["name"], state=params["state"], attributes=attributes)
