@@ -4,26 +4,7 @@
   gather_facts: 'no'
   vars_files:
     - ./vars/config.yml
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-      #- ./vars/users.yml
->>>>>>> 04a61c9 (Continuously developing the user.py)
-=======
->>>>>>> 422eabf (Continuously developing the user.py)
   tasks:
-    - name: "Activate changes on site - 1."
-      activation:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        force_foreign_changes: 'true'
-        sites:
-          - "{{ site }}"
-      delegate_to: localhost
-      run_once: 'true'
-
     - name: "Create users."
       cmk_user:  # noqa fqcn-builtins
         server_url: "{{ server_url }}"
@@ -33,14 +14,7 @@
         name: "{{ item.name }}"
         fullname: "{{ item.fullname }}"
         auth_type: "{{ item.auth_type }}"
-<<<<<<< HEAD
-<<<<<<< HEAD
         password: "{{ item.password }}"
-=======
->>>>>>> 04a61c9 (Continuously developing the user.py)
-=======
-        password: "{{ item.password }}"
->>>>>>> 422eabf (Continuously developing the user.py)
         roles:
           - "admin"
         authorized_sites:
@@ -51,17 +25,25 @@
       run_once: 'yes'
       loop: "{{ checkmk_users }}"
 
-    - name: "Activate changes on site - 2."
-      activation:
+    - name: "Create same users again."
+      cmk_user:  # noqa fqcn-builtins
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        force_foreign_changes: 'true'
-        sites:
+        name: "{{ item.name }}"
+        fullname: "{{ item.fullname }}"
+        auth_type: "{{ item.auth_type }}"
+        password: "{{ item.password }}"
+        roles:
+          - "admin"
+        authorized_sites:
           - "{{ site }}"
+        state: "present"
+      register: testout
       delegate_to: localhost
-      run_once: 'true'
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
 
     - name: "Edit users."
       cmk_user:  # noqa fqcn-builtins
@@ -77,27 +59,21 @@
       run_once: 'yes'
       loop: "{{ checkmk_users }}"
 
-    - name: "Activate changes on site - 3."
-      activation:
+    - name: "Edit users - again."
+      cmk_user:  # noqa fqcn-builtins
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        force_foreign_changes: 'true'
-        sites:
-          - "{{ site }}"
+        name: "{{ item.name }}"
+        contactgroups: "{{ item.contactgroups }}"
+        state: "present"
+      register: testout
       delegate_to: localhost
-      run_once: 'true'
+      run_once: 'yes'
+      loop: "{{ checkmk_users }}"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     - name: "Reset password of users."
-=======
-    - name: "Delete users."
->>>>>>> 04a61c9 (Continuously developing the user.py)
-=======
-    - name: "Reset password of users."
->>>>>>> 422eabf (Continuously developing the user.py)
       cmk_user:  # noqa fqcn-builtins
         server_url: "{{ server_url }}"
         site: "{{ site }}"
@@ -111,18 +87,6 @@
       run_once: 'yes'
       loop: "{{ checkmk_users }}"
 
-    - name: "Activate changes on site - 4."
-      activation:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        force_foreign_changes: 'true'
-        sites:
-          - "{{ site }}"
-      delegate_to: localhost
-      run_once: 'true'
-
     - name: "Delete users."
       cmk_user:  # noqa fqcn-builtins
         server_url: "{{ server_url }}"
@@ -135,15 +99,3 @@
       delegate_to: localhost
       run_once: 'yes'
       loop: "{{ checkmk_users }}"
-
-    - name: "Activate changes on site - 5."
-      activation:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        force_foreign_changes: 'true'
-        sites:
-          - "{{ site }}"
-      delegate_to: localhost
-      run_once: 'true'

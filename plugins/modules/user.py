@@ -146,17 +146,29 @@ from ansible.module_utils.urls import fetch_url
 
 
 def exit_failed(module, msg):
-    result = {"msg": "%s, log: %s" % (msg, " § ".join(LOG)), "changed": False, "failed": True}
+    result = {
+        "msg": "%s, log: %s" % (msg, " § ".join(LOG)),
+        "changed": False,
+        "failed": True,
+    }
     module.fail_json(**result)
 
 
 def exit_changed(module, msg):
-    result = {"msg": "%s, log: %s" % (msg, " § ".join(LOG)), "changed": True, "failed": False}
+    result = {
+        "msg": "%s, log: %s" % (msg, " § ".join(LOG)),
+        "changed": True,
+        "failed": False,
+    }
     module.exit_json(**result)
 
 
 def exit_ok(module, msg):
-    result = {"msg": "%s, log: %s" % (msg, " § ".join(LOG)), "changed": False, "failed": False}
+    result = {
+        "msg": "%s, log: %s" % (msg, " § ".join(LOG)),
+        "changed": False,
+        "failed": False,
+    }
     module.exit_json(**result)
 
 
@@ -164,24 +176,17 @@ def log(msg):
     LOG.append(msg)
 
 
-class User():
+class User:
 
     default_attributes = {
         "disable_login": False,
-        "contact_options": {
-            "email": "",
-            "fallback_contact": False
-        },
-        "idle_timeout": {
-            "option": "global"
-        },
-        "roles": [
-            "user"
-        ],
+        "contact_options": {"email": "", "fallback_contact": False},
+        "idle_timeout": {"option": "global"},
+        "roles": ["user"],
         "contactgroups": [],
         "pager_address": "",
         "disable_notifications": {},
-        #"enforce_password_change": False,
+        # "enforce_password_change": False,
         ### Only available in >2.1.0:
         # "interface_options": {
         #     "interface_theme": "default",
@@ -192,7 +197,6 @@ class User():
         # }
     }
 
-
     def __init__(self, username, state="present", attributes=None, etag=None):
         if attributes is None:
             self.attributes = self.default_attributes
@@ -202,27 +206,23 @@ class User():
         self.username = username
         self.etag = etag
 
-
     def __repr__(self):
         return "User(name: %s, state: %s, attributes: %s, etag: %s)" % (
             self.username,
             self.state,
             str(self.attributes),
-            self.etag
+            self.etag,
         )
 
     @classmethod
     def from_api_response(cls, module, api_params):
 
         # Determine the current state of this particular user
-        api_attributes, state, etag = get_current_user_state(
-            module, api_params
-        )
+        api_attributes, state, etag = get_current_user_state(module, api_params)
 
         attributes = copy.deepcopy(api_attributes)
 
         return cls(module.params["name"], state, attributes, etag)
-
 
     @classmethod
     def from_module(cls, params):
@@ -254,7 +254,9 @@ class User():
             if params.get("auth_type") == "password" or _exists("password"):
                 auth_option["password"] = params["password"]
                 auth_option["auth_type"] = "password"
-                auth_option["enforce_password_change"] = params["enforce_password_change"] == "True"
+                auth_option["enforce_password_change"] = (
+                    params["enforce_password_change"] == "True"
+                )
             elif params.get("auth_type") == "secret" or _exists("secret"):
                 auth_option["secret"] = params["secret"]
                 auth_option["auth_type"] = "secret"
@@ -268,7 +270,9 @@ class User():
             idle_timeout["idle_timeout_option"] = params["idle_timeout_option"]
             if params["idle_timeout_option"] == "individual":
                 if "idle_timeout_duration" in params:
-                    idle_timeout["idle_timeout_duration"] = params["idle_timeout_duration"]
+                    idle_timeout["idle_timeout_duration"] = params[
+                        "idle_timeout_duration"
+                    ]
                 else:
                     idle_timeout["idle_timeout_duration"] = 3600
             attributes["idle_timeout"] = idle_timeout
@@ -277,7 +281,9 @@ class User():
             contact_options = {}
             contact_options["email"] = params["email"]
             if "fallback_contact" in params:
-                contact_options["fallback_contact"] = params["fallback_contact"] == "True"
+                contact_options["fallback_contact"] = (
+                    params["fallback_contact"] == "True"
+                )
             attributes["contact_options"] = contact_options
 
         if _exists("disable_notifications"):
@@ -290,38 +296,40 @@ class User():
             attributes["disable_notifications"] = disable_notifications
 
         if _exists("roles"):
-            #roles = []
-            #try:
+            # roles = []
+            # try:
             #    roles = params["roles"]
-            #except json.decoder.JSONDecodeError:
+            # except json.decoder.JSONDecodeError:
             #    log("json.decoder.JSONDecodeError while parsing roles.")
             #    return
             attributes["roles"] = params["roles"]
 
         if _exists("contactgroups"):
-            #contactgroups = []
-            #try:
+            # contactgroups = []
+            # try:
             #    contactgroups = json.loads(params["contactgroups"])
-            #except json.decoder.JSONDecodeError:
+            # except json.decoder.JSONDecodeError:
             #    log("json.decoder.JSONDecodeError while parsing contactgroups.")
             #    return
             attributes["contactgroups"] = params["contactgroups"]
 
-
         if _exists("authorized_sites"):
-            #authorized_sites = []
-            #try:
+            # authorized_sites = []
+            # try:
             #    authorized_sites = json.loads(params["authorized_sites"])
-            #except json.decoder.JSONDecodeError:
+            # except json.decoder.JSONDecodeError:
             #    log("json.decoder.JSONDecodeError while parsing authorized_sites.")
             #    return
             attributes["authorized_sites"] = params["authorized_sites"]
 
         return cls(params["name"], state=params["state"], attributes=attributes)
 
+    def satisfies(self, other_instance):
+        for key, value in other_instance.attributes.items():
+            if key in self.attributes and value != self.attributes[key]:
+                return False
 
-    def is_equal_with(self, other_instance):
-        return self.attributes == other_instance.attributes
+        return True
 
 
 def get_current_user_state(module, api_params):
@@ -331,7 +339,9 @@ def get_current_user_state(module, api_params):
     api_endpoint = "/objects/user_config/" + module.params.get("name")
     url = api_params["base_url"] + api_endpoint
 
-    response, info = fetch_url(module, url, data=None, headers=api_params["headers"], method="GET")
+    response, info = fetch_url(
+        module, url, data=None, headers=api_params["headers"], method="GET"
+    )
 
     if info["status"] == 200:
         body = json.loads(response.read())
@@ -345,110 +355,32 @@ def get_current_user_state(module, api_params):
     else:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s. Body: %s"
+            "[get_current_user_state] Error calling API. HTTP code %d. Details: %s. Body: %s"
             % (info["status"], info["body"], body),
         )
 
     return extensions, current_state, etag
 
 
-def _normalize_attributes(user_attributes):
-    # Set the defaults
-    default_attributes = {
-        "auth_type": "password",
-        "password": "",
-        "disable_login": "False",
-        "email": "",
-        "fallback_contact": "False",
-        "pager_address": "",
-        "idle_timeout_duration": "3600",
-        "idle_timeout_option": "global",
-        "roles": ["user"],
-        "authorized_sites": [],
-        "contactgroups": ["all"],
-        "disable_notifications": {},
-    }
-
-    special_treatment = [
-        "idle_timeout_option",
-        "idle_timeout_duration",
-        "auth_type",
-        "password",
-        "email",
-        "fallback_contact",
-    ]
-
-    explicit_attributes = {}
-    log(str(user_attributes.items()))
-    for k, v in user_attributes.items():
-        log("processing %s (%s)" % (k,v))
-        if k not in special_treatment:
-            if v is None or v == "" or v == "None" or (k == "language" and v == "default"):
-                log("To be filled")
-                if k in default_attributes:
-                    log("Fill with default %s" % default_attributes[k])
-                    explicit_attributes[k] = default_attributes[k]
-                    log("Filled with default %s" % explicit_attributes[k])
-            else:
-                log("use what the user provided: %s" % v)
-                explicit_attributes[k] = v
-
-    # The API expects "idle_timeout", "auth_option" and "contact options" in a slightly different structure, but we
-    # want the Ansible module to be easier to use
-    if "idle_timeout_option" in user_attributes or "idle_timeout_duration" in user_attributes:
-        log("processing idle_timeout: ")
-        idle_timeout = {}
-        for key in ["option", "duration"]:
-            long_key = "idle_timeout_%s" % key
-            if long_key in user_attributes and user_attributes[long_key] is not None and user_attributes[long_key] != "":
-                idle_timeout[key] = user_attributes[long_key]
-            else:
-                idle_timeout[key] = default_attributes[long_key]
-        log(str(idle_timeout))
-        explicit_attributes["idle_timeout"] = idle_timeout
-
-    if "auth_type" in user_attributes:
-        log("processing auth_option: ")
-        auth_option = {
-            "auth_type": user_attributes.get("auth_type", default_attributes["auth_type"]),
-        }
-        if user_attributes["auth_type"] == "automation":
-            auth_option["secret"] = user_attributes.get("password", default_attributes["password"])
-        else:
-            auth_option["password"] = user_attributes.get("password", default_attributes["password"])
-        log(str(auth_option))
-        explicit_attributes["auth_option"] = auth_option
-
-    if "email" in user_attributes or "fallback_contact" in user_attributes:
-        log("processing contact_options: ")
-        contact_options = {}
-        for key in ["email", "fallback_contact"]:
-            if key in user_attributes and user_attributes[key] is not None and user_attributes[key] != "":
-                contact_options[key] = user_attributes[key]
-            else:
-                contact_options[key] = default_attributes[key]
-        log(str(contact_options))
-        explicit_attributes["contact_options"] = contact_options
-
-    log("explicit attributes: ")
-    log(str(explicit_attributes))
-
-    return explicit_attributes
-
 def set_user_attributes(module, desired_user, api_params):
     api_endpoint = "/objects/user_config/" + desired_user.username
     url = api_params["base_url"] + api_endpoint
     desired_attributes = desired_user.attributes
+    del desired_attributes["username"]  # Not needed as a param, as it's part of the URI
 
     log("set_user_attributes: %s" % str(module.jsonify(desired_attributes)))
     response, info = fetch_url(
-        module, url, module.jsonify(desired_attributes), headers=api_params["headers"], method="PUT"
+        module,
+        url,
+        module.jsonify(desired_attributes),
+        headers=api_params["headers"],
+        method="PUT",
     )
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
+            "[set_user_attributes] Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
 
@@ -461,17 +393,18 @@ def create_user(module, desired_user, api_params):
     if desired_attributes["fullname"] is None or "fullname" not in desired_attributes:
         desired_attributes["fullname"] = desired_attributes["username"]
 
-    #explicit_attributes = _normalize_attributes(desired_attributes)
-    #attributes = desired_attributes
-
     response, info = fetch_url(
-        module, url, module.jsonify(desired_attributes), headers=api_params["headers"], method="POST"
+        module,
+        url,
+        module.jsonify(desired_attributes),
+        headers=api_params["headers"],
+        method="POST",
     )
 
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
+            "[create_user] Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
 
@@ -480,12 +413,14 @@ def delete_user(module, api_params):
     api_endpoint = "/objects/user_config/" + module.params.get("name")
     url = api_params["base_url"] + api_endpoint
 
-    response, info = fetch_url(module, url, data=None, headers=api_params["headers"], method="DELETE")
+    response, info = fetch_url(
+        module, url, data=None, headers=api_params["headers"], method="DELETE"
+    )
 
     if info["status"] != 204:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
+            "[delete_user] Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
 
@@ -493,9 +428,6 @@ def delete_user(module, api_params):
 def run_module():
 
     # define available arguments/parameters a user can pass to the module
-    # TODO: Wenn Parameter nicht gesetzt ist, dann soll
-    # - bei einem "create" ein Default verwendet werden
-    # - bei einem "change" die gesetzten Werte nicht verändert werden.
     module_args = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
@@ -512,7 +444,9 @@ def run_module():
         fallback_contact=dict(type="bool"),
         pager_address=dict(type="str"),
         idle_timeout_duration=dict(type="str"),
-        idle_timeout_option=dict(type="str", choices=["global", "disable", "individual"]),
+        idle_timeout_option=dict(
+            type="str", choices=["global", "disable", "individual"]
+        ),
         roles=dict(type="raw"),
         authorized_sites=dict(type="raw"),
         contactgroups=dict(type="raw"),
@@ -527,7 +461,7 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
     log("params: %s" % module.params)
-    #exit_ok(module, "early exit.")
+    # exit_ok(module, "early exit.")
 
     # Use the parameters to initialize some common api variables
     api_params = {}
@@ -549,7 +483,7 @@ def run_module():
     # Determine desired state and attributes
     desired_user = User.from_module(module.params)
     log("desired_user: %s" % str(desired_user))
-    #exit_ok(module, "early exit")
+    # exit_ok(module, "early exit")
     desired_state = desired_user.state
 
     current_user = User.from_api_response(module, api_params)
@@ -558,12 +492,12 @@ def run_module():
 
     # Handle the user accordingly to above findings and desired state
     if desired_state in ["present", "reset_password"] and current_state == "present":
-        # TODO: set_user_attributes funktioniert noch nicht richtig.
-        # Test in ansible_210: user löschen und dann Playbook ausführen:
-        # cp plugins/modules/user.py plugins/modules/cmk_user.py; ansible-playbook -i localhost, playbooks/test-user.yml -e automation_secret=4cd592a6-dc04-4bb1-b5e4-1f5852713520 -v --step
         api_params["headers"]["If-Match"] = current_user.etag
 
-        if not desired_user.is_equal_with(current_user) or desired_state == "reset_password":
+        if (
+            not current_user.satisfies(desired_user)
+            or desired_state == "reset_password"
+        ):
             set_user_attributes(module, desired_user, api_params)
             exit_changed(module, "User attributes changed.")
         else:
@@ -581,12 +515,11 @@ def run_module():
         exit_changed(module, "User deleted.")
 
     else:
-        exit_failed(module, "Unknown error")
+        exit_failed(module, "[run_module] Unknown error")
 
 
 def main():
     run_module()
-
 
 
 if __name__ == "__main__":
