@@ -222,7 +222,7 @@ class User:
             attributes["fullname"] = params["fullname"]
 
         if _exists("disable_login"):
-            attributes["disable_login"] = params["disable_login"] == "True"
+            attributes["disable_login"] = params["disable_login"]
 
         if _exists("pager_address"):
             attributes["pager_address"] = params["pager_address"]
@@ -236,9 +236,7 @@ class User:
             if params.get("auth_type") == "password" and _exists("password"):
                 auth_option["password"] = params["password"]
                 auth_option["auth_type"] = "password"
-                auth_option["enforce_password_change"] = (
-                    params["enforce_password_change"] == "True"
-                )
+                auth_option["enforce_password_change"] = params["enforce_password_change"]
             elif params.get("auth_type") == "secret" and _exists("password"):
                 auth_option["secret"] = params["password"]
                 auth_option["auth_type"] = "secret"
@@ -263,9 +261,7 @@ class User:
             contact_options = {}
             contact_options["email"] = params["email"]
             if "fallback_contact" in params:
-                contact_options["fallback_contact"] = (
-                    params["fallback_contact"] == "True"
-                )
+                contact_options["fallback_contact"] = params["fallback_contact"] == True
             attributes["contact_options"] = contact_options
 
         if _exists("disable_notifications"):
@@ -290,6 +286,8 @@ class User:
 
     def satisfies(self, other_instance):
         for key, value in other_instance.attributes.items():
+            if key in ["auth_option", "password"]:
+                continue
             if key in self.attributes and value != self.attributes[key]:
                 return False
 
@@ -448,7 +446,7 @@ def run_module():
     # Determine desired state and attributes
     desired_user = User.from_module(module.params)
     log("desired_user: %s" % str(desired_user))
-    # exit_ok(module, "early exit")
+    #exit_ok(module, "early exit")
     desired_state = desired_user.state
 
     current_user = User.from_api_response(module, api_params)
