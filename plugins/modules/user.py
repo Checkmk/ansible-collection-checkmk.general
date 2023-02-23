@@ -186,6 +186,7 @@ class User:
         "contactgroups": [],
         "pager_address": "",
         "disable_notifications": {},
+    }
     
 
     def __init__(self, username, state="present", attributes=None, etag=None):
