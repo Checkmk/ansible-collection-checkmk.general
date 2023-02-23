@@ -131,7 +131,6 @@ message:
 
 LOG = []
 
-import ast
 import copy
 import json
 
