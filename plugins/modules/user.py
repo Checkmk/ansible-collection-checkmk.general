@@ -299,6 +299,7 @@ class User:
 def get_current_user_state(module, api_params):
     extensions = {}
     etag = ""
+    current_state = ""
 
     api_endpoint = "/objects/user_config/" + module.params.get("name")
     url = api_params["base_url"] + api_endpoint
