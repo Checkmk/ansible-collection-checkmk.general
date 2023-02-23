@@ -4,13 +4,12 @@
 # Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
-import copy
 
 __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: cmk_user
+module: user
 
 short_description: Manage users in Checkmk.
 
@@ -34,27 +33,22 @@ options:
     password:
         description: The password or secret for login.
         type: str
-        default: /
     enforce_password_change:
         description: If set to true, the user will be forced to change his/her password at the next login.
         type: bool
-        default: false
     auth_type:
         description: The authentication type.
         type: str
-        default: password
         choices: [password, secret]
     disable_login:
         description: The user can be blocked from login but will remain part of the site. The disabling does not affect notification and alerts.
         type: bool
-        default: false
     email:
         description: The mail address of the user. Required if the user is a monitoring contact and receives notifications via mail.
         type: str
     fallback_contact:
         description: In case none of your notification rules handles a certain event a notification will be sent to the specified email.
         type: bool
-        default: false
     pager_address:
         description: The pager address.
         type: str
@@ -64,32 +58,30 @@ options:
     idle_timeout_option:
         description: Specify if the idle timeout should use the global configuration, be disabled or use an individual duration
         type: str
-        default: disable
         choices: [global, disable, individual]
     roles:
         description: The list of assigned roles to the user.
         type: raw
-        default: {user}
     authorized_sites:
         description: The names of the sites the user is authorized to handle.
         type: raw
-        default: {}
     contactgroups:
-        description: Assign the user to one or multiple contact groups. If no contact group is specified then no monitoring contact will be created for the user.
+        description: Assign the user to one or multiple contact groups. If no contact group is specified then no monitoring contact will be created.
         type: raw
-        default: {all}
     disable_notifications:
         description: Option if all notifications should be temporarily disabled.
-        type: bool
-        default: false
+        type: raw
     language:
         description: Configure the language to be used by the user in the user interface. Omitting this will configure the default language.
         type: str
-        default: default
         choices: [default, en, de, ro]
+    state:
+        description: Desired state
+        type: str
+        default: present
+        choices: [present, absent, reset_password]
 
 author:
-    - Robin Gierse (@robin-tribe29)
     - Lars Getwan (@lgetwan)
 """
 
@@ -139,8 +131,9 @@ message:
 
 LOG = []
 
-import json
 import ast
+import copy
+import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 
@@ -187,7 +180,6 @@ class User:
         "pager_address": "",
         "disable_notifications": {},
     }
-    
 
     def __init__(self, username, state="present", attributes=None, etag=None):
         if attributes is None:
@@ -238,19 +230,17 @@ class User:
         if _exists("language") and params["language"] != "default":
             attributes["language"] = params["language"]
 
-        if _exists("auth_type") or _exists("password") or _exists("secret"):
+        if _exists("auth_type"):
             auth_option = {}
-            log("auth_type: %s" % params.get("auth_type", "unset"))
-            log("exists password: %s" % str(_exists("password")))
 
-            if params.get("auth_type") == "password" or _exists("password"):
+            if params.get("auth_type") == "password" and _exists("password"):
                 auth_option["password"] = params["password"]
                 auth_option["auth_type"] = "password"
                 auth_option["enforce_password_change"] = (
                     params["enforce_password_change"] == "True"
                 )
-            elif params.get("auth_type") == "secret" or _exists("secret"):
-                auth_option["secret"] = params["secret"]
+            elif params.get("auth_type") == "secret" and _exists("password"):
+                auth_option["secret"] = params["password"]
                 auth_option["auth_type"] = "secret"
             else:
                 log("Incomplete auth_type/password/secret combination.")
@@ -405,13 +395,13 @@ def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
+        validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        name=dict(required=True, type=str),
+        name=dict(required=True, type="str"),
         fullname=dict(type="str"),
-        password=dict(type="str"),
+        password=dict(type="str", no_log=True),
         enforce_password_change=dict(type="bool"),
-        secret=dict(type="str"),
         auth_type=dict(type="str", choices=["password", "secret"]),
         disable_login=dict(type="bool"),
         email=dict(type="str"),
