@@ -118,6 +118,33 @@ EXAMPLES = r"""
     roles:
         - "registration"
     state: "present"
+
+# Create a detailed user.
+- name: "Create a detailed user."
+  tribe29.checkmk.user:
+    server_url: "http://localhost/"
+    site: "local"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    name: "horst"
+    fullname: "Horst Schlämmer"
+    auth_type: "password"
+    password: "uschi"
+    enforce_password_change: True
+    email: "checker@grevenbroich.de"
+    fallback_contact: True
+    pager_address: 089-123456789
+    contactgroups:
+      - "sport"
+      - "vereinsgeschehen"
+      - "lokalpolitik"
+    disable_notifications: '{"disable": true, "timerange": { "start_time": "2023-02-23T15:06:48+00:00", "end_time": "2023-02-23T16:06:48+00:00"}}'
+    language: "de"
+    roles:
+      - "user"
+    authorized_sites:
+      - "{{ site }}"
+    state: "present"
 """
 
 RETURN = r"""
