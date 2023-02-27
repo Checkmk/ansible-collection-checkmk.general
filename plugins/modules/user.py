@@ -263,9 +263,9 @@ class User:
             if params.get("auth_type") == "password" and _exists("password"):
                 auth_option["password"] = params["password"]
                 auth_option["auth_type"] = "password"
-                auth_option["enforce_password_change"] = bool(params[
-                    "enforce_password_change"
-                ])
+                auth_option["enforce_password_change"] = bool(
+                    params["enforce_password_change"]
+                )
             elif params.get("auth_type") == "secret" and _exists("password"):
                 auth_option["secret"] = params["password"]
                 auth_option["auth_type"] = "secret"

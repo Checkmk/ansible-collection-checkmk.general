@@ -89,7 +89,7 @@
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     name: "{{ item.name }}"
-    contact_groups: "{{ item.contactgroups }}"
+    contactgroups: "{{ item.contactgroups }}"
     state: "present"
   delegate_to: localhost
   run_once: true
