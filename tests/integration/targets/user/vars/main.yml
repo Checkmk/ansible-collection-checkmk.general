@@ -41,4 +41,3 @@ checkmk_users:
     contactgroups:
         - team3
     fallback_contact: false
-
