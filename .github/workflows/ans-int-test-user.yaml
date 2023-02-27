@@ -1,6 +1,6 @@
 # https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
 
-name: Ansible Integration Tests for user Module
+name: Ansible Integration Tests for User Module
 on:
   workflow_dispatch:
   pull_request:

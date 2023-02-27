@@ -15,7 +15,7 @@ short_description: Manage users in Checkmk.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "0.0.1"
+version_added: "0.18.0"
 
 description:
 - Create and delete users within Checkmk.
