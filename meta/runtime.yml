@@ -12,6 +12,7 @@ action_groups:
     - host_group
     - service_group
     - contact_group
+    - user
 
 # plugin_routing:
 #   modules:
