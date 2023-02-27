@@ -5,7 +5,8 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    name: "{{ item.name }}"
+    name: "{{ item }}"
+    title: "{{ item }}"
     state: "present"
   delegate_to: localhost
   run_once: true
