@@ -263,9 +263,9 @@ class User:
             if params.get("auth_type") == "password" and _exists("password"):
                 auth_option["password"] = params["password"]
                 auth_option["auth_type"] = "password"
-                auth_option["enforce_password_change"] = params[
+                auth_option["enforce_password_change"] = bool(params[
                     "enforce_password_change"
-                ]
+                ])
             elif params.get("auth_type") == "secret" and _exists("password"):
                 auth_option["secret"] = params["password"]
                 auth_option["auth_type"] = "secret"
@@ -360,7 +360,6 @@ def set_user_attributes(module, desired_user, api_params):
     desired_attributes = desired_user.attributes
     del desired_attributes["username"]  # Not needed as a param, as it's part of the URI
 
-    log("set_user_attributes: %s" % str(module.jsonify(desired_attributes)))
     response, info = fetch_url(
         module,
         url,
@@ -452,7 +451,6 @@ def run_module():
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
-    log("params: %s" % module.params)
 
     # Use the parameters to initialize some common api variables
     api_params = {}
