@@ -87,6 +87,7 @@
   register: checkmk_agent_update_state
   when: |
     (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
     and checkmk_agent_updater_binary.stat.exists | bool
@@ -103,6 +104,7 @@
   register: checkmk_agent_update_state
   when: |
     (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
     and checkmk_agent_updater_binary.stat.exists | bool
