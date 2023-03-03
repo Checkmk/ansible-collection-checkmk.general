@@ -1,0 +1,43 @@
+---
+checkmk_versions:
+  - version: "2.1.0p20"
+    site: "stable"
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
+site: "test"
+server_url: "http://127.0.0.1/"
+automation_user: "cmkadmin"
+automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
+
+checkmk_contact_groups:
+  - team1
+  - team2
+  - team3
+
+checkmk_users:
+  - name: user1
+    fullname: User Eins
+    password: "123"
+    newpassword: "abc"
+    auth_type: password
+    email: 123@company.com
+    contactgroups:
+      - team1
+    fallback_contact: true
+  - name: user2
+    fullname: User Zwei
+    password: "234"
+    newpassword: "bcd"
+    auth_type: password
+    email: 234@company.com
+    contactgroups:
+      - team2
+    fallback_contact: true
+  - name: user3
+    fullname: User Drei
+    password: "345"
+    newpassword: "cde"
+    auth_type: password
+    email: 345@company.com
+    contactgroups:
+      - team3
+    fallback_contact: false
