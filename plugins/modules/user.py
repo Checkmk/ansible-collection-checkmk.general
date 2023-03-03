@@ -428,7 +428,7 @@ def run_module():
         name=dict(required=True, type="str"),
         fullname=dict(type="str"),
         password=dict(type="str", no_log=True),
-        enforce_password_change=dict(type="bool"),
+        enforce_password_change=dict(type="bool", no_log=False),
         auth_type=dict(type="str", choices=["password", "secret"]),
         disable_login=dict(type="bool"),
         email=dict(type="str"),
