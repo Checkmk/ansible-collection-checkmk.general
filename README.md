@@ -44,6 +44,8 @@ For any form of support queries or requests refer to [SUPPORT.md](SUPPORT.md).
 For information about the structure and organization of this repository
 have a look at [STRUCTURE.md](docs/STRUCTURE.md).
 
+You can find playbooks, demonstrating several aspects of this collection in the folder [playbooks/demo/](playbooks/demo/).
+
 ## Included content
 
 <!--start collection content-->
@@ -71,7 +73,7 @@ Name | Description | Tests
 [tribe29.checkmk.rule](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rule.py)|Manage rules.|[![Integration Tests for Rule Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-rule.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-rule.yaml)
 [tribe29.checkmk.service_group](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/service_group.py)|Manage service groups.|[![Integration Tests for Service Group Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-service_group.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-service_group.yaml)
 [tribe29.checkmk.tag_group](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/tag_group.py)|Manage tag groups.|[![Integration Tests for Tag Group Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-tag_group.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-tag_group.yaml)
-
+[tribe29.checkmk.user](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/user.py)|Manage tag groups.|[![Integration Tests for Tag Group Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-user.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-user.yaml)
 ### Roles
 Name | Description | Tests
 --- | --- | ---
@@ -80,37 +82,9 @@ Name | Description | Tests
 <!--end collection content-->
 
 ## Installing this collection
-
-### Locally
-
-You can install the Checkmk collection locally, if you acquired a tarball from the [releases page](https://github.com/tribe29/ansible-collection-tribe29.checkmk/releases) as follows:
-
-    ansible-galaxy collection install /path/to/tribe29-checkmk-X.Y.Z.tar.gz
-
-You can also include it in a `requirements.yml` file and install it with
-`ansible-galaxy collection install -r requirements.yml`, using the format:
-```yaml
----
-collections:
-  - source: /path/to/tribe29-checkmk-X.Y.Z.tar.gz
-    type: file
-```
-
-### From the Galaxy
-
-You can install the Checkmk collection with the Ansible Galaxy CLI:
+Please refer to the [official Ansible documentation](https://docs.ansible.com/ansible/latest/collections_guide/collections_installing.html) on how to install this collection. The most basic way is this:
 
     ansible-galaxy collection install tribe29.checkmk
-
-You can also include it in a `requirements.yml` file and install it with
-`ansible-galaxy collection install -r requirements.yml`, using the format:
-
-```yaml
----
-collections:
-  - name: tribe29.checkmk
-    version: X.Y.Z
-```
 
 ## Using this collection
 
