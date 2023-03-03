@@ -1,0 +1,365 @@
+---
+- name: "Test all modules."
+  hosts: test
+  gather_facts: 'no'
+  vars_files:
+    - ./vars/config.yml
+  tasks:
+    - name: "Activate changes on site - Showcase no changes."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
+
+    - name: "Create folder."
+      folder:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
+        name: "{{ item.name }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_folders }}"
+
+    - name: "Create host."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        attributes:
+          site: "{{ site }}"
+          ipaddress: 127.0.0.1
+        state: "present"
+      delegate_to: localhost
+
+    - name: "Discover services on host."
+      discovery:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        state: "fix_all"
+      delegate_to: localhost
+
+    - name: "Create service groups."
+      service_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        title: "{{ item.title | default(item.name) }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_service_groups_create }}"
+
+    - name: "Create host groups."
+      host_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        title: "{{ item.title | default(item.name) }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_service_groups_create }}"
+
+    - name: "Create contact groups."
+      contact_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        title: "{{ item.title | default(item.name) }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_service_groups_create }}"
+
+    - name: "Create tag groups."
+      tag_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        title: "{{ item.title | default(item.name) }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_service_groups_create }}"
+
+    - name: "Pause to review first set of changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+
+    - name: "Activate changes on site - Showcase creation of hosts and folders."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
+
+    - name: "Change host attributes."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        attributes:
+          site: "{{ site }}"
+          alias: "Important Server"
+          ipaddress: 127.0.0.2
+        state: "present"
+      delegate_to: localhost
+
+    - name: "Move host to another folder."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "/bar"
+        state: "present"
+      delegate_to: localhost
+
+    - name: "Create contact groups."
+      contact_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        title: "{{ item.title | default(item.name) }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_contact_groups_create }}"
+
+    - name: "Pause to review second set of changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+
+    - name: "Downtime 1 - on services with relative times"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 1 - on services with relative timestamps
+        start_after:
+          hours: 2
+          minutes: 30
+        end_after:
+          hours: 1
+          minutes: 30
+        service_descriptions:
+          - "CPU utilization"
+          - Memory
+      delegate_to: localhost
+
+    - name: "Downtime 2 - on services with absolute timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 2 - on services with absolute timestamps
+        start_time: 2024-03-25T20:39:28Z
+        end_time: 2024-03-26T20:39:28Z
+        service_descriptions:
+          - "CPU utilization"
+          - Memory
+      delegate_to: localhost
+
+    - name: "Downtime 3 - on services without timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 3 - on services without timestamps
+        service_descriptions:
+          - "CPU utilization"
+          - Memory
+        end_after:
+          minutes: 1
+      delegate_to: localhost
+
+    - name: "Downtime 4 - on host with relative times"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 4 - on host with relative timestamps
+        start_after:
+          hours: 2
+          minutes: 30
+        end_after:
+          hours: 1
+          minutes: 30
+      delegate_to: localhost
+
+    - name: "Downtime 5 - on host with absolute timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 5 - on host with absolute timestamps
+        start_time: 2024-03-25T20:39:28Z
+        end_time: 2024-03-26T20:39:28Z
+      delegate_to: localhost
+
+    - name: "Downtime 6 - on host without timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 6 - on host without timestamps
+      delegate_to: localhost
+
+    - name: "Pause to review second set of changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+
+    - name: "Downtime delete 1 - service downtimes"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        service_descriptions:
+          - "CPU utilization"
+          - Memory
+        state: absent
+      delegate_to: localhost
+
+    - name: "Downtime delete 2 - host downtimes"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        state: absent
+      delegate_to: localhost
+
+    - name: "Pause to review second set of changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+
+    - name: "Activate changes on site - Showcase changes to existing objects."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
+
+    - name: "Delete service groups."
+      service_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_service_groups_create }}"
+
+    - name: "Delete contact groups."
+      contact_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_contact_groups_create }}"
+
+    - name: "Delete Host."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        state: "absent"
+      delegate_to: localhost
+
+    - name: "Delete folders."
+      folder:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
+        name: "{{ item.name }}"
+        state: "absent"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_folders }}"
+
+    - name: "Activate changes on site - Showcase host and folders were deleted"
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
