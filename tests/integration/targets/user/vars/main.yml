@@ -21,7 +21,7 @@ checkmk_users:
     auth_type: password
     email: 123@company.com
     contactgroups:
-        - team1
+      - team1
     fallback_contact: true
   - name: user2
     fullname: User Zwei
@@ -30,7 +30,7 @@ checkmk_users:
     auth_type: password
     email: 234@company.com
     contactgroups:
-        - team2
+      - team2
     fallback_contact: true
   - name: user3
     fullname: User Drei
@@ -39,5 +39,5 @@ checkmk_users:
     auth_type: password
     email: 345@company.com
     contactgroups:
-        - team3
+      - team3
     fallback_contact: false
