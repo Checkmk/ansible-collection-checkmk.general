@@ -10,6 +10,7 @@
       Accept: "application/octet-stream"
   when: |
     checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme"
   become: false
@@ -28,6 +29,7 @@
     mode: "0644"
   when: |
     (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
     and checkmk_agent_download_state.status == 200
@@ -44,6 +46,7 @@
     disable_gpg_check: true
   when: |
     (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
     and checkmk_agent_download_state.status == 200
@@ -62,6 +65,7 @@
   become: false
   when: |
     (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
     and checkmk_agent_download_state.status != 200
@@ -77,6 +81,7 @@
     mode: "0644"
   when: |
     (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
     and checkmk_agent_download_state.status != 200
@@ -93,6 +98,7 @@
     disable_gpg_check: true
   when: |
     (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
     and checkmk_agent_download_state.status != 200
