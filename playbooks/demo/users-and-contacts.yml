@@ -3,7 +3,9 @@
   hosts: test
   gather_facts: 'no'
   vars_files:
-    - ../vars/demo.yml
+    - ../vars/auth.yml      # This vars file contains details about your site
+    - ../vars/groups.yml    # This vars file contains the contact groups
+    - ../vars/users.yml     # This vars file contains the user to manage
   tasks:
     - name: "Create contact groups."
       contact_group:

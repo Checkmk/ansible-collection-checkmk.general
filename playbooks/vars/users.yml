@@ -1,0 +1,29 @@
+---
+checkmk_users:
+  - name: user1
+    fullname: User Eins
+    password: "123"
+    newpassword: "abc"
+    auth_type: password
+    email: 123@company.com
+    contactgroups:
+      - server
+    fallback_contact: true
+  - name: user2
+    fullname: User Zwei
+    password: "234"
+    newpassword: "bcd"
+    auth_type: password
+    email: 234@company.com
+    contactgroups:
+      - linux
+    fallback_contact: true
+  - name: user3
+    fullname: User Drei
+    password: "345"
+    newpassword: "cde"
+    auth_type: password
+    email: 345@company.com
+    contactgroups:
+      - network
+    fallback_contact: false
