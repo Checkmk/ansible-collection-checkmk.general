@@ -3,7 +3,8 @@
   hosts: test
   gather_facts: 'no'
   vars_files:
-    - ../vars/demo.yml
+    - ../vars/auth.yml      # This vars file provides details about your site
+    - ../vars/folders.yml   # This vars file contains the folders to manage
   tasks:
     - name: "Create folders."
       folder:

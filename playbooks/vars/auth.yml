@@ -1,0 +1,12 @@
+---
+# Provice the URL and credentials to your Checkmk site here #
+server_url: "http://localhost/"
+site: "my_site"
+automation_user: "cmkadmin"
+automation_secret: "cmk"
+checkmk_agent_user: "{{ automation_user }}"
+checkmk_agent_pass: "{{ automation_secret }}"
+
+checkmk_version: "2.1.0p23"
+checkmk_edition: "cre"
+#############################################################
