@@ -5,6 +5,7 @@ checkmk_server_server_stable_os:
   - Ubuntu-18
   - Ubuntu-20
   - Ubuntu-22
+  - AlmaLinux-8
   - CentOS-7
   - CentOS-8
   - RedHat-7

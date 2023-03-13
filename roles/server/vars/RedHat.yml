@@ -27,6 +27,10 @@ checkmk_server_prerequisites_per_distro:
     - firewalld
     - dnf-plugins-core
     - python3-libsemanage
+  AlmaLinux:
+    - firewalld
+    - dnf-plugins-core
+    - python3-libsemanage
 
 checkmk_server_prerequisites: "{{ checkmk_server_prerequisites_per_distro[ansible_facts.distribution ~ '-' ~ ansible_facts.distribution_major_version]
   | default( checkmk_server_prerequisites_per_distro[ansible_facts.distribution]) }}"
