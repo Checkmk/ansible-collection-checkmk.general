@@ -1,0 +1,126 @@
+---
+- name: "Showcase host and folder modules."
+  hosts: test
+  gather_facts: 'no'
+  vars_files:
+    - ../vars/demo.yml
+  tasks:
+    - name: "Create folders."
+      folder:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
+        name: "{{ item.name }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_folders }}"
+
+    - name: "Create hosts."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        attributes:
+          site: "{{ site }}"
+          ipaddress: 127.0.0.1
+        state: "present"
+      delegate_to: localhost
+
+    - name: "Pause to review first set of changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+
+    - name: "Activate changes on site."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'
+
+    - name: "Change host attributes."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        attributes:
+          site: "{{ site }}"
+          alias: "Important Server"
+          ipaddress: 127.0.0.2
+        state: "present"
+      delegate_to: localhost
+
+    - name: "Move host to another folder."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "/bar"
+        state: "present"
+      delegate_to: localhost
+
+    - name: "Pause to review second set of changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+
+    - name: "Delete Hosts."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        state: "absent"
+      delegate_to: localhost
+
+    - name: "Delete folders."
+      folder:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
+        name: "{{ item.name }}"
+        state: "absent"
+      register: testout
+      delegate_to: localhost
+      run_once: 'yes'
+      loop: "{{ checkmk_folders }}"
+
+    - name: "Pause to review third set of changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+
+    - name: "Activate changes on site."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: 'true'

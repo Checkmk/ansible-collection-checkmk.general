@@ -24,7 +24,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: '3.10'
 
       - name: Install Dependencies
         run: |
@@ -82,6 +82,7 @@ jobs:
           mkdir -p build/src
           cp $files build/src
           cp -rf $directories build/src
+          rm -rf build/src/roles/*/molecule
         env:
           files: "CHANGELOG.rst LICENSE README.md ansible.cfg galaxy.yml"
           directories: "changelogs docs meta playbooks plugins roles"

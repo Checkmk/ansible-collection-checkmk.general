@@ -213,6 +213,11 @@ releases:
     - rule.yml
     release_date: '2023-02-10'
   0.17.1:
+    changes:
+      minor_changes:
+      - Agent role - Add cloud edition support.
+    fragments:
+    - agent.yml
     release_date: '2023-02-17'
   0.2.0:
     changes:

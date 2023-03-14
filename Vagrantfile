@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
       end
       $script = <<-SCRIPT
       apt-get update
-      apt-get install -y python3-pip ca-certificates curl gnupg lsb-release
+      apt-get install -y python3.9 python3-pip ca-certificates curl gnupg lsb-release
       wget "https://download.checkmk.com/checkmk/2.1.0p21/check-mk-raw-2.1.0p21_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
       wget "https://download.checkmk.com/checkmk/2.1.0p21/check-mk-raw-2.1.0p21_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
       apt-get install -y /tmp/checkmk-stable.deb
