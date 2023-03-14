@@ -5,3 +5,4 @@ ansible-lint >= 6.0.0
 jinja2 >= 3.0.0
 molecule >= 3.5.0
 molecule-docker >= 1.1.0
+yamllint >=1.0.0

@@ -1,4 +1,4 @@
 ---
 collections:
   - name: tribe29.checkmk
-    version: 0.17.1
+    version: 0.18.0

@@ -8,6 +8,11 @@ tribe29.checkmk Release Notes
 v0.17.1
 =======
 
+Minor Changes
+-------------
+
+- Agent role - Add cloud edition support.
+
 v0.17.0
 =======
 

@@ -97,26 +97,28 @@ We strive to provide the best possible quality with this collection, hence we ha
 We urge you to run the following tests locally as applicable, so the turnaround on your pull request ist as low as possible.
 
 ### Sanity
-[Ansible Sanity Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html) enforce Ansible coding standards and requirements facilitating static code analysis. The `ansible-test` tool comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
-We recommend using the `--docker` option, so you get the best results, as that uses a Docker image crafted and maintained by the Ansible project.
+[Ansible Sanity Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html) enforce Ansible coding standards and requirements facilitating static code analysis. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
+We recommend using the `--docker` option, so you get the best results, as that uses a Docker image crafted and maintained by the Ansible project.  
+**Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
 
 To run the tests locally, use the following command in the project root:
 
     ansible-test sanity --docker
 
-You can also run a subset by mentioning them as follows. See `tests/integration/targets` for potential test targets).
+You can also run a subset by mentioning them as follows. See `ansible-test sanity --list-tests` for available tests). We strongly recommend to run all tests though.
 
     ansible-test sanity $TEST_CASE --docker
 
 ### Integration
-[Ansible Integration Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html) run test cases created by the maintainers of this project, to ensure the collection actually does what is intended. The `ansible-test` tool comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
-We strongly recommend using the `--docker` option, so you do not modify your local system with the tests.
+[Ansible Integration Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html) run test cases created by the maintainers of this project, to ensure the collection actually does what is intended. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
+We strongly recommend using the `--docker` option, so you do not modify your local system with these tests.  
+**Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
 
 To run all tests locally, use the following command in the project root:
 
     ansible-test integration --docker
 
-You can also run a subset by mentioning them as follows. See `ansible-test sanity --list-tests` for available tests). We strongly recommend to run all tests though.
+You can also run a subset by mentioning them as follows. See `tests/integration/targets` for potential test targets).
 
     ansible-test integration $TEST_CASE --docker
 
