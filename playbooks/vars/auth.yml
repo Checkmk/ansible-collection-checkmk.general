@@ -10,3 +10,6 @@ checkmk_agent_pass: "{{ automation_secret }}"
 checkmk_version: "2.1.0p23"
 checkmk_edition: "cre"
 #############################################################
+
+# Set to true, to skip the break points:
+run_unattended: false

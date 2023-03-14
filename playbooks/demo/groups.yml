@@ -1,7 +1,7 @@
 ---
 - name: "Showcase group modules."
   hosts: test
-  gather_facts: 'no'
+  gather_facts: false
   vars_files:
     - ../vars/auth.yml      # This vars file contains details about your site
     - ../vars/groups.yml    # This vars file contains the groups to manage
@@ -65,6 +65,7 @@
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
           "Press <Enter> to continue."
+      when: not run_unattended | bool
 
     - name: "Activate changes on site - Showcase creation of groups."
       activation:
