@@ -4,6 +4,7 @@ major_changes:
 
 known_issues:  
   - User module - The parameter "interface_options" is not yet usable
+  - User module - Currently no automation users can be created due to a mismatch of 'auth_type'
 
 # known_issues:
 #   - This release is still in development and a heavy work in progress.
