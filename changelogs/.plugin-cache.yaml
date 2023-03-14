@@ -61,9 +61,14 @@ plugins:
       name: tag_group
       namespace: ''
       version_added: 0.11.0
+    user:
+      description: Manage users in Checkmk.
+      name: user
+      namespace: ''
+      version_added: 0.18.0
   netconf: {}
   shell: {}
   strategy: {}
   test: {}
   vars: {}
-version: 0.17.1
+version: 0.18.0
