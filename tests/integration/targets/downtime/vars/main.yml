@@ -2,9 +2,9 @@
 checkmk_versions:
   - version: "2.2.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
     site: "beta"
-  - version: "2.1.0p21"
+  - version: "2.1.0p24"
     site: "stable"
-  - version: "2.0.0p33"
+  - version: "2.0.0p34"
     site: "oldstable"
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
 server_url: "http://127.0.0.1/"

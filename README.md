@@ -33,7 +33,7 @@ Although the Ansible project notes, that collections should have no or very litt
 ## Getting help
 
 For documentation on the [included modules](#modules), run the following
-command substituting the $MODULE_NAME:
+command substituting the `$MODULE_NAME`:
 
     ansible-doc tribe29.checkmk.$MODULE_NAME
 
@@ -73,7 +73,7 @@ Name | Description | Tests
 [tribe29.checkmk.rule](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rule.py)|Manage rules.|[![Integration Tests for Rule Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-rule.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-rule.yaml)
 [tribe29.checkmk.service_group](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/service_group.py)|Manage service groups.|[![Integration Tests for Service Group Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-service_group.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-service_group.yaml)
 [tribe29.checkmk.tag_group](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/tag_group.py)|Manage tag groups.|[![Integration Tests for Tag Group Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-tag_group.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-tag_group.yaml)
-[tribe29.checkmk.user](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/user.py)|Manage tag groups.|[![Integration Tests for Tag Group Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-user.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-user.yaml)
+[tribe29.checkmk.user](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/user.py)|Manage tag groups.|[![Integration Tests for User Module](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-user.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/ans-int-test-user.yaml)
 ### Roles
 Name | Description | Tests
 --- | --- | ---

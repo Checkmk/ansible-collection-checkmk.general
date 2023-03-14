@@ -6,7 +6,7 @@
 Tribe29.Checkmk
 ===============
 
-Collection version 0.17.1
+Collection version 0.18.0
 
 .. contents::
    :local:
@@ -59,6 +59,7 @@ Modules
 * :ref:`rule module <ansible_collections.tribe29.checkmk.rule_module>` -- Manage rules in Checkmk.
 * :ref:`service_group module <ansible_collections.tribe29.checkmk.service_group_module>` -- Manage service groups in Checkmk (bulk version).
 * :ref:`tag_group module <ansible_collections.tribe29.checkmk.tag_group_module>` -- Manage tag\_group within Checkmk
+* :ref:`user module <ansible_collections.tribe29.checkmk.user_module>` -- Manage users in Checkmk.
 
 .. toctree::
     :maxdepth: 1
@@ -74,5 +75,6 @@ Modules
     rule_module
     service_group_module
     tag_group_module
+    user_module
 
 
