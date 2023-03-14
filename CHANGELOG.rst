@@ -5,6 +5,31 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.18.0
+=======
+
+Major Changes
+-------------
+
+- Add user module.
+- Rule module - Enable check mode.
+
+Bugfixes
+--------
+
+- Agent role - Fix support for CCE.
+
+Known Issues
+------------
+
+- User module - Currently no automation users can be created due to a mismatch of 'auth_type'
+- User module - The parameter "interface_options" is not yet usable
+
+New Modules
+-----------
+
+- tribe29.checkmk.user - Manage users in Checkmk.
+
 v0.17.1
 =======
 
