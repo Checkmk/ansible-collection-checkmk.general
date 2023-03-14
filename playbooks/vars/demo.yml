@@ -7,7 +7,7 @@ automation_secret: "cmk"
 checkmk_agent_user: "{{ automation_user }}"
 checkmk_agent_pass: "{{ automation_secret }}"
 
-checkmk_version: "2.1.0p21"
+checkmk_version: "2.1.0p24"
 checkmk_edition: "cre"
 #############################################################
 
