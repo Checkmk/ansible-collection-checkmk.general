@@ -5,7 +5,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     attributes:
       site: "{{ outer_item.site }}"
@@ -33,7 +33,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     state: "absent"
   delegate_to: localhost
