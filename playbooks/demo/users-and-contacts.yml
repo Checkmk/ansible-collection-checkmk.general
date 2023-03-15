@@ -1,6 +1,7 @@
 ---
 - name: "Showcase contact_group and user modules."
   hosts: test
+  strategy: linear
   gather_facts: 'no'
   vars_files:
     - ../vars/demo.yml

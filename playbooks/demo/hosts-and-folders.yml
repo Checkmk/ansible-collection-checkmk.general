@@ -1,6 +1,7 @@
 ---
 - name: "Showcase host and folder modules."
   hosts: test
+  strategy: linear
   gather_facts: 'no'
   vars_files:
     - ../vars/demo.yml

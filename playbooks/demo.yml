@@ -1,6 +1,7 @@
 ---
 - name: "Test all modules."
   hosts: test
+  strategy: linear
   gather_facts: 'no'
   vars_files:
     - ./vars/config.yml
