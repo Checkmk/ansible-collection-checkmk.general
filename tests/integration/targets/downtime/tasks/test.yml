@@ -5,7 +5,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     attributes:
       site: "{{ outer_item.site }}"
@@ -21,7 +21,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     state: "fix_all"
   delegate_to: localhost
   run_once: true  # noqa run-once
@@ -43,7 +43,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on services with relative timestamps
     start_after:
       hours: 2
@@ -62,7 +62,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on services with relative timestamps in strings
     start_after:
       hours: "2"
@@ -81,7 +81,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on services with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
@@ -96,7 +96,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on services without timestamps
     service_descriptions:
       - "Memory"
@@ -111,7 +111,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on host with relative timestamps
     start_after:
       hours: 2
@@ -127,7 +127,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on host with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
@@ -139,7 +139,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on host with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
@@ -151,7 +151,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     force: "yes"
     comment: Schedule downtime on host with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
@@ -164,7 +164,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on host with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
@@ -177,7 +177,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on host without timestamps
   loop: "{{ checkmk_hosts }}"
 
@@ -187,7 +187,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on services with relative timestamps
     service_descriptions:
       - "Check_MK"
@@ -201,7 +201,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on host without timestamps
     state: absent
   loop: "{{ checkmk_hosts }}"
@@ -212,7 +212,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on services with relative timestamps
     service_descriptions:
       - "Check_MK"
@@ -226,7 +226,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     comment: Schedule downtime on host without timestamps
     state: absent
   loop: "{{ checkmk_hosts }}"
@@ -237,7 +237,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     service_descriptions:
       - "CPU load"
       - "CPU utililization"
@@ -252,7 +252,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     state: absent
   loop: "{{ checkmk_hosts }}"
 
@@ -262,7 +262,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     state: "absent"
   delegate_to: localhost
