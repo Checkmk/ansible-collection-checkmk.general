@@ -1,0 +1,4 @@
+# https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
+
+minor_changes:
+  - "Agent role - Add cloud edition support."
