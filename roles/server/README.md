@@ -1,4 +1,4 @@
-# tribe29.checkmk.server - added setup for AlmaLinux-8
+# tribe29.checkmk.server
 
 <!-- A brief description of the role goes here. -->
 This role installs Checkmk on servers and manages sites.
