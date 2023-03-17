@@ -1,0 +1,178 @@
+---
+- name: "{{ outer_item.version }} - Create contact groups."
+  contact_group:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item }}"
+    title: "{{ item }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_contact_groups }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Create users."
+  user:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    fullname: "{{ item.fullname }}"
+    auth_type: "{{ item.auth_type }}"
+    password: "{{ item.password }}"
+    roles:
+      - "admin"
+    authorized_sites:
+      - "{{ outer_item.site }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_users }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Create same users again."
+  user:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    fullname: "{{ item.fullname }}"
+    auth_type: "{{ item.auth_type }}"
+    password: "{{ item.password }}"
+    roles:
+      - "admin"
+    authorized_sites:
+      - "{{ outer_item.site }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  register: rule_result
+  loop: "{{ checkmk_users }}"
+
+- name: "{{ outer_item.version }} - Fail if changed."  # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Rule changed!"
+  when: "rule_result.changed"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Edit users."
+  user:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    contactgroups: "{{ item.contactgroups }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_users }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Change PW of users."
+  user:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    password: "{{ item.newpassword }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true
+  register: rule_result
+  loop: "{{ checkmk_users }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Delete users."
+  user:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ checkmk_users }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: "{{ outer_item.version }} - Delete same users again."
+  user:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true
+  register: rule_result
+  loop: "{{ checkmk_users }}"
+
+- name: "{{ outer_item.version }} - Fail if changed."  # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Rule changed!"
+  when: "rule_result.changed"
+  delegate_to: localhost
+  run_once: true
