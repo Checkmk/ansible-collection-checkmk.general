@@ -9,4 +9,5 @@
     host_name: "{{ inventory_hostname }}"
     state: "fix_all"
   delegate_to: "{{ checkmk_server.host }}.{{ checkmk_server.domain }}"
-
+  tags:
+    - check_mk_setup_scan_hosts
