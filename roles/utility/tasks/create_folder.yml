@@ -13,5 +13,6 @@
   loop: "{{ checkmk_server_setup.folders }}"
   loop_control: 
     loop_var: folder
-  tags: check_mk_setup_create_folder
   when: checkmk_server_setup.folders is defined | default(false)
+  tags:
+    - check_mk_setup_create_folders

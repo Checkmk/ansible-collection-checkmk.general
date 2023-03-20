@@ -1,6 +1,6 @@
 ---
 
-- name: "create host {{ inventory_hostname }} with admin-ip {{ management_ip }}"
+- name: "add host {{ inventory_hostname }} with admin-ip {{ management_ip }}"
   tribe29.checkmk.host:
     server_url: "{{ checkmk_server.url }}"
     site: "{{ checkmk_server.site }}"
@@ -13,5 +13,6 @@
       ipaddress: "{{ management_ip }}"
     state: 'present'
   delegate_to: "{{ checkmk_server.host }}.{{ checkmk_server.domain }}"
-  tags: check_mk_setup_create_host
+  tags: 
+    - check_mk_setup_add_hosts
 

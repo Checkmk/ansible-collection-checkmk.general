@@ -10,4 +10,5 @@
     sites:
       - "{{ checkmk_server.site }}"
   delegate_to: "{{ checkmk_server.host }}.{{ checkmk_server.domain }}"
-
+  tags:
+    - check_mk_setup_activate_changes
