@@ -1,0 +1,12 @@
+---
+
+- name: "Discovery services on host"
+  discovery:
+    server_url: "{{ checkmk_server.url }}"
+    site: "{{ checkmk_server.site }}"
+    automation_user: "{{ checkmk_server.automation_user }}"
+    automation_secret: "{{ checkmk_server.automation_secret }}"
+    host_name: "{{ inventory_hostname }}"
+    state: "fix_all"
+  delegate_to: "{{ checkmk_server.host }}.{{ checkmk_server.domain }}"
+
