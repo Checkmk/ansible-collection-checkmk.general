@@ -1,0 +1,14 @@
+---
+
+- name: "create folder on invocation ..."
+  include_tasks: "create_folder.yml"
+
+- name: "add hosts on invocation ..."
+  include_tasks: "add_hosts.yml"
+
+- name: "call scan automatically on invocation (service discovery) ..."
+  include_tasks: "scan_hosts.yml"
+
+- name: "call activate changes automatically on invocation ..."
+  include_tasks: "activate_changes.yml"
+
