@@ -10,8 +10,8 @@
     name: "{{ folder.name }}"
     state: "present"
   delegate_to: "{{ checkmk_server.host }}.{{ checkmk_server.domain }}"
-  loop: "{{ checkmk_server.folders }}"
+  loop: "{{ checkmk_server_setup.folders }}"
   loop_control: 
     loop_var: folder
   tags: check_mk_setup_create_folder
-
+  when: checkmk_server_setup.folders is defined | default(false)
