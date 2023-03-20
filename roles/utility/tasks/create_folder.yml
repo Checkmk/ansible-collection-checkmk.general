@@ -1,6 +1,6 @@
 ---
 
-- name: "create all folders runOnce=True"
+- name: "create all folders, WIP @(#) - missing idempotency here ... "
   tribe29.checkmk.folder:
     server_url: "{{ checkmk_server.url }}"
     site: "{{ checkmk_server.site }}"
@@ -10,9 +10,8 @@
     name: "{{ folder.name }}"
     state: "present"
   delegate_to: "{{ checkmk_server.host }}.{{ checkmk_server.domain }}"
-  run_once: True
   loop: "{{ checkmk_server.folders }}"
   loop_control: 
     loop_var: folder
-
+  tags: check_mk_setup_create_folder
 

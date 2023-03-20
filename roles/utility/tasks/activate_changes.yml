@@ -1,12 +1,13 @@
 ---
 
-- name: "Discovery services on host"
-  tribe29.checkmk.discovery:
+- name: "Activate changes on site "
+  tribe29.checkmk.activation:
     server_url: "{{ checkmk_server.url }}"
     site: "{{ checkmk_server.site }}"
     automation_user: "{{ checkmk_server.automation_user }}"
     automation_secret: "{{ checkmk_server.automation_secret }}"
-    host_name: "{{ inventory_hostname }}"
-    state: "fix_all"
+    force_foreign_changes: True
+    sites:
+      - "{{ checkmk_server.site }}"
   delegate_to: "{{ checkmk_server.host }}.{{ checkmk_server.domain }}"
 
