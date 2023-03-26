@@ -11,10 +11,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 import json
-
-from ansible.module_utils.urls import fetch_url
 from collections import namedtuple
 
+from ansible.module_utils.urls import fetch_url
 
 RESULT = namedtuple(
     "Result", ["http_code", "msg", "content", "etag", "changed", "failed"]
