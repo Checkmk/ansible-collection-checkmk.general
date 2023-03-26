@@ -39,7 +39,11 @@ class CheckmkAPI:
 
     def _fetch(self, code_mapping, endpoint="", data=None, method="GET"):
         response, info = fetch_url(
-            self.module, "%s/%s" % (self.url, endpoint), self.module.jsonify(data), self.headers, method
+            self.module,
+            "%s/%s" % (self.url, endpoint),
+            self.module.jsonify(data),
+            self.headers,
+            method,
         )
         http_code = info["status"]
         (
