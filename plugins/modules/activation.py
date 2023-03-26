@@ -85,9 +85,8 @@ message:
 import time
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
-from ..module_utils.api import CheckmkAPI
 
+from ..module_utils.api import CheckmkAPI
 
 HTTP_CODES = {
     # http_code: (changed, failed, "Message")
@@ -155,5 +154,9 @@ def run_module():
     module.exit_json(**result_dict)
 
 
-if __name__ == "__main__":
+def main():
     run_module()
+
+
+if __name__ == "__main__":
+    main()
