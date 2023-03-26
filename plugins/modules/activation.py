@@ -78,9 +78,6 @@ message:
     returned: always
     sample: 'Changes activated.'
 """
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
-# pylint: disable=wrong-import-position
 
 import time
 
