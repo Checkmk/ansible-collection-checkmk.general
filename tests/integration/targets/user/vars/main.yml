@@ -46,5 +46,6 @@ checkmk_users:
     password: "0123456789"
     newpassword: "abcdefghij"
     auth_type: password
+    contactgroups: []
     roles:
       - admin
