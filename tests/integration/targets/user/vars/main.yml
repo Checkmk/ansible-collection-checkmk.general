@@ -41,3 +41,10 @@ checkmk_users:
     contactgroups:
       - team3
     fallback_contact: false
+  - name: auto1
+    fullname: Automation User 1
+    password: "0123456789"
+    newpassword: "abcdefghij"
+    auth_type: password
+    roles:
+      - admin
