@@ -15,7 +15,7 @@ short_description: Activate changes in Checkmk.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "0.0.2"
+version_added: "0.0.1"
 
 description:
 - Activate changes within Checkmk.
@@ -83,7 +83,7 @@ import time
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ..module_utils.api import CheckmkAPI
+from ..module_utils.api import CheckmkAPI, result_dict
 
 HTTP_CODES = {
     # http_code: (changed, failed, "Message")
@@ -137,18 +137,9 @@ def run_module():
     cmk = ActivationAPI(module)
     result = cmk.post()
 
-    result_dict = {
-        "http_code": result.http_code,
-        "changed": result.changed,
-        "failed": result.failed,
-        "msg": result.msg,
-    }
-    if result.failed:
-        module.fail_json(**result_dict)
-
     time.sleep(3)
 
-    module.exit_json(**result_dict)
+    module.exit_json(**result_dict(result))
 
 
 def main():
