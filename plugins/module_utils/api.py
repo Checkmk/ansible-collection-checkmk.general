@@ -20,6 +20,14 @@ RESULT = namedtuple(
 )
 
 
+def result_dict(result):
+    return {
+        "changed": result.changed,
+        "failed": result.failed,
+        "msg": result.msg,
+    }
+
+
 class CheckmkAPI:
     """Base class to contact a Checkmk server"""
 
@@ -51,11 +59,10 @@ class CheckmkAPI:
             failed,
             http_readable,
         ) = code_mapping.get(http_code, (False, True, "Error calling API"))
-        content = json.loads(response.read()) if response else {}
+        content = json.loads(response.read()) if not failed else {}
         msg = "%s - %s" % (str(http_code), http_readable)
-        if failed:
-            msg = "%s - %s" % (msg, content)
-        return RESULT(
+
+        result = RESULT(
             http_code=http_code,
             msg=msg,
             content=content,
@@ -63,3 +70,7 @@ class CheckmkAPI:
             failed=failed,
             changed=changed,
         )
+
+        if failed:
+            self.module.fail_json(**result_dict(result))
+        return result
