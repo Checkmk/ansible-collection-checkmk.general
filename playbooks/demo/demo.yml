@@ -1,58 +1,11 @@
 ---
 - name: "Test all modules."
   hosts: test
-  gather_facts: 'no'
+  strategy: linear
+  gather_facts: false
   vars_files:
-    - ./vars/config.yml
+    - ../vars/config.yml
   tasks:
-    - name: "Activate changes on site - Showcase no changes."
-      activation:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        force_foreign_changes: 'true'
-        sites:
-          - "{{ site }}"
-      delegate_to: localhost
-      run_once: 'true'
-
-    - name: "Create folder."
-      folder:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        path: "{{ item.path }}"
-        name: "{{ item.name }}"
-        state: "present"
-      delegate_to: localhost
-      run_once: 'yes'
-      loop: "{{ checkmk_folders }}"
-
-    - name: "Create host."
-      host:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        name: "{{ inventory_hostname }}"
-        folder: "{{ checkmk_folder_path }}"
-        attributes:
-          site: "{{ site }}"
-          ipaddress: 127.0.0.1
-        state: "present"
-      delegate_to: localhost
-
-    - name: "Discover services on host."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        host_name: "{{ inventory_hostname }}"
-        state: "fix_all"
-      delegate_to: localhost
 
     - name: "Create service groups."
       service_group:
@@ -64,7 +17,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups_create }}"
 
     - name: "Create host groups."
@@ -77,7 +30,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups_create }}"
 
     - name: "Create contact groups."
@@ -90,7 +43,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups_create }}"
 
     - name: "Create tag groups."
@@ -103,7 +56,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups_create }}"
 
     - name: "Pause to review first set of changes."
@@ -122,7 +75,7 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]
 
     - name: "Change host attributes."
       host:
@@ -160,7 +113,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_contact_groups_create }}"
 
     - name: "Pause to review second set of changes."
@@ -196,8 +149,8 @@
         automation_secret: "{{ automation_secret }}"
         host_name: "{{ inventory_hostname }}"
         comment: downtime 2 - on services with absolute timestamps
-        start_time: 2024-03-25T20:39:28Z
-        end_time: 2024-03-26T20:39:28Z
+        start_time: "2024-03-25T20:39:28Z"
+        end_time: "2024-03-26T20:39:28Z"
         service_descriptions:
           - "CPU utilization"
           - Memory
@@ -242,8 +195,8 @@
         automation_secret: "{{ automation_secret }}"
         host_name: "{{ inventory_hostname }}"
         comment: downtime 5 - on host with absolute timestamps
-        start_time: 2024-03-25T20:39:28Z
-        end_time: 2024-03-26T20:39:28Z
+        start_time: "2024-03-25T20:39:28Z"
+        end_time: "2024-03-26T20:39:28Z"
       delegate_to: localhost
 
     - name: "Downtime 6 - on host without timestamps"
@@ -301,7 +254,7 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]
 
     - name: "Delete service groups."
       service_group:
@@ -312,7 +265,7 @@
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups_create }}"
 
     - name: "Delete contact groups."
@@ -324,7 +277,7 @@
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_contact_groups_create }}"
 
     - name: "Delete Host."
@@ -349,7 +302,7 @@
         state: "absent"
       register: testout
       delegate_to: localhost
-      run_once: 'yes'
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_folders }}"
 
     - name: "Activate changes on site - Showcase host and folders were deleted"
@@ -362,4 +315,4 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]

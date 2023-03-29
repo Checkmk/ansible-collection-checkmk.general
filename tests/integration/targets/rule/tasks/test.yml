@@ -9,7 +9,7 @@
     rule: "{{ item.rule }}"
     state: "present"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_rules }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -22,7 +22,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Create rules."
   rule:
@@ -34,7 +34,7 @@
     rule: "{{ item.rule }}"
     state: "present"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]
   register: rule_result
   loop: "{{ checkmk_rules }}"
 
@@ -43,7 +43,7 @@
     msg: "Rule changed!"
   when: "rule_result.changed"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Delete rules."
   rule:
@@ -55,7 +55,7 @@
     rule: "{{ item.rule }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_rules }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -68,7 +68,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Delete rules."
   rule:
@@ -80,7 +80,7 @@
     rule: "{{ item.rule }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]
   register: rule_result
   loop: "{{ checkmk_rules }}"
 
@@ -89,4 +89,4 @@
     msg: "Rule changed!"
   when: "rule_result.changed"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]
