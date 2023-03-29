@@ -20,15 +20,15 @@ Vagrant.configure("2") do |config|
       $script = <<-SCRIPT
       apt-get update
       apt-get install -y python3.9 python3-pip ca-certificates curl gnupg lsb-release
-      wget "https://download.checkmk.com/checkmk/2.1.0p21/check-mk-raw-2.1.0p21_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
-      wget "https://download.checkmk.com/checkmk/2.1.0p21/check-mk-raw-2.1.0p21_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
+      wget "https://download.checkmk.com/checkmk/2.1.0p24/check-mk-raw-2.1.0p24_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
+      wget "https://download.checkmk.com/checkmk/2.2.0-$(date +%Y.%m.%d)/check-mk-raw-2.2.0-$(date +%Y.%m.%d)_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
       apt-get install -y /tmp/checkmk-stable.deb
       omd create --admin-password 'd7589df1-01db-4eda-9858-dbcff8d0c361' stable
       apt-get install -y /tmp/checkmk-beta.deb
       omd create --admin-password 'd7589df1-01db-4eda-9858-dbcff8d0c361' beta
       omd status -b stable || omd start stable
       omd status -b beta || omd start beta
-      pip install -r /vagrant/requirements.txt
+      python3.9 -m pip install -r /vagrant/requirements.txt
       sudo -u vagrant ansible-galaxy collection install -f -r /vagrant/requirements.yml
       mkdir -p /home/vagrant/ansible_collections/tribe29/checkmk
       mkdir -p /etc/apt/keyrings

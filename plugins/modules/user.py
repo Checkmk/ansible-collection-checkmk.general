@@ -39,7 +39,7 @@ options:
     auth_type:
         description: The authentication type.
         type: str
-        choices: [password, secret]
+        choices: [password, automation]
     disable_login:
         description: The user can be blocked from login but will remain part of the site. The disabling does not affect notification and alerts.
         type: bool
@@ -113,7 +113,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "registration"
     fullname: "Registration User"
-    auth_type: "secret"
+    auth_type: "automation"
     password: "ZGSDHUVDSKJHSDF"
     roles:
         - "registration"
@@ -266,9 +266,9 @@ class User:
                 auth_option["enforce_password_change"] = bool(
                     params["enforce_password_change"]
                 )
-            elif params.get("auth_type") == "secret" and _exists("password"):
+            elif params.get("auth_type") == "automation" and _exists("password"):
                 auth_option["secret"] = params["password"]
-                auth_option["auth_type"] = "secret"
+                auth_option["auth_type"] = "automation"
             else:
                 log("Incomplete auth_type/password/secret combination.")
                 return
@@ -429,7 +429,7 @@ def run_module():
         fullname=dict(type="str"),
         password=dict(type="str", no_log=True),
         enforce_password_change=dict(type="bool", no_log=False),
-        auth_type=dict(type="str", choices=["password", "secret"]),
+        auth_type=dict(type="str", choices=["password", "automation"]),
         disable_login=dict(type="bool"),
         email=dict(type="str"),
         fallback_contact=dict(type="bool"),
