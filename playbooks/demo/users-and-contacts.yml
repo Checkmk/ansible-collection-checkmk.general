@@ -2,10 +2,11 @@
 - name: "Showcase contact_group and user modules."
   hosts: test
   strategy: linear
-  gather_facts: 'no'
+  gather_facts: false
   vars_files:
     - ../vars/demo.yml
   tasks:
+
     - name: "Create contact groups."
       contact_group:
         server_url: "{{ server_url }}"

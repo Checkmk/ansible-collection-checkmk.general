@@ -2,10 +2,11 @@
 - name: "Test all modules."
   hosts: test
   strategy: linear
-  gather_facts: 'no'
+  gather_facts: false
   vars_files:
     - ./vars/config.yml
   tasks:
+
     - name: "Activate changes on site - Showcase no changes."
       activation:
         server_url: "{{ server_url }}"
@@ -158,8 +159,8 @@
         automation_secret: "{{ automation_secret }}"
         host_name: "{{ inventory_hostname }}"
         comment: downtime 2 - on services with absolute timestamps
-        start_time: 2024-03-25T20:39:28Z
-        end_time: 2024-03-26T20:39:28Z
+        start_time: "2024-03-25T20:39:28Z"
+        end_time: "2024-03-26T20:39:28Z"
         service_descriptions:
           - "CPU utilization"
           - Memory
@@ -204,8 +205,8 @@
         automation_secret: "{{ automation_secret }}"
         host_name: "{{ inventory_hostname }}"
         comment: downtime 5 - on host with absolute timestamps
-        start_time: 2024-03-25T20:39:28Z
-        end_time: 2024-03-26T20:39:28Z
+        start_time: "2024-03-25T20:39:28Z"
+        end_time: "2024-03-26T20:39:28Z"
       delegate_to: localhost
 
     - name: "Downtime 6 - on host without timestamps"
