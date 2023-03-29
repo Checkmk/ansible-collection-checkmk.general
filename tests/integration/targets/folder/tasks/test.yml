@@ -12,7 +12,7 @@
     name: "{{ item.name }}"
     state: "present"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_folders }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -25,7 +25,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Delete folders."
   folder:
@@ -37,7 +37,7 @@
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_folders }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -50,4 +50,4 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once
+  run_once: true  # noqa run-once[task]

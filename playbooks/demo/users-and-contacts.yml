@@ -16,7 +16,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_contact_groups }}"
 
     - name: "Create users."
@@ -35,7 +35,7 @@
           - "{{ site }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_users }}"
 
     - name: "Pause to review first set of changes."
@@ -54,7 +54,7 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]
 
     - name: "Delete users."
       user:
@@ -65,7 +65,7 @@
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_users }}"
 
     - name: "Delete contact groups."
@@ -77,7 +77,7 @@
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_contact_groups }}"
 
     - name: "Pause to review second set of changes."
@@ -96,4 +96,4 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]
