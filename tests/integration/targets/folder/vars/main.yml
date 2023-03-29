@@ -1,6 +1,6 @@
 ---
 checkmk_versions:
-  - version: "2.2.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+  - version: "2.2.0b1"
     site: "beta"
   - version: "2.1.0p25"
     site: "stable"
