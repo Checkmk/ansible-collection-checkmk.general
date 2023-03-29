@@ -19,7 +19,8 @@
     msg: |
       Downgrading is not allowed since checkmk_server_allow_downgrades is set to false.
   when:
-    checkmk_server_allow_downgrades | bool is false
+    checkmk_server_allow_downgrades is defined
+    and not checkmk_server_allow_downgrades | bool
     and item.stdout is version(item.item.version, '>')
 
 - name: "Short pause for patch update."
@@ -53,7 +54,6 @@
     omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
   args:
     executable: /bin/bash
-    creates: "{{ checkmk_server_backup_dir }}/{{ item.item.name }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
   when: checkmk_server_backup_on_update
 
 - name: "Update Site."

@@ -3,7 +3,7 @@
   ansible.builtin.get_url:
     url: "{{ download_url }}"
     dest: /tmp/checkmk-server-{{ item.site }}.deb
-    mode: "0640"
+    mode: 0640
   loop: "{{ checkmk_versions }}"
 
 - name: "Install Checkmk Versions."
