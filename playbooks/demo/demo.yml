@@ -18,7 +18,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups_create }}"
 
     - name: "Create host groups."
@@ -31,7 +31,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups_create }}"
 
     - name: "Create contact groups."
@@ -44,7 +44,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups_create }}"
 
     - name: "Create tag groups."
@@ -57,7 +57,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups_create }}"
 
     - name: "Pause to review first set of changes."
@@ -76,7 +76,7 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]
 
     - name: "Change host attributes."
       host:
@@ -114,7 +114,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_contact_groups_create }}"
 
     - name: "Pause to review second set of changes."
@@ -255,7 +255,7 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]
 
     - name: "Delete service groups."
       service_group:
@@ -266,7 +266,7 @@
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups_create }}"
 
     - name: "Delete contact groups."
@@ -278,7 +278,7 @@
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_contact_groups_create }}"
 
     - name: "Delete Host."
@@ -303,7 +303,7 @@
         state: "absent"
       register: testout
       delegate_to: localhost
-      run_once: 'yes'
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_folders }}"
 
     - name: "Activate changes on site - Showcase host and folders were deleted"
@@ -316,4 +316,4 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]

@@ -16,7 +16,7 @@
         name: "{{ item.name }}"
         state: "present"
       delegate_to: localhost
-      run_once: 'yes'
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_folders }}"
 
     - name: "Create hosts."
@@ -49,7 +49,7 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]
 
     - name: "Change host attributes."
       host:
@@ -105,7 +105,7 @@
         state: "absent"
       register: testout
       delegate_to: localhost
-      run_once: 'yes'
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_folders }}"
 
     - name: "Pause to review third set of changes."
@@ -124,4 +124,4 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]
