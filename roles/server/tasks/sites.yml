@@ -81,7 +81,7 @@
   tags:
     - destroy-sites
 
-- name: "Update Site Admin Password for Checkmk < 2.1."
+- name: "Update Site Admin Password for Checkmk < 2.1."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: |
     set -o pipefail
@@ -96,7 +96,7 @@
 
 # In the future this should be done with 'cmk-passwd' available from 2.1.0p16 (https://checkmk.com/werk/14389)
 # To keep things simple, we do it in a more generic way here, which works in all 2.1 releases
-- name: "Update Site Admin Password for Checkmk >= 2.1."
+- name: "Update Site Admin Password for Checkmk >= 2.1."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: |
     set -o pipefail
