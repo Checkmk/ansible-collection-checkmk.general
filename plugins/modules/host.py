@@ -31,11 +31,22 @@ options:
     folder:
         description: The folder your host is located in.
         type: str
-        default: /
     attributes:
         description:
             - The attributes of your host as described in the API documentation.
               B(Attention! This option OVERWRITES all existing attributes!)
+        type: raw
+        default: {}
+    update_attributes:
+        description:
+            - The update_attributes of your host as described in the API documentation.
+              This will only update the given attributes.
+        type: raw
+        default: {}
+    remove_attributes:
+        description:
+            - The remove_attributes of your host as described in the API documentation.
+              This will only remove the given attributes.
         type: raw
         default: []
     state:
@@ -47,6 +58,7 @@ options:
 author:
     - Robin Gierse (@robin-tribe29)
     - Lars Getwan (@lgetwan)
+    - Oliver Gaida (@ogaida)
 """
 
 EXAMPLES = r"""
@@ -86,6 +98,30 @@ EXAMPLES = r"""
     attributes:
       site: "my_remote_site"
     folder: "/"
+    state: "present"
+
+# Update only specified attributes 
+- name: "Create a host which is monitored on a distinct site."
+  tribe29.checkmk.host:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    name: "my_host"
+    update_attributes:
+      alias: "foo"
+    state: "present"
+
+# Remove specified attributes 
+- name: "Create a host which is monitored on a distinct site."
+  tribe29.checkmk.host:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    name: "my_host"
+    remove_attributes:
+      - alias
     state: "present"
 """
 
@@ -153,10 +189,10 @@ def get_current_host_state(module, base_url, headers):
     return current_state, current_explicit_attributes, current_folder, etag
 
 
-def set_host_attributes(module, attributes, base_url, headers):
+def set_host_attributes(module, attributes, base_url, headers, update_method):
     api_endpoint = "/objects/host_config/" + module.params.get("name")
     params = {
-        "attributes": attributes,
+        update_method: attributes,
     }
     url = base_url + api_endpoint
 
@@ -164,13 +200,14 @@ def set_host_attributes(module, attributes, base_url, headers):
         module, url, module.jsonify(params), headers=headers, method="PUT"
     )
 
-    if info["status"] != 200:
+    if info["status"] == 400 and update_method == "remove_attributes":
+        return "Host attributes allready removed."
+    elif info["status"] != 200:
         exit_failed(
             module,
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
-
 
 def move_host(module, base_url, headers):
     api_endpoint = "/objects/host_config/%s/actions/move/invoke" % module.params.get(
@@ -212,7 +249,6 @@ def create_host(module, attributes, base_url, headers):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
-
 
 def delete_host(module, base_url, headers):
     api_endpoint = "/objects/host_config/" + module.params.get("name")
@@ -261,8 +297,10 @@ def run_module():
                 }
             ],
         ),
-        attributes=dict(type="raw", default=[]),
-        folder=dict(type="str", default="/"),
+        attributes=dict(type="raw", default={}),
+        remove_attributes=dict(type="raw", default=[]),
+        update_attributes=dict(type="raw", default={}),
+        folder=dict(type="str", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
@@ -288,9 +326,15 @@ def run_module():
     attributes = module.params.get("attributes", {})
     if attributes == []:
         attributes = {}
+    remove_attributes = module.params.get("remove_attributes", {})
+    if remove_attributes == []:
+        remove_attributes = {}
+    update_attributes = module.params.get("update_attributes", {})
+    if update_attributes == []:
+        update_attributes = {}
     state = module.params.get("state", "present")
 
-    if "folder" in module.params:
+    if module.params["folder"]:
         module.params["folder"] = normalize_folder(module.params["folder"])
 
     # Determine the current state of this particular host
@@ -308,13 +352,24 @@ def run_module():
 
         current_folder = normalize_folder(current_folder)
 
-        if current_folder != module.params["folder"]:
+        if module.params["folder"] and current_folder != module.params["folder"]:
             move_host(module, base_url, headers)
             msg_tokens.append("Host was moved.")
 
         if attributes != {} and current_explicit_attributes != attributes:
-            set_host_attributes(module, attributes, base_url, headers)
-            msg_tokens.append("Host attributes changed.")
+            set_host_attributes(module, attributes, base_url, headers, "attributes")
+            msg_tokens.append("Host attributes replaced.")
+
+        if update_attributes != {} and current_explicit_attributes != current_explicit_attributes.update(update_attributes):
+            set_host_attributes(module, update_attributes, base_url, headers, "update_attributes")
+            msg_tokens.append("Host attributes updated.")
+
+        if remove_attributes != {}:
+            msg = set_host_attributes(module, remove_attributes, base_url, headers, "remove_attributes")
+            if msg == "Host attributes allready removed.":
+                exit_ok(module, msg)
+            else:
+                msg_tokens.append("Host attributes removed.")
 
         if len(msg_tokens) >= 1:
             exit_changed(module, " ".join(msg_tokens))
