@@ -83,7 +83,10 @@ import time
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ..module_utils.api import CheckmkAPI, result_dict
+from ansible_collections.tribe29.checkmk.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.tribe29.checkmk.plugins.module_utils.utils import (
+    result_as_dict,
+)
 
 HTTP_CODES = {
     # http_code: (changed, failed, "Message")
@@ -91,16 +94,12 @@ HTTP_CODES = {
     204: (True, False, "Changes activated."),
     302: (True, False, "Redirected."),
     422: (False, False, "There are no changes to be activated."),
-    400: (False, True, "Bad Request."),
     401: (
         False,
         True,
         "Unauthorized: There are foreign changes, which you may not activate, or you did not use <force_foreign_changes>.",
     ),
-    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
-    406: (False, True, "Not Acceptable."),
     409: (False, True, "Conflict: Some sites could not be activated."),
-    415: (False, True, "Unsupported Media Type."),
     423: (False, True, "Locked: There is already an activation running."),
 }
 
@@ -134,12 +133,12 @@ def run_module():
     )
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
-    cmk = ActivationAPI(module)
-    result = cmk.post()
+    activation = ActivationAPI(module)
+    result = activation.post()
 
     time.sleep(3)
 
-    module.exit_json(**result_dict(result))
+    module.exit_json(**result_as_dict(result))
 
 
 def main():

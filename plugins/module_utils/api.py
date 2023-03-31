@@ -10,22 +10,13 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-import json
-from collections import namedtuple
-
 from ansible.module_utils.urls import fetch_url
 
-RESULT = namedtuple(
-    "Result", ["http_code", "msg", "content", "etag", "changed", "failed"]
+from ansible_collections.tribe29.checkmk.plugins.module_utils.types import RESULT
+from ansible_collections.tribe29.checkmk.plugins.module_utils.utils import (
+    result_as_dict,
+    GENERIC_HTTP_CODES,
 )
-
-
-def result_dict(result):
-    return {
-        "changed": result.changed,
-        "failed": result.failed,
-        "msg": result.msg,
-    }
 
 
 class CheckmkAPI:
@@ -44,22 +35,33 @@ class CheckmkAPI:
             "Content-Type": "application/json",
             "Authorization": "Bearer %s %s" % (user, secret),
         }
+        self.current = {}
+        self.required = {}
+        # may be "present", "abesent" or an individual one
+        self.state = ""
 
     def _fetch(self, code_mapping, endpoint="", data=None, method="GET"):
+        http_mapping = GENERIC_HTTP_CODES.copy()
+        http_mapping.update(code_mapping)
+
         response, info = fetch_url(
-            self.module,
-            "%s/%s" % (self.url, endpoint),
-            self.module.jsonify(data),
-            self.headers,
-            method,
+            module=self.module,
+            url="%s/%s" % (self.url, endpoint),
+            data=self.module.jsonify(data),
+            headers=self.headers,
+            method=method,
+            use_proxy=None,
+            timeout=10,
         )
+
         http_code = info["status"]
         (
             changed,
             failed,
             http_readable,
-        ) = code_mapping.get(http_code, (False, True, "Error calling API"))
-        content = json.loads(response.read()) if not failed else {}
+        ) = http_mapping.get(http_code, (False, True, "Error calling API"))
+        # Better translate to json later and keep the original response here.
+        content = response.read()
         msg = "%s - %s" % (str(http_code), http_readable)
 
         result = RESULT(
@@ -72,5 +74,5 @@ class CheckmkAPI:
         )
 
         if failed:
-            self.module.fail_json(**result_dict(result))
+            self.module.fail_json(**result_as_dict(result))
         return result
