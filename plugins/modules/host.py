@@ -377,6 +377,8 @@ def run_module():
             exit_ok(module, "Host already present. All explicit attributes as desired.")
 
     elif state == "present" and current_state == "absent":
+        if not module.params["folder"]:
+            module.params["folder"] = "/"
         create_host(module, attributes, base_url, headers)
         exit_changed(module, "Host created.")
 
