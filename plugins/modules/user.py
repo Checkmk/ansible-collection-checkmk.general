@@ -160,7 +160,6 @@ message:
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.tribe29.checkmk.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.tribe29.checkmk.plugins.module_utils.utils import (
     result_as_dict,
