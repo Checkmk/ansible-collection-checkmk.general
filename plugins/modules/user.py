@@ -156,268 +156,175 @@ message:
     sample: 'User created.'
 """
 
-LOG = []
 
-import copy
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
+
+from ansible_collections.tribe29.checkmk.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.tribe29.checkmk.plugins.module_utils.utils import (
+    result_as_dict,
+)
+
+USER = (
+    "username",
+    "fullname",
+    "password",
+    "enforce_password_change",
+    "auth_type",
+    "disable_login",
+    "email",
+    "fallback_contact",
+    "pager_address",
+    "idle_timout_option",
+    "idle_timeout_duration",
+    "roles",
+    "authorized_sites",
+    "contactgroups",
+    "disable_notifications",
+    "language",
+)
 
 
-def exit_failed(module, msg):
-    result = {
-        "msg": "%s, log: %s" % (msg, " § ".join(LOG)),
-        "changed": False,
-        "failed": True,
+class UserHTTPCodes:
+    # http_code: (changed, failed, "Message")
+    get = {
+        200: (False, False, "User found, nothing changed"),
+        404: (False, False, "User not found"),
     }
-    module.fail_json(**result)
+    create = {200: (True, False, "User created")}
+    edit = {200: (True, False, "User modified")}
+    delete = {204: (True, False, "User deleted")}
 
 
-def exit_changed(module, msg):
-    result = {
-        "msg": "%s, log: %s" % (msg, " § ".join(LOG)),
-        "changed": True,
-        "failed": False,
-    }
-    module.exit_json(**result)
+class UserEndpoints:
+    default = "/objects/user_config"
+    create = "/domain-types/user_config/collections/all"
 
 
-def exit_ok(module, msg):
-    result = {
-        "msg": "%s, log: %s" % (msg, " § ".join(LOG)),
-        "changed": False,
-        "failed": False,
-    }
-    module.exit_json(**result)
+class UserAPI(CheckmkAPI):
+    def _build_user_data(self):
+        user = {}
 
+        # For some keys the API has required sub keys. We can use them as indicator,
+        # that the key must be used
+        if self.required.get("auth_type"):
+            user["auth_option"] = {}
+        if self.required.get("email"):
+            user["contact_options"] = {}
+        if self.required.get("idle_timeout_option"):
+            user["idle_timeout"] = {}
 
-def log(msg):
-    LOG.append(msg)
+        for key, value in self.required.items():
+            if key in (
+                "username",
+                "fullname",
+                "disable_login",
+                "pager_address",
+                "roles",
+                "authorized_sites",
+                "contactgroups",
+                "language",
+            ):
+                user[key] = value
 
+            if key in ("auth_type", "password", "enforce_password_change"):
+                if key == "password" and self.params.get("auth_type") == "automation":
+                    # Unfortunately the API uses different strings for the password
+                    # depending on the kind of user...
+                    key = "secret"
+                user["auth_option"][key] = value
 
-class User:
+            if key in ("email", "fallback_contact"):
+                user["contact_options"][key] = value
 
-    default_attributes = {
-        "disable_login": False,
-        "contact_options": {"email": "", "fallback_contact": False},
-        "idle_timeout": {"option": "global"},
-        "roles": ["user"],
-        "contactgroups": [],
-        "pager_address": "",
-        "disable_notifications": {},
-    }
+            if key in ("idle_timeout_option", "idle_timeout_duration"):
+                user["idle_timeout"] = value
 
-    def __init__(self, username, state="present", attributes=None, etag=None):
-        if attributes is None:
-            self.attributes = self.default_attributes
-        else:
-            self.attributes = attributes
-        self.state = state
-        self.username = username
-        self.etag = etag
+            if key == "disable_notifications":
+                user["disable_notifications"]["disable"] = value
 
-    def __repr__(self):
-        return "User(name: %s, state: %s, attributes: %s, etag: %s)" % (
-            self.username,
-            self.state,
-            str(self.attributes),
-            self.etag,
-        )
+        return user
 
-    @classmethod
-    def from_api_response(cls, module, api_params):
+    def _set_current(self, result):
+        # A flat hierarchy allows an easy comparison of differences
+        if result.http_code == 200:
+            content = json.loads(result.content)["extensions"]
+            for key in USER:
+                if key in content:
+                    self.current[key] = content[key]
 
-        # Determine the current state of this particular user
-        api_attributes, state, etag = get_current_user_state(module, api_params)
+    def _build_default_endpoint(self):
+        return "%s/%s" % (UserEndpoints.default, self.params.get("name"))
 
-        attributes = copy.deepcopy(api_attributes)
-
-        return cls(module.params["name"], state, attributes, etag)
-
-    @classmethod
-    def from_module(cls, params):
-
-        attributes = cls.default_attributes
-
-        attributes["username"] = params["name"]
-
-        def _exists(key):
-            return key in params and params[key] is not None
-
-        if _exists("fullname"):
-            attributes["fullname"] = params["fullname"]
-
-        if _exists("disable_login"):
-            attributes["disable_login"] = params["disable_login"]
-
-        if _exists("pager_address"):
-            attributes["pager_address"] = params["pager_address"]
-
-        if _exists("language") and params["language"] != "default":
-            attributes["language"] = params["language"]
-
-        if _exists("auth_type"):
-            auth_option = {}
-
-            if params.get("auth_type") == "password" and _exists("password"):
-                auth_option["password"] = params["password"]
-                auth_option["auth_type"] = "password"
-                auth_option["enforce_password_change"] = bool(
-                    params["enforce_password_change"]
-                )
-            elif params.get("auth_type") == "automation" and _exists("password"):
-                auth_option["secret"] = params["password"]
-                auth_option["auth_type"] = "automation"
-            else:
-                log("Incomplete auth_type/password/secret combination.")
-                return
-            attributes["auth_option"] = auth_option
-
-        if _exists("idle_timeout_option"):
-            idle_timeout = {}
-            idle_timeout["idle_timeout_option"] = params["idle_timeout_option"]
-            if params["idle_timeout_option"] == "individual":
-                if "idle_timeout_duration" in params:
-                    idle_timeout["idle_timeout_duration"] = params[
-                        "idle_timeout_duration"
-                    ]
-                else:
-                    idle_timeout["idle_timeout_duration"] = 3600
-            attributes["idle_timeout"] = idle_timeout
-
-        if _exists("email"):
-            contact_options = {}
-            contact_options["email"] = params["email"]
-            if "fallback_contact" in params:
-                contact_options["fallback_contact"] = params["fallback_contact"]
-            attributes["contact_options"] = contact_options
-
-        if _exists("disable_notifications"):
-            disable_notifications = {}
-            try:
-                disable_notifications = json.loads(params["disable_notifications"])
-            except json.decoder.JSONDecodeError:
-                log("json.decoder.JSONDecodeError while parsing disable_notifications.")
-                return
-            attributes["disable_notifications"] = disable_notifications
-
-        if _exists("roles"):
-            attributes["roles"] = params["roles"]
-
-        if _exists("contactgroups"):
-            attributes["contactgroups"] = params["contactgroups"]
-
-        if _exists("authorized_sites"):
-            attributes["authorized_sites"] = params["authorized_sites"]
-
-        return cls(params["name"], state=params["state"], attributes=attributes)
-
-    def satisfies(self, other_instance):
-        for key, value in other_instance.attributes.items():
-            if key in ["auth_option", "password"]:
+    def build_required(self):
+        # A flat hierarchy allows an easy comparison of differences
+        for key in USER:
+            if key == "username":
+                self.required[key] = self.params["name"]
                 continue
-            if key in self.attributes and value != self.attributes[key]:
-                return False
+            if self.params.get(key) is None:
+                continue
+            self.required[key] = self.params[key]
 
-        return True
+    def needs_editing(self):
+        black_list = ("username", "password", "auth_type", "authorized_sites")
+        for key, value in self.required.items():
+            if key not in black_list and self.current.get(key) != value:
+                return True
+        return False
 
-
-def get_current_user_state(module, api_params):
-    extensions = {}
-    etag = ""
-    current_state = ""
-
-    api_endpoint = "/objects/user_config/" + module.params.get("name")
-    url = api_params["base_url"] + api_endpoint
-
-    response, info = fetch_url(
-        module, url, data=None, headers=api_params["headers"], method="GET"
-    )
-
-    if info["status"] == 200:
-        body = json.loads(response.read())
-        current_state = "present"
-        etag = info.get("etag", "")
-        extensions = body.get("extensions", {})
-
-    elif info["status"] == 404:
-        current_state = "absent"
-
-    else:
-        exit_failed(
-            module,
-            "[get_current_user_state] Error calling API. HTTP code %d. Details: %s. Body: %s"
-            % (info["status"], info["body"], body),
+    def get(self):
+        result = self._fetch(
+            code_mapping=UserHTTPCodes.get,
+            endpoint=self._build_default_endpoint(),
+            method="GET",
         )
 
-    return extensions, current_state, etag
+        self.state = "present" if result.http_code == 200 else "absent"
+        self._set_current(result)
 
+        return result
 
-def set_user_attributes(module, desired_user, api_params):
-    api_endpoint = "/objects/user_config/" + desired_user.username
-    url = api_params["base_url"] + api_endpoint
-    desired_attributes = desired_user.attributes
-    del desired_attributes["username"]  # Not needed as a param, as it's part of the URI
+    def create(self):
+        data = self._build_user_data()
+        # It's allowed in Ansible to skip the fullname, but it's not allowed
+        # in the Checkmk API...
+        data.setdefault("fullname", data["username"])
 
-    response, info = fetch_url(
-        module,
-        url,
-        module.jsonify(desired_attributes),
-        headers=api_params["headers"],
-        method="PUT",
-    )
-
-    if info["status"] != 200:
-        exit_failed(
-            module,
-            "[set_user_attributes] Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+        result = self._fetch(
+            code_mapping=UserHTTPCodes.create,
+            endpoint=UserEndpoints.create,
+            data=data,
+            method="POST",
         )
 
+        return result
 
-def create_user(module, desired_user, api_params):
-    api_endpoint = "/domain-types/user_config/collections/all"
-    url = api_params["base_url"] + api_endpoint
-    desired_attributes = desired_user.attributes
+    def edit(self, etag):
+        data = self._build_user_data()
+        self.headers["if-Match"] = etag
 
-    if desired_attributes["fullname"] is None or "fullname" not in desired_attributes:
-        desired_attributes["fullname"] = desired_attributes["username"]
-
-    response, info = fetch_url(
-        module,
-        url,
-        module.jsonify(desired_attributes),
-        headers=api_params["headers"],
-        method="POST",
-    )
-
-    if info["status"] != 200:
-        exit_failed(
-            module,
-            "[create_user] Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+        result = self._fetch(
+            code_mapping=UserHTTPCodes.edit,
+            endpoint=self._build_default_endpoint(),
+            data=data,
+            method="PUT",
         )
 
+        return result
 
-def delete_user(module, api_params):
-    api_endpoint = "/objects/user_config/" + module.params.get("name")
-    url = api_params["base_url"] + api_endpoint
-
-    response, info = fetch_url(
-        module, url, data=None, headers=api_params["headers"], method="DELETE"
-    )
-
-    if info["status"] != 204:
-        exit_failed(
-            module,
-            "[delete_user] Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+    def delete(self):
+        result = self._fetch(
+            code_mapping=UserHTTPCodes.delete,
+            endpoint=self._build_default_endpoint(),
+            method="DELETE",
         )
+
+        return result
 
 
 def run_module():
-
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         server_url=dict(type="str", required=True),
@@ -453,57 +360,27 @@ def run_module():
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
     # Use the parameters to initialize some common api variables
-    api_params = {}
-    api_params["headers"] = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s"
-        % (
-            module.params.pop("automation_user", ""),
-            module.params.pop("automation_secret", ""),
-        ),
-    }
+    user = UserAPI(module)
 
-    api_params["base_url"] = "%s/%s/check_mk/api/1.0" % (
-        module.params.pop("server_url", ""),
-        module.params.pop("site", ""),
-    )
+    user.build_required()
+    result = user.get()
+    etag = result.etag
 
-    # Determine desired state and attributes
-    desired_user = User.from_module(module.params)
-    log("desired_user: %s" % str(desired_user))
-    desired_state = desired_user.state
+    required_state = user.params.get("state")
+    if user.state == "present":
+        if required_state == "reset_password":
+            user.required.pop("username")
+            result = user.edit(etag)
+        elif required_state == "absent":
+            result = user.delete()
+        elif user.needs_editing():
+            user.required.pop("username")
+            result = user.edit(etag)
+    elif user.state == "absent":
+        if required_state in ("present", "reset_password"):
+            result = user.create()
 
-    current_user = User.from_api_response(module, api_params)
-    current_state = current_user.state
-    log("current_user: %s" % str(current_user))
-
-    # Handle the user accordingly to above findings and desired state
-    if desired_state in ["present", "reset_password"] and current_state == "present":
-        api_params["headers"]["If-Match"] = current_user.etag
-
-        if (
-            not current_user.satisfies(desired_user)
-            or desired_state == "reset_password"
-        ):
-            set_user_attributes(module, desired_user, api_params)
-            exit_changed(module, "User attributes changed.")
-        else:
-            exit_ok(module, "User already present. All explicit attributes as desired.")
-
-    elif desired_state == "present" and current_state == "absent":
-        create_user(module, desired_user, api_params)
-        exit_changed(module, "User created.")
-
-    elif desired_state == "absent" and current_state == "absent":
-        exit_ok(module, "User already absent.")
-
-    elif desired_state == "absent" and current_state == "present":
-        delete_user(module, api_params)
-        exit_changed(module, "User deleted.")
-
-    else:
-        exit_failed(module, "[run_module] Unknown error")
+    module.exit_json(**result_as_dict(result))
 
 
 def main():

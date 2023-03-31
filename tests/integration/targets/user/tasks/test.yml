@@ -9,7 +9,7 @@
     title: "{{ item }}"
     state: "present"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
   loop: "{{ checkmk_contact_groups }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -22,7 +22,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Create users."
   user:
@@ -40,8 +40,16 @@
       - "{{ outer_item.site }}"
     state: "present"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
+  register: rule_result
   loop: "{{ checkmk_users }}"
+
+- name: "{{ outer_item.version }} - Fail if not changed." # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Users not created! Maybe already existing?"
+  when: rule_result is not changed
+  delegate_to: localhost
+  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Activate."
   activation:
@@ -53,7 +61,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Create same users again."
   user:
@@ -71,16 +79,16 @@
       - "{{ outer_item.site }}"
     state: "present"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
   register: rule_result
   loop: "{{ checkmk_users }}"
 
-- name: "{{ outer_item.version }} - Fail if changed."  # noqa no-handler
+- name: "{{ outer_item.version }} - Fail if changed." # noqa no-handler
   ansible.builtin.fail:
-    msg: "Rule changed!"
+    msg: "Tried to create the same user twice!"
   when: "rule_result.changed"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Edit users."
   user:
@@ -92,7 +100,7 @@
     contactgroups: "{{ item.contactgroups }}"
     state: "present"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
   loop: "{{ checkmk_users }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -105,7 +113,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Change PW of users."
   user:
@@ -115,11 +123,19 @@
     automation_secret: "{{ automation_secret }}"
     name: "{{ item.name }}"
     password: "{{ item.newpassword }}"
-    state: "present"
+    auth_type: "{{ item.auth_type }}"
+    state: "reset_password"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
   register: rule_result
   loop: "{{ checkmk_users }}"
+
+- name: "{{ outer_item.version }} - Fail if not changed." # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Password not changed"
+  when: rule_result is not changed
+  delegate_to: localhost
+  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Activate."
   activation:
@@ -131,7 +147,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Delete users."
   user:
@@ -142,8 +158,16 @@
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
+  register: rule_result
   loop: "{{ checkmk_users }}"
+
+- name: "{{ outer_item.version }} - Fail if not changed." # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Users not deleted"
+  when: rule_result is not changed
+  delegate_to: localhost
+  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Activate."
   activation:
@@ -155,7 +179,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Delete same users again."
   user:
@@ -166,13 +190,13 @@
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
   register: rule_result
   loop: "{{ checkmk_users }}"
 
-- name: "{{ outer_item.version }} - Fail if changed."  # noqa no-handler
+- name: "{{ outer_item.version }} - Fail if changed." # noqa no-handler
   ansible.builtin.fail:
     msg: "Rule changed!"
   when: "rule_result.changed"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  run_once: true # noqa run-once[task]
