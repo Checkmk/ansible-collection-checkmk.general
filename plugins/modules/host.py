@@ -363,8 +363,8 @@ def run_module():
             msg_tokens.append("Host attributes replaced.")
 
         if (
-            update_attributes != {} and
-            current_explicit_attributes
+            update_attributes != {} 
+            and current_explicit_attributes
             != current_explicit_attributes.update(update_attributes)
         ):
             set_host_attributes(
