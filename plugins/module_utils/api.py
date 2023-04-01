@@ -60,7 +60,7 @@ class CheckmkAPI:
             http_readable,
         ) = http_mapping.get(http_code, (False, True, "Error calling API"))
         # Better translate to json later and keep the original response here.
-        content = response.read()
+        content = response.read() if response else ""
         msg = "%s - %s" % (str(http_code), http_readable)
 
         result = RESULT(
