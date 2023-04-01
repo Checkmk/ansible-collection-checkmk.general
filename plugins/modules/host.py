@@ -4,6 +4,7 @@
 # Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
+from pydantic.utils import deep_update
 
 __metaclass__ = type
 
@@ -19,6 +20,9 @@ version_added: "0.0.1"
 
 description:
     - Manage hosts within Checkmk.
+
+requirements:
+    - python package pydantic
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -101,7 +105,7 @@ EXAMPLES = r"""
     state: "present"
 
 # Update only specified attributes
-- name: "Create a host which is monitored on a distinct site."
+- name: "Update only specified attributes"
   tribe29.checkmk.host:
     server_url: "http://localhost/"
     site: "my_site"
@@ -113,7 +117,7 @@ EXAMPLES = r"""
     state: "present"
 
 # Remove specified attributes
-- name: "Create a host which is monitored on a distinct site."
+- name: "Remove specified attributes"
   tribe29.checkmk.host:
     server_url: "http://localhost/"
     site: "my_site"
@@ -326,14 +330,8 @@ def run_module():
 
     # Determine desired state and attributes
     attributes = module.params.get("attributes", {})
-    if attributes == []:
-        attributes = {}
-    remove_attributes = module.params.get("remove_attributes", {})
-    if remove_attributes == []:
-        remove_attributes = {}
+    remove_attributes = module.params.get("remove_attributes", [])
     update_attributes = module.params.get("update_attributes", {})
-    if update_attributes == []:
-        update_attributes = {}
     state = module.params.get("state", "present")
 
     if module.params["folder"]:
@@ -365,14 +363,14 @@ def run_module():
         if (
             update_attributes != {}
             and current_explicit_attributes
-            != current_explicit_attributes.update(update_attributes)
+            != deep_update(current_explicit_attributes, update_attributes)
         ):
             set_host_attributes(
                 module, update_attributes, base_url, headers, "update_attributes"
             )
             msg_tokens.append("Host attributes updated.")
 
-        if remove_attributes != {}:
+        if remove_attributes != []:
             msg = set_host_attributes(
                 module, remove_attributes, base_url, headers, "remove_attributes"
             )
@@ -387,6 +385,11 @@ def run_module():
             exit_ok(module, "Host already present. All explicit attributes as desired.")
 
     elif state == "present" and current_state == "absent":
+        if (
+            update_attributes != {}
+            and attributes == {}
+        ):
+            attributes = update_attributes
         create_host(module, attributes, base_url, headers)
         exit_changed(module, "Host created.")
 
