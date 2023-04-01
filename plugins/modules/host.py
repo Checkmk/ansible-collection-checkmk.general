@@ -362,12 +362,20 @@ def run_module():
             set_host_attributes(module, attributes, base_url, headers, "attributes")
             msg_tokens.append("Host attributes replaced.")
 
-        if update_attributes != {} and current_explicit_attributes != current_explicit_attributes.update(update_attributes):
-            set_host_attributes(module, update_attributes, base_url, headers, "update_attributes")
+        if (
+            update_attributes != {} and
+            current_explicit_attributes
+            != current_explicit_attributes.update(update_attributes)
+        ):
+            set_host_attributes(
+                module, update_attributes, base_url, headers, "update_attributes"
+            )
             msg_tokens.append("Host attributes updated.")
 
         if remove_attributes != {}:
-            msg = set_host_attributes(module, remove_attributes, base_url, headers, "remove_attributes")
+            msg = set_host_attributes(
+                module, remove_attributes, base_url, headers, "remove_attributes"
+            )
             if msg == "Host attributes allready removed.":
                 exit_ok(module, msg)
             else:
