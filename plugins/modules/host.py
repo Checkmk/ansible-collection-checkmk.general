@@ -100,7 +100,7 @@ EXAMPLES = r"""
     folder: "/"
     state: "present"
 
-# Update only specified attributes 
+# Update only specified attributes
 - name: "Create a host which is monitored on a distinct site."
   tribe29.checkmk.host:
     server_url: "http://localhost/"
@@ -112,7 +112,7 @@ EXAMPLES = r"""
       alias: "foo"
     state: "present"
 
-# Remove specified attributes 
+# Remove specified attributes
 - name: "Create a host which is monitored on a distinct site."
   tribe29.checkmk.host:
     server_url: "http://localhost/"
@@ -209,6 +209,7 @@ def set_host_attributes(module, attributes, base_url, headers, update_method):
             % (info["status"], info["body"]),
         )
 
+
 def move_host(module, base_url, headers):
     api_endpoint = "/objects/host_config/%s/actions/move/invoke" % module.params.get(
         "name"
@@ -249,6 +250,7 @@ def create_host(module, attributes, base_url, headers):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
+
 
 def delete_host(module, base_url, headers):
     api_endpoint = "/objects/host_config/" + module.params.get("name")
