@@ -42,7 +42,7 @@ tribe29.checkmk.tag_group module -- Manage tag\_group within Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.18.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.19.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
