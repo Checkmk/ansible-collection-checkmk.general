@@ -239,6 +239,23 @@ releases:
       name: user
       namespace: ''
     release_date: '2023-03-14'
+  0.19.0:
+    changes:
+      bugfixes:
+      - User module - Fix creation of automation users.
+      major_changes:
+      - We dropped support for Ansible 2.11 and Python 2 entirely. That means you
+        can still use this collection with older versions, we just do not test against
+        them anymore.
+      - module_utils - Introduce a centralized library to call the Checkmk API.
+      minor_changes:
+      - We added support for Ansible 2.14.
+      release_summary: Centralizing functions.
+    fragments:
+    - api.yml
+    - support.yml
+    - user.yml
+    release_date: '2023-04-03'
   0.2.0:
     changes:
       known_issues:
