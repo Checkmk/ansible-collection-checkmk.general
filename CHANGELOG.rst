@@ -5,6 +5,30 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.19.0
+=======
+
+Release Summary
+---------------
+
+Centralizing functions.
+
+Major Changes
+-------------
+
+- We dropped support for Ansible 2.11 and Python 2 entirely. That means you can still use this collection with older versions, we just do not test against them anymore.
+- module_utils - Introduce a centralized library to call the Checkmk API.
+
+Minor Changes
+-------------
+
+- We added support for Ansible 2.14.
+
+Bugfixes
+--------
+
+- User module - Fix creation of automation users.
+
 v0.18.0
 =======
 
