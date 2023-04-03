@@ -50,6 +50,7 @@
     - download-gpg-key
 
 - name: "GPG Verification on Debian Derivatives."
+  when: checkmk_server_verify_setup | bool and ansible_os_family == "Debian"
   block:
     - name: "Import Checkmk GPG Key."
       ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
@@ -68,7 +69,6 @@
     - name: "Print Verification Output."
       ansible.builtin.debug:
         msg: "{{ checkmk_server_verify_state.stderr_lines }} "
-  when: checkmk_server_verify_setup | bool and ansible_os_family == "Debian"
 
 - name: "Import Checkmk GPG Key."
   become: true

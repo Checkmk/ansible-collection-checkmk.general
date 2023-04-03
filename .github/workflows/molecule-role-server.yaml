@@ -33,7 +33,6 @@ jobs:
       fail-fast: false
       matrix:
         python:
-          - '2.7'
           - '3.8'
           - '3.9'
           - '3.10'
@@ -41,6 +40,7 @@ jobs:
         checkmk:
           - '2.0.0'
           - '2.1.0'
+          - '2.2.0'
 
     steps:
       - name: Check out code
