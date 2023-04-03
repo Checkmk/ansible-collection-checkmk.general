@@ -42,7 +42,7 @@ tribe29.checkmk.user module -- Manage users in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.18.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.19.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -129,7 +129,7 @@ Parameters
       :ansible-option-choices:`Choices:`
 
       - :ansible-option-choices-entry:`"password"`
-      - :ansible-option-choices-entry:`"secret"`
+      - :ansible-option-choices-entry:`"automation"`
 
 
       .. raw:: html
@@ -955,7 +955,7 @@ Examples
         automation_secret: "$SECRET"
         name: "registration"
         fullname: "Registration User"
-        auth_type: "secret"
+        auth_type: "automation"
         password: "ZGSDHUVDSKJHSDF"
         roles:
             - "registration"
