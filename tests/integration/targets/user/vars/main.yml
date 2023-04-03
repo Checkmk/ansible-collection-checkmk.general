@@ -1,6 +1,8 @@
 ---
 checkmk_versions:
-  - version: "2.1.0p20"
+  - version: "2.2.0b1"
+    site: "beta"
+  - version: "2.1.0p24"
     site: "stable"
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
 site: "test"
@@ -41,3 +43,11 @@ checkmk_users:
     contactgroups:
       - team3
     fallback_contact: false
+  - name: auto1
+    fullname: Automation User 1
+    password: "0123456789"
+    newpassword: "abcdefghij"
+    auth_type: password
+    contactgroups: []
+    roles:
+      - admin

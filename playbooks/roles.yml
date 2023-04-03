@@ -1,6 +1,7 @@
 ---
 - name: "Run roles."
   hosts: vagrant
+  strategy: linear
 
   vars_files:
     - ./vars/config.yml
