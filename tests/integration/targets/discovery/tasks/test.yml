@@ -21,7 +21,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    name: "{{ item.name }}"
+    host_name: "{{ item.name }}"
     state: "fix_all"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
