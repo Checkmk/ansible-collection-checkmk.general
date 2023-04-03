@@ -21,9 +21,6 @@ version_added: "0.0.1"
 description:
     - Manage hosts within Checkmk.
 
-requirements:
-    - python package pydantic
-
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
@@ -33,7 +30,7 @@ options:
         type: str
         aliases: [host_name]
     folder:
-        description: The folder your host is located in.
+        description: The folder your host is located in. On create it defaults to /.
         type: str
     attributes:
         description:
@@ -59,10 +56,13 @@ options:
         default: present
         choices: [present, absent]
 
-author:
+authors:
     - Robin Gierse (@robin-tribe29)
     - Lars Getwan (@lgetwan)
     - Oliver Gaida (@ogaida)
+
+requirements:
+    - pydantic
 """
 
 EXAMPLES = r"""
@@ -102,6 +102,18 @@ EXAMPLES = r"""
     attributes:
       site: "my_remote_site"
     folder: "/"
+    state: "present"
+
+# Create a host with update_attributes.
+- name: "Create a host which is monitored on a distinct site."
+  tribe29.checkmk.host:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    name: "my_host"
+    update_attributes:
+      site: "my_remote_site"
     state: "present"
 
 # Update only specified attributes
@@ -390,6 +402,8 @@ def run_module():
             and attributes == {}
         ):
             attributes = update_attributes
+        if not module.params["folder"]:
+            module.params["folder"] = "/"
         create_host(module, attributes, base_url, headers)
         exit_changed(module, "Host created.")
 
