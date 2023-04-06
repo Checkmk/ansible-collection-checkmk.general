@@ -4,7 +4,17 @@
 # Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
-from pydantic.utils import deep_update
+import traceback
+from ansible.module_utils.basic import missing_required_lib
+
+LIB_IMP_ERR = None
+try:
+    from pydantic.utils import deep_update
+    HAS_LIB = True
+except:
+    HAS_LIB = False
+    LIB_IMP_ERR = traceback.format_exc()
+
 
 __metaclass__ = type
 
@@ -323,6 +333,10 @@ def run_module():
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+
+    if not HAS_LIB:
+        module.fail_json(msg=missing_required_lib("pydantic"),
+        exception=LIB_IMP_ERR)
 
     # Use the parameters to initialize some common variables
     headers = {
