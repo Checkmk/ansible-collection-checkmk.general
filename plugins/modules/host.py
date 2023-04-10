@@ -369,10 +369,8 @@ def run_module():
             set_host_attributes(module, attributes, base_url, headers, "attributes")
             msg_tokens.append("Host attributes replaced.")
 
-        if (
-            update_attributes != {}
-            and current_explicit_attributes
-            != dict_merge(current_explicit_attributes, update_attributes)
+        if update_attributes != {} and current_explicit_attributes != dict_merge(
+            current_explicit_attributes, update_attributes
         ):
             set_host_attributes(
                 module, update_attributes, base_url, headers, "update_attributes"
@@ -394,10 +392,7 @@ def run_module():
             exit_ok(module, "Host already present. All explicit attributes as desired.")
 
     elif state == "present" and current_state == "absent":
-        if (
-            update_attributes != {}
-            and attributes == {}
-        ):
+        if update_attributes != {} and attributes == {}:
             attributes = update_attributes
         if not module.params["folder"]:
             module.params["folder"] = "/"
