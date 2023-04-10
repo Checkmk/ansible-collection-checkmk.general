@@ -55,7 +55,7 @@ options:
         default: present
         choices: [present, absent]
 
-authors:
+author:
     - Robin Gierse (@robin-tribe29)
     - Lars Getwan (@lgetwan)
     - Oliver Gaida (@ogaida)
