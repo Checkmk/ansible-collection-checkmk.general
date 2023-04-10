@@ -4,7 +4,6 @@
 # Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
-from ansible.module_utils.common.dict_transformations import dict_merge
 
 __metaclass__ = type
 
@@ -60,7 +59,6 @@ authors:
     - Robin Gierse (@robin-tribe29)
     - Lars Getwan (@lgetwan)
     - Oliver Gaida (@ogaida)
-
 """
 
 EXAMPLES = r"""
@@ -151,6 +149,7 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
+from ansible.module_utils.common.dict_transformations import dict_merge
 
 
 def exit_failed(module, msg):
