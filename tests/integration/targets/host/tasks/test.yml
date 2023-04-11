@@ -50,7 +50,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Create host with update_attributes without folder."
   host:
@@ -67,7 +67,7 @@
       alias: test
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -80,7 +80,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - check idempotency on update_attributes for only a subset of attributes."
   host:
@@ -95,84 +95,7 @@
       alias: test
     state: "present"
   delegate_to: localhost
-  run_once: true
-  loop: "{{ checkmk_hosts }}"
-
-- name: "{{ outer_item.version }} - Activate."
-  activation:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true
-
-- name: "{{ outer_item.version }} - remove_attributes."
-  host:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    name: "{{ item.name }}"
-    remove_attributes:
-      - alias
-    state: "present"
-  delegate_to: localhost
-  run_once: true
-  loop: "{{ checkmk_hosts }}"
-
-- name: "{{ outer_item.version }} - Activate."
-  activation:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true
-
-- name: "{{ outer_item.version }} - check idempotency on remove_attributes"
-  host:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    name: "{{ item.name }}"
-    remove_attributes:
-      - alias
-    state: "present"
-  delegate_to: localhost
-  run_once: true
-  loop: "{{ checkmk_hosts }}"
-
-- name: "{{ outer_item.version }} - Activate."
-  activation:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true
-
-- name: "{{ outer_item.version }} - Delete hosts."
-  host:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
-    state: "absent"
-  delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -186,3 +109,81 @@
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - remove_attributes."
+  host:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    remove_attributes:
+      - alias
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - check idempotency on remove_attributes"
+  host:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    remove_attributes:
+      - alias
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Delete hosts."
+  host:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  
