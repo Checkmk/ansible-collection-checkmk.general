@@ -1,6 +1,6 @@
 ---
 checkmk_versions:
-  - version: "2.2.0b1"
+  - version: "2.2.0b2"
     site: "beta"
   - version: "2.1.0p25"
     site: "stable"
