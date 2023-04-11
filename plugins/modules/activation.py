@@ -82,7 +82,43 @@ message:
 import time
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
+
+from ..module_utils.api import CheckmkAPI, result_dict
+
+HTTP_CODES = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "Changes activated."),
+    204: (True, False, "Changes activated."),
+    302: (True, False, "Redirected."),
+    422: (False, False, "There are no changes to be activated."),
+    400: (False, True, "Bad Request."),
+    401: (
+        False,
+        True,
+        "Unauthorized: There are foreign changes, which you may not activate, or you did not use <force_foreign_changes>.",
+    ),
+    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
+    406: (False, True, "Not Acceptable."),
+    409: (False, True, "Conflict: Some sites could not be activated."),
+    415: (False, True, "Unsupported Media Type."),
+    423: (False, True, "Locked: There is already an activation running."),
+}
+
+
+class ActivationAPI(CheckmkAPI):
+    def post(self):
+        data = {
+            "force_foreign_changes": self.params.get("force_foreign_changes"),
+            "redirect": False,
+            "sites": self.params.get("sites", []),
+        }
+
+        return self._fetch(
+            code_mapping=HTTP_CODES,
+            endpoint="domain-types/activation_run/actions/activate-changes/invoke",
+            data=data,
+            method="POST",
+        )
 
 
 def run_module():
@@ -96,85 +132,14 @@ def run_module():
         sites=dict(type="raw", default=[]),
         force_foreign_changes=dict(type="bool", default=False),
     )
-
-    result = dict(changed=False, failed=False, http_code="", msg="")
-
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
-    changed = False
-    failed = False
-    http_code = ""
-    sites = module.params["sites"]
-    if sites == {}:
-        sites = []
+    cmk = ActivationAPI(module)
+    result = cmk.post()
 
-    http_code_mapping = {
-        # http_code: (changed, failed, "Message")
-        200: (True, False, "Changes activated."),
-        204: (True, False, "Changes activated."),
-        302: (True, False, "Redirected."),
-        422: (False, False, "There are no changes to be activated."),
-        400: (False, True, "Bad Request."),
-        401: (
-            False,
-            True,
-            "Unauthorized: There are foreign changes, which you may not activate, or you did not use <force_foreign_changes>.",
-        ),
-        403: (False, True, "Forbidden: Configuration via WATO is disabled."),
-        406: (False, True, "Not Acceptable."),
-        409: (False, True, "Conflict: Some sites could not be activated."),
-        415: (False, True, "Unsupported Media Type."),
-        423: (False, True, "Locked: There is already an activation running."),
-    }
-
-    # Declare headers including authentication to send to the Checkmk API
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s"
-        % (
-            module.params.get("automation_user", ""),
-            module.params.get("automation_secret", ""),
-        ),
-    }
-
-    params = {
-        "force_foreign_changes": module.params.get("force_foreign_changes", ""),
-        "redirect": False,
-        "sites": sites,
-    }
-
-    base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
-        module.params.get("site", ""),
-    )
-
-    api_endpoint = "/domain-types/activation_run/actions/activate-changes/invoke"
-    url = base_url + api_endpoint
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )
-    http_code = info["status"]
-
-    # Kudos to Lars G.!
-    if http_code in http_code_mapping.keys():
-        changed, failed, msg = http_code_mapping[http_code]
-    else:
-        changed, failed, msg = (False, True, "Error calling API")
-
-    result["msg"] = msg
-    result["changed"] = changed
-    result["failed"] = failed
-    result["http_code"] = http_code
-
-    if result["failed"]:
-        module.fail_json(**result)
-
-    # Work around a possible race condition in the activation process.
-    # The sleep can be removed, once this is stable on Checkmk's and.
     time.sleep(3)
 
-    module.exit_json(**result)
+    module.exit_json(**result_dict(result))
 
 
 def main():

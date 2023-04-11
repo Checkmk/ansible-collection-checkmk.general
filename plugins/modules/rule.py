@@ -283,8 +283,8 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
             if (
                 r["extensions"]["folder"] == rule["folder"]
                 and r["extensions"]["conditions"] == rule["conditions"]
-                and r["extensions"]["properties"]["disabled"]
-                == rule["properties"]["disabled"]
+                and r["extensions"]["properties"].get("disabled", "")
+                == rule["properties"].get("disabled", "")
                 and value_api == value_mod
             ):
                 # If they are the same, return the ID
