@@ -9,7 +9,7 @@
     title: "{{ item }}"
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_contact_groups }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -22,7 +22,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Create users."
   user:
@@ -40,7 +40,7 @@
       - "{{ outer_item.site }}"
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_users }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -53,7 +53,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Create same users again."
   user:
@@ -71,7 +71,7 @@
       - "{{ outer_item.site }}"
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   register: rule_result
   loop: "{{ checkmk_users }}"
 
@@ -80,7 +80,7 @@
     msg: "Rule changed!"
   when: "rule_result.changed"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Edit users."
   user:
@@ -92,7 +92,7 @@
     contactgroups: "{{ item.contactgroups }}"
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_users }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -105,7 +105,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Change PW of users."
   user:
@@ -117,7 +117,7 @@
     password: "{{ item.newpassword }}"
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   register: rule_result
   loop: "{{ checkmk_users }}"
 
@@ -131,7 +131,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Delete users."
   user:
@@ -142,7 +142,7 @@
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_users }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -155,7 +155,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Delete same users again."
   user:
@@ -166,7 +166,7 @@
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   register: rule_result
   loop: "{{ checkmk_users }}"
 
@@ -175,4 +175,4 @@
     msg: "Rule changed!"
   when: "rule_result.changed"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]

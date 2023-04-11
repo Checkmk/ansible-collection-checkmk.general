@@ -5,6 +5,7 @@
 
 - name: "Register hosts against a remote site. Both for updates and TLS."
   hosts: vagrant
+  strategy: linear
   vars:
     # Basic server and authentication information.
     # You have to provide the distributed setup yourself.

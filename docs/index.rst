@@ -6,7 +6,7 @@
 Tribe29.Checkmk
 ===============
 
-Collection version 0.18.0
+Collection version 0.19.0
 
 .. contents::
    :local:
@@ -25,7 +25,7 @@ The official Checkmk Ansible collection - brought to you by tribe29 - the Checkm
 
 **Supported ansible-core versions:**
 
-* 2.11.1 or newer
+* 2.12.0 or newer
 
 .. raw:: html
 

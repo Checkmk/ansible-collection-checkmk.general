@@ -48,7 +48,7 @@
   tags:
     - update-pause
 
-- name: "Create backup of site."
+- name: "Create backup of site."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: |
     omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
