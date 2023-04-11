@@ -360,6 +360,9 @@ def run_module():
         msg_tokens = []
 
         current_folder = normalize_folder(current_folder)
+        merged_attributes = dict_merge(
+            current_explicit_attributes, update_attributes
+        )
 
         if module.params["folder"] and current_folder != module.params["folder"]:
             move_host(module, base_url, headers)
@@ -369,11 +372,9 @@ def run_module():
             set_host_attributes(module, attributes, base_url, headers, "attributes")
             msg_tokens.append("Host attributes replaced.")
 
-        if update_attributes != {} and current_explicit_attributes != dict_merge(
-            current_explicit_attributes, update_attributes
-        ):
+        if update_attributes != {} and current_explicit_attributes != merged_attributes:
             set_host_attributes(
-                module, update_attributes, base_url, headers, "update_attributes"
+                module, merged_attributes, base_url, headers, "attributes"
             )
             msg_tokens.append("Host attributes updated.")
 
