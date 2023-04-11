@@ -371,7 +371,9 @@ def run_module():
             msg_tokens.append("Host attributes replaced.")
 
         if update_attributes != {} and current_explicit_attributes != merged_attributes:
-            set_host_attributes(module, merged_attributes, base_url, headers, "attributes")
+            set_host_attributes(
+                module, merged_attributes, base_url, headers, "attributes"
+            )
             msg_tokens.append("Host attributes updated.")
 
         if remove_attributes != []:
