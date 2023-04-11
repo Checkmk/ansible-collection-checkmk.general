@@ -70,18 +70,6 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate."
-  activation:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-
 - name: "{{ outer_item.version }} - check idempotency on update_attributes for only a subset of attributes."
   host:
     server_url: "{{ server_url }}"
@@ -98,18 +86,6 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate."
-  activation:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-
 - name: "{{ outer_item.version }} - remove_attributes."
   host:
     server_url: "{{ server_url }}"
@@ -123,18 +99,6 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
-
-- name: "{{ outer_item.version }} - Activate."
-  activation:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - check idempotency on remove_attributes"
   host:
@@ -150,18 +114,6 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate."
-  activation:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-
 - name: "{{ outer_item.version }} - Delete hosts."
   host:
     server_url: "{{ server_url }}"
@@ -174,16 +126,4 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
-
-- name: "{{ outer_item.version }} - Activate."
-  activation:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   
