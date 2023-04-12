@@ -29,7 +29,7 @@ options:
         type: str
         aliases: [host_name]
     folder:
-        description: The folder your host is located in. On create it defaults to /.
+        description: The folder your host is located in. On create it defaults to C(/).
         type: str
     attributes:
         description:
