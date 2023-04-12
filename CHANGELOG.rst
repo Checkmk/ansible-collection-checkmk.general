@@ -5,6 +5,20 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.20.0
+=======
+
+Minor Changes
+-------------
+
+- Agent role - Make firewall zone configurable on RedHat derivates.
+- Host module - Enable update and removal of attributes in addition to fully managing them. This is analogous to the Checkmk REST API. Additionally the "folder" attribute has no default value anymore except on creation.
+
+Bugfixes
+--------
+
+- Rule module - Fix crash, if the Checkmk REST API does not return a value for the "disabled" property.
+
 v0.19.0
 =======
 
