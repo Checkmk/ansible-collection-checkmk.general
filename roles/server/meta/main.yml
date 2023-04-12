@@ -33,10 +33,13 @@ galaxy_info:
   platforms:
     - name: Debian
       versions:
+        - buster
         - bullseye
     - name: Ubuntu
       versions:
+        - bionic
         - focal
+        - jammy
 
   galaxy_tags: [tribe29, checkmk, monitoring, server]
   # List tags for your role here, one per line. A tag is a keyword that describes
