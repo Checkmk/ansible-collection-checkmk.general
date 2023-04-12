@@ -1,14 +1,88 @@
 ---
 checkmk_versions:
-  - version: "2.1.0p24"
+  - version: "2.2.0b2"
+    site: "beta"
+  - version: "2.1.0p25"
     site: "stable"
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
-site: "test"
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
 
 checkmk_rules:
+
+  - name: "Filesystem - Magic Factor."
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      location:
+        folder: "/"
+        position: "bottom"
+      conditions: {
+        "host_labels": [],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "description": "",
+        "disabled": false
+      }
+      value_raw: "{'magic': 0.8}"
+
+  - name: "CPU - Load."
+    ruleset: "checkgroup_parameters:cpu_load"
+    rule:
+      location:
+        folder: "/"
+        position: "bottom"
+      conditions: {
+        "host_labels": [],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "description": "",
+        "disabled": false
+      }
+      value_raw: "{'levels': (1.0, 2.0)}"
+
+  - name: "CPU - Utilization."
+    ruleset: "checkgroup_parameters:cpu_iowait"
+    rule:
+      location:
+        folder: "/"
+        position: "bottom"
+      conditions: {
+        "host_labels": [],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "description": "",
+        "disabled": false
+      }
+      value_raw: "{'core_util_time': (100.0, 300, 900), 'core_util_time_total': (100.0, 300, 900)}"
+
+  - name: "Logwatch - Event Console Forwarding."
+    ruleset: "checkgroup_parameters:logwatch_ec"
+    rule:
+      location:
+        folder: "/"
+        position: "bottom"
+      conditions: {
+        "host_labels": [],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "description": "",
+        "disabled": false
+      }
+      value_raw: "{'facility': 17, 'method': '', 'monitor_logfilelist': False}"
+
   - ruleset: "usewalk_hosts"
     rule:
       conditions: {
@@ -23,10 +97,10 @@ checkmk_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_date_time.iso8601 }} Set by Ansible",
+        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
         "disabled": false,
       }
-      value_raw: "True"
+      value_raw: 'True'
   - ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -41,13 +115,14 @@ checkmk_rules:
         "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
       }
       value_raw: "{'levels': (80.0, 90.0)}"
+
   - ruleset: "periodic_discovery"
     rule:
       location:
-          position: "top"
-          folder: "/"
+        position: "top"
+        folder: "/"
       properties:
-        comment: "Created by Ansible"
+        comment: "{{ ansible_date_time.iso8601 }} - Ansible managed"
         description: "Perform Service Discovery every 5 minutes"
         disabled: false
       conditions:
@@ -58,17 +133,17 @@ checkmk_rules:
             operator: "is"
             value: "yes"
       value_raw: "{
-        'check_interval': 5.0,
-        'inventory_rediscovery': {
-          'activation': True,
-          'excluded_time': [],
-          'group_time': 900,
-          'mode': 2,
-          'service_filters':(
-            'combined', {'service_whitelist': ['^E2E.*']}
-          )
-        },
-        'severity_new_host_label': 0,
-        'severity_unmonitored': 0,
-        'severity_vanished': 0
-      }"
+          'check_interval': 5.0,
+          'inventory_rediscovery': {
+            'activation': True,
+            'excluded_time': [],
+            'group_time': 900,
+            'mode': 2,
+            'service_filters':(
+              'combined', {'service_whitelist': ['^E2E.*']}
+            )
+          },
+          'severity_new_host_label': 0,
+          'severity_unmonitored': 0,
+          'severity_vanished': 0
+        }"

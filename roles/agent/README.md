@@ -104,6 +104,10 @@ for automatic updates. Otherwise this will fail.
 
 Automatically configure the firewall to allow access to the Checkmk agent.
 
+    checkmk_agent_configure_firewall_zone: 'public'
+
+When checkmk_agent_configure_firewall then configure firewall zone on RedHat systems. Defaults to 'public'.
+
     checkmk_agent_force_install: 'false'
 
 Force the installation of the agent package, no matter the constraints.

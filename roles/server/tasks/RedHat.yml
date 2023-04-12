@@ -4,7 +4,6 @@
     (ansible_facts.distribution == "RedHat" or ansible_facts.distribution == "CentOS")
     and ansible_facts.distribution_major_version == "8"
   block:
-
     - name: "Download EPEL GPG Key on CentOS & RHEL 8."
       ansible.builtin.get_url:
         url: "{{ checkmk_server_epel_gpg_key }}"
