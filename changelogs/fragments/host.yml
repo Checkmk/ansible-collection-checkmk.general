@@ -1,0 +1,2 @@
+minor_changes:
+  - Host module - Enable update and removal of attributes in addition to fully managing them. This is analogous to the Checkmk REST API. Additionally the "folder" attribute has no default value anymore except on creation.

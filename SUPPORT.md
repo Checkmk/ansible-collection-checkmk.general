@@ -24,3 +24,4 @@ Collection Version | Checkmk Versions | Ansible Versions | Remarks
 0.17.1 | 2.1.0p21, 2.0.0p33 | 2.11, 2.12, 2.13 | None
 0.18.0 | 2.1.0p24, 2.0.0p34 | 2.11, 2.12, 2.13 | None
 0.19.0 | 2.1.0p25, 2.0.0p34, 2.2.0b1 | 2.12, 2.13, 2.14 | None
+0.20.0 | 2.1.0p25, 2.0.0p34, 2.2.0b2 | 2.12, 2.13, 2.14 | None

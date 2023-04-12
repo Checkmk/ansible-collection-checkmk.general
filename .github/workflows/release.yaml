@@ -57,7 +57,7 @@ jobs:
         run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ tribe29.checkmk
 
       - name: Create Pull Request for docs and changelog against devel branch
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           commit-message: Update Docs and Changelogs
           committer: GitHub <noreply@github.com>
