@@ -138,7 +138,7 @@ Before running the action `Release Collection` against the `main` branch, the
 following needs to be done:
 
 1. Update the collection version in `galaxy.yml` and `requirements.yml`. Look for `version:`.
-2. Check the integration tests for up-to-date Checkmk versions.
+2. Check the integration and molecule tests for up-to-date Checkmk versions.
 3. Check the GitHub Workflows for [EOL Ansible and Python versions and add new releases](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix).
 4. Update the compatibility matrix in `SUPPORT.md` accordingly.
 5. Double check `changelogs/fragments` if all changes have a changelog.
