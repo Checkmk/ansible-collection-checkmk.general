@@ -33,10 +33,10 @@ options:
         required: false
         type: str
 
-    job:
-        description: Jobtype - Bake, sign or bake and sign
-        choices: ["bake", "sign", "bake_sign"]
-        default: "bake"
+    state:
+        description: State - Baked, signed or baked and signed
+        choices: ["baked", "signed", "baked_signed"]
+        default: "baked"
         type: str
 
 author:
@@ -66,8 +66,6 @@ message:
     sample: 'Done.'
 """
 
-import json
-
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 
@@ -81,10 +79,10 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         sign_key_id=dict(type="int", required=False),
         sign_key_passphrase=dict(type="str", required=False, no_log=True),
-        job=dict(
+        state=dict(
             type="str",
-            default="bake",
-            choices=["bake", "sign", "bake_sign"],
+            default="baked",
+            choices=["baked", "signed", "baked_signed"],
             required=False,
         ),
     )
@@ -102,8 +100,16 @@ def run_module():
         200: (True, False, "The operation was done successfully."),
         400: (False, True, "Bad Request: Parameter or validation failure"),
         403: (False, True, "Forbidden: Configuration via WATO is disabled."),
-        406: (False, True, "Not Acceptable: The requests accept headers can not be satisfied"),
-        415: (False, True, "Unsupported Media Type: The submitted content-type is not supported"),
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied"
+        ),
+        415: (
+            False,
+            True,
+            "Unsupported Media Type: The submitted content-type is not supported"
+        ),
         500: (False, True, "General Server Error."),
     }
 
@@ -123,41 +129,35 @@ def run_module():
         module.params.get("site", ""),
     )
 
-    jobtype = module.params.get("job", "")
+    action = module.params.get("state", "")
 
-    if jobtype == "bake":
-        api_endpoint = ("/domain-types/agent/actions/bake/invoke")
-
+    if action == "baked":
+        api_endpoint = "/domain-types/agent/actions/bake/invoke"
         params = ()
 
-        url = base_url + api_endpoint
-        response, info = fetch_url(
-            module, url, module.jsonify(params), headers=headers, method="POST", timeout=60
-        )
-    elif jobtype == "sign":
-        api_endpoint = ("/domain-types/agent/actions/sign/invoke")
-
+    elif action == "signed":
+        api_endpoint = "/domain-types/agent/actions/sign/invoke"
         params = {
             "key_id": module.params.get("sign_key_id", ""),
             "passphrase": module.params.get("sign_key_passphrase", ""),
         }
 
-        url = base_url + api_endpoint
-        response, info = fetch_url(
-            module, url, module.jsonify(params), headers=headers, method="POST", timeout=60
-        )
-    elif jobtype == "bake_sign":
-        api_endpoint = ("/domain-types/agent/actions/bake_and_sign/invoke")
-
+    elif action == "baked_signed":
+        api_endpoint = "/domain-types/agent/actions/bake_and_sign/invoke"
         params = {
             "key_id": module.params.get("sign_key_id", ""),
             "passphrase": module.params.get("sign_key_passphrase", ""),
         }
 
-        url = base_url + api_endpoint
-        response, info = fetch_url(
-            module, url, module.jsonify(params), headers=headers, method="POST", timeout=60
-        )
+    url = base_url + api_endpoint
+    response, info = fetch_url(
+        module,
+        url,
+        module.jsonify(params),
+        headers=headers,
+        method="POST",
+        timeout=60
+    )
 
     http_code = info["status"]
 
