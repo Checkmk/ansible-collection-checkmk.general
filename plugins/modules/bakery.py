@@ -11,14 +11,14 @@ DOCUMENTATION = r"""
 ---
 module: bakery
 
-short_description: Using the Bakery.
+short_description: Trigger baking and signing in the agent bakery.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "0.17.1"
+version_added: "0.21.0"
 
 description:
-- Using the Bakery.
+- Trigger baking and signing in the agent bakery.
 
 extends_documentation_fragment: [tribe29.checkmk.common]
 
@@ -44,13 +44,34 @@ author:
 """
 
 EXAMPLES = r"""
-# Bake all agents.
-- name: "Bake all agents."
+# Bake all agents without signing, as example in a fresh installation without a signature key.
+- name: "Bake all agents without signing."
   tribe29.checkmk.bakery:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
+    state: "baked"
+# Sign all agents.
+- name: "Sign all agents."
+  tribe29.checkmk.bakery:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    sign_key_id: 1
+    sign_key_passphrase: "secretkey"
+    state: "signed"
+# Sign and bake all agents.
+- name: "Sign and Bake all agents."
+  tribe29.checkmk.bakery:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    sign_key_id: 1
+    sign_key_passphrase: "secretkey"
+    state: "baked_signed"
 """
 
 RETURN = r"""
