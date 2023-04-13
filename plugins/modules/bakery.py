@@ -103,12 +103,12 @@ def run_module():
         406: (
             False,
             True,
-            "Not Acceptable: The requests accept headers can not be satisfied"
+            "Not Acceptable: The requests accept headers can not be satisfied",
         ),
         415: (
             False,
             True,
-            "Unsupported Media Type: The submitted content-type is not supported"
+            "Unsupported Media Type: The submitted content-type is not supported",
         ),
         500: (False, True, "General Server Error."),
     }
@@ -151,12 +151,7 @@ def run_module():
 
     url = base_url + api_endpoint
     response, info = fetch_url(
-        module,
-        url,
-        module.jsonify(params),
-        headers=headers,
-        method="POST",
-        timeout=60
+        module, url, module.jsonify(params), headers=headers, method="POST", timeout=60
     )
 
     http_code = info["status"]
