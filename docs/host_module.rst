@@ -42,7 +42,7 @@ tribe29.checkmk.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.18.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.20.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -126,7 +126,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`{}`
 
       .. raw:: html
 
@@ -227,12 +227,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The folder your host is located in.
+      The folder your host is located in. On create it defaults to \ :literal:`/`\ .
 
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"/"`
 
       .. raw:: html
 
@@ -273,6 +269,44 @@ Parameters
 
       The host you want to manage.
 
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-remove_attributes"></div>
+
+      .. _ansible_collections.tribe29.checkmk.host_module__parameter-remove_attributes:
+
+      .. rst-class:: ansible-option-title
+
+      **remove_attributes**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-remove_attributes" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`any`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The remove\_attributes of your host as described in the API documentation. This will only remove the given attributes.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
 
       .. raw:: html
 
@@ -391,6 +425,44 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-update_attributes"></div>
+
+      .. _ansible_collections.tribe29.checkmk.host_module__parameter-update_attributes:
+
+      .. rst-class:: ansible-option-title
+
+      **update_attributes**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-update_attributes" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`any`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The update\_attributes of your host as described in the API documentation. This will only update the given attributes.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`{}`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
       .. _ansible_collections.tribe29.checkmk.host_module__parameter-validate_certs:
@@ -486,6 +558,42 @@ Examples
         folder: "/"
         state: "present"
 
+    # Create a host with update_attributes.
+    - name: "Create a host which is monitored on a distinct site."
+      tribe29.checkmk.host:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        name: "my_host"
+        update_attributes:
+          site: "my_remote_site"
+        state: "present"
+
+    # Update only specified attributes
+    - name: "Update only specified attributes"
+      tribe29.checkmk.host:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        name: "my_host"
+        update_attributes:
+          alias: "foo"
+        state: "present"
+
+    # Remove specified attributes
+    - name: "Remove specified attributes"
+      tribe29.checkmk.host:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        name: "my_host"
+        remove_attributes:
+          - alias
+        state: "present"
+
 
 
 
@@ -564,6 +672,7 @@ Authors
 
 - Robin Gierse (@robin-tribe29)
 - Lars Getwan (@lgetwan)
+- Oliver Gaida (@ogaida)
 
 
 
