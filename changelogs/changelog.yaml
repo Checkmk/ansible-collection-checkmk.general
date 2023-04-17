@@ -239,6 +239,23 @@ releases:
       name: user
       namespace: ''
     release_date: '2023-03-14'
+  0.19.0:
+    changes:
+      bugfixes:
+      - User module - Fix creation of automation users.
+      major_changes:
+      - We dropped support for Ansible 2.11 and Python 2 entirely. That means you
+        can still use this collection with older versions, we just do not test against
+        them anymore.
+      - module_utils - Introduce a centralized library to call the Checkmk API.
+      minor_changes:
+      - We added support for Ansible 2.14.
+      release_summary: Centralizing functions.
+    fragments:
+    - api.yml
+    - support.yml
+    - user.yml
+    release_date: '2023-04-03'
   0.2.0:
     changes:
       known_issues:
@@ -283,6 +300,21 @@ releases:
     fragments:
     - discovery.yml
     release_date: '2022-05-11'
+  0.20.0:
+    changes:
+      bugfixes:
+      - Rule module - Fix crash, if the Checkmk REST API does not return a value for
+        the "disabled" property.
+      minor_changes:
+      - Agent role - Make firewall zone configurable on RedHat derivates.
+      - Host module - Enable update and removal of attributes in addition to fully
+        managing them. This is analogous to the Checkmk REST API. Additionally the
+        "folder" attribute has no default value anymore except on creation.
+    fragments:
+    - agent.yml
+    - host.yml
+    - rule.yml
+    release_date: '2023-04-12'
   0.3.2:
     changes:
       minor_changes:

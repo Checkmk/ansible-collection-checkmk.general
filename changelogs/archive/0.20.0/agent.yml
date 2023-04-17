@@ -1,0 +1,2 @@
+minor_changes:
+  - Agent role - Make firewall zone configurable on RedHat derivates.

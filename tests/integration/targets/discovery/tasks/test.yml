@@ -5,14 +5,14 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     attributes:
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - Discover hosts."
@@ -24,7 +24,7 @@
     host_name: "{{ item.name }}"
     state: "fix_all"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -37,7 +37,7 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Delete hosts."
   host:
@@ -45,11 +45,11 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
+    name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     state: "absent"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - Activate."
@@ -61,4 +61,4 @@
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
-  run_once: true
+  run_once: true  # noqa run-once[task]
