@@ -140,7 +140,6 @@ import json
 # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.dict_transformations import dict_merge
-from ansible.module_utils.common.dict_transformations import recursive_diff
 from ansible.module_utils.urls import fetch_url
 
 
@@ -377,10 +376,12 @@ def run_module():
 
         if attributes != {} and current_explicit_attributes != attributes:
             if not module.check_mode:
-                set_folder_attributes(module, attributes, base_url, headers, "attributes")
+                set_folder_attributes(
+                    module, attributes, base_url, headers, "attributes"
+                )
             msg_tokens.append("Folder attributes replaced.")
 
-        if update_attributes != {} and current_explicit_attributes != dict_merge(current_explicit_attributes, merged_attributes):
+        if update_attributes != {} and current_explicit_attributes != merged_attributes:
             if not module.check_mode:
                 set_folder_attributes(
                     module, merged_attributes, base_url, headers, "update_attributes"
