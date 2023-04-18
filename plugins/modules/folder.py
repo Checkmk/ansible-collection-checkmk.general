@@ -132,16 +132,14 @@ message:
     sample: 'Folder created.'
 """
 
+import json
 import sys
 import traceback
-
-import json
 
 # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.dict_transformations import dict_merge
 from ansible.module_utils.urls import fetch_url
-
 
 if sys.version[0] == "3":
     from pathlib import Path
@@ -157,6 +155,7 @@ else:
     else:
         HAS_PATHLIB2_LIBRARY = True
         PATHLIB2_LIBRARY_IMPORT_ERROR = None
+
 
 def exit_failed(module, msg):
     result = {"msg": msg, "changed": False, "failed": True}
@@ -179,8 +178,10 @@ def cleanup_path(path):
         p = Path("/").joinpath(p)
     return str(p.parent).lower(), p.name
 
+
 def path_for_url(module):
     return module.params["path"].replace("/", "~")
+
 
 def get_current_folder_state(module, base_url, headers):
     current_state = "unknown"
@@ -217,7 +218,7 @@ def get_current_folder_state(module, base_url, headers):
     return current_state, current_explicit_attributes, current_title, etag
 
 
-def set_folder_attributes(module, attributes, base_url, headers, update_method="attributes"):
+def set_folder_attributes(module, attributes, base_url, headers, update_method):
     api_endpoint = "/objects/folder_config/" + path_for_url(module)
     params = {
         update_method: attributes,
@@ -260,6 +261,7 @@ def change_title(module, attributes, base_url, headers):
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
+
 
 def create_folder(module, attributes, base_url, headers):
     parent, foldername = cleanup_path(module.params["path"])
