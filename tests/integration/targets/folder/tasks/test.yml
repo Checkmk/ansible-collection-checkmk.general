@@ -115,11 +115,11 @@
     path: "{{ checkmk_folder_attr_test.path }}"
     state: "present"
     remove_attributes:
-      - tag_networking
+      - "tag_networking"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
- - name: "{{ outer_item.version }} - Check the idempotency of Remove attributes."
+- name: "{{ outer_item.version }} - Check the idempotency of Remove attributes."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -127,7 +127,7 @@
     automation_secret: "{{ automation_secret }}"
     path: "{{ checkmk_folder_attr_test.path }}"
     remove_attributes:
-      - tag_networking
+      - "tag_networking"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
