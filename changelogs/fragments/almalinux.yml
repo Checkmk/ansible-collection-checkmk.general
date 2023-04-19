@@ -1,0 +1,5 @@
+# Reference: https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
+
+minor_changes:
+  - added support for almalinux in server-role
+
