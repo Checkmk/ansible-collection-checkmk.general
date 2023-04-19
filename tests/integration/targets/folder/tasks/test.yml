@@ -91,6 +91,8 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+  register: test_output
+  failed_when: test_output.changed | bool
 
 - name: "{{ outer_item.version }} - Update folder title (name)."
   folder:
@@ -129,3 +131,5 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+  register: test_output
+  failed_when: test_output.changed | bool
