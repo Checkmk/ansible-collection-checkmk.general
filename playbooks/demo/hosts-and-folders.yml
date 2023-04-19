@@ -35,7 +35,7 @@
         state: "present"
       delegate_to: localhost
 
-    - name: "Pause to review first set of changes."
+    - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
@@ -80,7 +80,7 @@
         state: "present"
       delegate_to: localhost
 
-    - name: "Pause to review second set of changes."
+    - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
@@ -112,7 +112,7 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_folders }}"
 
-    - name: "Pause to review third set of changes."
+    - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."

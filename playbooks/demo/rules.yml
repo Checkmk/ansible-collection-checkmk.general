@@ -1,5 +1,5 @@
 ---
-- name: "Showcase host and folder modules."
+- name: "Showcase rule module."
   hosts: test
   gather_facts: false
   vars_files:
@@ -54,12 +54,12 @@
       run_once: true
       delegate_to: localhost
 
-    - name: "Pause to review first set of changes."
+    - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
           "Press <Enter> to continue."
-      # when: not run_unattended | bool
+      when: not run_unattended | bool
 
     - name: "Activate changes on site."
       activation:
@@ -110,7 +110,7 @@
       run_once: 'yes'
       loop: "{{ checkmk_folders }}"
 
-    - name: "Pause to review third set of changes."
+    - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
