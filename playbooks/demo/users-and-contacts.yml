@@ -41,7 +41,7 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_users }}"
 
-    - name: "Pause to review first set of changes."
+    - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
@@ -84,7 +84,7 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_contact_groups }}"
 
-    - name: "Pause to review second set of changes."
+    - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
