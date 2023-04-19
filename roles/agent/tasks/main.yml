@@ -56,7 +56,7 @@
     automation_user: "{{ checkmk_agent_user }}"
     automation_secret: "{{ checkmk_agent_auth }}"
     folder: "{{ checkmk_agent_folder | default(omit) }}"
-    host_name: "{{ checkmk_agent_host_name }}"
+    name: "{{ checkmk_agent_host_name }}"
     attributes: "{{ checkmk_agent_host_attributes }}"
     state: "present"
   become: false
@@ -127,6 +127,19 @@
     and checkmk_agent_tls | bool
     and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
 
+- name: "Refresh discovery information on host."
+  become: false
+  tribe29.checkmk.discovery:
+    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
+    site: "{{ checkmk_agent_site }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    automation_user: "{{ checkmk_agent_user }}"
+    automation_secret: "{{ checkmk_agent_auth }}"
+    host_name: "{{ checkmk_agent_host_name }}"
+    state: "refresh"
+  delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
+  when: checkmk_agent_discover | bool
+
 - name: "Discover services and labels on host."
   become: false
   tribe29.checkmk.discovery:
@@ -136,7 +149,7 @@
     automation_user: "{{ checkmk_agent_user }}"
     automation_secret: "{{ checkmk_agent_auth }}"
     host_name: "{{ checkmk_agent_host_name }}"
-    state: "fix_all"
+    state: "new"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_discover | bool
   notify: "activate changes"
