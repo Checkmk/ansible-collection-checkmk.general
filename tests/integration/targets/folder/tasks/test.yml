@@ -79,7 +79,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
- - name: "{{ outer_item.version }} - Check the idempotency of Update attributes."
+- name: "{{ outer_item.version }} - Check the idempotency of Update attributes."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -129,6 +129,3 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-
-
-
