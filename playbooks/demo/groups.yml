@@ -6,6 +6,14 @@
     - ../vars/auth.yml      # This vars file contains details about your site
     - ../vars/groups.yml    # This vars file contains the groups to manage
   tasks:
+
+    - name: "Gather Date and Time Facts on localhost."
+      ansible.builtin.setup:
+        gather_subset:
+          - date_time
+      delegate_to: localhost
+      run_once: 'yes'
+
     - name: "Create host groups."
       host_group:
         server_url: "{{ server_url }}"
@@ -60,7 +68,73 @@
       run_once: true
       loop: "{{ checkmk_service_groups }}"
 
-    - name: "Pause to review first set of changes."
+    - name: "Assign hosts to host groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "host_groups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_host_groups }}"
+
+    - name: "Assign hosts to contact groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "host_contactgroups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_contact_groups }}"
+
+    - name: "Assign services to service groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "service_groups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "present"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_service_groups }}"
+
+    - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
@@ -78,6 +152,72 @@
           - "{{ site }}"
       delegate_to: localhost
       run_once: 'true'
+
+    - name: "Unassign hosts to host groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "host_groups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_host_groups }}"
+
+    - name: "Unassign hosts to contact groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "host_contactgroups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_contact_groups }}"
+
+    - name: "Unassign services to service groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "service_groups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true
+      loop: "{{ checkmk_service_groups }}"
 
     - name: "Delete service groups."
       service_group:
@@ -126,6 +266,13 @@
       delegate_to: localhost
       run_once: true
       loop: "{{ checkmk_host_groups }}"
+
+    - name: "Pause to review changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+      when: not run_unattended | bool
 
     - name: "Activate changes on site - Showcase host and folders were deleted"
       activation:
