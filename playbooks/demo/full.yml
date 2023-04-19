@@ -5,8 +5,6 @@
   ansible.builtin.import_playbook: groups.yml
 - name: "Users and Contacts."
   ansible.builtin.import_playbook: users-and-contacts.yml
-- name: "Services."
-  ansible.builtin.import_playbook: services.yml
 - name: "Rules."
   ansible.builtin.import_playbook: rules.yml
 - name: "Downtimes."
