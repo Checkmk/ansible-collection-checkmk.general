@@ -226,7 +226,13 @@ def set_folder_attributes(module, attributes, base_url, headers, params):
         module, url, module.jsonify(params), headers=headers, method="PUT"
     )
 
-    if info["status"] == 400 and params.get("remove_attributes") and not params.get("title") and not params.get("attributes") and not params.get("update_attributes"):
+    if (
+        info["status"] == 400
+        and params.get("remove_attributes")
+        and not params.get("title")
+        and not params.get("attributes")
+        and not params.get("update_attributes")
+    ):
         # "Folder attributes allready removed."
         return False
     elif info["status"] != 200:
@@ -372,8 +378,8 @@ def run_module():
         if params != {}:
             if not module.check_mode:
                 changed = set_folder_attributes(
-                              module, attributes, base_url, headers, params
-                          )
+                    module, attributes, base_url, headers, params
+                )
 
             if changed:
                 msg_tokens.append("Folder attributes updated.")
