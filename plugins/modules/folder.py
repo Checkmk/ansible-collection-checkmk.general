@@ -218,18 +218,15 @@ def get_current_folder_state(module, base_url, headers):
     return current_state, current_explicit_attributes, current_title, etag
 
 
-def set_folder_attributes(module, attributes, base_url, headers, update_method):
+def set_folder_attributes(module, attributes, base_url, headers, params):
     api_endpoint = "/objects/folder_config/" + path_for_url(module)
-    params = {
-        update_method: attributes,
-    }
     url = base_url + api_endpoint
 
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="PUT"
     )
 
-    if info["status"] == 400 and update_method == "remove_attributes":
+    if info["status"] == 400 and params.get("remove_attributes") and not params.get("title") and not params.get("attributes") and not params.get("update_attributes"):
         # "Folder attributes allready removed."
         return False
     elif info["status"] != 200:
@@ -240,27 +237,6 @@ def set_folder_attributes(module, attributes, base_url, headers, update_method):
         )
 
     return True
-
-
-def change_title(module, attributes, base_url, headers):
-    name = module.params.get("name")
-
-    api_endpoint = "/objects/folder_config/" + path_for_url(module)
-    params = {
-        "title": name,
-    }
-    url = base_url + api_endpoint
-
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="PUT"
-    )
-
-    if info["status"] != 200:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
-        )
 
 
 def create_folder(module, attributes, base_url, headers):
@@ -371,43 +347,36 @@ def run_module():
 
         merged_attributes = dict_merge(current_explicit_attributes, update_attributes)
 
+        params = {}
+
+        changed = False
         if module.params["name"] and current_title != module.params["name"]:
-            if not module.check_mode:
-                change_title(module, attributes, base_url, headers)
-            msg_tokens.append("Folder title updated.")
+            params["title"] = module.params.get("name")
+            changed = True
 
         if attributes != {} and current_explicit_attributes != attributes:
-            if not module.check_mode:
-                set_folder_attributes(
-                    module, attributes, base_url, headers, "attributes"
-                )
-            msg_tokens.append("Folder attributes replaced.")
+            params["attributes"] = attributes
+            changed = True
 
         if update_attributes != {} and current_explicit_attributes != merged_attributes:
-            if not module.check_mode:
-                set_folder_attributes(
-                    module, merged_attributes, base_url, headers, "update_attributes"
-                )
-            msg_tokens.append("Folder attributes updated.")
+            params["update_attributes"] = merged_attributes
+            changed = True
 
         if remove_attributes != []:
-            attr_exists = False
             for el in remove_attributes:
                 if current_explicit_attributes.get(el):
-                    attr_exists = True
+                    changed = True
                     break
-            changed = attr_exists
+            params["remove_attributes"] = remove_attributes
+
+        if params != {}:
             if not module.check_mode:
                 changed = set_folder_attributes(
-                    module, remove_attributes, base_url, headers, "remove_attributes"
-                )
+                              module, attributes, base_url, headers, params
+                          )
 
             if changed:
-                msg_tokens.append("Folder attributes removed.")
-            elif len(msg_tokens) >= 1:
-                msg_tokens.append("Folder attributes allready removed.")
-            else:
-                exit_ok(module, "Folder attributes allready removed.")
+                msg_tokens.append("Folder attributes updated.")
 
         if len(msg_tokens) >= 1:
             exit_changed(module, " ".join(msg_tokens))
