@@ -113,7 +113,7 @@
     path: "{{ checkmk_folder_attr_test.path }}"
     state: "present"
     remove_attributes:
-      tag_networking: "wan"
+      - tag_networking
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
@@ -125,7 +125,7 @@
     automation_secret: "{{ automation_secret }}"
     path: "{{ checkmk_folder_attr_test.path }}"
     remove_attributes:
-      tag_networking: "wan"
+      - tag_networking
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
