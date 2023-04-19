@@ -3,7 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 title: "[BUG]"
 labels: bug
-assignees: robin-tribe29
+assignees: robin-checkmk
 
 ---
 
@@ -25,8 +25,8 @@ $ ansible --version
 
 ```
 
-**Checkmk Version**
-<!-- Paste the version string, that can be found in the 'Help' menu. -->
+**Checkmk Version and Edition**
+<!-- Paste the version string, that can be found in the 'Help' menu. Please make sure to include the edition!-->
 ```console
 e.g. 2.X.YpZ (CRE)
 ```
