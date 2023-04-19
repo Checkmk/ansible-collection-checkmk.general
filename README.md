@@ -81,6 +81,10 @@ Name | Description | Tests
 [tribe29.checkmk.server](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/roles/server/README.md)|Installs Checkmk servers.|[![Molecule Tests for Server Role](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-server.yaml/badge.svg)](https://github.com/tribe29/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-server.yaml)
 <!--end collection content-->
 
+## Additional content
+We love to see the community build things on top of this collection.  
+Check out [COMMUNITY.md](COMMUNITY.md) for a listing of interesting projects that build upon this collection in some way.
+
 ## Installing this collection
 Please refer to the [official Ansible documentation](https://docs.ansible.com/ansible/latest/collections_guide/collections_installing.html) on how to install this collection. The most basic way is this:
 
