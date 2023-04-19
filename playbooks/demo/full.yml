@@ -9,3 +9,5 @@
   ansible.builtin.import_playbook: services.yml
 - name: "Rules."
   ansible.builtin.import_playbook: rules.yml
+- name: "Downtimes."
+  ansible.builtin.import_playbook: downtimes.yml

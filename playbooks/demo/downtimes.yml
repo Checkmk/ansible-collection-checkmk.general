@@ -1,0 +1,208 @@
+---
+- name: "Showcase downtime module."
+  hosts: test
+  strategy: linear
+  gather_facts: false
+  vars_files:
+    - ../vars/auth.yml      # This vars file provides details about your site
+    - ../vars/folders.yml   # This vars file contains the folders to manage
+  tasks:
+    - name: "Create folders."
+      folder:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
+        name: "{{ item.name }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_folders }}"
+
+    - name: "Create hosts."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        attributes:
+          site: "{{ site }}"
+          ipaddress: 127.0.0.1
+        state: "present"
+      delegate_to: localhost
+
+    - name: "Activate changes on site."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    - name: "Downtime 1 - on services with relative timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 1 - on services with relative timestamps
+        start_after:
+          hours: 2
+          minutes: 30
+        end_after:
+          hours: 1
+          minutes: 30
+        service_descriptions:
+          - "Check_MK"
+          - "Check_MK Discovery"
+      delegate_to: localhost
+
+    - name: "Downtime 2 - on services with absolute timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 2 - on services with absolute timestamps
+        start_time: "2024-03-25T20:39:28Z"
+        end_time: "2024-03-26T20:39:28Z"
+        service_descriptions:
+          - "Check_MK"
+          - "Check_MK Discovery"
+      delegate_to: localhost
+
+    - name: "Downtime 3 - on services without timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 3 - on services without timestamps
+        service_descriptions:
+          - "Check_MK"
+          - "Check_MK Discovery"
+        end_after:
+          minutes: 1
+      delegate_to: localhost
+
+    - name: "Downtime 4 - on host with relative times"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 4 - on host with relative timestamps
+        start_after:
+          hours: 2
+          minutes: 30
+        end_after:
+          hours: 1
+          minutes: 30
+      delegate_to: localhost
+
+    - name: "Downtime 5 - on host with absolute timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 5 - on host with absolute timestamps
+        start_time: "2024-03-25T20:39:28Z"
+        end_time: "2024-03-26T20:39:28Z"
+      delegate_to: localhost
+
+    - name: "Downtime 6 - on host without timestamps"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        comment: downtime 6 - on host without timestamps
+      delegate_to: localhost
+
+    - name: "Pause to review changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+      when: not run_unattended | bool
+
+    - name: "Downtime delete 1 - service downtimes"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        service_descriptions:
+          - "Check_MK"
+          - "Check_MK Discovery"
+        state: absent
+      delegate_to: localhost
+
+    - name: "Downtime delete 2 - host downtimes"
+      downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        state: absent
+      delegate_to: localhost
+
+    - name: "Pause to review changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+      when: not run_unattended | bool
+
+    - name: "Delete Hosts."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        state: "absent"
+      delegate_to: localhost
+
+    - name: "Delete folders."
+      folder:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
+        name: "{{ item.name }}"
+        state: "absent"
+      register: testout
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_folders }}"
+
+    - name: "Activate changes on site."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
