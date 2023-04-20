@@ -107,5 +107,5 @@ jobs:
             
             For a detailed changelog, refer to the [CHANGELOG](https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/CHANGELOG.rst).
 
-      # - name: Publish Ansible Collection to the Galaxy
-      #   run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
+      - name: Publish Ansible Collection to the Galaxy
+        run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
