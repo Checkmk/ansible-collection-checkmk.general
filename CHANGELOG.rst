@@ -5,6 +5,14 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.21.0
+=======
+
+Minor Changes
+-------------
+
+- added support for almalinux in server-role
+
 v0.20.0
 =======
 

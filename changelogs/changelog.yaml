@@ -315,6 +315,13 @@ releases:
     - host.yml
     - rule.yml
     release_date: '2023-04-12'
+  0.21.0:
+    changes:
+      minor_changes:
+      - added support for almalinux in server-role
+    fragments:
+    - almalinux.yml
+    release_date: '2023-04-20'
   0.3.2:
     changes:
       minor_changes:
