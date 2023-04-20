@@ -1,0 +1,88 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: ubuntu1804
+    image: geerlingguy/docker-ubuntu1804-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    tmpfs:
+      - /run
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+  - name: ubuntu2004
+    image: geerlingguy/docker-ubuntu2004-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    tmpfs:
+      - /run
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+  - name: ubuntu2204
+    image: geerlingguy/docker-ubuntu2204-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    tmpfs:
+      - /run
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+  - name: debian10
+    image: geerlingguy/docker-debian10-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    tmpfs:
+      - /run
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+  - name: debian11
+    image: geerlingguy/docker-debian11-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    tmpfs:
+      - /run
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+  - name: centos7
+    image: geerlingguy/docker-centos7-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    tmpfs:
+      - /run
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+  - name: centos8
+    image: geerlingguy/docker-centos8-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    tmpfs:
+      - /run
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+provisioner:
+  name: ansible
+verifier:
+  name: ansible
+scenario:
+  test_sequence:
+    - dependency
+    - lint
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    # - idempotence  # disable for now, as we have non-idempotent tasks
+    - side_effect
+    - verify
+    - cleanup
+    - destroy
