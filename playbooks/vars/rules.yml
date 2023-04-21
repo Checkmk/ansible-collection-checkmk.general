@@ -80,6 +80,9 @@ checkmk_rules:
         folder: "/"
         position: "bottom"
       conditions: {
+        "host_labels": [],
+        "host_tags": [],
+        "service_labels": [],
         "service_description": {
           "match_on": [
             "VBox Guest Additions"
