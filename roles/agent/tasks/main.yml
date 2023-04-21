@@ -56,7 +56,7 @@
     automation_user: "{{ checkmk_agent_user }}"
     automation_secret: "{{ checkmk_agent_auth }}"
     folder: "{{ checkmk_agent_folder | default(omit) }}"
-    host_name: "{{ checkmk_agent_host_name }}"
+    name: "{{ checkmk_agent_host_name }}"
     attributes: "{{ checkmk_agent_host_attributes }}"
     state: "present"
   become: false
