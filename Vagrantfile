@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
       srv.vm.provider "virtualbox" do |v|
         v.name = 'ansible-collection'
         v.memory = 6144
-        v.cpus = 2
+        v.cpus = 4
       end
       $script = <<-SCRIPT
       apt-get -y update --quiet
