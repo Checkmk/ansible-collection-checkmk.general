@@ -393,8 +393,6 @@ def run_module():
     elif state == "present" and current_state == "absent":
         if update_attributes != {} and attributes == {}:
             attributes = update_attributes
-        if not module.params["name"]:
-            module.params["name"] = ""
         if not module.check_mode:
             create_folder(module, attributes, base_url, headers)
         exit_changed(module, "Folder created.")
