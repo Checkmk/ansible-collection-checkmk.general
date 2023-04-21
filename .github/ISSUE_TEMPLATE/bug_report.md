@@ -53,6 +53,9 @@ Steps to reproduce the behavior:
 
 **Minimum reproduction example**
 <!-- If you can, please provide a minimum example of your configuration. This really helps us quickly understand the situation. -->
+```yaml
+
+```
 
 **Additional context**
 <!-- Add any other context, e.g. OS information about control and managed node, screenshots or background information about the problem. -->
