@@ -72,3 +72,24 @@ checkmk_rules:
         "disabled": false
       }
       value_raw: "{'facility': 17, 'method': '', 'monitor_logfilelist': False}"
+
+  - name: "Disable irrelevant Services."
+    ruleset: "ignored_services"
+    rule:
+      location:
+        folder: "/"
+        position: "bottom"
+      conditions: {
+        "service_description": {
+          "match_on": [
+            "VBox Guest Additions"
+          ],
+          "operator": "one_of"
+        }
+      }
+      properties: {
+        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "description": "",
+        "disabled": false
+      }
+      value_raw: "True"
