@@ -37,8 +37,6 @@ e.g. 2.X.YpZ (CRE)
 $ ansible-galaxy collection list
 
 ```
-**Environment**
-<!-- Provide all relevant information below, e.g. control node OS versions, Python version, etc. -->
 
 **To Reproduce**
 Steps to reproduce the behavior:
@@ -53,8 +51,8 @@ Steps to reproduce the behavior:
 **Actual behavior**
 <!-- A clear and concise description of what actually happens. -->
 
-**Screenshots**
-<!-- If applicable, add screenshots to help explain your problem. -->
+**Minimum reproduction example**
+<!-- If you can, please provide a minimum example of your configuration. This really helps us quickly understand the situation. -->
 
 **Additional context**
-<!-- Add any other context about the problem here. -->
+<!-- Add any other context, e.g. OS information about control and managed node, screenshots or background information about the problem. -->
