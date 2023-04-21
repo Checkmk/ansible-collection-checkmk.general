@@ -1,4 +1,13 @@
 ---
+- name: "{{ outer_item.version }} - Activate without changes."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
 - name: "{{ outer_item.version }} - Create hosts."
   host:
     server_url: "{{ server_url }}"
@@ -15,15 +24,12 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - Activate without explicit site."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: 'false'
-    sites:
-      - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
@@ -47,7 +53,46 @@
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     force_foreign_changes: true
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Create hosts."
+  host:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Activate with explicit site."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: 'false'
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Delete hosts."
+  host:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
