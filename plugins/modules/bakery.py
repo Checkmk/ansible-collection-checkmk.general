@@ -23,12 +23,12 @@ description:
 extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
-    sign_key_id:
+    signature_key_id:
         description: The id of the signing key
         required: false
         type: int
 
-    sign_key_passphrase:
+    signature_key_passphrase:
         description: The passphrase of the signing key
         required: false
         type: str
@@ -59,8 +59,8 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    sign_key_id: 1
-    sign_key_passphrase: "secretkey"
+    signature_key_id: 1
+    signature_key_passphrase: "secretkey"
     state: "signed"
 # Bake and sign all agents.
 - name: "Bake and sign all agents."
@@ -69,8 +69,8 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    sign_key_id: 1
-    sign_key_passphrase: "secretkey"
+    signature_key_id: 1
+    signature_key_passphrase: "secretkey"
     state: "baked_signed"
 """
 
@@ -98,8 +98,8 @@ def run_module():
         validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        sign_key_id=dict(type="int", required=False),
-        sign_key_passphrase=dict(type="str", required=False, no_log=True),
+        signature_key_id=dict(type="int", required=False),
+        signature_key_passphrase=dict(type="str", required=False, no_log=True),
         state=dict(
             type="str",
             default="baked",
@@ -159,15 +159,15 @@ def run_module():
     elif action == "signed":
         api_endpoint = "/domain-types/agent/actions/sign/invoke"
         params = {
-            "key_id": module.params.get("sign_key_id", ""),
-            "passphrase": module.params.get("sign_key_passphrase", ""),
+            "key_id": module.params.get("signature_key_id", ""),
+            "passphrase": module.params.get("signature_key_passphrase", ""),
         }
 
     elif action == "baked_signed":
         api_endpoint = "/domain-types/agent/actions/bake_and_sign/invoke"
         params = {
-            "key_id": module.params.get("sign_key_id", ""),
-            "passphrase": module.params.get("sign_key_passphrase", ""),
+            "key_id": module.params.get("signature_key_id", ""),
+            "passphrase": module.params.get("signature_key_passphrase", ""),
         }
 
     url = base_url + api_endpoint
