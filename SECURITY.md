@@ -15,5 +15,5 @@ and we will do our best to fix it in the next release.
 
 ## Reporting a Vulnerability
 
-For now, please open a normal [issue](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) in the repository but try to disclose the
+For now, please open a normal [issue](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) in the repository but try to disclose the
 vulnerability as reasonable as possible.
