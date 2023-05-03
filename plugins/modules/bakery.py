@@ -138,7 +138,8 @@ def run_module():
     headers = {
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s" % (
+        "Authorization": "Bearer %s %s"
+        % (
             module.params.get("automation_user", ""),
             module.params.get("automation_secret", ""),
         ),
