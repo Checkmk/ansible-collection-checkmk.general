@@ -62,8 +62,8 @@ EXAMPLES = r"""
     sign_key_id: 1
     sign_key_passphrase: "secretkey"
     state: "signed"
-# Sign and bake all agents.
-- name: "Sign and Bake all agents."
+# Bake and sign all agents.
+- name: "Bake and sign all agents."
   tribe29.checkmk.bakery:
     server_url: "http://localhost/"
     site: "my_site"
