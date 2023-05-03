@@ -121,7 +121,7 @@ EXAMPLES = r"""
             "comment": "Warning at 80%\nCritical at 90%\n",
             "description": "Allow higher memory usage",
             "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
         folder: "/"
         value_raw: "{'levels': (80.0, 90.0)}"
@@ -160,7 +160,7 @@ EXAMPLES = r"""
             "comment": "Warning at 85%\nCritical at 99%\n",
             "description": "Allow even higher memory usage",
             "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
         value_raw: "{'levels': (85.0, 99.0)}"
         location:
@@ -192,7 +192,7 @@ EXAMPLES = r"""
             "comment": "Warning at 80%\nCritical at 90%\n",
             "description": "Allow higher memory usage",
             "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
         }
         value_raw: "{'levels': (80.0, 90.0)}"
     state: "absent"
