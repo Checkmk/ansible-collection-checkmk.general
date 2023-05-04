@@ -77,7 +77,7 @@ Name | Description | Tests
 ### Roles
 Name | Description | Tests
 --- | --- | ---
-[tribe29.checkmk.agent](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/roles/agent/README.md)|Installs Checkmk agents.| Tests currently unavailable. <!-- [![Molecule Tests for Agent Role](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-agent.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-agent.yaml)-->
+[tribe29.checkmk.agent](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/roles/agent/README.md)|Installs Checkmk agents.| [![Molecule Tests for Agent Role](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-agent.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-agent.yaml)
 [tribe29.checkmk.server](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/roles/server/README.md)|Installs Checkmk servers.|[![Molecule Tests for Server Role](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-server.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/actions/workflows/molecule-role-server.yaml)
 <!--end collection content-->
 
