@@ -122,19 +122,19 @@ def run_module():
         204: (
             True,
             False,
-            "No Content: Operation done successfully. No further output."
+            "No Content: Operation done successfully. No further output.",
         ),
         400: (False, True, "Bad Request: Parameter or validation failure."),
         403: (False, True, "Forbidden: Configuration via WATO is disabled."),
         406: (
             False,
             True,
-            "Not Acceptable: The requests accept headers can not be satisfied."
+            "Not Acceptable: The requests accept headers can not be satisfied.",
         ),
         415: (
             False,
             True,
-            "Unsupported Media Type: The submitted content-type is not supported."
+            "Unsupported Media Type: The submitted content-type is not supported.",
         ),
         500: (False, True, "General Server Error."),
     }
