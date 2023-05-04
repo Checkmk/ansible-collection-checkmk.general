@@ -1,0 +1,31 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+
+    - name: Populate service facts.
+      ansible.builtin.service_facts:
+
+    - name: "Test Agent is present."
+      ansible.builtin.stat:
+        path: "/usr/bin/check_mk_agent"
+      register: checkmk_agent_file
+
+    - name: "Verify Agent is present."
+      ansible.builtin.assert:
+        that: checkmk_agent_file.stat.exists | bool
+
+    - name: "Test Agent Service is running."
+      ansible.builtin.assert:
+        that: "'check-mk-agent-async.service' in ansible_facts.services"
+
+    - name: "Test that the Agent is listening on the default Port."
+      ansible.builtin.wait_for:
+        port: 6556
+        connect_timeout: 30
+      register: checkmk_agent_port
+
+    - name: "Test Agent Service is listening on port 6556."
+      ansible.builtin.assert:
+        that: "(checkmk_agent_port.port == 6556) and (checkmk_agent_port.state == 'started')"

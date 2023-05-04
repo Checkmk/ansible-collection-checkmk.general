@@ -33,3 +33,7 @@
     - name: "Run server role."
       ansible.builtin.include_role:
         name: server
+
+    - name: "Run agent role."
+      ansible.builtin.include_role:
+        name: agent
