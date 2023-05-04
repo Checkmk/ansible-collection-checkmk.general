@@ -3,7 +3,7 @@ antsibull-changelog >= 0.16.0
 antsibull-docs >= 1.5.0
 ansible-lint >= 6.0.0
 jinja2 >= 3.0.0
-molecule < 5.0.0  # Pin molecule until version 5 is stable enough.
+molecule >= 5.0.1
 molecule-docker >= 1.1.0
 # molecule-plugins[docker] >= 23.0.0  # This will be needed with Molecule 5.
 yamllint >=1.0.0
