@@ -74,7 +74,7 @@ verifier:
 scenario:
   test_sequence:
     - dependency
-    - lint  # Apparently linting is gone from molecule 5 onwards: https://github.com/ansible-community/molecule/pull/3802
+    # - lint  # Apparently linting is gone from molecule 5 onwards: https://github.com/ansible-community/molecule/pull/3802
     - cleanup
     - destroy
     - syntax
