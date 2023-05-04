@@ -1,4 +1,4 @@
-# tribe29 Checkmk Collection
+# Checkmk Ansible Collection
 
 Checkmk already provides the needed APIs to automate and 
 configure your monitoring. With this project we want to create
