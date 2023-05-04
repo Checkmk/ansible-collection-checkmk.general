@@ -1,0 +1,60 @@
+---
+# General
+checkmk_version: "2.1.0p26"
+checkmk_edition: "cre"
+checkmk_site: "my_site"
+automation_user: "cmkadmin"
+automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
+
+# Agent Role
+checkmk_agent_version: "{{ checkmk_version }}"
+checkmk_agent_edition: "{{ checkmk_edition }}"
+checkmk_agent_protocol: http
+checkmk_agent_server: localhost
+checkmk_agent_site: "{{ checkmk_site }}"
+checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
+checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
+checkmk_agent_server_validate_certs: 'false'
+checkmk_agent_port: "{% if checkmk_agent_protocol == 'https' %}443{% else %}80{% endif %}"
+checkmk_agent_user: "{{ automation_user | default('automation') }}"
+
+# Depending on which user you will be using, set the password or secret:
+# checkmk_agent_pass: "{{ automation_secret }}"
+checkmk_agent_secret: "{{ automation_secret }}"
+
+checkmk_agent_auto_activate: 'false'
+checkmk_agent_add_host: 'false'
+checkmk_agent_discover: 'false'
+checkmk_agent_update: 'false'
+checkmk_agent_tls: 'false'
+checkmk_agent_configure_firewall: 'false'
+checkmk_agent_force_install: 'false'
+checkmk_agent_prep_legacy: 'false'
+checkmk_agent_delegate_api_calls: localhost
+checkmk_agent_delegate_download: "{{ inventory_hostname }}"
+checkmk_agent_host_name: "{{ inventory_hostname }}"
+checkmk_agent_folder: "{{ checkmk_folder_path | default('/') }}"
+checkmk_agent_force_foreign_changes: 'false'
+checkmk_agent_host_attributes:
+  ipaddress: 127.0.0.1
+
+# If you trust your local hostnames, you could also use the following
+# to use the local hostname instead of the inventory hostname:
+# checkmk_agent_host_name: "{{ hostvars[inventory_hostname]['ansible_fqdn'] }}"
+# Checkmk does not need an IP address, as long as the hostname is DNS-resolvable
+
+# If that does not apply to your environment, you can configure the IP address below:
+# checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+# Server Role
+
+checkmk_server_edition: "{{ checkmk_edition }}"
+checkmk_server_version: "{{ checkmk_version }}"
+checkmk_server_verify_setup: 'true'
+
+checkmk_server_sites:
+  - name: "{{ checkmk_site }}"
+    version: "{{ checkmk_version }}"
+    state: started
+    admin_pw: cmk
+    update_conflict_resolution: install
