@@ -5,6 +5,29 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.21.0
+=======
+
+Major Changes
+-------------
+
+- Add Bakery module
+
+Minor Changes
+-------------
+
+- Server role - Added support for almalinux
+
+Bugfixes
+--------
+
+- Agent role - Fix activate changes handler failing with self-signed certificate
+
+New Modules
+-----------
+
+- tribe29.checkmk.bakery - Trigger baking and signing in the agent bakery.
+
 v0.20.0
 =======
 
