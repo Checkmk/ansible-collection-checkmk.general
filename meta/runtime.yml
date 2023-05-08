@@ -3,15 +3,16 @@ requires_ansible: '>=2.12.0'
 action_groups:
   checkmk:
     - activation
+    - bakery
+    - contact_group
     - discovery
+    - downtime
     - folder
     - host
-    - downtime
-    - rule
-    - tag_group
     - host_group
+    - rule
     - service_group
-    - contact_group
+    - tag_group
     - user
 
 # plugin_routing:
