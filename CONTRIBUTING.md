@@ -44,6 +44,7 @@ On pull request creation, checks will run and tell you,
 if your changes work with the collection. If errors are detected, please try to
 fix them and update your pull request accordingly.
 If you need help, do ask for it.
+After submitting a PR, follow the instructions to sign the [CLA](https://github.com/tribe29/checkmk/blob/master/doc/cla/cla_readme.md) as asked by the bot.
 
 ### Changelog
 
