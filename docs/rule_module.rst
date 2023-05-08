@@ -42,7 +42,7 @@ tribe29.checkmk.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.20.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.21.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -739,7 +739,7 @@ Examples
                 "comment": "Warning at 80%\nCritical at 90%\n",
                 "description": "Allow higher memory usage",
                 "disabled": false,
-                "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+                "documentation_url": "https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
             }
             folder: "/"
             value_raw: "{'levels': (80.0, 90.0)}"
@@ -778,7 +778,7 @@ Examples
                 "comment": "Warning at 85%\nCritical at 99%\n",
                 "description": "Allow even higher memory usage",
                 "disabled": false,
-                "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+                "documentation_url": "https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
             }
             value_raw: "{'levels': (85.0, 99.0)}"
             location:
@@ -810,7 +810,7 @@ Examples
                 "comment": "Warning at 80%\nCritical at 90%\n",
                 "description": "Allow higher memory usage",
                 "disabled": false,
-                "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+                "documentation_url": "https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
             }
             value_raw: "{'levels': (80.0, 90.0)}"
         state: "absent"
@@ -949,8 +949,8 @@ Collection links
 .. raw:: html
 
   <p class="ansible-links">
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
+    <a href="https://github.com/Checkmk/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
+    <a href="https://github.com/Checkmk/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
   </p>
 
 .. Parsing errors
