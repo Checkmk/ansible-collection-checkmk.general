@@ -10,7 +10,7 @@ name: checkmk
 
 # The version of the collection. Must be compatible with semantic versioning
 
-version: 0.20.0
+version: 0.21.0
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -48,16 +48,16 @@ dependencies:
   "ansible.posix": ">=1.4.0"
 
 # The URL of the originating SCM repository
-repository: https://github.com/tribe29/ansible-collection-tribe29.checkmk
+repository: https://github.com/Checkmk/ansible-collection-tribe29.checkmk
 
 # The URL to any online docs
-documentation: https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/README.md
+documentation: https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/README.md
 
 # The URL to the homepage of the collection/project
-homepage: https://github.com/tribe29/ansible-collection-tribe29.checkmk
+homepage: https://github.com/Checkmk/ansible-collection-tribe29.checkmk
 
 # The URL to the collection issue tracker
-issues: https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc
+issues: https://github.com/Checkmk/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc
 
 # build_ignore:
 #   - '*cloud-config-aws.ini'

@@ -1,9 +1,9 @@
-<!--- Please provide a general summary of your changes in the title above -->
+<!--- Please provide a brief summary of your changes as a title in the textbox above -->
 
 <!---
-Please use the devel branch as the merge target!
+Please use the devel branch as the merge target (see dropdown above)!
 We use that branch as a staging area, to make sure the main branch
-stays as stable as possible, if people are using the branch directly.
+stays as stable as possible, in case people are using it to install the collection directly.
  -->
 
 ## Pull request type
@@ -14,7 +14,7 @@ Please check the type of change your PR introduces:
 - [ ] Bugfix
 - [ ] Feature
 - [ ] Code style update (formatting, renaming)
-- [ ] Refactoring (no functional changes, no api changes)
+- [ ] Refactoring (no functional changes, no API changes)
 - [ ] Build related changes
 - [ ] Documentation content changes
 - [ ] Other (please describe):
@@ -22,7 +22,7 @@ Please check the type of change your PR introduces:
 ## What is the current behavior?
 <!-- Please describe the current behavior that you are modifying, or link to a relevant issue. -->
 
-Issue Number: `e.g. #1`
+Issue Number: `e.g. #1` <!-- Delete this, if it does not apply. -->
 
 ## What is the new behavior?
 <!-- Please describe the behavior or changes that are being added by this PR. -->
@@ -32,4 +32,4 @@ Issue Number: `e.g. #1`
 -
 
 ## Other information
-<!-- Any other information that is important to this PR such as screenshots of how the component looks before and after the change. -->
+<!-- Any other information that is important to this PR, e.g screenshots of how the component looks before and after the change. -->
