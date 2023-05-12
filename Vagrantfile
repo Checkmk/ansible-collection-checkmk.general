@@ -37,6 +37,8 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
       usermod -aG docker vagrant
+      grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='ansible-galaxy collection build --force ~/ansible_collections/tribe29/checkmk && ansible-galaxy collection install -f ./tribe29-checkmk-*.tar.gz && rm ./tribe29-checkmk-*.tar.gz'" >> /home/vagrant/.bashrc
+      grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
       SCRIPT
       srv.vm.provision "shell", inline: $script
       srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/tribe29/checkmk/"
