@@ -198,6 +198,7 @@ def _set_timestamps(module):
         if end_after == {}:
             end_time = default_end_time
         else:
+            start_time = re.sub(r"Z$", "+00:00", start_time)
             dt_start = datetime.fromisoformat(start_time)
             end_time = (dt_start + timedelta(**end_after)).isoformat()
     return [start_time, end_time]
