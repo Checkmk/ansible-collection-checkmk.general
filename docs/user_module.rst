@@ -42,7 +42,7 @@ tribe29.checkmk.user module -- Manage users in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.21.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.22.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
