@@ -147,6 +147,8 @@ following needs to be done:
 7. Release the collection by running the action `Release Collection` against the `main` branch.
 8. Merge the automatically created pull request and update the `devel` branch from `main`.
 
+Some of these steps can already be checked and done with `scripts/release.sh`. This is a work in progress and should be used carefully.
+
 ## Code of Conduct
 
 See [Code of Conduct](CODE_OF_CONDUCT.md).
