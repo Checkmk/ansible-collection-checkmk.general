@@ -1,45 +1,58 @@
 ---
-- name: "Showcase contact_group and user modules."
+- name: "Showcase rule module."
   hosts: test
-  strategy: linear
   gather_facts: false
   vars_files:
-    - ../vars/auth.yml      # This vars file contains details about your site
-    - ../vars/groups.yml    # This vars file contains the contact groups
-    - ../vars/users.yml     # This vars file contains the user to manage
+    - ../vars/auth.yml      # This vars file provides details about your site
+    - ../vars/folders.yml   # This vars file contains the folders to manage
+    - ../vars/rules.yml    # This vars file contains the groups to manage
   tasks:
+    - name: "Gather Date and Time Facts on localhost."
+      ansible.builtin.setup:
+        gather_subset:
+          - date_time
+      delegate_to: localhost
+      run_once: 'yes'
 
-    - name: "Create contact groups."
-      contact_group:
+    - name: "Create folders."
+      folder:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
         name: "{{ item.name }}"
-        title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_contact_groups }}"
+      run_once: 'yes'
+      loop: "{{ checkmk_folders }}"
 
-    - name: "Create users."
-      user:
+    - name: "Create hosts."
+      host:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        name: "{{ item.name }}"
-        fullname: "{{ item.fullname }}"
-        auth_type: "{{ item.auth_type }}"
-        password: "{{ item.password }}"
-        roles:
-          - "guest"
-        authorized_sites:
-          - "{{ site }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        attributes:
+          site: "{{ site }}"
+          ipaddress: 127.0.0.1
         state: "present"
       delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_users }}"
+
+    - name: "Create rules."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "{{ item.ruleset }}"
+        rule: "{{ item.rule }}"
+        state: "present"
+      loop: "{{ checkmk_rules }}"
+      run_once: true
+      delegate_to: localhost
 
     - name: "Pause to review changes."
       ansible.builtin.pause:
@@ -58,31 +71,44 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: true  # noqa run-once[task]
+      run_once: 'true'
 
-    - name: "Delete users."
-      user:
+    - name: "Delete rules."
+      rule:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        name: "{{ item.name }}"
+        ruleset: "{{ item.ruleset }}"
+        rule: "{{ item.rule }}"
         state: "absent"
+      loop: "{{ checkmk_rules }}"
+      run_once: true
       delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_users }}"
 
-    - name: "Delete contact groups."
-      contact_group:
+    - name: "Delete Hosts."
+      host:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        state: "absent"
+      delegate_to: localhost
+
+    - name: "Delete folders."
+      folder:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_contact_groups }}"
+      run_once: 'yes'
+      loop: "{{ checkmk_folders }}"
 
     - name: "Pause to review changes."
       ansible.builtin.pause:
@@ -101,4 +127,4 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: true  # noqa run-once[task]
+      run_once: 'true'
