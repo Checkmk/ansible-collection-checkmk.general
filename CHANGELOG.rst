@@ -5,6 +5,24 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.22.0
+=======
+
+Release Summary
+---------------
+
+Further centralizing.
+
+Major Changes
+-------------
+
+- module_utils - Extend centralization by providing types and further utils.
+
+Minor Changes
+-------------
+
+- Playbooks - Reorganize and clean up playbooks. This is a constant work in progress.
+
 v0.21.0
 =======
 
