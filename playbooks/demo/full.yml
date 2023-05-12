@@ -1,0 +1,11 @@
+---
+- name: "Hosts and Folders."
+  ansible.builtin.import_playbook: hosts-and-folders.yml
+- name: "Groups."
+  ansible.builtin.import_playbook: groups.yml
+- name: "Users and Contacts."
+  ansible.builtin.import_playbook: users-and-contacts.yml
+- name: "Rules."
+  ansible.builtin.import_playbook: rules.yml
+- name: "Downtimes."
+  ansible.builtin.import_playbook: downtimes.yml
