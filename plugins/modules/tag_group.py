@@ -96,9 +96,6 @@ import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 
-def bail_out(module, msg):
-    x = {"msg": msg, "changed": False, "failed": False} 
-    module.fail_json(**x)
 
 def read_tag_group(module, base_url, headers):
     result = dict(
