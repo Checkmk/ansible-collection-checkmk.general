@@ -10,10 +10,14 @@
 
 # ToDo
 # - Collection version prüfen!
-# - Checkmk versionen prüfen!
 
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 collection_dir="${script_dir%/*}"
+
+# Update these as necessary:
+checkmk_oldstable="2.0.0p35"
+checkmk_stable="2.1.0p27"
+checkmk_beta="2.2.0b7"
 
 while getopts 's:t:' OPTION; do
   case "$OPTION" in 
@@ -30,13 +34,23 @@ done
 
 echo "# General things to keep in mind:"
 echo "- Did you provide changelogs for all relevant changes?"
-
-echo "# Test findings:"
-if [[ $(find "${collection_dir}/changelogs/fragments" | wc -l) -lt 1 ]] ; then echo "Make sure to provide all relevant changelogs!" ; fi
-grep -R release_summary "${collection_dir}/changelogs/fragments/" > /dev/null || echo "Please provide a 'release_summary' in the changelogs!"
-echo "# End tests section."
+echo "- Did you update SUPPORT.md with the latest compability information?"
+echo
 
 echo "# Changes:"
 sed -i "s/version: ${source_version}/version: ${target_version}/g" "${collection_dir}/galaxy.yml" && echo "Updated Collection version in 'galaxy.yml' from ${source_version} to ${target_version}."
 sed -i "s/version: ${source_version}/version: ${target_version}/g" "${collection_dir}/requirements.yml" && echo "Updated Collection version in 'requirements.yml' from ${source_version} to ${target_version}."
+# The following is quite hacky, but it works well enough. If you want to tame the sed monster, have at it. Otherwise be careful with changes here.
+find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.2.0.*/${checkmk_beta}\"/g" {} \; && echo "Updated Checkmk Beta version for integration tests to ${checkmk_beta}."
+find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.1.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated Checkmk Beta version for integration tests to ${checkmk_stable}."
+find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.0.0.*/${checkmk_oldstable}\"/g" {} \; && echo "Updated Checkmk Beta version for integration tests to ${checkmk_oldstable}."
+grep "${target_version}" "${collection_dir}/SUPPORT.md" || echo "${target_version} | ${checkmk_stable}, ${checkmk_oldstable}, ${checkmk_beta} | 2.12, 2.13, 2.14 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
+
 echo "# End changes section."
+echo
+
+echo "# Test findings:"
+if [[ $(find "${collection_dir}/changelogs/fragments" | wc -l) -lt 1 ]] ; then echo "Make sure to provide all relevant changelogs!" ; fi
+grep -R release_summary "${collection_dir}/changelogs/fragments/" > /dev/null || echo "Please provide a 'release_summary' in the changelogs!"
+grep "${target_version}" "${collection_dir}/SUPPORT.md" > /dev/null || echo "Please provide a line about the version support in 'SUPPORT.md'!"
+echo "# End tests section."
