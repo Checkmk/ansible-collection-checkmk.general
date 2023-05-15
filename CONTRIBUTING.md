@@ -145,15 +145,14 @@ following needs to be done:
 5. Double check `changelogs/fragments` if all changes have a changelog.
 6. After all changes have been performed, merge them into the `main` branch.
 7. Release the collection by running the action `Release Collection` against the `main` branch.
-8. Merge the automatically created pull request and update the `devel` branch from `main`.
+8. Merge the automatically created pull request into `devel` and then update the `main` branch from `devel`.
 
 Some of these steps can already be checked and done with `scripts/release.sh`. This is a work in progress and should be used carefully.
+You should definitely check the resulting changes thoroughly before committing.
 
 ## Code of Conduct
-
 See [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Forum
-
 If you have questions, feedback and or simply no Github account feel free to
 reach out to our awesome [Checkmk Community (using the 'ansible' tag)](https://forum.checkmk.com/tag/ansible).
