@@ -25,3 +25,12 @@
   register: site_status
   changed_when: site_status.rc == "0"
   loop: "{{ checkmk_versions }}"
+
+- name: "Inject a Key into the Sites."  # This is a hack and should never be done in production!
+  ansible.builtin.copy:
+    src: agent_signature_keys.mk
+    dest: "/omd/sites/{{ item.site }}/etc/check_mk/multisite.d/wato/agent_signature_keys.mk"
+    owner: "{{ item.site }}"
+    group: "{{ item.site }}"
+    mode: "0660"
+  loop: "{{ checkmk_versions }}"
