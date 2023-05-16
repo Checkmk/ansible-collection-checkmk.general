@@ -15,18 +15,6 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Discover hosts."
-  discovery:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    host_name: "{{ item.name }}"
-    state: "fix_all"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
-
 - name: "{{ outer_item.version }} - Activate."
   activation:
     server_url: "{{ server_url }}"
@@ -45,7 +33,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    job: "bake"
+    state: "baked"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
@@ -55,21 +43,21 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    sign_key_id: "{{ general.checkmk_server_bakerykeyid }}"
-    sign_key_passphrase: "{{ general.checkmk_server_bakerypass }}"
-    job: "sign"
+    signature_key_id: "{{ signature_key_id }}"
+    signature_key_passphrase: "{{ signature_key_passphrase }}"
+    state: "signed"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Bake all agents."
-  tribe29.checkmk.bakery:
+  bakery:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    sign_key_id: "{{ general.checkmk_server_bakerykeyid }}"
-    sign_key_passphrase: "{{ general.checkmk_server_bakerypass }}"
-    job: "bake_sign"
+    signature_key_id: "{{ signature_key_id }}"
+    signature_key_passphrase: "{{ signature_key_passphrase }}"
+    state: "baked_signed,"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 

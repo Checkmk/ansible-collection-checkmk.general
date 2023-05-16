@@ -13,3 +13,17 @@ download_pw: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/tribe
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
+signature_key_id: "1"
+signature_key_passphrase: "{{ automation_secret }}"
+
+checkmk_hosts:
+  - name: test1.tld
+    folder: "/"
+  - name: test2.tld
+    folder: "/"
+  - name: test3.tld
+    folder: "/"
+  - name: test4.tld
+    folder: "/"
+  - name: test5.tld
+    folder: "/"
