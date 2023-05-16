@@ -8,7 +8,8 @@ checkmk_versions:
     site: "oldstable"
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-enterprise-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
 download_user: "d-gh-ansible-dl"
-download_pw: "{{ lookup('ansible.builtin.file', '.dl-secret') }}"
+# This is a hacky approach, but there is no better way currently. This has been confirmed by the Ansible project.
+download_pw: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/tribe29/checkmk/tests/integration/files/.dl-secret') }}"
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
