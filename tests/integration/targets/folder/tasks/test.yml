@@ -51,3 +51,85 @@
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Create folders for attributes test."
+  folder:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    path: "{{ checkmk_folder_attr_test.path }}"
+    name: "{{ checkmk_folder_attr_test.name }}"
+    attributes: "{{ checkmk_folder_attr_test.attributes }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Update folder attributes without specifying title (name)."
+  folder:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    path: "{{ checkmk_folder_attr_test.path }}"
+    state: "present"
+    update_attributes:
+      tag_criticality: "test"
+      tag_networking: "wan"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Check the idempotency of Update attributes."
+  folder:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    path: "{{ checkmk_folder_attr_test.path }}"
+    update_attributes:
+      tag_criticality: "test"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  register: test_output
+  failed_when: test_output.changed | bool
+
+- name: "{{ outer_item.version }} - Update folder title (name)."
+  folder:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    path: "{{ checkmk_folder_attr_test.path }}"
+    name: "{{ checkmk_folder_attr_test.name }} Modified"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Remove folder attributes without specifying title (name)."
+  folder:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    path: "{{ checkmk_folder_attr_test.path }}"
+    state: "present"
+    remove_attributes:
+      - "tag_networking"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Check the idempotency of Remove attributes."
+  folder:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    path: "{{ checkmk_folder_attr_test.path }}"
+    remove_attributes:
+      - "tag_networking"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  register: test_output
+  failed_when: test_output.changed | bool
