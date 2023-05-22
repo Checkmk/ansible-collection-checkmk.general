@@ -315,6 +315,35 @@ releases:
     - host.yml
     - rule.yml
     release_date: '2023-04-12'
+  0.21.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix activate changes handler failing with self-signed certificate
+      major_changes:
+      - Add Bakery module
+      minor_changes:
+      - Server role - Added support for almalinux
+    fragments:
+    - agent.yml
+    - almalinux.yml
+    - bakery.yml
+    modules:
+    - description: Trigger baking and signing in the agent bakery.
+      name: bakery
+      namespace: ''
+    release_date: '2023-05-08'
+  0.22.0:
+    changes:
+      major_changes:
+      - module_utils - Extend centralization by providing types and further utils.
+      minor_changes:
+      - Playbooks - Reorganize and clean up playbooks. This is a constant work in
+        progress.
+      release_summary: Further centralizing.
+    fragments:
+    - playbooks.yml
+    - utils.yml
+    release_date: '2023-05-12'
   0.3.2:
     changes:
       minor_changes:

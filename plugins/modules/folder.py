@@ -24,7 +24,10 @@ extends_documentation_fragment: [tribe29.checkmk.common]
 
 options:
     path:
-        description: The full path to the folder you want to manage. Pay attention to the leading C(/) and avoid trailing C(/).
+        description:
+            - The full path to the folder you want to manage.
+              Pay attention to the leading C(/) and avoid trailing C(/).
+              Special characters apart from C(_) are not allowed!
         required: true
         type: str
     name:

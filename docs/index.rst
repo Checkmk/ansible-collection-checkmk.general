@@ -6,7 +6,7 @@
 Tribe29.Checkmk
 ===============
 
-Collection version 0.20.0
+Collection version 0.22.0
 
 .. contents::
    :local:
@@ -30,8 +30,8 @@ The official Checkmk Ansible collection - brought to you by tribe29 - the Checkm
 .. raw:: html
 
   <p class="ansible-links">
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
+    <a href="https://github.com/Checkmk/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
+    <a href="https://github.com/Checkmk/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
   </p>
 
 
@@ -50,6 +50,7 @@ Modules
 ~~~~~~~
 
 * :ref:`activation module <ansible_collections.tribe29.checkmk.activation_module>` -- Activate changes in Checkmk.
+* :ref:`bakery module <ansible_collections.tribe29.checkmk.bakery_module>` -- Trigger baking and signing in the agent bakery.
 * :ref:`contact_group module <ansible_collections.tribe29.checkmk.contact_group_module>` -- Manage contact groups in Checkmk (bulk version).
 * :ref:`discovery module <ansible_collections.tribe29.checkmk.discovery_module>` -- Discover services in Checkmk.
 * :ref:`downtime module <ansible_collections.tribe29.checkmk.downtime_module>` -- Manage downtimes in Checkmk.
@@ -66,6 +67,7 @@ Modules
     :hidden:
 
     activation_module
+    bakery_module
     contact_group_module
     discovery_module
     downtime_module

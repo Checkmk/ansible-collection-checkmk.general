@@ -15,11 +15,11 @@ Vagrant.configure("2") do |config|
       srv.vm.provider "virtualbox" do |v|
         v.name = 'ansible-collection'
         v.memory = 6144
-        v.cpus = 2
+        v.cpus = 4
       end
       $script = <<-SCRIPT
-      apt-get update
-      apt-get install -y python3.9 python3-pip ca-certificates curl gnupg lsb-release
+      apt-get -y update --quiet
+      apt-get -y install python3.9 python3-pip ca-certificates curl gnupg lsb-release
       wget "https://download.checkmk.com/checkmk/2.1.0p24/check-mk-raw-2.1.0p24_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
       wget "https://download.checkmk.com/checkmk/2.2.0-$(date +%Y.%m.%d)/check-mk-raw-2.2.0-$(date +%Y.%m.%d)_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
       apt-get install -y /tmp/checkmk-stable.deb
@@ -37,6 +37,8 @@ Vagrant.configure("2") do |config|
       apt-get update
       apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
       usermod -aG docker vagrant
+      grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='ansible-galaxy collection build --force ~/ansible_collections/tribe29/checkmk && ansible-galaxy collection install -f ./tribe29-checkmk-*.tar.gz && rm ./tribe29-checkmk-*.tar.gz'" >> /home/vagrant/.bashrc
+      grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
       SCRIPT
       srv.vm.provision "shell", inline: $script
       srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/tribe29/checkmk/"
