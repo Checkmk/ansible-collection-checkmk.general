@@ -1,8 +1,8 @@
 ---
 checkmk_versions:
-  - version: "2.2.0b7"
+  - version: "2.2.0b8"
     site: "beta"
-  - version: "2.1.0p27"
+  - version: "2.1.0p28"
     site: "stable"
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
 site: "test"
