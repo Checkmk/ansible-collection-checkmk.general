@@ -22,8 +22,8 @@ on:
       - 'roles/**'
 
 env:
-  NAMESPACE: tribe29
-  COLLECTION_NAME: checkmk 
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
 
 jobs:
 
@@ -69,7 +69,7 @@ jobs:
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Install Checkmk collection
-        run: ansible-galaxy collection install --timeout 120 tribe29.checkmk
+        run: ansible-galaxy collection install --timeout 120 checkmk.general
 
       # Run the linting
       - name: Run yamllint on roles
@@ -84,12 +84,12 @@ jobs:
         run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles/
         working-directory: ./ansible_collections/
         env:
-          ANSIBLE_LIBRARY: "./tribe29/checkmk/plugins/modules"
-          ANSIBLE_ROLES_PATH: "./tribe29/checkmk/roles"
+          ANSIBLE_LIBRARY: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/plugins/modules"
+          ANSIBLE_ROLES_PATH: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles"
 
       - name: Run ansible-lint on playbooks
         run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/playbooks/
         working-directory: ./ansible_collections/
         env:
-          ANSIBLE_LIBRARY: "./tribe29/checkmk/plugins/modules"
-          ANSIBLE_ROLES_PATH: "./tribe29/checkmk/roles"
+          ANSIBLE_LIBRARY: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/plugins/modules"
+          ANSIBLE_ROLES_PATH: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles"
