@@ -12,8 +12,8 @@ on:
     - cron: '0 0 * * *'
 
 env:
-  NAMESPACE: tribe29
-  COLLECTION_NAME: checkmk 
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
 
 jobs:
 
