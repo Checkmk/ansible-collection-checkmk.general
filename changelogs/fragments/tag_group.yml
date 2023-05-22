@@ -1,0 +1,2 @@
+minor_changes:
+  - tag_group module - Code cleanup. Should have no effect on functionality, but mentioning it here for transparency.
