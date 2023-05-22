@@ -15,11 +15,65 @@ action_groups:
     - tag_group
     - user
 
-# plugin_routing:
-#   modules:
-#     foo:
-#       deprecation:
-#         removal_date: 2022-06-01
-#         warning_text: >-
-#           foo was removed in Ansible 2.9.
-#           Please update your tasks.
+plugin_routing:
+  modules:
+    activation:
+      redirect: checkmk.general.activation
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
+    bakery:
+      redirect: checkmk.general.bakery
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
+    contact_group:
+      redirect: checkmk.general.contact_group
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
+    discovery:
+      redirect: checkmk.general.discovery
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
+    downtime:
+      redirect: checkmk.general.downtime
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
+    folder:
+      redirect: checkmk.general.folder
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
+    host_group:
+      redirect: checkmk.general.host_group
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
+    host:
+      redirect: checkmk.general.host
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
+    rule:
+      redirect: checkmk.general.rule
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
+    service_group:
+      redirect: checkmk.general.service_group
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
+    tag_group:
+      redirect: checkmk.general.tag_group
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
+    user:
+      redirect: checkmk.general.user
+      deprecation:
+        removal_version: 1.0.0
+        warning_text: This collection has been renamed. Use 'checkmk.general' instead!
