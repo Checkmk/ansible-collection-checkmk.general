@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
+# Copyright: (c) 2022, Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -21,7 +21,7 @@ description:
 - Activate changes within Checkmk.
 - This module only needs to be run once and not for every host. Use C(run_once).
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     sites:
@@ -34,12 +34,12 @@ options:
         type: bool
 
 author:
-    - Robin Gierse (@robin-tribe29)
+    - Robin Gierse (@robin-checkmk)
 """
 
 EXAMPLES = r"""
 - name: "Activate changes on all sites."
-  tribe29.checkmk.activation:
+  checkmk.general.activation:
       server_url: "http://localhost/"
       site: "my_site"
       automation_user: "automation"
@@ -47,7 +47,7 @@ EXAMPLES = r"""
   run_once: 'true'
 
 - name: "Activate changes on a specific site."
-  tribe29.checkmk.activation:
+  checkmk.general.activation:
       server_url: "http://localhost/"
       site: "my_site"
       automation_user: "automation"
@@ -57,7 +57,7 @@ EXAMPLES = r"""
   run_once: 'true'
 
 - name: "Activate changes including foreign changes."
-  tribe29.checkmk.activation:
+  checkmk.general.activation:
       server_url: "http://localhost/"
       site: "my_site"
       automation_user: "automation"
@@ -82,8 +82,8 @@ message:
 import time
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.tribe29.checkmk.plugins.module_utils.api import CheckmkAPI
-from ansible_collections.tribe29.checkmk.plugins.module_utils.utils import (
+from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
 
