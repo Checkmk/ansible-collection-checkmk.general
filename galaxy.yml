@@ -46,6 +46,7 @@ tags: [tribe29, checkmk, monitoring, check_mk, check, discovery, ubuntu, debian,
 dependencies:
   "community.general": ">=5.0.0"
   "ansible.posix": ">=1.4.0"
+  "checkmk.general": ">=1.0.0"
 
 # The URL of the originating SCM repository
 repository: https://github.com/Checkmk/ansible-collection-tribe29.checkmk
