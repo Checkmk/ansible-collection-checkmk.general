@@ -44,7 +44,7 @@ sed -i "s/version: ${source_version}/version: ${target_version}/g" "${collection
 find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.2.0.*/${checkmk_beta}\"/g" {} \; && echo "Updated Checkmk Beta version for integration tests to ${checkmk_beta}."
 find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.1.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated Checkmk Beta version for integration tests to ${checkmk_stable}."
 find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.0.0.*/${checkmk_oldstable}\"/g" {} \; && echo "Updated Checkmk Beta version for integration tests to ${checkmk_oldstable}."
-grep "${target_version}" "${collection_dir}/SUPPORT.md" || echo "${target_version} | ${checkmk_stable}, ${checkmk_oldstable}, ${checkmk_beta} | 2.12, 2.13, 2.14 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
+grep "${target_version}" "${collection_dir}/SUPPORT.md" || echo "${target_version} | ${checkmk_stable}, ${checkmk_oldstable}, ${checkmk_beta} | 2.13, 2.14, 2.15 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
 
 echo "# End changes section."
 echo
