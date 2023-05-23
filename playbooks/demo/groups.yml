@@ -24,7 +24,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_host_groups }}"
 
     - name: "Create contact groups."
@@ -37,7 +37,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_contact_groups }}"
 
     - name: "Create tag groups."
@@ -52,7 +52,7 @@
         choices: "{{ item.choices }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_tag_groups }}"
 
     - name: "Create service groups."
@@ -65,7 +65,7 @@
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups }}"
 
     - name: "Assign hosts to host groups."
@@ -87,7 +87,7 @@
           value_raw: "'{{ item.name }}'"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_host_groups }}"
 
     - name: "Assign hosts to contact groups."
@@ -109,7 +109,7 @@
           value_raw: "'{{ item.name }}'"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_contact_groups }}"
 
     - name: "Assign services to service groups."
@@ -131,7 +131,7 @@
           value_raw: "'{{ item.name }}'"
         state: "present"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups }}"
 
     - name: "Pause to review changes."
@@ -172,7 +172,7 @@
           value_raw: "'{{ item.name }}'"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_host_groups }}"
 
     - name: "Unassign hosts to contact groups."
@@ -194,7 +194,7 @@
           value_raw: "'{{ item.name }}'"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_contact_groups }}"
 
     - name: "Unassign services to service groups."
@@ -216,7 +216,7 @@
           value_raw: "'{{ item.name }}'"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups }}"
 
     - name: "Delete service groups."
@@ -228,7 +228,7 @@
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_service_groups }}"
 
     - name: "Delete tag groups."
@@ -240,7 +240,7 @@
         id: "{{ item.id }}"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_tag_groups }}"
 
     - name: "Delete contact groups."
@@ -252,7 +252,7 @@
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_contact_groups }}"
 
     - name: "Delete host groups."
@@ -264,7 +264,7 @@
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_host_groups }}"
 
     - name: "Pause to review changes."
