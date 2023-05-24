@@ -31,7 +31,7 @@ options:
         description: The action to perform during discovery.
         type: str
         default: new
-        choices: [new, remove, fix_all, refresh, only_host_labels]
+        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels]
 
 author:
     - Robin Gierse (@robin-tribe29)
@@ -70,9 +70,39 @@ message:
     sample: 'Host created.'
 """
 
+import time
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
+from ansible_collections.tribe29.checkmk.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.tribe29.checkmk.plugins.module_utils.utils import (
+    result_as_dict,
+)
+
+HTTP_CODES = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "Discovery successful."),
+    400: (False, True, "Bad Request."),
+    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
+    404: (False, True, "Not Found: Host could not be found."),
+    406: (False, True, "Not Acceptable."),
+    415: (False, True, "Unsupported Media Type."),
+    500: (False, True, "General Server Error."),
+}
+
+
+class DiscoveryAPI(CheckmkAPI):
+    def post(self):
+        data = {
+            "host_name": self.params.get("host_name"),
+            "mode": self.params.get("state"),
+        }
+
+        return self._fetch(
+            code_mapping=HTTP_CODES,
+            endpoint="/domain-types/service_discovery_run/actions/start/invoke",
+            data=data,
+            method="POST",
+        )
 
 
 def run_module():
@@ -86,83 +116,17 @@ def run_module():
         state=dict(
             type="str",
             default="new",
-            choices=["new", "remove", "fix_all", "refresh", "only_host_labels"],
+            choices=["new", "remove", "fix_all", "refresh", "tabula_rasa", "only_host_labels"],
         ),
     )
-
-    result = dict(changed=False, failed=False, http_code="", msg="")
-
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
-    changed = False
-    failed = False
-    http_code = ""
+    discovery = DiscoveryAPI(module)
+    result = discovery.post()
 
-    http_code_mapping = {
-        # http_code: (changed, failed, "Message")
-        200: (True, False, "Discovery successful."),
-        400: (False, True, "Bad Request."),
-        403: (False, True, "Forbidden: Configuration via WATO is disabled."),
-        404: (False, True, "Not Found: Host could not be found."),
-        406: (False, True, "Not Acceptable."),
-        415: (False, True, "Unsupported Media Type."),
-        500: (False, True, "General Server Error."),
-    }
+    time.sleep(3)
 
-    # Declare headers including authentication to send to the Checkmk API
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s"
-        % (
-            module.params.get("automation_user", ""),
-            module.params.get("automation_secret", ""),
-        ),
-    }
-
-    params = {
-        "mode": module.params.get("state", ""),
-    }
-
-    base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
-        module.params.get("site", ""),
-    )
-
-    api_endpoint = (
-        "/objects/host/"
-        + module.params.get("host_name")
-        + "/actions/discover_services/invoke"
-    )
-    url = base_url + api_endpoint
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST", timeout=60
-    )
-    http_code = info["status"]
-
-    # Kudos to Lars G.!
-    if http_code in http_code_mapping.keys():
-        changed, failed, msg = http_code_mapping[http_code]
-    else:
-        changed, failed, msg = (
-            False,
-            True,
-            "Error calling API. HTTP Return Code is %d" % http_code,
-        )
-
-    if failed:
-        details = info.get("body", info.get("msg", "N/A"))
-        msg += " Details: %s" % details
-
-    result["msg"] = msg
-    result["changed"] = changed
-    result["failed"] = failed
-    result["http_code"] = http_code
-
-    if result["failed"]:
-        module.fail_json(**result)
-
-    module.exit_json(**result)
+    module.exit_json(**result_as_dict(result))
 
 
 def main():

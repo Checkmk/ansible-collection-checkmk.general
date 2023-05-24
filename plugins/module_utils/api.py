@@ -62,6 +62,9 @@ class CheckmkAPI:
         # Better translate to json later and keep the original response here.
         content = response.read() if response else ""
         msg = "%s - %s" % (str(http_code), http_readable)
+        if failed:
+            details = info.get("body", info.get("msg", "N/A"))
+            msg += " Details: %s" % details
 
         result = RESULT(
             http_code=http_code,
