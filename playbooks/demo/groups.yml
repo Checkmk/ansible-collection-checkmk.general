@@ -1,6 +1,7 @@
 ---
 - name: "Showcase group modules."
   hosts: test
+  strategy: linear
   gather_facts: false
   vars_files:
     - ../vars/auth.yml      # This vars file contains details about your site
@@ -12,7 +13,7 @@
         gather_subset:
           - date_time
       delegate_to: localhost
-      run_once: 'yes'
+      run_once: true  # noqa run-once[task]
 
     - name: "Create host groups."
       host_group:
@@ -151,7 +152,7 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]
 
     - name: "Unassign hosts to host groups."
       rule:
@@ -284,4 +285,4 @@
         sites:
           - "{{ site }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]
