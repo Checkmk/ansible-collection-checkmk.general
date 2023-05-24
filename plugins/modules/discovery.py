@@ -116,7 +116,14 @@ def run_module():
         state=dict(
             type="str",
             default="new",
-            choices=["new", "remove", "fix_all", "refresh", "tabula_rasa", "only_host_labels"],
+            choices=[
+                "new",
+                "remove",
+                "fix_all",
+                "refresh",
+                "tabula_rasa",
+                "only_host_labels"
+            ],
         ),
     )
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
