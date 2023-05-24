@@ -122,7 +122,7 @@ def run_module():
                 "fix_all",
                 "refresh",
                 "tabula_rasa",
-                "only_host_labels"
+                "only_host_labels",
             ],
         ),
     )
