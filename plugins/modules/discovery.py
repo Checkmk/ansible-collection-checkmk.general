@@ -104,6 +104,7 @@ class DiscoveryAPI(CheckmkAPI):
             method="POST",
         )
 
+
 class oldDiscoveryAPI(CheckmkAPI):
     def post(self):
         data = {

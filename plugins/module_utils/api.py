@@ -83,12 +83,12 @@ class CheckmkAPI:
 
     def getversion(self):
         data = {}
-    
+
         result = self._fetch(
             code_mapping={
                 200: (True, False, "Discovery successful."),
                 406: (False, True, "Not Acceptable."),
-                },
+            },
             endpoint="version",
             data=data,
             method="GET",
