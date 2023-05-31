@@ -96,4 +96,4 @@ class CheckmkAPI:
 
         content = result.content
         checkmkinfo = json.loads(content)
-        return (checkmkinfo.get("versions").get("checkmk")).split('.')
+        return (checkmkinfo.get("versions").get("checkmk")).split(".")

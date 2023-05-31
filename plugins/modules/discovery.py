@@ -148,7 +148,7 @@ def run_module():
 
     discovery = DiscoveryAPI(module)
     checkmkversion = discovery.getversion()
-    if checkmkversion[0] == '2' and checkmkversion[1] == '0':
+    if checkmkversion[0] == "2" and checkmkversion[1] == "0":
         discovery = oldDiscoveryAPI(module)
 
     result = discovery.post()
