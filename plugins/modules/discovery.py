@@ -99,7 +99,24 @@ class DiscoveryAPI(CheckmkAPI):
 
         return self._fetch(
             code_mapping=HTTP_CODES,
-            endpoint="/domain-types/service_discovery_run/actions/start/invoke",
+            endpoint="domain-types/service_discovery_run/actions/start/invoke",
+            data=data,
+            method="POST",
+        )
+
+class oldDiscoveryAPI(CheckmkAPI):
+    def post(self):
+        data = {
+            "mode": self.params.get("state"),
+        }
+
+        return self._fetch(
+            code_mapping=HTTP_CODES,
+            endpoint=(
+                "/objects/host/"
+                + self.params.get("host_name")
+                + "/actions/discover_services/invoke"
+            ),
             data=data,
             method="POST",
         )
@@ -129,6 +146,10 @@ def run_module():
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
     discovery = DiscoveryAPI(module)
+    checkmkversion = discovery.getversion()
+    if checkmkversion[0] == '2' and checkmkversion[1] == '0':
+        discovery = oldDiscoveryAPI(module)
+
     result = discovery.post()
 
     time.sleep(3)
