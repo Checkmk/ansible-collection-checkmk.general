@@ -1,12 +1,5 @@
 # Checkmk Ansible Collection
 
-# Attention! This collection has been renamed!
-If you are reading this, you have an old version of the collection installed, or you are looking at an old git state.  
-The renamed collection can be found here: https://github.com/Checkmk/ansible-collection-checkmk.general/
-See you on the other side!
-
----
-
 Checkmk already provides the needed APIs to automate and 
 configure your monitoring. With this project we want to create
 and share modules and roles for Ansible to both simplify your first steps
