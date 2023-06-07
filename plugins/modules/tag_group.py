@@ -2,7 +2,7 @@
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
 # Copyright: (c) 2022, Stefan Mühling <muehling.stefan@googlemail.com> &
-#                      Robin Gierse <robin.gierse@tribe29.com>
+#                      Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ version_added: "0.11.0"
 description:
 - Manage tag_group within Checkmk.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     id:
@@ -55,7 +55,7 @@ author:
 
 EXAMPLES = r"""
 - name: "Create tag_group"
-  tribe29.checkmk.tag_group:
+  checkmk.general.tag_group:
     server_url: "https://localhost/"
     site: "my_site"
     automation_user: "automation"

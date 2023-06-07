@@ -1,4 +1,4 @@
-# tribe29.checkmk.agent
+# checkmk.general.agent
 
 <!-- A brief description of the role goes here. -->
 This role installs Checkmk agents.
@@ -169,7 +169,7 @@ passed in as parameters) is always nice for users too:
 
     - hosts: all
       roles:
-         - tribe29.checkmk.agent
+         - checkmk.general.agent
 
 ## Use Cases
 This is a brief collection of use cases, that outline how this role can be used.
@@ -195,4 +195,4 @@ See [LICENSE](../../LICENSE).
 ## Author Information
 
 <!-- An optional section for the role authors to include contact information, or a website (HTML is not allowed). -->
-Robin Gierse (@robin-tribe29)
+Robin Gierse (@robin-checkmk)

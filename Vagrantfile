@@ -30,18 +30,18 @@ Vagrant.configure("2") do |config|
       omd status -b beta || omd start beta
       python3.9 -m pip install -r /vagrant/requirements.txt
       sudo -u vagrant ansible-galaxy collection install -f -r /vagrant/requirements.yml
-      mkdir -p /home/vagrant/ansible_collections/tribe29/checkmk
+      mkdir -p /home/vagrant/ansible_collections/checkmk/general
       mkdir -p /etc/apt/keyrings
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
       apt-get update
       apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
       usermod -aG docker vagrant
-      grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='ansible-galaxy collection build --force ~/ansible_collections/tribe29/checkmk && ansible-galaxy collection install -f ./tribe29-checkmk-*.tar.gz && rm ./tribe29-checkmk-*.tar.gz'" >> /home/vagrant/.bashrc
+      grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='ansible-galaxy collection build --force ~/ansible_collections/checkmk/general && ansible-galaxy collection install -f ./checkmk-general-*.tar.gz && rm ./checkmk-general-*.tar.gz'" >> /home/vagrant/.bashrc
       grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
       SCRIPT
       srv.vm.provision "shell", inline: $script
-      srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/tribe29/checkmk/"
+      srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/"
     end
 
     # Ubuntu
