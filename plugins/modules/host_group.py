@@ -343,8 +343,8 @@ def run_module():
             deprecated_aliases=[
                 {
                     "name": "host_group_name",
-                    "date": "2023-03-01",
                     "collection_name": "checkmk.general",
+                    "version": "3.0.0",
                 }
             ],
         ),
@@ -357,8 +357,8 @@ def run_module():
             deprecated_aliases=[
                 {
                     "name": "host_groups",
-                    "date": "2023-03-01",
                     "collection_name": "checkmk.general",
+                    "version": "3.0.0",
                 }
             ],
         ),

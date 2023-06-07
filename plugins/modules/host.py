@@ -307,8 +307,8 @@ def run_module():
             deprecated_aliases=[
                 {
                     "name": "host_name",
-                    "date": "2024-01-01",
                     "collection_name": "checkmk.general",
+                    "version": "3.0.0",
                 }
             ],
         ),
