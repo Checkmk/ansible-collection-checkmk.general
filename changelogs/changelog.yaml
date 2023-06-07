@@ -496,3 +496,15 @@ releases:
     - host_module.yml
     - server_role.yml
     release_date: '2022-09-12'
+  1.0.0:
+    changes:
+      breaking_changes:
+      - 'This collection was renamed and module redirects have been activated. That
+        means, if you are using this release, you also need the new collection to
+        be installed. Otherwise things will break for you. In any way you should now
+        move to the new collection name: checkmk.general.'
+      release_summary: This collection was renamed to checkmk.general. Please use
+        the new name moving forward!
+    fragments:
+    - renaming_preparation.yml
+    release_date: '2023-06-07'
