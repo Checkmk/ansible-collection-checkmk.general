@@ -10,10 +10,70 @@ plugins:
   httpapi: {}
   inventory: {}
   lookup: {}
-  module: {}
+  module:
+    activation:
+      description: Activate changes in Checkmk.
+      name: activation
+      namespace: ''
+      version_added: 0.0.1
+    bakery:
+      description: Trigger baking and signing in the agent bakery.
+      name: bakery
+      namespace: ''
+      version_added: 0.21.0
+    contact_group:
+      description: Manage contact groups in Checkmk (bulk version).
+      name: contact_group
+      namespace: ''
+      version_added: 0.12.0
+    discovery:
+      description: Discover services in Checkmk.
+      name: discovery
+      namespace: ''
+      version_added: 0.0.1
+    downtime:
+      description: Manage downtimes in Checkmk.
+      name: downtime
+      namespace: ''
+      version_added: 0.2.0
+    folder:
+      description: Manage folders in Checkmk.
+      name: folder
+      namespace: ''
+      version_added: 0.0.1
+    host:
+      description: Manage hosts in Checkmk.
+      name: host
+      namespace: ''
+      version_added: 0.0.1
+    host_group:
+      description: Manage host groups in Checkmk (bulk version).
+      name: host_group
+      namespace: ''
+      version_added: 0.11.0
+    rule:
+      description: Manage rules in Checkmk.
+      name: rule
+      namespace: ''
+      version_added: 0.10.0
+    service_group:
+      description: Manage service groups in Checkmk (bulk version).
+      name: service_group
+      namespace: ''
+      version_added: 0.12.0
+    tag_group:
+      description: Manage tag_group within Checkmk
+      name: tag_group
+      namespace: ''
+      version_added: 0.11.0
+    user:
+      description: Manage users in Checkmk.
+      name: user
+      namespace: ''
+      version_added: 0.18.0
   netconf: {}
   shell: {}
   strategy: {}
   test: {}
   vars: {}
-version: 1.0.0
+version: 2.0.0
