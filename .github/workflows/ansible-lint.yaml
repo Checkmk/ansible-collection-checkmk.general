@@ -69,7 +69,7 @@ jobs:
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Install Checkmk collection
-        run: ansible-galaxy collection install --timeout 120 checkmk.general
+        run: ansible-galaxy collection install ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       # Run the linting
       - name: Run yamllint on roles
