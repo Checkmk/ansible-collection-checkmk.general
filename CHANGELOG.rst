@@ -1,9 +1,22 @@
 =============================
-tribe29.checkmk Release Notes
+checkmk.general Release Notes
 =============================
 
 .. contents:: Topics
 
+
+v2.0.0
+======
+
+Release Summary
+---------------
+
+Welcome to the new world!
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- The renaming of the collection has concluded. If you are reading this, you on the right release and repository and should be able to use the collection just as you are used to. Make sure to double check, that you are using the new FQCNs!
 
 v1.0.0
 ======
@@ -71,7 +84,7 @@ Bugfixes
 New Modules
 -----------
 
-- tribe29.checkmk.bakery - Trigger baking and signing in the agent bakery.
+- checkmk.general.bakery - Trigger baking and signing in the agent bakery.
 
 v0.20.0
 =======
@@ -134,7 +147,7 @@ Known Issues
 New Modules
 -----------
 
-- tribe29.checkmk.user - Manage users in Checkmk.
+- checkmk.general.user - Manage users in Checkmk.
 
 v0.17.1
 =======
@@ -276,7 +289,7 @@ Bugfixes
 New Modules
 -----------
 
-- tribe29.checkmk.contact_group - Manage contact groups in Checkmk (bulk version).
+- checkmk.general.contact_group - Manage contact groups in Checkmk (bulk version).
 
 v0.11.0
 =======
@@ -296,8 +309,8 @@ Minor Changes
 New Modules
 -----------
 
-- tribe29.checkmk.host_group - Manage host groups in Checkmk (bulk version).
-- tribe29.checkmk.tag_group - Manage tag_group within Checkmk
+- checkmk.general.host_group - Manage host groups in Checkmk (bulk version).
+- checkmk.general.tag_group - Manage tag_group within Checkmk
 
 v0.10.0
 =======
@@ -320,7 +333,7 @@ Known Issues
 New Modules
 -----------
 
-- tribe29.checkmk.rule - Manage rules in Checkmk.
+- checkmk.general.rule - Manage rules in Checkmk.
 
 v0.9.0
 ======
@@ -506,7 +519,7 @@ Known Issues
 New Modules
 -----------
 
-- tribe29.checkmk.downtime - Manage downtimes in Checkmk.
+- checkmk.general.downtime - Manage downtimes in Checkmk.
 
 v0.1.0
 ======
@@ -565,7 +578,7 @@ Known Issues
 New Modules
 -----------
 
-- tribe29.checkmk.activation - Activate changes in Checkmk.
-- tribe29.checkmk.discovery - discovery services in Checkmk.
-- tribe29.checkmk.folder - Manage folders in Checkmk.
-- tribe29.checkmk.host - Manage hosts in Checkmk.
+- checkmk.general.activation - Activate changes in Checkmk.
+- checkmk.general.discovery - discovery services in Checkmk.
+- checkmk.general.folder - Manage folders in Checkmk.
+- checkmk.general.host - Manage hosts in Checkmk.
