@@ -7,7 +7,7 @@ assignees: robin-checkmk
 
 ---
 
-Verify first that your issue is not already reported [here](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
+Verify first that your issue is not already reported [here](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
 Where possible also test if the latest release and main branch are affected too.
 Complete all sections as described!
 

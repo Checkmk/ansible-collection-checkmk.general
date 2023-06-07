@@ -1,11 +1,11 @@
 # Getting help
 
 Please be aware, that although the content in this repository is maintained and
-curated by tribe29, it is fully open source and there is no commercial support whatsoever!
+curated by Checkmk, it is fully open source and there is no commercial support whatsoever!
 This is just a side project and we can only work on this on a **part time and best effort basis**.
 
 Of course you can reach out in the [Checkmk Community (using the 'ansible' tag)](https://forum.checkmk.com/tag/ansible)
-or create [issues here](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
+or create [issues here](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
 
 # Compatibility Matrix
 The following is a compatibility overview between this collection and Checkmk. We always try to track the most recent Checkmk version. This table will give you an overview which collection versions were tested against which Checkmk versions.
