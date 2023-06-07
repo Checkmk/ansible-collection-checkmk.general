@@ -5,6 +5,19 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v1.0.0
+======
+
+Release Summary
+---------------
+
+This collection was renamed to checkmk.general. Please use the new name moving forward!
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- This collection was renamed and module redirects have been activated. That means, if you are using this release, you also need the new collection to be installed. Otherwise things will break for you. In any way you should now move to the new collection name: checkmk.general.
+
 v0.23.0
 =======
 

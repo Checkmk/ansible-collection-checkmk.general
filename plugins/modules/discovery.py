@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
+# Copyright: (c) 2022, Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -20,7 +20,7 @@ version_added: "0.0.1"
 description:
 - Discovery services within Checkmk.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     host_name:
@@ -34,13 +34,13 @@ options:
         choices: [new, remove, fix_all, refresh, only_host_labels]
 
 author:
-    - Robin Gierse (@robin-tribe29)
+    - Robin Gierse (@robin-checkmk)
 """
 
 EXAMPLES = r"""
 # Create a single host.
 - name: "Add newly discovered services on host."
-  tribe29.checkmk.discovery:
+  checkmk.general.discovery:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -48,7 +48,7 @@ EXAMPLES = r"""
     host_name: "my_host"
     state: "new"
 - name: "Add newly discovered services, update labels and remove vanished services on host."
-  tribe29.checkmk.discovery:
+  checkmk.general.discovery:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
