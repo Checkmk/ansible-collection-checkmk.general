@@ -35,7 +35,21 @@ options:
         type: str
         aliases: [title]
     attributes:
-        description: The attributes of your folder as described in the API documentation.
+        description:
+            - The attributes of your folder as described in the API documentation.
+              B(Attention! This option OVERWRITES all existing attributes!)
+        type: raw
+        default: {}
+    update_attributes:
+        description:
+            - The update_attributes of your host as described in the API documentation.
+              This will only update the given attributes.
+        type: raw
+        default: {}
+    remove_attributes:
+        description:
+            - The remove_attributes of your host as described in the API documentation.
+              This will only remove the given attributes.
         type: raw
         default: []
     state:
@@ -47,6 +61,7 @@ options:
 author:
     - Robin Gierse (@robin-tribe29)
     - Lars Getwan (@lgetwan)
+    - Michael Sekania (@msekania)
 """
 
 EXAMPLES = r"""
@@ -73,21 +88,60 @@ EXAMPLES = r"""
     attributes:
       site: "my_remote_site"
     state: "present"
+
+# Create a folder with Criticality set to a Test system and Networking Segment WAN (high latency)"
+- name: "Create a folder with tag_criticality test and tag_networking wan"
+  tribe29.checkmk.folder:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    path: "/my_remote_folder"
+    attributes:
+      tag_criticality: "test"
+      tag_networking: "wan"
+    state: "present"
+
+# Update only specified attributes
+- name: "Update only specified attributes"
+  tribe29.checkmk.folder:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    path: "/my_folder"
+    update_attributes:
+      tag_networking: "dmz"
+    state: "present"
+
+# Remove specified attributes
+- name: "Remove specified attributes"
+  tribe29.checkmk.folder:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    path: "/my_folder"
+    remove_attributes:
+      - tag_networking
+    state: "present"
 """
 
 RETURN = r"""
 message:
-    description: The output message that the module generates.
+    description: The output message that the module generates. Contains the API response details in case of an error.
     type: str
     returned: always
     sample: 'Folder created.'
 """
 
+import json
 import sys
 import traceback
 
 # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
+from ansible.module_utils.common.dict_transformations import dict_merge
 from ansible.module_utils.urls import fetch_url
 
 if sys.version[0] == "3":
@@ -104,8 +158,6 @@ else:
     else:
         HAS_PATHLIB2_LIBRARY = True
         PATHLIB2_LIBRARY_IMPORT_ERROR = None
-
-import json
 
 
 def exit_failed(module, msg):
@@ -130,15 +182,19 @@ def cleanup_path(path):
     return str(p.parent).lower(), p.name
 
 
+def path_for_url(module):
+    return module.params["path"].replace("/", "~")
+
+
 def get_current_folder_state(module, base_url, headers):
     current_state = "unknown"
     current_explicit_attributes = {}
+    current_title = ""
     etag = ""
 
-    path_for_url = module.params["path"].replace("/", "~")
-
-    api_endpoint = "/objects/folder_config/" + path_for_url
-    url = base_url + api_endpoint
+    api_endpoint = "/objects/folder_config/" + path_for_url(module)
+    parameters = "?show_hosts=false"
+    url = base_url + api_endpoint + parameters
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
 
@@ -148,6 +204,7 @@ def get_current_folder_state(module, base_url, headers):
         etag = info.get("etag", "")
         extensions = body.get("extensions", {})
         current_explicit_attributes = extensions.get("attributes", {})
+        current_title = "%s" % body.get("title", "")
         if "meta_data" in current_explicit_attributes:
             del current_explicit_attributes["meta_data"]
 
@@ -157,35 +214,38 @@ def get_current_folder_state(module, base_url, headers):
     else:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s"
+            "Error calling API. HTTP code %d. Details: %s."
             % (info["status"], info.get("body", "N/A")),
         )
 
-    return current_state, current_explicit_attributes, etag
+    return current_state, current_explicit_attributes, current_title, etag
 
 
-def set_folder_attributes(module, attributes, base_url, headers):
-    parent, foldername = cleanup_path(module.params["path"])
-    path_for_url = module.params["path"].replace("/", "~")
-    name = module.params.get("name", foldername)
-
-    api_endpoint = "/objects/folder_config/" + path_for_url
-    params = {
-        "name": name,
-        "attributes": attributes,
-    }
+def set_folder_attributes(module, attributes, base_url, headers, params):
+    api_endpoint = "/objects/folder_config/" + path_for_url(module)
     url = base_url + api_endpoint
 
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="PUT"
     )
 
-    if info["status"] != 200:
+    if (
+        info["status"] == 400
+        and params.get("remove_attributes")
+        and not params.get("title")
+        and not params.get("attributes")
+        and not params.get("update_attributes")
+    ):
+        # "Folder attributes allready removed."
+        return False
+    elif info["status"] != 200:
         exit_failed(
             module,
             "Error calling API. HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
+
+    return True
 
 
 def create_folder(module, attributes, base_url, headers):
@@ -214,9 +274,7 @@ def create_folder(module, attributes, base_url, headers):
 
 
 def delete_folder(module, base_url, headers):
-    path_for_url = module.params["path"].replace("/", "~")
-
-    api_endpoint = "/objects/folder_config/" + path_for_url
+    api_endpoint = "/objects/folder_config/" + path_for_url(module)
     url = base_url + api_endpoint
 
     response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
@@ -242,11 +300,13 @@ def run_module():
             required=False,
             aliases=["title"],
         ),
-        attributes=dict(type="raw", default=[]),
+        attributes=dict(type="raw", default={}),
+        remove_attributes=dict(type="raw", default=[]),
+        update_attributes=dict(type="raw", default={}),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
     # Handle library import error according to the following link:
     # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
@@ -275,6 +335,8 @@ def run_module():
 
     # Determine desired state and attributes
     attributes = module.params.get("attributes", {})
+    remove_attributes = module.params.get("remove_attributes", [])
+    update_attributes = module.params.get("update_attributes", {})
     if attributes == []:
         attributes = {}
     state = module.params.get("state", "present")
@@ -283,6 +345,7 @@ def run_module():
     (
         current_state,
         current_explicit_attributes,
+        current_title,
         etag,
     ) = get_current_folder_state(module, base_url, headers)
 
@@ -291,9 +354,37 @@ def run_module():
         headers["If-Match"] = etag
         msg_tokens = []
 
+        merged_attributes = dict_merge(current_explicit_attributes, update_attributes)
+
+        params = {}
+        changed = False
+        if module.params["name"] and current_title != module.params["name"]:
+            params["title"] = module.params.get("name")
+            changed = True
+
         if attributes != {} and current_explicit_attributes != attributes:
-            set_folder_attributes(module, attributes, base_url, headers)
-            msg_tokens.append("Folder attributes changed.")
+            params["attributes"] = attributes
+            changed = True
+
+        if update_attributes != {} and current_explicit_attributes != merged_attributes:
+            params["update_attributes"] = merged_attributes
+            changed = True
+
+        if remove_attributes != []:
+            for el in remove_attributes:
+                if current_explicit_attributes.get(el):
+                    changed = True
+                    break
+            params["remove_attributes"] = remove_attributes
+
+        if params != {}:
+            if not module.check_mode:
+                changed = set_folder_attributes(
+                    module, attributes, base_url, headers, params
+                )
+
+            if changed:
+                msg_tokens.append("Folder attributes updated.")
 
         if len(msg_tokens) >= 1:
             exit_changed(module, " ".join(msg_tokens))
@@ -303,14 +394,18 @@ def run_module():
             )
 
     elif state == "present" and current_state == "absent":
-        create_folder(module, attributes, base_url, headers)
+        if update_attributes != {} and attributes == {}:
+            attributes = update_attributes
+        if not module.check_mode:
+            create_folder(module, attributes, base_url, headers)
         exit_changed(module, "Folder created.")
 
     elif state == "absent" and current_state == "absent":
         exit_ok(module, "Folder already absent.")
 
     elif state == "absent" and current_state == "present":
-        delete_folder(module, base_url, headers)
+        if not module.check_mode:
+            delete_folder(module, base_url, headers)
         exit_changed(module, "Folder deleted.")
 
     else:
