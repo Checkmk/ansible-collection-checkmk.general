@@ -48,13 +48,13 @@ jobs:
         run: ansible-galaxy collection build build/src --force
 
       - name: Install Ansible Collection
-        run: ansible-galaxy collection install ./tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+        run: ansible-galaxy collection install --no-deps ./checkmk-general${{ steps.current_version.outputs.version }}.tar.gz
 
       - name: Compile Collection Changelog
         run: antsibull-changelog release
 
       - name: Compile Collection Docs
-        run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ tribe29.checkmk
+        run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ checkmk.general
 
       - name: Create Pull Request for docs and changelog against devel branch
         uses: peter-evans/create-pull-request@v5
@@ -69,8 +69,8 @@ jobs:
           title: '[Auto] Update changelogs and docs'
           body: |
             Changelogs and docs updated during *${{ steps.current_version.outputs.version }}* release.
-          assignees: robin-tribe29
-          reviewers: robin-tribe29
+          assignees: robin-checkmk
+          reviewers: robin-checkmk
           draft: false
 
       #
@@ -95,17 +95,17 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          draft: true
-          prerelease: true
+          draft: false
+          prerelease: false
           name: v${{ steps.current_version.outputs.version }}
           tag_name: v${{ steps.current_version.outputs.version }}
-          files: tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz
+          files: checkmk-general${{ steps.current_version.outputs.version }}.tar.gz
           body: |
-            # Ansible Collection: tribe29.checkmk
+            # Ansible Collection: checkmk.general
 
-            For information about this collection and how to install it, refer to the [README](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/README.md).
+            For information about this collection and how to install it, refer to the [README](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/README.md).
             
-            For a detailed changelog, refer to the [CHANGELOG](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/CHANGELOG.rst).
+            For a detailed changelog, refer to the [CHANGELOG](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/CHANGELOG.rst).
 
       - name: Publish Ansible Collection to the Galaxy
-        run: ansible-galaxy collection publish tribe29-checkmk-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
+        run: ansible-galaxy collection publish checkmk-general${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}

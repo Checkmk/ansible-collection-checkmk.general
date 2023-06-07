@@ -22,8 +22,8 @@ on:
       - 'roles/server/**'
 
 env:
-  NAMESPACE: tribe29
-  COLLECTION_NAME: checkmk 
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
 
 jobs:
   build:

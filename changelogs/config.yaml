@@ -28,6 +28,6 @@ sections:
   - Bugfixes
 - - known_issues
   - Known Issues
-title: tribe29.checkmk
+title: checkmk.general
 trivial_section_name: trivial
 use_fqcn: true

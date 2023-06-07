@@ -315,6 +315,48 @@ releases:
     - host.yml
     - rule.yml
     release_date: '2023-04-12'
+  0.21.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix activate changes handler failing with self-signed certificate
+      major_changes:
+      - Add Bakery module
+      minor_changes:
+      - Server role - Added support for almalinux
+    fragments:
+    - agent.yml
+    - almalinux.yml
+    - bakery.yml
+    modules:
+    - description: Trigger baking and signing in the agent bakery.
+      name: bakery
+      namespace: ''
+    release_date: '2023-05-08'
+  0.22.0:
+    changes:
+      major_changes:
+      - module_utils - Extend centralization by providing types and further utils.
+      minor_changes:
+      - Playbooks - Reorganize and clean up playbooks. This is a constant work in
+        progress.
+      release_summary: Further centralizing.
+    fragments:
+    - playbooks.yml
+    - utils.yml
+    release_date: '2023-05-12'
+  0.23.0:
+    changes:
+      major_changes:
+      - folder module - Add support for 'update_attributes' and 'remove_attributes'.
+        Read the documentation for further details.
+      minor_changes:
+      - folder module - Add support for check mode.
+      - tag_group module - Code cleanup. Should have no effect on functionality, but
+        mentioning it here for transparency.
+    fragments:
+    - folder.yml
+    - tag_group.yml
+    release_date: '2023-06-07'
   0.3.2:
     changes:
       minor_changes:
@@ -454,3 +496,26 @@ releases:
     - host_module.yml
     - server_role.yml
     release_date: '2022-09-12'
+  1.0.0:
+    changes:
+      breaking_changes:
+      - 'This collection was renamed and module redirects have been activated. That
+        means, if you are using this release, you also need the new collection to
+        be installed. Otherwise things will break for you. In any way you should now
+        move to the new collection name: checkmk.general.'
+      release_summary: This collection was renamed to checkmk.general. Please use
+        the new name moving forward!
+    fragments:
+    - renaming_preparation.yml
+    release_date: '2023-06-07'
+  2.0.0:
+    changes:
+      breaking_changes:
+      - The renaming of the collection has concluded. If you are reading this, you
+        on the right release and repository and should be able to use the collection
+        just as you are used to. Make sure to double check, that you are using the
+        new FQCNs!
+      release_summary: Welcome to the new world!
+    fragments:
+    - renaming_complete.yml
+    release_date: '2023-06-07'

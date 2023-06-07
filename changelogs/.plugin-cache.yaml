@@ -16,6 +16,11 @@ plugins:
       name: activation
       namespace: ''
       version_added: 0.0.1
+    bakery:
+      description: Trigger baking and signing in the agent bakery.
+      name: bakery
+      namespace: ''
+      version_added: 0.21.0
     contact_group:
       description: Manage contact groups in Checkmk (bulk version).
       name: contact_group
@@ -71,4 +76,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 0.20.0
+version: 2.0.0

@@ -26,7 +26,7 @@
 
 .. Anchors
 
-.. _ansible_collections.tribe29.checkmk.rule_module:
+.. _ansible_collections.checkmk.general.rule_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -36,23 +36,23 @@
 
 .. Title
 
-tribe29.checkmk.rule module -- Manage rules in Checkmk.
+checkmk.general.rule module -- Manage rules in Checkmk.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.20.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.0.0).
 
-    To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
+    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`tribe29.checkmk.rule`.
+    To use it in a playbook, specify: :code:`checkmk.general.rule`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in tribe29.checkmk 0.10.0
+New in checkmk.general 0.10.0
 
 .. contents::
    :local:
@@ -100,7 +100,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -134,7 +134,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -168,7 +168,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule:
 
       .. rst-class:: ansible-option-title
 
@@ -202,7 +202,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/conditions"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/conditions:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/conditions:
 
       .. rst-class:: ansible-option-title
 
@@ -236,7 +236,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/folder"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/folder:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/folder:
 
       .. rst-class:: ansible-option-title
 
@@ -274,7 +274,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/location"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/location:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/location:
 
       .. rst-class:: ansible-option-title
 
@@ -312,7 +312,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/location/folder"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/location/folder:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/location/folder:
 
       .. rst-class:: ansible-option-title
 
@@ -356,7 +356,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/location/position"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/location/position:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/location/position:
 
       .. rst-class:: ansible-option-title
 
@@ -402,7 +402,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/location/rule_id"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/location/rule_id:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/location/rule_id:
 
       .. rst-class:: ansible-option-title
 
@@ -441,7 +441,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/properties"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/properties:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/properties:
 
       .. rst-class:: ansible-option-title
 
@@ -475,7 +475,7 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/value_raw"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-rule/value_raw:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/value_raw:
 
       .. rst-class:: ansible-option-title
 
@@ -510,7 +510,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-ruleset"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-ruleset:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-ruleset:
 
       .. rst-class:: ansible-option-title
 
@@ -544,7 +544,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -578,7 +578,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-site:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -612,7 +612,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-state:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -654,7 +654,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -717,7 +717,7 @@ Examples
     # Create a rule in checkgroup_parameters:memory_percentage_used
     # at the top of the main folder.
     - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
-      tribe29.checkmk.rule:
+      checkmk.general.rule:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -739,7 +739,7 @@ Examples
                 "comment": "Warning at 80%\nCritical at 90%\n",
                 "description": "Allow higher memory usage",
                 "disabled": false,
-                "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+                "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
             }
             folder: "/"
             value_raw: "{'levels': (80.0, 90.0)}"
@@ -756,7 +756,7 @@ Examples
     # Create another rule in checkgroup_parameters:memory_percentage_used
     # and put it after the rule created above.
     - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
-      tribe29.checkmk.rule:
+      checkmk.general.rule:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -778,7 +778,7 @@ Examples
                 "comment": "Warning at 85%\nCritical at 99%\n",
                 "description": "Allow even higher memory usage",
                 "disabled": false,
-                "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+                "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
             }
             value_raw: "{'levels': (85.0, 99.0)}"
             location:
@@ -788,7 +788,7 @@ Examples
 
     # Delete the first rule.
     - name: "Delete a rule."
-      tribe29.checkmk.rule:
+      checkmk.general.rule:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -810,7 +810,7 @@ Examples
                 "comment": "Warning at 80%\nCritical at 90%\n",
                 "description": "Allow higher memory usage",
                 "disabled": false,
-                "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+                "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
             }
             value_raw: "{'levels': (80.0, 90.0)}"
         state: "absent"
@@ -842,7 +842,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-id"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__return-id:
+      .. _ansible_collections.checkmk.general.rule_module__return-id:
 
       .. rst-class:: ansible-option-title
 
@@ -887,7 +887,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.tribe29.checkmk.rule_module__return-msg:
+      .. _ansible_collections.checkmk.general.rule_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
@@ -949,8 +949,8 @@ Collection links
 .. raw:: html
 
   <p class="ansible-links">
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
+    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
+    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
   </p>
 
 .. Parsing errors

@@ -26,7 +26,7 @@
 
 .. Anchors
 
-.. _ansible_collections.tribe29.checkmk.downtime_module:
+.. _ansible_collections.checkmk.general.downtime_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -36,23 +36,23 @@
 
 .. Title
 
-tribe29.checkmk.downtime module -- Manage downtimes in Checkmk.
+checkmk.general.downtime module -- Manage downtimes in Checkmk.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.20.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.0.0).
 
-    To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
+    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`tribe29.checkmk.downtime`.
+    To use it in a playbook, specify: :code:`checkmk.general.downtime`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in tribe29.checkmk 0.2.0
+New in checkmk.general 0.2.0
 
 .. contents::
    :local:
@@ -99,7 +99,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -133,7 +133,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -167,7 +167,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-comment"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-comment:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-comment:
 
       .. rst-class:: ansible-option-title
 
@@ -201,7 +201,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-duration"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-duration:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-duration:
 
       .. rst-class:: ansible-option-title
 
@@ -239,7 +239,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-end_after"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-end_after:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-end_after:
 
       .. rst-class:: ansible-option-title
 
@@ -277,7 +277,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-end_time"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-end_time:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-end_time:
 
       .. rst-class:: ansible-option-title
 
@@ -315,7 +315,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-force"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-force:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-force:
 
       .. rst-class:: ansible-option-title
 
@@ -357,7 +357,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-host_name:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-host_name:
 
       .. rst-class:: ansible-option-title
 
@@ -391,7 +391,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -425,7 +425,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-service_descriptions"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-service_descriptions:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-service_descriptions:
 
       .. rst-class:: ansible-option-title
 
@@ -463,7 +463,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-site:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -497,7 +497,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-start_after"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-start_after:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-start_after:
 
       .. rst-class:: ansible-option-title
 
@@ -535,7 +535,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-start_time"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-start_time:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-start_time:
 
       .. rst-class:: ansible-option-title
 
@@ -573,7 +573,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-state:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -615,7 +615,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -676,7 +676,7 @@ Examples
 
     
     - name: "Schedule host downtime."
-      tribe29.checkmk.downtime:
+      checkmk.general.downtime:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
@@ -689,7 +689,7 @@ Examples
           hours: 5
 
     - name: "Schedule service downtimes for two given services."
-      tribe29.checkmk.downtime:
+      checkmk.general.downtime:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
@@ -704,7 +704,7 @@ Examples
           - "Memory"
 
     - name: "Delete all service downtimes for two given services."
-      tribe29.checkmk.downtime:
+      checkmk.general.downtime:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
@@ -742,7 +742,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-message"></div>
 
-      .. _ansible_collections.tribe29.checkmk.downtime_module__return-message:
+      .. _ansible_collections.checkmk.general.downtime_module__return-message:
 
       .. rst-class:: ansible-option-title
 
@@ -804,8 +804,8 @@ Collection links
 .. raw:: html
 
   <p class="ansible-links">
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
+    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
+    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
   </p>
 
 .. Parsing errors

@@ -4,7 +4,8 @@
   strategy: linear
   gather_facts: false
   vars_files:
-    - ../vars/demo.yml
+    - ../vars/auth.yml      # This vars file provides details about your site
+    - ../vars/folders.yml   # This vars file contains the folders to manage
   tasks:
 
     - name: "Create folders."
@@ -34,11 +35,12 @@
         state: "present"
       delegate_to: localhost
 
-    - name: "Pause to review first set of changes."
+    - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
           "Press <Enter> to continue."
+      when: not run_unattended | bool
 
     - name: "Activate changes on site."
       activation:
@@ -78,11 +80,12 @@
         state: "present"
       delegate_to: localhost
 
-    - name: "Pause to review second set of changes."
+    - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
           "Press <Enter> to continue."
+      when: not run_unattended | bool
 
     - name: "Delete Hosts."
       host:
@@ -109,11 +112,12 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_folders }}"
 
-    - name: "Pause to review third set of changes."
+    - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
           "Press <Enter> to continue."
+      when: not run_unattended | bool
 
     - name: "Activate changes on site."
       activation:
