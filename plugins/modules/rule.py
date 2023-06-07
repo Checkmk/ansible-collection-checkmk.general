@@ -445,11 +445,11 @@ def run_module():
                     mutually_exclusive=[("folder", "rule_id")],
                     apply_defaults=True,
                     deprecated_aliases=[
-                        dict(
-                            name="folder",
-                            collection_name="checkmk.general",
-                            version="1.0.0",
-                        ),
+                        {
+                            "name": "folder",
+                            "collection_name": "checkmk.general",
+                            "version": "3.0.0",
+                        }
                     ],
                 ),
             ),

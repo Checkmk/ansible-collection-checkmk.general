@@ -17,7 +17,7 @@ collection_dir="${script_dir%/*}"
 # Update these as necessary:
 checkmk_oldstable="2.0.0p36"
 checkmk_stable="2.1.0p28"
-checkmk_beta="2.2.0b8"
+checkmk_beta="2.2.0p1"
 
 while getopts 's:t:' OPTION; do
   case "$OPTION" in 
@@ -44,7 +44,7 @@ sed -i "s/version: ${source_version}/version: ${target_version}/g" "${collection
 find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.2.0.*/${checkmk_beta}\"/g" {} \; && echo "Updated Checkmk Beta version for integration tests to ${checkmk_beta}."
 find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.1.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated Checkmk Beta version for integration tests to ${checkmk_stable}."
 find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.0.0.*/${checkmk_oldstable}\"/g" {} \; && echo "Updated Checkmk Beta version for integration tests to ${checkmk_oldstable}."
-grep "${target_version}" "${collection_dir}/SUPPORT.md" || echo "${target_version} | ${checkmk_stable}, ${checkmk_oldstable}, ${checkmk_beta} | 2.13, 2.14, 2.15 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
+grep "${target_version}" "${collection_dir}/SUPPORT.md" || echo "${target_version} | ${checkmk_oldstable}, ${checkmk_stable}, ${checkmk_beta} | 2.13, 2.14, 2.15 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
 
 echo "# End changes section."
 echo
