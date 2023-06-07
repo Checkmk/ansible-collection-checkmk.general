@@ -10,7 +10,7 @@ name: checkmk
 
 # The version of the collection. Must be compatible with semantic versioning
 
-version: 0.23.0
+version: 1.0.0
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -46,6 +46,7 @@ tags: [tribe29, checkmk, monitoring, check_mk, check, discovery, ubuntu, debian,
 dependencies:
   "community.general": ">=5.0.0"
   "ansible.posix": ">=1.4.0"
+  "checkmk.general": ">=2.0.0"
 
 # The URL of the originating SCM repository
 repository: https://github.com/Checkmk/ansible-collection-tribe29.checkmk

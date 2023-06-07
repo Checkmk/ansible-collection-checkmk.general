@@ -3,11 +3,11 @@ name: Feedback
 about: Give us any form of feedback
 title: "[FEED]"
 labels: feedback
-assignees: robin-tribe29
+assignees: robin-checkmk
 
 ---
 
-Please verify first that your feedback is not already reported [here](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+sort%3Aupdated-desc).
+Please verify first that your feedback is not already reported [here](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+sort%3Aupdated-desc).
 If possible and useful provide additional information below. This is optional however.
 
 **Provide your feedback**

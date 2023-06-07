@@ -24,7 +24,7 @@ There are several ways in which you can contribute:
 
 1. Submit an [issue](#Submitting-Issues).
 2. Create a [pull request](#Pull-Requests).
-3. Pick an [issue, which needs help](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+3. Pick an [issue, which needs help](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
 
 Everything helps, really!
 We do test everything to the best of our abilities, but nothing beats real world
@@ -33,18 +33,18 @@ the functionality, [pull requests](#Pull-Requests) are appreciated.
 
 ### Submitting Issues
 
-If you encounter any bugs or have ideas for improvements feel free to open an [issue](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) or even better a [pull request](#Pull-Requests).
+If you encounter any bugs or have ideas for improvements feel free to open an [issue](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) or even better a [pull request](#Pull-Requests).
 Dedicated requirements will be added here as suitable.
 
 ### Pull Requests
 
-Please open a [pull request](https://github.com/Checkmk/ansible-collection-tribe29.checkmk/pulls?q=is%3Apr+is%3Aopen)
+Please open a [pull request](https://github.com/Checkmk/ansible-collection-checkmk.general/pulls?q=is%3Apr+is%3Aopen)
 if you have something to contribute.
 On pull request creation, checks will run and tell you,
 if your changes work with the collection. If errors are detected, please try to
 fix them and update your pull request accordingly.
 If you need help, do ask for it.
-After submitting a PR, follow the instructions to sign the [CLA](https://github.com/tribe29/checkmk/blob/master/doc/cla/cla_readme.md) as asked by the bot.
+After submitting a PR, follow the instructions to sign the [CLA](https://github.com/Checkmk/checkmk/blob/master/doc/cla/cla_readme.md) as asked by the bot.
 
 ### Changelog
 

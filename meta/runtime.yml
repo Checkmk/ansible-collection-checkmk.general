@@ -15,11 +15,29 @@ action_groups:
     - tag_group
     - user
 
-# plugin_routing:
-#   modules:
-#     foo:
-#       deprecation:
-#         removal_date: 2022-06-01
-#         warning_text: >-
-#           foo was removed in Ansible 2.9.
-#           Please update your tasks.
+plugin_routing:
+  modules:
+    activation:
+      redirect: checkmk.general.activation
+    bakery:
+      redirect: checkmk.general.bakery
+    contact_group:
+      redirect: checkmk.general.contact_group
+    discovery:
+      redirect: checkmk.general.discovery
+    downtime:
+      redirect: checkmk.general.downtime
+    folder:
+      redirect: checkmk.general.folder
+    host_group:
+      redirect: checkmk.general.host_group
+    host:
+      redirect: checkmk.general.host
+    rule:
+      redirect: checkmk.general.rule
+    service_group:
+      redirect: checkmk.general.service_group
+    tag_group:
+      redirect: checkmk.general.tag_group
+    user:
+      redirect: checkmk.general.user
