@@ -27,5 +27,5 @@ jobs:
         days-before-close: 7
         stale-issue-label: 'stale'
         stale-pr-label: 'stale'
-        exempt-issue-labels: 'upstream'
-        exempt-pr-labels: 'upstream'
+        exempt-issue-labels: 'upstream, never-stale'
+        exempt-pr-labels: 'upstream, never-stale'

@@ -26,7 +26,7 @@
 
 .. Anchors
 
-.. _ansible_collections.tribe29.checkmk.bakery_module:
+.. _ansible_collections.checkmk.general.bakery_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -36,23 +36,23 @@
 
 .. Title
 
-tribe29.checkmk.bakery module -- Trigger baking and signing in the agent bakery.
+checkmk.general.bakery module -- Trigger baking and signing in the agent bakery.
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.22.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.0.0).
 
-    To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
+    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`tribe29.checkmk.bakery`.
+    To use it in a playbook, specify: :code:`checkmk.general.bakery`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in tribe29.checkmk 0.21.0
+New in checkmk.general 0.21.0
 
 .. contents::
    :local:
@@ -99,7 +99,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.tribe29.checkmk.bakery_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.bakery_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -133,7 +133,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.tribe29.checkmk.bakery_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.bakery_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -167,7 +167,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.tribe29.checkmk.bakery_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.bakery_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -201,7 +201,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-signature_key_id"></div>
 
-      .. _ansible_collections.tribe29.checkmk.bakery_module__parameter-signature_key_id:
+      .. _ansible_collections.checkmk.general.bakery_module__parameter-signature_key_id:
 
       .. rst-class:: ansible-option-title
 
@@ -235,7 +235,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-signature_key_passphrase"></div>
 
-      .. _ansible_collections.tribe29.checkmk.bakery_module__parameter-signature_key_passphrase:
+      .. _ansible_collections.checkmk.general.bakery_module__parameter-signature_key_passphrase:
 
       .. rst-class:: ansible-option-title
 
@@ -269,7 +269,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.tribe29.checkmk.bakery_module__parameter-site:
+      .. _ansible_collections.checkmk.general.bakery_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -303,7 +303,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.tribe29.checkmk.bakery_module__parameter-state:
+      .. _ansible_collections.checkmk.general.bakery_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -346,7 +346,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.tribe29.checkmk.bakery_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.bakery_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -403,7 +403,7 @@ Examples
     
     # Bake all agents without signing, as example in a fresh installation without a signature key.
     - name: "Bake all agents without signing."
-      tribe29.checkmk.bakery:
+      checkmk.general.bakery:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -411,7 +411,7 @@ Examples
         state: "baked"
     # Sign all agents.
     - name: "Sign all agents."
-      tribe29.checkmk.bakery:
+      checkmk.general.bakery:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -421,7 +421,7 @@ Examples
         state: "signed"
     # Bake and sign all agents.
     - name: "Bake and sign all agents."
-      tribe29.checkmk.bakery:
+      checkmk.general.bakery:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -457,7 +457,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-http_code"></div>
 
-      .. _ansible_collections.tribe29.checkmk.bakery_module__return-http_code:
+      .. _ansible_collections.checkmk.general.bakery_module__return-http_code:
 
       .. rst-class:: ansible-option-title
 
@@ -502,7 +502,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-message"></div>
 
-      .. _ansible_collections.tribe29.checkmk.bakery_module__return-message:
+      .. _ansible_collections.checkmk.general.bakery_module__return-message:
 
       .. rst-class:: ansible-option-title
 
@@ -563,8 +563,8 @@ Collection links
 .. raw:: html
 
   <p class="ansible-links">
-    <a href="https://github.com/Checkmk/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/Checkmk/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
+    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
+    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
   </p>
 
 .. Parsing errors

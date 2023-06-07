@@ -12,8 +12,8 @@ on:
     - cron: '0 0 * * *'
 
 env:
-  NAMESPACE: tribe29
-  COLLECTION_NAME: checkmk 
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
 
 jobs:
 
@@ -34,9 +34,9 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.12
           - stable-2.13
           - stable-2.14
+          - stable-2.15
           - devel
         python:
           - '3.8'
