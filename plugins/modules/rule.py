@@ -61,12 +61,6 @@ options:
                             - Mutually exclusive with I(rule_id).
                         default: "/"
                         type: str
-            folder:
-                description:
-                  - Folder of the rule.
-                  - Deprecated, use I(location) instead.
-                  - Mutually exclusive with I(location).
-                type: str
             conditions:
                 description: Conditions of the rule.
                 type: dict
@@ -418,7 +412,6 @@ def run_module():
             type="dict",
             required=True,
             options=dict(
-                folder=dict(type="str"),
                 conditions=dict(type="dict"),
                 properties=dict(type="dict"),
                 value_raw=dict(type="str"),
@@ -444,13 +437,6 @@ def run_module():
                     ],
                     mutually_exclusive=[("folder", "rule_id")],
                     apply_defaults=True,
-                    deprecated_aliases=[
-                        {
-                            "name": "folder",
-                            "collection_name": "checkmk.general",
-                            "version": "3.0.0",
-                        }
-                    ],
                 ),
             ),
             mutually_exclusive=[("folder", "location")],
