@@ -5,6 +5,20 @@ tribe29.checkmk Release Notes
 .. contents:: Topics
 
 
+v0.23.0
+=======
+
+Major Changes
+-------------
+
+- folder module - Add support for 'update_attributes' and 'remove_attributes'. Read the documentation for further details.
+
+Minor Changes
+-------------
+
+- folder module - Add support for check mode.
+- tag_group module - Code cleanup. Should have no effect on functionality, but mentioning it here for transparency.
+
 v0.22.0
 =======
 

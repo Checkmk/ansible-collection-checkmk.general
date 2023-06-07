@@ -42,7 +42,7 @@ tribe29.checkmk.folder module -- Manage folders in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.22.0).
+    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.23.0).
 
     To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
 
@@ -121,12 +121,12 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The attributes of your folder as described in the API documentation.
+      The attributes of your folder as described in the API documentation. \ :strong:`Attention! This option OVERWRITES all existing attributes!`\ 
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`{}`
 
       .. raw:: html
 
@@ -277,6 +277,44 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-remove_attributes"></div>
+
+      .. _ansible_collections.tribe29.checkmk.folder_module__parameter-remove_attributes:
+
+      .. rst-class:: ansible-option-title
+
+      **remove_attributes**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-remove_attributes" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`any`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The remove\_attributes of your host as described in the API documentation. This will only remove the given attributes.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
       .. _ansible_collections.tribe29.checkmk.folder_module__parameter-server_url:
@@ -387,6 +425,44 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-update_attributes"></div>
+
+      .. _ansible_collections.tribe29.checkmk.folder_module__parameter-update_attributes:
+
+      .. rst-class:: ansible-option-title
+
+      **update_attributes**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-update_attributes" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`any`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The update\_attributes of your host as described in the API documentation. This will only update the given attributes.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`{}`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
       .. _ansible_collections.tribe29.checkmk.folder_module__parameter-validate_certs:
@@ -468,6 +544,43 @@ Examples
           site: "my_remote_site"
         state: "present"
 
+    # Create a folder with Criticality set to a Test system and Networking Segment WAN (high latency)"
+    - name: "Create a folder with tag_criticality test and tag_networking wan"
+      tribe29.checkmk.folder:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        path: "/my_remote_folder"
+        attributes:
+          tag_criticality: "test"
+          tag_networking: "wan"
+        state: "present"
+
+    # Update only specified attributes
+    - name: "Update only specified attributes"
+      tribe29.checkmk.folder:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        path: "/my_folder"
+        update_attributes:
+          tag_networking: "dmz"
+        state: "present"
+
+    # Remove specified attributes
+    - name: "Remove specified attributes"
+      tribe29.checkmk.folder:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        path: "/my_folder"
+        remove_attributes:
+          - tag_networking
+        state: "present"
+
 
 
 
@@ -517,7 +630,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-cell">
 
-      The output message that the module generates.
+      The output message that the module generates. Contains the API response details in case of an error.
 
 
       .. rst-class:: ansible-option-line
@@ -546,6 +659,7 @@ Authors
 
 - Robin Gierse (@robin-tribe29)
 - Lars Getwan (@lgetwan)
+- Michael Sekania (@msekania)
 
 
 
