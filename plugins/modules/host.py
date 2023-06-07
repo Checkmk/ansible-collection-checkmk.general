@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
+# Copyright: (c) 2022, Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -20,7 +20,7 @@ version_added: "0.0.1"
 description:
     - Manage hosts within Checkmk.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
@@ -56,7 +56,7 @@ options:
         choices: [present, absent]
 
 author:
-    - Robin Gierse (@robin-tribe29)
+    - Robin Gierse (@robin-checkmk)
     - Lars Getwan (@lgetwan)
     - Oliver Gaida (@ogaida)
 """
@@ -64,7 +64,7 @@ author:
 EXAMPLES = r"""
 # Create a host.
 - name: "Create a host."
-  tribe29.checkmk.host:
+  checkmk.general.host:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -75,7 +75,7 @@ EXAMPLES = r"""
 
 # Create a host with IP.
 - name: "Create a host with IP address."
-  tribe29.checkmk.host:
+  checkmk.general.host:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -89,7 +89,7 @@ EXAMPLES = r"""
 
 # Create a host which is monitored on a distinct site.
 - name: "Create a host which is monitored on a distinct site."
-  tribe29.checkmk.host:
+  checkmk.general.host:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -102,7 +102,7 @@ EXAMPLES = r"""
 
 # Create a host with update_attributes.
 - name: "Create a host which is monitored on a distinct site."
-  tribe29.checkmk.host:
+  checkmk.general.host:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -114,7 +114,7 @@ EXAMPLES = r"""
 
 # Update only specified attributes
 - name: "Update only specified attributes"
-  tribe29.checkmk.host:
+  checkmk.general.host:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -126,7 +126,7 @@ EXAMPLES = r"""
 
 # Remove specified attributes
 - name: "Remove specified attributes"
-  tribe29.checkmk.host:
+  checkmk.general.host:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -308,7 +308,7 @@ def run_module():
                 {
                     "name": "host_name",
                     "date": "2024-01-01",
-                    "collection_name": "tribe29.checkmk",
+                    "collection_name": "checkmk.general",
                 }
             ],
         ),
