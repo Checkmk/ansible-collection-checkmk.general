@@ -1,24 +1,28 @@
 ---
-- name: "{{ outer_item.version }} - Download Checkmk Version."
+- name: "{{ item.version }} - Download Checkmk Versions."
   ansible.builtin.get_url:
     url: "{{ download_url }}"
-    dest: /tmp/checkmk-server-{{ outer_item.site }}.deb
+    dest: /tmp/checkmk-server-{{ item.site }}.deb
     mode: "0640"
+  loop: "{{ checkmk_versions }}"
 
-- name: "{{ outer_item.version }} - Install Checkmk Version."
+- name: "{{ item.version }} - Install Checkmk Versions."
   ansible.builtin.apt:
-    deb: /tmp/checkmk-server-{{ outer_item.site }}.deb
+    deb: /tmp/checkmk-server-{{ item.site }}.deb
     state: present
+  loop: "{{ checkmk_versions }}"
 
-- name: "{{ outer_item.version }} - Create Site."
-  ansible.builtin.command: "omd create --no-tmpfs --admin-password {{ automation_secret }} {{ outer_item.site }}"
+- name: "{{ item.version }} - Create Sites."
+  ansible.builtin.command: "omd -V {{ item.version }}.cre create --no-tmpfs --admin-password {{ automation_secret }} {{ item.site }}"
   args:
-    creates: "/omd/sites/{{ outer_item.site }}"
+    creates: "/omd/sites/{{ item.site }}"
+  loop: "{{ checkmk_versions }}"
 
-- name: "{{ outer_item.version }} - Start Site."
-  ansible.builtin.shell: "omd status -b {{ outer_item.site }} || omd start {{ outer_item.site }}"
+- name: "{{ item.version }} - Start Sites."
+  ansible.builtin.shell: "omd status -b {{ item.site }} || omd start {{ item.site }}"
   register: site_status
   changed_when: site_status.rc == "0"
+  loop: "{{ checkmk_versions }}"
 
 - name: "Wait for site to be ready."
   ansible.builtin.pause:
