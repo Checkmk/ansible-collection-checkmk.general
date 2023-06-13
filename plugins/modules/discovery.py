@@ -81,7 +81,11 @@ from ansible_collections.tribe29.checkmk.plugins.module_utils.utils import (
 HTTP_CODES = {
     # http_code: (changed, failed, "Message")
     200: (True, False, "Discovery successful."),
-    302: (True, False, "The service discovery background job has been initialized. Redirecting to the 'Wait for service discovery completion' endpoint."),
+    302: (
+        True,
+        False,
+        "The service discovery background job has been initialized. Redirecting to the 'Wait for service discovery completion' endpoint.",
+    ),
     400: (False, True, "Bad Request."),
     403: (False, True, "Forbidden: Configuration via WATO is disabled."),
     404: (False, True, "Not Found: Host could not be found."),
@@ -93,7 +97,11 @@ HTTP_CODES = {
 HTTP_CODES_SC = {
     # http_code: (changed, failed, "Message")
     200: (True, False, "The service discovery has been completed."),
-    302: (True, False, "The service discovery is still running. Redirecting to the 'Wait for completion' endpoint."),
+    302: (
+        True,
+        False,
+        "The service discovery is still running. Redirecting to the 'Wait for completion' endpoint.",
+    ),
     403: (False, True, "Forbidden: Configuration via Setup is disabled."),
     404: (False, True, "Not Found: There is no running service discovery"),
     406: (False, True, "Not Acceptable."),
