@@ -23,3 +23,10 @@
   register: site_status
   changed_when: site_status.rc == "0"
   loop: "{{ checkmk_versions }}"
+
+- name: "Gather Date and Time Facts on localhost."
+  ansible.builtin.setup:
+    gather_subset:
+      - date_time
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
