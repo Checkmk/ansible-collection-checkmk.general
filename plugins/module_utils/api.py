@@ -13,8 +13,8 @@ __metaclass__ = type
 import json
 
 from ansible.module_utils.urls import fetch_url
-from ansible_collections.tribe29.checkmk.plugins.module_utils.types import RESULT
-from ansible_collections.tribe29.checkmk.plugins.module_utils.utils import (
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     GENERIC_HTTP_CODES,
     result_as_dict,
 )

@@ -1,6 +1,6 @@
 ---
 checkmk_versions:
-  - version: "2.2.0"
+  - version: "2.2.0p1"
     site: "stable"
   - version: "2.1.0p28"
     site: "oldstable"
@@ -112,7 +112,7 @@ checkmk_rules:
         "comment": "Warning at 80%\nCritical at 90%\n",
         "description": "Allow higher memory usage",
         "disabled": false,
-        "documentation_url": "https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
       }
       value_raw: "{'levels': (80.0, 90.0)}"
 

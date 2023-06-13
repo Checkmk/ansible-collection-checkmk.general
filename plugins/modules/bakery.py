@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2023, Robin Gierse <robin.gierse@tribe29.com>
+# Copyright: (c) 2023, Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -20,7 +20,7 @@ version_added: "0.21.0"
 description:
 - Trigger baking and signing in the agent bakery.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     signature_key_id:
@@ -46,7 +46,7 @@ author:
 EXAMPLES = r"""
 # Bake all agents without signing, as example in a fresh installation without a signature key.
 - name: "Bake all agents without signing."
-  tribe29.checkmk.bakery:
+  checkmk.general.bakery:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -54,7 +54,7 @@ EXAMPLES = r"""
     state: "baked"
 # Sign all agents.
 - name: "Sign all agents."
-  tribe29.checkmk.bakery:
+  checkmk.general.bakery:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -64,7 +64,7 @@ EXAMPLES = r"""
     state: "signed"
 # Bake and sign all agents.
 - name: "Bake and sign all agents."
-  tribe29.checkmk.bakery:
+  checkmk.general.bakery:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
