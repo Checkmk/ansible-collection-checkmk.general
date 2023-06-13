@@ -2,7 +2,7 @@
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
 # Copyright: (c) 2022, Michael Sekania &
-#                      Robin Gierse <robin.gierse@tribe29.com>
+#                      Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -21,7 +21,7 @@ version_added: "0.11.0"
 description:
 - Manage host groups in Checkmk.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
@@ -51,7 +51,7 @@ author:
 EXAMPLES = r"""
 # Create a single host group.
 - name: "Create a single host group."
-  tribe29.checkmk.host_group:
+  checkmk.general.host_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -62,7 +62,7 @@ EXAMPLES = r"""
 
 # Create several host groups.
 - name: "Create several host groups."
-  tribe29.checkmk.host_group:
+  checkmk.general.host_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -78,7 +78,7 @@ EXAMPLES = r"""
 
 # Create several host groups.
 - name: "Create several host groups."
-  tribe29.checkmk.host_group:
+  checkmk.general.host_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -92,7 +92,7 @@ EXAMPLES = r"""
 
 # Delete a single host group.
 - name: "Create a single host group."
-  tribe29.checkmk.host_group:
+  checkmk.general.host_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -102,7 +102,7 @@ EXAMPLES = r"""
 
 # Delete several host groups.
 - name: "Delete several host groups."
-  tribe29.checkmk.host_group:
+  checkmk.general.host_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -354,8 +354,8 @@ def run_module():
             deprecated_aliases=[
                 {
                     "name": "host_group_name",
-                    "date": "2023-03-01",
-                    "collection_name": "tribe29.checkmk",
+                    "collection_name": "checkmk.general",
+                    "version": "3.0.0",
                 }
             ],
         ),
@@ -368,8 +368,8 @@ def run_module():
             deprecated_aliases=[
                 {
                     "name": "host_groups",
-                    "date": "2023-03-01",
-                    "collection_name": "tribe29.checkmk",
+                    "collection_name": "checkmk.general",
+                    "version": "3.0.0",
                 }
             ],
         ),

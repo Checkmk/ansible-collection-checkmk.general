@@ -19,7 +19,7 @@ version_added: "0.12.0"
 description:
 - Manage contact groups in Checkmk.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
@@ -51,7 +51,7 @@ author:
 EXAMPLES = r"""
 # Create a single contact group.
 - name: "Create a single contact group."
-  tribe29.checkmk.contact_group:
+  checkmk.general.contact_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -62,7 +62,7 @@ EXAMPLES = r"""
 
 # Create several contact groups.
 - name: "Create several contact groups."
-  tribe29.checkmk.contact_group:
+  checkmk.general.contact_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -78,7 +78,7 @@ EXAMPLES = r"""
 
 # Create several contact groups.
 - name: "Create several contact groups."
-  tribe29.checkmk.contact_group:
+  checkmk.general.contact_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -92,7 +92,7 @@ EXAMPLES = r"""
 
 # Delete a single contact group.
 - name: "Create a single contact group."
-  tribe29.checkmk.contact_group:
+  checkmk.general.contact_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -102,7 +102,7 @@ EXAMPLES = r"""
 
 # Delete several contact groups.
 - name: "Delete several contact groups."
-  tribe29.checkmk.contact_group:
+  checkmk.general.contact_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"

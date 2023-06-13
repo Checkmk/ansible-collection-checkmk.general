@@ -2,7 +2,7 @@
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
 # Copyright: (c) 2022, Michael Sekania &
-#                      Robin Gierse <robin.gierse@tribe29.com>
+#                      Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -21,7 +21,7 @@ version_added: "0.12.0"
 description:
 - Manage service groups in Checkmk.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
@@ -53,7 +53,7 @@ author:
 EXAMPLES = r"""
 # Create a single service group.
 - name: "Create a single service group."
-  tribe29.checkmk.service_group:
+  checkmk.general.service_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -64,7 +64,7 @@ EXAMPLES = r"""
 
 # Create several service groups.
 - name: "Create several service groups."
-  tribe29.checkmk.service_group:
+  checkmk.general.service_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -80,7 +80,7 @@ EXAMPLES = r"""
 
 # Create several service groups.
 - name: "Create several service groups."
-  tribe29.checkmk.service_group:
+  checkmk.general.service_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -94,7 +94,7 @@ EXAMPLES = r"""
 
 # Delete a single service group.
 - name: "Create a single service group."
-  tribe29.checkmk.service_group:
+  checkmk.general.service_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -104,7 +104,7 @@ EXAMPLES = r"""
 
 # Delete several service groups.
 - name: "Delete several service groups."
-  tribe29.checkmk.service_group:
+  checkmk.general.service_group:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"

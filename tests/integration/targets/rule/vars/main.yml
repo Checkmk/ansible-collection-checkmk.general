@@ -1,10 +1,10 @@
 ---
 checkmk_versions:
-  - version: "2.2.0"
+  - version: "2.2.0p1"
     site: "stable"
   - version: "2.1.0p28"
     site: "oldstable"
-download_url: "https://download.checkmk.com/checkmk/{{ outer_item.version }}/check-mk-raw-{{ outer_item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
@@ -112,7 +112,7 @@ checkmk_rules:
         "comment": "Warning at 80%\nCritical at 90%\n",
         "description": "Allow higher memory usage",
         "disabled": false,
-        "documentation_url": "https://github.com/Checkmk/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
       }
       value_raw: "{'levels': (80.0, 90.0)}"
 
