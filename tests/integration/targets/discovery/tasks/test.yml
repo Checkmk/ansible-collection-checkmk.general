@@ -15,6 +15,67 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
+- name: "{{ outer_item.version }} - Update host labels."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    state: "only_host_labels"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Rescan (Tabula Rasa in 2.1 and before) services."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    state: "refresh"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Tabula Rasa. (Only 2.2)"
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    state: "refresh"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+  when: "'2.2' in outer_item.version"
+
+- name: "{{ outer_item.version }} - Remove vanished services."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    state: "remove"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Add undecided services to monitoring."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    host_name: "{{ item.name }}"
+    state: "new"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
 - name: "{{ outer_item.version }} - Discover hosts."
   discovery:
     server_url: "{{ server_url }}"
