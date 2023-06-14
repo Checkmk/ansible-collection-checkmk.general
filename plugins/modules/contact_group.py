@@ -184,13 +184,24 @@ def get_current_contact_groups(module, base_url, headers):
     if info["status"] == 200:
         body = json.loads(response.read())
         tmp = body.get("value", [])
-        current_groups = [
-            {
-                "name": el.get("href").rsplit("/", 1)[-1],
-                "title": el.get("title", el.get("name")),
-            }
-            for el in tmp
-        ]
+        # Response from 2.2.0 is different. So this should fix it until module is migrated to new CheckMKAPI
+        for el in tmp:
+            if el.get("domainType") == "contact_group_config":  # 2.2.0
+                current_groups = [
+                    {
+                        "name": el.get("id"),
+                        "title": el.get("title", el.get("name")),
+                    }
+                    for el in tmp
+                ]
+            else:  # 2.0.0 and 2.1.0
+                current_groups = [
+                    {
+                        "name": el.get("href").rsplit("/", 1)[-1],
+                        "title": el.get("title", el.get("name")),
+                    }
+                    for el in tmp
+                ]
     else:
         exit_failed(
             module,
@@ -385,7 +396,7 @@ def run_module():
 
         groups = module.params.get("groups")
 
-        # Determine which contact groups do already exest
+        # Determine which contact groups do already exist
         current_groups = get_current_contact_groups(module, base_url, headers)
 
         # Determine intersection and difference with input, according to 'name' only
