@@ -81,11 +81,30 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
 HTTP_CODES = {
     # http_code: (changed, failed, "Message")
     200: (True, False, "Discovery successful."),
+    302: (
+        True,
+        False,
+        "The service discovery background job has been initialized. Redirecting to the 'Wait for service discovery completion' endpoint.",
+    ),
     400: (False, True, "Bad Request."),
     403: (False, True, "Forbidden: Configuration via WATO is disabled."),
     404: (False, True, "Not Found: Host could not be found."),
     406: (False, True, "Not Acceptable."),
     415: (False, True, "Unsupported Media Type."),
+    500: (False, True, "General Server Error."),
+}
+
+HTTP_CODES_SC = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "The service discovery has been completed."),
+    302: (
+        True,
+        False,
+        "The service discovery is still running. Redirecting to the 'Wait for completion' endpoint.",
+    ),
+    403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+    404: (False, True, "Not Found: There is no running service discovery"),
+    406: (False, True, "Not Acceptable."),
     500: (False, True, "General Server Error."),
 }
 
@@ -123,6 +142,22 @@ class oldDiscoveryAPI(CheckmkAPI):
         )
 
 
+class ServiceCompletionAPI(CheckmkAPI):
+    def get(self):
+        data = {}
+
+        return self._fetch(
+            code_mapping=HTTP_CODES_SC,
+            endpoint=(
+                "objects/service_discovery_run/"
+                + self.params.get("host_name")
+                + "/actions/wait-for-completion/invoke"
+            ),
+            data=data,
+            method="GET",
+        )
+
+
 def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
@@ -152,6 +187,11 @@ def run_module():
         discovery = oldDiscoveryAPI(module)
 
     result = discovery.post()
+
+    # If the API returns 302 check SC-Endpoint until the discovery has completed successfully.
+    while result.http_code == "302":
+        servicecompletion = ServiceCompletionAPI(module)
+        result = servicecompletion.get()
 
     time.sleep(3)
 
