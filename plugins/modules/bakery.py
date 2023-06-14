@@ -37,7 +37,6 @@ options:
         description: State - Baked, signed or baked and signed
         required: true
         choices: ["baked", "signed", "baked_signed"]
-        default: "baked"
         type: str
 
 author:
@@ -156,7 +155,6 @@ def run_module():
         signature_key_passphrase=dict(type="str", required=False, no_log=True),
         state=dict(
             type="str",
-            default="baked",
             choices=["baked", "signed", "baked_signed"],
             required=True,
         ),
