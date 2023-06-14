@@ -35,6 +35,7 @@ options:
 
     state:
         description: State - Baked, signed or baked and signed
+        required: true
         choices: ["baked", "signed", "baked_signed"]
         default: "baked"
         type: str
