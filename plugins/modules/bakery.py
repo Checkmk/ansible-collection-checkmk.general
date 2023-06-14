@@ -157,7 +157,7 @@ def run_module():
             type="str",
             default="baked",
             choices=["baked", "signed", "baked_signed"],
-            required=False,
+            required=True,
         ),
     )
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
