@@ -1,0 +1,3 @@
+major_changes:
+  - Bakery module - Migrated to use module_utils.
+  - Discovery module - Migrated to use module_utils.
