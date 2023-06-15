@@ -3,6 +3,6 @@ antsibull-changelog
 antsibull-docs
 ansible-lint
 jinja2
-molecule
-molecule-plugins[docker]
+molecule >= 5.0.1
+molecule-plugins
 yamllint
