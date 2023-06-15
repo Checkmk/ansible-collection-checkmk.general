@@ -1,0 +1,5 @@
+minor_changes:
+  - Agent role - changed the mode of the automatic service discovery to 'tabula_rasa' to ensure fresh data.
+
+known_issues:
+  - Discovery module - The module does not work on a controller host with Python 2.
