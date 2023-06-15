@@ -29,12 +29,7 @@ options:
         type: list
         elements: str
     state:
-        description: The mode of the bulk discovery action. Can be one of:
-            * `new` - Add undecided services to monitoring
-            * `remove` - Remove vanished services
-            * `fix_all` - Add undecided services and new host labels, remove vanished services
-            * `refresh` - Update inforomation from host, then remove all existing and add all just found services and host labels
-            * `only_host_labels` - Update host labels
+        description: The action to perform during discovery.
         type: str
         default: new
         choices: [new, remove, fix_all, refresh, only_host_labels]
