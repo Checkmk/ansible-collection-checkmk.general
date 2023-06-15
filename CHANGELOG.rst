@@ -5,6 +5,31 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v2.1.0
+======
+
+Major Changes
+-------------
+
+- Bakery module - Migrated to use module_utils.
+- Discovery module - Migrated to use module_utils.
+- contact_group module - The module was not compatible with Checkmk 2.2. This is fixed now.
+- host_group module - The module was not compatible with Checkmk 2.2. This is fixed now.
+- service_group module - The module was not compatible with Checkmk 2.2. This is fixed now.
+
+Bugfixes
+--------
+
+- Discovery module - Properly handle redirects to wait for completion of background jobs.
+- Downtime module - The module handles timezones properly now.
+- Integration tests - A bug was fixed, where the integration tests did not use the correct Checkmk version.
+- Utils - With Checkmk 2.2.0p3 the activation introduces a breaking change, which we need to handle. As a workaround we added the 'If-Match' header to all API requests.
+
+Known Issues
+------------
+
+- Utils - All API calls send the 'If-Match' header. This is a workaround and will be fixed in a future release.
+
 v2.0.0
 ======
 

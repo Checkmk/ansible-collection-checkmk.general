@@ -42,7 +42,7 @@ checkmk.general.tag_group module -- Manage tag\_group within Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.0.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.1.0).
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
