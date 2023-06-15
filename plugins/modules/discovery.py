@@ -188,7 +188,8 @@ def run_module():
 
     result = discovery.post()
 
-    # If the API returns 302 check SC-Endpoint until the discovery has completed successfully.
+    # If the API returns 302, check the service completion endpoint
+    # until the discovery has completed successfully.
     while result.http_code == "302":
         servicecompletion = ServiceCompletionAPI(module)
         result = servicecompletion.get()
