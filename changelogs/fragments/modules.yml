@@ -1,3 +1,6 @@
 major_changes:
   - Bakery module - Migrated to use module_utils.
   - Discovery module - Migrated to use module_utils.
+  - contact_group module - The module was not compatible with Checkmk 2.2. This is fixed now.
+  - host_group module - The module was not compatible with Checkmk 2.2. This is fixed now.
+  - service_group module - The module was not compatible with Checkmk 2.2. This is fixed now.
