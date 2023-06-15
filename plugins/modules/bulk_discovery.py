@@ -123,7 +123,7 @@ class BulkDiscoveryAPI(CheckmkAPI):
         data = {
             "hostnames": self.params.get("host_names", []),
             "mode": self.params.get("state"),
-            "do_full_scan": self.params.get("do_full_scan", True)
+            "do_full_scan": self.params.get("do_full_scan", True),
             "bulk_size": self.params.get("bulk_size", 1),
             "ignore_errors": self.params.get("ignore_errors", True),
         }
