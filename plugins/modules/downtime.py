@@ -39,6 +39,7 @@ options:
               default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
               a host or host/service will be removed.
         type: str
+        default: Created by Ansible
     duration:
         description:
             - Duration in seconds. When set, the downtime does not begin automatically at a nominated time,
