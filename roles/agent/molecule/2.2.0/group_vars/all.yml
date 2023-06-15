@@ -10,7 +10,7 @@ automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
 checkmk_agent_version: "{{ checkmk_version }}"
 checkmk_agent_edition: "{{ checkmk_edition }}"
 checkmk_agent_protocol: http
-checkmk_agent_server: 127.0.0.1
+checkmk_agent_server: localhost
 checkmk_agent_site: "{{ checkmk_site }}"
 checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
 checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
@@ -30,7 +30,7 @@ checkmk_agent_tls: 'false'
 checkmk_agent_configure_firewall: 'false'
 checkmk_agent_force_install: 'false'
 checkmk_agent_prep_legacy: 'false'
-checkmk_agent_delegate_api_calls: localhost
+checkmk_agent_delegate_api_calls: "{{ inventory_hostname }}"  # Bugfixing
 checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 checkmk_agent_host_name: "{{ inventory_hostname }}"
 checkmk_agent_folder: "{{ checkmk_folder_path | default('/') }}"
@@ -56,5 +56,5 @@ checkmk_server_sites:
   - name: "{{ checkmk_site }}"
     version: "{{ checkmk_version }}"
     state: started
-    admin_pw: cmk
+    admin_pw: "{{ automation_secret }}"
     update_conflict_resolution: install
