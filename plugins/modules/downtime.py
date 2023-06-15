@@ -411,7 +411,7 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         host_name=dict(type="str", required=True),
-        comment=dict(type="str"),
+        comment=dict(type="str", default="Created by Ansible"),
         duration=dict(type="int", default=0),
         start_after=dict(type="dict", default={}),
         start_time=dict(type="str", default=""),
