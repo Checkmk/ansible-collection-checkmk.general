@@ -42,7 +42,7 @@ checkmk.general.discovery module -- Discover services in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.0.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.1.0).
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
@@ -302,6 +302,7 @@ Parameters
       - :ansible-option-choices-entry:`"remove"`
       - :ansible-option-choices-entry:`"fix\_all"`
       - :ansible-option-choices-entry:`"refresh"`
+      - :ansible-option-choices-entry:`"tabula\_rasa"`
       - :ansible-option-choices-entry:`"only\_host\_labels"`
 
 
