@@ -10,6 +10,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import json
+
 from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
@@ -33,6 +35,7 @@ class CheckmkAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
             "Authorization": "Bearer %s %s" % (user, secret),
+            "If-Match": "*",
         }
         self.current = {}
         self.required = {}
@@ -62,6 +65,9 @@ class CheckmkAPI:
         # Better translate to json later and keep the original response here.
         content = response.read() if response else ""
         msg = "%s - %s" % (str(http_code), http_readable)
+        if failed:
+            details = info.get("body", info.get("msg", "N/A"))
+            msg += " Details: %s" % details
 
         result = RESULT(
             http_code=http_code,
@@ -75,3 +81,20 @@ class CheckmkAPI:
         if failed:
             self.module.fail_json(**result_as_dict(result))
         return result
+
+    def getversion(self):
+        data = {}
+
+        result = self._fetch(
+            code_mapping={
+                200: (True, False, "Discovery successful."),
+                406: (False, True, "Not Acceptable."),
+            },
+            endpoint="version",
+            data=data,
+            method="GET",
+        )
+
+        content = result.content
+        checkmkinfo = json.loads(content)
+        return (checkmkinfo.get("versions").get("checkmk")).split(".")

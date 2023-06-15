@@ -86,8 +86,8 @@
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
     service_descriptions:
-      - "CPU load"
-      - "CPU utililization"
+      - "Check_MK"
+      - "Check_MK Discovery"
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - Schedule downtime on services without timestamps."
@@ -99,8 +99,8 @@
     host_name: "{{ item.name }}"
     comment: Schedule downtime on services without timestamps
     service_descriptions:
-      - "Memory"
-      - "Uptime"
+      - "Check_MK"
+      - "Check_MK Discovery"
     end_after:
       minutes: 1
   loop: "{{ checkmk_hosts }}"
