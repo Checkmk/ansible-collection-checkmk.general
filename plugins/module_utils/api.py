@@ -35,7 +35,6 @@ class CheckmkAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
             "Authorization": "Bearer %s %s" % (user, secret),
-            "If-Match": "*",
         }
         self.current = {}
         self.required = {}
