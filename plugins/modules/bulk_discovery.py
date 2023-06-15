@@ -128,7 +128,6 @@ class BulkDiscoveryAPI(CheckmkAPI):
             "ignore_errors": self.params.get("ignore_errors", True),
         }
 
-
         return self._fetch(
             code_mapping=HTTP_CODES,
             endpoint="domain-types/discovery_run/actions/bulk-discovery-start/invoke",
@@ -161,9 +160,7 @@ class ServiceCompletionAPI(CheckmkAPI):
 
         return self._fetch(
             code_mapping=HTTP_CODES_SC,
-            endpoint=(
-                "objects/discovery_run/bulk_discovery"
-            ),
+            endpoint=("objects/discovery_run/bulk_discovery"),
             data=data,
             method="GET",
         )
