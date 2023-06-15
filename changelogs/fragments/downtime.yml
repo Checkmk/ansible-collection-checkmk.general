@@ -1,2 +1,2 @@
 bugfixes:
-    - Downtime module - The comment has a default value now: "Created by Ansible"
+    - Downtime module - The comment has a default value now
