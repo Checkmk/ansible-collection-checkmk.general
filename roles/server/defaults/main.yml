@@ -2,6 +2,7 @@
 checkmk_server_server_stable_os:
   - Debian-10
   - Debian-11
+  - Debian-12
   - Ubuntu-18
   - Ubuntu-20
   - Ubuntu-22
