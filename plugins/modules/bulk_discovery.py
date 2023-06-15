@@ -89,6 +89,7 @@ message:
     sample: '???...'
 """
 
+import json
 import time
 
 from ansible.module_utils.basic import AnsibleModule
@@ -203,11 +204,13 @@ def run_module():
     if result.http_code == "200":
         servicecompletion = ServiceCompletionAPI(module)
 
-        while true:
+        while True:
             result = servicecompletion.get()
 
-            if not json.loads(result.content).get("extensions").get("active"):
+            if not (json.loads(result.content).get("extensions").get("active")):
                 break
+
+        time.sleep(3)
 
     # content of json.loads(result.content).get("extensions").get("logs").get("result") is alos quite interesting
     module.exit_json(**result_as_dict(result))
