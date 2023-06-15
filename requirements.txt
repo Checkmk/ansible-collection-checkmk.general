@@ -4,5 +4,5 @@ antsibull-docs
 ansible-lint
 jinja2
 molecule >= 5.0.1
-molecule-plugins
+molecule-plugins[docker]
 yamllint
