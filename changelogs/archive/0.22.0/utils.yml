@@ -1,0 +1,4 @@
+major_changes:
+  - module_utils - Extend centralization by providing types and further utils.
+
+release_summary: "Further centralizing."

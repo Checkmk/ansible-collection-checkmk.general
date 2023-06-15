@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, diademiemi <emilia@diademiemi.me> & Robin Gierse <robin.gierse@tribe29.com>
+# Copyright: (c) 2022, diademiemi <emilia@diademiemi.me> & Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -21,7 +21,7 @@ description:
     - Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
     - Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     rule:
@@ -99,7 +99,7 @@ EXAMPLES = r"""
 # Create a rule in checkgroup_parameters:memory_percentage_used
 # at the top of the main folder.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
-  tribe29.checkmk.rule:
+  checkmk.general.rule:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -121,7 +121,7 @@ EXAMPLES = r"""
             "comment": "Warning at 80%\nCritical at 90%\n",
             "description": "Allow higher memory usage",
             "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
         }
         folder: "/"
         value_raw: "{'levels': (80.0, 90.0)}"
@@ -138,7 +138,7 @@ EXAMPLES = r"""
 # Create another rule in checkgroup_parameters:memory_percentage_used
 # and put it after the rule created above.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
-  tribe29.checkmk.rule:
+  checkmk.general.rule:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -160,7 +160,7 @@ EXAMPLES = r"""
             "comment": "Warning at 85%\nCritical at 99%\n",
             "description": "Allow even higher memory usage",
             "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
         }
         value_raw: "{'levels': (85.0, 99.0)}"
         location:
@@ -170,7 +170,7 @@ EXAMPLES = r"""
 
 # Delete the first rule.
 - name: "Delete a rule."
-  tribe29.checkmk.rule:
+  checkmk.general.rule:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -192,7 +192,7 @@ EXAMPLES = r"""
             "comment": "Warning at 80%\nCritical at 90%\n",
             "description": "Allow higher memory usage",
             "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
         }
         value_raw: "{'levels': (80.0, 90.0)}"
     state: "absent"
@@ -445,11 +445,11 @@ def run_module():
                     mutually_exclusive=[("folder", "rule_id")],
                     apply_defaults=True,
                     deprecated_aliases=[
-                        dict(
-                            name="folder",
-                            collection_name="tribe29.checkmk",
-                            version="1.0.0",
-                        ),
+                        {
+                            "name": "folder",
+                            "collection_name": "checkmk.general",
+                            "version": "3.0.0",
+                        }
                     ],
                 ),
             ),

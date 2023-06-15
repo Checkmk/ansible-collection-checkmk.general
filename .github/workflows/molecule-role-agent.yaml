@@ -1,0 +1,66 @@
+# https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# README FIRST
+# 1. replace "NAMESPACE" and "COLLECTION_NAME" with the correct name in the env section (e.g. with 'community' and 'mycollection')
+# 2. If you don't have unit tests remove that section
+# 3. If your collection depends on other collections ensure they are installed, see "Install collection dependencies"
+# If you need help please ask in #ansible-community on the Libera.chat IRC network
+
+name: Molecule Tests for Agent Role
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - devel
+    paths:
+      - 'roles/agent/**'
+  push:
+    branches:
+      - main
+      - devel
+    paths:
+      - 'roles/agent/**'
+
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    name: Checkmk ${{ matrix.checkmk }} + py${{ matrix.python }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python:
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+        checkmk:
+          - '2.0.0'
+          - '2.1.0'
+          - '2.2.0'
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: Test with molecule
+        run: |
+          cd roles/agent/
+          molecule test -s ${{ matrix.checkmk }}
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}

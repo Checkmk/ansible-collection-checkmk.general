@@ -15,31 +15,33 @@ Vagrant.configure("2") do |config|
       srv.vm.provider "virtualbox" do |v|
         v.name = 'ansible-collection'
         v.memory = 6144
-        v.cpus = 2
+        v.cpus = 4
       end
       $script = <<-SCRIPT
       apt-get -y update --quiet
-      apt-get -y install python3.9 python3-pip ca-certificates curl gnupg lsb-release
-      wget "https://download.checkmk.com/checkmk/2.1.0p24/check-mk-raw-2.1.0p24_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
-      wget "https://download.checkmk.com/checkmk/2.2.0-$(date +%Y.%m.%d)/check-mk-raw-2.2.0-$(date +%Y.%m.%d)_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
-      apt-get install -y /tmp/checkmk-stable.deb
+      apt-get -y install python3-pip ca-certificates curl gnupg lsb-release
+      wget "https://download.checkmk.com/checkmk/2.1.0p29/check-mk-raw-2.1.0p29_0.focal_amd64.deb" -O /tmp/checkmk-oldstable.deb
+      wget "https://download.checkmk.com/checkmk/2.2.0p3/check-mk-raw-2.2.0p3_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
+      apt-get install -y /tmp/checkmk-oldstable.deb
       omd create --admin-password 'd7589df1-01db-4eda-9858-dbcff8d0c361' stable
-      apt-get install -y /tmp/checkmk-beta.deb
+      apt-get install -y /tmp/checkmk-stable.deb
       omd create --admin-password 'd7589df1-01db-4eda-9858-dbcff8d0c361' beta
       omd status -b stable || omd start stable
       omd status -b beta || omd start beta
-      python3.9 -m pip install -r /vagrant/requirements.txt
+      python3 -m pip install -r /vagrant/requirements.txt
       sudo -u vagrant ansible-galaxy collection install -f -r /vagrant/requirements.yml
-      mkdir -p /home/vagrant/ansible_collections/tribe29/checkmk
+      mkdir -p /home/vagrant/ansible_collections/checkmk/general
       mkdir -p /etc/apt/keyrings
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
       echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
       apt-get update
       apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
       usermod -aG docker vagrant
+      grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='ansible-galaxy collection build --force ~/ansible_collections/checkmk/general && ansible-galaxy collection install -f ./checkmk-general-*.tar.gz && rm ./checkmk-general-*.tar.gz'" >> /home/vagrant/.bashrc
+      grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
       SCRIPT
       srv.vm.provision "shell", inline: $script
-      srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/tribe29/checkmk/"
+      srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/"
     end
 
     # Ubuntu

@@ -7,7 +7,7 @@ assignees: robin-checkmk
 
 ---
 
-Verify first that your issue is not already reported [here](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
+Verify first that your issue is not already reported [here](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
 Where possible also test if the latest release and main branch are affected too.
 Complete all sections as described!
 
@@ -37,8 +37,6 @@ e.g. 2.X.YpZ (CRE)
 $ ansible-galaxy collection list
 
 ```
-**Environment**
-<!-- Provide all relevant information below, e.g. control node OS versions, Python version, etc. -->
 
 **To Reproduce**
 Steps to reproduce the behavior:
@@ -53,8 +51,11 @@ Steps to reproduce the behavior:
 **Actual behavior**
 <!-- A clear and concise description of what actually happens. -->
 
-**Screenshots**
-<!-- If applicable, add screenshots to help explain your problem. -->
+**Minimum reproduction example**
+<!-- If you can, please provide a minimum example of your configuration. This really helps us quickly understand the situation. -->
+```yaml
+
+```
 
 **Additional context**
-<!-- Add any other context about the problem here. -->
+<!-- Add any other context, e.g. OS information about control and managed node, screenshots or background information about the problem. -->

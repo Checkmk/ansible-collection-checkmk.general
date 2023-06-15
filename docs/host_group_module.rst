@@ -26,7 +26,7 @@
 
 .. Anchors
 
-.. _ansible_collections.tribe29.checkmk.host_group_module:
+.. _ansible_collections.checkmk.general.host_group_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -36,23 +36,23 @@
 
 .. Title
 
-tribe29.checkmk.host_group module -- Manage host groups in Checkmk (bulk version).
+checkmk.general.host_group module -- Manage host groups in Checkmk (bulk version).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.20.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.1.0).
 
-    To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
+    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`tribe29.checkmk.host_group`.
+    To use it in a playbook, specify: :code:`checkmk.general.host_group`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in tribe29.checkmk 0.11.0
+New in checkmk.general 0.11.0
 
 .. contents::
    :local:
@@ -99,7 +99,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.host_group_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -133,7 +133,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.host_group_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -168,8 +168,8 @@ Parameters
         <div class="ansibleOptionAnchor" id="parameter-groups"></div>
         <div class="ansibleOptionAnchor" id="parameter-host_groups"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-groups:
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-host_groups:
+      .. _ansible_collections.checkmk.general.host_group_module__parameter-groups:
+      .. _ansible_collections.checkmk.general.host_group_module__parameter-host_groups:
 
       .. rst-class:: ansible-option-title
 
@@ -212,8 +212,8 @@ Parameters
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
         <div class="ansibleOptionAnchor" id="parameter-host_group_name"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-host_group_name:
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-name:
+      .. _ansible_collections.checkmk.general.host_group_module__parameter-host_group_name:
+      .. _ansible_collections.checkmk.general.host_group_module__parameter-name:
 
       .. rst-class:: ansible-option-title
 
@@ -251,7 +251,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.host_group_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -285,7 +285,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-site:
+      .. _ansible_collections.checkmk.general.host_group_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -319,7 +319,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-state:
+      .. _ansible_collections.checkmk.general.host_group_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -361,7 +361,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-title"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-title:
+      .. _ansible_collections.checkmk.general.host_group_module__parameter-title:
 
       .. rst-class:: ansible-option-title
 
@@ -395,7 +395,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_group_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.host_group_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -452,7 +452,7 @@ Examples
     
     # Create a single host group.
     - name: "Create a single host group."
-      tribe29.checkmk.host_group:
+      checkmk.general.host_group:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -463,7 +463,7 @@ Examples
 
     # Create several host groups.
     - name: "Create several host groups."
-      tribe29.checkmk.host_group:
+      checkmk.general.host_group:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -479,7 +479,7 @@ Examples
 
     # Create several host groups.
     - name: "Create several host groups."
-      tribe29.checkmk.host_group:
+      checkmk.general.host_group:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -493,7 +493,7 @@ Examples
 
     # Delete a single host group.
     - name: "Create a single host group."
-      tribe29.checkmk.host_group:
+      checkmk.general.host_group:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -503,7 +503,7 @@ Examples
 
     # Delete several host groups.
     - name: "Delete several host groups."
-      tribe29.checkmk.host_group:
+      checkmk.general.host_group:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -540,7 +540,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-message"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_group_module__return-message:
+      .. _ansible_collections.checkmk.general.host_group_module__return-message:
 
       .. rst-class:: ansible-option-title
 
@@ -601,8 +601,8 @@ Collection links
 .. raw:: html
 
   <p class="ansible-links">
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
+    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
+    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
   </p>
 
 .. Parsing errors

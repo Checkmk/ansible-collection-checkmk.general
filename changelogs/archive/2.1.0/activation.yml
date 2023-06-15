@@ -1,0 +1,5 @@
+bugfixes:
+  - Utils - With Checkmk 2.2.0p3 the activation introduces a breaking change, which we need to handle. As a workaround we added the 'If-Match' header to all API requests.
+
+known_issues:
+  - Utils - All API calls send the 'If-Match' header. This is a workaround and will be fixed in a future release.

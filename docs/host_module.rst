@@ -26,7 +26,7 @@
 
 .. Anchors
 
-.. _ansible_collections.tribe29.checkmk.host_module:
+.. _ansible_collections.checkmk.general.host_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -36,23 +36,23 @@
 
 .. Title
 
-tribe29.checkmk.host module -- Manage hosts in Checkmk.
+checkmk.general.host module -- Manage hosts in Checkmk.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.20.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.1.0).
 
-    To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
+    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`tribe29.checkmk.host`.
+    To use it in a playbook, specify: :code:`checkmk.general.host`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in tribe29.checkmk 0.0.1
+New in checkmk.general 0.0.1
 
 .. contents::
    :local:
@@ -99,7 +99,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-attributes"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-attributes:
+      .. _ansible_collections.checkmk.general.host_module__parameter-attributes:
 
       .. rst-class:: ansible-option-title
 
@@ -137,7 +137,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.host_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -171,7 +171,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.host_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -205,7 +205,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-folder"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-folder:
+      .. _ansible_collections.checkmk.general.host_module__parameter-folder:
 
       .. rst-class:: ansible-option-title
 
@@ -240,8 +240,8 @@ Parameters
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
         <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-host_name:
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-name:
+      .. _ansible_collections.checkmk.general.host_module__parameter-host_name:
+      .. _ansible_collections.checkmk.general.host_module__parameter-name:
 
       .. rst-class:: ansible-option-title
 
@@ -279,7 +279,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-remove_attributes"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-remove_attributes:
+      .. _ansible_collections.checkmk.general.host_module__parameter-remove_attributes:
 
       .. rst-class:: ansible-option-title
 
@@ -317,7 +317,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.host_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -351,7 +351,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-site:
+      .. _ansible_collections.checkmk.general.host_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -385,7 +385,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-state:
+      .. _ansible_collections.checkmk.general.host_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -427,7 +427,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-update_attributes"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-update_attributes:
+      .. _ansible_collections.checkmk.general.host_module__parameter-update_attributes:
 
       .. rst-class:: ansible-option-title
 
@@ -465,7 +465,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.host_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -522,7 +522,7 @@ Examples
     
     # Create a host.
     - name: "Create a host."
-      tribe29.checkmk.host:
+      checkmk.general.host:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -533,7 +533,7 @@ Examples
 
     # Create a host with IP.
     - name: "Create a host with IP address."
-      tribe29.checkmk.host:
+      checkmk.general.host:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -547,7 +547,7 @@ Examples
 
     # Create a host which is monitored on a distinct site.
     - name: "Create a host which is monitored on a distinct site."
-      tribe29.checkmk.host:
+      checkmk.general.host:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -560,7 +560,7 @@ Examples
 
     # Create a host with update_attributes.
     - name: "Create a host which is monitored on a distinct site."
-      tribe29.checkmk.host:
+      checkmk.general.host:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -572,7 +572,7 @@ Examples
 
     # Update only specified attributes
     - name: "Update only specified attributes"
-      tribe29.checkmk.host:
+      checkmk.general.host:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -584,7 +584,7 @@ Examples
 
     # Remove specified attributes
     - name: "Remove specified attributes"
-      tribe29.checkmk.host:
+      checkmk.general.host:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -621,7 +621,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-message"></div>
 
-      .. _ansible_collections.tribe29.checkmk.host_module__return-message:
+      .. _ansible_collections.checkmk.general.host_module__return-message:
 
       .. rst-class:: ansible-option-title
 
@@ -670,7 +670,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- Robin Gierse (@robin-tribe29)
+- Robin Gierse (@robin-checkmk)
 - Lars Getwan (@lgetwan)
 - Oliver Gaida (@ogaida)
 
@@ -684,8 +684,8 @@ Collection links
 .. raw:: html
 
   <p class="ansible-links">
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
+    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
+    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
   </p>
 
 .. Parsing errors

@@ -1,0 +1,288 @@
+---
+- name: "Showcase group modules."
+  hosts: test
+  strategy: linear
+  gather_facts: false
+  vars_files:
+    - ../vars/auth.yml      # This vars file contains details about your site
+    - ../vars/groups.yml    # This vars file contains the groups to manage
+  tasks:
+
+    - name: "Gather Date and Time Facts on localhost."
+      ansible.builtin.setup:
+        gather_subset:
+          - date_time
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    - name: "Create host groups."
+      host_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        title: "{{ item.title | default(item.name) }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_host_groups }}"
+
+    - name: "Create contact groups."
+      contact_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        title: "{{ item.title | default(item.name) }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_contact_groups }}"
+
+    - name: "Create tag groups."
+      tag_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        id: "{{ item.id }}"
+        title: "{{ item.title | default(item.id) }}"
+        topic: "{{ item.topic }}"
+        choices: "{{ item.choices }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_tag_groups }}"
+
+    - name: "Create service groups."
+      service_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        title: "{{ item.title | default(item.name) }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_service_groups }}"
+
+    - name: "Assign hosts to host groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "host_groups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_host_groups }}"
+
+    - name: "Assign hosts to contact groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "host_contactgroups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_contact_groups }}"
+
+    - name: "Assign services to service groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "service_groups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_service_groups }}"
+
+    - name: "Pause to review changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+      when: not run_unattended | bool
+
+    - name: "Activate changes on site - Showcase creation of groups."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    - name: "Unassign hosts to host groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "host_groups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_host_groups }}"
+
+    - name: "Unassign hosts to contact groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "host_contactgroups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_contact_groups }}"
+
+    - name: "Unassign services to service groups."
+      rule:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        ruleset: "service_groups"
+        rule:
+          location:
+            folder: "/"
+            position: "bottom"
+          properties: {
+            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "description": "",
+            "disabled": false
+          }
+          value_raw: "'{{ item.name }}'"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_service_groups }}"
+
+    - name: "Delete service groups."
+      service_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_service_groups }}"
+
+    - name: "Delete tag groups."
+      tag_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        id: "{{ item.id }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_tag_groups }}"
+
+    - name: "Delete contact groups."
+      contact_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_contact_groups }}"
+
+    - name: "Delete host groups."
+      host_group:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_host_groups }}"
+
+    - name: "Pause to review changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+      when: not run_unattended | bool
+
+    - name: "Activate changes on site - Showcase host and folders were deleted"
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]

@@ -1,11 +1,11 @@
 ---
 checkmk_versions:
-  - version: "2.2.0b2"
-    site: "beta"
-  - version: "2.1.0p25"
+  - version: "2.2.0p3"
     site: "stable"
-  - version: "2.0.0p34"
+  - version: "2.1.0p29"
     site: "oldstable"
+  - version: "2.0.0p36"
+    site: "ancientstable"
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"

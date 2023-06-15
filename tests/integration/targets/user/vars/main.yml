@@ -1,9 +1,9 @@
 ---
 checkmk_versions:
-  - version: "2.2.0b2"
-    site: "beta"
-  - version: "2.1.0p24"
+  - version: "2.2.0p3"
     site: "stable"
+  - version: "2.1.0p29"
+    site: "oldstable"
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
 site: "test"
 server_url: "http://127.0.0.1/"
