@@ -333,18 +333,22 @@ def run_module():
     # until the discovery has completed successfully.
     # If not single_mode and the API returns 200, check the service completion endpoint
     # repeat until the bulk_discovery has completed successfully (or failed).
-    if (single_mode and result.http_code == "302") or (
-        len(module.params.get("hosts", [])) > 0 and result.http_code == "200"
+    # if (single_mode and result.http_code == "302") or (
+    #     len(module.params.get("hosts", [])) > 0 and result.http_code == "200"
+    # ):
+    if (single_mode and result.http_code == 302) or (
+        len(module.params.get("hosts", [])) > 0 and result.http_code == 200
     ):
         while True:
             result = servicecompletion.get()
 
             if single_mode:
-                if result.http_code != "302":
+                # if result.http_code != "302":
+                if result.http_code != 302:
                     break
             else:
                 result.msg = (
-                    json.loads(result.content).get("extensions").get("active") + '0'
+                    json.loads(result.content).get("extensions").get("active") + "0"
                 )
                 if not (json.loads(result.content).get("extensions").get("active")):
                     result.msg = (
