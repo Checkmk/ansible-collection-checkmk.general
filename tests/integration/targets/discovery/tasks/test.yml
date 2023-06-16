@@ -124,11 +124,6 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
----
----
----
----
-
 - name: Chech bulk discovery mode for Check MK > 2.0
   when: "not '2.0.0' in outer_item.version"
   block:
