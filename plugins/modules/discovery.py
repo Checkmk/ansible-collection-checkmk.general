@@ -218,7 +218,7 @@ class ServiceCompletionAPI(CheckmkAPI):
 class BulkDiscoveryAPI(CheckmkAPI):
     def post(self):
         data = {
-            "hostnames": self.params.get("host_names", []),
+            "hostnames": self.params.get("hosts", []),
             "mode": self.params.get("state"),
             "do_full_scan": self.params.get("do_full_scan", True),
             "bulk_size": self.params.get("bulk_size", 1),

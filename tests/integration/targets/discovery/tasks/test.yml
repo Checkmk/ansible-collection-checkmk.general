@@ -251,3 +251,59 @@
           - "{{ outer_item.site }}"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
+
+- name: Chech bulk discovery mode for Check MK > 2.0
+  when: "'2.0.0' in outer_item.version"
+  block:
+    - name: "{{ outer_item.version }} - Create hosts."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ outer_item.site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        folder: "{{ item.folder }}"
+        attributes:
+          site: "{{ outer_item.site }}"
+          ipaddress: 127.0.0.1
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_hosts }}"
+
+    - name: "{{ outer_item.version }} - Update host labels."
+      discovery:
+        server_url: "{{ server_url }}"
+        site: "{{ outer_item.site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        hosts: "{{ checkmk_hosts }}"
+        state: "tabula_rasa"
+        bulk_size: 5
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      ignore_errors: true
+
+    - name: "{{ outer_item.version }} - Delete hosts."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ outer_item.site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        folder: "{{ item.folder }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_hosts }}"
+
+    - name: "{{ outer_item.version }} - Activate."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ outer_item.site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        sites:
+          - "{{ outer_item.site }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
