@@ -288,7 +288,7 @@ def run_module():
         changed=False,
     )
 
-    single_mode = ("host_name" in module.params)
+    single_mode = "host_name" in module.params
 
     discovery = None
     servicecompletion = None
@@ -305,7 +305,11 @@ def run_module():
     if single_mode and checkmkversion[0] == "2" and checkmkversion[1] == "0":
         discovery = oldDiscoveryAPI(module)
 
-    if checkmkversion[0] == "2" and checkmkversion[1] in ["0", "1"] and module.params.get("state") == "tabula_rasa":
+    if (
+        checkmkversion[0] == "2"
+        and checkmkversion[1] in ["0", "1"]
+        and module.params.get("state") == "tabula_rasa"
+    ):
         result = RESULT(
             # http_code=http_code,
             msg="State 'tabula_rasa' is not supported in Check MK v. 2.0 or 2.1",
@@ -320,7 +324,9 @@ def run_module():
     # until the discovery has completed successfully.
     # If not single_mode and the API returns 200, check the service completion endpoint
     # repeat until the bulk_discovery has completed successfully (or failed).
-    if (single_mode and result.http_code == "302") or (len(module.params.get("groups", [])) > 0 and result.http_code == "200"):
+    if (single_mode and result.http_code == "302") or (
+        len(module.params.get("groups", [])) > 0 and result.http_code == "200"
+    ):
         while True:
             result = servicecompletion.get()
 
