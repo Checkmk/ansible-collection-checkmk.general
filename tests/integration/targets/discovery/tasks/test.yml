@@ -149,7 +149,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_hos_names }}"
+        hosts: "{{ checkmk_host_names }}"
         state: "only_host_labels"
         bulk_size: 5
       delegate_to: localhost
@@ -161,7 +161,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_hos_names }}"
+        hosts: "{{ checkmk_host_names }}"
         state: "refresh"
         bulk_size: 5
       delegate_to: localhost
@@ -173,7 +173,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_hos_names }}"
+        hosts: "{{ checkmk_host_names }}"
         state: "refresh"
         bulk_size: 5
       delegate_to: localhost
@@ -186,7 +186,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_hos_names }}"
+        hosts: "{{ checkmk_host_names }}"
         state: "remove"
         bulk_size: 5
       delegate_to: localhost
@@ -198,7 +198,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_hos_names }}"
+        hosts: "{{ checkmk_host_names }}"
         state: "new"
         bulk_size: 5
       delegate_to: localhost
@@ -210,7 +210,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_hos_names }}"
+        hosts: "{{ checkmk_host_names }}"
         state: "fix_all"
         bulk_size: 5
       delegate_to: localhost
@@ -277,7 +277,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_hos_names }}"
+        hosts: "{{ checkmk_host_names }}"
         state: "tabula_rasa"
         bulk_size: 5
       delegate_to: localhost
