@@ -343,7 +343,9 @@ def run_module():
                 if result.http_code != "302":
                     break
             else:
+                result.msg=json.loads(result.content).get("extensions").get("active") + '0'
                 if not (json.loads(result.content).get("extensions").get("active")):
+                    result.msg=json.loads(result.content).get("extensions").get("active")
                     break
 
             time.sleep(3)
