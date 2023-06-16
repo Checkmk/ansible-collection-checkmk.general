@@ -282,10 +282,10 @@ def run_module():
     )
 
     result = RESULT(
-        http_code=0
+        http_code=0,
         msg="Nothing to be done",
-        content=""
-        etag=""
+        content="",
+        etag="",
         failed=False,
         changed=False,
     )
@@ -313,10 +313,10 @@ def run_module():
         and module.params.get("state") == "tabula_rasa"
     ):
         result = RESULT(
-            http_code=0
+            http_code=0,
             msg="State 'tabula_rasa' is not supported in Check MK v. 2.0 or 2.1",
-            content=""
-            etag=""
+            content="",
+            etag="",
             failed=True,
             changed=False,
         )
