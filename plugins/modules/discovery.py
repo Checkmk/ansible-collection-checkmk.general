@@ -290,7 +290,7 @@ def run_module():
         changed=False,
     )
 
-    single_mode = "host_name" in module.params
+    single_mode = "host_name" in module.params and module.params.get("host_name", "") != ""
 
     discovery = None
     servicecompletion = None
