@@ -344,9 +344,6 @@ def run_module():
                     break
             else:
                 if not (json.loads(result.content).get("extensions").get("active")):
-                    result.msg = (
-                        json.loads(result.content).get("extensions").get("active")
-                    )
                     break
 
             time.sleep(3)
