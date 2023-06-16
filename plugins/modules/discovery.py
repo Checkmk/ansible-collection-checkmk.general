@@ -149,7 +149,7 @@ HTTP_CODES_SC = {
 HTTP_CODES_BULK = {
     # http_code: (changed, failed, "Message")
     200: (True, False, "Discovery successful."),
-    400: (False, True, "Bad Request. BULK"),
+    400: (False, True, "Bad Request."),
     403: (False, True, "Forbidden: Configuration via WATO is disabled."),
     406: (False, True, "Not Acceptable."),
     409: (False, True, "Conflict: A bulk discovery job is already active"),
@@ -333,9 +333,6 @@ def run_module():
     # until the discovery has completed successfully.
     # If not single_mode and the API returns 200, check the service completion endpoint
     # repeat until the bulk_discovery has completed successfully (or failed).
-    # if (single_mode and result.http_code == "302") or (
-    #     len(module.params.get("hosts", [])) > 0 and result.http_code == "200"
-    # ):
     if (single_mode and result.http_code == 302) or (
         len(module.params.get("hosts", [])) > 0 and result.http_code == 200
     ):
@@ -343,13 +340,9 @@ def run_module():
             result = servicecompletion.get()
 
             if single_mode:
-                # if result.http_code != "302":
                 if result.http_code != 302:
                     break
             else:
-                result.msg = (
-                    json.loads(result.content).get("extensions").get("active") + "0"
-                )
                 if not (json.loads(result.content).get("extensions").get("active")):
                     result.msg = (
                         json.loads(result.content).get("extensions").get("active")
