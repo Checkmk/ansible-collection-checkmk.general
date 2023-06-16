@@ -39,6 +39,7 @@ options:
               default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
               a host or host/service will be removed.
         type: str
+        default: Created by Ansible
     duration:
         description:
             - Duration in seconds. When set, the downtime does not begin automatically at a nominated time,
@@ -411,7 +412,7 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         host_name=dict(type="str", required=True),
-        comment=dict(type="str"),
+        comment=dict(type="str", default="Created by Ansible"),
         duration=dict(type="int", default=0),
         start_after=dict(type="dict", default={}),
         start_time=dict(type="str", default=""),
