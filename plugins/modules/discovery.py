@@ -32,6 +32,7 @@ options:
         required: false
         type: list
         elements: str
+        default: []
     state:
         description: The action to perform during discovery.
         type: str
@@ -148,7 +149,7 @@ HTTP_CODES_SC = {
 HTTP_CODES_BULK = {
     # http_code: (changed, failed, "Message")
     200: (True, False, "Discovery successful."),
-    400: (False, True, "Bad Request."),
+    400: (False, True, "Bad Request. BULK"),
     403: (False, True, "Forbidden: Configuration via WATO is disabled."),
     406: (False, True, "Not Acceptable."),
     409: (False, True, "Conflict: A bulk discovery job is already active"),
@@ -253,7 +254,7 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         host_name=dict(type="str", required=False),
-        hosts=dict(type="list", elements="str", required=False),
+        hosts=dict(type="list", elements="str", required=False, default=[]),
         state=dict(
             type="str",
             default="new",
