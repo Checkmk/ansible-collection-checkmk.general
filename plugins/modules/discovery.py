@@ -24,17 +24,40 @@ extends_documentation_fragment: [checkmk.general.common]
 
 options:
     host_name:
-        description: The host who's services you want to manage.
-        required: true
+        description: The host who's services you want to manage. Mutualy exclusive with hosts.
+        required: false
         type: str
+    hosts:
+        description: The list of hosts the services of which you want to manage. Mutualy exclusive with host_name
+        required: false
+        type: list
+        elements: str
     state:
         description: The action to perform during discovery.
         type: str
         default: new
         choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels]
+    # mode:
+    #     description:
+    #     type: str
+    #     default: single
+    #     choices: [single, bulk]
+    do_full_scan:
+        description: The option whether to perform a full scan or not. (bulk mode only).
+        type: bool
+        default: True
+    bulk_size:
+        description: The number of hosts to be handled at once. (bulk mode only).
+        type: int
+        default: 1
+    ignore_errors:
+        description: The option whether to ignore errors in single check plugins. (bulk mode only).
+        type: bool
+        default: True
 
 author:
     - Robin Gierse (@robin-checkmk)
+    - Michael Sekania (@msekania)
 """
 
 EXAMPLES = r"""
@@ -55,6 +78,25 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     host_name: "my_host"
     state: "fix_all"
+- name: "Add newly discovered services on hosts."
+  checkmk.general.discovery:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    host_names: "[my_host_0, my_host_1]"
+    state: "new"
+    mode: "bulk"
+- name: "Add newly discovered services, update labels and remove vanished services on host; 3 at once"
+  checkmk.general.discovery:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    host_names: "[my_host_0, my_host_1, my_host_2, my_host_3, my_host_4, my_host_5]"
+    state: "fix_all"
+    mode: "bulk"
+    bulk_size: 3
 """
 
 RETURN = r"""
@@ -71,9 +113,11 @@ message:
 """
 
 import time
+import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
@@ -104,6 +148,26 @@ HTTP_CODES_SC = {
     ),
     403: (False, True, "Forbidden: Configuration via Setup is disabled."),
     404: (False, True, "Not Found: There is no running service discovery"),
+    406: (False, True, "Not Acceptable."),
+    500: (False, True, "General Server Error."),
+}
+
+HTTP_CODES_BULK = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "Discovery successful."),
+    400: (False, True, "Bad Request."),
+    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
+    406: (False, True, "Not Acceptable."),
+    409: (False, True, "Conflict: A bulk discovery job is already active"),
+    415: (False, True, "Unsupported Media Type."),
+    500: (False, True, "General Server Error."),
+}
+
+HTTP_CODES_BULK_SC = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "The service discovery has been completed."),
+    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
+    404: (False, True, "Not Found: There is no running bulk_discovery job"),
     406: (False, True, "Not Acceptable."),
     500: (False, True, "General Server Error."),
 }
@@ -158,6 +222,36 @@ class ServiceCompletionAPI(CheckmkAPI):
         )
 
 
+class BulkDiscoveryAPI(CheckmkAPI):
+    def post(self):
+        data = {
+            "hostnames": self.params.get("host_names", []),
+            "mode": self.params.get("state"),
+            "do_full_scan": self.params.get("do_full_scan", True),
+            "bulk_size": self.params.get("bulk_size", 1),
+            "ignore_errors": self.params.get("ignore_errors", True),
+        }
+
+        return self._fetch(
+            code_mapping=HTTP_CODES_BULK,
+            endpoint="domain-types/discovery_run/actions/bulk-discovery-start/invoke",
+            data=data,
+            method="POST",
+        )
+
+
+class ServiceCompletionBulkAPI(CheckmkAPI):
+    def get(self):
+        data = {}
+
+        return self._fetch(
+            code_mapping=HTTP_CODES_BULK_SC,
+            endpoint=("objects/discovery_run/bulk_discovery"),
+            data=data,
+            method="GET",
+        )
+
+
 def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
@@ -165,7 +259,8 @@ def run_module():
         validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        host_name=dict(type="str", required=True),
+        host_name=dict(type="str", required=False),
+        hosts=dict(type="list", elements="str", required=False),
         state=dict(
             type="str",
             default="new",
@@ -178,24 +273,92 @@ def run_module():
                 "only_host_labels",
             ],
         ),
+        # state=dict(
+        #     type="str",
+        #     default="single",
+        #     choices=[
+        #         "single",
+        #         "bulk",
+        #     ],
+        # ),
+        do_full_scan=dict(type="bool", default=True),
+        bulk_size=dict(type="int", default=1),
+        ignore_errors=dict(type="bool", default=True),
     )
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+    module = AnsibleModule(
+        argument_spec=module_args,
+        mutually_exclusive=[
+            ("host_name", "hosts"),
+        ],
+        required_one_of=[
+            ("host_name", "hosts"),
+        ],
+        supports_check_mode=False,
+    )
 
-    discovery = DiscoveryAPI(module)
-    checkmkversion = discovery.getversion()
-    if checkmkversion[0] == "2" and checkmkversion[1] == "0":
-        discovery = oldDiscoveryAPI(module)
+    result = RESULT(
+        # http_code=http_code,
+        msg="Nothing to be done",
+        failed=False,
+        changed=False,
+    )
 
-    result = discovery.post()
+    # if module.params.get("mode") == "single":
+    if "host_name" in module.params:
+        discovery = DiscoveryAPI(module)
+        checkmkversion = discovery.getversion()
+        if checkmkversion[0] == "2" and checkmkversion[1] == "0":
+            discovery = oldDiscoveryAPI(module)
 
-    # If the API returns 302, check the service completion endpoint
-    # until the discovery has completed successfully.
-    while result.http_code == "302":
-        servicecompletion = ServiceCompletionAPI(module)
-        result = servicecompletion.get()
+        result = discovery.post()
 
-    time.sleep(3)
+        # If the API returns 302, check the service completion endpoint
+        # until the discovery has completed successfully.
+        if result.http_code == "302":
+            servicecompletion = ServiceCompletionAPI(module)
+            while True:
+                result = servicecompletion.get()
+                if result.http_code == "302":
+                    break
 
+                time.sleep(3)
+    elif len(module.params.get("groups", [])) > 0:
+        if module.params.get("state") == "tabula_rasa"
+            result = RESULT(
+                # http_code=http_code,
+                msg="State 'tabula_rasa' is not supported by Bulk Discovery mode",
+                failed=True,
+                changed=False,
+            )
+            module.fail_json(**result_as_dict(result))
+
+        bulk_discovery = BulkDiscoveryAPI(module)
+        checkmkversion = bulk_discovery.getversion()
+        if checkmkversion[0] == "2" and checkmkversion[1] == "0":
+            result = RESULT(
+                # http_code=http_code,
+                msg="Bulk Discovery mode is unsupported in CMK 2.0.0",
+                failed=True,
+                changed=False,
+            )
+            module.fail_json(**result_as_dict(result))
+
+        result = bulk_discovery.post()
+
+        # If the API returns 200, check the service completion endpoint
+        # repeat until the bulk_discovery has completed successfully (or failed).
+        if result.http_code == "200":
+            servicecompletion = ServiceCompletionBulkAPI(module)
+
+            while True:
+                result = servicecompletion.get()
+
+                if not (json.loads(result.content).get("extensions").get("active")):
+                    break
+
+                time.sleep(3)
+
+    # content of json.loads(result.content).get("extensions").get("logs").get("result") is alos quite interesting
     module.exit_json(**result_as_dict(result))
 
 
