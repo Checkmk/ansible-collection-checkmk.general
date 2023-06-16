@@ -325,7 +325,7 @@ def run_module():
             result = servicecompletion.get()
 
             if single_mode:
-                if not result.http_code != "302":
+                if result.http_code != "302":
                     break
             else:
                 if not (json.loads(result.content).get("extensions").get("active")):
