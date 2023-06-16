@@ -291,7 +291,7 @@ def run_module():
     )
 
     single_mode = (
-         "host_name" in module.params and module.params.get("host_name", "") != ""
+        "host_name" in module.params and module.params.get("host_name", "") != ""
     )
 
     discovery = None
