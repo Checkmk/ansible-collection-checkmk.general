@@ -323,7 +323,7 @@ def run_module():
 
                 time.sleep(3)
     elif len(module.params.get("groups", [])) > 0:
-        if module.params.get("state") == "tabula_rasa"
+        if module.params.get("state") == "tabula_rasa":
             result = RESULT(
                 # http_code=http_code,
                 msg="State 'tabula_rasa' is not supported by Bulk Discovery mode",
