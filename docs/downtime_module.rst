@@ -42,7 +42,7 @@ checkmk.general.downtime module -- Manage downtimes in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.2.0).
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
@@ -191,6 +191,10 @@ Parameters
 
       Remarks for the downtime. If omitted in combination with state = present, the default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of a host or host/service will be removed.
 
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"Created by Ansible"`
 
       .. raw:: html
 

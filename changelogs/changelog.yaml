@@ -549,3 +549,24 @@ releases:
     - modules.yml
     - tests.yml
     release_date: '2023-06-15'
+  2.2.0:
+    changes:
+      bugfixes:
+      - Downtime module - The comment has a default value now
+      minor_changes:
+      - Activation module - Properly add If-Match header.
+      - Agent role - Add support for AlmaLinux and Rocky Linux, both versions 8 and
+        9.
+      - Agent role - Bump default Checkmk version to 2.2.0.
+      - Module utils - Remove workaround from version 2.1.0, where all modules were
+        passed the If-Match header.
+      - Server role - Add support for AlmaLinux and Rocky Linux, both versions 8 and
+        9.
+      - Server role - Bump default Checkmk version to 2.2.0.
+      release_summary: Extend OS support in roles and fix some minor issues in modules.
+    fragments:
+    - activation.yml
+    - downtime.yml
+    - roles.yml
+    - summary.yml
+    release_date: '2023-06-19'
