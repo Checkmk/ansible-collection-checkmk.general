@@ -5,6 +5,29 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v2.2.0
+======
+
+Release Summary
+---------------
+
+Extend OS support in roles and fix some minor issues in modules.
+
+Minor Changes
+-------------
+
+- Activation module - Properly add If-Match header.
+- Agent role - Add support for AlmaLinux and Rocky Linux, both versions 8 and 9.
+- Agent role - Bump default Checkmk version to 2.2.0.
+- Module utils - Remove workaround from version 2.1.0, where all modules were passed the If-Match header.
+- Server role - Add support for AlmaLinux and Rocky Linux, both versions 8 and 9.
+- Server role - Bump default Checkmk version to 2.2.0.
+
+Bugfixes
+--------
+
+- Downtime module - The comment has a default value now
+
 v2.1.0
 ======
 
