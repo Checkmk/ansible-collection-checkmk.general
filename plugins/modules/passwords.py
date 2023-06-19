@@ -112,8 +112,8 @@ message:
 import time
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
@@ -177,7 +177,11 @@ HTTP_CODES_CREATE = {
 
 HTTP_CODES_UPDATE = {
     # http_code: (changed, failed, "Message")
-    200: (True, False, "No Content: Operation was done successfully. No further output"),
+    200: (
+        True,
+        False,
+        "No Content: Operation was done successfully. No further output",
+    ),
     403: (False, True, "Forbidden: Configuration via Setup is disabled."),
     404: (False, True, "Not Found: The requested object has not been found."),
     406: (
@@ -245,8 +249,7 @@ class PasswordsUpdateAPI(CheckmkAPI):
 
 class PasswordsDeleteAPI(CheckmkAPI):
     def delete(self):
-        data = {
-        }
+        data = {}
 
         return self._fetch(
             code_mapping=HTTP_CODES_DELETE,
@@ -258,8 +261,7 @@ class PasswordsDeleteAPI(CheckmkAPI):
 
 class PasswordsGetAPI(CheckmkAPI):
     def get(self):
-        data = {
-        }
+        data = {}
 
         return self._fetch(
             code_mapping=HTTP_CODES_GET,
