@@ -38,6 +38,7 @@
     bulk_size: 5
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+  when: "not '2.0.0' in outer_item.version"
 
 - name: "{{ outer_item.version }} - Rescan (Tabula Rasa in 2.1 and before) services."
   discovery:
@@ -62,6 +63,7 @@
     bulk_size: 5
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+  when: "not '2.0.0' in outer_item.version"
 
 - name: "{{ outer_item.version }} - Tabula Rasa. (Only 2.2)"
   discovery:
@@ -112,6 +114,7 @@
     bulk_size: 5
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+  when: "not '2.0.0' in outer_item.version"
 
 - name: "{{ outer_item.version }} - Add undecided services to monitoring."
   discovery:
@@ -136,6 +139,7 @@
     bulk_size: 5
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+  when: "not '2.0.0' in outer_item.version"
 
 - name: "{{ outer_item.version }} - Discover hosts."
   discovery:
@@ -160,6 +164,7 @@
     bulk_size: 5
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+  when: "not '2.0.0' in outer_item.version"
 
 - name: "{{ outer_item.version }} - Tabula_rasa. (Bulk)."
   discovery:
