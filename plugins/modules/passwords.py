@@ -110,6 +110,7 @@ message:
 """
 
 import time
+import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
@@ -238,6 +239,9 @@ class PasswordsUpdateAPI(CheckmkAPI):
             "owner": self.params.get("owner", ""),
             "shared": self.params.get("shared", ""),
         }
+
+        # Remove all keys without value, as they would be emptied.
+        data = {key: val for key, val in data.items() if val}
 
         return self._fetch(
             code_mapping=HTTP_CODES_UPDATE,

@@ -39,13 +39,28 @@ checkmk_passwords_create:
     shared: [
       "all"
     ]
+  - name: "pwtest4"
+    title: "Password Test 4"
+    comment: "Comment on PW 4"
+    documentation_url: "http://something.4/"
+    password: "topsecret"
+    owner: "admin"
+    shared: [
+      "all"
+    ]
 
 checkmk_passwords_update:
   - name: "pwtest2"
     title: "Password Test 2 CHANGED"
     comment: "Comment on PW 2 - New Info"
     documentation_url: "http://something.too/"
-    password: "topsecret"
+  - name: "pwtest3"
+    documentation_url: "http://localhost/"
+  - name: "pwtest5"
+    title: "Password Test 5"
+    comment: "My new Comment on PW 5"
+    documentation_url: "http://something.new/"
+    password: "morethantopsecret"
     owner: "admin"
     shared: [
       "all"
@@ -53,3 +68,4 @@ checkmk_passwords_update:
 
 checkmk_passwords_delete:
   - name: "pwtest1"
+  - name: "pwtest4"
