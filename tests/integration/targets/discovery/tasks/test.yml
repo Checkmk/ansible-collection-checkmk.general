@@ -27,6 +27,18 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
+- name: "{{ outer_item.version }} - Update host labels. (Bulk)."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    hosts: "{{ checkmk_host_names }}"
+    state: "only_host_labels"
+    bulk_size: 5
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
 - name: "{{ outer_item.version }} - Rescan (Tabula Rasa in 2.1 and before) services."
   discovery:
     server_url: "{{ server_url }}"
@@ -38,6 +50,18 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Rescan (Tabula Rasa in 2.1 and before) services. (Bulk)."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    hosts: "{{ checkmk_host_names }}"
+    state: "refresh"
+    bulk_size: 5
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Tabula Rasa. (Only 2.2)"
   discovery:
@@ -52,6 +76,19 @@
   loop: "{{ checkmk_hosts }}"
   when: "'2.2' in outer_item.version"
 
+- name: "{{ outer_item.version }} - Tabula Rasa. (Only 2.2). (Bulk)."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    hosts: "{{ checkmk_host_names }}"
+    state: "refresh"
+    bulk_size: 5
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  when: "'2.2' in outer_item.version"
+
 - name: "{{ outer_item.version }} - Remove vanished services."
   discovery:
     server_url: "{{ server_url }}"
@@ -63,6 +100,18 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Remove vanished services. (Bulk)."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    hosts: "{{ checkmk_host_names }}"
+    state: "remove"
+    bulk_size: 5
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Add undecided services to monitoring."
   discovery:
@@ -76,6 +125,18 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
+- name: "{{ outer_item.version }} - Add undecided services to monitoring. (Bulk)."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    hosts: "{{ checkmk_host_names }}"
+    state: "new"
+    bulk_size: 5
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
 - name: "{{ outer_item.version }} - Discover hosts."
   discovery:
     server_url: "{{ server_url }}"
@@ -87,6 +148,33 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Discover hosts. (Bulk)."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    hosts: "{{ checkmk_host_names }}"
+    state: "fix_all"
+    bulk_size: 5
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  when: "not '2.0.0' in outer_item.version"
+
+- name: "{{ outer_item.version }} - Update host labels. (Bulk)."
+  discovery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    hosts: "{{ checkmk_host_names }}"
+    state: "tabula_rasa"
+    bulk_size: 5
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  ignore_errors: true
+  when: "'2.0.0' in outer_item.version"
 
 - name: "{{ outer_item.version }} - Activate."
   activation:
@@ -123,187 +211,3 @@
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-
-- name: Chech bulk discovery mode for Check MK > 2.0
-  when: "not '2.0.0' in outer_item.version"
-  block:
-    - name: "{{ outer_item.version }} - Create hosts."
-      host:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        name: "{{ item.name }}"
-        folder: "{{ item.folder }}"
-        attributes:
-          site: "{{ outer_item.site }}"
-          ipaddress: 127.0.0.1
-        state: "present"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
-
-    - name: "{{ outer_item.version }} - Update host labels. (Bulk)."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
-        state: "only_host_labels"
-        bulk_size: 5
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-
-    - name: "{{ outer_item.version }} - Rescan (Tabula Rasa in 2.1 and before) services. (Bulk)."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
-        state: "refresh"
-        bulk_size: 5
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-
-    - name: "{{ outer_item.version }} - Tabula Rasa. (Only 2.2). (Bulk)."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
-        state: "refresh"
-        bulk_size: 5
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-      when: "'2.2' in outer_item.version"
-
-    - name: "{{ outer_item.version }} - Remove vanished services. (Bulk)."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
-        state: "remove"
-        bulk_size: 5
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-
-    - name: "{{ outer_item.version }} - Add undecided services to monitoring. (Bulk)."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
-        state: "new"
-        bulk_size: 5
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-
-    - name: "{{ outer_item.version }} - Discover hosts. (Bulk)."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
-        state: "fix_all"
-        bulk_size: 5
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-
-    - name: "{{ outer_item.version }} - Activate. (Bulk)."
-      activation:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        force_foreign_changes: true
-        sites:
-          - "{{ outer_item.site }}"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-
-    - name: "{{ outer_item.version }} - Delete hosts"
-      host:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        name: "{{ item.name }}"
-        folder: "{{ item.folder }}"
-        state: "absent"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
-
-    - name: "{{ outer_item.version }} - Activate."
-      activation:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        sites:
-          - "{{ outer_item.site }}"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-
-- name: Chech bulk discovery mode for Check MK > 2.0
-  when: "'2.0.0' in outer_item.version"
-  block:
-    - name: "{{ outer_item.version }} - Create hosts."
-      host:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        name: "{{ item.name }}"
-        folder: "{{ item.folder }}"
-        attributes:
-          site: "{{ outer_item.site }}"
-          ipaddress: 127.0.0.1
-        state: "present"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
-
-    - name: "{{ outer_item.version }} - Update host labels. (Bulk)."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
-        state: "tabula_rasa"
-        bulk_size: 5
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-      ignore_errors: true
-
-    - name: "{{ outer_item.version }} - Delete hosts."
-      host:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        name: "{{ item.name }}"
-        folder: "{{ item.folder }}"
-        state: "absent"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
-
-    - name: "{{ outer_item.version }} - Activate."
-      activation:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        sites:
-          - "{{ outer_item.site }}"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
