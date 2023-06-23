@@ -70,6 +70,7 @@ author:
 
 EXAMPLES = r"""
 # Creating and Updating is the same.
+# If passwords are configured, no_log should be set to true.
 - name: "Create a new password."
   checkmk.general.passwords:
     server_url: "http://localhost/"
@@ -86,6 +87,7 @@ EXAMPLES = r"""
         "all"
     ]
     state: "present"
+  no_log: true
 - name: "Delete a password."
   checkmk.general.passwords:
     server_url: "http://localhost/"
