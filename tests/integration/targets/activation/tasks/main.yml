@@ -12,4 +12,4 @@
   ansible.builtin.include_tasks: test.yml
   loop: "{{ checkmk_versions }}"
   loop_control:
-    loop_var: outer_item
+   loop_var: outer_item

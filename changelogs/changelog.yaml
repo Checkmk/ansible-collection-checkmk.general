@@ -508,3 +508,65 @@ releases:
     fragments:
     - renaming_preparation.yml
     release_date: '2023-06-07'
+  2.0.0:
+    changes:
+      breaking_changes:
+      - The renaming of the collection has concluded. If you are reading this, you
+        on the right release and repository and should be able to use the collection
+        just as you are used to. Make sure to double check, that you are using the
+        new FQCNs!
+      release_summary: Welcome to the new world!
+    fragments:
+    - renaming_complete.yml
+    release_date: '2023-06-07'
+  2.1.0:
+    changes:
+      bugfixes:
+      - Discovery module - Properly handle redirects to wait for completion of background
+        jobs.
+      - Downtime module - The module handles timezones properly now.
+      - Integration tests - A bug was fixed, where the integration tests did not use
+        the correct Checkmk version.
+      - Utils - With Checkmk 2.2.0p3 the activation introduces a breaking change,
+        which we need to handle. As a workaround we added the 'If-Match' header to
+        all API requests.
+      known_issues:
+      - Utils - All API calls send the 'If-Match' header. This is a workaround and
+        will be fixed in a future release.
+      major_changes:
+      - Bakery module - Migrated to use module_utils.
+      - Discovery module - Migrated to use module_utils.
+      - contact_group module - The module was not compatible with Checkmk 2.2. This
+        is fixed now.
+      - host_group module - The module was not compatible with Checkmk 2.2. This is
+        fixed now.
+      - service_group module - The module was not compatible with Checkmk 2.2. This
+        is fixed now.
+    fragments:
+    - activation.yml
+    - discovery.yml
+    - downtime.yml
+    - modules.yml
+    - tests.yml
+    release_date: '2023-06-15'
+  2.2.0:
+    changes:
+      bugfixes:
+      - Downtime module - The comment has a default value now
+      minor_changes:
+      - Activation module - Properly add If-Match header.
+      - Agent role - Add support for AlmaLinux and Rocky Linux, both versions 8 and
+        9.
+      - Agent role - Bump default Checkmk version to 2.2.0.
+      - Module utils - Remove workaround from version 2.1.0, where all modules were
+        passed the If-Match header.
+      - Server role - Add support for AlmaLinux and Rocky Linux, both versions 8 and
+        9.
+      - Server role - Bump default Checkmk version to 2.2.0.
+      release_summary: Extend OS support in roles and fix some minor issues in modules.
+    fragments:
+    - activation.yml
+    - downtime.yml
+    - roles.yml
+    - summary.yml
+    release_date: '2023-06-19'

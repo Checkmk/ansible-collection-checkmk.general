@@ -18,17 +18,17 @@ Vagrant.configure("2") do |config|
         v.cpus = 4
       end
       $script = <<-SCRIPT
-      apt-get update
-      apt-get install -y python3-pip ca-certificates curl gnupg lsb-release
-      wget "https://download.checkmk.com/checkmk/2.1.0p19/check-mk-raw-2.1.0p19_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
-      wget "https://download.checkmk.com/checkmk/2.1.0p19/check-mk-raw-2.1.0p19_0.focal_amd64.deb" -O /tmp/checkmk-beta.deb
-      apt-get install -y /tmp/checkmk-stable.deb
+      apt-get -y update --quiet
+      apt-get -y install python3-pip ca-certificates curl gnupg lsb-release
+      wget "https://download.checkmk.com/checkmk/2.1.0p29/check-mk-raw-2.1.0p29_0.focal_amd64.deb" -O /tmp/checkmk-oldstable.deb
+      wget "https://download.checkmk.com/checkmk/2.2.0p3/check-mk-raw-2.2.0p3_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
+      apt-get install -y /tmp/checkmk-oldstable.deb
       omd create --admin-password 'd7589df1-01db-4eda-9858-dbcff8d0c361' stable
-      apt-get install -y /tmp/checkmk-beta.deb
+      apt-get install -y /tmp/checkmk-stable.deb
       omd create --admin-password 'd7589df1-01db-4eda-9858-dbcff8d0c361' beta
       omd status -b stable || omd start stable
       omd status -b beta || omd start beta
-      python3.9 -m pip install -r /vagrant/requirements.txt
+      python3 -m pip install -r /vagrant/requirements.txt
       sudo -u vagrant ansible-galaxy collection install -f -r /vagrant/requirements.yml
       mkdir -p /home/vagrant/ansible_collections/checkmk/general
       mkdir -p /etc/apt/keyrings

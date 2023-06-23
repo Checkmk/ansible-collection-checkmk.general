@@ -39,6 +39,7 @@ options:
               default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
               a host or host/service will be removed.
         type: str
+        default: Created by Ansible
     duration:
         description:
             - Duration in seconds. When set, the downtime does not begin automatically at a nominated time,
@@ -198,11 +199,9 @@ def _set_timestamps(module):
         if end_after == {}:
             end_time = default_end_time
         else:
-            start_time = re.sub(r"\+\d\d:\d\d$", "Z", start_time)
-            dt_start = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ")
-            end_time = (dt_start + timedelta(**end_after)).strftime(
-                "%Y-%m-%dT%H:%M:%SZ"
-            )
+            start_time = re.sub(r"Z$", "+00:00", start_time)
+            dt_start = datetime.fromisoformat(start_time)
+            end_time = (dt_start + timedelta(**end_after)).isoformat()
     return [start_time, end_time]
 
 
@@ -413,7 +412,7 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         host_name=dict(type="str", required=True),
-        comment=dict(type="str"),
+        comment=dict(type="str", default="Created by Ansible"),
         duration=dict(type="int", default=0),
         start_after=dict(type="dict", default={}),
         start_time=dict(type="str", default=""),
