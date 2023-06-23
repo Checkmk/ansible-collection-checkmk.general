@@ -111,7 +111,6 @@ message:
     sample: 'Done.'
 """
 
-import json
 import time
 
 from ansible.module_utils.basic import AnsibleModule
