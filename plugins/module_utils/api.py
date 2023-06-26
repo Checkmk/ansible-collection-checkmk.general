@@ -53,7 +53,7 @@ class CheckmkAPI:
             headers=self.headers,
             method=method,
             use_proxy=None,
-            timeout=10,
+            timeout=15,
         )
 
         http_code = info["status"]
