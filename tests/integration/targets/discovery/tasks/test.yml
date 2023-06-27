@@ -178,7 +178,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   ignore_errors: true
-  when: "'2.2.0' in outer_item.version"
+  when: "not '2.0.0' in outer_item.version and not '2.1.0' in outer_item.version"
 
 - name: "{{ outer_item.version }} - Tabula_rasa. (Bulk)."
   discovery:
