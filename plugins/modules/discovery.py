@@ -319,7 +319,7 @@ def run_module():
     ):
         result = RESULT(
             http_code=0,
-            msg="State 'tabula_rasa' is not supported in Check MK v. 2.0 or 2.1",
+            msg="State 'tabula_rasa' is not supported with Checkmk 2.0.0 and 2.1.0",
             content="",
             etag="",
             failed=True,
