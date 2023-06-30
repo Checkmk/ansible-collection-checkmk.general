@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2023, Robin Gierse <robin.gierse@checkmk.com>
+# Copyright: (c) 2023, Max Sickora <max.sickora@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: passwords
+module: password
 
 short_description: Manage passwords in checkmk.
 
@@ -72,7 +72,7 @@ EXAMPLES = r"""
 # Creating and Updating is the same.
 # If passwords are configured, no_log should be set to true.
 - name: "Create a new password."
-  checkmk.general.passwords:
+  checkmk.general.password:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
@@ -89,7 +89,7 @@ EXAMPLES = r"""
     state: "present"
   no_log: true
 - name: "Delete a password."
-  checkmk.general.passwords:
+  checkmk.general.password:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
