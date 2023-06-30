@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, Robin Gierse <robin.gierse@checkmk.com>
+# Copyright: (c) 2022, Michael Sekania &
+#                      Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -24,11 +25,11 @@ extends_documentation_fragment: [checkmk.general.common]
 
 options:
     host_name:
-        description: The host who's services you want to manage. Mutualy exclusive with hosts.
+        description: The host who's services you want to manage. Mutually exclusive with hosts.
         required: false
         type: str
     hosts:
-        description: The list of hosts the services of which you want to manage. Mutualy exclusive with host_name. Bulk mode.
+        description: The list of hosts the services of which you want to manage. Mutually exclusive with host_name. Bulk mode.
         required: false
         type: list
         elements: str
