@@ -22,3 +22,5 @@ checkmk_hosts:
     folder: "/"
   - name: test5.tld
     folder: "/"
+
+checkmk_host_names: "{{ checkmk_hosts | map(attribute='name') }}"
