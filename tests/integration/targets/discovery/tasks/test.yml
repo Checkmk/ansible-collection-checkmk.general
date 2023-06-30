@@ -17,18 +17,6 @@
 
 - name: "Run Single Discoveries."
   block:
-    - name: "{{ outer_item.version }} - Update host labels."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        host_name: "{{ item.name }}"
-        state: "only_host_labels"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
-
     - name: "{{ outer_item.version }} - Refresh (Tabula Rasa in 2.1 and before, Rescan in 2.2 and newer)."
       discovery:
         server_url: "{{ server_url }}"
@@ -41,18 +29,17 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_hosts }}"
 
-    - name: "{{ outer_item.version }} - Tabula Rasa. (New since 2.2)"
+    - name: "{{ outer_item.version }} - Update host labels."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
         host_name: "{{ item.name }}"
-        state: "tabula_rasa"
+        state: "only_host_labels"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_hosts }}"
-      when: "'2.2' in outer_item.version"
 
     - name: "{{ outer_item.version }} - Remove vanished services."
       discovery:
@@ -77,6 +64,19 @@
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_hosts }}"
+
+    - name: "{{ outer_item.version }} - Tabula Rasa. (New since 2.2)"
+      discovery:
+        server_url: "{{ server_url }}"
+        site: "{{ outer_item.site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ item.name }}"
+        state: "tabula_rasa"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_hosts }}"
+      when: "'2.2' in outer_item.version"
 
     - name: "{{ outer_item.version }} - Discover hosts (fix_all)."
       discovery:
@@ -126,26 +126,36 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-
-- name: "{{ outer_item.version }} - Create hosts."
-  host:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
-    attributes:
-      site: "{{ outer_item.site }}"
-      ipaddress: 127.0.0.1
-    state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
-
 - name: "Run Bulk Discoveries."
   when: "not '2.0.0' in outer_item.version"
   block:
+    - name: "{{ outer_item.version }} - Create hosts."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ outer_item.site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ item.name }}"
+        folder: "{{ item.folder }}"
+        attributes:
+          site: "{{ outer_item.site }}"
+          ipaddress: 127.0.0.1
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_hosts }}"
+
+    - name: "{{ outer_item.version }} - Bulk: Refresh (Tabula Rasa in 2.1 and before, Rescan in 2.2 and newer)."
+      discovery:
+        server_url: "{{ server_url }}"
+        site: "{{ outer_item.site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        hosts: "{{ checkmk_host_names }}"
+        state: "refresh"
+        bulk_size: 5
+      delegate_to: localhost
+
     - name: "{{ outer_item.version }} - Bulk: Update host labels."
       discovery:
         server_url: "{{ server_url }}"
@@ -156,29 +166,6 @@
         state: "only_host_labels"
         bulk_size: 5
       delegate_to: localhost
-
-    - name: "{{ outer_item.version }} - Bulk: Rescan (Tabula Rasa in 2.1 and before) services."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
-        state: "refresh"
-        bulk_size: 5
-      delegate_to: localhost
-
-    - name: "{{ outer_item.version }} - Bulk: Tabula Rasa. (Only 2.2)."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
-        state: "refresh"
-        bulk_size: 5
-      delegate_to: localhost
-      when: "'2.2' in outer_item.version"
 
     - name: "{{ outer_item.version }} - Bulk: Remove vanished services."
       discovery:
@@ -202,20 +189,7 @@
         bulk_size: 5
       delegate_to: localhost
 
-    - name: "{{ outer_item.version }} - Bulk: Refresh (Tabula Rasa)."
-      discovery:
-        server_url: "{{ server_url }}"
-        site: "{{ outer_item.site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
-        state: "refresh"
-        bulk_size: 5
-      delegate_to: localhost
-      ignore_errors: true  # noqa ignore-errors
-      when: "'2.1.0' in outer_item.version"
-
-    - name: "{{ outer_item.version }} - Bulk: Tabula Rasa (Tabula Rasa)."
+    - name: "{{ outer_item.version }} - Bulk: Tabula Rasa. (Only 2.2)."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -225,8 +199,7 @@
         state: "tabula_rasa"
         bulk_size: 5
       delegate_to: localhost
-      ignore_errors: true  # noqa ignore-errors
-      when: "not '2.1.0' in outer_item.version"
+      when: "'2.2' in outer_item.version"
 
     - name: "{{ outer_item.version }} - Bulk: Discover hosts (fix_all)."
       discovery:
@@ -239,17 +212,17 @@
         bulk_size: 5
       delegate_to: localhost
 
-- name: "{{ outer_item.version }} - Activate."
-  activation:
-    server_url: "{{ server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+    - name: "{{ outer_item.version }} - Activate."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ outer_item.site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: true
+        sites:
+          - "{{ outer_item.site }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Delete hosts."
   host:
