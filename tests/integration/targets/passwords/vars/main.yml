@@ -1,0 +1,71 @@
+---
+checkmk_versions:
+  - version: "2.2.0p3"
+    site: "stable"
+  - version: "2.1.0p29"
+    site: "oldstable"
+  - version: "2.0.0p36"
+    site: "ancientstable"
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
+server_url: "http://127.0.0.1/"
+automation_user: "cmkadmin"
+automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
+
+checkmk_passwords_create:
+  - name: "pwtest1"
+    title: "Password Test 1"
+    comment: "Comment on PW 1"
+    documentation_url: "http://something/"
+    password: "topsecret"
+    owner: "admin"
+    shared: [
+      "all"
+    ]
+  - name: "pwtest2"
+    title: "Password Test 2"
+    comment: "Comment on PW 2"
+    documentation_url: "http://something.too/"
+    password: "topsecret"
+    owner: "admin"
+    shared: [
+      "all"
+    ]
+  - name: "pwtest3"
+    title: "Password Test 3"
+    comment: "Comment on PW 3"
+    documentation_url: "http://something.3rd/"
+    password: "topsecret"
+    owner: "admin"
+    shared: [
+      "all"
+    ]
+  - name: "pwtest4"
+    title: "Password Test 4"
+    comment: "Comment on PW 4"
+    documentation_url: "http://something.4/"
+    password: "topsecret"
+    owner: "admin"
+    shared: [
+      "all"
+    ]
+
+checkmk_passwords_update:
+  - name: "pwtest2"
+    title: "Password Test 2 CHANGED"
+    comment: "Comment on PW 2 - New Info"
+    documentation_url: "http://something.too/"
+  - name: "pwtest3"
+    documentation_url: "http://localhost/"
+  - name: "pwtest5"
+    title: "Password Test 5"
+    comment: "My new Comment on PW 5"
+    documentation_url: "http://something.new/"
+    password: "morethantopsecret"
+    owner: "admin"
+    shared: [
+      "all"
+    ]
+
+checkmk_passwords_delete:
+  - name: "pwtest1"
+  - name: "pwtest4"
