@@ -5,6 +5,31 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v2.3.0
+======
+
+Release Summary
+---------------
+
+Features all over the place!
+
+Major Changes
+-------------
+
+- Discovery module - Add support for bulk discoveries.
+- Password module - Add password module.
+
+Minor Changes
+-------------
+
+- Server role - Add support for RHEL and CentOS 9
+- Utils - Introduce retries for API calls in case of timeouts.
+
+New Modules
+-----------
+
+- checkmk.general.password - Manage passwords in checkmk.
+
 v2.2.0
 ======
 
