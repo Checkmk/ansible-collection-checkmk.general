@@ -11,14 +11,24 @@ server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
 
+checkmk_folders:
+  - path: /foo
+    name: Foo
+  - path: /bar
+    name: Bar
+  - path: /foo/bar
+    name: Bar
+  - path: /foo/bar1
+    name: Digital
+
 checkmk_hosts:
   - name: test1.tld
     folder: "/"
   - name: test2.tld
-    folder: "/"
+    folder: "/foo"
   - name: test3.tld
-    folder: "/"
+    folder: "/bar"
   - name: test4.tld
-    folder: "/"
+    folder: "/foo/bar"
   - name: test5.tld
-    folder: "/"
+    folder: "/foo/bar1"

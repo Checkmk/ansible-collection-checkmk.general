@@ -24,6 +24,8 @@ checkmk_folders:
     name: Foo
   - path: /foo/bar/treasure
     name: Treasure
+  - path: /foo/bar1
+    name: Digital
 
 checkmk_folder_attr_test:
   path: /test
