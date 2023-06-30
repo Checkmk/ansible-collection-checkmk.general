@@ -26,7 +26,7 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.discovery_module:
+.. _ansible_collections.checkmk.general.password_module:
 
 .. Anchors: short name for ansible.builtin
 
@@ -36,8 +36,8 @@
 
 .. Title
 
-checkmk.general.discovery module -- Discover services in Checkmk.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.password module -- Manage passwords in checkmk.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -46,13 +46,13 @@ checkmk.general.discovery module -- Discover services in Checkmk.
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.discovery`.
+    To use it in a playbook, specify: :code:`checkmk.general.password`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 0.0.1
+New in checkmk.general 2.3.0
 
 .. contents::
    :local:
@@ -66,7 +66,7 @@ Synopsis
 
 .. Description
 
-- Discovery services within Checkmk.
+- Manage passwords in checkmk.
 
 
 .. Aliases
@@ -99,7 +99,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.discovery_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.password_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -133,7 +133,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.discovery_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.password_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -165,97 +165,17 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-bulk_size"></div>
+        <div class="ansibleOptionAnchor" id="parameter-comment"></div>
 
-      .. _ansible_collections.checkmk.general.discovery_module__parameter-bulk_size:
-
-      .. rst-class:: ansible-option-title
-
-      **bulk_size**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-bulk_size" title="Permalink to this option"></a>
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-type:`integer`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The number of hosts to be handled at once. (Bulk mode only).
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`1`
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-do_full_scan"></div>
-
-      .. _ansible_collections.checkmk.general.discovery_module__parameter-do_full_scan:
+      .. _ansible_collections.checkmk.general.password_module__parameter-comment:
 
       .. rst-class:: ansible-option-title
 
-      **do_full_scan**
+      **comment**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-do_full_scan" title="Permalink to this option"></a>
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-type:`boolean`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The option whether to perform a full scan or not. (Bulk mode only).
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-choices:`Choices:`
-
-      - :ansible-option-choices-entry:`false`
-      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
-
-      .. _ansible_collections.checkmk.general.discovery_module__parameter-host_name:
-
-      .. rst-class:: ansible-option-title
-
-      **host_name**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-comment" title="Permalink to this option"></a>
 
       .. rst-class:: ansible-option-type-line
 
@@ -269,7 +189,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The host who's services you want to manage. Mutually exclusive with hosts.
+      A comment for the password.
 
 
       .. raw:: html
@@ -279,21 +199,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-hosts"></div>
+        <div class="ansibleOptionAnchor" id="parameter-documentation_url"></div>
 
-      .. _ansible_collections.checkmk.general.discovery_module__parameter-hosts:
+      .. _ansible_collections.checkmk.general.password_module__parameter-documentation_url:
 
       .. rst-class:: ansible-option-title
 
-      **hosts**
+      **documentation_url**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-hosts" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-documentation_url" title="Permalink to this option"></a>
 
       .. rst-class:: ansible-option-type-line
 
-      :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+      :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -303,12 +223,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The list of hosts the services of which you want to manage. Mutually exclusive with host\_name. Bulk mode.
+      An optional URL pointing to documentation or any other page.
 
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
 
       .. raw:: html
 
@@ -317,21 +233,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-ignore_errors"></div>
+        <div class="ansibleOptionAnchor" id="parameter-name"></div>
 
-      .. _ansible_collections.checkmk.general.discovery_module__parameter-ignore_errors:
+      .. _ansible_collections.checkmk.general.password_module__parameter-name:
 
       .. rst-class:: ansible-option-title
 
-      **ignore_errors**
+      **name**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-ignore_errors" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
 
       .. rst-class:: ansible-option-type-line
 
-      :ansible-option-type:`boolean`
+      :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -341,15 +257,75 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The option whether to ignore errors in single check plugins. (Bulk mode only).
+      An unique identifier for the password.
 
 
-      .. rst-class:: ansible-option-line
+      .. raw:: html
 
-      :ansible-option-choices:`Choices:`
+        </div>
 
-      - :ansible-option-choices-entry:`false`
-      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-owner"></div>
+
+      .. _ansible_collections.checkmk.general.password_module__parameter-owner:
+
+      .. rst-class:: ansible-option-title
+
+      **owner**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-owner" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Each password is owned by a group of users which are able to edit, delete and use existing passwords.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-password"></div>
+
+      .. _ansible_collections.checkmk.general.password_module__parameter-password:
+
+      .. rst-class:: ansible-option-title
+
+      **password**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-password" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The password string.
 
 
       .. raw:: html
@@ -361,7 +337,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.discovery_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.password_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -393,9 +369,43 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-shared"></div>
+
+      .. _ansible_collections.checkmk.general.password_module__parameter-shared:
+
+      .. rst-class:: ansible-option-title
+
+      **shared**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-shared" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`any`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The list of members to share the password with.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.discovery_module__parameter-site:
+      .. _ansible_collections.checkmk.general.password_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -429,7 +439,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.checkmk.general.discovery_module__parameter-state:
+      .. _ansible_collections.checkmk.general.password_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -438,6 +448,48 @@ Parameters
       .. raw:: html
 
         <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`string` / :ansible-option-required:`required`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      create/update or delete a password.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"present"`
+      - :ansible-option-choices-entry:`"absent"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-title"></div>
+
+      .. _ansible_collections.checkmk.general.password_module__parameter-title:
+
+      .. rst-class:: ansible-option-title
+
+      **title**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-title" title="Permalink to this option"></a>
 
       .. rst-class:: ansible-option-type-line
 
@@ -451,19 +503,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The action to perform during discovery.
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-choices:`Choices:`
-
-      - :ansible-option-choices-entry-default:`"new"` :ansible-option-choices-default-mark:`← (default)`
-      - :ansible-option-choices-entry:`"remove"`
-      - :ansible-option-choices-entry:`"fix\_all"`
-      - :ansible-option-choices-entry:`"refresh"`
-      - :ansible-option-choices-entry:`"tabula\_rasa"`
-      - :ansible-option-choices-entry:`"only\_host\_labels"`
+      A title for the password.
 
 
       .. raw:: html
@@ -475,7 +515,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.discovery_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.password_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -530,40 +570,33 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    # Create a single host.
-    - name: "Add newly discovered services on host."
-      checkmk.general.discovery:
+    # Creating and Updating is the same.
+    # If passwords are configured, no_log should be set to true.
+    - name: "Create a new password."
+      checkmk.general.password:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_name: "my_host"
-        state: "new"
-    - name: "Add newly discovered services, update labels and remove vanished services on host."
-      checkmk.general.discovery:
+        name: "mypassword"
+        title: "My Password"
+        comment: "Comment on my password"
+        documentation_url: "https://url.to.mypassword/"
+        password: "topsecret"
+        owner: "admin"
+        shared: [
+            "all"
+        ]
+        state: "present"
+      no_log: true
+    - name: "Delete a password."
+      checkmk.general.password:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        host_name: "my_host"
-        state: "fix_all"
-    - name: "Add newly discovered services on hosts. (Bulk)"
-      checkmk.general.discovery:
-        server_url: "http://localhost/"
-        site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
-        hosts: "[my_host_0, my_host_1]"
-        state: "new"
-    - name: "Add newly discovered services, update labels and remove vanished services on host; 3 at once (Bulk)"
-      checkmk.general.discovery:
-        server_url: "http://localhost/"
-        site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
-        hosts: "[my_host_0, my_host_1, my_host_2, my_host_3, my_host_4, my_host_5]"
-        state: "fix_all"
-        bulk_size: 3
+        name: "mypassword"
+        state: "absent"
 
 
 
@@ -592,7 +625,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-http_code"></div>
 
-      .. _ansible_collections.checkmk.general.discovery_module__return-http_code:
+      .. _ansible_collections.checkmk.general.password_module__return-http_code:
 
       .. rst-class:: ansible-option-title
 
@@ -637,7 +670,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-message"></div>
 
-      .. _ansible_collections.checkmk.general.discovery_module__return-message:
+      .. _ansible_collections.checkmk.general.password_module__return-message:
 
       .. rst-class:: ansible-option-title
 
@@ -669,7 +702,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Host created."`
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Done."`
 
 
       .. raw:: html
@@ -686,8 +719,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- Robin Gierse (@robin-checkmk)
-- Michael Sekania (@msekania)
+- Max Sickora (@max-checkmk)
 
 
 
