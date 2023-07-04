@@ -14,13 +14,17 @@
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme"
   become: false
-  register: checkmk_agent_download_state
+  register: checkmk_agent_generic_download_state
   # This task may fail, as we fall back to the generic agent in that case
   failed_when: 'false'
   changed_when: 'false'
   delegate_to: "{{ checkmk_agent_delegate_download }}"
   tags:
     - download-package
+
+- name: "Set Fact: Agent State: host-specific."
+  ansible.builtin.set_fact:
+    checkmk_agent_host_specific: "{% if checkmk_agent_generic_download_state.status == 200 %}true{% else %}false{% endif %}"
 
 - name: "Suse Derivates: Transfer host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
@@ -32,7 +36,7 @@
     checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
-    and checkmk_agent_download_state.status == 200
+    and checkmk_agent_host_specific | bool
     and checkmk_agent_delegate_download != inventory_hostname
   tags:
     - download-package
@@ -49,9 +53,39 @@
     checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
-    and checkmk_agent_download_state.status == 200
+    and checkmk_agent_host_specific | bool
   tags:
     - install-package
+
+- name: "Suse Derivatives: Download folder-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+  ansible.builtin.uri:
+    url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_rpm&agent_type=generic&folder_name={{ checkmk_agent_folder }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    dest: "{{ checkmk_agent_agent.file.cee }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_auth }}"
+      Accept: "application/octet-stream"
+  become: false
+  register: checkmk_agent_folder_download_state
+  when: |
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
+    and checkmk_agent_folder is defined
+    and not checkmk_agent_host_specific | bool
+  retries: 3
+  failed_when: 'false'
+  changed_when: 'false'
+  delegate_to: "{{ checkmk_agent_delegate_download }}"
+  tags:
+    - download-package
+
+- name: "Set Fact: Agent State: folder-specific."
+  ansible.builtin.set_fact:
+    checkmk_agent_folder_specific: >-
+     {% if checkmk_agent_folder_download_state.status is defined and checkmk_agent_folder_download_state.status == 200 %}true{% else %}false{% endif %}
 
 - name: "Suse Derivatives: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
@@ -68,13 +102,13 @@
     checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
-    and checkmk_agent_download_state.status != 200
+    and checkmk_agent_folder_specific | bool
   retries: 3
   delegate_to: "{{ checkmk_agent_delegate_download }}"
   tags:
     - download-package
 
-- name: "Suse Derivates: Transfer GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "Suse Derivates: Transfer GENERIC or folder-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.cee }}"
     dest: "{{ checkmk_agent_agent.file.cee }}"
@@ -84,12 +118,12 @@
     checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
-    and checkmk_agent_download_state.status != 200
+    and (not checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
     and checkmk_agent_delegate_download != inventory_hostname
   tags:
     - download-package
 
-- name: "Suse Derivatives: Install GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "Suse Derivatives: Install GENERIC or folder-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   community.general.zypper:
     name: "{{ checkmk_agent_agent.file.cee }}"
@@ -101,7 +135,7 @@
     checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
-    and checkmk_agent_download_state.status != 200
+    and (not checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
   tags:
     - install-package
 
