@@ -142,7 +142,7 @@ HTTP_CODES_SC = {
         "The service discovery is still running. Redirecting to the 'Wait for completion' endpoint.",
     ),
     403: (False, True, "Forbidden: Configuration via Setup is disabled."),
-    404: (False, True, "Not Found: There is no running service discovery"),
+    404: (False, False, "Not Found: There is no running service discovery"),
     406: (False, True, "Not Acceptable."),
     500: (False, True, "General Server Error."),
 }
@@ -162,7 +162,7 @@ HTTP_CODES_BULK_SC = {
     # http_code: (changed, failed, "Message")
     200: (True, False, "The service discovery has been completed."),
     403: (False, True, "Forbidden: Configuration via WATO is disabled."),
-    404: (False, True, "Not Found: There is no running bulk_discovery job"),
+    404: (False, False, "Not Found: There is no running bulk_discovery job"),
     406: (False, True, "Not Acceptable."),
     500: (False, True, "General Server Error."),
 }
