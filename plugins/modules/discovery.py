@@ -328,12 +328,28 @@ def run_module():
         )
         module.fail_json(**result_as_dict(result))
 
+    # If single_mode check if another discovery process is already running. If API returns 302, check the service completion endpoint
+    # until the discovery has completed successfully (or failed).
+    # If not single_mode check if another bulk_discovery process is already running. If active, check the service completion endpoint
+    # until the bulk_discovery has completed successfully (or failed).
+    while True:
+        result = servicecompletion.get()
+
+        if single_mode:
+            if result.http_code != 302:
+                break
+        else:
+            if not (json.loads(result.content).get("extensions").get("active")):
+                break
+
+            time.sleep(3)
+
     result = discovery.post()
 
     # If single_mode and the API returns 302, check the service completion endpoint
-    # until the discovery has completed successfully.
+    # until the discovery has completed successfully (or failed).
     # If not single_mode and the API returns 200, check the service completion endpoint
-    # repeat until the bulk_discovery has completed successfully (or failed).
+    # until the bulk_discovery has completed successfully (or failed).
     if (single_mode and result.http_code == 302) or (
         len(module.params.get("hosts", [])) > 0 and result.http_code == 200
     ):
