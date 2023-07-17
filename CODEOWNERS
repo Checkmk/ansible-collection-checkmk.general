@@ -1,2 +1,9 @@
 * @robin-checkmk
+/tests/ @robin-checkmk
+/roles/ @robin-checkmk
+/playbooks/ @robin-checkmk
 /plugins/modules/ @lgetwan
+/plugins/module_utils/ @godspeed-you
+/plugins/modules/user.py @lgetwan
+/plugins/modules/bakery.py @Max-checkmk
+/plugins/modules/password.py @Max-checkmk

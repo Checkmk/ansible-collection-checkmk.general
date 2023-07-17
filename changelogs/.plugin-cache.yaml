@@ -51,6 +51,11 @@ plugins:
       name: host_group
       namespace: ''
       version_added: 0.11.0
+    password:
+      description: Manage passwords in checkmk.
+      name: password
+      namespace: ''
+      version_added: 2.3.0
     rule:
       description: Manage rules in Checkmk.
       name: rule
@@ -76,4 +81,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 2.1.0
+version: 2.3.0

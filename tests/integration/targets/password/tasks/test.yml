@@ -1,0 +1,83 @@
+---
+- name: "{{ outer_item.version }} - Create new passwords."
+  password:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    title: "{{ item.title }}"
+    comment: "{{ item.comment }}"
+    documentation_url: "{{ item.documentation_url }}"
+    password: "{{ item.password }}"
+    owner: "{{ item.owner }}"
+    shared: "{{ item.shared }}"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ checkmk_passwords_create }}"
+  no_log: true
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Update passwords."
+  password:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    title: "{{ item.title | default(omit) }}"
+    comment: "{{ item.comment | default(omit) }}"
+    documentation_url: "{{ item.documentation_url | default(omit) }}"
+    password: "{{ item.password | default(omit) }}"
+    owner: "{{ item.owner | default(omit) }}"
+    shared: "{{ item.shared | default(omit) }}"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ checkmk_passwords_update }}"
+  no_log: true
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "Delete a password."
+  password:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  delegate_to: localhost
+  loop: "{{ checkmk_passwords_delete }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
