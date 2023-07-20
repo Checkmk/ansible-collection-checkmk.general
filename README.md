@@ -134,6 +134,7 @@ Please do **not** consider a concrete planning document!
     - Agents
     - BI
     - Distributed Monitoring
+    - Notification Rules
     - Time Periods
 - Lookup Plugins
   - Version
