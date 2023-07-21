@@ -15,6 +15,7 @@ checkmk_server_server_stable_os:
   - RedHat-7
   - RedHat-8
   - RedHat-9
+  - OracleLinux-8
 
 checkmk_server_version: 2.2.0p3
 checkmk_server_edition: cre

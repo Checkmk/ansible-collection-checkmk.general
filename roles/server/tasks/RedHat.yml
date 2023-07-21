@@ -53,6 +53,15 @@
   tags:
     - enable-repos
 
+- name: "Enable powertools repository on OracleLinux 8."  # noqa no-changed-when
+  become: true
+  ansible.builtin.shell: dnf config-manager --set-enabled ol8_codeready_builder  # noqa command-instead-of-shell
+  when: | # RHEL needs epel and a package URL
+    ansible_facts.distribution == "OracleLinux"
+    and ansible_distribution_major_version == "8"
+  tags:
+    - enable-repos
+
 - name: "Enable powertools repository on RHEL 7."
   become: true
   community.general.rhsm_repository:
