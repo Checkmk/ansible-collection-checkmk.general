@@ -10,7 +10,7 @@
     - include-system-tasks
 
 - name: "Discover services and labels on host."
-  tribe29.checkmk.discovery:
+  checkmk.general.discovery:
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
