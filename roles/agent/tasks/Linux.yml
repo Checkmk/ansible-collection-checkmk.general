@@ -27,6 +27,26 @@
   tags:
     - include-os-family-tasks
 
+- name: "Create host on server."
+  checkmk.general.host:
+    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
+    site: "{{ checkmk_agent_site }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    automation_user: "{{ checkmk_agent_user }}"
+    automation_secret: "{{ checkmk_agent_auth }}"
+    folder: "{{ checkmk_agent_folder | default(omit) }}"
+    name: "{{ checkmk_agent_host_name }}"
+    attributes: "{{ checkmk_agent_host_attributes }}"
+    state: "present"
+  become: false
+  register: checkmk_agent_create_result
+  failed_when: |
+    (checkmk_agent_create_result.failed == true) and
+    ("The host is already part of the specified target folder" not in checkmk_agent_create_result.msg)
+  delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
+  when: checkmk_agent_add_host | bool
+  notify: "activate changes"
+
 - name: "({{ ansible_system }}): Check for Agent Updater Binary."
   ansible.builtin.stat:
     path: /usr/bin/cmk-update-agent
