@@ -278,7 +278,7 @@ ElseIf ((Get-Service "WinRM").Status -ne "Running") {
 }
 
 # WinRM should be running; check that we have a PS session config.
-If (!(Get-PSSessionConfiguration -Verbose:$false) -or (!(Get-ChildItem WSMan:\localhost\Listener))) {
+If (!(Get-PSSessionConfiguration -Verbose:$false) -or (!(Get-ChildItem -LiteralPath WSMan:\localhost\Listener))) {
     If ($SkipNetworkProfileCheck) {
         Write-Verbose "Enabling PS Remoting without checking Network profile."
         Enable-PSRemoting -SkipNetworkProfileCheck -Force -ErrorAction Stop
@@ -309,7 +309,7 @@ if ($token_value -ne 1) {
 }
 
 # Make sure there is a SSL listener.
-$listeners = Get-ChildItem WSMan:\localhost\Listener
+$listeners = Get-ChildItem -LiteralPath WSMan:\localhost\Listener
 If (!($listeners | Where-Object { $_.Keys -like "TRANSPORT=HTTPS" })) {
     # We cannot use New-SelfSignedCertificate on 2012R2 and earlier
     $thumbprint = New-LegacySelfSignedCert -SubjectName $SubjectName -ValidDays $CertValidityDays
@@ -358,7 +358,7 @@ Else {
 }
 
 # Check for basic authentication.
-$basicAuthSetting = Get-ChildItem WSMan:\localhost\Service\Auth | Where-Object { $_.Name -eq "Basic" }
+$basicAuthSetting = Get-ChildItem -LiteralPath WSMan:\localhost\Service\Auth | Where-Object { $_.Name -eq "Basic" }
 
 If ($DisableBasicAuth) {
     If (($basicAuthSetting.Value) -eq $true) {
@@ -384,7 +384,7 @@ Else {
 # If EnableCredSSP if set to true
 If ($EnableCredSSP) {
     # Check for CredSSP authentication
-    $credsspAuthSetting = Get-ChildItem WSMan:\localhost\Service\Auth | Where-Object { $_.Name -eq "CredSSP" }
+    $credsspAuthSetting = Get-ChildItem -LiteralPath WSMan:\localhost\Service\Auth | Where-Object { $_.Name -eq "CredSSP" }
     If (($credsspAuthSetting.Value) -eq $false) {
         Write-Verbose "Enabling CredSSP auth support."
         Enable-WSManCredSSP -role server -Force
