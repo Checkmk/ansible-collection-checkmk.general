@@ -25,6 +25,11 @@
 - name: "Set Fact: Agent State: host-specific."
   ansible.builtin.set_fact:
     checkmk_agent_host_specific: "{% if checkmk_agent_generic_download_state.status == 200 %}true{% else %}false{% endif %}"
+  when: |
+    checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme"
 
 - name: "RedHat Derivates: Transfer host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
