@@ -57,7 +57,7 @@ Name | Description
 Name | Description | Tests
 --- | --- | ---
 [checkmk.general.activation](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/activation.py)|Activate changes.|[![Integration Tests for Activation Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-activation.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-activation.yaml)
-[checkmk.general.bakery](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/bakery.py)|Activate changes.|[![Integration Tests for Activation Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-bakery.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-bakery.yaml)
+[checkmk.general.bakery](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/bakery.py)|Activate changes.|[![Integration Tests for Bakery Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-bakery.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-bakery.yaml)
 [checkmk.general.contact_group](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/contact_group.py)|Manage contact groups.|[![Integration Tests for Contact Group Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-contact_group.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-contact_group.yaml)
 [checkmk.general.discovery](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/discovery.py)|Discover services on hosts.|[![Integration Tests for Discovery Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-discovery.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-discovery.yaml)
 [checkmk.general.downtime](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/downtime.py)|Manage downtimes.|[![Integration Tests for Downtime Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-downtime.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-downtime.yaml)
@@ -133,10 +133,12 @@ Please do **not** consider a concrete planning document!
   - Setup
     - Agents
     - BI
-    - Passwords
+    - Distributed Monitoring
+    - Notification Rules
     - Time Periods
 - Lookup Plugins
   - Version
+  - Rules
 
 ## More information about Ansible
 
