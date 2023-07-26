@@ -251,7 +251,7 @@ class ServiceCompletionBulkAPI(CheckmkAPI):
 # until the discovery has completed successfully (or failed).
 # If not single_mode check if bulk_discovery process is already running. If active, check the service completion endpoint
 # until the bulk_discovery has completed successfully (or failed).
-def wait_for_completion(single_mode, servicecompletion, sleep_time = 3):
+def wait_for_completion(single_mode, servicecompletion, sleep_time=3):
     while True:
         result = servicecompletion.get()
 
@@ -265,7 +265,6 @@ def wait_for_completion(single_mode, servicecompletion, sleep_time = 3):
             time.sleep(sleep_time)
 
     return result
-
 
 
 def run_module():
