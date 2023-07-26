@@ -127,7 +127,7 @@
     and checkmk_agent_tls | bool
     and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
 
-- name: "Start Rescan on the freshly added host."
+- name: "Fetch fresh monitoring data from the added host."
   become: false
   checkmk.general.discovery:
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
@@ -140,7 +140,7 @@
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_discover | bool
 
-- name: "Discover services and labels on host."
+- name: "Update monitored services and labels on host."
   become: false
   checkmk.general.discovery:
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
