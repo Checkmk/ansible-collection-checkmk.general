@@ -1,0 +1,5 @@
+minor_changes:
+  - Agent role - Ensure fresh data before adding services to host.
+
+known_issues:
+  - Discovery module - The module does not work on a controller host with Python 2.

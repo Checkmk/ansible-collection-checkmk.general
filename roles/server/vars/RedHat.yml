@@ -27,6 +27,11 @@ checkmk_server_prerequisites_per_distro:
     - firewalld
     - dnf-plugins-core
     - python3-libsemanage
+  OracleLinux-8:
+    - firewalld
+    - dnf-plugins-core
+    - python3-libsemanage
+
 
 checkmk_server_prerequisites: "{{ checkmk_server_prerequisites_per_distro[ansible_facts.distribution ~ '-' ~ ansible_facts.distribution_major_version]
   | default( checkmk_server_prerequisites_per_distro[ ansible_distribution_file_variety ]) }}"
