@@ -77,6 +77,7 @@ platforms:
     privileged: true
     pre_build_image: true
     ## There are no Checkmk 2.0.0 server packages for Rocky 9
+    ## As these test also set up a server before testing the agent, we remove this image.
     # - name: rockylinux9
     #   image: geerlingguy/docker-rockylinux9-ansible
     #   command: ${MOLECULE_DOCKER_COMMAND:-""}
