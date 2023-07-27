@@ -12,7 +12,7 @@ anstream ansible_host=192.168.56.63 checkmk_folder_path="foo/bar"
 ansuse ansible_host=192.168.56.64 checkmk_folder_path="/bar"
 ansles ansible_host=192.168.56.65 checkmk_folder_path="/bar/foo"
 ansoracle ansible_host=192.168.56.66 checkmk_folder_path="/foo"
-ansidows ansible_host=192.168.56.66 checkmk_folder_path="/" ansible_password=vagrant ansible_connection=winrm ansible_winrm_transport=basic ansible_winrm_server_cert_validation=ignore
+ansidows ansible_host=192.168.56.67 checkmk_folder_path="/" ansible_password=vagrant ansible_connection=winrm ansible_winrm_transport=basic ansible_winrm_server_cert_validation=ignore
 
 [vagrant:vars]
 ansible_user=vagrant
