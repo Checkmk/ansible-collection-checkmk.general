@@ -51,8 +51,6 @@ jobs:
           - host
         exclude:
           # Exclude unsupported sets.
-          - ansible: stable-2.12
-            python: '3.11'
           - ansible: stable-2.13
             python: '3.11'
 

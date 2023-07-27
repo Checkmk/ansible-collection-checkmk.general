@@ -1,0 +1,4 @@
+minor_changes:
+  - Utils - Introduce retries for API calls in case of timeouts.
+
+release_summary: "Features all over the place!"

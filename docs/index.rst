@@ -6,7 +6,7 @@
 Checkmk.General
 ===============
 
-Collection version 2.2.0
+Collection version 2.3.0
 
 .. contents::
    :local:
@@ -57,6 +57,7 @@ Modules
 * :ref:`folder module <ansible_collections.checkmk.general.folder_module>` -- Manage folders in Checkmk.
 * :ref:`host module <ansible_collections.checkmk.general.host_module>` -- Manage hosts in Checkmk.
 * :ref:`host_group module <ansible_collections.checkmk.general.host_group_module>` -- Manage host groups in Checkmk (bulk version).
+* :ref:`password module <ansible_collections.checkmk.general.password_module>` -- Manage passwords in checkmk.
 * :ref:`rule module <ansible_collections.checkmk.general.rule_module>` -- Manage rules in Checkmk.
 * :ref:`service_group module <ansible_collections.checkmk.general.service_group_module>` -- Manage service groups in Checkmk (bulk version).
 * :ref:`tag_group module <ansible_collections.checkmk.general.tag_group_module>` -- Manage tag\_group within Checkmk
@@ -74,6 +75,7 @@ Modules
     folder_module
     host_module
     host_group_module
+    password_module
     rule_module
     service_group_module
     tag_group_module
