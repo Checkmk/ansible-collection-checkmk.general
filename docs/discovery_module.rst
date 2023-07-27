@@ -42,7 +42,7 @@ checkmk.general.discovery module -- Discover services in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.0.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.3.0).
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
@@ -165,6 +165,86 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-bulk_size"></div>
+
+      .. _ansible_collections.checkmk.general.discovery_module__parameter-bulk_size:
+
+      .. rst-class:: ansible-option-title
+
+      **bulk_size**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-bulk_size" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The number of hosts to be handled at once. (Bulk mode only).
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`1`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-do_full_scan"></div>
+
+      .. _ansible_collections.checkmk.general.discovery_module__parameter-do_full_scan:
+
+      .. rst-class:: ansible-option-title
+
+      **do_full_scan**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-do_full_scan" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The option whether to perform a full scan or not. (Bulk mode only).
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
 
       .. _ansible_collections.checkmk.general.discovery_module__parameter-host_name:
@@ -179,7 +259,7 @@ Parameters
 
       .. rst-class:: ansible-option-type-line
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+      :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -189,7 +269,87 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The host who's services you want to manage.
+      The host who's services you want to manage. Mutually exclusive with hosts.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-hosts"></div>
+
+      .. _ansible_collections.checkmk.general.discovery_module__parameter-hosts:
+
+      .. rst-class:: ansible-option-title
+
+      **hosts**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-hosts" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The list of hosts the services of which you want to manage. Mutually exclusive with host\_name. Bulk mode.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-ignore_errors"></div>
+
+      .. _ansible_collections.checkmk.general.discovery_module__parameter-ignore_errors:
+
+      .. rst-class:: ansible-option-title
+
+      **ignore_errors**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-ignore_errors" title="Permalink to this option"></a>
+
+      .. rst-class:: ansible-option-type-line
+
+      :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The option whether to ignore errors in single check plugins. (Bulk mode only).
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
 
 
       .. raw:: html
@@ -302,6 +462,7 @@ Parameters
       - :ansible-option-choices-entry:`"remove"`
       - :ansible-option-choices-entry:`"fix\_all"`
       - :ansible-option-choices-entry:`"refresh"`
+      - :ansible-option-choices-entry:`"tabula\_rasa"`
       - :ansible-option-choices-entry:`"only\_host\_labels"`
 
 
@@ -386,6 +547,23 @@ Examples
         automation_secret: "$SECRET"
         host_name: "my_host"
         state: "fix_all"
+    - name: "Add newly discovered services on hosts. (Bulk)"
+      checkmk.general.discovery:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        hosts: "[my_host_0, my_host_1]"
+        state: "new"
+    - name: "Add newly discovered services, update labels and remove vanished services on host; 3 at once (Bulk)"
+      checkmk.general.discovery:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        hosts: "[my_host_0, my_host_1, my_host_2, my_host_3, my_host_4, my_host_5]"
+        state: "fix_all"
+        bulk_size: 3
 
 
 
@@ -509,6 +687,7 @@ Authors
 ~~~~~~~
 
 - Robin Gierse (@robin-checkmk)
+- Michael Sekania (@msekania)
 
 
 

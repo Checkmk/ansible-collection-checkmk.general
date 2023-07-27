@@ -6,11 +6,12 @@ test4.tld checkmk_folder_path="/"
 test5.tld checkmk_folder_path="/foo/bar" 
 
 [vagrant]
-ansibuntu ansible_host=192.168.56.61
-debsible ansible_host=192.168.56.62
-anstream ansible_host=192.168.56.63
-ansuse ansible_host=192.168.56.64
-ansles ansible_host=192.168.56.65
+ansibuntu ansible_host=192.168.56.61 checkmk_folder_path="/test"
+debsible ansible_host=192.168.56.62 checkmk_folder_path="/foo"
+anstream ansible_host=192.168.56.63 checkmk_folder_path="foo/bar"
+ansuse ansible_host=192.168.56.64 checkmk_folder_path="/bar"
+ansles ansible_host=192.168.56.65 checkmk_folder_path="/bar/foo"
+ansoracle ansible_host=192.168.56.66 checkmk_folder_path="/foo"
 
 [vagrant:vars]
 ansible_user=vagrant

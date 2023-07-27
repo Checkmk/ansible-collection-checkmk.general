@@ -12,7 +12,7 @@ None.
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_server_version: "2.1.0p24"
+    checkmk_server_version: "2.2.0p6"
 
 The Checkmk version of your site.
 
@@ -119,7 +119,9 @@ See [CONTRIBUTING](../../CONTRIBUTING).
 
 ## Disclaimer
 
-This role is provided AS IS and we can and will not guarantee that the role works as intended, nor can we be accountable for any damage or misconfiguration done by this role. Study the role thoroughly before using it.
+This role is provided AS IS and we can and will not guarantee that the role works
+as intended, nor can we be accountable for any damage or misconfiguration done
+by this role. Study the role thoroughly before using it.
 
 ## License
 

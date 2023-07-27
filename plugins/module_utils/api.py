@@ -35,7 +35,6 @@ class CheckmkAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
             "Authorization": "Bearer %s %s" % (user, secret),
-            "If-Match": "*",
         }
         self.current = {}
         self.required = {}
@@ -46,17 +45,24 @@ class CheckmkAPI:
         http_mapping = GENERIC_HTTP_CODES.copy()
         http_mapping.update(code_mapping)
 
-        response, info = fetch_url(
-            module=self.module,
-            url="%s/%s" % (self.url, endpoint),
-            data=self.module.jsonify(data),
-            headers=self.headers,
-            method=method,
-            use_proxy=None,
-            timeout=10,
-        )
+        # retry if timed out
+        num_of_retries = 2
+        for i in range(num_of_retries):
+            response, info = fetch_url(
+                module=self.module,
+                url="%s/%s" % (self.url, endpoint),
+                data=self.module.jsonify(data),
+                headers=self.headers,
+                method=method,
+                use_proxy=None,
+                timeout=10,
+            )
 
-        http_code = info["status"]
+            http_code = info["status"]
+
+            if http_code != -1:
+                break
+
         (
             changed,
             failed,

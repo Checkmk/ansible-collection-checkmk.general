@@ -42,7 +42,7 @@ checkmk.general.bakery module -- Trigger baking and signing in the agent bakery.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.0.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.3.0).
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
@@ -315,7 +315,7 @@ Parameters
 
       .. rst-class:: ansible-option-type-line
 
-      :ansible-option-type:`string`
+      :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -332,7 +332,7 @@ Parameters
 
       :ansible-option-choices:`Choices:`
 
-      - :ansible-option-choices-entry-default:`"baked"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"baked"`
       - :ansible-option-choices-entry:`"signed"`
       - :ansible-option-choices-entry:`"baked\_signed"`
 
