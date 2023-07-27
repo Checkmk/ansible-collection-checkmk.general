@@ -47,14 +47,10 @@ jobs:
         swap-storage: true
   build:
     runs-on: ubuntu-20.04
-    name: Checkmk ${{ matrix.checkmk }} + py${{ matrix.python }}
+    name: Checkmk ${{ matrix.checkmk }}
     strategy:
       fail-fast: false
       matrix:
-        python:
-          - '3.9'
-          - '3.10'
-          - '3.11'
         checkmk:
           - '2.0.0'
           - '2.1.0'
@@ -66,10 +62,10 @@ jobs:
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: Set up Python ${{ matrix.python }}
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python }}
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |

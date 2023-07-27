@@ -30,6 +30,7 @@ Vagrant.configure("2") do |config|
     omd create --admin-password 'd7589df1-01db-4eda-9858-dbcff8d0c361' beta
     omd status -b stable || omd start stable
     omd status -b beta || omd start beta
+    python3 -m pip install pip --upgrade
     python3 -m pip install -r /vagrant/requirements.txt
     sudo -u vagrant ansible-galaxy collection install -f -r /vagrant/requirements.yml
     mkdir -p /home/vagrant/ansible_collections/checkmk/general
@@ -62,7 +63,7 @@ Vagrant.configure("2") do |config|
 
   # Debian
   config.vm.define "debsible", autostart: false , primary: false do |srv|
-    srv.vm.box = "debian/bullseye64"
+    srv.vm.box = "debian/bookworm64"
     srv.vm.network "private_network", ip: "192.168.56.62"
     srv.ssh.insert_key = false
     srv.vm.provider "virtualbox" do |v|
