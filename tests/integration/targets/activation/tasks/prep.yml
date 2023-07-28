@@ -4,6 +4,8 @@
     url: "{{ download_url }}"
     dest: /tmp/checkmk-server-{{ item.site }}.deb
     mode: "0640"
+    url_username: "{{ download_user | default(omit) }}"
+    url_password: "{{ download_pass | default(omit) }}"
   loop: "{{ checkmk_versions }}"
 
 - name: "Install Checkmk Versions."
