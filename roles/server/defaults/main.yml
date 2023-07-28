@@ -45,3 +45,5 @@ checkmk_server_backup_opts: '--no-past'
 checkmk_server_allow_downgrades: 'false'
 
 checkmk_server_epel_gpg_check: 'true'
+
+checkmk_server_cleanup: 'false'
