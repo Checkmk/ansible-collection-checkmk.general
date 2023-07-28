@@ -132,7 +132,7 @@
       ansible.builtin.rpm_key:
         key: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
         state: present
-      when: checkmk_server_verify_setup | bool and ansible_facts['os_family'] == "RedHat"
+      when: checkmk_server_verify_setup | bool and not ansible_facts['os_family'] == "Debian"
       tags:
         - import-gpg-key
 

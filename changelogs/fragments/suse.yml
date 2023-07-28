@@ -1,0 +1,7 @@
+major_changes:
+  - Server role - Introduce initial support for Suse derivatives by enabling openSUSE Leap 15.
+
+known_issues:
+  - Server role - Suse support is currently tested only on openSUSE Leap 15.
+    This means, that it is not tested on actual SLES.
+    If you have any interest in this functionality and have a SLES 15 handy, we are happy to collaborate on this.
