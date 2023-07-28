@@ -1,5 +1,10 @@
 # https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
 
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
+  MODULE_NAME: bakery
+
 name: Ansible Integration Tests for Bakery Module
 on:
   workflow_dispatch:
@@ -7,13 +12,8 @@ on:
     branches:
       - main
       - devel
-      - feature-int-test-bakery
     paths:
-      - 'plugins/modules/bakery.py'
-
-env:
-  NAMESPACE: checkmk
-  COLLECTION_NAME: general
+      - 'plugins/modules/${{env.MODULE_NAME}}.py'
 
 jobs:
 
@@ -64,5 +64,5 @@ jobs:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
       - name: Run integration test
-        run: ansible-test integration bakery -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker
+        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
