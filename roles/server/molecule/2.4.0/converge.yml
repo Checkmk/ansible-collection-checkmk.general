@@ -33,6 +33,15 @@
       ansible.builtin.command: chmod 0400 /etc/shadow
       when: ansible_facts['distribution'] == 'Rocky' and (ansible_facts['distribution_major_version'] == '9' or ansible_facts['distribution_major_version'] == '10')
 
+    # This seems Suse specific: https://support.scc.suse.com/s/kb/Ansible-fails-to-run-ansible-builtin-package-facts?language=en_US
+    - name: "Install prerequisites."
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - python311-rpm  # Actual dependency, needed before first role run
+      when: ansible_facts['os_family'] == 'Suse'
+
     - name: "Download MKP."
       ansible.builtin.get_url:
         url: https://exchange.checkmk.com/packages/sslcertificates/1928/sslcertificates-9.2.1.mkp
