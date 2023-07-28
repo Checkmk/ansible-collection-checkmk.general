@@ -1,5 +1,10 @@
 # https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
 
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
+  MODULE: bakery
+
 name: Ansible Integration Tests for Bakery Module
 on:
   workflow_dispatch:
@@ -7,13 +12,9 @@ on:
     branches:
       - main
       - devel
+      - feature-int-test-bakery
     paths:
       - 'plugins/modules/${{env.MODULE}}.py'
-
-env:
-  NAMESPACE: checkmk
-  COLLECTION_NAME: general
-  MODULE: bakery
 
 jobs:
 
