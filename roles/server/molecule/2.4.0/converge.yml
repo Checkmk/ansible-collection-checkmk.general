@@ -19,6 +19,15 @@
         - man
       when: ansible_facts['os_family'] == 'Debian'
 
+    # This seems Suse specific: https://support.scc.suse.com/s/kb/Ansible-fails-to-run-ansible-builtin-package-facts?language=en_US
+    - name: "Install prerequisites."
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - python311-rpm  # Actual dependency, needed before first role run
+      when: ansible_facts['os_family'] == 'Suse'
+
     - name: "Create '/usr/share/man/man8/' on Ubuntu."
       ansible.builtin.file:
         path: /usr/share/man/man8/
