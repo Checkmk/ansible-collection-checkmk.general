@@ -22,8 +22,8 @@ Vagrant.configure("2") do |config|
     $script = <<-SCRIPT
     apt-get -y update --quiet
     apt-get -y install python3-pip ca-certificates curl gnupg lsb-release
-    wget "https://download.checkmk.com/checkmk/2.1.0p30/check-mk-raw-2.1.0p30_0.jammy_amd64.deb" -O /tmp/checkmk-oldstable.deb
-    wget "https://download.checkmk.com/checkmk/2.2.0p6/check-mk-raw-2.2.0p6_0.jammy_amd64.deb" -O /tmp/checkmk-stable.deb
+    wget "https://download.checkmk.com/checkmk/2.1.0p31/check-mk-raw-2.1.0p31_0.jammy_amd64.deb" -O /tmp/checkmk-oldstable.deb
+    wget "https://download.checkmk.com/checkmk/2.2.0p7/check-mk-raw-2.2.0p7_0.jammy_amd64.deb" -O /tmp/checkmk-stable.deb
     apt-get install -y /tmp/checkmk-oldstable.deb
     omd create --admin-password 'd7589df1-01db-4eda-9858-dbcff8d0c361' stable
     apt-get install -y /tmp/checkmk-stable.deb
