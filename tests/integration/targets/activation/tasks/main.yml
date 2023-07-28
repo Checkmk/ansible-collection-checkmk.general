@@ -10,6 +10,8 @@
         version: "{{ item.version }}"
         admin_pw: "{{ automation_secret }}"
   loop: "{{ test_sites }}"
+  loop_control:
+    loop_var: outer_item
 
 - name: "Start Sites."
   ansible.builtin.shell: "omd status -b {{ item.site }} || omd start {{ item.site }}"
