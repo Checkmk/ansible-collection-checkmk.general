@@ -133,6 +133,7 @@ def run_module():
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
     activation = ActivationAPI(module)
+    activation.headers["If-Match"] = "*"
     result = activation.post()
 
     time.sleep(3)

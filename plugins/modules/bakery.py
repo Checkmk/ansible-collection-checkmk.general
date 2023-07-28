@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2023, Robin Gierse <robin.gierse@checkmk.com>
+# Copyright: (c) 2023, Max Sickora <max.sickora@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -35,8 +35,8 @@ options:
 
     state:
         description: State - Baked, signed or baked and signed
+        required: true
         choices: ["baked", "signed", "baked_signed"]
-        default: "baked"
         type: str
 
 author:
@@ -87,8 +87,61 @@ message:
     sample: 'Done.'
 """
 
+import time
+
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
+from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    result_as_dict,
+)
+
+HTTP_CODES = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "The operation was done successfully."),
+    204: (
+        True,
+        False,
+        "No Content: Operation done successfully. No further output.",
+    ),
+    400: (False, True, "Bad Request: Parameter or validation failure."),
+    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
+    406: (
+        False,
+        True,
+        "Not Acceptable: The requests accept headers can not be satisfied.",
+    ),
+    415: (
+        False,
+        True,
+        "Unsupported Media Type: The submitted content-type is not supported.",
+    ),
+    500: (False, True, "General Server Error."),
+}
+
+
+class BakeryAPI(CheckmkAPI):
+    def post(self):
+        if self.params.get("state", "") != "baked":
+            data = {
+                "key_id": self.params.get("signature_key_id", ""),
+                "passphrase": self.params.get("signature_key_passphrase", ""),
+            }
+        else:
+            data = ""
+
+        if self.params.get("state", "") == "baked":
+            action = "bake"
+        if self.params.get("state", "") == "signed":
+            action = "sign"
+        if self.params.get("state", "") == "baked_signed":
+            action = "bake_and_sign"
+
+        return self._fetch(
+            code_mapping=HTTP_CODES,
+            endpoint="/domain-types/agent/actions/%s/invoke" % action,
+            data=data,
+            method="POST",
+        )
 
 
 def run_module():
@@ -102,109 +155,18 @@ def run_module():
         signature_key_passphrase=dict(type="str", required=False, no_log=True),
         state=dict(
             type="str",
-            default="baked",
             choices=["baked", "signed", "baked_signed"],
-            required=False,
+            required=True,
         ),
     )
-
-    result = dict(changed=False, failed=False, http_code="", msg="")
-
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
-    changed = False
-    failed = False
-    http_code = ""
+    bakery = BakeryAPI(module)
+    result = bakery.post()
 
-    http_code_mapping = {
-        # http_code: (changed, failed, "Message")
-        200: (True, False, "The operation was done successfully."),
-        204: (
-            True,
-            False,
-            "No Content: Operation done successfully. No further output.",
-        ),
-        400: (False, True, "Bad Request: Parameter or validation failure."),
-        403: (False, True, "Forbidden: Configuration via WATO is disabled."),
-        406: (
-            False,
-            True,
-            "Not Acceptable: The requests accept headers can not be satisfied.",
-        ),
-        415: (
-            False,
-            True,
-            "Unsupported Media Type: The submitted content-type is not supported.",
-        ),
-        500: (False, True, "General Server Error."),
-    }
+    time.sleep(3)
 
-    # Declare headers including authentication to send to the Checkmk API
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s"
-        % (
-            module.params.get("automation_user", ""),
-            module.params.get("automation_secret", ""),
-        ),
-    }
-
-    base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
-        module.params.get("site", ""),
-    )
-
-    action = module.params.get("state", "")
-
-    if action == "baked":
-        api_endpoint = "/domain-types/agent/actions/bake/invoke"
-        params = ()
-
-    elif action == "signed":
-        api_endpoint = "/domain-types/agent/actions/sign/invoke"
-        params = {
-            "key_id": module.params.get("signature_key_id", ""),
-            "passphrase": module.params.get("signature_key_passphrase", ""),
-        }
-
-    elif action == "baked_signed":
-        api_endpoint = "/domain-types/agent/actions/bake_and_sign/invoke"
-        params = {
-            "key_id": module.params.get("signature_key_id", ""),
-            "passphrase": module.params.get("signature_key_passphrase", ""),
-        }
-
-    url = base_url + api_endpoint
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST", timeout=60
-    )
-
-    http_code = info["status"]
-
-    # Kudos to Lars G.!
-    if http_code in http_code_mapping.keys():
-        changed, failed, msg = http_code_mapping[http_code]
-    else:
-        changed, failed, msg = (
-            False,
-            True,
-            "Error calling API. HTTP Return Code is %d" % http_code,
-        )
-
-    if failed:
-        details = info.get("body", info.get("msg", "N/A"))
-        msg += " Details: %s" % details
-
-    result["msg"] = msg
-    result["changed"] = changed
-    result["failed"] = failed
-    result["http_code"] = http_code
-
-    if result["failed"]:
-        module.fail_json(**result)
-
-    module.exit_json(**result)
+    module.exit_json(**result_as_dict(result))
 
 
 def main():

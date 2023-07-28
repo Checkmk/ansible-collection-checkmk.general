@@ -4,15 +4,17 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: ubuntu1804
-    image: geerlingguy/docker-ubuntu1804-ansible
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
-    tmpfs:
-      - /run
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    privileged: true
-    pre_build_image: true
+  ## We do not support Ubuntu 18 on server side with Checkmk 2.2 anymore.
+  ## As these test also set up a server before testing the agent, we remove this image.
+  # - name: ubuntu1804
+  #   image: geerlingguy/docker-ubuntu1804-ansible
+  #   command: ${MOLECULE_DOCKER_COMMAND:-""}
+  #   tmpfs:
+  #     - /run
+  #   volumes:
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  #   privileged: true
+  #   pre_build_image: true
   - name: ubuntu2004
     image: geerlingguy/docker-ubuntu2004-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
@@ -60,6 +62,15 @@ platforms:
     pre_build_image: true
   - name: centos8
     image: geerlingguy/docker-centos8-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    tmpfs:
+      - /run
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
+  - name: rockylinux9
+    image: geerlingguy/docker-rockylinux9-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     tmpfs:
       - /run
