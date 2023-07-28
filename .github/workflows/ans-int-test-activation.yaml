@@ -1,4 +1,9 @@
-# https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# README:
+# - When changing the module name, it needs to be changed in 'env:MODULE_NAME' and in 'on:pull_requests:path'!
+#
+# Resources:
+# - Template for this file: https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# - About Ansible integration tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
 env:
   NAMESPACE: checkmk
@@ -16,11 +21,6 @@ on:
       - 'plugins/modules/activation.py'
 
 jobs:
-
-###
-# Integration tests (RECOMMENDED)
-#
-# https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
   integration:
     runs-on: ubuntu-latest

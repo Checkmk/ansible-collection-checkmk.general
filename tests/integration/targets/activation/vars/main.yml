@@ -1,11 +1,14 @@
 ---
+# In these integration tests, we do not normalize the edition naming, but stick
+# to the naming of the setup files. For example 'raw' and 'enterprise' rather
+# than 'CRE' and 'CEE'.
 test_sites:
   - version: "2.2.0p7"
     edition: "raw"
-    site: "stable-cre"
+    site: "stable_raw"
   - version: "2.2.0p7"
     edition: "enterprise"
-    site: "stable-cee"
+    site: "stable_enterprise"
   - version: "2.1.0p31"
     edition: "raw"
     site: "oldstable"
