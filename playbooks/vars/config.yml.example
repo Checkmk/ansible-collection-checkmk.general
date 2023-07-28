@@ -1,6 +1,6 @@
 ---
 server_url: "http://localhost/"
-site: "$SITENAME"
+site: "my_site"
 automation_user: "automation"
 automation_secret: "$SECRET"
 

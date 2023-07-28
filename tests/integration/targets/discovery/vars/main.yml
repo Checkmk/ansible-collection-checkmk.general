@@ -1,10 +1,10 @@
 ---
 checkmk_versions:
-  - version: "2.2.0p1"
+  - version: "2.2.0p7"
     site: "stable"
-  - version: "2.1.0p28"
+  - version: "2.1.0p31"
     site: "oldstable"
-  - version: "2.0.0p36"
+  - version: "2.0.0p37"
     site: "ancientstable"
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
 server_url: "http://127.0.0.1/"
@@ -22,3 +22,5 @@ checkmk_hosts:
     folder: "/"
   - name: test5.tld
     folder: "/"
+
+checkmk_host_names: "{{ checkmk_hosts | map(attribute='name') }}"

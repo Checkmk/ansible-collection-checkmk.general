@@ -133,10 +133,12 @@ Please do **not** consider a concrete planning document!
   - Setup
     - Agents
     - BI
-    - Passwords
+    - Distributed Monitoring
+    - Notification Rules
     - Time Periods
 - Lookup Plugins
   - Version
+  - Rules
 
 ## More information about Ansible
 
