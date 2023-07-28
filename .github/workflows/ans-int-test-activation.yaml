@@ -1,10 +1,5 @@
 # https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
 
-env:
-  NAMESPACE: checkmk
-  COLLECTION_NAME: general
-  MODULE_NAME: activation
-
 name: Ansible Integration Tests for Activation Module
 on:
   workflow_dispatch:
@@ -14,6 +9,11 @@ on:
       - devel
     paths:
       - 'plugins/modules/${{env.MODULE_NAME}}.py'
+
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
+  MODULE_NAME: activation
 
 jobs:
 
