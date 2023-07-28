@@ -13,6 +13,7 @@ checkmk_server_server_stable_os:
   - CentOS-9
   - Debian-10
   - Debian-11
+  - Debian-12
   - RedHat-7
   - RedHat-8
   - RedHat-9
@@ -45,3 +46,5 @@ checkmk_server_backup_opts: '--no-past'
 checkmk_server_allow_downgrades: 'false'
 
 checkmk_server_epel_gpg_check: 'true'
+
+checkmk_server_cleanup: 'false'

@@ -4,15 +4,6 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: ubuntu1804
-    image: geerlingguy/docker-ubuntu1804-ansible
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
-    tmpfs:
-      - /run
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    privileged: true
-    pre_build_image: true
   - name: ubuntu2004
     image: geerlingguy/docker-ubuntu2004-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
@@ -67,16 +58,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
     pre_build_image: true
-    ## There are no Checkmk 2.0.0 server packages for Rocky 9
-    # - name: rockylinux9
-    #   image: geerlingguy/docker-rockylinux9-ansible
-    #   command: ${MOLECULE_DOCKER_COMMAND:-""}
-    #   tmpfs:
-    #     - /run
-    #   volumes:
-    #     - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    #   privileged: true
-    #   pre_build_image: true
 provisioner:
   name: ansible
 verifier:
