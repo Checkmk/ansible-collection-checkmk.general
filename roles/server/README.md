@@ -44,6 +44,10 @@ Cryptographically verify the downloaded Checkmk setup file.
 
 Cryptographically verify the downloaded epel-release package on RHEL 8.
 
+    checkmk_server_cleanup: 'false'
+
+Uninstall unused Checkmk versions on the server.
+
     checkmk_server_configure_firewall: 'true'
 
 Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
@@ -97,6 +101,7 @@ Tasks are tagged with the following tags:
 | `destroy-sites` | Destroy sites on the Checkmk server. |
 | `set-site-admin-pw` | Set the cmkadmin password of a site. |
 | `update-pause` | Pause with a warning when updating a site. |
+| `cleanup` | Clean up old Checkmk versions. |
 
 You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
 
