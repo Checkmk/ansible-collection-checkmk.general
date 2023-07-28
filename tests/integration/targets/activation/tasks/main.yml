@@ -1,6 +1,21 @@
 ---
 - name: "Run preparations."
-  ansible.builtin.include_tasks: prep.yml
+  ansible.builtin.import_role:
+    name: server
+  vars:
+    checkmk_server_version: "{{ item.version }}"
+    checkmk_server_edition: "{{ item.edition }}"
+    checkmk_server_sites:
+      - name: "{{ item.site }}"
+        version: "{{ item.version }}"
+        admin_pw: "{{ automation_secret }}"
+  loop: "{{ test_sites }}"
+
+- name: "Start Sites."
+  ansible.builtin.shell: "omd status -b {{ item.site }} || omd start {{ item.site }}"
+  register: site_status
+  changed_when: site_status.rc == "0"
+  loop: "{{ test_sites }}"
 
 - name: "Wait for site to be ready."
   ansible.builtin.pause:
@@ -10,6 +25,6 @@
 
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml
-  loop: "{{ checkmk_versions }}"
+  loop: "{{ test_sites }}"
   loop_control:
-   loop_var: outer_item
+    loop_var: outer_item
