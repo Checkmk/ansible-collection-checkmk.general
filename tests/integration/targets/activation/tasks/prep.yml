@@ -15,7 +15,7 @@
   loop: "{{ test_sites }}"
 
 - name: "Create Sites."
-  ansible.builtin.command: "omd -V {{ item.version }}.cre create --no-tmpfs --admin-password {{ automation_secret }} {{ item.site }}"
+  ansible.builtin.command: "omd -V {{ item.version }}.{{ item.edition }} create --no-tmpfs --admin-password {{ automation_secret }} {{ item.site }}"
   args:
     creates: "/omd/sites/{{ item.site }}"
   loop: "{{ test_sites }}"
