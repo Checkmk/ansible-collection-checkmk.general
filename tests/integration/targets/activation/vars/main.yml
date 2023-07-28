@@ -8,7 +8,7 @@ test_sites:
     site: "stable_raw"
   - version: "2.2.0p7"
     edition: "enterprise"
-    site: "stable_enterprise"
+    site: "stable_ent"
   - version: "2.1.0p30"
     edition: "raw"
     site: "oldstable"
