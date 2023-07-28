@@ -1,6 +1,6 @@
 ---
 - name: "Run preparations."
-  ansible.builtin.import_role:
+  ansible.builtin.include_role:
     name: server
   vars:
     checkmk_server_version: "{{ item.version }}"
