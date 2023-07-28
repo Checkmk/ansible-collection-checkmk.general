@@ -21,12 +21,14 @@ checkmk_server_server_stable_os:
   - RedHat-8
   - RedHat-9
   - RedHat-10
+  - openSUSE Leap-15
   - OracleLinux-8
   - OracleLinux-9
   - OracleLinux-10
   - Rocky-8
   - Rocky-9
   - Rocky-10
+  - SLES-15
   - Ubuntu-18
   - Ubuntu-20
   - Ubuntu-22
