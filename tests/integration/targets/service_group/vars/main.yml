@@ -11,10 +11,10 @@ test_sites:
     site: "stable_ent"
   - version: "2.1.0p31"
     edition: "cre"
-    site: "oldstable"
+    site: "old_raw"
   - version: "2.0.0p37"
     edition: "cre"
-    site: "ancientstable"
+    site: "ancient_raw"
 
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
