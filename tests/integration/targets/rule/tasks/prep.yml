@@ -4,25 +4,27 @@
     url: "{{ download_url }}"
     dest: /tmp/checkmk-server-{{ item.site }}.deb
     mode: "0640"
-  loop: "{{ checkmk_versions }}"
+    url_username: "{{ download_user | default(omit) }}"
+    url_password: "{{ download_pass | default(omit) }}"
+  loop: "{{ test_sites }}"
 
 - name: "Install Checkmk Versions."
   ansible.builtin.apt:
     deb: /tmp/checkmk-server-{{ item.site }}.deb
     state: present
-  loop: "{{ checkmk_versions }}"
+  loop: "{{ test_sites }}"
 
 - name: "Create Sites."
-  ansible.builtin.command: "omd -V {{ item.version }}.cre create --no-tmpfs --admin-password {{ automation_secret }} {{ item.site }}"
+  ansible.builtin.command: "omd -V {{ item.version }}.{{ item.edition }} create --no-tmpfs --admin-password {{ automation_secret }} {{ item.site }}"
   args:
     creates: "/omd/sites/{{ item.site }}"
-  loop: "{{ checkmk_versions }}"
+  loop: "{{ test_sites }}"
 
 - name: "Start Sites."
   ansible.builtin.shell: "omd status -b {{ item.site }} || omd start {{ item.site }}"
   register: site_status
   changed_when: site_status.rc == "0"
-  loop: "{{ checkmk_versions }}"
+  loop: "{{ test_sites }}"
 
 - name: "Gather Date and Time Facts on localhost."
   ansible.builtin.setup:
