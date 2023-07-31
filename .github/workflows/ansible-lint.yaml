@@ -1,4 +1,6 @@
-# https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# README:
+# Resources:
+# - Template for this file: https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
 
 env:
   NAMESPACE: checkmk
@@ -22,11 +24,6 @@ on:
 
 jobs:
 
-###
-# Integration tests (RECOMMENDED)
-#
-# https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
-
   integration:
     runs-on: ubuntu-latest
     name: I py${{ matrix.python }})
@@ -48,7 +45,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Install Dependencies
         run: |

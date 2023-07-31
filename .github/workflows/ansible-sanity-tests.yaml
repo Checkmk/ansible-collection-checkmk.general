@@ -1,4 +1,7 @@
-# https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# README:
+# Resources:
+# - Template for this file: https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# - About Ansible sanity tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
 
 env:
   NAMESPACE: checkmk
@@ -26,12 +29,8 @@ on:
 
 jobs:
 
-###
-# Sanity tests (REQUIRED)
-#
-# https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
-
   sanity:
+    runs-on: ubuntu-latest
     name: Sanity (Ⓐ${{ matrix.ansible }})
     strategy:
       fail-fast: false
@@ -41,7 +40,7 @@ jobs:
           - stable-2.14
           - stable-2.15
           - devel
-    runs-on: ubuntu-latest
+
     steps:
 
       - name: Check out code
@@ -52,7 +51,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.10'  # Ansible 2.13 does not support Python 3.11.
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
