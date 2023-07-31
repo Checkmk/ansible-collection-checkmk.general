@@ -22,11 +22,6 @@ on:
 
 jobs:
 
-###
-# Integration tests (RECOMMENDED)
-#
-# https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
-
   integration:
     runs-on: ubuntu-latest
     name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}

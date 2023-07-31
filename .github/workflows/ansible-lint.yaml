@@ -1,4 +1,6 @@
-# https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# README:
+# Resources:
+# - Template for this file: https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
 
 env:
   NAMESPACE: checkmk
@@ -21,11 +23,6 @@ on:
       - 'roles/**'
 
 jobs:
-
-###
-# Integration tests (RECOMMENDED)
-#
-# https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
   integration:
     runs-on: ubuntu-latest
