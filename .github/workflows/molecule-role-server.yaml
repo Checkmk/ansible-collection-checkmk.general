@@ -56,6 +56,11 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+      - name: Provide secrets file
+        run: echo "${{ secrets.CHECKMK_DOWNLOAD_PW }}" > .dl-secret
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        env:
+          CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
       - name: Test with molecule
         run: |
