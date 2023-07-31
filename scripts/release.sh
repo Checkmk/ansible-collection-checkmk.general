@@ -16,8 +16,8 @@ collection_dir="${script_dir%/*}"
 
 # Update these as necessary:
 checkmk_ancient="2.0.0p37"
-checkmk_oldstable="2.1.0p30"
-checkmk_stable="2.2.0p4"
+checkmk_oldstable="2.1.0p31"
+checkmk_stable="2.2.0p7"
 
 while getopts 's:t:' OPTION; do
   case "$OPTION" in 
@@ -49,6 +49,9 @@ find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec
 find "${collection_dir}/roles/" -type f -name all.yml -exec sed -i "s/2.2.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated Checkmk Stable version for molecule tests to ${checkmk_stable}."
 find "${collection_dir}/roles/" -type f -name all.yml -exec sed -i "s/2.1.0.*/${checkmk_oldstable}\"/g" {} \; && echo "Updated Checkmk Oldstable version for molecule tests to ${checkmk_oldstable}."
 find "${collection_dir}/roles/" -type f -name all.yml -exec sed -i "s/2.0.0.*/${checkmk_ancient}\"/g" {} \; && echo "Updated Checkmk Ancient version for molecule tests to ${checkmk_ancient}."
+# Roles:
+find "${collection_dir}/roles/" -type f -name main.yml -exec sed -i "s/2.2.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated default Checkmk version for roles to ${checkmk_stable}."
+find "${collection_dir}/roles/" -type f -name README.md -exec sed -i "s/2.2.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated default Checkmk version in roles README to ${checkmk_stable}."
 # Support Matrix
 grep "${target_version}" "${collection_dir}/SUPPORT.md" || echo "${target_version} | ${checkmk_ancient}, ${checkmk_oldstable}, ${checkmk_stable} | 2.13, 2.14, 2.15 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
 

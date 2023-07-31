@@ -45,8 +45,9 @@ class CheckmkAPI:
         http_mapping = GENERIC_HTTP_CODES.copy()
         http_mapping.update(code_mapping)
 
-        # retry if timed out
-        num_of_retries = 2
+        # retry if timed out and each time double the timeout value
+        num_of_retries = 3
+        timeout = 10
         for i in range(num_of_retries):
             response, info = fetch_url(
                 module=self.module,
@@ -55,13 +56,15 @@ class CheckmkAPI:
                 headers=self.headers,
                 method=method,
                 use_proxy=None,
-                timeout=10,
+                timeout=timeout,
             )
 
             http_code = info["status"]
 
             if http_code != -1:
                 break
+
+            timeout *= 2
 
         (
             changed,

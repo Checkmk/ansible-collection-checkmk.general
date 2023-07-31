@@ -12,7 +12,7 @@ None.
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_server_version: "2.1.0p24"
+    checkmk_server_version: "2.2.0p7"
 
 The Checkmk version of your site.
 
@@ -43,6 +43,10 @@ Cryptographically verify the downloaded Checkmk setup file.
     checkmk_server_epel_gpg_check: 'true'
 
 Cryptographically verify the downloaded epel-release package on RHEL 8.
+
+    checkmk_server_cleanup: 'false'
+
+Uninstall unused Checkmk versions on the server.
 
     checkmk_server_configure_firewall: 'true'
 
@@ -97,6 +101,7 @@ Tasks are tagged with the following tags:
 | `destroy-sites` | Destroy sites on the Checkmk server. |
 | `set-site-admin-pw` | Set the cmkadmin password of a site. |
 | `update-pause` | Pause with a warning when updating a site. |
+| `cleanup` | Clean up old Checkmk versions. |
 
 You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
 
@@ -119,7 +124,9 @@ See [CONTRIBUTING](../../CONTRIBUTING).
 
 ## Disclaimer
 
-This role is provided AS IS and we can and will not guarantee that the role works as intended, nor can we be accountable for any damage or misconfiguration done by this role. Study the role thoroughly before using it.
+This role is provided AS IS and we can and will not guarantee that the role works
+as intended, nor can we be accountable for any damage or misconfiguration done
+by this role. Study the role thoroughly before using it.
 
 ## License
 

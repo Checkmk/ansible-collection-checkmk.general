@@ -1,8 +1,8 @@
 ---
 checkmk_versions:
-  - version: "2.2.0p4"
+  - version: "2.2.0p7"
     site: "stable"
-  - version: "2.1.0p30"
+  - version: "2.1.0p31"
     site: "oldstable"
   - version: "2.0.0p37"
     site: "ancientstable"
@@ -24,6 +24,8 @@ checkmk_folders:
     name: Foo
   - path: /foo/bar/treasure
     name: Treasure
+  - path: /foo/bar1
+    name: Digital
 
 checkmk_folder_attr_test:
   path: /test

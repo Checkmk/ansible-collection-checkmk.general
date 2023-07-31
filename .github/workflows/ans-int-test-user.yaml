@@ -1,5 +1,10 @@
 # https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
 
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
+  MODULE_NAME: user
+
 name: Ansible Integration Tests for User Module
 on:
   workflow_dispatch:
@@ -8,11 +13,7 @@ on:
       - main
       - devel
     paths:
-      - 'plugins/modules/user.py'
-
-env:
-  NAMESPACE: checkmk
-  COLLECTION_NAME: general
+      - 'plugins/modules/${{env.MODULE_NAME}}.py'
 
 jobs:
 
@@ -57,5 +58,5 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Run integration test
-        run: ansible-test integration user -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker
+        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
