@@ -33,4 +33,4 @@
     owner: "{{ item.site }}"
     group: "{{ item.site }}"
     mode: "0660"
-  loop: "{{ checkmk_versions }}"
+  loop: "{{ test_sites }}"
