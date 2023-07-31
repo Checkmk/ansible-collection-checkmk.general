@@ -589,3 +589,24 @@ releases:
       name: password
       namespace: ''
     release_date: '2023-06-30'
+  2.4.0:
+    changes:
+      known_issues:
+      - Discovery module - The module does not work on a controller host with Python
+        2.
+      minor_changes:
+      - Agent role - Ensure fresh data before adding services to host.
+      - Agent role - Ensure support for Debian 12.
+      - Discovery module - Improve resilience and stability.
+      - Server role - Add feature to clean up unused Checkmk versions on the server.
+      - Server role - Enable explicit support for Oracle Linux 8.
+      - Server role - Ensure explicit support for Debian 12.
+      release_summary: Enabling more operating systems!
+    fragments:
+    - agent.yml
+    - debian12.yml
+    - discovery.yml
+    - oraclelinux8.yml
+    - release.yml
+    - server.yml
+    release_date: '2023-07-31'
