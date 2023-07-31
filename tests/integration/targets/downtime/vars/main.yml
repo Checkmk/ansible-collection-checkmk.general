@@ -4,25 +4,33 @@
 # than 'CRE' and 'CEE'.
 test_sites:
   - version: "2.2.0p7"
-    edition: "raw"
+    edition: "cre"
     site: "stable_raw"
   - version: "2.2.0p7"
-    edition: "enterprise"
+    edition: "cee"
     site: "stable_ent"
   - version: "2.1.0p31"
-    edition: "raw"
+    edition: "cre"
     site: "oldstable"
   - version: "2.0.0p37"
-    edition: "raw"
+    edition: "cre"
     site: "ancientstable"
 
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
 
-download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ item.edition }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
 download_user: "d-gh-ansible-dl"
 download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret') }}"
+
+# Due to inconsitent naming of editions, we normalize them here for convenience
+checkmk_server_edition_mapping:
+  cre: raw
+  cfe: free
+  cee: enterprise
+  cce: cloud
+  cme: managed
 
 checkmk_hosts:
   - name: test1.tld
