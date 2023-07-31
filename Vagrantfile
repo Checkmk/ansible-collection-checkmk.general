@@ -134,24 +134,18 @@ Vagrant.configure("2") do |config|
 
   # Windows
   config.vm.define "ansidows", autostart: false , primary: false do |srv|
-    srv.vm.box = "gusztavvargadr/windows-10"
+    srv.vm.box = "gusztavvargadr/windows-server-2019-standard"
     srv.vm.network "private_network", ip: "192.168.56.67"
-    srv.vm.boot_timeout = 180
-    srv.vm.guest = :windows
-    srv.winrm.username = "vagrant"
-    srv.winrm.password = "vagrant"
     srv.vm.communicator = "winrm"
     srv.vm.hostname = "ansidows"
-    srv.vm.network "forwarded_port", guest: 3389, host: 3391
-    srv.vm.network "forwarded_port", guest: 5985, host: 5987, id: "winrm", auto_correct: true
-    srv.winrm.timeout =   1800 # 30 minutes
     srv.vm.provider "virtualbox" do |srv|
       srv.name = 'ansidows'
       srv.memory = 4096
-      srv.cpus = 4
+      srv.cpus = 2
       srv.gui = true
     end
-    srv.vm.provision "shell", path: "./preparation/ansible-winrm/ConfigureRemotingForAnsible.ps1", privileged: true
+    vmx.vm.provision "shell",
+      inline: "powershell Set-NetFirewallRule -name 'FPS-ICMP4-ERQ-In*' -Enabled true"
   end
 
 end
