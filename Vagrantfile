@@ -142,9 +142,9 @@ Vagrant.configure("2") do |config|
       srv.name = 'ansidows'
       srv.memory = 4096
       srv.cpus = 2
-      srv.gui = true
+      srv.gui = false
     end
-    vmx.vm.provision "shell",
+    srv.vm.provision "shell",
       inline: "powershell Set-NetFirewallRule -name 'FPS-ICMP4-ERQ-In*' -Enabled true"
   end
 
