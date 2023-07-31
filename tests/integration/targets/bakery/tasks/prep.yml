@@ -2,29 +2,29 @@
 - name: "Download Checkmk Versions."
   ansible.builtin.get_url:
     url: "{{ download_url }}"
-    url_username: " {{ download_user }}"
-    url_password: "{{ download_pw }}"
     dest: /tmp/checkmk-server-{{ item.site }}.deb
     mode: "0640"
-  loop: "{{ checkmk_versions }}"
+    url_username: "{{ download_user | default(omit) }}"
+    url_password: "{{ download_pass | default(omit) }}"
+  loop: "{{ test_sites }}"
 
 - name: "Install Checkmk Versions."
   ansible.builtin.apt:
     deb: /tmp/checkmk-server-{{ item.site }}.deb
     state: present
-  loop: "{{ checkmk_versions }}"
+  loop: "{{ test_sites }}"
 
 - name: "Create Sites."
-  ansible.builtin.command: "omd create --no-tmpfs --admin-password {{ automation_secret }} {{ item.site }}"
+  ansible.builtin.command: "omd -V {{ item.version }}.{{ item.edition }} create --no-tmpfs --admin-password {{ automation_secret }} {{ item.site }}"
   args:
     creates: "/omd/sites/{{ item.site }}"
-  loop: "{{ checkmk_versions }}"
+  loop: "{{ test_sites }}"
 
 - name: "Start Sites."
   ansible.builtin.shell: "omd status -b {{ item.site }} || omd start {{ item.site }}"
   register: site_status
   changed_when: site_status.rc == "0"
-  loop: "{{ checkmk_versions }}"
+  loop: "{{ test_sites }}"
 
 - name: "Inject a Key into the Sites."  # This is a hack and should never be done in production!
   ansible.builtin.copy:
@@ -33,4 +33,4 @@
     owner: "{{ item.site }}"
     group: "{{ item.site }}"
     mode: "0660"
-  loop: "{{ checkmk_versions }}"
+  loop: "{{ test_sites }}"
