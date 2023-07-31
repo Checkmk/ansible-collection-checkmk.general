@@ -4,17 +4,14 @@
 # than 'CRE' and 'CEE'.
 test_sites:
   - version: "2.2.0p7"
-    edition: "cre"
-    site: "stable_raw"
-  - version: "2.2.0p7"
     edition: "cee"
     site: "stable_ent"
   - version: "2.1.0p31"
-    edition: "cre"
-    site: "oldstable"
+    edition: "cee"
+    site: "old_ent"
   - version: "2.0.0p37"
-    edition: "cre"
-    site: "ancientstable"
+    edition: "cee"
+    site: "ancient_ent"
 
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
