@@ -5,6 +5,29 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v2.4.0
+======
+
+Release Summary
+---------------
+
+Enabling more operating systems!
+
+Minor Changes
+-------------
+
+- Agent role - Ensure fresh data before adding services to host.
+- Agent role - Ensure support for Debian 12.
+- Discovery module - Improve resilience and stability.
+- Server role - Add feature to clean up unused Checkmk versions on the server.
+- Server role - Enable explicit support for Oracle Linux 8.
+- Server role - Ensure explicit support for Debian 12.
+
+Known Issues
+------------
+
+- Discovery module - The module does not work on a controller host with Python 2.
+
 v2.3.0
 ======
 
