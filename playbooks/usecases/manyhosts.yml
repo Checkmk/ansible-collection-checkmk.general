@@ -1,0 +1,100 @@
+---
+- name: "Showcase host and folder modules."
+  hosts: many
+  strategy: linear
+  gather_facts: false
+  vars_files:
+    - ../vars/cma.yml      # This vars file provides details about your site
+    # - ../vars/folders.yml   # This vars file contains the folders to manage
+  tasks:
+    - name: "Create folders."
+      folder:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
+        name: "{{ item.name }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_folders }}"
+
+    - name: "Create hosts."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        attributes:
+          site: "{{ site }}"
+          ipaddress: 127.0.0.1
+        state: "present"
+      delegate_to: localhost
+
+    - name: "Discover services on hosts."
+      discovery:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        host_name: "{{ inventory_hostname }}"
+        state: "fix_all"
+      delegate_to: localhost
+
+    - name: "Activate changes on site."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    - name: "Pause to review changes."
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Press <Enter> to continue."
+
+    - name: "Delete Hosts."
+      host:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        name: "{{ inventory_hostname }}"
+        folder: "{{ checkmk_folder_path }}"
+        state: "absent"
+      delegate_to: localhost
+
+    - name: "Delete folders."
+      folder:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        path: "{{ item.path }}"
+        name: "{{ item.name }}"
+        state: "absent"
+      register: testout
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_folders }}"
+
+    - name: "Activate changes on site."
+      activation:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: 'true'
+        sites:
+          - "{{ site }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]

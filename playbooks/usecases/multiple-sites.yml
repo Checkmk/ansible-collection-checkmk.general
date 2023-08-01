@@ -1,0 +1,264 @@
+---
+# This playbook uses the inventory from the 'playbooks/hosts' file and expects
+# an expects an existing site with the below configuration and hosts of the group
+# 'vagrant'.
+
+
+# - name: "Testing."
+#   ansible.builtin.include_tasks: test.yml
+#   loop: "{{ checkmk_versions }}"
+#   loop_control:
+#     loop_var: outer_item
+
+# - name: "{{ outer_item.version }} - Create hosts."
+#   host:
+#     server_url: "{{ server_url }}"
+#     site: "{{ outer_item.site }}"
+#     automation_user: "{{ automation_user }}"
+#     automation_secret: "{{ automation_secret }}"
+#     host_name: "{{ item.name }}"
+#     folder: "{{ item.folder }}"
+#     attributes:
+#       site: "{{ outer_item.site }}"
+#       ipaddress: 127.0.0.1
+#     state: "present"
+#   delegate_to: localhost
+#   run_once: true  # noqa run-once[task]
+#   loop: "{{ checkmk_hosts }}"
+
+
+- name: "Run tasks against sites."
+  hosts: test
+  strategy: linear
+  gather_facts: false
+  vars:
+    server_url: http://192.168.56.162
+    sites:
+      - zwonull
+      - zwoeins
+      - zwozwo
+    automation_user: cmkadmin
+    automation_secret: cmk
+    checkmk_folders:
+      - path: /test
+        name: Test
+      - path: /foo/
+        name: Foo
+      - path: /bar
+        name: Bar
+      - path: /foo/bar
+        name: Bar
+      - path: /bar/foo
+        name: Foo
+      - path: /foo/bar/treasure
+        name: Treasure
+  tasks:
+    - name: "Testing."
+      ansible.builtin.include_tasks: multiple-sites-tasks.yml
+      loop: "{{ sites }}"
+      loop_control:
+        loop_var: outer_item
+
+# - name: "Run tasks against zwozwo."
+#   hosts: test
+#   gather_facts: false
+#   vars:
+#     server_url: http://192.168.56.162
+#     site: zwoeins
+#     automation_user: cmkadmin
+#     automation_secret: cmk
+#     checkmk_folders:
+#       - path: /test
+#         name: Test
+#       - path: /foo/
+#         name: Foo
+#       - path: /bar
+#         name: Bar
+#       - path: /foo/bar
+#         name: Bar
+#       - path: /bar/foo
+#         name: Foo
+#       - path: /foo/bar/treasure
+#         name: Treasure
+#   tasks:
+#     - name: "Create folder."
+#       folder:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         path: "{{ item.path }}"
+#         name: "{{ item.name }}"
+#         state: "present"
+#       delegate_to: localhost
+#       run_once: true  # noqa run-once[task]
+#       loop: "{{ checkmk_folders }}"
+#     - name: "Create host."
+#       host:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         name: "{{ inventory_hostname }}"
+#         folder: "{{ checkmk_folder_path }}"
+#         attributes:
+#           site: "{{ site }}"
+#           ipaddress: 127.0.0.1
+#         state: "present"
+#       delegate_to: localhost
+#     - name: "Discover services on host."
+#       discovery:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         host_name: localhost
+#         state: "fix_all"
+#       delegate_to: localhost
+#     - name: "Activate changes on site."
+#       activation:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         force_foreign_changes: 'true'
+#         sites:
+#           - "{{ site }}"
+#       delegate_to: localhost
+#       run_once: true  # noqa run-once[task]
+
+# - name: "Run tasks against zwoeins."
+#   hosts: test
+#   gather_facts: false
+#   vars:
+#     server_url: http://192.168.56.162
+#     site: zwoeins
+#     automation_user: cmkadmin
+#     automation_secret: cmk
+#     checkmk_folders:
+#       - path: /test
+#         name: Test
+#       - path: /foo/
+#         name: Foo
+#       - path: /bar
+#         name: Bar
+#       - path: /foo/bar
+#         name: Bar
+#       - path: /bar/foo
+#         name: Foo
+#       - path: /foo/bar/treasure
+#         name: Treasure
+#   tasks:
+#     - name: "Create folder."
+#       folder:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         path: "{{ item.path }}"
+#         name: "{{ item.name }}"
+#         state: "present"
+#       delegate_to: localhost
+#       run_once: true  # noqa run-once[task]
+#       loop: "{{ checkmk_folders }}"
+#     - name: "Create host."
+#       host:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         name: "{{ inventory_hostname }}"
+#         folder: "{{ checkmk_folder_path }}"
+#         attributes:
+#           site: "{{ site }}"
+#           ipaddress: 127.0.0.1
+#         state: "present"
+#       delegate_to: localhost
+#     - name: "Discover services on host."
+#       discovery:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         host_name: localhost
+#         state: "fix_all"
+#       delegate_to: localhost
+#     - name: "Activate changes on site."
+#       activation:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         force_foreign_changes: 'true'
+#         sites:
+#           - "{{ site }}"
+#       delegate_to: localhost
+#       run_once: true  # noqa run-once[task]
+
+# - name: "Run tasks against zwonull."
+#   hosts: test
+#   gather_facts: false
+#   vars:
+#     server_url: http://192.168.56.162
+#     site: zwonull
+#     automation_user: cmkadmin
+#     automation_secret: cmk
+#     checkmk_folders:
+#       - path: /test
+#         name: Test
+#       - path: /foo/
+#         name: Foo
+#       - path: /bar
+#         name: Bar
+#       - path: /foo/bar
+#         name: Bar
+#       - path: /bar/foo
+#         name: Foo
+#       - path: /foo/bar/treasure
+#         name: Treasure
+#   tasks:
+#     - name: "Create folder."
+#       folder:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         path: "{{ item.path }}"
+#         name: "{{ item.name }}"
+#         state: "present"
+#       delegate_to: localhost
+#       run_once: true  # noqa run-once[task]
+#       loop: "{{ checkmk_folders }}"
+#     - name: "Create host."
+#       host:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         name: "{{ inventory_hostname }}"
+#         folder: "{{ checkmk_folder_path }}"
+#         attributes:
+#           site: "{{ site }}"
+#           ipaddress: 127.0.0.1
+#         state: "present"
+#       delegate_to: localhost
+#     - name: "Discover services on host."
+#       discovery:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         host_name: localhost
+#         state: "fix_all"
+#       delegate_to: localhost
+#     - name: "Activate changes on site."
+#       activation:
+#         server_url: "{{ server_url }}"
+#         site: "{{ site }}"
+#         automation_user: "{{ automation_user }}"
+#         automation_secret: "{{ automation_secret }}"
+#         force_foreign_changes: 'true'
+#         sites:
+#           - "{{ site }}"
+#       delegate_to: localhost
+#       run_once: true  # noqa run-once[task]
