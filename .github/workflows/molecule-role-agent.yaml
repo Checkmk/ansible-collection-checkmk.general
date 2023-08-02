@@ -63,10 +63,14 @@ jobs:
         env:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
-      - name: Set up Swap Space
-        uses: pierotofy/set-swap-space@master
-        with:
-          swap-size-gb: 8
+      - name: "Debug Memory."
+        run: |
+          free -h
+          swapon --show
+          fallocate -l 8G /swap
+          chmod 600 /swap
+          mkswap /swap
+          swapon /swap
 
       - name: Test with molecule
         run: |
@@ -76,7 +80,7 @@ jobs:
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
         continue-on-error: true
 
-      - name: Set up Swap Space
-        uses: pierotofy/set-swap-space@master
-        with:
-          swap-size-gb: 8
+      - name: "Debug Memory."
+        run: |
+          free -h
+          swapon --show
