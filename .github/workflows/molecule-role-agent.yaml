@@ -34,12 +34,13 @@ jobs:
 
     steps:
 
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          # this might remove tools that are actually needed,
-          # if set to "true" but frees about 6 GB
-          tool-cache: false
+# Re-enable after Memory Debugging:
+      # - name: Free Disk Space (Ubuntu)
+      #   uses: jlumbroso/free-disk-space@main
+      #   with:
+      #     # this might remove tools that are actually needed,
+      #     # if set to "true" but frees about 6 GB
+      #     tool-cache: false
 
       - name: Check out code
         uses: actions/checkout@v3
@@ -67,10 +68,10 @@ jobs:
         run: |
           free -h
           swapon --show
-          fallocate -l 8G /swap
-          chmod 600 /swap
-          mkswap /swap
-          swapon /swap
+          sudo fallocate -l 8G /swap
+          sudo chmod 600 /swap
+          sudo mkswap /swap
+          sudo swapon /swap
 
       - name: Test with molecule
         run: |
