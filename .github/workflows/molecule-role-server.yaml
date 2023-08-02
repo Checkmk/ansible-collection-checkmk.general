@@ -41,6 +41,15 @@ jobs:
           # if set to "true" but frees about 6 GB
           tool-cache: false
 
+      - name: "Add swap file to avoid memory shortage."
+        run: |
+          sudo fallocate -l 8G /swap
+          sudo chmod 600 /swap
+          sudo mkswap /swap
+          sudo swapon /swap
+          free -h
+          swapon --show
+
       - name: Check out code
         uses: actions/checkout@v3
         with:

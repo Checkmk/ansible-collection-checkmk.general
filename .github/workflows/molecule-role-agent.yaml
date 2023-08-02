@@ -41,6 +41,15 @@ jobs:
           # if set to "true" but frees about 6 GB
           tool-cache: false
 
+      - name: "Add swap file to avoid memory shortage."
+        run: |
+          sudo fallocate -l 8G /swap
+          sudo chmod 600 /swap
+          sudo mkswap /swap
+          sudo swapon /swap
+          free -h
+          swapon --show
+
       - name: Check out code
         uses: actions/checkout@v3
         with:
@@ -63,24 +72,9 @@ jobs:
         env:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
-      - name: "Debug Memory."
-        run: |
-          free -h
-          swapon --show
-          sudo fallocate -l 8G /swap
-          sudo chmod 600 /swap
-          sudo mkswap /swap
-          sudo swapon /swap
-
       - name: Test with molecule
         run: |
           cd roles/agent/
           ln -s ../../requirements.yml requirements.yml
           molecule test -s ${{ matrix.checkmk }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-        continue-on-error: true
-
-      - name: "Debug Memory."
-        run: |
-          free -h
-          swapon --show
