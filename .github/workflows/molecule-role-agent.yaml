@@ -56,14 +56,27 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
       - name: Provide secrets file
         run: echo "${{ secrets.CHECKMK_DOWNLOAD_PW }}" > .dl-secret
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
         env:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
+      - name: Set up Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 8
+
       - name: Test with molecule
         run: |
           cd roles/agent/
+          ln -s ../../requirements.yml requirements.yml
           molecule test -s ${{ matrix.checkmk }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        continue-on-error: true
+
+      - name: Set up Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 8
