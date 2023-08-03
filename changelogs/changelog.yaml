@@ -610,3 +610,11 @@ releases:
     - release.yml
     - server.yml
     release_date: '2023-07-31'
+  2.4.1:
+    changes:
+      minor_changes:
+      - Agent role - The activate changes handler was missing the server port. This
+        is fixed now.
+    fragments:
+    - agent.yml
+    release_date: '2023-08-03'
