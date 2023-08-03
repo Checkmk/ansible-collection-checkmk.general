@@ -1,0 +1,86 @@
+---
+- name: "{{ outer_item.version }} - Create hosts."
+  host:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Bake all agents."
+  bakery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    state: "baked"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Sign all agents."
+  bakery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    signature_key_id: "{{ signature_key_id }}"
+    signature_key_passphrase: "{{ signature_key_passphrase }}"
+    state: "signed"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Bake and Sign all agents."
+  bakery:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    signature_key_id: "{{ signature_key_id }}"
+    signature_key_passphrase: "{{ signature_key_passphrase }}"
+    state: "baked_signed"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Delete hosts."
+  host:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]

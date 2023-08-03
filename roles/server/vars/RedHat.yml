@@ -12,6 +12,10 @@ checkmk_server_prerequisites_per_distro:
     - firewalld
     - dnf-plugins-core
     - python3-libsemanage
+  CentOS:
+    - firewalld
+    - dnf-plugins-core
+    - python3-libsemanage
   CentOS-7:
     - firewalld
     - dnf-plugins-core

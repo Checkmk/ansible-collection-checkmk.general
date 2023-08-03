@@ -30,10 +30,6 @@
 
 .. Anchors: short name for ansible.builtin
 
-.. Anchors: aliases
-
-
-
 .. Title
 
 checkmk.general.contact_group module -- Manage contact groups in Checkmk (bulk version).
@@ -42,7 +38,7 @@ checkmk.general.contact_group module -- Manage contact groups in Checkmk (bulk v
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.4.0).
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
