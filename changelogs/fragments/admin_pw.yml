@@ -1,0 +1,5 @@
+minor_changes:
+  - Server role - Site management can now be done without specifying 'admin_pw'.
+
+known_issues:
+  - This feature introduces a problem though, as users could create sites without knowing the randomly generated password. A task is introduced to mitigate this, but the solution there could be improved.
