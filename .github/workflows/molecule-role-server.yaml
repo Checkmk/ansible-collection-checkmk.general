@@ -34,36 +34,47 @@ jobs:
 
     steps:
 
-      - name: Free Disk Space (Ubuntu)
+      - name: "Free Disk Space."
         uses: jlumbroso/free-disk-space@main
         with:
           # this might remove tools that are actually needed,
           # if set to "true" but frees about 6 GB
           tool-cache: false
 
-      - name: Check out code
+      - name: "Add swap file to avoid memory shortage."
+        run: |
+          sudo fallocate -l 8G /swap
+          sudo chmod 600 /swap
+          sudo mkswap /swap
+          sudo swapon /swap
+          free -h
+          swapon --show
+
+      - name: "Check out code."
         uses: actions/checkout@v3
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: Set up Python
+      - name: "Set up Python."
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: "Install dependencies."
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-      - name: Provide secrets file
+
+      - name: "Provide secrets file."
         run: echo "${{ secrets.CHECKMK_DOWNLOAD_PW }}" > .dl-secret
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
         env:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
-      - name: Test with molecule
+      - name: "Run Molecule."
         run: |
           cd roles/server/
+          ln -s ../../requirements.yml requirements.yml
           molecule test -s ${{ matrix.checkmk }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
