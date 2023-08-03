@@ -4,12 +4,12 @@
   tags:
     - include-os-family-vars
 
-- name: "({{ ansible_system }}): Include OS specific tasks."
+- name: "{{ ansible_system }}: Include OS specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_system }}.yml"
   tags:
     - include-system-tasks
 
-- name: "Fetch fresh monitoring data from the added host."
+- name: "Fetch fresh monitoring data from host."
   become: false
   checkmk.general.discovery:
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
@@ -24,7 +24,6 @@
 
 - name: "Update monitored services and labels on host."
   become: false
-
   checkmk.general.discovery:
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
     site: "{{ checkmk_agent_site }}"

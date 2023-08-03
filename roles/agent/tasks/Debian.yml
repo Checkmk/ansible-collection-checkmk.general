@@ -73,7 +73,7 @@
   tags:
     - download-package
 
-- name: "Debian Derivates: Transfer GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivates: Transfer GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.cee }}"
     dest: "{{ checkmk_agent_agent.file.cee }}"
