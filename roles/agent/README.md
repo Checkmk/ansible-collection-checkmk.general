@@ -50,11 +50,11 @@ The name of your Checkmk site.
 
     checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
 
-The server you want to use for registration tasks (Agent updates and TLS encryption). Defaults to {{ checkmk_agent_server }}.
+The server you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_server }}`.
 
     checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
 
-The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to {{ checkmk_agent_site }}.
+The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_site }}`.
 
     checkmk_agent_user: automation
 
@@ -74,6 +74,10 @@ This is mutually exclusive with `checkmk_agent_pass`.
 
 Enable automatic activation of changes on all sites.
 This is disabled by default, as it might be unexpected.
+
+    checkmk_agent_force_foreign_changes: 'false'
+
+Allow forcing foreign changes on activation by handler.
 
     checkmk_agent_add_host: 'false'
 
@@ -103,11 +107,11 @@ for automatic updates. Otherwise this will fail.
 
     checkmk_agent_configure_firewall: 'true'
 
-Automatically configure the firewall to allow access to the Checkmk agent.
+Automatically configure the firewall (*currently only on RedHat derivatives*) to allow access to the Checkmk agent.
 
     checkmk_agent_configure_firewall_zone: 'public'
 
-When checkmk_agent_configure_firewall then configure firewall zone on RedHat systems. Defaults to 'public'.
+When checkmk_agent_configure_firewall is set to `true` then configure the firewall zone on RedHat derivatives. Defaults to 'public'.
 
     checkmk_agent_force_install: 'false'
 
@@ -136,13 +140,9 @@ Define an IP address which will be added to the host in Checkmk. This is optiona
 
     checkmk_agent_host_attributes:
         ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
-        tag_agent: 'cmk-agent'
 
 Define attributes with which the host will be added to Checkmk.
 
-    checkmk_agent_force_foreign_changes: 'false'
-
-Allow forcing foreign changes on activation by handler.
 
 ## Tags
 Tasks are tagged with the following tags:
