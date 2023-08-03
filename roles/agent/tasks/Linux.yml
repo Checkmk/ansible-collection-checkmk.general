@@ -99,9 +99,6 @@
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }} --trust-cert
   register: checkmk_agent_tls_state
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
-    and checkmk_agent_controller_binary.stat.exists | bool
+    checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
