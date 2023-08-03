@@ -5,6 +5,14 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v2.4.1
+======
+
+Minor Changes
+-------------
+
+- Agent role - The activate changes handler was missing the server port. This is fixed now.
+
 v2.4.0
 ======
 
