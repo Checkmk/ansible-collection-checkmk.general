@@ -14,6 +14,15 @@
   tags:
     - create-sites
 
+- name: "Print warning about missing cmkadmin password."  # ToDo: This can be improved
+  ansible.builtin.debug:
+    msg:
+      - "You created at least one site without specifying an admin password!"
+      - "Please make sure to set it by different means, if you do not want to do it here."
+  loop: "{{ checkmk_server_sites_created.results }}"
+  when: checkmk_server_sites_created.changed | bool and not item.item.admin_pw is defined
+  notify: warn admin password
+
 - name: "Get site version."
   become: true
   ansible.builtin.shell: |
@@ -90,7 +99,7 @@
     executable: /bin/bash
   no_log: true
   loop: "{{ checkmk_server_sites }}"
-  when: (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '<'))
+  when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '<'))
   tags:
     - set-site-admin-pw
 
@@ -105,6 +114,6 @@
     executable: /bin/bash
   no_log: true
   loop: "{{ checkmk_server_sites }}"
-  when: (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '>='))
+  when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '>='))
   tags:
     - set-site-admin-pw
