@@ -6,13 +6,10 @@ feedback:
   - '\[FEED\]'
 
 role:server:
-  - '/component name:.*server.*$/i'
-  - 'Component Name:.*server.*$'
-  - '/component name: server/i'
-  - 'Component Name: server'
+  - any: ['/component name:.*server.*$/i', 'Component Name:.*server.*$', '/component name: server/i', 'Component Name: server']
 
 role:agent:
-  - '/component name:.*agent.*$/i'
+  - 'Component Name: agent'
 
 module:activation:
   - '/component name:.*activation.*$/i'
