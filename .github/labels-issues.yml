@@ -6,7 +6,10 @@ feedback:
   - '\[FEED\]'
 
 role:server:
-  - any: ['/component name:.*server.*$/i', 'Component Name:.*server.*$', '/component name: server/i', 'Component Name: server']
+  - '/component name:.*server.*$/i'
+  - 'Component Name:.*server.*$'
+  - '/component name: server/i'
+  - 'Component Name: server'
 
 role:agent:
   - 'Component Name: agent'
