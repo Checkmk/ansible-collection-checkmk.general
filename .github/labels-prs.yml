@@ -1,9 +1,48 @@
 ---
+documentation:
+  - any: ['**/*.md', '**/*.rst']
+
 role:server:
   - 'roles/server/*'
 
 role:agent:
   - 'roles/agent/*'
+
+module:activation:
+  - 'plugins/modules/activation.py'
+
+module:bakery:
+  - 'plugins/modules/bakery.py'
+
+module:contact_group:
+  - 'plugins/modules/contact_group.py'
+
+module:discovery:
+  - 'plugins/modules/discovery.py'
+
+module:downtime:
+  - 'plugins/modules/downtime.py'
+
+module:folder:
+  - 'plugins/modules/folder.py'
+
+module:host:
+  - 'plugins/modules/host.py'
+
+module:host_group:
+  - 'plugins/modules/host_group.py'
+
+module:password:
+  - 'plugins/modules/password.py'
+
+module:rule:
+  - 'plugins/modules/rule.py'
+
+module:service_group:
+  - 'plugins/modules/service_group.py'
+
+module:tag_group:
+  - 'plugins/modules/tag_group.py'
 
 module:user:
   - 'plugins/modules/user.py'
