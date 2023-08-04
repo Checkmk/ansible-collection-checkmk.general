@@ -16,7 +16,7 @@ Complete all sections as described!
 
 **Component Name**
 <!--  Write the short name of the module or plugin below, use your best guess if unsure. Keeping the below syntax helps us match the issues to labels. -->
-Component Name: `activation`
+Component Name: activation
 
 **Ansible Version**
 <!-- Paste verbatim output from `ansible --version` between triple backticks. -->
