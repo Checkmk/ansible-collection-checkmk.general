@@ -5,7 +5,7 @@ checkmk_edition: "cre"
 checkmk_site: "my_site"
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
-automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
+automation_secret: "d7589df1"
 
 # Server Role
 checkmk_server_edition: "{{ checkmk_edition }}"
@@ -23,20 +23,20 @@ checkmk_server_sites:
   - name: "{{ checkmk_site }}"
     version: "{{ checkmk_version }}"
     state: started
-    admin_pw: cmk
+    admin_pw: "{{ automation_secret }}"
     update_conflict_resolution: install
   - name: "stopped"
     version: "{{ checkmk_version }}"
     state: stopped
-    admin_pw: cmk
+    admin_pw: "{{ automation_secret }}"
     update_conflict_resolution: install
   - name: "present"
     version: "{{ checkmk_version }}"
     state: present
-    admin_pw: cmk
+    admin_pw: "{{ automation_secret }}"
     update_conflict_resolution: install
   - name: "absent"
     version: "{{ checkmk_version }}"
     state: absent
-    admin_pw: cmk
+    admin_pw: "{{ automation_secret }}"
     update_conflict_resolution: install
