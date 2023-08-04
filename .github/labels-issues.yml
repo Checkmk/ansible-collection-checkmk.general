@@ -1,6 +1,51 @@
 ---
 bug:
-  - '[BUG]'
+  - '\[BUG\]'
 
-feed:
-  - '[FEED]'
+feedback:
+  - '\[FEED\]'
+
+role:server:
+  - 'Component Name\nserver'
+
+role:agent:
+  - 'Component Name\nagent'
+
+module:activation:
+  - 'Component Name\nactivation'
+
+module:bakery:
+  - 'Component Name\nbakery'
+
+module:contact_group:
+  - 'Component Name\ncontact_group'
+
+module:discovery:
+  - 'Component Name\ndiscovery'
+
+module:downtime:
+  - 'Component Name\ndowntime'
+
+module:folder:
+  - 'Component Name\nfolder'
+
+module:host:
+  - 'Component Name\nhost'
+
+module:host_group:
+  - 'Component Name\nhost_group'
+
+module:password:
+  - 'Component Name\npassword'
+
+module:rule:
+  - 'Component Name\nrule'
+
+module:service_group:
+  - 'Component Name\nservice_group'
+
+module:tag_group:
+  - 'Component Name\ntag_group'
+
+module:user:
+  - 'Component Name\nuser'

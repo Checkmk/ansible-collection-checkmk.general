@@ -17,11 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Label Issues."
-      uses: github/issue-labeler@v3.1
+      uses: github/issue-labeler@v3.2
       with:
         configuration-path: .github/labels-issues.yml
         include-title: 1
-        # include-body: 0
         repo-token: ${{ github.token }}
         enable-versioned-regex: 0
 
