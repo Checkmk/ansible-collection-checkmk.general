@@ -1,0 +1,35 @@
+name: "Labeler"
+on:
+  workflow_dispatch:
+  issues:
+    types: [opened, edited]
+  pull_request:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+
+  issues:
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Label Issues."
+      uses: github/issue-labeler@v3.2
+      with:
+        configuration-path: .github/labels-issues.yml
+        include-title: 1
+        repo-token: ${{ github.token }}
+        enable-versioned-regex: 0
+        sync-labels: 0
+
+  pulls:
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Label Pull Requests."
+      uses: actions/labeler@v4
+      with:
+        configuration-path: .github/labels-prs.yml
+        sync-labels: 0
