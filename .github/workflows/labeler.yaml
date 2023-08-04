@@ -21,6 +21,7 @@ jobs:
         include-title: 1
         include-body: 0
         repo-token: ${{ github.token }}
+        enable-versioned-regex: 0
 
   pulls:
     permissions:
@@ -30,7 +31,5 @@ jobs:
     steps:
     - name: "Checkout code."
       uses: actions/checkout@v3
-      with:
-        path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
     - name: "Label Pull Requests."
       uses: actions/labeler@v4
