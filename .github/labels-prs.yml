@@ -1,10 +1,4 @@
 ---
-bug:
-  - '[BUG]'
-
-feed:
-  - '[FEED]'
-
 role:server:
   - 'roles/server/*'
 

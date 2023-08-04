@@ -17,7 +17,7 @@ jobs:
     - name: "Label Issues."
       uses: github/issue-labeler@v3.1
       with:
-        configuration-path: .github/labeler.yml
+        configuration-path: .github/labels-issues.yml
         include-title: 1
         # include-body: 0
         repo-token: ${{ github.token }}
@@ -29,7 +29,7 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - name: "Checkout code."
-      uses: actions/checkout@v3
     - name: "Label Pull Requests."
       uses: actions/labeler@v4
+      with:
+        configuration-path: .github/labels-prs.yml
