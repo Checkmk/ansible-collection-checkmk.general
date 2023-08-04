@@ -6,46 +6,46 @@ feedback:
   - '\[FEED\]'
 
 role:server:
-  - 'Component Name\nserver'
+  - '/component name:.*server.*$/i'
 
 role:agent:
-  - 'Component Name\nagent'
+  - '/component name:.*agent.*$/i'
 
 module:activation:
-  - 'Component Name\nactivation'
+  - '/component name:.*activation.*$/i'
 
 module:bakery:
-  - 'Component Name\nbakery'
+  - '/component name:.*bakery.*$/i'
 
 module:contact_group:
-  - 'Component Name\ncontact_group'
+  - '/component name:.*contact_group.*$/i'
 
 module:discovery:
-  - 'Component Name\ndiscovery'
+  - '/component name:.*discovery.*$/i'
 
 module:downtime:
-  - 'Component Name\ndowntime'
+  - '/component name:.*downtime.*$/i'
 
 module:folder:
-  - 'Component Name\nfolder'
+  - '/component name:.*folder.*$/i'
 
 module:host:
-  - 'Component Name\nhost'
+  - '/component name:.*host.*$/i'
 
 module:host_group:
-  - 'Component Name\nhost_group'
+  - '/component name:.*host_group.*$/i'
 
 module:password:
-  - 'Component Name\npassword'
+  - '/component name:.*password.*$/i'
 
 module:rule:
-  - 'Component Name\nrule'
+  - '/component name:.*rule.*$/i'
 
 module:service_group:
-  - 'Component Name\nservice_group'
+  - '/component name:.*service_group.*$/i'
 
 module:tag_group:
-  - 'Component Name\ntag_group'
+  - '/component name:.*tag_group.*$/i'
 
 module:user:
-  - 'Component Name\nuser'
+  - '/component name:.*user.*$/i'
