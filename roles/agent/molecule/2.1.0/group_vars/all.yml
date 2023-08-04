@@ -4,7 +4,7 @@ checkmk_version: "2.1.0p31"
 checkmk_edition: "cre"
 checkmk_site: "my_site"
 automation_user: "cmkadmin"
-automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
+automation_secret: "d7589df1"
 
 # Agent Role
 checkmk_agent_version: "{{ checkmk_version }}"
