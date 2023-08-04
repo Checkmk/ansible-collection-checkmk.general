@@ -6,10 +6,10 @@ feed:
   - '[FEED]'
 
 role:server:
-  - roles/server/**
+  - 'roles/server/**'
 
 role:agent:
-  - roles/agent/**
+  - 'roles/agent/**'
 
 module:user:
-  - plugins/modules/user.py
+  - 'plugins/modules/user.py'

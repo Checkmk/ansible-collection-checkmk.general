@@ -19,7 +19,7 @@ jobs:
       with:
         configuration-path: .github/labeler.yml
         include-title: 1
-        include-body: 0
+        # include-body: 0
         repo-token: ${{ github.token }}
         enable-versioned-regex: 0
 
