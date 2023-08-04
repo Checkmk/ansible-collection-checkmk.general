@@ -7,6 +7,9 @@ feedback:
 
 role:server:
   - '/component name:.*server.*$/i'
+  - 'Component Name:.*server.*$'
+  - '/component name: server/i'
+  - 'Component Name: server'
 
 role:agent:
   - '/component name:.*agent.*$/i'
