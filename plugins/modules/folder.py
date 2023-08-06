@@ -38,20 +38,26 @@ options:
         description:
             - The attributes of your folder as described in the API documentation.
               B(Attention! This option OVERWRITES all existing attributes!)
+              As of Check MK v2.2.0p7 (eventually 2.3.0b1), simultaneous use of I(attributes), I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
-        default: {}
+        # default: {}
+        required: false
     update_attributes:
         description:
             - The update_attributes of your host as described in the API documentation.
               This will only update the given attributes.
+              As of Check MK v2.2.0p7 (eventually 2.3.0b1), simultaneous use of I(attributes), I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
-        default: {}
+        # default: {}
+        required: false
     remove_attributes:
         description:
             - The remove_attributes of your host as described in the API documentation.
               This will only remove the given attributes.
+              As of Check MK v2.2.0p7 (eventually 2.3.0b1), simultaneous use of I(attributes), I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
-        default: []
+        # default: []
+        required: false
     state:
         description: The state of your folder.
         type: str
@@ -144,6 +150,13 @@ from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.dict_transformations import dict_merge
 from ansible.module_utils.urls import fetch_url
 
+from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    result_as_dict,
+)
+
+
 if sys.version[0] == "3":
     from pathlib import Path
 
@@ -184,6 +197,23 @@ def cleanup_path(path):
 
 def path_for_url(module):
     return module.params["path"].replace("/", "~")
+
+
+def get_version(module, base_url, headers):
+    api_endpoint = "version"
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
+
+    if info["status"] != 200:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+
+    checkmkinfo = json.loads(json.loads(response.read()))
+    return (checkmkinfo.get("versions").get("checkmk")).split(".")
 
 
 def get_current_folder_state(module, base_url, headers):
@@ -300,10 +330,10 @@ def run_module():
             required=False,
             aliases=["title"],
         ),
-        attributes=dict(type="raw", default={}),
-        remove_attributes=dict(type="raw", default=[]),
-        update_attributes=dict(type="raw", default={}),
-        state=dict(type="str", default="present", choices=["present", "absent"]),
+        attributes=dict(type="raw", required=False),
+        remove_attributes=dict(type="raw", required=False),
+        update_attributes=dict(type="raw", required=False),
+        state=dict(type="str", required=False, default="present", choices=["present", "absent"]),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
@@ -316,6 +346,29 @@ def run_module():
             msg=missing_required_lib("pathlib2"),
             exception=PATHLIB2_LIBRARY_IMPORT_ERROR,
         )
+
+    count_options = sum([1 for el in ["attributes", "remove_attributes", "update_attributes"] if module.params.get(el) ])
+
+    checkmkversion = get_version(module, base_url, headers)
+
+    if count_options > 1:
+        version_ge_220p7 = False
+        if int(checkmkversion[0]) > 2:
+            version_ge_220p7 = True
+        elif int(checkmkversion[0]) == 2:
+            if int(checkmkversion[1]) > 2:
+               version_ge_220p7 = True
+            elif int(checkmkversion[1]) == 2
+                if checkmkversion[2] >= "0p7"
+                   version_ge_220p7 = True
+
+        if version_ge_220p7:
+            exit_failed(
+                module,
+                "As of Check MK v2.2.0p7 (eventually 2.3.0b1), simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported.",
+            )
+        else:
+            module.warn("As of Check MK v2.2.0p7 (eventually 2.3.0b1), simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported.")
 
     # Use the parameters to initialize some common variables
     headers = {
