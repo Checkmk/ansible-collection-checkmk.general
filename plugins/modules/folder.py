@@ -329,7 +329,12 @@ def run_module():
         attributes=dict(type="raw", required=False),
         remove_attributes=dict(type="raw", required=False),
         update_attributes=dict(type="raw", required=False),
-        state=dict(type="str", required=False, default="present", choices=["present", "absent"]),
+        state=dict(
+            type="str",
+            required=False,
+            default="present",
+            choices=["present", "absent"]
+        ),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
@@ -343,7 +348,29 @@ def run_module():
             exception=PATHLIB2_LIBRARY_IMPORT_ERROR,
         )
 
-    count_options = sum([1 for el in ["attributes", "remove_attributes", "update_attributes"] if module.params.get(el)])
+    # Use the parameters to initialize some common variables
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer %s %s"
+        % (
+            module.params.get("automation_user", ""),
+            module.params.get("automation_secret", ""),
+        ),
+    }
+
+    base_url = "%s/%s/check_mk/api/1.0" % (
+        module.params.get("server_url", ""),
+        module.params.get("site", ""),
+    )
+
+    count_options = sum(
+        [
+            1
+            for el in ["attributes", "remove_attributes", "update_attributes"]
+            if module.params.get(el)
+        ]
+    )
 
     checkmkversion = get_version(module, base_url, headers)
 
@@ -367,22 +394,6 @@ def run_module():
             module.warn(
                 "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported."
             )
-
-    # Use the parameters to initialize some common variables
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s"
-        % (
-            module.params.get("automation_user", ""),
-            module.params.get("automation_secret", ""),
-        ),
-    }
-
-    base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
-        module.params.get("site", ""),
-    )
 
     # Determine desired state and attributes
     attributes = module.params.get("attributes", {})
