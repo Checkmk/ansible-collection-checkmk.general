@@ -369,10 +369,11 @@ def run_module():
         ]
     )
 
-    checkmkversion = get_version(module, base_url, headers)
-
     if count_options > 1:
+        checkmkversion = get_version(module, base_url, headers)
+
         version_ge_220p7 = False
+
         if int(checkmkversion[0]) > 2:
             version_ge_220p7 = True
         elif int(checkmkversion[0]) == 2:
