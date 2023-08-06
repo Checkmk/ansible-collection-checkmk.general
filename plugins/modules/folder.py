@@ -153,7 +153,6 @@ from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.dict_transformations import dict_merge
 from ansible.module_utils.urls import fetch_url
 
-
 if sys.version[0] == "3":
     from pathlib import Path
 
@@ -344,7 +343,7 @@ def run_module():
             exception=PATHLIB2_LIBRARY_IMPORT_ERROR,
         )
 
-    count_options = sum([1 for el in ["attributes", "remove_attributes", "update_attributes"] if module.params.get(el) ])
+    count_options = sum([1 for el in ["attributes", "remove_attributes", "update_attributes"] if module.params.get(el)])
 
     checkmkversion = get_version(module, base_url, headers)
 
@@ -355,8 +354,8 @@ def run_module():
         elif int(checkmkversion[0]) == 2:
             if int(checkmkversion[1]) > 2:
                 version_ge_220p7 = True
-            elif int(checkmkversion[1]) == 2
-                if checkmkversion[2] >= "0p7"
+            elif int(checkmkversion[1]) == 2:
+                if checkmkversion[2] >= "0p7":
                     version_ge_220p7 = True
 
         if version_ge_220p7:
