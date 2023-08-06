@@ -38,7 +38,8 @@ options:
         description:
             - The attributes of your folder as described in the API documentation.
               B(Attention! This option OVERWRITES all existing attributes!)
-              As of Check MK v2.2.0p7 (eventually 2.3.0b1), simultaneous use of I(attributes), I(remove_attributes), and I(update_attributes) is no longer supported.
+              As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
+              I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
         # default: {}
         required: false
@@ -46,7 +47,8 @@ options:
         description:
             - The update_attributes of your host as described in the API documentation.
               This will only update the given attributes.
-              As of Check MK v2.2.0p7 (eventually 2.3.0b1), simultaneous use of I(attributes), I(remove_attributes), and I(update_attributes) is no longer supported.
+              As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
+              I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
         # default: {}
         required: false
@@ -54,7 +56,8 @@ options:
         description:
             - The remove_attributes of your host as described in the API documentation.
               This will only remove the given attributes.
-              As of Check MK v2.2.0p7 (eventually 2.3.0b1), simultaneous use of I(attributes), I(remove_attributes), and I(update_attributes) is no longer supported.
+              As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
+              I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
         # default: []
         required: false
@@ -149,12 +152,6 @@ import traceback
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.dict_transformations import dict_merge
 from ansible.module_utils.urls import fetch_url
-
-from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
-from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
-from ansible_collections.checkmk.general.plugins.module_utils.utils import (
-    result_as_dict,
-)
 
 
 if sys.version[0] == "3":
@@ -357,18 +354,20 @@ def run_module():
             version_ge_220p7 = True
         elif int(checkmkversion[0]) == 2:
             if int(checkmkversion[1]) > 2:
-               version_ge_220p7 = True
+                version_ge_220p7 = True
             elif int(checkmkversion[1]) == 2
                 if checkmkversion[2] >= "0p7"
-                   version_ge_220p7 = True
+                    version_ge_220p7 = True
 
         if version_ge_220p7:
             exit_failed(
                 module,
-                "As of Check MK v2.2.0p7 (eventually 2.3.0b1), simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported.",
+                "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported.",
             )
         else:
-            module.warn("As of Check MK v2.2.0p7 (eventually 2.3.0b1), simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported.")
+            module.warn(
+                "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported."
+            )
 
     # Use the parameters to initialize some common variables
     headers = {
