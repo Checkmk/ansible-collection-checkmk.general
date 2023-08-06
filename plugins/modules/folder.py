@@ -330,10 +330,7 @@ def run_module():
         remove_attributes=dict(type="raw", required=False),
         update_attributes=dict(type="raw", required=False),
         state=dict(
-            type="str",
-            required=False,
-            default="present",
-            choices=["present", "absent"]
+            type="str", required=False, default="present", choices=["present", "absent"]
         ),
     )
 
