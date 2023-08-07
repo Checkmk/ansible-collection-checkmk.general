@@ -6,7 +6,12 @@ This role installs Checkmk agents.
 ## Requirements
 
 <!-- Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required. -->
-None.
+The Ansible Checkmk Collection from this role originates is needed to
+use it, as modules shipped by this collection are used in the role.
+
+It can be installed as easy as running:
+
+    ansible-galaxy collection install checkmk.general
 
 ## Role Variables
 
@@ -90,6 +95,11 @@ The folder into which the automatically created host will be places.
     checkmk_agent_discover: 'false'
 
 Automatically discover services on the host where the agent was installed.
+
+    checkmk_agent_discover_max_parallel_tasks: 0
+
+When this parameter is greater then zero, then only the defined number of
+discovery tasks run at the same time in parallel.
 
     checkmk_agent_update: 'false'
 
