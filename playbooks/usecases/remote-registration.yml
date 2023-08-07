@@ -36,6 +36,7 @@
     checkmk_agent_add_host: 'true'
     # These are some generic agent options you might want to configure.
     checkmk_agent_discover: 'true'
+    checkmk_agent_discover_max_parallel_tasks: 0
     checkmk_agent_force_install: 'true'
     checkmk_agent_delegate_api_calls: localhost
     checkmk_agent_delegate_download: "{{ inventory_hostname }}"
