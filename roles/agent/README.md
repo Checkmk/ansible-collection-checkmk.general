@@ -91,6 +91,11 @@ The folder into which the automatically created host will be places.
 
 Automatically discover services on the host where the agent was installed.
 
+    checkmk_agent_discover_max_parallel_tasks: 0
+
+When this parameter is greater then zero, then only the defined number of
+discovery tasks run at the same time in parallel.
+
     checkmk_agent_update: 'false'
 
 Register host for automatic updates. Make sure to have the server side prepared
