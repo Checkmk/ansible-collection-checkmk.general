@@ -21,6 +21,10 @@
     state: "refresh"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_discover | bool
+  register: result
+  retries: 3
+  delay: 10
+  until: "result.changed | bool"
 
 - name: "Update monitored services and labels on host."
   become: false
@@ -34,4 +38,8 @@
     state: "fix_all"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_discover | bool
+  register: result
+  retries: 3
+  delay: 10
+  until: "result.changed | bool"
   notify: "activate changes"

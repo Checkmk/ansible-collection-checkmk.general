@@ -21,7 +21,10 @@
     dest: "{{ checkmk_agent_agent.file.cre }}"
     mode: '0640'
   when: checkmk_agent_edition == "cre"
+  register: result
   retries: 3
+  delay: 10
+  until: "result.changed | bool"
   tags:
     - download-package
 
