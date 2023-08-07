@@ -1,0 +1,51 @@
+---
+bug:
+  - '\[BUG\]'
+
+feedback:
+  - '\[FEED\]'
+
+role:server:
+  - 'Component Name: server'
+
+role:agent:
+  - 'Component Name: agent'
+
+module:activation:
+  - 'Component Name: activation'
+
+module:bakery:
+  - 'Component Name: bakery'
+
+module:contact_group:
+  - 'Component Name: contact_group'
+
+module:discovery:
+  - 'Component Name: discovery'
+
+module:downtime:
+  - 'Component Name: downtime'
+
+module:folder:
+  - 'Component Name: folder'
+
+module:host:
+  - 'Component Name: host'
+
+module:host_group:
+  - 'Component Name: host_group'
+
+module:password:
+  - 'Component Name: password'
+
+module:rule:
+  - 'Component Name: rule'
+
+module:service_group:
+  - 'Component Name: service_group'
+
+module:tag_group:
+  - 'Component Name: tag_group'
+
+module:user:
+  - 'Component Name: user'
