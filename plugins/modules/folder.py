@@ -384,6 +384,10 @@ def run_module():
             patchlevel = checkmkversion[2].split("b")
             patchtype = "b"
         else:
+            exit_failed(
+                module,
+                "Not supported patch-level schema: %" % (checkmkversion[2]),
+            )
 
         if (
             int(checkmkversion[0]) > 2
