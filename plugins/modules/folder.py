@@ -374,14 +374,22 @@ def run_module():
 
         version_ge_220p7 = False
 
-        if int(checkmkversion[0]) > 2:
+        if "p" in checkmkversion[2]:
+            patchlevel = checkmkversion[2].split("p")
+            patchtype = "p"
+        elif "a" in checkmkversion[2]:
+            patchlevel = checkmkversion[2].split("a")
+            patchtype = "a"
+        elif "b" in checkmkversion[2]:
+            patchlevel = checkmkversion[2].split("b")
+            patchtype = "b"
+        else:
+
+        if (int(checkmkversion[0]) > 2) or
+           (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) > 2) or
+           (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) == 2) and int(patchlevel[0]) > 0) or
+           (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) == 2) and int(patchlevel[0]) == 0 and patchtype == "p" and int(patchlevel[1]) >= 7):
             version_ge_220p7 = True
-        elif int(checkmkversion[0]) == 2:
-            if int(checkmkversion[1]) > 2:
-                version_ge_220p7 = True
-            elif int(checkmkversion[1]) == 2:
-                if checkmkversion[2] >= "0p7":
-                    version_ge_220p7 = True
 
         if version_ge_220p7:
             exit_failed(
