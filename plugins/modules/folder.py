@@ -386,10 +386,10 @@ def run_module():
         else:
 
         if (
-            int(checkmkversion[0]) > 2)
+            int(checkmkversion[0]) > 2
             or (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) > 2)
-            or (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) == 2) and int(patchlevel[0]) > 0)
-            or (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) == 2) and int(patchlevel[0]) == 0 and patchtype == "p" and int(patchlevel[1]) >= 7
+            or (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) == 2 and int(patchlevel[0]) > 0)
+            or (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) == 2 and int(patchlevel[0]) == 0 and patchtype == "p" and int(patchlevel[1]) >= 7)
         ):
             version_ge_220p7 = True
 
