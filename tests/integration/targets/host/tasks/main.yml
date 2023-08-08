@@ -5,7 +5,9 @@
 - name: "Wait for site to be ready."
   ansible.builtin.pause:
     seconds: 5
-  when: "'OVERALL 1' in item.stdout_lines"
+  when: |
+    ((download_pass is defined and download_pass | length) or item.item.edition == 'cre')
+    and (item.stdout_lines is defined and 'OVERALL 1' in item.stdout_lines)
   loop: "{{ site_status.results }}"
 
 - name: "Testing."
@@ -13,3 +15,4 @@
   loop: "{{ test_sites }}"
   loop_control:
     loop_var: outer_item
+  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
