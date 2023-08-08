@@ -280,7 +280,7 @@ def create_folder(module, attributes, base_url, headers):
         "name": foldername,
         "title": name,
         "parent": parent,
-        "attributes": attributes,
+        "attributes": attributes if attributes else {},
     }
     url = base_url + api_endpoint
 
@@ -441,7 +441,9 @@ def run_module():
         msg_tokens = []
 
         if update_attributes:
-            merged_attributes = dict_merge(current_explicit_attributes, update_attributes)
+            merged_attributes = dict_merge(
+                current_explicit_attributes, update_attributes
+            )
 
         params = {}
         changed = False
@@ -466,9 +468,7 @@ def run_module():
 
         if params != {}:
             if not module.check_mode:
-                changed = set_folder_attributes(
-                    module, base_url, headers, params
-                )
+                changed = set_folder_attributes(module, base_url, headers, params)
 
             if changed:
                 msg_tokens.append("Folder attributes updated.")
