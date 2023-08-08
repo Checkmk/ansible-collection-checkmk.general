@@ -41,7 +41,6 @@ options:
               As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
               I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
-        # default: {}
         required: false
     update_attributes:
         description:
@@ -50,7 +49,6 @@ options:
               As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
               I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
-        # default: {}
         required: false
     remove_attributes:
         description:
@@ -59,7 +57,6 @@ options:
               As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
               I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
-        # default: []
         required: false
     state:
         description: The state of your folder.
@@ -247,7 +244,7 @@ def get_current_folder_state(module, base_url, headers):
     return current_state, current_explicit_attributes, current_title, etag
 
 
-def set_folder_attributes(module, attributes, base_url, headers, params):
+def set_folder_attributes(module, base_url, headers, params):
     api_endpoint = "/objects/folder_config/" + path_for_url(module)
     url = base_url + api_endpoint
 
@@ -313,7 +310,7 @@ def delete_folder(module, base_url, headers):
         )
 
 
-def version_ge_220p7(module, checkmkversion):
+def get_version_ge_220p7(module, checkmkversion):
     if "p" in checkmkversion[2]:
         patchlevel = checkmkversion[2].split("p")
         patchtype = "p"
@@ -409,7 +406,9 @@ def run_module():
     if count_options > 1:
         checkmkversion = get_version(module, base_url, headers)
 
-        if version_ge_220p7(module, checkmkversion):
+        version_ge_220p7 = get_version_ge_220p7(module, checkmkversion)
+
+        if version_ge_220p7:
             exit_failed(
                 module,
                 "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported.",
@@ -420,11 +419,12 @@ def run_module():
             )
 
     # Determine desired state and attributes
-    attributes = module.params.get("attributes", {})
-    remove_attributes = module.params.get("remove_attributes", [])
-    update_attributes = module.params.get("update_attributes", {})
+    attributes = module.params.get("attributes")
+    remove_attributes = module.params.get("remove_attributes")
+    update_attributes = module.params.get("update_attributes")
     if attributes == []:
         attributes = {}
+
     state = module.params.get("state", "present")
 
     # Determine the current state of this particular folder
@@ -440,7 +440,8 @@ def run_module():
         headers["If-Match"] = etag
         msg_tokens = []
 
-        merged_attributes = dict_merge(current_explicit_attributes, update_attributes)
+        if update_attributes:
+            merged_attributes = dict_merge(current_explicit_attributes, update_attributes)
 
         params = {}
         changed = False
@@ -448,15 +449,15 @@ def run_module():
             params["title"] = module.params.get("name")
             changed = True
 
-        if attributes != {} and current_explicit_attributes != attributes:
+        if attributes and current_explicit_attributes != attributes:
             params["attributes"] = attributes
             changed = True
 
-        if update_attributes != {} and current_explicit_attributes != merged_attributes:
+        if update_attributes and current_explicit_attributes != merged_attributes:
             params["update_attributes"] = merged_attributes
             changed = True
 
-        if remove_attributes != []:
+        if remove_attributes:
             for el in remove_attributes:
                 if current_explicit_attributes.get(el):
                     changed = True
@@ -466,7 +467,7 @@ def run_module():
         if params != {}:
             if not module.check_mode:
                 changed = set_folder_attributes(
-                    module, attributes, base_url, headers, params
+                    module, base_url, headers, params
                 )
 
             if changed:
@@ -480,7 +481,7 @@ def run_module():
             )
 
     elif state == "present" and current_state == "absent":
-        if update_attributes != {} and attributes == {}:
+        if update_attributes != {} and (attributes or attributes == {}):
             attributes = update_attributes
         if not module.check_mode:
             create_folder(module, attributes, base_url, headers)
