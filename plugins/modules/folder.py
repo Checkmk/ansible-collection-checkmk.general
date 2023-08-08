@@ -313,6 +313,43 @@ def delete_folder(module, base_url, headers):
         )
 
 
+def version_ge_220p7(module, checkmkversion)
+    if "p" in checkmkversion[2]:
+        patchlevel = checkmkversion[2].split("p")
+        patchtype = "p"
+    elif "a" in checkmkversion[2]:
+        patchlevel = checkmkversion[2].split("a")
+        patchtype = "a"
+    elif "b" in checkmkversion[2]:
+        patchlevel = checkmkversion[2].split("b")
+        patchtype = "b"
+    else:
+        exit_failed(
+            module,
+            "Not supported patch-level schema: %s" % (checkmkversion[2]),
+        )
+
+    if (
+        int(checkmkversion[0]) > 2
+        or (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) > 2)
+        or (
+            int(checkmkversion[0]) == 2
+            and int(checkmkversion[1]) == 2
+            and int(patchlevel[0]) > 0
+        )
+        or (
+            int(checkmkversion[0]) == 2
+            and int(checkmkversion[1]) == 2
+            and int(patchlevel[0]) == 0
+            and patchtype == "p"
+            and int(patchlevel[1]) >= 7
+        )
+    ):
+        return True
+    else:
+        return False
+
+
 def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
@@ -372,42 +409,7 @@ def run_module():
     if count_options > 1:
         checkmkversion = get_version(module, base_url, headers)
 
-        version_ge_220p7 = False
-
-        if "p" in checkmkversion[2]:
-            patchlevel = checkmkversion[2].split("p")
-            patchtype = "p"
-        elif "a" in checkmkversion[2]:
-            patchlevel = checkmkversion[2].split("a")
-            patchtype = "a"
-        elif "b" in checkmkversion[2]:
-            patchlevel = checkmkversion[2].split("b")
-            patchtype = "b"
-        else:
-            exit_failed(
-                module,
-                "Not supported patch-level schema: %s" % (checkmkversion[2]),
-            )
-
-        if (
-            int(checkmkversion[0]) > 2
-            or (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) > 2)
-            or (
-                int(checkmkversion[0]) == 2
-                and int(checkmkversion[1]) == 2
-                and int(patchlevel[0]) > 0
-            )
-            or (
-                int(checkmkversion[0]) == 2
-                and int(checkmkversion[1]) == 2
-                and int(patchlevel[0]) == 0
-                and patchtype == "p"
-                and int(patchlevel[1]) >= 7
-            )
-        ):
-            version_ge_220p7 = True
-
-        if version_ge_220p7:
+        if version_ge_220p7(module, checkmkversion):
             exit_failed(
                 module,
                 "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported.",
