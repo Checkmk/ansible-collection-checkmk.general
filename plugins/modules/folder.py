@@ -313,7 +313,7 @@ def delete_folder(module, base_url, headers):
         )
 
 
-def version_ge_220p7(module, checkmkversion)
+def version_ge_220p7(module, checkmkversion):
     if "p" in checkmkversion[2]:
         patchlevel = checkmkversion[2].split("p")
         patchtype = "p"
