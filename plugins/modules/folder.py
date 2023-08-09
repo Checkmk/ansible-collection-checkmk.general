@@ -38,20 +38,26 @@ options:
         description:
             - The attributes of your folder as described in the API documentation.
               B(Attention! This option OVERWRITES all existing attributes!)
+              As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
+              I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
-        default: {}
+        required: false
     update_attributes:
         description:
             - The update_attributes of your host as described in the API documentation.
               This will only update the given attributes.
+              As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
+              I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
-        default: {}
+        required: false
     remove_attributes:
         description:
             - The remove_attributes of your host as described in the API documentation.
               This will only remove the given attributes.
+              As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
+              I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
-        default: []
+        required: false
     state:
         description: The state of your folder.
         type: str
@@ -186,6 +192,23 @@ def path_for_url(module):
     return module.params["path"].replace("/", "~")
 
 
+def get_version(module, base_url, headers):
+    api_endpoint = "version"
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
+
+    if info["status"] != 200:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+
+    checkmkinfo = json.loads(json.loads(response.read()))
+    return (checkmkinfo.get("versions").get("checkmk")).split(".")
+
+
 def get_current_folder_state(module, base_url, headers):
     current_state = "unknown"
     current_explicit_attributes = {}
@@ -221,7 +244,7 @@ def get_current_folder_state(module, base_url, headers):
     return current_state, current_explicit_attributes, current_title, etag
 
 
-def set_folder_attributes(module, attributes, base_url, headers, params):
+def set_folder_attributes(module, base_url, headers, params):
     api_endpoint = "/objects/folder_config/" + path_for_url(module)
     url = base_url + api_endpoint
 
@@ -257,7 +280,7 @@ def create_folder(module, attributes, base_url, headers):
         "name": foldername,
         "title": name,
         "parent": parent,
-        "attributes": attributes,
+        "attributes": attributes if attributes else {},
     }
     url = base_url + api_endpoint
 
@@ -287,6 +310,43 @@ def delete_folder(module, base_url, headers):
         )
 
 
+def get_version_ge_220p7(module, checkmkversion):
+    if "p" in checkmkversion[2]:
+        patchlevel = checkmkversion[2].split("p")
+        patchtype = "p"
+    elif "a" in checkmkversion[2]:
+        patchlevel = checkmkversion[2].split("a")
+        patchtype = "a"
+    elif "b" in checkmkversion[2]:
+        patchlevel = checkmkversion[2].split("b")
+        patchtype = "b"
+    else:
+        exit_failed(
+            module,
+            "Not supported patch-level schema: %s" % (checkmkversion[2]),
+        )
+
+    if (
+        int(checkmkversion[0]) > 2
+        or (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) > 2)
+        or (
+            int(checkmkversion[0]) == 2
+            and int(checkmkversion[1]) == 2
+            and int(patchlevel[0]) > 0
+        )
+        or (
+            int(checkmkversion[0]) == 2
+            and int(checkmkversion[1]) == 2
+            and int(patchlevel[0]) == 0
+            and patchtype == "p"
+            and int(patchlevel[1]) >= 7
+        )
+    ):
+        return True
+    else:
+        return False
+
+
 def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
@@ -300,10 +360,12 @@ def run_module():
             required=False,
             aliases=["title"],
         ),
-        attributes=dict(type="raw", default={}),
-        remove_attributes=dict(type="raw", default=[]),
-        update_attributes=dict(type="raw", default={}),
-        state=dict(type="str", default="present", choices=["present", "absent"]),
+        attributes=dict(type="raw", required=False),
+        remove_attributes=dict(type="raw", required=False),
+        update_attributes=dict(type="raw", required=False),
+        state=dict(
+            type="str", required=False, default="present", choices=["present", "absent"]
+        ),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
@@ -333,12 +395,36 @@ def run_module():
         module.params.get("site", ""),
     )
 
+    count_options = sum(
+        [
+            1
+            for el in ["attributes", "remove_attributes", "update_attributes"]
+            if module.params.get(el)
+        ]
+    )
+
+    if count_options > 1:
+        checkmkversion = get_version(module, base_url, headers)
+
+        version_ge_220p7 = get_version_ge_220p7(module, checkmkversion)
+
+        if version_ge_220p7:
+            exit_failed(
+                module,
+                "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported.",
+            )
+        else:
+            module.warn(
+                "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported."
+            )
+
     # Determine desired state and attributes
-    attributes = module.params.get("attributes", {})
-    remove_attributes = module.params.get("remove_attributes", [])
-    update_attributes = module.params.get("update_attributes", {})
+    attributes = module.params.get("attributes")
+    remove_attributes = module.params.get("remove_attributes")
+    update_attributes = module.params.get("update_attributes")
     if attributes == []:
         attributes = {}
+
     state = module.params.get("state", "present")
 
     # Determine the current state of this particular folder
@@ -354,7 +440,10 @@ def run_module():
         headers["If-Match"] = etag
         msg_tokens = []
 
-        merged_attributes = dict_merge(current_explicit_attributes, update_attributes)
+        if update_attributes:
+            merged_attributes = dict_merge(
+                current_explicit_attributes, update_attributes
+            )
 
         params = {}
         changed = False
@@ -362,15 +451,15 @@ def run_module():
             params["title"] = module.params.get("name")
             changed = True
 
-        if attributes != {} and current_explicit_attributes != attributes:
+        if attributes and current_explicit_attributes != attributes:
             params["attributes"] = attributes
             changed = True
 
-        if update_attributes != {} and current_explicit_attributes != merged_attributes:
+        if update_attributes and current_explicit_attributes != merged_attributes:
             params["update_attributes"] = merged_attributes
             changed = True
 
-        if remove_attributes != []:
+        if remove_attributes:
             for el in remove_attributes:
                 if current_explicit_attributes.get(el):
                     changed = True
@@ -379,9 +468,7 @@ def run_module():
 
         if params != {}:
             if not module.check_mode:
-                changed = set_folder_attributes(
-                    module, attributes, base_url, headers, params
-                )
+                changed = set_folder_attributes(module, base_url, headers, params)
 
             if changed:
                 msg_tokens.append("Folder attributes updated.")
@@ -394,7 +481,7 @@ def run_module():
             )
 
     elif state == "present" and current_state == "absent":
-        if update_attributes != {} and attributes == {}:
+        if update_attributes != {} and (attributes or attributes == {}):
             attributes = update_attributes
         if not module.check_mode:
             create_folder(module, attributes, base_url, headers)
