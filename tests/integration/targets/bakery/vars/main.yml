@@ -16,7 +16,7 @@ automation_secret: "d7589df1"
 
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
 download_user: "d-gh-ansible-dl"
-download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret') }}"
+download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret', errors='ignore') | default(omit) }}"  # noqa yaml[line-length]
 
 # Due to inconsitent naming of editions, we normalize them here for convenience
 checkmk_server_edition_mapping:
