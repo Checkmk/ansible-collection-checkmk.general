@@ -9,7 +9,7 @@ test_sites:
   - version: "2.2.0p7"
     edition: "cee"
     site: "stable_ent"
-  - version: "2.1.0p31"
+  - version: "2.1.0p32"
     edition: "cre"
     site: "old_raw"
   - version: "2.0.0p37"
