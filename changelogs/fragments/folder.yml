@@ -1,0 +1,2 @@
+minor_changes:
+  - Folder module - Warn about mutually exclusive attribute options on older Checkmk versions and fail on recent Checkmk versions.
