@@ -24,7 +24,7 @@ download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-
 download_user: "d-gh-ansible-dl"
 download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret', errors='ignore') | default(omit) }}"  # noqa yaml[line-length]
 
-# Due to inconsitent naming of editions, we normalize them here for convenience
+# Due to inconsistent naming of editions, we normalize them here for convenience
 checkmk_server_edition_mapping:
   cre: raw
   cfe: free
