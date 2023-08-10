@@ -439,7 +439,6 @@ def run_module():
                     apply_defaults=True,
                 ),
             ),
-            mutually_exclusive=[("folder", "location")],
         ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
