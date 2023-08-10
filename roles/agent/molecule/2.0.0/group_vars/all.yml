@@ -1,6 +1,6 @@
 ---
 # General
-checkmk_version: "2.0.0p37"
+checkmk_version: "2.0.0p38"
 checkmk_edition: "cre"
 checkmk_site: "my_site"
 automation_user: "cmkadmin"
