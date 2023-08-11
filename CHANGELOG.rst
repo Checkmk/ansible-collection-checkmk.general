@@ -5,6 +5,28 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v3.0.0
+======
+
+Release Summary
+---------------
+
+Removing deprecated module options and more cleaning.
+
+Minor Changes
+-------------
+
+- Agent role - Allow throttling of discovery task to limit load on Checkmk server.
+- Folder module - Warn about mutually exclusive attribute options on older Checkmk versions and fail on recent Checkmk versions. See 'Breaking Changes'.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Folder module - The module options 'attributes', 'update_attributes' and 'remove_attributes' are now mutually exclusive. Using more than one on a single task will cause a warning or error.
+- Host group module - Deprecated options 'host_group_name' and 'host_groups' were removed. Use 'name' and 'groups' instead!
+- Host module - Deprecated option 'host_name' was removed. Use 'name' instead!
+- Rule module - Deprecated option 'folder' was removed. Use 'location' instead!
+
 v2.4.1
 ======
 
