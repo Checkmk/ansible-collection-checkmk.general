@@ -27,7 +27,6 @@ options:
     name:
         description: The name of the host group to be created/modified/deleted.
         type: str
-        aliases: [host_group_name]
     title:
         description: The title (alias) of your host group. If omitted defaults to the name.
         type: str
@@ -37,7 +36,6 @@ options:
               If title is omitted in entry, it defaults to the host group name.
         default: []
         type: raw
-        aliases: [host_groups]
     state:
         description: The state of your host group.
         type: str
@@ -350,28 +348,12 @@ def run_module():
         name=dict(
             type="str",
             required=False,
-            aliases=["host_group_name"],
-            deprecated_aliases=[
-                {
-                    "name": "host_group_name",
-                    "collection_name": "checkmk.general",
-                    "version": "3.0.0",
-                }
-            ],
         ),
         title=dict(type="str", required=False),
         groups=dict(
             type="raw",
             required=False,
             default=[],
-            aliases=["host_groups"],
-            deprecated_aliases=[
-                {
-                    "name": "host_groups",
-                    "collection_name": "checkmk.general",
-                    "version": "3.0.0",
-                }
-            ],
         ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
@@ -414,7 +396,7 @@ def run_module():
         if "title" in module.params and module.params.get("title", ""):
             exit_failed(
                 module,
-                "'title' has only effect when 'name' (deprecated alias 'host_group_name') is defined and not 'groups' (deprecated alias 'host_groups')",
+                "'title' has only effect when 'name' is defined and not 'groups'",
             )
 
         groups = module.params.get("groups")

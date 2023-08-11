@@ -4,11 +4,33 @@
   gather_facts: false
   tasks:
 
-    - name: "Test Server is running."
+
+    - name: "Test Server is running."  # noqa no-changed-when
+      ansible.builtin.command: omd status {{ checkmk_site }}
+      register: checkmk_server_omd_state
+
+    - name: "Verify Server is running."
+      ansible.builtin.assert:
+        that: checkmk_server_omd_state.rc == 0
+
+    - name: "Test site URL returns 200."
       ansible.builtin.uri:
         url: "{{ server_url }}/{{ checkmk_site }}/"
       register: checkmk_server_url_state
 
-    - name: "Verify Server is running."
+    - name: "Verify site URL returns 200."
       ansible.builtin.assert:
         that: checkmk_server_url_state.status == 200
+
+    - name: "Test if we can talk to the REST API by activating changes."
+      checkmk.general.activation:
+        server_url: "{{ server_url }}"
+        site: "{{ checkmk_site }}"
+        automation_user: "{{ automation_user }}"
+        automation_secret: "{{ automation_secret }}"
+        force_foreign_changes: true
+      register: checkmk_server_api_state
+
+    - name: "Verify REST API call."
+      ansible.builtin.assert:
+        that: checkmk_server_api_state.msg == "422 - There are no changes to be activated."
