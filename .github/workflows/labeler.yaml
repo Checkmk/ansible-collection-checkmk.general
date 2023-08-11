@@ -17,7 +17,7 @@ jobs:
 
   issues:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == "issue" }}
+    if: ${{ github.event_name == "issues" }}
     steps:
     - name: "Label Issues."
       uses: github/issue-labeler@v3.2
