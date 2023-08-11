@@ -4,8 +4,6 @@ on:
   issues:
     types: [opened, edited]
   pull_request_target:
-    types: [opened, edited]
-  push:
     paths:
       - 'plugins/**'
       - 'roles/**'
@@ -19,6 +17,7 @@ jobs:
 
   issues:
     runs-on: ubuntu-latest
+    if: ${{ !github.event.issue.pull_request }}
     steps:
     - name: "Label Issues."
       uses: github/issue-labeler@v3.2
@@ -31,6 +30,7 @@ jobs:
 
   pulls:
     runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request }}
     steps:
     - name: "Label Pull Requests."
       uses: actions/labeler@v4
