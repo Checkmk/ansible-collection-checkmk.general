@@ -17,7 +17,7 @@ jobs:
 
   issues:
     runs-on: ubuntu-latest
-    if: ${{ !github.event.issue.pull_request }}
+    if: ${{ github.event_name == "issue" }}
     steps:
     - name: "Label Issues."
       uses: github/issue-labeler@v3.2
@@ -30,7 +30,7 @@ jobs:
 
   pulls:
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue.pull_request }}
+    if: ${{ github.event_name == "pull_request" || github.event_name == "pull_request_target" }}
     steps:
     - name: "Label Pull Requests."
       uses: actions/labeler@v4
