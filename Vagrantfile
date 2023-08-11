@@ -171,4 +171,20 @@ Vagrant.configure("2") do |config|
       inline: "dnf --quiet check-update ; dnf -y install vim curl wget git"
   end
 
+  # Windows
+  config.vm.define "ansidows", autostart: false , primary: false do |srv|
+    srv.vm.box = "gusztavvargadr/windows-server-2019-standard"
+    srv.vm.network "private_network", ip: "192.168.56.67"
+    srv.vm.communicator = "winrm"
+    srv.vm.hostname = "ansidows"
+    srv.vm.provider "virtualbox" do |srv|
+      srv.name = 'ansidows'
+      srv.memory = 4096
+      srv.cpus = 2
+      srv.gui = false
+    end
+    srv.vm.provision "shell",
+      inline: "powershell Set-NetFirewallRule -name 'FPS-ICMP4-ERQ-In*' -Enabled true"
+  end
+
 end

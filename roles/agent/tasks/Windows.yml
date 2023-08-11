@@ -1,0 +1,89 @@
+---
+- name: "{{ ansible_os_family }}: Download Checkmk CRE Agent."
+  ansible.windows.win_get_url:
+    url: "{{ checkmk_agent_agent.url.cre }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    dest: "{{ checkmk_agent_agent.file.cre }}"
+  when: checkmk_agent_edition == "cre"
+  register: result
+  retries: 3
+  delay: 10
+  until: "result.changed | bool"
+  tags:
+    - download-package
+
+- name: "{{ ansible_os_family }}: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+  ansible.windows.win_get_url:
+    url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ checkmk_agent_host_name }}&os_type=windows_msi&agent_type=host_name"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    dest: "{{ checkmk_agent_agent.file.host }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_auth }}"
+      Accept: "application/octet-stream"
+  when: |
+    checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme"
+  register: checkmk_agent_download_state
+  # This task may fail, as we fall back to the generic agent in that case
+  failed_when: 'false'
+  changed_when: 'false'
+  delegate_to: "{{ checkmk_agent_delegate_download }}"
+  tags:
+    - download-package
+
+- name: "{{ ansible_os_family }}: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+  ansible.windows.win_package:
+    path: "{{ checkmk_agent_agent.file.host }}"
+    state: present
+  when: |
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
+    and checkmk_agent_download_state.status_code == 200
+  tags:
+    - install-package
+
+- name: "{{ ansible_os_family }}: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+  ansible.windows.win_get_url:
+    url: "{{ checkmk_agent_agent.url.cee }}?os_type=windows_msi&agent_type=generic"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    dest: "{{ checkmk_agent_agent.file.cee }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_auth }}"
+      Accept: "application/octet-stream"
+  when: |
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
+    and checkmk_agent_download_state.status_code != 200
+  retries: 3
+  delegate_to: "{{ checkmk_agent_delegate_download }}"
+  tags:
+    - download-package
+
+- name: "{{ ansible_os_family }}: Install GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+  ansible.windows.win_package:
+    path: "{{ checkmk_agent_agent.file.cee }}"
+    state: present
+  when: |
+    (checkmk_agent_edition == "cee" or
+    checkmk_agent_edition == "cce" or
+    checkmk_agent_edition == "cfe" or
+    checkmk_agent_edition == "cme")
+    and checkmk_agent_download_state.status_code != 200
+  tags:
+    - install-package
+
+- name: "{{ ansible_os_family }}: Install Checkmk CRE Agent."
+  ansible.windows.win_package:
+    path: "{{ checkmk_agent_agent.file.cre }}"
+    state: present
+  when: checkmk_agent_edition == "cre"
+  tags:
+    - install-package
