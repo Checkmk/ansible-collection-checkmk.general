@@ -14,10 +14,10 @@
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme"
   become: false
-  register: checkmk_agent_generic_download_state
+  register: checkmk_agent_host_download_state
   # This task may fail, as we fall back to the generic agent in that case
   failed_when: 'false'
-  changed_when: 'false'
+  changed_when: checkmk_agent_host_download_state.status is defined and checkmk_agent_host_download_state.status == 200
   delegate_to: "{{ checkmk_agent_delegate_download }}"
   tags:
     - download-package
@@ -25,7 +25,7 @@
 - name: "Set Fact: Agent State: host-specific."
   ansible.builtin.set_fact:
     checkmk_agent_host_specific: >-
-     {% if checkmk_agent_generic_download_state.status is defined and checkmk_agent_generic_download_state.status == 200 %}true{% else %}false{% endif %}
+     {% if checkmk_agent_host_download_state.status is defined and checkmk_agent_host_download_state.status == 200 %}true{% else %}false{% endif %}
 
 - name: "{{ ansible_os_family }} Derivatives: Transfer host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
@@ -77,7 +77,7 @@
     and not checkmk_agent_host_specific | bool
   retries: 3
   failed_when: 'false'
-  changed_when: 'false'
+  changed_when: checkmk_agent_folder_download_state.status is defined and checkmk_agent_folder_download_state.status == 200
   delegate_to: "{{ checkmk_agent_delegate_download }}"
   tags:
     - download-package
@@ -102,13 +102,13 @@
     checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
-    and not checkmk_agent_folder_specific | bool
+    and not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
   retries: 3
   delegate_to: "{{ checkmk_agent_delegate_download }}"
   tags:
     - download-package
 
-- name: "{{ ansible_os_family }} Derivatives: Transfer GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Transfer GENERIC or folder-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.cee }}"
     dest: "{{ checkmk_agent_agent.file.cee }}"
@@ -118,12 +118,12 @@
     checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
-    and (not checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
+    and not checkmk_agent_host_specific | bool
     and checkmk_agent_delegate_download != inventory_hostname
   tags:
     - download-package
 
-- name: "{{ ansible_os_family }} Derivatives: Install GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install GENERIC or folder-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.yum:
     name: "{{ checkmk_agent_agent.file.cee }}"
@@ -134,7 +134,7 @@
     checkmk_agent_edition == "cce" or
     checkmk_agent_edition == "cfe" or
     checkmk_agent_edition == "cme")
-    and (not checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
+    and not checkmk_agent_host_specific | bool
   tags:
     - install-package
 
