@@ -37,11 +37,7 @@
 - name: "Set Fact: Agent State: host-specific."
   ansible.builtin.set_fact:
     checkmk_agent_host_specific: >-
-     {%- if checkmk_agent_host_download_state.status_code is defined and checkmk_agent_host_download_state.status_code == 200 -%}
-     true
-     {%- else -%}
-     false
-     {%- endif -%}
+      {{ (checkmk_agent_host_download_state.status_code is defined and checkmk_agent_host_download_state.status_code == 200) | bool }}
 
 - name: "{{ ansible_os_family }}: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.windows.win_package:
@@ -83,11 +79,7 @@
 - name: "Set Fact: Agent State: folder-specific."
   ansible.builtin.set_fact:
     checkmk_agent_folder_specific: >-
-     {%- if checkmk_agent_folder_download_state.status_code is defined and checkmk_agent_folder_download_state.status_code == 200 -%}
-     true
-     {%- else -%}
-     false
-     {%- endif -%}
+      {{ (checkmk_agent_folder_download_state.status_code is defined and checkmk_agent_folder_download_state.status_code == 200) | bool }}
 
 - name: "{{ ansible_os_family }}: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.windows.win_get_url:

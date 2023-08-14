@@ -25,7 +25,7 @@
 - name: "Set Fact: Agent State: host-specific."
   ansible.builtin.set_fact:
     checkmk_agent_host_specific: >-
-     {% if checkmk_agent_host_download_state.status is defined and checkmk_agent_host_download_state.status == 200 %}true{% else %}false{% endif %}
+     {{ (checkmk_agent_host_download_state.status is defined and checkmk_agent_host_download_state.status == 200) | bool }}
 
 - name: "{{ ansible_os_family }} Derivatives: Transfer host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
@@ -86,7 +86,7 @@
 - name: "Set Fact: Agent State: folder-specific."
   ansible.builtin.set_fact:
     checkmk_agent_folder_specific: >-
-     {% if checkmk_agent_folder_download_state.status is defined and checkmk_agent_folder_download_state.status == 200 %}true{% else %}false{% endif %}
+     {{ (checkmk_agent_folder_download_state.status is defined and checkmk_agent_folder_download_state.status == 200) | bool }}
 
 - name: "{{ ansible_os_family }} Derivatives: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
