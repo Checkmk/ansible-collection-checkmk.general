@@ -1,133 +1,33 @@
 ---
-- name: "Include Derivative specific Variables."
+- name: "Include OS family specific variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-vars
 
-- name: "Get RPM or APT package facts."
-  ansible.builtin.package_facts:
-    manager: "auto"
+- name: "{{ ansible_system }}: Include OS specific tasks."
+  ansible.builtin.include_tasks: "{{ ansible_system }}.yml"
   tags:
-    - get-package-facts
+    - include-system-tasks
 
-- name: Populate service facts.
-  ansible.builtin.service_facts:
-
-- name: "Import Legacy agent tasks."
-  ansible.builtin.include_tasks: "legacy.yml"
-  when: |
-    checkmk_agent_prep_legacy | bool
-    and ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
-
-- name: "Download Checkmk CRE Agent."
-  ansible.builtin.get_url:
-    url: "{{ checkmk_agent_agent.url.cre }}"
-    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
-    dest: "{{ checkmk_agent_agent.file.cre }}"
-    mode: "0640"
-  delegate_to: "{{ checkmk_agent_delegate_download }}"
+- name: "Fetch fresh monitoring data from host."
   become: false
-  when: checkmk_agent_edition == "cre"
-  retries: 3
-  tags:
-    - download-package
-
-- name: "Transfer Checkmk CRE agent to remote node"
-  ansible.builtin.copy:
-    src: "{{ checkmk_agent_agent.file.cre }}"
-    dest: "{{ checkmk_agent_agent.file.cre }}"
-    mode: "0644"
-  when:
-    - checkmk_agent_edition == "cre"
-    - checkmk_agent_delegate_download != inventory_hostname
-  tags:
-    - download-package
-
-- name: "Run OS Family specific Tasks."
-  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
-  tags:
-    - include-os-family-tasks
-
-- name: "Create host on server."
-  checkmk.general.host:
+  checkmk.general.discovery:
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
     automation_secret: "{{ checkmk_agent_auth }}"
-    folder: "{{ checkmk_agent_folder | default(omit) }}"
-    name: "{{ checkmk_agent_host_name }}"
-    attributes: "{{ checkmk_agent_host_attributes }}"
-    state: "present"
-  become: false
-  register: checkmk_agent_create_result
-  failed_when: |
-    (checkmk_agent_create_result.failed == true) and
-    ("The host is already part of the specified target folder" not in checkmk_agent_create_result.msg)
+    host_name: "{{ checkmk_agent_host_name }}"
+    state: "refresh"
+  throttle: "{{ checkmk_agent_discover_max_parallel_tasks }}"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
-  when: checkmk_agent_add_host | bool
-  notify: "activate changes"
+  when: checkmk_agent_discover | bool
+  register: result
+  retries: 3
+  delay: 10
+  until: "result.changed | bool"
 
-- name: "Check for Agent Updater Binary."
-  ansible.builtin.stat:
-    path: /usr/bin/cmk-update-agent
-  register: checkmk_agent_updater_binary
-
-- name: "Check for Agent Controller Binary."
-  ansible.builtin.stat:
-    path: /usr/bin/cmk-agent-ctl
-  register: checkmk_agent_controller_binary
-
-- name: "Register Agent for automatic Upates using User Password."  # noqa no-changed-when
-  become: true
-  ansible.builtin.shell: |
-    cmk-update-agent register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
-    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }}
-  register: checkmk_agent_update_state
-  when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
-    and checkmk_agent_updater_binary.stat.exists | bool
-    and checkmk_agent_update | bool
-    and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
-    and (checkmk_agent_secret is not defined)
-
-- name: "Register Agent for automatic Upates using Automation Secret."  # noqa no-changed-when
-  become: true
-  ansible.builtin.shell: |
-    cmk-update-agent register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
-    -U {{ checkmk_agent_user }} -S {{ checkmk_agent_auth }}
-  register: checkmk_agent_update_state
-  when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
-    and checkmk_agent_updater_binary.stat.exists | bool
-    and checkmk_agent_update | bool
-    and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
-
-- name: "Trigger Activate Changes to enable TLS registration."
-  ansible.builtin.meta:
-    flush_handlers
-
-- name: "Register Agent for TLS."  # noqa no-changed-when
-  become: true
-  ansible.builtin.shell: |
-    cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
-    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }} --trust-cert
-  register: checkmk_agent_tls_state
-  when: |
-    checkmk_agent_controller_binary.stat.exists | bool
-    and checkmk_agent_tls | bool
-    and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
-
-- name: "Discover services and labels on host."
+- name: "Update monitored services and labels on host."
   become: false
   checkmk.general.discovery:
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
@@ -137,6 +37,11 @@
     automation_secret: "{{ checkmk_agent_auth }}"
     host_name: "{{ checkmk_agent_host_name }}"
     state: "fix_all"
+  throttle: "{{ checkmk_agent_discover_max_parallel_tasks }}"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_discover | bool
+  register: result
+  retries: 3
+  delay: 10
+  until: "result.changed | bool"
   notify: "activate changes"

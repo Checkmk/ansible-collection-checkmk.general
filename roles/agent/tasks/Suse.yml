@@ -1,5 +1,5 @@
 ---
-- name: "Suse Derivatives: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ checkmk_agent_host_name }}&os_type=linux_rpm&agent_type=host_name"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -28,6 +28,7 @@
      {% if checkmk_agent_generic_download_state.status is defined and checkmk_agent_generic_download_state.status == 200 %}true{% else %}false{% endif %}
 
 - name: "Suse Derivates: Transfer host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Transfer host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.host }}"
     dest: "{{ checkmk_agent_agent.file.host }}"
@@ -42,7 +43,7 @@
   tags:
     - download-package
 
-- name: "Suse Derivatives: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   community.general.zypper:
     name: "{{ checkmk_agent_agent.file.host }}"
@@ -89,6 +90,7 @@
      {% if checkmk_agent_folder_download_state.status is defined and checkmk_agent_folder_download_state.status == 200 %}true{% else %}false{% endif %}
 
 - name: "Suse Derivatives: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_rpm&agent_type=generic"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -109,7 +111,7 @@
   tags:
     - download-package
 
-- name: "Suse Derivates: Transfer GENERIC or folder-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Transfer GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.cee }}"
     dest: "{{ checkmk_agent_agent.file.cee }}"
@@ -124,7 +126,7 @@
   tags:
     - download-package
 
-- name: "Suse Derivatives: Install GENERIC or folder-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   community.general.zypper:
     name: "{{ checkmk_agent_agent.file.cee }}"
@@ -140,7 +142,7 @@
   tags:
     - install-package
 
-- name: "Suse Derivatives: Install Checkmk CRE Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install Checkmk CRE Agent."
   become: true
   community.general.zypper:
     name: "{{ checkmk_agent_agent.file.cre }}"

@@ -6,13 +6,18 @@ This role installs Checkmk agents.
 ## Requirements
 
 <!-- Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required. -->
-None.
+The Ansible Checkmk Collection from this role originates is needed to
+use it, as modules shipped by this collection are used in the role.
+
+It can be installed as easy as running:
+
+    ansible-galaxy collection install checkmk.general
 
 ## Role Variables
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_agent_version: "2.2.0p6"
+    checkmk_agent_version: "2.2.0p7"
 
 The Checkmk version of your site.
 
@@ -50,11 +55,11 @@ The name of your Checkmk site.
 
     checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
 
-The server you want to use for registration tasks (Agent updates and TLS encryption). Defaults to {{ checkmk_agent_server }}.
+The server you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_server }}`.
 
     checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
 
-The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to {{ checkmk_agent_site }}.
+The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_site }}`.
 
     checkmk_agent_user: automation
 
@@ -75,6 +80,10 @@ This is mutually exclusive with `checkmk_agent_pass`.
 Enable automatic activation of changes on all sites.
 This is disabled by default, as it might be unexpected.
 
+    checkmk_agent_force_foreign_changes: 'false'
+
+Allow forcing foreign changes on activation by handler.
+
     checkmk_agent_add_host: 'false'
 
 Automatically add the host where the agent was installed to Checkmk.
@@ -91,6 +100,11 @@ The folder into which the automatically created host will be places.
 
 Automatically discover services on the host where the agent was installed.
 
+    checkmk_agent_discover_max_parallel_tasks: 0
+
+When this parameter is greater then zero, then only the defined number of
+discovery tasks run at the same time in parallel.
+
     checkmk_agent_update: 'false'
 
 Register host for automatic updates. Make sure to have the server side prepared
@@ -103,11 +117,11 @@ for automatic updates. Otherwise this will fail.
 
     checkmk_agent_configure_firewall: 'true'
 
-Automatically configure the firewall to allow access to the Checkmk agent.
+Automatically configure the firewall (*currently only on RedHat derivatives*) to allow access to the Checkmk agent.
 
     checkmk_agent_configure_firewall_zone: 'public'
 
-When checkmk_agent_configure_firewall then configure firewall zone on RedHat systems. Defaults to 'public'.
+When checkmk_agent_configure_firewall is set to `true` then configure the firewall zone on RedHat derivatives. Defaults to 'public'.
 
     checkmk_agent_force_install: 'false'
 
@@ -136,13 +150,9 @@ Define an IP address which will be added to the host in Checkmk. This is optiona
 
     checkmk_agent_host_attributes:
         ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
-        tag_agent: 'cmk-agent'
 
 Define attributes with which the host will be added to Checkmk.
 
-    checkmk_agent_force_foreign_changes: 'false'
-
-Allow forcing foreign changes on activation by handler.
 
 ## Tags
 Tasks are tagged with the following tags:

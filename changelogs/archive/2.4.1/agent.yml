@@ -1,0 +1,2 @@
+minor_changes:
+  - Agent role - The activate changes handler was missing the server port. This is fixed now.

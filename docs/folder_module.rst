@@ -30,10 +30,6 @@
 
 .. Anchors: short name for ansible.builtin
 
-.. Anchors: aliases
-
-
-
 .. Title
 
 checkmk.general.folder module -- Manage folders in Checkmk.
@@ -42,7 +38,7 @@ checkmk.general.folder module -- Manage folders in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 3.0.0).
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
@@ -121,12 +117,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The attributes of your folder as described in the API documentation. \ :strong:`Attention! This option OVERWRITES all existing attributes!`\ 
+      The attributes of your folder as described in the API documentation. \ :strong:`Attention! This option OVERWRITES all existing attributes!`\  As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of \ :emphasis:`attributes`\ , \ :emphasis:`remove\_attributes`\ , and \ :emphasis:`update\_attributes`\  is no longer supported.
 
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`{}`
 
       .. raw:: html
 
@@ -301,12 +293,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The remove\_attributes of your host as described in the API documentation. This will only remove the given attributes.
+      The remove\_attributes of your host as described in the API documentation. This will only remove the given attributes. As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of \ :emphasis:`attributes`\ , \ :emphasis:`remove\_attributes`\ , and \ :emphasis:`update\_attributes`\  is no longer supported.
 
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
 
       .. raw:: html
 
@@ -449,12 +437,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The update\_attributes of your host as described in the API documentation. This will only update the given attributes.
+      The update\_attributes of your host as described in the API documentation. This will only update the given attributes. As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of \ :emphasis:`attributes`\ , \ :emphasis:`remove\_attributes`\ , and \ :emphasis:`update\_attributes`\  is no longer supported.
 
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`{}`
 
       .. raw:: html
 

@@ -6,7 +6,7 @@
 Checkmk.General
 ===============
 
-Collection version 2.3.0
+Collection version 3.0.0
 
 .. contents::
    :local:
@@ -49,19 +49,19 @@ These are the plugins in the checkmk.general collection:
 Modules
 ~~~~~~~
 
-* :ref:`activation module <ansible_collections.checkmk.general.activation_module>` -- Activate changes in Checkmk.
-* :ref:`bakery module <ansible_collections.checkmk.general.bakery_module>` -- Trigger baking and signing in the agent bakery.
-* :ref:`contact_group module <ansible_collections.checkmk.general.contact_group_module>` -- Manage contact groups in Checkmk (bulk version).
-* :ref:`discovery module <ansible_collections.checkmk.general.discovery_module>` -- Discover services in Checkmk.
-* :ref:`downtime module <ansible_collections.checkmk.general.downtime_module>` -- Manage downtimes in Checkmk.
-* :ref:`folder module <ansible_collections.checkmk.general.folder_module>` -- Manage folders in Checkmk.
-* :ref:`host module <ansible_collections.checkmk.general.host_module>` -- Manage hosts in Checkmk.
-* :ref:`host_group module <ansible_collections.checkmk.general.host_group_module>` -- Manage host groups in Checkmk (bulk version).
-* :ref:`password module <ansible_collections.checkmk.general.password_module>` -- Manage passwords in checkmk.
-* :ref:`rule module <ansible_collections.checkmk.general.rule_module>` -- Manage rules in Checkmk.
-* :ref:`service_group module <ansible_collections.checkmk.general.service_group_module>` -- Manage service groups in Checkmk (bulk version).
-* :ref:`tag_group module <ansible_collections.checkmk.general.tag_group_module>` -- Manage tag\_group within Checkmk
-* :ref:`user module <ansible_collections.checkmk.general.user_module>` -- Manage users in Checkmk.
+* :ansplugin:`activation module <checkmk.general.activation#module>` -- Activate changes in Checkmk.
+* :ansplugin:`bakery module <checkmk.general.bakery#module>` -- Trigger baking and signing in the agent bakery.
+* :ansplugin:`contact_group module <checkmk.general.contact_group#module>` -- Manage contact groups in Checkmk (bulk version).
+* :ansplugin:`discovery module <checkmk.general.discovery#module>` -- Discover services in Checkmk.
+* :ansplugin:`downtime module <checkmk.general.downtime#module>` -- Manage downtimes in Checkmk.
+* :ansplugin:`folder module <checkmk.general.folder#module>` -- Manage folders in Checkmk.
+* :ansplugin:`host module <checkmk.general.host#module>` -- Manage hosts in Checkmk.
+* :ansplugin:`host_group module <checkmk.general.host_group#module>` -- Manage host groups in Checkmk (bulk version).
+* :ansplugin:`password module <checkmk.general.password#module>` -- Manage passwords in checkmk.
+* :ansplugin:`rule module <checkmk.general.rule#module>` -- Manage rules in Checkmk.
+* :ansplugin:`service_group module <checkmk.general.service_group#module>` -- Manage service groups in Checkmk (bulk version).
+* :ansplugin:`tag_group module <checkmk.general.tag_group#module>` -- Manage tag\_group within Checkmk
+* :ansplugin:`user module <checkmk.general.user#module>` -- Manage users in Checkmk.
 
 .. toctree::
     :maxdepth: 1

@@ -1,13 +1,33 @@
 ---
-checkmk_versions:
-  - version: "2.2.0p4"
-    site: "stable"
-  - version: "2.1.0p30"
-    site: "oldstable"
-download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
+# In these integration tests, we do not normalize the edition naming, but stick
+# to the naming of the setup files. For example 'raw' and 'enterprise' rather
+# than 'CRE' and 'CEE'.
+test_sites:
+  - version: "2.2.0p7"
+    edition: "cre"
+    site: "stable_raw"
+  - version: "2.2.0p7"
+    edition: "cee"
+    site: "stable_ent"
+  - version: "2.1.0p32"
+    edition: "cre"
+    site: "old_raw"
+
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
-automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
+automation_secret: "d7589df1"
+
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
+download_user: "d-gh-ansible-dl"
+download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret', errors='ignore') | default(omit) }}"  # noqa yaml[line-length]
+
+# Due to inconsistent naming of editions, we normalize them here for convenience
+checkmk_server_edition_mapping:
+  cre: raw
+  cfe: free
+  cee: enterprise
+  cce: cloud
+  cme: managed
 
 checkmk_rules:
 

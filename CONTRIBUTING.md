@@ -124,11 +124,11 @@ You can also run a subset by mentioning them as follows. See `tests/integration/
     ansible-test integration $TEST_CASE --docker
 
 ### Molecule
-To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/testing-your-ansible-roles-molecule). It can be installed using the `requirements.txt`in this project or manually. The tests are crafted by the maintainers of this project to reflect real world scenarios a role would be used in. To run the tests, you need to navigate to the role directory and choose a scenario. At the time of writing those are named after the supported Checkmk versions: `2.0.0`and `2.1.0`.
+To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/testing-your-ansible-roles-molecule). It can be installed using the `requirements.txt`in this project or manually. The tests are crafted by the maintainers of this project to reflect real world scenarios a role would be used in. To run the tests, you need to navigate to the role directory and choose a scenario. At the time of writing those are named after the supported Checkmk versions: `2.1.0`and `2.2.0`.
 
     cd roles/server/
-    molecule test -s 2.0.0
     molecule test -s 2.1.0
+    molecule test -s 2.2.0
 
 ### Unit
 There are currently no unit tests.

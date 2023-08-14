@@ -27,7 +27,6 @@ options:
         description: The host you want to manage.
         required: true
         type: str
-        aliases: [host_name]
     folder:
         description: The folder your host is located in. On create it defaults to C(/).
         type: str
@@ -303,14 +302,6 @@ def run_module():
         name=dict(
             type="str",
             required=True,
-            aliases=["host_name"],
-            deprecated_aliases=[
-                {
-                    "name": "host_name",
-                    "collection_name": "checkmk.general",
-                    "version": "3.0.0",
-                }
-            ],
         ),
         attributes=dict(type="raw", default={}),
         remove_attributes=dict(type="raw", default=[]),

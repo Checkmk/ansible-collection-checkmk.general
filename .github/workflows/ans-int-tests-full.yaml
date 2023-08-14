@@ -1,9 +1,13 @@
-# https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
-# README FIRST
-# 1. replace "NAMESPACE" and "COLLECTION_NAME" with the correct name in the env section (e.g. with 'community' and 'mycollection')
-# 2. If you don't have unit tests remove that section
-# 3. If your collection depends on other collections ensure they are installed, see "Install collection dependencies"
-# If you need help please ask in #ansible-community on the Libera.chat IRC network
+# README:
+# - When changing the module name, it needs to be changed in 'env:MODULE_NAME' and in 'on:pull_requests:path'!
+#
+# Resources:
+# - Template for this file: https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# - About Ansible integration tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
+
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
 
 name: Ansible Integration Tests for all Modules
 on:
@@ -11,21 +15,7 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
-env:
-  NAMESPACE: checkmk
-  COLLECTION_NAME: general
-
 jobs:
-
-###
-# Integration tests (RECOMMENDED)
-#
-# https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
-
-
-# If the application you are testing is available as a docker container and you want to test
-# multiple versions see the following for an example:
-# https://github.com/ansible-collections/community.zabbix/tree/master/.github/workflows
 
   integration:
     runs-on: ubuntu-latest
@@ -45,10 +35,18 @@ jobs:
           - '3.11'
         module:
           - activation
+          - bakery
+          - contact_group
           - discovery
           - downtime
           - folder
+          - host_group
           - host
+          - password
+          - rule
+          - service_group
+          - tag_group
+          - user
         exclude:
           # Exclude unsupported sets.
           - ansible: stable-2.13
@@ -63,29 +61,17 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          # it is just required to run that once as "ansible-test integration" in the docker image
-          # will run on all python versions it supports.
-          python-version: '3.10'
+          python-version: '3.10'  # Ansible 2.13 does not support Python 3.11.
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      # OPTIONAL If your integration test requires Python libraries or modules from other collections
-      # Install them like this
-      # - name: Install collection dependencies
-      #   run: ansible-galaxy collection install ansible.netcommon -p .
+      - name: Provide secrets file
+        run: echo "${{ secrets.CHECKMK_DOWNLOAD_PW }}" > ./tests/integration/files/.dl-secret
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        env:
+          CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
-      # Run the integration tests
       - name: Run integration test
         run: ansible-test integration ${{ matrix.module }} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker --coverage
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-
-      # # ansible-test support producing code coverage date
-      # - name: Generate coverage report
-      #   run: ansible-test coverage xml -v --requirements --group-by command --group-by version
-      #   working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-
-      # # See the reports at https://codecov.io/gh/GITHUBORG/REPONAME
-      # - uses: codecov/codecov-action@v2
-      #   with:
-      #     fail_ci_if_error: false
