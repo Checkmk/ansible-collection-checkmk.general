@@ -1,5 +1,5 @@
 ---
-- name: "{{ ansible_os_family }} Derivatives: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Download host-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ checkmk_agent_host_name }}&os_type=linux_deb&agent_type=host_name"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -24,7 +24,7 @@
     checkmk_agent_host_specific: >-
      {{ (checkmk_agent_host_download_state.status is defined and checkmk_agent_host_download_state.status == 200) | bool }}
 
-- name: "{{ ansible_os_family }} Derivatives: Transfer host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Transfer host-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.host }}"
     dest: "{{ checkmk_agent_agent.file.host }}"
@@ -36,7 +36,7 @@
   tags:
     - download-package
 
-- name: "{{ ansible_os_family }} Derivatives: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install host-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.host }}"
@@ -48,7 +48,7 @@
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }} Derivatives: Download folder-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Download folder-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_deb&agent_type=generic&folder_name={{ checkmk_agent_folder }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -75,7 +75,7 @@
     checkmk_agent_folder_specific: >-
      {{ (checkmk_agent_folder_download_state.status is defined and checkmk_agent_folder_download_state.status == 200) | bool }}
 
-- name: "{{ ansible_os_family }} Derivatives: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Download GENERIC {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_deb&agent_type=generic"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -93,7 +93,7 @@
   tags:
     - download-package
 
-- name: "{{ ansible_os_family }} Derivatives: Transfer GENERIC or folder-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Transfer GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.cee }}"
     dest: "{{ checkmk_agent_agent.file.cee }}"
@@ -105,7 +105,7 @@
   tags:
     - download-package
 
-- name: "{{ ansible_os_family }} Derivatives: Install GENERIC or folder-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.cee }}"
@@ -117,7 +117,7 @@
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }} Derivatives: Install Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.cre }}"
