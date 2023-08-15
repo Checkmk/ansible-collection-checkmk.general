@@ -1,10 +1,10 @@
 ---
-- name: "{{ ansible_os_family }}: Run OS Family specific tasks."
+- name: "{{ ansible_system }}: Run OS Family specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-tasks
 
-- name: "Create host on server."
+- name: "{{ ansible_system }}: Create host on server."
   checkmk.general.host:
     server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
     site: "{{ checkmk_agent_site }}"
@@ -24,17 +24,17 @@
   when: checkmk_agent_add_host | bool
   notify: "activate changes"
 
-- name: "Check for Agent Controller Binary."
+- name: "{{ ansible_system }}: Check for Agent Controller Binary."
   ansible.windows.win_stat:
     path: "{{ checkmk_agent_controller_binary_path }}"
   register: checkmk_agent_controller_binary
 
-- name: "Check for Agent Binary."
+- name: "{{ ansible_system }}: Check for Agent Binary."
   ansible.windows.win_stat:
     path: "{{ checkmk_agent_binary_path }}"
   register: checkmk_agent_binary
 
-- name: "Register Agent for automatic Updates using User Password."  # noqa no-changed-when
+- name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."  # noqa no-changed-when
   ansible.windows.win_command: |
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
@@ -49,7 +49,7 @@
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
     and (checkmk_agent_secret is not defined)
 
-- name: "Register Agent for automatic Updates using Automation Secret."  # noqa no-changed-when
+- name: "{{ ansible_system }}: Register Agent for automatic Updates using Automation Secret."  # noqa no-changed-when
   ansible.windows.win_command: |
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
@@ -67,7 +67,7 @@
   ansible.builtin.meta:
     flush_handlers
 
-- name: "Register Agent for TLS."  # noqa no-changed-when
+- name: "{{ ansible_system }}: Register Agent for TLS."  # noqa no-changed-when
   ansible.windows.win_command: |
     cmk-agent-ctl.exe register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
@@ -80,7 +80,7 @@
     and checkmk_agent_tls | bool
     and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
 
-- name: "Verify Checkmk Agent Port is open."
+- name: "{{ ansible_system }}: Verify Checkmk Agent Port is open."
   ansible.windows.win_wait_for:
     port: 6556
     timeout: 60

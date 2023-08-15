@@ -1,5 +1,5 @@
 ---
-- name: "Download to managed Host."
+- name: "{{ ansible_system }}: Download to managed Host."
   when: checkmk_agent_delegate_download == inventory_hostname
   block:
     - name: "{{ ansible_system }}: Download Vanilla {{ checkmk_agent_edition | upper }} Agent."
@@ -35,7 +35,7 @@
       changed_when: checkmk_agent_host_download_state.status_code is defined and checkmk_agent_host_download_state.status_code == 200
       delegate_to: "{{ checkmk_agent_delegate_download }}"
 
-    - name: "Set Fact: Agent State: host-specific."
+    - name: "{{ ansible_system }}: Set Fact: Agent State: host-specific."
       ansible.builtin.set_fact:
         checkmk_agent_host_specific: >-
           {{ (checkmk_agent_host_download_state.status_code is defined and checkmk_agent_host_download_state.status_code == 200) | bool }}
@@ -63,7 +63,7 @@
       changed_when: checkmk_agent_folder_download_state.status_code is defined and checkmk_agent_folder_download_state.status_code == 200
       delegate_to: "{{ checkmk_agent_delegate_download }}"
 
-    - name: "Set Fact: Agent State: folder-specific."
+    - name: "{{ ansible_system }}: Set Fact: Agent State: folder-specific."
       ansible.builtin.set_fact:
         checkmk_agent_folder_specific: >-
           {{ (checkmk_agent_folder_download_state.status_code is defined and checkmk_agent_folder_download_state.status_code == 200) | bool }}
@@ -87,7 +87,7 @@
       delegate_to: "{{ checkmk_agent_delegate_download }}"
 
 
-- name: "Download to delegated Host."
+- name: "{{ ansible_system }}: Download to delegated Host."
   when: checkmk_agent_delegate_download != inventory_hostname
   block:
     - name: "{{ ansible_system }}: Download Vanilla {{ checkmk_agent_edition | upper }} Agent (delegated)."
@@ -124,7 +124,7 @@
       changed_when: checkmk_agent_host_download_state.status_code is defined and checkmk_agent_host_download_state.status_code == 200
       delegate_to: "{{ checkmk_agent_delegate_download }}"
 
-    - name: "Set Fact: Agent State: host-specific."
+    - name: "{{ ansible_system }}: Set Fact: Agent State: host-specific."
       ansible.builtin.set_fact:
         checkmk_agent_host_specific: >-
           {{ (checkmk_agent_host_download_state.status_code is defined and checkmk_agent_host_download_state.status_code == 200) | bool }}
@@ -152,7 +152,7 @@
       changed_when: checkmk_agent_folder_download_state.status_code is defined and checkmk_agent_folder_download_state.status_code == 200
       delegate_to: "{{ checkmk_agent_delegate_download }}"
 
-    - name: "Set Fact: Agent State: folder-specific."
+    - name: "{{ ansible_system }}: Set Fact: Agent State: folder-specific."
       ansible.builtin.set_fact:
         checkmk_agent_folder_specific: >-
           {{ (checkmk_agent_folder_download_state.status_code is defined and checkmk_agent_folder_download_state.status_code == 200) | bool }}
