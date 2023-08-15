@@ -22,10 +22,7 @@
       Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_auth }}"
       Accept: "application/octet-stream"
   when: |
-    checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme"
+    checkmk_agent_edition != "cre"
   register: checkmk_agent_host_download_state
   # This task may fail, as we fall back to the generic agent in that case
   failed_when: 'false'
@@ -44,10 +41,7 @@
     path: "{{ checkmk_agent_agent.file.host }}"
     state: present
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition != "cre"
     and checkmk_agent_host_specific | bool
   tags:
     - install-package
@@ -63,10 +57,7 @@
       Accept: "application/octet-stream"
   register: checkmk_agent_folder_download_state
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition != "cre"
     and checkmk_agent_folder is defined
     and not checkmk_agent_host_specific | bool
   retries: 3
@@ -91,10 +82,7 @@
       Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_auth }}"
       Accept: "application/octet-stream"
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition != "cre"
     and not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
   retries: 3
   delegate_to: "{{ checkmk_agent_delegate_download }}"
@@ -106,10 +94,7 @@
     path: "{{ checkmk_agent_agent.file.cee }}"
     state: present
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition != "cre"
     and not checkmk_agent_host_specific | bool
   tags:
     - install-package

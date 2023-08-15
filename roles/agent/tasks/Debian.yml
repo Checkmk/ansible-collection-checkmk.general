@@ -9,10 +9,7 @@
       Authorization: "Bearer {{ checkmk_agent_user }} {{ checkmk_agent_auth }}"
       Accept: "application/octet-stream"
   when: |
-    checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme"
+    checkmk_agent_edition != "cre"
   become: false
   register: checkmk_agent_host_download_state
   # This task may fail, as we fall back to the generic agent in that case
@@ -33,10 +30,7 @@
     dest: "{{ checkmk_agent_agent.file.host }}"
     mode: "0644"
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition != "cre"
     and checkmk_agent_host_specific | bool
     and checkmk_agent_delegate_download != inventory_hostname
   tags:
@@ -49,10 +43,7 @@
     force: "{{ checkmk_agent_force_install | bool }}"
     state: present
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition != "cre"
     and checkmk_agent_host_specific | bool
   tags:
     - install-package
@@ -69,10 +60,7 @@
   become: false
   register: checkmk_agent_folder_download_state
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition != "cre"
     and checkmk_agent_folder is defined
     and not checkmk_agent_host_specific | bool
   retries: 3
@@ -98,10 +86,7 @@
       Accept: "application/octet-stream"
   become: false
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition != "cre"
     and not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
   retries: 3
   delegate_to: "{{ checkmk_agent_delegate_download }}"
@@ -114,10 +99,7 @@
     dest: "{{ checkmk_agent_agent.file.cee }}"
     mode: "0644"
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition != "cre"
     and not checkmk_agent_host_specific | bool
     and checkmk_agent_delegate_download != inventory_hostname
   tags:
@@ -130,15 +112,12 @@
     force: "{{ checkmk_agent_force_install | bool }}"
     state: present
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition != "cre"
     and not checkmk_agent_host_specific | bool
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }} Derivatives: Install Checkmk CRE Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.cre }}"
