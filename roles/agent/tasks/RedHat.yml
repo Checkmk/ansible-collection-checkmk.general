@@ -117,7 +117,18 @@
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }} Derivatives: Install Checkmk CRE Agent."
+- name: "{{ ansible_os_family }} Derivatives: Transfer Vanilla {{ checkmk_agent_edition | upper }} Agent."
+  ansible.builtin.copy:
+    src: "{{ checkmk_agent_agent.file.cre }}"
+    dest: "{{ checkmk_agent_agent.file.cre }}"
+    mode: "0644"
+  when: |
+    checkmk_agent_edition | lower == "cre"
+    and checkmk_agent_delegate_download != inventory_hostname
+  tags:
+    - download-package
+
+- name: "{{ ansible_os_family }} Derivatives: Install Vanilla {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.yum:
     name: "{{ checkmk_agent_agent.file.cre }}"
