@@ -14,7 +14,7 @@
     checkmk_agent_prep_legacy | bool
     and ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
 
-- name: "{{ ansible_system }}: Download Checkmk CRE agent."
+- name: "{{ ansible_system }}: Download Vanilla {{ checkmk_agent_edition | upper }} agent."
   ansible.builtin.get_url:
     url: "{{ checkmk_agent_agent.url.cre }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -24,7 +24,8 @@
   register: result
   retries: 3
   delay: 10
-  until: "result.changed | bool"
+  until: "not result.failed | bool"
+  delegate_to: "{{ checkmk_agent_delegate_download }}"
   tags:
     - download-package
 
