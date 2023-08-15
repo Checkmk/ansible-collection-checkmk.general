@@ -38,7 +38,7 @@ checkmk.general.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 3.0.0).
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
@@ -234,9 +234,7 @@ Parameters
 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
-        <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
 
-      .. _ansible_collections.checkmk.general.host_module__parameter-host_name:
       .. _ansible_collections.checkmk.general.host_module__parameter-name:
 
       .. rst-class:: ansible-option-title
@@ -246,10 +244,6 @@ Parameters
       .. raw:: html
 
         <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-aliases:`aliases: host_name`
 
       .. rst-class:: ansible-option-type-line
 

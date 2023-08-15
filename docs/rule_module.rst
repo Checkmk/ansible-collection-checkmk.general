@@ -38,7 +38,7 @@ checkmk.general.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 3.0.0).
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
@@ -221,44 +221,6 @@ Parameters
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
       Conditions of the rule.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-rule/folder"></div>
-
-      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/folder:
-
-      .. rst-class:: ansible-option-title
-
-      **folder**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-rule/folder" title="Permalink to this option"></a>
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
-
-      Folder of the rule.
-
-      Deprecated, use \ :emphasis:`location`\  instead.
-
-      Mutually exclusive with \ :emphasis:`location`\ .
 
 
       .. raw:: html

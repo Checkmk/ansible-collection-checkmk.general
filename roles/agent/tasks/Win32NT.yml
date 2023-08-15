@@ -85,3 +85,8 @@
     checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
+
+- name: "Verify Checkmk Agent Port is open."
+  ansible.windows.win_wait_for:
+    port: 6556
+    timeout: 60

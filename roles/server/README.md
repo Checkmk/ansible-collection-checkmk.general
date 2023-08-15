@@ -8,6 +8,17 @@ This role installs Checkmk on servers and manages sites.
 <!-- Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required. -->
 None.
 
+## Distribution Support
+This roles includes explicit distribution support.
+That means, that even if the role might run on other distributions,
+we can only verify, that it works on the ones listed in `defaults/main.yml` in the variable `checkmk_server_server_stable_os`.
+
+To elaborate: We do **not** guarantee, that this role will work on them.
+But we do our best to have them stable. On top of that we have
+automated tests, that continuously test this role against a set of distributions.
+
+To learn about the distributions used in automated tests, inspect the corresponding `molecule/*/molecule.yml`.
+
 ## Role Variables
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
