@@ -9,7 +9,24 @@
   ansible.builtin.service_facts:
 
 - name: "{{ ansible_system }}: Import Legacy agent tasks."
-  ansible.builtin.include_tasks: "legacy.yml"
+  block:
+    - name: "{{ ansible_system }}: Install xinetd"
+      become: true
+      ansible.builtin.package:
+        name: xinetd
+        state: present
+      tags:
+        - install-package
+        - install-prerequisites
+
+    - name: "{{ ansible_system }}: Enable xinetd"
+      become: true
+      ansible.builtin.service:
+        name: xinetd
+        state: started
+        enabled: true
+      tags:
+        - enable-xinetd
   when: |
     checkmk_agent_prep_legacy | bool
     and ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
