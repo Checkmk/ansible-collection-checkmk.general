@@ -9,6 +9,12 @@
   tags:
     - include-os-family-vars
 
+- name: "{{ ansible_system }}: Include File Management."
+  ansible.builtin.include_tasks: "{{ ansible_system }}-files.yml"
+  tags:
+    - include-system-tasks
+    - download-package
+
 - name: "{{ ansible_system }}: Include OS specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_system }}.yml"
   tags:

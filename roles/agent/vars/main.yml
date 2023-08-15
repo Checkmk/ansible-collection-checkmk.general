@@ -10,3 +10,9 @@ checkmk_agent_edition_mapping:
   cee: enterprise
   cce: cloud
   cme: managed
+
+checkmk_agent_files_mapping:
+  Debian: linux_deb
+  RedHat: linux_rpm
+  Suse: linux_rpm
+  Windows: windows_msi
