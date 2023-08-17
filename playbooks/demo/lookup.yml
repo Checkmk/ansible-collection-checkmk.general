@@ -1,0 +1,14 @@
+---
+- name: "Showcase Lookup Plugins."
+  hosts: test
+  strategy: linear
+  gather_facts: false
+  vars_files:
+    - ../vars/auth.yml      # This vars file provides details about your site
+  tasks:
+
+    - name: "Get CMK version."
+      debug:
+        msg: "Version is {{ lookup('checkmk.general.version', server_url+'/'+site, validate_certs=False, automation_user=automation_user, automation_secret=automation_secret)}}" 
+      delegate_to: localhost
+      run_once: 'true'
