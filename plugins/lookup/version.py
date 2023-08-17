@@ -7,7 +7,7 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: version
     author: Lars Getwan (@lgetwan)
-    version_added: "3.1"
+    version_added: "3.1.0"
     short_description: Get the version of a CMK server
     description:
       - Returns the version of a CMK server as a string, e.g. '2.1.0p31.cre'
