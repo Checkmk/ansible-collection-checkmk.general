@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- encoding: utf-8; py-indent-offset: 4 -*-
-
 # Copyright: (c) 2023, Lars Getwan <lars.getwan@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -9,7 +6,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
     name: version
-    author: Lars Getwan <lars.getwan@checkmk.com>
+    author: Lars Getwan (@lgetwan)
     version_added: "3.1"
     short_description: Get the version of a CMK server
     description:
@@ -38,7 +35,8 @@ DOCUMENTATION = """
 
 EXAMPLES = """
 - name: We could read the file directly, but this shows output from command
-ansible.builtin.debug: msg="CMK version installed is{{ lookup('checkmk.general.version', 'https://myserver/mysite' }}."
+  ansible.builtin.debug: 
+      msg: "CMK version installed is{{ lookup('checkmk.general.version', 'https://myserver/mysite', automation_user='automation', automation_secret='$SECRET'}}."
 """
 
 RETURN = """
