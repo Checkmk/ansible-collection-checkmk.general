@@ -1,7 +1,7 @@
 # Copyright: (c) 2023, Lars Getwan <lars.getwan@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -48,15 +48,15 @@ RETURN = """
 """
 
 import json
-from ansible.errors import AnsibleError
-from ansible.module_utils.common.text.converters import to_text, to_native
-from ansible.module_utils.urls import open_url, ConnectionError, SSLValidationError
-from ansible.plugins.lookup import LookupBase
 from urllib.error import HTTPError, URLError
+
+from ansible.errors import AnsibleError
+from ansible.module_utils.common.text.converters import to_native, to_text
+from ansible.module_utils.urls import ConnectionError, SSLValidationError, open_url
+from ansible.plugins.lookup import LookupBase
 
 
 class LookupModule(LookupBase):
-
     def run(self, terms, variables, **kwargs):
 
         self.set_options(var_options=variables, direct=kwargs)
@@ -77,16 +77,30 @@ class LookupModule(LookupBase):
             }
 
             try:
-                response = open_url(url, data=None, headers=headers, method="GET", validate_certs=validate_certs)
+                response = open_url(
+                    url, 
+                    data=None, 
+                    headers=headers, 
+                    method="GET", 
+                    validate_certs=validate_certs,
+                )
 
             except HTTPError as e:
-                raise AnsibleError("Received HTTP error for %s : %s" % (url, to_native(e)))
+                raise AnsibleError(
+                    "Received HTTP error for %s : %s" % (url, to_native(e))
+                )
             except URLError as e:
-                raise AnsibleError("Failed lookup url for %s : %s" % (url, to_native(e)))
+                raise AnsibleError(
+                    "Failed lookup url for %s : %s" % (url, to_native(e))
+                )
             except SSLValidationError as e:
-                raise AnsibleError("Error validating the server's certificate for %s: %s" % (url, to_native(e)))
+                raise AnsibleError(
+                    "Error validating the server's certificate for %s: %s" % (url, to_native(e))
+                )
             except ConnectionError as e:
-                raise AnsibleError("Error connecting to %s: %s" % (url, to_native(e)))
+                raise AnsibleError(
+                    "Error connecting to %s: %s" % (url, to_native(e))
+                )
 
             checkmkinfo = json.loads(to_text(response.read()))
             ret.append(checkmkinfo.get("versions").get("checkmk"))
