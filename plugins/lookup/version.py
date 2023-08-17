@@ -2,6 +2,7 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -35,8 +36,8 @@ DOCUMENTATION = """
 
 EXAMPLES = """
 - name: We could read the file directly, but this shows output from command
-  ansible.builtin.debug: 
-      msg: "CMK version installed is{{ lookup('checkmk.general.version', 'https://myserver/mysite', automation_user='automation', automation_secret='$SECRET'}}."
+  ansible.builtin.debug:
+      msg: "CMK version: {{ lookup('checkmk.general.version', 'https://myserver/mysite', automation_user='automation', automation_secret='$SECRET'}}."
 """
 
 RETURN = """
@@ -78,10 +79,10 @@ class LookupModule(LookupBase):
 
             try:
                 response = open_url(
-                    url, 
-                    data=None, 
-                    headers=headers, 
-                    method="GET", 
+                    url,
+                    data=None,
+                    headers=headers,
+                    method="GET",
                     validate_certs=validate_certs,
                 )
 
@@ -95,12 +96,11 @@ class LookupModule(LookupBase):
                 )
             except SSLValidationError as e:
                 raise AnsibleError(
-                    "Error validating the server's certificate for %s: %s" % (url, to_native(e))
+                    "Error validating the server's certificate for %s: %s"
+                    % (url, to_native(e))
                 )
             except ConnectionError as e:
-                raise AnsibleError(
-                    "Error connecting to %s: %s" % (url, to_native(e))
-                )
+                raise AnsibleError("Error connecting to %s: %s" % (url, to_native(e)))
 
             checkmkinfo = json.loads(to_text(response.read()))
             ret.append(checkmkinfo.get("versions").get("checkmk"))
