@@ -9,9 +9,9 @@ DOCUMENTATION = """
     name: version
     author: Lars Getwan (@lgetwan)
     version_added: "3.1.0"
-    short_description: Get the version of a CMK server
+    short_description: Get the version of a Checkmk server
     description:
-      - Returns the version of a CMK server as a string, e.g. '2.1.0p31.cre'
+      - Returns the version of a Checkmk server as a string, e.g. '2.1.0p31.cre'
     options:
       _terms:
         description: site url
@@ -27,23 +27,25 @@ DOCUMENTATION = """
         type: boolean
         required: False
         default: True
-    notes:
-      - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'.
-        If you need to use different permissions, you must change the command or run Ansible as another user.
-      - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
-      - The directory of the play is used as the current working directory.
 """
 
 EXAMPLES = """
-- name: We could read the file directly, but this shows output from command
-  ansible.builtin.debug:
-      msg: "CMK version: {{ lookup('checkmk.general.version', 'https://myserver/mysite', automation_user='automation', automation_secret='$SECRET'}}."
+- name: "Show Checkmk version"
+  debug:
+    msg: "Server version is {{ version }}"
+  vars:
+    version: "{{ lookup('checkmk.general.version',
+                   server_url + '/' + site,
+                   validate_certs=False,
+                   automation_user=automation_user,
+                   automation_secret=automation_secret
+               )}}"
 """
 
 RETURN = """
   _list:
     description:
-      - server CMK version
+      - server Checkmk version
     type: list
     elements: str
 """
