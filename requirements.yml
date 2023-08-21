@@ -1,3 +1,4 @@
 ---
 collections:
   - name: checkmk.general
+  - name: community.docker
