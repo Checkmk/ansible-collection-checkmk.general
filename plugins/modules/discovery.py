@@ -353,12 +353,16 @@ def run_module():
 
     result = discovery.post()
 
-    # In any case the API returns 409 (discovery running) we wait for half a second and try again.
+    # In case the API returns 409 (discovery running) we wait and try again.
     # This can happen as example in versions where the endpoint doesn't respond with the correct redirect.
     while (single_mode and result.http_code == 409) or (
         len(module.params.get("hosts", [])) > 0 and result.http_code == 409
     ):
-        time.sleep(0.5)
+        if single_mode:
+            time.sleep(1)
+        else:
+            time.sleep(10)
+
         result = discovery.post()
 
     # If single_mode and the API returns 302, check the service completion endpoint
