@@ -129,6 +129,7 @@ HTTP_CODES = {
     403: (False, True, "Forbidden: Configuration via WATO is disabled."),
     404: (False, True, "Not Found: Host could not be found."),
     406: (False, True, "Not Acceptable."),
+    409: (False, False, "Conflict: A discovery background job is already running"),
     415: (False, True, "Unsupported Media Type."),
     500: (False, True, "General Server Error."),
 }
@@ -153,7 +154,7 @@ HTTP_CODES_BULK = {
     400: (False, True, "Bad Request."),
     403: (False, True, "Forbidden: Configuration via WATO is disabled."),
     406: (False, True, "Not Acceptable."),
-    409: (False, True, "Conflict: A bulk discovery job is already active"),
+    409: (False, False, "Conflict: A bulk discovery job is already active"),
     415: (False, True, "Unsupported Media Type."),
     500: (False, True, "General Server Error."),
 }
@@ -351,6 +352,14 @@ def run_module():
     result = wait_for_completion(single_mode, servicecompletion)
 
     result = discovery.post()
+
+    # In any case the API returns 409 (discovery running) we wait for half a second and try again.
+    # This can happen as example in versions where the endpoint doesn't respond with the correct redirect.
+    while (single_mode and result.http_code == 409) or (
+        len(module.params.get("hosts", [])) > 0 and result.http_code == 409
+    ):
+        time.sleep(0.5)
+        result = discovery.post()
 
     # If single_mode and the API returns 302, check the service completion endpoint
     # If not single_mode and the API returns 200, check the service completion endpoint
