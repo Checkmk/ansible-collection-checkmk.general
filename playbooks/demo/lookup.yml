@@ -5,18 +5,18 @@
   gather_facts: false
   vars_files:
     - ../vars/auth.yml      # This vars file provides details about your site
+
   tasks:
 
     - name: "Get Checkmk version."
-      debug:
+      ansible.builtin.debug:
         msg: "Version is {{ version }}"
       vars:
         version: "{{ lookup('checkmk.general.version',
                        server_url + '/' + site,
                        validate_certs=False,
                        automation_user=automation_user,
-                       automation_secret=automation_secret
-                   )}}"
-
+                       automation_secret=automation_secret)
+                  }}"
       delegate_to: localhost
-      run_once: 'true'
+      run_once: true  # noqa run-once[task]
