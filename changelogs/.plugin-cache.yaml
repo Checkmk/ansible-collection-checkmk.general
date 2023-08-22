@@ -9,7 +9,11 @@ plugins:
   filter: {}
   httpapi: {}
   inventory: {}
-  lookup: {}
+  lookup:
+    version:
+      description: Get the version of a Checkmk server
+      name: version
+      version_added: 3.1.0
   module:
     activation:
       description: Activate changes in Checkmk.
@@ -81,4 +85,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 3.0.0
+version: 3.1.0
