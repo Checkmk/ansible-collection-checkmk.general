@@ -46,3 +46,6 @@ module:tag_group:
 
 module:user:
   - 'plugins/modules/user.py'
+
+lookup:version:
+  - 'plugins/modules/lookup/version.py'

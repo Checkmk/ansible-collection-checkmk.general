@@ -1,5 +1,5 @@
 ---
-- name: "RedHat Derivatives: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Download host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?host_name={{ checkmk_agent_host_name }}&os_type=linux_rpm&agent_type=host_name"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -22,7 +22,7 @@
   tags:
     - download-package
 
-- name: "RedHat Derivates: Transfer host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Transfer host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.host }}"
     dest: "{{ checkmk_agent_agent.file.host }}"
@@ -37,7 +37,7 @@
   tags:
     - download-package
 
-- name: "RedHat Derivatives: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install host-specific Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.yum:
     name: "{{ checkmk_agent_agent.file.host }}"
@@ -52,7 +52,7 @@
   tags:
     - install-package
 
-- name: "RedHat Derivatives: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Download GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url: "{{ checkmk_agent_agent.url.cee }}?os_type=linux_rpm&agent_type=generic"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
@@ -73,7 +73,7 @@
   tags:
     - download-package
 
-- name: "RedHat Derivates: Transfer GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Transfer GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.cee }}"
     dest: "{{ checkmk_agent_agent.file.cee }}"
@@ -88,7 +88,7 @@
   tags:
     - download-package
 
-- name: "RedHat Derivatives: Install GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install GENERIC Checkmk {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.yum:
     name: "{{ checkmk_agent_agent.file.cee }}"
@@ -103,7 +103,7 @@
   tags:
     - install-package
 
-- name: "RedHat Derivatives: Install Checkmk CRE Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install Checkmk CRE Agent."
   become: true
   ansible.builtin.yum:
     name: "{{ checkmk_agent_agent.file.cre }}"
@@ -113,15 +113,15 @@
   tags:
     - install-package
 
-- name: "RedHat Derivatives: Configure Firewall for Agent."
+- name: "{{ ansible_os_family }} Derivatives: Configure Firewall for Agent."
   when: checkmk_agent_configure_firewall | bool and "firewalld.service" in ansible_facts.services
   block:
-    - name: "RedHat Derivatives: Check if checkmk_agent_server is an IP address."
+    - name: "{{ ansible_os_family }} Derivatives: Check if checkmk_agent_server is an IP address."
       ansible.builtin.set_fact:
         checkmk_agent_server_ip: "{{ checkmk_agent_server }}"
       when: checkmk_agent_server_ip is not defined and checkmk_agent_server | ansible.utils.ipaddr()
 
-    - name: "RedHat Derivatives: Allow Checkmk services access to the agent."
+    - name: "{{ ansible_os_family }} Derivatives: Allow Checkmk services access to the agent."
       ansible.posix.firewalld:
         permanent: 'yes'
         immediate: 'yes'

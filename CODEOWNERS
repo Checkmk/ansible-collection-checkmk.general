@@ -2,8 +2,12 @@
 /tests/ @robin-checkmk
 /roles/ @robin-checkmk
 /playbooks/ @robin-checkmk
+/plugins/lookup/version.py @lgetwan
 /plugins/modules/ @lgetwan
 /plugins/module_utils/ @godspeed-you
 /plugins/modules/user.py @lgetwan
 /plugins/modules/bakery.py @Max-checkmk
 /plugins/modules/password.py @Max-checkmk
+/roles/agent/tasks/Windows.yml @Max-checkmk
+/roles/agent/vars/Windows.yml @Max-checkmk
+/roles/agent/tasks/Win32NT.yml @Max-checkmk
