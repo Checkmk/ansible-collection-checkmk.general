@@ -639,3 +639,22 @@ releases:
     - folder.yml
     - release_summary.yml
     release_date: '2023-08-11'
+  3.1.0:
+    changes:
+      major_changes:
+      - Agent role - Add support for Windows.
+      - Version lookup plugin - Add Version lookup plugin.
+      minor_changes:
+      - Discovery module - Add handling for 409 response.
+      release_summary: It is summer and you want to look outside, so we added Windows.
+    fragments:
+    - discovery.yml
+    - lookup.yml
+    - release_summary.yml
+    - windows.yml
+    plugins:
+      lookup:
+      - description: Get the version of a Checkmk server
+        name: version
+        namespace: null
+    release_date: '2023-08-22'
