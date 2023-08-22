@@ -6,7 +6,7 @@
 Checkmk.General
 ===============
 
-Collection version 3.0.0
+Collection version 3.1.0
 
 .. contents::
    :local:
@@ -80,5 +80,17 @@ Modules
     service_group_module
     tag_group_module
     user_module
+
+
+Lookup Plugins
+~~~~~~~~~~~~~~
+
+* :ansplugin:`version lookup <checkmk.general.version#lookup>` -- Get the version of a Checkmk server
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+
+    version_lookup
 
 
