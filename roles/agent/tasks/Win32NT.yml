@@ -43,10 +43,7 @@
   args:
     chdir: "C:\\Program Files (x86)\\checkmk\\service\\"
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition | lower != "cre"
     and checkmk_agent_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
@@ -61,10 +58,7 @@
   args:
     chdir: "C:\\Program Files (x86)\\checkmk\\service\\"
   when: |
-    (checkmk_agent_edition == "cee" or
-    checkmk_agent_edition == "cce" or
-    checkmk_agent_edition == "cfe" or
-    checkmk_agent_edition == "cme")
+    checkmk_agent_edition | lower != "cre"
     and checkmk_agent_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
