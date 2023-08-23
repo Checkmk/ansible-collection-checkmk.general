@@ -68,7 +68,7 @@
 
     - name: "Print Verification Output."
       ansible.builtin.debug:
-        msg: "{{ checkmk_server_verify_state.stderr_lines }} "
+        msg: "{{ checkmk_server_verify_state.stderr_lines }}"
 
 - name: "Import Checkmk GPG Key."
   become: true
