@@ -1,20 +1,14 @@
-name: "Labeler"
+name: "Label Issues."
 on:
   issues:
     types: [opened, edited]
-  pull_request_target:
-    paths:
-      - 'plugins/**'
-      - 'roles/**'
 
 permissions:
   contents: read
   issues: write
-  pull-requests: write
 
 jobs:
-
-  issues:
+  label:
     runs-on: ubuntu-latest
     steps:
     - name: "Label Issues."
@@ -24,13 +18,4 @@ jobs:
         include-title: 1
         repo-token: ${{ github.token }}
         enable-versioned-regex: 0
-        sync-labels: 0
-
-  pulls:
-    runs-on: ubuntu-latest
-    steps:
-    - name: "Label Pull Requests."
-      uses: actions/labeler@v4
-      with:
-        configuration-path: .github/labels-prs.yml
         sync-labels: 0

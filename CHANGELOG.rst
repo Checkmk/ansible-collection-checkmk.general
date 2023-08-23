@@ -5,6 +5,33 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v3.1.0
+======
+
+Release Summary
+---------------
+
+It is summer and you want to look outside, so we added Windows.
+
+Major Changes
+-------------
+
+- Agent role - Add support for Windows.
+- Version lookup plugin - Add Version lookup plugin.
+
+Minor Changes
+-------------
+
+- Discovery module - Add handling for 409 response.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.version - Get the version of a Checkmk server
+
 v3.0.0
 ======
 
