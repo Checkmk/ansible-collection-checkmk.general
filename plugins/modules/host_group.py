@@ -265,6 +265,7 @@ def create_single_host_group(module, base_url, headers):
     params = {
         "name": name,
         "alias": module.params.get("title", name),
+        "customer": module.params.get("customer", 'provider'),
     }
     url = base_url + api_endpoint
 
@@ -279,7 +280,6 @@ def create_single_host_group(module, base_url, headers):
             % (info["status"], info["body"]),
         )
 
-
 def create_host_groups(module, base_url, groups, headers):
     api_endpoint = "/domain-types/host_group_config/actions/bulk-create/invoke"
     params = {
@@ -287,6 +287,7 @@ def create_host_groups(module, base_url, groups, headers):
             {
                 "name": el.get("name"),
                 "alias": el.get("title", el.get("name")),
+                "customer": el.get("customer", 'provider'),
             }
             for el in groups
         ],
@@ -303,7 +304,6 @@ def create_host_groups(module, base_url, groups, headers):
             "Error calling API (bulk-create). HTTP code %d. Details: %s, "
             % (info["status"], info["body"]),
         )
-
 
 def delete_single_host_group(module, base_url, headers):
     api_endpoint = "/objects/host_group_config/" + module.params["name"]
