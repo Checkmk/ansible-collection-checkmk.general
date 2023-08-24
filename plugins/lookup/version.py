@@ -62,6 +62,7 @@ from ansible.errors import AnsibleError
 from ansible.module_utils.common.text.converters import to_native, to_text
 from ansible.module_utils.urls import ConnectionError, SSLValidationError, open_url
 from ansible.plugins.lookup import LookupBase
+from ansible_collections.checkmk.general.plugins.module_utils.lookup_api CheckMKLookupAPI
 
 
 class LookupModule(LookupBase):
@@ -72,44 +73,16 @@ class LookupModule(LookupBase):
         secret = self.get_option("automation_secret")
         validate_certs = self.get_option("validate_certs")
 
+        api = CheckMKLookupAPI(
+            site_url=site_url,
+            user=user,
+            secret=secret,
+            validate_certs=validate_certs,
+        )
+
         ret = []
+
         for term in terms:
-            base_url = term + "/check_mk/api/1.0"
-            api_endpoint = "/version"
-            url = base_url + api_endpoint
-
-            headers = {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer %s %s" % (user, secret),
-            }
-
-            try:
-                response = open_url(
-                    url,
-                    data=None,
-                    headers=headers,
-                    method="GET",
-                    validate_certs=validate_certs,
-                )
-
-            except HTTPError as e:
-                raise AnsibleError(
-                    "Received HTTP error for %s : %s" % (url, to_native(e))
-                )
-            except URLError as e:
-                raise AnsibleError(
-                    "Failed lookup url for %s : %s" % (url, to_native(e))
-                )
-            except SSLValidationError as e:
-                raise AnsibleError(
-                    "Error validating the server's certificate for %s: %s"
-                    % (url, to_native(e))
-                )
-            except ConnectionError as e:
-                raise AnsibleError("Error connecting to %s: %s" % (url, to_native(e)))
-
-            checkmkinfo = json.loads(to_text(response.read()))
-            ret.append(checkmkinfo.get("versions").get("checkmk"))
-
+            response = json.loads(api.get("/version"))
+            ret.append(response.get("versions", {}).get("checkmk"))
         return ret
