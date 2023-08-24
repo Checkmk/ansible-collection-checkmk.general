@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-    name: all_folders
+    name: folders
     author: Lars Getwan (@lgetwan)
     version_added: "3.1.0"
     short_description: Get various information about a folder
@@ -48,7 +48,7 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "Folder tree: {{ item.id }}"
   loop: "{{
-    lookup('checkmk.general.all_folders',
+    lookup('checkmk.general.folders',
         '~',
         show_hosts=False,
         recursive=True,
@@ -66,7 +66,7 @@ EXAMPLES = """
     msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
   vars:
     looping: "{{
-                 lookup('checkmk.general.all_folders',
+                 lookup('checkmk.general.folders',
                      '~tests',
                      show_hosts=True,
                      recursive=True,
