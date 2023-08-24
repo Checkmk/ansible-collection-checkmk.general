@@ -1,2 +1,2 @@
 major_changes:
-+  - folder lookup plugin - Add a lookup plugin that exposes the REST API endpoint /objects/folder_config/<folder>
+ - folder lookup plugin - Add a lookup plugin that exposes the REST API endpoint /objects/folder_config/<folder>

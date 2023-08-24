@@ -1,2 +1,0 @@
-major_changes:
-+  - all_folders lookup plugin - Add a lookup plugin that exposes the REST API endpoint /domain-types/folder_config/collections/all
