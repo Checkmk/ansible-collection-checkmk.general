@@ -117,7 +117,7 @@
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }} Derivatives: Transfer Vanilla {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Transfer Vanilla agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.cre }}"
     dest: "{{ checkmk_agent_agent.file.cre }}"
@@ -128,7 +128,7 @@
   tags:
     - download-package
 
-- name: "{{ ansible_os_family }} Derivatives: Install Vanilla {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }} Derivatives: Install Vanilla agent."
   become: true
   ansible.builtin.apt:
     deb: "{{ checkmk_agent_agent.file.cre }}"
