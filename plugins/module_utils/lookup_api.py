@@ -31,7 +31,7 @@ class CheckMKLookupAPI:
             "Authorization": "Bearer %s %s" % (user, secret),
         }
 
-    def get(self, endpoint="", parameters={}):
+    def get(self, endpoint="", parameters=None):
         url = self.url + endpoint
 
         if parameters:
