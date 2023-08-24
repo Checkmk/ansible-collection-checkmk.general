@@ -1,0 +1,4 @@
+minor_changes:
+  - Agent role - Allow the role to download folder-specific agents.
+bugfixes:
+  - Agent role - Fix agent and update registration on remote sites.
