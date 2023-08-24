@@ -13,6 +13,8 @@ env:
 name: Ansible Integration Tests for Discovery Module
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
   pull_request:
     branches:
       - main
