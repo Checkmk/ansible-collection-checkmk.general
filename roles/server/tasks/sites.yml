@@ -3,7 +3,7 @@
   become: true
   ansible.builtin.shell: |
     set -o pipefail
-    omd -V {{ item.version }}.{{ checkmk_server_edition }} create {{ item.name }}
+    omd -V {{ item.version }}.{{ checkmk_server_edition | lower }} create {{ item.name }}
   args:
     executable: /bin/bash
     creates: "/omd/sites/{{ item.name }}"
@@ -23,7 +23,7 @@
     executable: /bin/bash
   no_log: true
   loop: "{{ checkmk_server_sites }}"
-  changed_when: "checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition"
+  changed_when: "checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition | lower"
   when: item.state != "absent"
   register: checkmk_server_sites_versions
   tags:

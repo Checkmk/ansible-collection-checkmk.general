@@ -8,7 +8,7 @@
 - name: "Check if desired version is installed."
   ansible.builtin.shell: |
     set -o pipefail
-    omd versions | egrep -o '{{ item.item.version }}.{{ checkmk_server_edition }}'
+    omd versions | egrep -o '{{ item.item.version }}.{{ checkmk_server_edition | lower }}'
   args:
     executable: /bin/bash
   register: checkmk_server_sites_versions
@@ -27,7 +27,7 @@
   ansible.builtin.pause:
     seconds: 5
     prompt: |
-      Proceeding with updating site {{ item.item.name }} from version {{ item.stdout }} to version {{ item.item.version }}.{{ checkmk_server_edition }}.
+      Proceeding with updating site {{ item.item.name }} from version {{ item.stdout }} to version {{ item.item.version }}.{{ checkmk_server_edition | lower }}.
       This is a minor patch update.{% if checkmk_server_backup_on_update %} A backup will be created in {{ checkmk_server_backup_dir }}. {% endif %}
       This can take a while! The site will be down during the update
   when: |
@@ -39,7 +39,8 @@
   ansible.builtin.pause:
     seconds: 60
     prompt: >
-      Proceeding with updating site {{ item.item.name }} from version {{ item.stdout }} to version {{ item.item.version }}.{{ checkmk_server_edition }}.\n
+      Proceeding with updating site {{ item.item.name }}
+      from version {{ item.stdout }} to version {{ item.item.version }}.{{ checkmk_server_edition | lower }}.\n
       This is a major update. This can carry risks.
       {% if checkmk_server_backup_on_update %} A backup will be created in {{ checkmk_server_backup_dir }}. {% endif %}\n
       This can take a while! The site will be down during the update
@@ -60,7 +61,7 @@
   become: true
   ansible.builtin.shell: |
     omd stop {{ item.item.name }}
-    omd -f -V {{ item.item.version }}.{{ checkmk_server_edition }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
+    omd -f -V {{ item.item.version }}.{{ checkmk_server_edition | lower }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
   args:
     executable: /bin/bash
   register: checkmk_server_sites_updated
