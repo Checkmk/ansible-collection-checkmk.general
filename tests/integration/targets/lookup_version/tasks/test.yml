@@ -1,0 +1,17 @@
+---
+- name: "{{ outer_item.version }} - Get Checkmk version."
+  ansible.builtin.debug:
+    msg: "Version is {{ version }}"
+  vars:
+    version: "{{ lookup('checkmk.general.version',
+                    server_url + '/' + outer_item.site,
+                    validate_certs=False,
+                    automation_user=automation_user,
+                    automation_secret=automation_secret)
+              }}"
+  delegate_to: localhost
+  register: looked_up_version
+
+- name: "{{ outer_item.version }} - Verify Checkmk version."
+  ansible.builtin.assert:
+    that: "outer_item.version in looked_up_version.msg"

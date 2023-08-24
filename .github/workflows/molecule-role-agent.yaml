@@ -75,6 +75,5 @@ jobs:
       - name: "Run Molecule."
         run: |
           cd roles/agent/
-          ln -s ../../requirements.yml requirements.yml
           molecule test -s ${{ matrix.checkmk }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
