@@ -63,27 +63,28 @@ from ansible.module_utils.common.text.converters import to_native, to_text
 from ansible.module_utils.urls import ConnectionError, SSLValidationError, open_url
 from ansible.plugins.lookup import LookupBase
 
-from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import CheckMKLookupAPI
+from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
+    CheckMKLookupAPI,
+)
 
 
 class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
-
         self.set_options(var_options=variables, direct=kwargs)
         user = self.get_option("automation_user")
         secret = self.get_option("automation_secret")
         validate_certs = self.get_option("validate_certs")
 
-        api = CheckMKLookupAPI(
-            site_url=site_url,
-            user=user,
-            secret=secret,
-            validate_certs=validate_certs,
-        )
-
         ret = []
 
         for term in terms:
+            api = CheckMKLookupAPI(
+                site_url=term,
+                user=user,
+                secret=secret,
+                validate_certs=validate_certs,
+            )
+
             response = json.loads(api.get("/version"))
             ret.append(response.get("versions", {}).get("checkmk"))
         return ret

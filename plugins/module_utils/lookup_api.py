@@ -11,7 +11,7 @@ __metaclass__ = type
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 
-from ansible.errors import AnsibleError
+from ansible.errors import AnsibleError  # type: ignore[import]
 from ansible.module_utils.common.text.converters import to_native, to_text
 from ansible.module_utils.urls import ConnectionError, SSLValidationError, open_url
 
