@@ -5,7 +5,44 @@ on: # yamllint disable-line rule:truthy
   workflow_dispatch:
 
 jobs:
+
+  #
+  # Run sanity checks prior to release.
+  #
+
+  sanity:
+    runs-on: ubuntu-latest
+    name: Sanity (Ⓐ${{ matrix.ansible }})
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible:
+          - stable-2.13
+          - stable-2.14
+          - stable-2.15
+          - devel
+
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'  # Ansible 2.13 does not support Python 3.11.
+
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - name: Run sanity tests
+        run: ansible-test sanity --docker -v --color --coverage
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
   release:
+    needs: sanity
     runs-on: ubuntu-latest
 
     steps:
