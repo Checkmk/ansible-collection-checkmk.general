@@ -11,7 +11,7 @@ __metaclass__ = type
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 
-from ansible.errors import AnsibleError  # type: ignore[import]
+#from ansible.errors import AnsibleError  # type: ignore[import]
 from ansible.module_utils.common.text.converters import to_native, to_text
 from ansible.module_utils.urls import ConnectionError, SSLValidationError, open_url
 
@@ -45,15 +45,15 @@ class CheckMKLookupAPI:
             response = to_text(raw_response.read())
 
         except HTTPError as e:
-            raise AnsibleError("Received HTTP error for %s : %s" % (url, to_native(e)))
+            raise Exception("Received HTTP error for %s : %s" % (url, to_native(e)))
         except URLError as e:
-            raise AnsibleError("Failed lookup url for %s : %s" % (url, to_native(e)))
+            raise Exception("Failed lookup url for %s : %s" % (url, to_native(e)))
         except SSLValidationError as e:
-            raise AnsibleError(
+            raise Exception(
                 "Error validating the server's certificate for %s: %s"
                 % (url, to_native(e))
             )
         except ConnectionError as e:
-            raise AnsibleError("Error connecting to %s: %s" % (url, to_native(e)))
+            raise Exception("Error connecting to %s: %s" % (url, to_native(e)))
 
         return response

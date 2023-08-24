@@ -59,7 +59,6 @@ RETURN = """
 import json
 
 from ansible.plugins.lookup import LookupBase
-
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
 )
