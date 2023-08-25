@@ -33,6 +33,11 @@ options:
         required: false
         type: str
 
+    customer:
+        description: The customer
+        required: true (CME) | false (other Editions)
+        type: str
+
     comment:
         description: A comment for the password.
         required: false
@@ -79,6 +84,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "mypassword"
     title: "My Password"
+    customer: "provider"
     comment: "Comment on my password"
     documentation_url: "https://url.to.mypassword/"
     password: "topsecret"
@@ -145,7 +151,7 @@ HTTP_CODES_DELETE = {
     200: (True, False, "OK: The operation was done successfully."),
     400: (False, True, "Bad Request: Parameter or validation failure."),
     403: (False, True, "Forbidden: Configuration via Setup is disabled."),
-    404: (False, True, "Not Found: The requested object has not been found."),
+    404: (False, False, "Not Found: The requested object has not been found."),
     406: (
         False,
         True,
@@ -212,15 +218,28 @@ HTTP_CODES_UPDATE = {
 
 class PasswordsCreateAPI(CheckmkAPI):
     def post(self):
-        data = {
-            "ident": self.params.get("name", ""),
-            "title": self.params.get("title", ""),
-            "comment": self.params.get("comment", ""),
-            "documentation_url": self.params.get("documentation_url", ""),
-            "password": self.params.get("password", ""),
-            "owner": self.params.get("owner", ""),
-            "shared": self.params.get("shared", ""),
-        }
+        if self.params.get("customer", None) != None:
+            data = {
+                "ident": self.params.get("name", ""),
+                "title": self.params.get("title", ""),
+                "customer": self.params.get("customer", ""),
+                "comment": self.params.get("comment", ""),
+                "documentation_url": self.params.get("documentation_url", ""),
+                "password": self.params.get("password", ""),
+                "owner": self.params.get("owner", ""),
+                "shared": self.params.get("shared", ""),
+            }
+        else:
+            data = {
+                "ident": self.params.get("name", ""),
+                "title": self.params.get("title", ""),
+                "comment": self.params.get("comment", ""),
+                "documentation_url": self.params.get("documentation_url", ""),
+                "password": self.params.get("password", ""),
+                "owner": self.params.get("owner", ""),
+                "shared": self.params.get("shared", ""),
+            }
+
 
         return self._fetch(
             code_mapping=HTTP_CODES_CREATE,
@@ -285,6 +304,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         name=dict(type="str", required=True),
         title=dict(type="str", required=False),
+        customer=dict(type="str", required=False),
         comment=dict(type="str", required=False),
         documentation_url=dict(type="str", required=False),
         password=dict(type="str", required=False, no_log=True),

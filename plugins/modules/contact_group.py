@@ -30,6 +30,9 @@ options:
     title:
         description: The title (alias) of your contact group. If omitted defaults to the name.
         type: str
+    customer:
+        description: The customer (required for CME)
+        type: str
     groups:
         description:
             - instead of 'name', 'title' a list of dicts with elements of contact group name and title (alias) to be created/modified/deleted.
@@ -60,6 +63,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "my_contact_group"
     title: "My Contact Group"
+    cutomer: "provider"
     state: "present"
 
 # Create several contact groups.
@@ -69,6 +73,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
+    customer: "provider"
     groups:
       - name: "my_contact_group_one"
         title: "My Contact Group One"
@@ -85,6 +90,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
+    customer: "provider"
     groups:
       - name: "my_contact_group_one"
         title: "My Contact Group One"
@@ -266,10 +272,17 @@ def create_single_contact_group(module, base_url, headers):
     name = module.params["name"]
 
     api_endpoint = "/domain-types/contact_group_config/collections/all"
-    params = {
-        "name": name,
-        "alias": module.params.get("title", name),
-    }
+    if module.params.get("customer") != None:
+        params = {
+            "name": name,
+            "alias": module.params.get("title", name),
+            "customer": module.params.get("customer", 'provider'),
+        }
+    else:
+        params = {
+            "name": name,
+            "alias": module.params.get("title", name),
+        }
     url = base_url + api_endpoint
 
     response, info = fetch_url(
@@ -291,6 +304,7 @@ def create_contact_groups(module, base_url, groups, headers):
             {
                 "name": el.get("name"),
                 "alias": el.get("title", el.get("name")),
+                "customer": el.get("customer", 'provider'),
             }
             for el in groups
         ],
@@ -351,6 +365,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         name=dict(type="str", required=False),
         title=dict(type="str", required=False),
+        customer=dict(type="str", required=False),
         groups=dict(type="raw", required=False, default=[]),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )

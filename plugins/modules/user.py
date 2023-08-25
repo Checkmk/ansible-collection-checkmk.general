@@ -95,6 +95,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "krichards"
     fullname: "Keith Richards"
+    customer: "Provider"
     email: "keith.richards@rollingstones.com"
     password: "Open-G"
     contactgroups:
@@ -113,6 +114,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "registration"
     fullname: "Registration User"
+    customer: "Provider"
     auth_type: "automation"
     password: "ZGSDHUVDSKJHSDF"
     roles:
@@ -128,6 +130,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "horst"
     fullname: "Horst Schlämmer"
+    customer: "Provider"
     auth_type: "password"
     password: "uschi"
     enforce_password_change: True
@@ -247,6 +250,9 @@ class User:
 
         if _exists("fullname"):
             attributes["fullname"] = params["fullname"]
+
+        if _exists("customer"):
+            attributes["customer"] = params["customer"]
 
         if _exists("disable_login"):
             attributes["disable_login"] = params["disable_login"]
@@ -427,9 +433,10 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         name=dict(required=True, type="str"),
         fullname=dict(type="str"),
+        customer=dict(type="str"),
         password=dict(type="str", no_log=True),
         enforce_password_change=dict(type="bool", no_log=False),
-        auth_type=dict(type="str", choices=["password", "automation"]),
+        auth_type=dict(type="str", choices=["password", "automation"], required=True), # changed to required=True, because endpoint won't create usable user without auth_type
         disable_login=dict(type="bool"),
         email=dict(type="str"),
         fallback_contact=dict(type="bool"),
