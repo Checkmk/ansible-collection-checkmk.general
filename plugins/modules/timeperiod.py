@@ -60,22 +60,52 @@ author:
 
 EXAMPLES = r"""
 # Creating and Updating is the same.
-- name: "Create a new time period."
+- name: "Create a new time period. (Attributes in one line)"
   checkmk.general.timeperiod:
     server_url: "http://localhost/"
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
     name: "worktime"
-    title: "Work time"
-    active_time_ranges: [
-    exceptions: [
+    title: "Worktime"
+    active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]'
+    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
+    exclude: '[ "Lunchtime" ]'
+    state: "present"
 
-    ]
-    ]
+- name: "Create a new time period. (Attributes in multiple lines)"
+  checkmk.general.timeperiod:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    name: "worktime"
+    title: "Worktime"
+    active_time_ranges: [
+              {
+                  "day": "all",
+                  "time_ranges": [
+                      {
+                          "start": "8:00",
+                          "end": "17:00"
+                      }
+                  ]
+              },
+          ]
+    exceptions: [
+              {
+                  "date": "2023-12-24",
+                  "time_ranges": [
+                      {
+                          "start": "8:00",
+                          "end": "12:00"
+                      }
+                  ]
+              },
+          ]
     exclude: [
-        "lunch"
-    ]
+         "Lunchtime"
+          ]
     state: "present"
 
 - name: "Delete a time period."
@@ -297,13 +327,13 @@ def patched_version(checkmkversion):
     if (
         checkmkversion[0] == "2"
         and checkmkversion[1] == "2"
-        and int(checkmkversion[2]) >= 9
+        and int(checkmkversion[2].replace("0p", "", 1)) >= 9
     ):
         return True
     if (
         checkmkversion[0] == "2"
         and checkmkversion[1] == "1"
-        and int(checkmkversion[2]) >= 33
+        and int(checkmkversion[2].replace("0p", "", 1)) >= 33
     ):
         return True
     return False
@@ -347,6 +377,7 @@ def run_module():
         if result.http_code == 200:
             checkmkversion = timeperiodget.getversion()
 
+            # Check for value "exclude" as this wasn't possible to update before Werk #16052.
             if module.params.get("exclude") and not patched_version(checkmkversion):
                 result = RESULT(
                     http_code=0,
@@ -360,6 +391,7 @@ def run_module():
 
             timeperiodupdate = TimeperiodUpdateAPI(module)
             timeperiodupdate.headers["If-Match"] = result.etag
+
             # Different output of "Show a time period" in Version 2.0
             if checkmkversion[0] == "2" and checkmkversion[1] == "0":
                 existingalias = json.loads(result.content).get("alias")
