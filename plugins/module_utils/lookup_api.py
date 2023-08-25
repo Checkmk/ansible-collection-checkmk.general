@@ -8,10 +8,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 
-# from ansible.errors import AnsibleError
 from ansible.module_utils.common.text.converters import to_native, to_text
 from ansible.module_utils.urls import ConnectionError, SSLValidationError, open_url
 
@@ -38,22 +36,9 @@ class CheckMKLookupAPI:
             url = "%s?%s" % (url, urlencode(parameters))
 
         response = ""
-        try:
-            raw_response = open_url(
-                url, headers=self.headers, validate_certs=self.validate_certs
-            )
-            response = to_text(raw_response.read())
-
-        except HTTPError as e:
-            raise Exception("Received HTTP error for %s : %s" % (url, to_native(e)))
-        except URLError as e:
-            raise Exception("Failed lookup url for %s : %s" % (url, to_native(e)))
-        except SSLValidationError as e:
-            raise Exception(
-                "Error validating the server's certificate for %s: %s"
-                % (url, to_native(e))
-            )
-        except ConnectionError as e:
-            raise Exception("Error connecting to %s: %s" % (url, to_native(e)))
+        raw_response = open_url(
+            url, headers=self.headers, validate_certs=self.validate_certs
+        )
+        response = to_text(raw_response.read())
 
         return response

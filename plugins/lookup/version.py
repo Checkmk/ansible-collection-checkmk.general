@@ -56,11 +56,7 @@ RETURN = """
 """
 
 import json
-from urllib.error import HTTPError, URLError
 
-from ansible.errors import AnsibleError
-from ansible.module_utils.common.text.converters import to_native, to_text
-from ansible.module_utils.urls import ConnectionError, SSLValidationError, open_url
 from ansible.plugins.lookup import LookupBase
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
