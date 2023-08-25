@@ -101,8 +101,8 @@ message:
     sample: 'Done.'
 """
 
-import time
 import json
+import time
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
