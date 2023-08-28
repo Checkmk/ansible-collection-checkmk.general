@@ -20,6 +20,7 @@
     msg: "Alias of {{ checkmk_host.name }} is {{ extensions.attributes.alias }}"
   vars:
     extensions: "{{ lookup('checkmk.general.host',
+                    checkmk_host.name,
                     site_url=server_url + '/' + outer_item.site,
                     validate_certs=False,
                     automation_user=automation_user,
