@@ -6,24 +6,16 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-    name: folders
+    name: hosts
     author: Lars Getwan (@lgetwan)
     version_added: "3.3.0"
-    short_description: Get various information about a folder
+    short_description: Get various information about a host
     description:
-      - Returns a list of subfolders
-      - Returns a list of hosts of the folder
+      - Returns a list of subhosts
+      - Returns a list of hosts of the host
     options:
-      _terms:
-        description: complete folder path using tilde as a delimiter
-        required: True
-      show_hosts:
-        description: Also show the hosts of the folder(s) found
-        type: boolean
-        required: False
-        default: False
-      recursive:
-        description: Do a recursive query
+      effective_attributes:
+        description: show all effective attributes on hosts
         type: boolean
         required: False
         default: False
@@ -44,14 +36,12 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get all subfolders of the main folder recursively
+- name: Get all hosts
   ansible.builtin.debug:
-    msg: "Folder tree: {{ item.id }}"
+    msg: "Host: {{ item.id }} in folder {{ item.extensions.folder }}, IP: {{ item.extensions.effective_attributes.ipaddress }}"
   loop: "{{
-    lookup('checkmk.general.folders',
-        '~',
-        show_hosts=False,
-        recursive=True,
+    lookup('checkmk.general.hosts',
+        effective_attributes=True,
         site_url=server_url + '/' + site,
         automation_user=automation_user,
         automation_secret=automation_secret,
@@ -60,31 +50,12 @@ EXAMPLES = """
     }}"
   loop_control:
       label: "{{ item.id }}"
-
-- name: Get all hosts of the folder /test recursively
-  ansible.builtin.debug:
-    msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
-  vars:
-    looping: "{{
-                 lookup('checkmk.general.folders',
-                     '~tests',
-                     show_hosts=True,
-                     recursive=True,
-                     site_url=server_url + '/' + site,
-                     automation_user=automation_user,
-                     automation_secret=automation_secret,
-                     validate_certs=False
-                     )
-              }}"
-  loop: "{{ looping|subelements('members.hosts.value') }}"
-  loop_control:
-      label: "{{ item.0.id }}"
 """
 
 RETURN = """
   _list:
     description:
-      - A list of folders and, optionally, hosts of a folder
+      - A list of hosts and their attributes
     type: list
     elements: str
 """
@@ -100,8 +71,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import 
 class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
-        show_hosts = self.get_option("show_hosts")
-        recursive = self.get_option("recursive")
+        effective_attributes = self.get_option("effective_attributes")
         site_url = self.get_option("site_url")
         user = self.get_option("automation_user")
         secret = self.get_option("automation_secret")
@@ -115,16 +85,13 @@ class LookupModule(LookupBase):
         )
 
         ret = []
-        for term in terms:
-            parameters = {
-                "parent": term,
-                "recursive": recursive,
-                "show_hosts": show_hosts,
-            }
+        parameters = {
+            "effective_attributes": effective_attributes,
+        }
 
-            response = json.loads(
-                api.get("/domain-types/folder_config/collections/all", parameters)
-            )
-            ret.append(response.get("value"))
+        response = json.loads(
+            api.get("/domain-types/host_config/collections/all", parameters)
+        )
+        ret.append(response.get("value"))
 
         return ret

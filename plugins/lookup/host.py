@@ -6,16 +6,21 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-    name: folder
+    name: host
     author: Lars Getwan (@lgetwan)
     version_added: "3.3.0"
-    short_description: Get folder attributes
+    short_description: Get host attributes
     description:
-      - Returns the attributes of a folder
+      - Returns the attributes of a host
     options:
       _terms:
-        description: complete folder path using tilde as a delimiter
+        description: host name
         required: True
+      effective_attributes:
+        description: show all effective attributes on hosts
+        type: boolean
+        required: False
+        default: False
       site_url:
         description: site url
         required: True
@@ -33,13 +38,14 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get the attributes of folder /tests
+- name: Get the attributes of host example.com
   ansible.builtin.debug:
-    msg: "Attributes of folder /network: {{ attributes }}"
+    msg: "Attributes of host example: {{ attributes }}"
   vars:
     attributes: "{{
-                    lookup('checkmk.general.folder',
-                        '~tests',
+                    lookup('checkmk.general.host',
+                        'example.com',
+                        effective_attributes=True,
                         site_url=server_url + '/' + site,
                         automation_user=automation_user,
                         automation_secret=automation_secret,
@@ -51,7 +57,7 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of dicts of attributes of the folder(s)
+      - A list of dicts of attributes of the host(s)
     type: list
     elements: str
 """
@@ -67,6 +73,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import 
 class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
+        effective_attributes = self.get_option("effective_attributes")
         site_url = self.get_option("site_url")
         user = self.get_option("automation_user")
         secret = self.get_option("automation_secret")
@@ -80,10 +87,15 @@ class LookupModule(LookupBase):
         )
 
         ret = []
-        for term in terms:
-            api_endpoint = "/objects/folder_config/" + term
 
-            response = json.loads(api.get("/objects/folder_config/" + term))
+        parameters = {
+            "effective_attributes": effective_attributes,
+        }
+
+        for term in terms:
+            api_endpoint = "/objects/host_config/" + term
+
+            response = json.loads(api.get("/objects/host_config/" + term, parameters))
             ret.append(response.get("extensions"))
 
         return ret
