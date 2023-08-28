@@ -29,7 +29,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Verify Checkmk version."
+- name: "{{ outer_item.version }} - Verify host alias."
   ansible.builtin.assert:
     that: "checkmk_host.alias == extensions.attributes.alias"
   vars:
