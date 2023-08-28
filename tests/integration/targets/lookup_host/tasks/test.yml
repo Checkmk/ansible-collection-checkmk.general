@@ -17,7 +17,7 @@
 
 - name: "{{ outer_item.host }} - Get attributes of host."
   ansible.builtin.debug:
-    msg: "Alias of {{ checkmk_hosts.name }} is {{ extensions.attributes.alias }}"
+    msg: "Alias of {{ checkmk_host.name }} is {{ extensions.attributes.alias }}"
   vars:
     extensions: "{{ lookup('checkmk.general.host',
                     site_url=server_url + '/' + outer_item.site,
