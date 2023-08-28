@@ -421,18 +421,6 @@ def run_module():
 
             time.sleep(3)
 
-        elif result.http_code == 404:
-            result = RESULT(
-                http_code=404,
-                msg="Time period doesn't exist.",
-                content="",
-                etag="",
-                failed=True,
-                changed=False,
-            )
-
-            time.sleep(3)
-
     module.exit_json(**result_as_dict(result))
 
 
