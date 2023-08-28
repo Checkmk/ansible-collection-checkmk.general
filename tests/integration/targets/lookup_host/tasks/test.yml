@@ -1,6 +1,4 @@
 ---
-  loop: "{{ checkmk_hosts }}"
-
 - name: "{{ outer_item.version }} - Create host."
   host:
     server_url: "{{ server_url }}"
@@ -34,4 +32,3 @@
 - name: "{{ outer_item.version }} - Verify Checkmk version."
   ansible.builtin.assert:
     that: "checkmk_host.alias in looked_up_extensions.attributes.alias"
-
