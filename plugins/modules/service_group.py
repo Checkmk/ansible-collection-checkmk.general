@@ -272,7 +272,7 @@ def create_single_service_group(module, base_url, headers):
     name = module.params["name"]
 
     api_endpoint = "/domain-types/service_group_config/collections/all"
-    if module.params.get("customer") != None:
+    if module.params.get("customer") is not None:
         params = {
             "name": name,
             "alias": module.params.get("title", name),

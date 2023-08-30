@@ -34,8 +34,8 @@ options:
         type: str
 
     customer:
-        description: The customer
-        required: true (CME) | false (other Editions)
+        description: For the Checkmk Managed Edition, you need to specify which customer a password belongs to.
+        required: false
         type: str
 
     comment:
@@ -218,7 +218,7 @@ HTTP_CODES_UPDATE = {
 
 class PasswordsCreateAPI(CheckmkAPI):
     def post(self):
-        if self.params.get("customer", None) != None:
+        if self.params.get("customer", None) is not None:
             data = {
                 "ident": self.params.get("name", ""),
                 "title": self.params.get("title", ""),
@@ -239,7 +239,6 @@ class PasswordsCreateAPI(CheckmkAPI):
                 "owner": self.params.get("owner", ""),
                 "shared": self.params.get("shared", ""),
             }
-
 
         return self._fetch(
             code_mapping=HTTP_CODES_CREATE,

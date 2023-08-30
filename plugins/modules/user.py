@@ -38,6 +38,7 @@ options:
         type: bool
     auth_type:
         description: The authentication type.
+        required: true
         type: str
         choices: [password, automation]
     disable_login:
@@ -75,6 +76,9 @@ options:
         description: Configure the language to be used by the user in the user interface. Omitting this will configure the default language.
         type: str
         choices: [default, en, de, ro]
+    customer:
+        description: For the Checkmk Managed Edition, you need to specify which customer a user belongs to.
+        type: str
     state:
         description: Desired state
         type: str
@@ -436,7 +440,8 @@ def run_module():
         customer=dict(type="str"),
         password=dict(type="str", no_log=True),
         enforce_password_change=dict(type="bool", no_log=False),
-        auth_type=dict(type="str", choices=["password", "automation"], required=True), # changed to required=True, because endpoint won't create usable user without auth_type
+        # changed 'auth_type' to required=True, because endpoint won't create usable user without auth_type
+        auth_type=dict(type="str", choices=["password", "automation"], required=True),
         disable_login=dict(type="bool"),
         email=dict(type="str"),
         fallback_contact=dict(type="bool"),
