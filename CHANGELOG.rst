@@ -5,6 +5,22 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v3.2.0
+======
+
+Minor Changes
+-------------
+
+- Agent role - Add preflight check for correct Checkmk edition.
+- Agent role - Allow the role to download folder-specific agents.
+- Server role - Add preflight check for correct Checkmk edition.
+
+Bugfixes
+--------
+
+- Agent role - Fix activation handler URL.
+- Agent role - Fix agent and update registration on remote sites.
+
 v3.1.0
 ======
 

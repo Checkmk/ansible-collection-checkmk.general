@@ -658,3 +658,16 @@ releases:
         name: version
         namespace: null
     release_date: '2023-08-22'
+  3.2.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix activation handler URL.
+      - Agent role - Fix agent and update registration on remote sites.
+      minor_changes:
+      - Agent role - Add preflight check for correct Checkmk edition.
+      - Agent role - Allow the role to download folder-specific agents.
+      - Server role - Add preflight check for correct Checkmk edition.
+    fragments:
+    - agent.yml
+    - server.yml
+    release_date: '2023-08-30'
