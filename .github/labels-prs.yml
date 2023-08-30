@@ -49,3 +49,9 @@ module:user:
 
 lookup:version:
   - 'plugins/modules/lookup/version.py'
+
+lookup:folder:
+  - 'Component Name: lookup_folder'
+
+lookup:folders:
+  - 'Component Name: lookup_folders'
