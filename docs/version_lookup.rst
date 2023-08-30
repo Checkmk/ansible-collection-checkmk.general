@@ -38,7 +38,7 @@ checkmk.general.version lookup -- Get the version of a Checkmk server
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 3.1.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 3.2.0).
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
@@ -251,7 +251,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
         <div class="ansible-option-cell">
 
-      Wether or not to validate TLS cerificates
+      Wether or not to validate TLS certificates
 
 
       .. rst-class:: ansible-option-line
