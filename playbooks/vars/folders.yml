@@ -12,9 +12,3 @@ checkmk_folders:
     name: Foo
   - path: /foo/bar/treasure
     name: Treasure
-
-checkmk_folder:
-    name: "Folder 1"
-    path: "/folder1"
-    criticality: "test"
-
