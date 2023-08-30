@@ -45,50 +45,12 @@
   loop_control:
       label: "{{ item.id }}"
 
-- name: "Number of folders in vars"
-  ansible.builtin.debug:
-    msg: "{{ checkmk_folders|length }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-
-- name: "Number of folders in API"
-  ansible.builtin.debug:
-    msg: "{{ folders|length }}"
-  vars:
-    folders: "{{ lookup('checkmk.general.folders',
-                      '/',
-                      recursive=True,
-                      site_url=server_url + '/' + outer_item.site,
-                      validate_certs=False,
-                      automation_user=automation_user,
-                      automation_secret=automation_secret)
-                  }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-
-- name: "Verify number of checkmk_folders."
-  ansible.builtin.assert:
-    that: "checkmk_folders|length == 4"
-
-- name: "Verify number of folders."
-  ansible.builtin.assert:
-    that: "folders|length == 5"
-  vars:
-    folders: "{{ lookup('checkmk.general.folders',
-                      recursive=True,
-                      site_url=server_url + '/' + outer_item.site,
-                      validate_certs=False,
-                      automation_user=automation_user,
-                      automation_secret=automation_secret)
-                  }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-
 - name: "Verify number of folders."
   ansible.builtin.assert:
     that: "( 1 + checkmk_folders|length ) == folders|length"
   vars:
     folders: "{{ lookup('checkmk.general.folders',
+                      '/',
                       recursive=True,
                       site_url=server_url + '/' + outer_item.site,
                       validate_certs=False,

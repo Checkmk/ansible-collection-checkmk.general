@@ -127,6 +127,6 @@ class LookupModule(LookupBase):
             )
 
             ret.append(response.get("value"))
-            #ret.append([{"name": "debug %s" % term, "extensions": { "attributes": { "tag_criticality": "prod" } } }])
+            # ret.append([{"name": "debug %s" % term, "extensions": { "attributes": { "tag_criticality": "prod" } } }])
 
         return ret

@@ -295,12 +295,6 @@ def create_folder(module, attributes, base_url, headers):
             % (info["status"], info["body"], url, str(params)),
         )
 
-    #exit_failed(
-    #    module,
-    #    "Error calling API. HTTP code %d. Details: %s, Response: %s. URL: %s, Params: %s, "
-    #    % (info["status"], str(info), str(response), url, str(params)),
-    #)
-
 
 def delete_folder(module, base_url, headers):
     api_endpoint = "/objects/folder_config/" + path_for_url(module)
@@ -487,8 +481,9 @@ def run_module():
             )
 
     elif state == "present" and current_state == "absent":
-        #exit_ok(module, "update_attributes: %s, attributes: %s" % (str(update_attributes), str(attributes)))
-        if (update_attributes and update_attributes != {}) and (not attributes or attributes == {}):
+        if (update_attributes and update_attributes != {}) and (
+            not attributes or attributes == {}
+        ):
             attributes = update_attributes
         if not module.check_mode:
             create_folder(module, attributes, base_url, headers)
