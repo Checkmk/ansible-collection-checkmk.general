@@ -28,15 +28,15 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 
 - name: "{{ outer_item.host }} - Number of hosts from var"
   ansible.builtin.debug:
-    msg: "{{ checkmk_hosts|length }} hosts found"
+    msg: "{{ checkmk_hosts | length }} hosts found"
 
 - name: "{{ outer_item.host }} - Number of hosts from lookup"
   ansible.builtin.debug:
-    msg: "{{ hosts|length }} hosts found"
+    msg: "{{ hosts | length }} hosts found"
   vars:
     hosts: "{{ lookup('checkmk.general.hosts',
              site_url=server_url + '/' + outer_item.site,
@@ -50,7 +50,7 @@
 - name: "{{ outer_item.version }} - Verify number of hosts."
   ansible.builtin.assert:
     that: "checkmk_hosts|length == hosts|length"
-  var:
+  vars:
     hosts: "{{ lookup('checkmk.general.hosts',
                       site_url=server_url + '/' + outer_item.site,
                       validate_certs=False,
