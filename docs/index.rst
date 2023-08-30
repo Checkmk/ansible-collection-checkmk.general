@@ -6,7 +6,7 @@
 Checkmk.General
 ===============
 
-Collection version 3.1.0
+Collection version 3.2.0
 
 .. contents::
    :local:
@@ -22,6 +22,7 @@ The official Checkmk Ansible collection - brought to you by the Checkmk company.
 * Marcel Arentz (https://github.com/godspeed-you)
 * Robin Gierse (https://github.com/robin-checkmk)
 * Lars Getwan (https://github.com/lgetwan)
+* Max Sickora (https://github.com/Max-checkmk)
 
 **Supported ansible-core versions:**
 
