@@ -80,10 +80,9 @@ class LookupModule(LookupBase):
         )
 
         ret = []
-        for term in terms:
-            api_endpoint = "/objects/folder_config/" + term
 
-            response = json.loads(api.get("/objects/folder_config/" + term))
+        for term in terms:
+            response = json.loads(api.get("/objects/folder_config/" + term.replace('/', '~')))
             ret.append(response.get("extensions"))
 
         return ret

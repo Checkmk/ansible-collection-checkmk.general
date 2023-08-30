@@ -117,7 +117,7 @@ class LookupModule(LookupBase):
         ret = []
         for term in terms:
             parameters = {
-                "parent": term,
+                "parent": term.replace("/", "~"),
                 "recursive": recursive,
                 "show_hosts": show_hosts,
             }
@@ -125,6 +125,8 @@ class LookupModule(LookupBase):
             response = json.loads(
                 api.get("/domain-types/folder_config/collections/all", parameters)
             )
+
             ret.append(response.get("value"))
+            #ret.append([{"name": "debug %s" % term, "extensions": { "attributes": { "tag_criticality": "prod" } } }])
 
         return ret
