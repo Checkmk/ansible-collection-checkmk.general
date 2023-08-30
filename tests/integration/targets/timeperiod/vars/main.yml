@@ -44,6 +44,10 @@ checkmk_timeperiods_create:
   - name: "notonfriday"
     alias: "Notonfriday"
     active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "13:00:00", "end": "23:59:59"}]}]'
+  - name: "fridaybreak"
+    alias: "fridaybreak"
+    active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "14:00", "end": "15:00"}]}]'
+    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00", "end": "11:00"}]}]'
 
 checkmk_timeperiods_update:
   - name: "worktime"
@@ -52,8 +56,19 @@ checkmk_timeperiods_update:
   - name: "notonfriday"
     active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "00:00:00", "end": "23:59:59"}]}]'
 
+checkmk_timeperiods_noupdate:
+  - name: "fridaybreak"
+    alias: "fridaybreak"
+    active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "14:00", "end": "15:00"}]}]'
+    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00", "end": "11:00"}]}]'
+
+checkmk_timeperiods_faildelete:
+  - name: "lunchtime"
+
+checkmk_timeperiods_deletefirst:
+  - name: "worktime"
 
 checkmk_timeperiods_delete:
-  - name: "worktime"
   - name: "lunchtime"
   - name: "notonfriday"
+  - name: "fridaybreak"

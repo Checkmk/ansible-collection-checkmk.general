@@ -250,6 +250,8 @@ HTTP_CODES_UPDATE = {
     500: (False, True, "General Server Error."),
 }
 
+updatevalues = ("alias", "active_time_ranges", "exceptions", "exclude")
+
 
 class TimeperiodCreateAPI(CheckmkAPI):
     def post(self):
@@ -276,19 +278,20 @@ class TimeperiodCreateAPI(CheckmkAPI):
 class TimeperiodUpdateAPI(CheckmkAPI):
     def put(self, existingalias):
         data = {}
-        if (
-            self.params.get("alias") is not None
-            and self.params.get("alias") is not existingalias
-        ):
+        # In case of "alias" the API will respond with an error,
+        # if the existing alias is the same as the new one.
+        # So at this point we check if new and old are equal
+        # and skip the value if that's the case.
+        if self.params.get("alias") and self.params.get("alias") != existingalias:
             data["alias"] = self.params.get("alias")
 
-        if self.params.get("active_time_ranges") is not None:
+        if self.params.get("active_time_ranges"):
             data["active_time_ranges"] = self.params.get("active_time_ranges")
 
-        if self.params.get("exceptions") is not None:
+        if self.params.get("exceptions"):
             data["exceptions"] = self.params.get("exceptions")
 
-        if self.params.get("exclude") is not None:
+        if self.params.get("exclude"):
             data["exclude"] = self.params.get("exclude")
 
         return self._fetch(
@@ -337,6 +340,19 @@ def patched_version(checkmkversion):
     ):
         return True
     return False
+
+
+def existingnew_equalcheck(existing, new):
+    # Here we want to check if the existing values are equal to the given ones.
+    # Known issue here is that day "all" will be "monday","tuesday", ... in existing values.
+    # And new time 10:00:00 will be 10:00 in existing values.
+    # Both cases are not comparable at the moment and so the result will be False.
+    equal = True
+    for key, value in new.items():
+        if value is not None and value != existing.get(key):
+            equal = False
+            break
+    return equal
 
 
 def run_module():
@@ -392,16 +408,37 @@ def run_module():
             timeperiodupdate = TimeperiodUpdateAPI(module)
             timeperiodupdate.headers["If-Match"] = result.etag
 
-            # Different output of "Show a time period" in Version 2.0
+            # Get the existing values of the time period.
+            # Beware of different output of "Show a time period" in Version 2.0.
+            existing = {}
             if checkmkversion[0] == "2" and checkmkversion[1] == "0":
-                existingalias = json.loads(result.content).get("alias")
+                for value in updatevalues:
+                    existing[value] = json.loads(result.content).get(value)
             else:
-                existingalias = (
-                    json.loads(result.content).get("extensions").get("alias")
-                )
-            result = timeperiodupdate.put(existingalias)
+                for value in updatevalues:
+                    existing[value] = (
+                        json.loads(result.content).get("extensions").get(value)
+                    )
 
-            time.sleep(3)
+            # Get the new values of the time period.
+            new = {}
+            for value in updatevalues:
+                new[value] = module.params.get(value)
+
+            if existingnew_equalcheck(existing, new):
+                # Time period is equal. Skip the update.
+                result = RESULT(
+                    http_code=0,
+                    msg="Existing time period is equal with new one. No need to update.",
+                    content="",
+                    etag="",
+                    failed=False,
+                    changed=False,
+                )
+            else:
+                result = timeperiodupdate.put(existing["alias"])
+
+                time.sleep(3)
 
         # Time period doesn't exist - Create new one.
         elif result.http_code == 404:
