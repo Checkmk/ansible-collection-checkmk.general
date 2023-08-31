@@ -43,7 +43,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 
 - name: "Verify number of folders."
   ansible.builtin.assert:

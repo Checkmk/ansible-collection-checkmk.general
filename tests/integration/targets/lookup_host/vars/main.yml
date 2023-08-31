@@ -33,6 +33,6 @@ checkmk_server_edition_mapping:
   cme: managed
 
 checkmk_host:
-    name: "host1.tld"
-    folder: "/"
-    alias: "Host 1"
+  name: "host1.tld"
+  folder: "/"
+  alias: "Host 1"
