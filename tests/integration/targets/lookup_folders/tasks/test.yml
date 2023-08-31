@@ -47,6 +47,7 @@
 
 - name: "Verify number of folders."
   ansible.builtin.assert:
+    # The looked up list contains the main folder, as well.
     that: "( 1 + checkmk_folders|length ) == folders|length"
   vars:
     folders: "{{ lookup('checkmk.general.folders',
