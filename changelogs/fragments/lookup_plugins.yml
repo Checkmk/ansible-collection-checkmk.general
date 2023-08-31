@@ -1,0 +1,5 @@
+major_changes:
+ - folder lookup plugin - Add a lookup plugin that exposes the REST API endpoint /objects/folder_config/<folder>
+ - folders lookup plugin - Add a lookup plugin that exposes the REST API endpoint /domain-types/folder_config/collections/all
+ - host lookup plugin - Add a lookup plugin that exposes the REST API endpoint /objects/host_config/<host>
+ - hosts lookup plugin - Add a lookup plugin that exposes the REST API endpoint /domain-types/host_config/collections/all
