@@ -122,7 +122,7 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 See [CHANGELOG.rst](CHANGELOG.rst).
 
 ## Roadmap
-<!-- Optional. Include the Roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
+<!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
 This is merely a collection of possible additions to the role.
 Please do **not** consider a concrete planning document!
 
@@ -136,8 +136,8 @@ Please do **not** consider a concrete planning document!
     - Notification Rules
     - Time Periods
 - Lookup Plugins
-  - Version
   - Rules
+- Dynamic Inventory
 
 ## More information about Ansible
 
