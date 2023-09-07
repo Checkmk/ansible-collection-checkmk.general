@@ -299,16 +299,29 @@ def create_single_contact_group(module, base_url, headers):
 
 def create_contact_groups(module, base_url, groups, headers):
     api_endpoint = "/domain-types/contact_group_config/actions/bulk-create/invoke"
-    params = {
-        "entries": [
-            {
-                "name": el.get("name"),
-                "alias": el.get("title", el.get("name")),
-                "customer": el.get("customer", "provider"),
-            }
-            for el in groups
-        ],
-    }
+
+    if module.params.get("customer") is not None:
+        params = {
+            "entries": [
+                {
+                    "name": el.get("name"),
+                    "alias": el.get("title", el.get("name")),
+                    "customer": el.get("customer", "provider"),
+                }
+                for el in groups
+            ],
+        }
+    else:
+        params = {
+            "entries": [
+                {
+                    "name": el.get("name"),
+                    "alias": el.get("title", el.get("name")),
+                }
+                for el in groups
+            ],
+        }
+
     url = base_url + api_endpoint
 
     response, info = fetch_url(
