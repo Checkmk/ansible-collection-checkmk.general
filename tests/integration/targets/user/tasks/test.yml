@@ -25,7 +25,7 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Create users."
-  user:
+  user:  # noqa fqcn[action-core]  # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
@@ -56,7 +56,7 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Create same users again."
-  user:
+  user:  # noqa fqcn[action-core]  # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
@@ -83,12 +83,13 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Edit users."
-  user:
+  user:  # noqa fqcn[action-core]  # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     name: "{{ item.name }}"
+    auth_type: "{{ item.auth_type }}"
     contactgroups: "{{ item.contactgroups }}"
     state: "present"
   delegate_to: localhost
@@ -108,12 +109,13 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Change PW of users."
-  user:
+  user:  # noqa fqcn[action-core]  # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     name: "{{ item.name }}"
+    auth_type: "{{ item.auth_type }}"
     password: "{{ item.newpassword }}"
     state: "present"
   delegate_to: localhost
@@ -134,12 +136,13 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Delete users."
-  user:
+  user:  # noqa fqcn[action-core]  # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     name: "{{ item.name }}"
+    auth_type: "{{ item.auth_type }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -158,12 +161,13 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - Delete same users again."
-  user:
+  user:  # noqa fqcn[action-core]  # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
     name: "{{ item.name }}"
+    auth_type: "{{ item.auth_type }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
