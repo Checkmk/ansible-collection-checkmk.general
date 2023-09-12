@@ -1,4 +1,3 @@
----
 - name: "{{ ansible_os_family }}: Install host-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.windows.win_package:
     path: "{{ checkmk_agent_agent.file.host }}"
@@ -19,7 +18,7 @@
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }}: Install Vanilla {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_os_family }}: Install Vanilla agent."
   ansible.windows.win_package:
     path: "{{ checkmk_agent_agent.file.cre }}"
     state: present

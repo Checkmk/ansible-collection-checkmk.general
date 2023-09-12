@@ -36,3 +36,5 @@ Collection Version | Checkmk Versions | Ansible Versions | Remarks
 2.4.0 | 2.0.0p37, 2.1.0p31, 2.2.0p7 | 2.13, 2.14, 2.15 | None
 2.4.1 | 2.0.0p37, 2.1.0p31, 2.2.0p7 | 2.13, 2.14, 2.15 | None
 3.0.0 | 2.0.0p38, 2.1.0p32, 2.2.0p7 | 2.13, 2.14, 2.15 | Breaking changes to the following modules: `folder`, `host`, `host_group`, `rule`.
+3.1.0 | 2.0.0p38, 2.1.0p32, 2.2.0p7 | 2.13, 2.14, 2.15 | None
+3.2.0 | 2.0.0p38, 2.1.0p32, 2.2.0p8 | 2.13, 2.14, 2.15 | None
