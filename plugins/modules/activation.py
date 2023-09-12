@@ -29,7 +29,7 @@ options:
         default: []
         type: raw
     force_foreign_changes:
-        description: Wheather to active foreign changes.
+        description: Whether to active foreign changes.
         default: false
         type: bool
 

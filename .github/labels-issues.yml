@@ -49,3 +49,18 @@ module:tag_group:
 
 module:user:
   - 'Component Name: user'
+
+lookup:version:
+  - 'Component Name: lookup_version'
+
+lookup:folder:
+  - 'Component Name: lookup_folder'
+
+lookup:folders:
+  - 'Component Name: lookup_folders'
+
+lookup:host:
+  - 'Component Name: lookup_host'
+
+lookup:hosts:
+  - 'Component Name: lookup_hosts'

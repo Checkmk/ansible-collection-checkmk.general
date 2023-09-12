@@ -31,7 +31,22 @@
     checkmk_agent_prep_legacy | bool
     and ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
 
-- name: "{{ ansible_system }}: Run OS Family specific tasks."
+- name: "{{ ansible_system }}: Download Vanilla agent."
+  ansible.builtin.get_url:
+    url: "{{ checkmk_agent_agent.url.cre }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    dest: "{{ checkmk_agent_agent.file.cre }}"
+    mode: '0640'
+  when: checkmk_agent_edition | lower == "cre"
+  register: result
+  retries: 3
+  delay: 10
+  until: "not result.failed | bool"
+  delegate_to: "{{ checkmk_agent_delegate_download }}"
+  tags:
+    - download-package
+
+- name: "{{ ansible_os_family }}: Run OS Family specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-tasks
@@ -70,7 +85,7 @@
   become: true
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }}
   register: checkmk_agent_update_state
   when: |
@@ -84,7 +99,7 @@
   become: true
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} -p {{ checkmk_agent_protocol }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
     -U {{ checkmk_agent_user }} -S {{ checkmk_agent_auth }}
   register: checkmk_agent_update_state
   when: |
@@ -97,7 +112,7 @@
   become: true
   ansible.builtin.shell: |
     cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_server }} -i {{ checkmk_agent_site }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }} --trust-cert
   register: checkmk_agent_tls_state
   when: |

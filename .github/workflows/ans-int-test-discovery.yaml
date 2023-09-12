@@ -13,6 +13,8 @@ env:
 name: Ansible Integration Tests for Discovery Module
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
   pull_request:
     branches:
       - main
@@ -45,7 +47,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
