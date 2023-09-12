@@ -75,6 +75,15 @@ This is mutually exclusive with `checkmk_agent_secret`.
 The secret for the automation user used to authenticate against your Checkmk site.  
 This is mutually exclusive with `checkmk_agent_pass`.
 
+    checkmk_agent_port: 6556
+
+Configure the port the agent listens on. We recommend to stick to the default.
+**This does not change the agent configuration! It merely tells Ansible which port to talk to.**
+
+    checkmk_agent_port_check: 'true'
+
+Verify, that the the `checkmk_agent_port` is actually open, before querying it.
+
     checkmk_agent_auto_activate: 'false'
 
 Enable automatic activation of changes on all sites.
