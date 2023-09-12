@@ -82,5 +82,5 @@
 
 - name: "{{ ansible_system }}: Verify Checkmk Agent Port is open."
   ansible.windows.win_wait_for:
-    port: 6556
+    port: "{{ checkmk_agent_port }}"
     timeout: 60

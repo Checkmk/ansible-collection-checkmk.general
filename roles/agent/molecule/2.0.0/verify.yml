@@ -22,10 +22,10 @@
 
     - name: "Test that the Agent is listening on the default Port."
       ansible.builtin.wait_for:
-        port: 6556
+        port: "{{ checkmk_agent_port }}"
         connect_timeout: 30
-      register: checkmk_agent_server_port
+      register: checkmk_agent_port_state
 
-    - name: "Test Agent Service is listening on port 6556."
+    - name: "Test Agent Service is listening on port {{ checkmk_agent_port }}."
       ansible.builtin.assert:
-        that: "(checkmk_agent_server_port.port == 6556) and (checkmk_agent_server_port.state == 'started')"
+        that: "(checkmk_agent_port_state.port == checkmk_agent_port) and (checkmk_agent_port_state.state == 'started')"
