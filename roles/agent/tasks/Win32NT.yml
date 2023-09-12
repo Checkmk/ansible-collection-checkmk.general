@@ -84,3 +84,4 @@
   ansible.windows.win_wait_for:
     port: "{{ checkmk_agent_port }}"
     timeout: 60
+  when: checkmk_agent_port_check | bool

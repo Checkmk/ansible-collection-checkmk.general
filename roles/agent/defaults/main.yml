@@ -9,7 +9,7 @@ checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
 checkmk_agent_server_validate_certs: 'true'
 checkmk_agent_server_port: "{% if checkmk_agent_server_protocol == 'https' %}443{% else %}80{% endif %}"
 checkmk_agent_user: "{{ automation_user | default('automation') }}"
-checkmk_agent_port: "6556"
+checkmk_agent_port: 6556
 
 # Depending on which user you will be using, set the password or secret:
 # checkmk_agent_pass: "{{ automation_secret }}"
@@ -30,6 +30,7 @@ checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 checkmk_agent_host_name: "{{ inventory_hostname }}"
 checkmk_agent_folder: "{{ checkmk_folder_path | default('/') }}"
 checkmk_agent_force_foreign_changes: 'false'
+checkmk_agent_port_check: 'true'
 checkmk_agent_host_attributes:
   ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
 
