@@ -2,7 +2,7 @@
 - name: "Activate Changes."
   listen: activate changes
   checkmk.general.activation:
-    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}"
+    server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}"
     site: "{{ checkmk_agent_site }}"
     automation_user: "{{ checkmk_agent_user }}"
     automation_secret: "{{ checkmk_agent_auth }}"

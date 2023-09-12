@@ -24,8 +24,8 @@
       ansible.builtin.wait_for:
         port: 6556
         connect_timeout: 30
-      register: checkmk_agent_port
+      register: checkmk_agent_server_port
 
     - name: "Test Agent Service is listening on port 6556."
       ansible.builtin.assert:
-        that: "(checkmk_agent_port.port == 6556) and (checkmk_agent_port.state == 'started')"
+        that: "(checkmk_agent_server_port.port == 6556) and (checkmk_agent_server_port.state == 'started')"
