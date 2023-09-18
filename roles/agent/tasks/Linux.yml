@@ -107,3 +107,4 @@
   ansible.builtin.wait_for:
     port: 6556
     timeout: 60
+  when: not (checkmk_agent_push | default(false)) | bool
