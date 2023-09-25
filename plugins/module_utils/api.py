@@ -18,7 +18,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     GENERIC_HTTP_CODES,
     result_as_dict,
 )
-
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )
