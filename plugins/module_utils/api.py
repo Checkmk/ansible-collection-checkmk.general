@@ -19,6 +19,10 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
 
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
+
 
 class CheckmkAPI:
     """Base class to contact a Checkmk server"""
@@ -106,4 +110,4 @@ class CheckmkAPI:
 
         content = result.content
         checkmkinfo = json.loads(content)
-        return (checkmkinfo.get("versions").get("checkmk")).split(".")
+        return CheckmkVersion(checkmkinfo.get("versions").get("checkmk"))

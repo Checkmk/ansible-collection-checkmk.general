@@ -332,7 +332,7 @@ def run_module():
         discovery = BulkDiscoveryAPI(module)
         servicecompletion = ServiceCompletionBulkAPI(module)
 
-    ver = CheckmkVersion(discovery.getversion())
+    ver = discovery.getversion()
 
     if single_mode and ver < CheckmkVersion("2.1.0"):
         discovery = oldDiscoveryAPI(module)
