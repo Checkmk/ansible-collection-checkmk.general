@@ -17,9 +17,8 @@ class CheckmkVersion:
     """Helps to compare Checkmk versions"""
 
     def __init__(self, version_raw):
-
         def _parse(version_raw):
-            _pattern = '([0-9])\\.([0-9])\\.([0-9])([abp])*([0-9]+)*\\.?([a-zA-Z]{3})*'
+            _pattern = "([0-9])\\.([0-9])\\.([0-9])([abp])*([0-9]+)*\\.?([a-zA-Z]{3})*"
             r = re.match(_pattern, version_raw)
             return r
 
@@ -34,11 +33,6 @@ class CheckmkVersion:
             self.edition = p.group(6)
         else:
             self.valid = False
-
-    def _parse(self, version_raw):
-        _pattern = '([0-9])\.([0-9])\.([0-9])([abp])*([0-9]+)*.?([a-zA-Z]{3})*'
-        r = re.match(_pattern, version_raw)
-        return r
 
     def _value(self):
 

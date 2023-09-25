@@ -337,10 +337,7 @@ def run_module():
     if single_mode and ver < CheckmkVersion("2.1.0"):
         discovery = oldDiscoveryAPI(module)
 
-    if (
-        ver < CheckmkVersion("2.2.0")
-        and module.params.get("state") == "tabula_rasa"
-    ):
+    if ver < CheckmkVersion("2.2.0") and module.params.get("state") == "tabula_rasa":
         result = RESULT(
             http_code=0,
             msg="State 'tabula_rasa' is not supported with Checkmk 2.0.0 and 2.1.0",
