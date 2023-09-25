@@ -116,6 +116,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.types import RESUL
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
 
 HTTP_CODES = {
     # http_code: (changed, failed, "Message")
@@ -329,14 +332,13 @@ def run_module():
         discovery = BulkDiscoveryAPI(module)
         servicecompletion = ServiceCompletionBulkAPI(module)
 
-    checkmkversion = discovery.getversion()
+    ver = CheckmkVersion(discovery.getversion())
 
-    if single_mode and checkmkversion[0] == "2" and checkmkversion[1] == "0":
+    if single_mode and ver < CheckmkVersion("2.1.0"):
         discovery = oldDiscoveryAPI(module)
 
     if (
-        checkmkversion[0] == "2"
-        and checkmkversion[1] in ["0", "1"]
+        ver < CheckmkVersion("2.2.0")
         and module.params.get("state") == "tabula_rasa"
     ):
         result = RESULT(
