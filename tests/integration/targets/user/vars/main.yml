@@ -3,16 +3,16 @@
 # to the naming of the setup files. For example 'raw' and 'enterprise' rather
 # than 'CRE' and 'CEE'.
 test_sites:
-  - version: "2.2.0p8"
+  - version: "2.2.0p9"
     edition: "cme"
     site: "stable_cme"
-  - version: "2.2.0p8"
+  - version: "2.2.0p9"
     edition: "cre"
     site: "stable_raw"
-  - version: "2.2.0p8"
+  - version: "2.2.0p9"
     edition: "cee"
     site: "stable_ent"
-  - version: "2.1.0p32"
+  - version: "2.1.0p33"
     edition: "cre"
     site: "old_raw"
 
