@@ -51,7 +51,13 @@ lookup:version:
   - 'plugins/modules/lookup/version.py'
 
 lookup:folder:
-  - 'Component Name: lookup_folder'
+  - 'plugins/modules/lookup/folder.py'
 
 lookup:folders:
-  - 'Component Name: lookup_folders'
+  - 'plugins/modules/lookup/folders.py'
+
+lookup:host:
+  - 'plugins/modules/lookup/host.py'
+
+lookup:hosts:
+  - 'plugins/modules/lookup/hosts.py'

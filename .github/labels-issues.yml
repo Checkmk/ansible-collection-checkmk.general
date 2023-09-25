@@ -58,3 +58,9 @@ lookup:folder:
 
 lookup:folders:
   - 'Component Name: lookup_folders'
+
+lookup:host:
+  - 'Component Name: lookup_host'
+
+lookup:hosts:
+  - 'Component Name: lookup_hosts'

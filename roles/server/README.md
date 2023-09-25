@@ -61,9 +61,17 @@ Uninstall unused Checkmk versions on the server.
 
     checkmk_server_configure_firewall: 'true'
 
-Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
+Configures that the firewall is enabled and the checkmk server ports are allowed. (Currently only supported for redhat)
 
     checkmk_server_allow_downgrades: 'false'
+
+Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
+
+    checkmk_server_sites:
+      - name: test
+        version: "{{ checkmk_server_version }}"
+        state: started
+        admin_pw: test
 
 Automatically open the necessary ports on the Checkmk server for the
 web interface to be accessible.
@@ -71,6 +79,7 @@ web interface to be accessible.
     checkmk_server_sites:
       - name: test
         version: "{{ checkmk_server_version }}"
+        update_conflict_resolution: abort
         state: started
         admin_pw: test
 
@@ -78,12 +87,6 @@ A dictionary of sites, their version, admin password and state.
 If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
 Valid choices include `install`, `keepold` and `abort`.
 
-    checkmk_server_sites:
-      - name: test
-        version: "{{ checkmk_server_version }}"
-        update_conflict_resolution: abort
-        state: started
-        admin_pw: test
 
 Directory to backup sites to when updating between versions.
     checkmk_server_backup_dir: /tmp
