@@ -38,7 +38,6 @@ options:
         type: bool
     auth_type:
         description: The authentication type.
-        required: true
         type: str
         choices: [password, automation]
     disable_login:
@@ -76,9 +75,6 @@ options:
         description: Configure the language to be used by the user in the user interface. Omitting this will configure the default language.
         type: str
         choices: [default, en, de, ro]
-    customer:
-        description: For the Checkmk Managed Edition, you need to specify which customer a user belongs to.
-        type: str
     state:
         description: Desired state
         type: str
@@ -321,6 +317,7 @@ class User:
         if _exists("authorized_sites"):
             attributes["authorized_sites"] = params["authorized_sites"]
 
+        #raise Exception(str(params))
         return cls(params["name"], state=params["state"], attributes=attributes)
 
     def satisfies(self, other_instance):
@@ -350,6 +347,12 @@ def get_current_user_state(module, api_params):
         current_state = "present"
         etag = info.get("etag", "")
         extensions = body.get("extensions", {})
+
+    elif info["status"] == 401:
+        exit_failed(module, "[get_current_user_state] Error calling API. HTTP code %d. Details: %s." %  (info["status"], info["body"]))
+
+    elif info["status"] == 403:
+        exit_failed(module, "[get_current_user_state] Error calling API. HTTP code %d. Details: %s." %  (info["status"], info["body"]))
 
     elif info["status"] == 404:
         current_state = "absent"
@@ -437,11 +440,10 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         name=dict(required=True, type="str"),
         fullname=dict(type="str"),
-        customer=dict(type="str"),
+        customer=dict(type="str", required=False),
         password=dict(type="str", no_log=True),
         enforce_password_change=dict(type="bool", no_log=False),
-        # changed 'auth_type' to required=True, because endpoint won't create usable user without auth_type
-        auth_type=dict(type="str", choices=["password", "automation"], required=True),
+        auth_type=dict(type="str", choices=["password", "automation"]),
         disable_login=dict(type="bool"),
         email=dict(type="str"),
         fallback_contact=dict(type="bool"),
@@ -482,6 +484,7 @@ def run_module():
     )
 
     # Determine desired state and attributes
+    log("module.params: %s" % str(module.params))
     desired_user = User.from_module(module.params)
     log("desired_user: %s" % str(desired_user))
     desired_state = desired_user.state
