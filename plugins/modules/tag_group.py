@@ -17,7 +17,7 @@ short_description: Manage tag_group within Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "0.11.0"
+version_added: "0.12.0"
 
 description:
 - Manage tag_group within Checkmk.
@@ -36,6 +36,10 @@ options:
         type: str
     topic:
         description: The topic of the tag_group
+        default: ""
+        type: str
+    help:
+        description: The help of the tag_group
         default: ""
         type: str
     choices:
@@ -63,6 +67,7 @@ EXAMPLES = r"""
     id: Virtualization
     title: Virtualization
     topic: My_Tags
+    help: This is a fancy tag group
     choices:
         - id: No_Virtualization
           title: No Virtualization
@@ -103,7 +108,7 @@ def read_tag_group(module, base_url, headers):
     )
 
     current_state = "unknown"
-    current_tag_group = dict(title="", topic="", tags=[], ident="")
+    current_tag_group = dict(title="", topic="", help="", tags=[], ident="")
     etag = ""
 
     ident = module.params.get("id", "")
@@ -130,6 +135,7 @@ def read_tag_group(module, base_url, headers):
         extensions = json.loads(response_content).get("extensions", {})
         current_tag_group["tags"] = extensions["tags"]
         current_tag_group["topic"] = extensions["topic"]
+        current_tag_group["help"] = extensions["help"]
         current_tag_group["title"] = json.loads(response_content).get("title", "")
         current_tag_group["ident"] = json.loads(response_content).get("id", "")
 
@@ -161,6 +167,7 @@ def create_tag_group(module, base_url, headers):
     tag_group["ident"] = ident
     tag_group["title"] = module.params.get("title", "")
     tag_group["topic"] = module.params.get("topic", "")
+    tag_group["help"] = module.params.get("help", "")
     tag_group["tags"] = module.params.get("choices", "")
     for d in tag_group["tags"]:
         d["ident"] = d.pop("id")
@@ -198,6 +205,7 @@ def update_tag_group(module, base_url, headers, etag):
     tag_group["repair"] = True
     tag_group["title"] = module.params.get("title", "")
     tag_group["topic"] = module.params.get("topic", "")
+    tag_group["help"] = module.params.get("help", "")
     tag_group["tags"] = module.params.get("choices", "")
     for d in tag_group["tags"]:
         d["ident"] = d.pop("id")
@@ -236,6 +244,7 @@ def delete_tag_group(module, base_url, headers, etag):
     tag_group["repair"] = True
     tag_group["title"] = module.params.get("title", "")
     tag_group["topic"] = module.params.get("topic", "")
+    tag_group["help"] = module.params.get("help", "")
     tag_group["tags"] = module.params.get("choices", "")
     for d in tag_group["tags"]:
         d["ident"] = d.pop("id")
@@ -273,6 +282,7 @@ def run_module():
         title=dict(type="str", default=""),
         id=dict(type="str", default=""),
         topic=dict(type="str", default=""),
+        help=dict(type="str", default=""),
         choices=dict(type="list", elements="dict", default=[]),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
@@ -319,10 +329,12 @@ def run_module():
             current_etag = result["etag"]
             current_title = result["current_tag_group"]["title"]
             current_topic = result["current_tag_group"]["topic"]
+            current_help = result["current_tag_group"]["help"]
             changed_len = False
             changed_content = False
             changed_title = False
             changed_topic = False
+            changed_help = False
             if not all(a == b for a, b in pairs):
                 changed_content = True
                 msg_tokens.append("Content of choices changed.")
@@ -335,11 +347,15 @@ def run_module():
             if module.params.get("topic") != current_topic:
                 changed_topic = True
                 msg_tokens.append("Topic changed.")
+            if module.params.get("help") != current_help:
+                changed_help = True
+                msg_tokens.append("Help changed.")
             if (
                 changed_content is True
                 or changed_len is True
                 or changed_title is True
                 or changed_topic is True
+                or changed_help is True
             ):
                 result = update_tag_group(module, base_url, headers, current_etag)
                 result["changed"] = True
