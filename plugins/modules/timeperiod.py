@@ -131,9 +131,9 @@ message:
     sample: 'Done.'
 """
 
-from datetime import datetime
 import json
 import time
+from datetime import datetime
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
@@ -402,7 +402,8 @@ def existingnew_equalcheck(existing, new):
             correct_timeformat(time_ranges) for time_ranges in new["active_time_ranges"]
         ]
         time_ranges = [
-            correct_timeformat(time_ranges) for time_ranges in existing["active_time_ranges"]
+            correct_timeformat(time_ranges)
+            for time_ranges in existing["active_time_ranges"]
         ]
         new["active_time_ranges"] = correct_timerange(new["active_time_ranges"])
         time_ranges = [
