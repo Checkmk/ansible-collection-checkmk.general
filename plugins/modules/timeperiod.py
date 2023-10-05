@@ -131,6 +131,7 @@ message:
     sample: 'Done.'
 """
 
+from datetime import datetime
 import json
 import time
 
@@ -342,11 +343,93 @@ def patched_version(checkmkversion):
     return False
 
 
+# Correct every timerange (all to single days and summarize every day)
+def correct_timerange(active_time_ranges):
+    all_days = [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
+    ]
+    new_timeranges = []
+    for day in all_days:
+        timeranges = []
+        for time_range in active_time_ranges:
+            if time_range["day"] == "all" or time_range["day"] == day:
+                timeranges.extend(time_range["time_ranges"])
+        if timeranges:
+            new_timeranges.append({"day": day, "time_ranges": timeranges})
+    return new_timeranges
+
+
+# Sort new and existing timeranges (exceptions get sorted by date also)
+def sort_timerange(time_ranges):
+    time_ranges["time_ranges"] = sorted(
+        time_ranges["time_ranges"], key=lambda d: d["start"]
+    )
+    return time_ranges
+
+
+# Correct timeformat 08:00:00 / 8:00 -> 08:00
+def correct_timeformat(time_ranges):
+    for time_range in time_ranges["time_ranges"]:
+        try:  # Try with seconds
+            time_range["start"] = (
+                datetime.strptime(time_range["start"], "%H:%M:%S")
+            ).strftime("%H:%M")
+            time_range["end"] = (
+                datetime.strptime(time_range["end"], "%H:%M:%S")
+            ).strftime("%H:%M")
+        except ValueError:  # In Case of ValueError without seconds
+            time_range["start"] = (
+                datetime.strptime(time_range["start"], "%H:%M")
+            ).strftime("%H:%M")
+            time_range["end"] = (
+                datetime.strptime(time_range["end"], "%H:%M")
+            ).strftime("%H:%M")
+    return time_ranges
+
+
 def existingnew_equalcheck(existing, new):
     # Here we want to check if the existing values are equal to the given ones.
-    # Known issue here is that day "all" will be "monday","tuesday", ... in existing values.
-    # And new time 10:00:00 will be 10:00 in existing values.
-    # Both cases are not comparable at the moment and so the result will be False.
+    # For this we have to make them comparable with converting and sorting.
+
+    if new["active_time_ranges"]:
+        time_ranges = [
+            correct_timeformat(time_ranges) for time_ranges in new["active_time_ranges"]
+        ]
+        time_ranges = [
+            correct_timeformat(time_ranges) for time_ranges in existing["active_time_ranges"]
+        ]
+        new["active_time_ranges"] = correct_timerange(new["active_time_ranges"])
+        time_ranges = [
+            sort_timerange(time_ranges) for time_ranges in new["active_time_ranges"]
+        ]
+        time_ranges = [
+            sort_timerange(time_ranges)
+            for time_ranges in existing["active_time_ranges"]
+        ]
+
+    if new["exceptions"]:
+        time_ranges = [
+            correct_timeformat(time_ranges) for time_ranges in new["exceptions"]
+        ]
+        time_ranges = [
+            correct_timeformat(time_ranges) for time_ranges in existing["exceptions"]
+        ]
+        time_ranges = [sort_timerange(time_ranges) for time_ranges in new["exceptions"]]
+        new["exceptions"] = sorted(new["exceptions"], key=lambda d: d["date"])
+        existing["exceptions"] = sorted(existing["exceptions"], key=lambda d: d["date"])
+        time_ranges = [
+            sort_timerange(time_ranges) for time_ranges in existing["exceptions"]
+        ]
+
+    if new["exclude"]:
+        new["exclude"] = sorted(new["exclude"])
+        existing["exclude"] = sorted(existing["exclude"])
     equal = True
     for key, value in new.items():
         if value is not None and value != existing.get(key):
