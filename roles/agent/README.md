@@ -117,7 +117,7 @@ for automatic updates. Otherwise this will fail.
 
     checkmk_agent_configure_firewall: 'true'
 
-Automatically configure the firewall (*currently only on RedHat derivatives*) to allow access to the Checkmk agent.
+Automatically configure the firewall (*currently only on RedHat and Debian derivatives*) to allow access to the Checkmk agent.
 
     checkmk_agent_configure_firewall_zone: 'public'
 
