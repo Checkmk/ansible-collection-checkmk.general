@@ -93,6 +93,20 @@
   tags:
     - download-package
 
+- name: "{{ ansible_os_family }} Derivatives: Fetch GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
+  ansible.builtin.fetch:
+    src: "{{ checkmk_agent_agent.file.cee }}"
+    dest: "{{ checkmk_agent_agent.file.cee }}"
+    flat: true
+    mode: "0644"
+  when: |
+    checkmk_agent_edition | lower != "cre"
+    and not checkmk_agent_host_specific | bool
+    and checkmk_agent_delegate_download != inventory_hostname
+  delegate_to: "{{ checkmk_agent_delegate_download }}"
+  tags:
+    - download-package
+
 - name: "{{ ansible_os_family }} Derivatives: Transfer GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
     src: "{{ checkmk_agent_agent.file.cee }}"
