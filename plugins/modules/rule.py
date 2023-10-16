@@ -100,33 +100,32 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_labels": [],
-            "host_name": {
-                "match_on": [
-                    "test1.tld"
-                ],
-                "operator": "one_of"
-            },
-            "host_tags": [],
-            "service_labels": []
-        }
-        properties: {
-            "comment": "Warning at 80%\nCritical at 90%\n",
-            "description": "Allow higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-        }
+      conditions: {
+        "host_labels": [],
+        "host_name": {
+          "match_on": [
+            "test1.tld"
+          ],
+          "operator": "one_of"
+        },
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 80%\nCritical at 90%\n",
+        "description": "Allow higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (80.0, 90.0)}"
+      location:
         folder: "/"
-        value_raw: "{'levels': (80.0, 90.0)}"
-        location:
-            folder: "/"
-            position: "top"
+        position: "top"
     state: "present"
-    register: response
+  register: response
 
 - name: Show the ID of the new rule
-  debug:
+  ansible.builtin.debug:
     msg: "RULE ID : {{ response.id }}"
 
 # Create another rule in checkgroup_parameters:memory_percentage_used
@@ -139,27 +138,27 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_labels": [],
-            "host_name": {
-                "match_on": [
-                    "test2.tld"
-                ],
-                "operator": "one_of"
-            },
-            "host_tags": [],
-            "service_labels": []
-        }
-        properties: {
-            "comment": "Warning at 85%\nCritical at 99%\n",
-            "description": "Allow even higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-        }
-        value_raw: "{'levels': (85.0, 99.0)}"
-        location:
-            position: "after"
-            rule_id: "{{ response.id }}"
+      conditions: {
+        "host_labels": [],
+        "host_name": {
+          "match_on": [
+            "test2.tld"
+          ],
+          "operator": "one_of"
+        },
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 85%\nCritical at 99%\n",
+        "description": "Allow even higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (85.0, 99.0)}"
+      location:
+        position: "after"
+        rule_id: "{{ response.id }}"
     state: "present"
 
 # Delete the first rule.
@@ -171,25 +170,58 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_labels": [],
-            "host_name": {
-                "match_on": [
-                    "test1.tld"
-                ],
-                "operator": "one_of"
-            },
-            "host_tags": [],
-            "service_labels": []
-        }
-        properties: {
-            "comment": "Warning at 80%\nCritical at 90%\n",
-            "description": "Allow higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-        }
-        value_raw: "{'levels': (80.0, 90.0)}"
+      conditions: {
+        "host_labels": [],
+        "host_name": {
+          "match_on": [
+            "test1.tld"
+          ],
+          "operator": "one_of"
+        },
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 80%\nCritical at 90%\n",
+        "description": "Allow higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (80.0, 90.0)}"
     state: "absent"
+
+# Create a rule rule matching a host label
+- name: "Create a rule matching a label."
+  checkmk.general.rule:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      conditions: {
+        "host_labels": [
+          {
+          "key": "cmk/check_mk_server",
+          "operator": "is",
+          "value": "yes"
+          }
+        ],
+        "host_name": {},
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 80%\nCritical at 90%\n",
+        "description": "Allow higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (80.0, 90.0)}"
+      location:
+        folder: "/"
+        position: "top"
+    state: "present"
 """
 
 RETURN = r"""
