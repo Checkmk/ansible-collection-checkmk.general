@@ -1,0 +1,120 @@
+---
+- name: "{{ outer_item.version }} - Create new time periods."
+  timeperiod:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    alias: "{{ item.alias }}"
+    active_time_ranges: "{{ item.active_time_ranges }}"
+    exceptions: "{{ item.exceptions | default(omit) }}"
+    exclude: "{{ item.exclude | default(omit) }}"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ checkmk_timeperiods_create }}"
+  no_log: false
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Update time periods."
+  timeperiod:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    alias: "{{ item.alias | default(omit) }}"
+    active_time_ranges: "{{ item.active_time_ranges | default(omit) }}"
+    exceptions: "{{ item.exceptions | default(omit) }}"
+    exclude: "{{ item.exclude | default(omit) }}"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ checkmk_timeperiods_update }}"
+  no_log: false
+
+# As this time period is equal to the existing one, no change should happen.
+- name: "{{ outer_item.version }} - Update time equal periods."
+  timeperiod:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    alias: "{{ item.alias | default(omit) }}"
+    active_time_ranges: "{{ item.active_time_ranges | default(omit) }}"
+    exceptions: "{{ item.exceptions | default(omit) }}"
+    exclude: "{{ item.exclude | default(omit) }}"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ checkmk_timeperiods_noupdate }}"
+  no_log: false
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+# This should fail.
+- name: "Try to delete a time period which is used by another time period."
+  timeperiod:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  delegate_to: localhost
+  loop: "{{ checkmk_timeperiods_faildelete }}"
+  ignore_errors: true
+
+- name: "Delete other time period first."
+  timeperiod:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  delegate_to: localhost
+  loop: "{{ checkmk_timeperiods_deletefirst }}"
+
+- name: "Delete a time period."
+  timeperiod:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  delegate_to: localhost
+  loop: "{{ checkmk_timeperiods_delete }}"
+
+- name: "{{ outer_item.version }} - Activate."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
