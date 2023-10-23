@@ -16,8 +16,11 @@ DOCUMENTATION = """
       _terms:
         description: complete folder path using tilde as a delimiter
         required: True
-      site_url:
-        description: site url
+      server_url:
+        description: URL of the Checkmk server
+        required: True
+      site:
+        description: site name
         required: True
       automation_user:
         description: automation user for the REST API access
@@ -40,7 +43,8 @@ EXAMPLES = """
     attributes: "{{
                     lookup('checkmk.general.folder',
                         '~tests',
-                        site_url=server_url + '/' + site,
+                        server_url=server_url,
+                        site=site,
                         automation_user=automation_user,
                         automation_secret=automation_secret,
                         validate_certs=False
@@ -67,10 +71,13 @@ from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import 
 class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
-        site_url = self.get_option("site_url")
+        server_url = self.get_option("server_url")
+        site = self.get_option("site")
         user = self.get_option("automation_user")
         secret = self.get_option("automation_secret")
         validate_certs = self.get_option("validate_certs")
+
+        site_url = server_url + '/' + site
 
         api = CheckMKLookupAPI(
             site_url=site_url,
