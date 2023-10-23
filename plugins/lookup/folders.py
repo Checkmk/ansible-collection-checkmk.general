@@ -113,7 +113,7 @@ class LookupModule(LookupBase):
         secret = self.get_option("automation_secret")
         validate_certs = self.get_option("validate_certs")
 
-        site_url = server_url + '/' + site
+        site_url = server_url + "/" + site
 
         api = CheckMKLookupAPI(
             site_url=site_url,

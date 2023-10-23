@@ -21,7 +21,8 @@
     folders: "{{ lookup('checkmk.general.folders',
                   '/',
                   recursive=True,
-                  site_url=server_url + '/' + outer_item.site,
+                  server_url=server_url,
+                  site=outer_item.site,
                   validate_certs=False,
                   automation_user=automation_user,
                   automation_secret=automation_secret)
@@ -35,7 +36,8 @@
   loop: "{{ lookup('checkmk.general.folders',
              '/',
              recursive=True,
-             site_url=server_url + '/' + outer_item.site,
+             server_url=server_url,
+             site=outer_item.site,
              validate_certs=False,
              automation_user=automation_user,
              automation_secret=automation_secret)
@@ -53,7 +55,8 @@
     folders: "{{ lookup('checkmk.general.folders',
                       '/',
                       recursive=True,
-                      site_url=server_url + '/' + outer_item.site,
+                      server_url=server_url,
+                      site=outer_item.site,
                       validate_certs=False,
                       automation_user=automation_user,
                       automation_secret=automation_secret)
