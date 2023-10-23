@@ -1,28 +1,13 @@
 ---
 - name: "{{ outer_item.version }} - Set customer when needed."
-  ansible.builtin.ansible.builtin.set_fact:
-    customer: "provider"
-  when: outer_item.edition == "cme"
-
-- name: "{{ outer_item.version }} - Set customer when needed."
   ansible.builtin.set_fact:
     customer: "provider"
-  when: outer_item.edition == "cce"
+  when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
 
 - name: "{{ outer_item.version }} - Unset customer when needed."
   ansible.builtin.set_fact:
     customer: null
-  when: outer_item.edition == "cre"
-
-- name: "{{ outer_item.version }} - Unset customer when needed."
-  ansible.builtin.set_fact:
-    customer: null
-  when: outer_item.edition == "cfe"
-
-- name: "{{ outer_item.version }} - Unset customer when needed."
-  ansible.builtin.set_fact:
-    customer: null
-  when: outer_item.edition == "enterprise"
+  when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
 
 - name: "{{ outer_item.version }} - Create contact groups."
   contact_group:
