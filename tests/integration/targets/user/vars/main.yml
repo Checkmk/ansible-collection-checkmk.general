@@ -76,7 +76,7 @@ checkmk_users:
     fullname: Automation User 1
     password: "0123456789"
     newpassword: "abcdefghij"
-    auth_type: automation 
+    auth_type: automation
     contactgroups: []
     roles:
       - admin
