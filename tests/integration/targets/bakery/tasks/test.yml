@@ -1,5 +1,5 @@
 ---
-- name: "{{ outer_item.version }} - Create hosts."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
   host:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -15,7 +15,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -27,7 +27,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Bake all agents."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bake all agents."
   bakery:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -37,7 +37,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Sign all agents."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Sign all agents."
   bakery:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -49,7 +49,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Bake and Sign all agents."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bake and Sign all agents."
   bakery:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -61,7 +61,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete hosts."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -74,7 +74,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"

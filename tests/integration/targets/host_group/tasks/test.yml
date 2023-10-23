@@ -1,5 +1,5 @@
 ---
-- name: "{{ outer_item.version }} - Create host groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create host groups."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -12,7 +12,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_host_groups_create }}"
 
-- name: "{{ outer_item.version }} - Should fail because of 'groups', Create host groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Should fail because of 'groups', Create host groups."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -27,7 +27,7 @@
   loop: "{{ checkmk_host_groups_create }}"
   ignore_errors: True
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -39,7 +39,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Modify part of host groups (also checks for idempotency!)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify part of host groups (also checks for idempotency!)."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -52,7 +52,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_host_groups_modify }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -64,7 +64,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete host groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host groups."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -76,7 +76,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_host_groups_delete }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -88,7 +88,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete host groups that were created at the beginning (also check for idempotency)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host groups that were created at the beginning (also check for idempotency)."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -100,7 +100,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_host_groups_create }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -112,7 +112,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Bulk create host groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk create host groups."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -123,7 +123,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Should fail because of 'name', Bulk create host groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Should fail because of 'name', Bulk create host groups."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -136,7 +136,7 @@
   run_once: true  # noqa run-once[task]
   ignore_errors: True
 
-- name: "{{ outer_item.version }} - Should fail because of 'title', Bulk create host groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Should fail because of 'title', Bulk create host groups."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -149,7 +149,7 @@
   run_once: true  # noqa run-once[task]
   ignore_errors: True
 
-- name: "{{ outer_item.version }} - Bulk modify part of host groups (also checks for idempotency!)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk modify part of host groups (also checks for idempotency!)."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -160,7 +160,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Bulk delete host groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk delete host groups."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -171,7 +171,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Bulk delete host groups that were created at the beginning (also check for idempotency)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk delete host groups that were created at the beginning (also check for idempotency)."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -182,7 +182,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"

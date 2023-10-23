@@ -1,5 +1,5 @@
 ---
-- name: "{{ outer_item.version }} - Create folder."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folder."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -13,7 +13,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Get all folders."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all folders."
   ansible.builtin.debug:
     var: folders
   vars:
@@ -28,7 +28,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Get attributes of folder."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get attributes of folder."
   ansible.builtin.debug:
     msg: "Criticality of {{ checkmk_folder.name }} is {{ extensions.attributes.tag_criticality }}"
   vars:
@@ -43,7 +43,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Verify folder criticality."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify folder criticality."
   ansible.builtin.assert:
     that: "extensions.attributes.tag_criticality == checkmk_folder.criticality"
   vars:

@@ -1,5 +1,5 @@
 ---
-- name: "{{ outer_item.version }} - Create host."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create host."
   host:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -30,7 +30,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Verify host alias."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify host alias."
   ansible.builtin.assert:
     that: "checkmk_host.alias == extensions.attributes.alias"
   vars:

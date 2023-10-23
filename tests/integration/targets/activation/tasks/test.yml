@@ -1,5 +1,5 @@
 ---
-- name: "{{ outer_item.version }} - Activate without changes."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate without changes."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -8,7 +8,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Create hosts."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
   host:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -24,7 +24,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate without explicit site."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate without explicit site."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -33,7 +33,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete hosts."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -46,7 +46,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate forcing foreign changes."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate forcing foreign changes."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -56,7 +56,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Create hosts."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
   host:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -72,7 +72,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate with explicit site."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate with explicit site."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -84,7 +84,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete hosts."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
