@@ -30,7 +30,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "Get list of folders."
+- name: "Get list of all folders."
   ansible.builtin.debug:
     msg: "Criticality of {{ item.id }} is {{ item.extensions.attributes.tag_criticality | default('N/A') }}"
   loop: "{{ lookup('checkmk.general.folders',

@@ -16,7 +16,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Get list of hosts."
+- name: "{{ outer_item.version }} - Get a list of all hosts."
   ansible.builtin.debug:
     msg: "Alias of {{ item.id }} is {{ item.extensions.attributes.alias }}"
   loop: "{{ lookup('checkmk.general.hosts',
