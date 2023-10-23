@@ -1,0 +1,46 @@
+---
+- name: "{{ outer_item.version }} - Create host."
+  host:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ checkmk_host.name }}"
+    folder: "{{ checkmk_host.folder }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+      alias: "{{ checkmk_host.alias }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.host }} - Get attributes of host."
+  ansible.builtin.debug:
+    msg: "Alias of {{ checkmk_host.name }} is {{ extensions.attributes.alias }}"
+  vars:
+    extensions: "{{ lookup('checkmk.general.host',
+                    checkmk_host.name,
+                    server_url=server_url,
+                    site=outer_item.site,
+                    validate_certs=False,
+                    automation_user=automation_user,
+                    automation_secret=automation_secret)
+              }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - Verify host alias."
+  ansible.builtin.assert:
+    that: "checkmk_host.alias == extensions.attributes.alias"
+  vars:
+    extensions: "{{ lookup('checkmk.general.host',
+                    checkmk_host.name,
+                    server_url=server_url,
+                    site=outer_item.site,
+                    validate_certs=False,
+                    automation_user=automation_user,
+                    automation_secret=automation_secret)
+              }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]

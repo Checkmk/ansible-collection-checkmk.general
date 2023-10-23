@@ -237,8 +237,8 @@ def get_current_folder_state(module, base_url, headers):
     else:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s."
-            % (info["status"], info.get("body", "N/A")),
+            "Error calling API. HTTP code %d. Details: %s. URL: %s. Parameters: %s"
+            % (info["status"], info.get("body", "N/A"), url, parameters),
         )
 
     return current_state, current_explicit_attributes, current_title, etag
@@ -291,8 +291,8 @@ def create_folder(module, attributes, base_url, headers):
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, URL: %s, Params: %s, "
+            % (info["status"], info["body"], url, str(params)),
         )
 
 
@@ -481,7 +481,9 @@ def run_module():
             )
 
     elif state == "present" and current_state == "absent":
-        if update_attributes != {} and (attributes or attributes == {}):
+        if (update_attributes and update_attributes != {}) and (
+            not attributes or attributes == {}
+        ):
             attributes = update_attributes
         if not module.check_mode:
             create_folder(module, attributes, base_url, headers)

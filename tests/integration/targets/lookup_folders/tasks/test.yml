@@ -1,0 +1,65 @@
+---
+- name: "{{ outer_item.version }} - Create folder."
+  folder:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    name: "{{ item.name }}"
+    path: "{{ item.path }}"
+    update_attributes:
+      tag_criticality: "{{ item.criticality }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_folders }}"
+
+- name: "Get all folders."
+  ansible.builtin.debug:
+    var: folders
+  vars:
+    folders: "{{ lookup('checkmk.general.folders',
+                  '/',
+                  recursive=True,
+                  server_url=server_url,
+                  site=outer_item.site,
+                  validate_certs=False,
+                  automation_user=automation_user,
+                  automation_secret=automation_secret)
+              }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "Get list of all folders."
+  ansible.builtin.debug:
+    msg: "Criticality of {{ item.id }} is {{ item.extensions.attributes.tag_criticality | default('N/A') }}"
+  loop: "{{ lookup('checkmk.general.folders',
+             '/',
+             recursive=True,
+             server_url=server_url,
+             site=outer_item.site,
+             validate_certs=False,
+             automation_user=automation_user,
+             automation_secret=automation_secret)
+         }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop_control:
+    label: "{{ item.id }}"
+
+- name: "Verify number of folders."
+  ansible.builtin.assert:
+    # The looked up list contains the main folder, as well.
+    that: "( 1 + checkmk_folders|length ) == folders|length"
+  vars:
+    folders: "{{ lookup('checkmk.general.folders',
+                      '/',
+                      recursive=True,
+                      server_url=server_url,
+                      site=outer_item.site,
+                      validate_certs=False,
+                      automation_user=automation_user,
+                      automation_secret=automation_secret)
+                  }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]

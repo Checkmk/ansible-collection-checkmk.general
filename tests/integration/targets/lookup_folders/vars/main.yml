@@ -28,3 +28,17 @@ checkmk_server_edition_mapping:
   cee: enterprise
   cce: cloud
   cme: managed
+
+checkmk_folders:
+  - name: "Folder 1"
+    path: "/folder1"
+    criticality: "test"
+  - name: "Folder 2"
+    path: "/folder2"
+    criticality: "test"
+  - name: "Folder 3"
+    path: "/folder3"
+    criticality: "test"
+  - name: "Folder 3a"
+    path: "/folder3/a"
+    criticality: "prod"

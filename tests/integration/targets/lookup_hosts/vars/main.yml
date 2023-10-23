@@ -28,3 +28,14 @@ checkmk_server_edition_mapping:
   cee: enterprise
   cce: cloud
   cme: managed
+
+checkmk_hosts:
+  - name: "host1.tld"
+    folder: "/"
+    alias: "Host 1"
+  - name: "host2.tld"
+    folder: "/"
+    alias: "Host 2"
+  - name: "host3.tld"
+    folder: "/"
+    alias: "Host 3"
