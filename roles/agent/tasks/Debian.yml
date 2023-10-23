@@ -137,3 +137,21 @@
   when: checkmk_agent_edition | lower == "cre"
   tags:
     - install-package
+
+- name: "{{ ansible_os_family }} Derivatives: Configure Firewall for Agent."
+  when: checkmk_agent_configure_firewall | bool and "ufw.service" in ansible_facts.services
+  block:
+    - name: "{{ ansible_os_family }} Derivatives: Check if checkmk_agent_server is an IP address."
+      ansible.builtin.set_fact:
+        checkmk_agent_server_ip: "{{ checkmk_agent_server }}"
+      when: checkmk_agent_server_ip is not defined and checkmk_agent_server | ansible.utils.ipaddr()
+
+    - name: "{{ ansible_os_family }} Derivatives: Allow Checkmk services access to the agent."
+      community.general.ufw:
+        rule: allow
+        proto: tcp
+        src: "{{ checkmk_agent_server_ip }}"
+        port: '6556'
+        comment: Allow Checkmk
+      when: checkmk_agent_server_ip is defined
+      become: true

@@ -14,10 +14,10 @@ Additionally, there is no commercial support whatsoever!
 This is an open source endeavour, which we want to share and progress with the community.
 
 [![Ansible Sanity Tests](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml)
-[![Ansible Integration Tests for all Modules](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-tests-full.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-tests-full.yaml)
 <!-- [![Ansible Unit Tests](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-unit-tests.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-unit-tests.yaml) -->
 
 ## Dependencies
+
  - [ansible.posix](https://github.com/ansible-collections/ansible.posix)
  - [community.general](https://github.com/ansible-collections/community.general)
 
@@ -25,8 +25,8 @@ Although the Ansible project notes, that collections should have no or very litt
 
 ## Getting help
 
-For documentation on the [included modules](#modules), run the following
-command substituting the `$MODULE_NAME`:
+For documentation on the [included modules](#modules), head over to [the Galaxy](https://galaxy.ansible.com/ui/repo/published/checkmk/general/docs/),
+or run the following command substituting the `$MODULE_NAME`:
 
     ansible-doc checkmk.general.$MODULE_NAME
 
@@ -46,12 +46,16 @@ You can find playbooks, demonstrating several aspects of this collection in the 
 Name | Description
 --- | ---
 [checkmk.general.ec2](https://github.com/Checkmk/ansible-collection-checkmk.general/tree/main/docs/checkmk.general.ec2_inventory.rst)|EC2 inventory source
+-->
 
 ### Lookup plugins
-Name | Description
---- | ---
-[checkmk.general.account_attribute](https://github.com/Checkmk/ansible-collection-checkmk.general/tree/main/docs/checkmk.general.account_attribute_lookup.rst)|Look up Checkmk account attributes.
--->
+Name | Description | Tests
+--- | --- | ---
+[checkmk.general.folder](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/folder.py)|Look up folder attributes.|[![Integration Tests for Folder Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folder.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folder.yaml)
+[checkmk.general.folders](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/folders.py)|Look up all folders.|[![Integration Tests for Folders Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folders.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folders.yaml)
+[checkmk.general.host](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/host.py)|Look up host attributes.|[![Integration Tests for Host Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-host.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-host.yaml)
+[checkmk.general.hosts](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/hosts.py)|Look up all hosts.|[![Integration Tests for Hosts Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-hosts.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-hosts.yaml)
+[checkmk.general.version](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/version.py)|Look up version and edition information.|[![Integration Tests for Version Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-version.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-version.yaml)
 
 ### Modules
 Name | Description | Tests
@@ -68,6 +72,7 @@ Name | Description | Tests
 [checkmk.general.service_group](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/service_group.py)|Manage service groups.|[![Integration Tests for Service Group Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-service_group.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-service_group.yaml)
 [checkmk.general.tag_group](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/tag_group.py)|Manage tag groups.|[![Integration Tests for Tag Group Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-tag_group.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-tag_group.yaml)
 [checkmk.general.user](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/user.py)|Manage users.|[![Integration Tests for User Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-user.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-user.yaml)
+
 ### Roles
 Name | Description | Tests
 --- | --- | ---
@@ -76,10 +81,12 @@ Name | Description | Tests
 <!--end collection content-->
 
 ## Additional content
+
 We love to see the community build things on top of this collection.  
 Check out [COMMUNITY.md](COMMUNITY.md) for a listing of interesting projects that build upon this collection in some way.
 
 ## Installing this collection
+
 Please refer to the [official Ansible documentation](https://docs.ansible.com/ansible/latest/collections_guide/collections_installing.html) on how to install this collection. The most basic way is this:
 
     ansible-galaxy collection install checkmk.general
@@ -123,7 +130,7 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 See [CHANGELOG.rst](CHANGELOG.rst).
 
 ## Roadmap
-<!-- Optional. Include the Roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
+<!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
 This is merely a collection of possible additions to the role.
 Please do **not** consider a concrete planning document!
 
@@ -137,8 +144,8 @@ Please do **not** consider a concrete planning document!
     - Notification Rules
     - Time Periods
 - Lookup Plugins
-  - Version
   - Rules
+- Dynamic Inventory
 
 ## More information about Ansible
 

@@ -34,18 +34,21 @@ options:
         description:
             - The attributes of your host as described in the API documentation.
               B(Attention! This option OVERWRITES all existing attributes!)
+              If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
         default: {}
     update_attributes:
         description:
             - The update_attributes of your host as described in the API documentation.
               This will only update the given attributes.
+              If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
         default: {}
     remove_attributes:
         description:
             - The remove_attributes of your host as described in the API documentation.
               This will only remove the given attributes.
+              If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
         default: []
     state:
@@ -133,6 +136,19 @@ EXAMPLES = r"""
     name: "my_host"
     remove_attributes:
       - alias
+    state: "present"
+
+# Add custom tags to a host (note the leading 'tag_')
+- name: "Remove specified attributes"
+  checkmk.general.host:
+    server_url: "http://localhost/"
+    site: "my_site"
+    automation_user: "automation"
+    automation_secret: "$SECRET"
+    name: "my_host"
+    update_attributes:
+      - tag_my_tag_1: "Bar"
+      - tag_my_tag_2: "Foo"
     state: "present"
 """
 

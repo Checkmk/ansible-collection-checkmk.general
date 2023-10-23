@@ -1,0 +1,86 @@
+---
+test_sites:
+  - version: "2.2.0p12"
+    edition: "cre"
+    site: "stable_raw"
+  - version: "2.2.0p12"
+    edition: "cee"
+    site: "stable_ent"
+  - version: "2.1.0p35"
+    edition: "cre"
+    site: "old_raw"
+  - version: "2.0.0p39"
+    edition: "cre"
+    site: "ancient_raw"
+
+server_url: "http://127.0.0.1/"
+automation_user: "cmkadmin"
+automation_secret: "d7589df1"
+
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
+download_user: "d-gh-ansible-dl"
+download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret', errors='ignore') | default(omit) }}"  # noqa yaml[line-length]
+
+# Due to inconsistent naming of editions, we normalize them here for convenience
+checkmk_server_edition_mapping:
+  cre: raw
+  cfe: free
+  cee: enterprise
+  cce: cloud
+  cme: managed
+
+checkmk_timeperiods_create:
+  - name: "lunchtime"
+    alias: "Lunchtime"
+    active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "12:00:00", "end": "13:00:00"}]}]'
+  - name: "worktime"
+    alias: "Worktime"
+    active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]'
+    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
+    exclude: '[ "Lunchtime" ]'
+  - name: "notonfriday"
+    alias: "Notonfriday"
+    active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "13:00:00", "end": "23:59:59"}]}]'
+  - name: "fridaybreak"
+    alias: "fridaybreak"
+    active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "14:00", "end": "15:00"}]}]'
+    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00", "end": "11:00"}]}]'
+  - name: "nonsense"
+    alias: "nonsense"
+    active_time_ranges: [{'day': 'all', 'time_ranges': [{'start': '09:00:00', 'end': '17:00:00'}, {'start': '20:00:00', 'end': '22:00:00'}, {'start': '7:00', 'end': '08:00'}]},
+                          {'day': 'monday', 'time_ranges': [{'start': '08:00', 'end': '9:00'}]}]
+    exceptions: [{'date': '2023-12-24', 'time_ranges': [{'start': '10:00:00', 'end': '12:00:00'}, {'start': '15:00:00', 'end': '17:00:00'}, {'start': '7:00', 'end': '08:00'}]},
+                  {'date': '2023-10-03', 'time_ranges': [{'start': '15:00:00', 'end': '17:00:00'}, {'start': '10:00:00', 'end': '12:00:00'}, {'start': '7:00', 'end': '08:00'}]},
+                  {'date': '2023-05-01', 'time_ranges': [{'start': '05:00:00', 'end': '09:00'}, {'start': '11:00', 'end': '13:00'}, {'start': '10:00:00', 'end': '11:00'}]}]
+
+checkmk_timeperiods_update:
+  - name: "worktime"
+    active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "08:00:00", "end": "17:00:00"}]}]'
+    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
+  - name: "notonfriday"
+    active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "00:00:00", "end": "23:59:59"}]}]'
+
+checkmk_timeperiods_noupdate:
+  - name: "fridaybreak"
+    alias: "fridaybreak"
+    active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "14:00", "end": "15:00"}]}]'
+    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00", "end": "11:00"}]}]'
+  - name: "nonsense"
+    alias: "nonsense"
+    active_time_ranges: [{'day': 'all', 'time_ranges': [{'start': '20:00:00', 'end': '22:00:00'}, {'start': '09:00:00', 'end': '17:00:00'}, {'start': '7:00', 'end': '08:00'}]},
+                          {'day': 'monday', 'time_ranges': [{'start': '08:00', 'end': '9:00'}]}]
+    exceptions: [{'date': '2023-10-03', 'time_ranges': [{'start': '15:00:00', 'end': '17:00:00'}, {'start': '10:00:00', 'end': '12:00:00'}, {'start': '7:00', 'end': '08:00'}]},
+                  {'date': '2023-12-24', 'time_ranges': [{'start': '10:00:00', 'end': '12:00:00'}, {'start': '15:00:00', 'end': '17:00:00'}, {'start': '7:00', 'end': '08:00'}]},
+                  {'date': '2023-05-01', 'time_ranges': [{'start': '11:00', 'end': '13:00'}, {'start': '10:00:00', 'end': '11:00'}, {'start': '05:00:00', 'end': '09:00'}]}]
+
+checkmk_timeperiods_faildelete:
+  - name: "lunchtime"
+
+checkmk_timeperiods_deletefirst:
+  - name: "worktime"
+
+checkmk_timeperiods_delete:
+  - name: "lunchtime"
+  - name: "notonfriday"
+  - name: "fridaybreak"
+  - name: "nonsense"
