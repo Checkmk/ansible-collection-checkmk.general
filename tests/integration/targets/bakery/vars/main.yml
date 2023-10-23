@@ -3,10 +3,10 @@
 # to the naming of the setup files. For example 'raw' and 'enterprise' rather
 # than 'CRE' and 'CEE'.
 test_sites:
-  - version: "2.2.0p9"
+  - version: "2.2.0p12"
     edition: "cee"
     site: "stable_ent"
-  - version: "2.1.0p33"
+  - version: "2.1.0p35"
     edition: "cee"
     site: "old_ent"
 
