@@ -26,7 +26,7 @@
       ansible.builtin.debug:
         msg: "Folder tree: {{ item.id }}"
       loop: "{{
-        lookup('checkmk.general.all_folders', 
+        lookup('checkmk.general.all_folders',
             '~',
             show_hosts=False,
             recursive=True,
@@ -37,14 +37,14 @@
             )
         }}"
       loop_control:
-          label: "{{ item.id }}"
-    
+        label: "{{ item.id }}"
+
     - name: "Get all hosts of the folder /test recursively"
       ansible.builtin.debug:
         msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
       vars:
         looping: "{{
-                     lookup('checkmk.general.all_folders', 
+                     lookup('checkmk.general.all_folders',
                          '~tests',
                          show_hosts=True,
                          recursive=True,
@@ -56,14 +56,14 @@
                   }}"
       loop: "{{ looping|subelements('members.hosts.value') }}"
       loop_control:
-          label: "{{ item.0.id }}"
+        label: "{{ item.0.id }}"
 
     - name: "Get the attributes of folder /tests"
       ansible.builtin.debug:
         msg: "Attributes of folder /network: {{ attributes }}"
       vars:
         attributes: "{{
-                        lookup('checkmk.general.folder', 
+                        lookup('checkmk.general.folder',
                             '~tests',
                             site_url=server_url + '/' + site,
                             automation_user=automation_user,
