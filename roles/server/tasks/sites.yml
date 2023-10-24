@@ -7,7 +7,7 @@
   args:
     executable: /bin/bash
     creates: "/omd/sites/{{ item.name }}"
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.state != "absent"
   register: checkmk_server_sites_created
@@ -21,7 +21,7 @@
     omd version {{ item.name }} | egrep -o '[^ ]+$'
   args:
     executable: /bin/bash
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   changed_when: "checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition | lower"
   when: item.state != "absent"
@@ -44,7 +44,7 @@
   args:
     executable: /bin/bash
     creates: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.state == "started"
   register: checkmk_server_sites_started
@@ -59,7 +59,7 @@
   args:
     executable: /bin/bash
     removes: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: (item.state == "absent") or (item.state == "stopped")
   register: checkmk_server_sites_stopped
@@ -74,7 +74,7 @@
   args:
     executable: /bin/bash
     removes: "/omd/sites/{{ item.name }}"
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.state == "absent"
   register: checkmk_server_sites_removed
@@ -88,7 +88,7 @@
     echo '{{ item.admin_pw }}' | htpasswd -i /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
   args:
     executable: /bin/bash
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '<'))
   tags:
@@ -103,7 +103,7 @@
     echo '{{ item.admin_pw }}' | htpasswd -i -B -C 12 /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
   args:
     executable: /bin/bash
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '>='))
   tags:
@@ -117,4 +117,4 @@
   when: checkmk_server_sites_created.changed | bool and not item.item.admin_pw is defined
   changed_when: true
   notify: Warn site admin password
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
