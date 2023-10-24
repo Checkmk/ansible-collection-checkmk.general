@@ -150,10 +150,12 @@ from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.dict_transformations import dict_merge
 from ansible.module_utils.urls import fetch_url
 
+PYTHON_VERSION = 3
+HAS_PATHLIB2_LIBRARY = True
+PATHLIB2_LIBRARY_IMPORT_ERROR = None
+
 if sys.version[0] == "3":
     from pathlib import Path
-
-    PYTHON_VERSION = 3
 else:
     PYTHON_VERSION = 2
     try:
@@ -161,9 +163,6 @@ else:
     except ImportError:
         HAS_PATHLIB2_LIBRARY = False
         PATHLIB2_LIBRARY_IMPORT_ERROR = traceback.format_exc()
-    else:
-        HAS_PATHLIB2_LIBRARY = True
-        PATHLIB2_LIBRARY_IMPORT_ERROR = None
 
 
 def exit_failed(module, msg):
