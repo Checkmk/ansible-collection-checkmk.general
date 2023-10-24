@@ -18,9 +18,8 @@
                        automation_user=automation_user,
                        automation_secret=automation_secret)
                    }}"
-
       delegate_to: localhost
-      run_once: true
+      run_once: true  # noqa run-once[task]
 
     - name: "Get all subfolders of the main folder recursively"
       ansible.builtin.debug:
@@ -37,6 +36,8 @@
         }}"
       loop_control:
         label: "{{ item.id }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
 
     - name: "Get all hosts of the folder /test recursively"
       ansible.builtin.debug:
@@ -52,9 +53,11 @@
                          automation_secret=automation_secret,
                          validate_certs=False)
                   }}"
-      loop: "{{ looping|subelements('members.hosts.value') }}"
+      loop: "{{ looping | subelements('members.hosts.value') }}"
       loop_control:
         label: "{{ item.0.id }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
 
     - name: "Get the attributes of folder /tests"
       ansible.builtin.debug:
@@ -69,3 +72,4 @@
                             validate_certs=False)
                      }}"
       delegate_to: localhost
+      run_once: true  # noqa run-once[task]
