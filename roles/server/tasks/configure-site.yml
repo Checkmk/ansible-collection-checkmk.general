@@ -1,0 +1,11 @@
+---
+- name: "Configure Site."  # noqa no-changed-when
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd config {{ outer_item.name }} set {{ item.var }} {{ item.value }}
+  args:
+    executable: /bin/bash
+  loop: "{{ outer_item.omd_config }}"
+  tags:
+    - configure-sites
