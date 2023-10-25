@@ -29,7 +29,7 @@ DOCUMENTATION = """
         description: automation secret for the REST API access
         required: True
       validate_certs:
-        description: Wether or not to validate TLS cerificates
+        description: Wether or not to validate TLS certificates
         type: boolean
         required: False
         default: True
