@@ -14,12 +14,12 @@
   tags:
     - create-sites
 
-- name: "Include configure site tasks."
+- name: "Include site configuration tasks."
   ansible.builtin.include_tasks: configure-site.yml
   loop: "{{ checkmk_server_sites }}"
   loop_control:
     loop_var: outer_item
-  when: item.state != "absent" and item.omd_config | length
+  when: outer_item.omd_config is defined
   tags:
     - configure-sites
 

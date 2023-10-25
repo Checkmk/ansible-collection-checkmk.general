@@ -1,5 +1,5 @@
 ---
-- name: "Configure Site."  # noqa no-changed-when
+- name: "Configure Site '{{ outer_item.name }}'."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: |
     set -o pipefail
@@ -7,5 +7,6 @@
   args:
     executable: /bin/bash
   loop: "{{ outer_item.omd_config }}"
+  when: outer_item.state != "absent"  and outer_item.omd_config | length
   tags:
     - configure-sites

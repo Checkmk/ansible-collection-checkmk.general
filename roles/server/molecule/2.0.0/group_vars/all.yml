@@ -20,11 +20,16 @@ checkmk_server_backup_opts: '--no-past'
 checkmk_server_allow_downgrades: 'true'
 
 checkmk_server_sites:
-  - name: "{{ checkmk_site }}"
+  - name: "started"
     version: "{{ checkmk_version }}"
     state: started
     admin_pw: "{{ automation_secret }}"
     update_conflict_resolution: install
+    omd_config:
+      - var: LIVESTATUS_TCP
+        value: "on"
+      - var: LIVESTATUS_TCP_PORT
+        value: "6557"
   - name: "stopped"
     version: "{{ checkmk_version }}"
     state: stopped
@@ -35,6 +40,9 @@ checkmk_server_sites:
     state: present
     admin_pw: "{{ automation_secret }}"
     update_conflict_resolution: install
+    omd_config:
+      - var: LIVESTATUS_TCP
+        value: "on"
   - name: "absent"
     version: "{{ checkmk_version }}"
     state: absent
