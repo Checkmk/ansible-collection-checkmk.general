@@ -45,6 +45,20 @@
   tags:
     - update-sites
 
+- name: "Enable Sites."  # noqa no-changed-when
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd config {{ item.name }} AUTOSTART on
+  args:
+    executable: /bin/bash
+  no_log: true
+  loop: "{{ checkmk_server_sites }}"
+  when: (item.state == "enabled") or (item.state == "started")
+  register: checkmk_server_sites_stopped
+  tags:
+    - stop-sites
+
 - name: "Start Sites."
   become: true
   ansible.builtin.shell: |
@@ -71,6 +85,20 @@
   no_log: true
   loop: "{{ checkmk_server_sites }}"
   when: (item.state == "absent") or (item.state == "stopped")
+  register: checkmk_server_sites_stopped
+  tags:
+    - stop-sites
+
+- name: "Disable Sites."  # noqa no-changed-when
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd config {{ item.name }} AUTOSTART off
+  args:
+    executable: /bin/bash
+  no_log: true
+  loop: "{{ checkmk_server_sites }}"
+  when: (item.state == "disabled") or (item.state == "present")
   register: checkmk_server_sites_stopped
   tags:
     - stop-sites
