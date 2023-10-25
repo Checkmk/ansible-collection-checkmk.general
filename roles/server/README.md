@@ -69,27 +69,37 @@ Automatically open the necessary ports on the Checkmk server for the
 web interface to be accessible.
 
     checkmk_server_sites:
-      - name: test
-        version: "{{ checkmk_server_version }}"
-        state: started
-        admin_pw: test
-
-A dictionary of sites, their version, admin password and state.
-If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
-Valid choices include `install`, `keepold` and `abort`.
-
-    checkmk_server_sites:
-      - name: test
+      - name: mysite
         version: "{{ checkmk_server_version }}"
         update_conflict_resolution: abort
         state: started
-        admin_pw: test
+        admin_pw: mypw
+        omd_config:
+          - var: AUTOSTART
+            value: on
 
-Directory to backup sites to when updating between versions.
-    checkmk_server_backup_dir: /tmp
+A dictionary of sites, their version, admin password and state.
+Valid values for `state` are:
+- `started`
+- `stopped`
+- `enabled`
+- `disabled`
+- `present`
+- `absent`
+
+If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
+Valid choices include `install`, `keepold` and `abort`.  
+Site configuration can be passed with the `omd_config` keyword.
+The format can be seen above, for a list of variables run `omd show`
+on an existing site.
+
+    checkmk_server_backup_on_update: 'true'
 
 Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
-    checkmk_server_backup_on_update: 'true'
+
+    checkmk_server_backup_dir: /tmp
+
+Directory to backup sites to when updating between versions.
 
 ## Tags
 Tasks are tagged with the following tags:
