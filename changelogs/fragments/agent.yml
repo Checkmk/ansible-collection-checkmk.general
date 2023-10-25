@@ -1,4 +1,4 @@
 minor_changes:
   - Agent role - Add support for firewall configuration on Debian derivates.
 bugfixes:
-  - Agent role - Performing the agent registration on a remote would fail, if the host was just created on the central site. This release introduces a workaround to enable this.
+  - Agent role - Performing the agent registration on a remote would fail, if the host was just created. This release introduces a workaround to enable this.
