@@ -10,6 +10,22 @@ plugins:
   httpapi: {}
   inventory: {}
   lookup:
+    folder:
+      description: Get folder attributes
+      name: folder
+      version_added: 3.3.0
+    folders:
+      description: Get various information about a folder
+      name: folders
+      version_added: 3.3.0
+    host:
+      description: Get host attributes
+      name: host
+      version_added: 3.3.0
+    hosts:
+      description: Get various information about a host
+      name: hosts
+      version_added: 3.3.0
     version:
       description: Get the version of a Checkmk server
       name: version
@@ -75,6 +91,11 @@ plugins:
       name: tag_group
       namespace: ''
       version_added: 0.11.0
+    timeperiod:
+      description: Manage time periods in checkmk.
+      name: timeperiod
+      namespace: ''
+      version_added: 3.3.0
     user:
       description: Manage users in Checkmk.
       name: user
@@ -85,4 +106,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 3.2.0
+version: 3.3.0
