@@ -15,6 +15,7 @@
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-vars
+    - install-package
 
 - name: "Update APT Cache."
   become: true
@@ -73,7 +74,7 @@
 
     - name: "Print Verification Output."
       ansible.builtin.debug:
-        msg: "{{ checkmk_server_verify_state.stderr_lines }} "
+        msg: "{{ checkmk_server_verify_state.stderr_lines }}"
 
 - name: "Import Checkmk GPG Key."
   become: true

@@ -47,6 +47,9 @@ module:service_group:
 module:tag_group:
   - 'Component Name: tag_group'
 
+module:timeperiod:
+  - 'Component Name: timeperiod'
+
 module:user:
   - 'Component Name: user'
 

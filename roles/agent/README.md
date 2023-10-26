@@ -17,7 +17,7 @@ It can be installed as easy as running:
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_agent_version: "2.2.0p8"
+    checkmk_agent_version: "2.2.0p12"
 
 The Checkmk version of your site.
 
@@ -117,7 +117,7 @@ for automatic updates. Otherwise this will fail.
 
     checkmk_agent_configure_firewall: 'true'
 
-Automatically configure the firewall (*currently only on RedHat derivatives*) to allow access to the Checkmk agent.
+Automatically configure the firewall (*currently only on RedHat and Debian derivatives*) to allow access to the Checkmk agent.
 
     checkmk_agent_configure_firewall_zone: 'public'
 

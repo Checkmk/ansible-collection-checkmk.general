@@ -44,6 +44,9 @@ module:service_group:
 module:tag_group:
   - 'plugins/modules/tag_group.py'
 
+module:timeperiod:
+  - 'plugins/modules/timeperiod.py'
+
 module:user:
   - 'plugins/modules/user.py'
 

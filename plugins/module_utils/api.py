@@ -18,6 +18,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     GENERIC_HTTP_CODES,
     result_as_dict,
 )
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
 
 
 class CheckmkAPI:
@@ -106,4 +109,4 @@ class CheckmkAPI:
 
         content = result.content
         checkmkinfo = json.loads(content)
-        return (checkmkinfo.get("versions").get("checkmk")).split(".")
+        return CheckmkVersion(checkmkinfo.get("versions").get("checkmk"))

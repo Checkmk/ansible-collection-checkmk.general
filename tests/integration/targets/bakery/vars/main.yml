@@ -1,12 +1,9 @@
 ---
-# In these integration tests, we do not normalize the edition naming, but stick
-# to the naming of the setup files. For example 'raw' and 'enterprise' rather
-# than 'CRE' and 'CEE'.
 test_sites:
-  - version: "2.2.0p8"
+  - version: "2.2.0p12"
     edition: "cee"
     site: "stable_ent"
-  - version: "2.1.0p32"
+  - version: "2.1.0p35"
     edition: "cee"
     site: "old_ent"
 

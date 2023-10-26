@@ -1,5 +1,5 @@
 ---
-- name: "{{ outer_item.version }} - Create hosts."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
   host:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -17,7 +17,7 @@
 
 - name: "Run Single Discoveries."
   block:
-    - name: "{{ outer_item.version }} - Rescan services."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Rescan services."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -29,7 +29,7 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_hosts }}"
 
-    - name: "{{ outer_item.version }} - Update host labels."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update host labels."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -41,7 +41,7 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_hosts }}"
 
-    - name: "{{ outer_item.version }} - Remove vanished services."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove vanished services."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -53,7 +53,7 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_hosts }}"
 
-    - name: "{{ outer_item.version }} - Add undecided services."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Add undecided services."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -65,7 +65,7 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_hosts }}"
 
-    - name: "{{ outer_item.version }} - Tabula Rasa. (New since 2.2)"
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Tabula Rasa. (New since 2.2)"
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -78,7 +78,7 @@
       loop: "{{ checkmk_hosts }}"
       when: "'2.2' in outer_item.version"
 
-    - name: "{{ outer_item.version }} - Discover hosts (fix_all)."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Discover hosts (fix_all)."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -90,7 +90,7 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -102,7 +102,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete hosts."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -115,7 +115,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -129,7 +129,7 @@
 - name: "Run Bulk Discoveries."
   when: "not '2.0.0' in outer_item.version"
   block:
-    - name: "{{ outer_item.version }} - Create hosts."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
       host:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -145,7 +145,7 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_hosts }}"
 
-    - name: "{{ outer_item.version }} - Bulk: Rescan services."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Rescan services."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -156,7 +156,7 @@
         bulk_size: 5
       delegate_to: localhost
 
-    - name: "{{ outer_item.version }} - Bulk: Update host labels."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Update host labels."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -167,7 +167,7 @@
         bulk_size: 5
       delegate_to: localhost
 
-    - name: "{{ outer_item.version }} - Bulk: Remove vanished services."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Remove vanished services."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -178,7 +178,7 @@
         bulk_size: 5
       delegate_to: localhost
 
-    - name: "{{ outer_item.version }} - Bulk: Add undecided services to monitoring."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Add undecided services to monitoring."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -189,7 +189,7 @@
         bulk_size: 5
       delegate_to: localhost
 
-    - name: "{{ outer_item.version }} - Bulk: Tabula Rasa. (Only 2.2)."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Tabula Rasa. (Only 2.2)."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -201,7 +201,7 @@
       delegate_to: localhost
       when: "'2.2' in outer_item.version"
 
-    - name: "{{ outer_item.version }} - Bulk: Discover hosts (fix_all)."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Discover hosts (fix_all)."
       discovery:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -212,7 +212,7 @@
         bulk_size: 5
       delegate_to: localhost
 
-    - name: "{{ outer_item.version }} - Activate."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
       activation:
         server_url: "{{ server_url }}"
         site: "{{ outer_item.site }}"
@@ -224,7 +224,7 @@
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete hosts."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -237,7 +237,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
