@@ -6,23 +6,8 @@
 .. |antsibull-internal-nbsp| unicode:: 0xA0
     :trim:
 
-.. role:: ansible-attribute-support-label
-.. role:: ansible-attribute-support-property
-.. role:: ansible-attribute-support-full
-.. role:: ansible-attribute-support-partial
-.. role:: ansible-attribute-support-none
-.. role:: ansible-attribute-support-na
-.. role:: ansible-option-type
-.. role:: ansible-option-elements
-.. role:: ansible-option-required
-.. role:: ansible-option-versionadded
-.. role:: ansible-option-aliases
-.. role:: ansible-option-choices
-.. role:: ansible-option-choices-default-mark
-.. role:: ansible-option-default-bold
-.. role:: ansible-option-configuration
-.. role:: ansible-option-returned-bold
-.. role:: ansible-option-sample-bold
+.. meta::
+  :antsibull-docs: 2.5.0
 
 .. Anchors
 
@@ -38,7 +23,10 @@ checkmk.general.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 3.2.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.3.0).
+
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
@@ -81,12 +69,13 @@ Synopsis
 Parameters
 ----------
 
-.. rst-class:: ansible-option-table
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
 .. list-table::
   :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Parameter
     - Comments
@@ -106,9 +95,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-automation_secret" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -140,9 +129,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-automation_user" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -174,9 +163,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-rule" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`dictionary` / :ansible-option-required:`required`
+        :ansible-option-type:`dictionary` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -198,6 +187,10 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/conditions"></div>
 
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
       .. _ansible_collections.checkmk.general.rule_module__parameter-rule/conditions:
 
       .. rst-class:: ansible-option-title
@@ -208,13 +201,17 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-rule/conditions" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`dictionary`
+        :ansible-option-type:`dictionary`
 
       .. raw:: html
 
         </div>
+
+      .. raw:: latex
+
+        \end{minipage}
 
     - .. raw:: html
 
@@ -232,6 +229,10 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/location"></div>
 
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
       .. _ansible_collections.checkmk.general.rule_module__parameter-rule/location:
 
       .. rst-class:: ansible-option-title
@@ -242,13 +243,17 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-rule/location" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`dictionary`
+        :ansible-option-type:`dictionary`
 
       .. raw:: html
 
         </div>
+
+      .. raw:: latex
+
+        \end{minipage}
 
     - .. raw:: html
 
@@ -270,6 +275,10 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/location/folder"></div>
 
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
       .. _ansible_collections.checkmk.general.rule_module__parameter-rule/location/folder:
 
       .. rst-class:: ansible-option-title
@@ -280,13 +289,17 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-rule/location/folder" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
         </div>
+
+      .. raw:: latex
+
+        \end{minipage}
 
     - .. raw:: html
 
@@ -314,6 +327,10 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/location/position"></div>
 
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
       .. _ansible_collections.checkmk.general.rule_module__parameter-rule/location/position:
 
       .. rst-class:: ansible-option-title
@@ -324,13 +341,17 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-rule/location/position" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
         </div>
+
+      .. raw:: latex
+
+        \end{minipage}
 
     - .. raw:: html
 
@@ -360,6 +381,10 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/location/rule_id"></div>
 
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
       .. _ansible_collections.checkmk.general.rule_module__parameter-rule/location/rule_id:
 
       .. rst-class:: ansible-option-title
@@ -370,13 +395,17 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-rule/location/rule_id" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
         </div>
+
+      .. raw:: latex
+
+        \end{minipage}
 
     - .. raw:: html
 
@@ -399,6 +428,10 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/properties"></div>
 
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
       .. _ansible_collections.checkmk.general.rule_module__parameter-rule/properties:
 
       .. rst-class:: ansible-option-title
@@ -409,13 +442,17 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-rule/properties" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`dictionary`
+        :ansible-option-type:`dictionary`
 
       .. raw:: html
 
         </div>
+
+      .. raw:: latex
+
+        \end{minipage}
 
     - .. raw:: html
 
@@ -433,6 +470,10 @@ Parameters
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/value_raw"></div>
 
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
       .. _ansible_collections.checkmk.general.rule_module__parameter-rule/value_raw:
 
       .. rst-class:: ansible-option-title
@@ -443,13 +484,17 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-rule/value_raw" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
         </div>
+
+      .. raw:: latex
+
+        \end{minipage}
 
     - .. raw:: html
 
@@ -478,9 +523,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-ruleset" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -512,9 +557,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-server_url" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -546,9 +591,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-site" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -580,9 +625,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -622,9 +667,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-validate_certs" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`boolean`
+        :ansible-option-type:`boolean`
 
       .. raw:: html
 
@@ -682,33 +727,32 @@ Examples
         automation_secret: "$SECRET"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
-            conditions: {
-                "host_labels": [],
-                "host_name": {
-                    "match_on": [
-                        "test1.tld"
-                    ],
-                    "operator": "one_of"
-                },
-                "host_tags": [],
-                "service_labels": []
-            }
-            properties: {
-                "comment": "Warning at 80%\nCritical at 90%\n",
-                "description": "Allow higher memory usage",
-                "disabled": false,
-                "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-            }
+          conditions: {
+            "host_labels": [],
+            "host_name": {
+              "match_on": [
+                "test1.tld"
+              ],
+              "operator": "one_of"
+            },
+            "host_tags": [],
+            "service_labels": []
+          }
+          properties: {
+            "comment": "Warning at 80%\nCritical at 90%\n",
+            "description": "Allow higher memory usage",
+            "disabled": false,
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+          }
+          value_raw: "{'levels': (80.0, 90.0)}"
+          location:
             folder: "/"
-            value_raw: "{'levels': (80.0, 90.0)}"
-            location:
-                folder: "/"
-                position: "top"
+            position: "top"
         state: "present"
-        register: response
+      register: response
 
     - name: Show the ID of the new rule
-      debug:
+      ansible.builtin.debug:
         msg: "RULE ID : {{ response.id }}"
 
     # Create another rule in checkgroup_parameters:memory_percentage_used
@@ -721,27 +765,27 @@ Examples
         automation_secret: "$SECRET"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
-            conditions: {
-                "host_labels": [],
-                "host_name": {
-                    "match_on": [
-                        "test2.tld"
-                    ],
-                    "operator": "one_of"
-                },
-                "host_tags": [],
-                "service_labels": []
-            }
-            properties: {
-                "comment": "Warning at 85%\nCritical at 99%\n",
-                "description": "Allow even higher memory usage",
-                "disabled": false,
-                "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-            }
-            value_raw: "{'levels': (85.0, 99.0)}"
-            location:
-                position: "after"
-                rule_id: "{{ response.id }}"
+          conditions: {
+            "host_labels": [],
+            "host_name": {
+              "match_on": [
+                "test2.tld"
+              ],
+              "operator": "one_of"
+            },
+            "host_tags": [],
+            "service_labels": []
+          }
+          properties: {
+            "comment": "Warning at 85%\nCritical at 99%\n",
+            "description": "Allow even higher memory usage",
+            "disabled": false,
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+          }
+          value_raw: "{'levels': (85.0, 99.0)}"
+          location:
+            position: "after"
+            rule_id: "{{ response.id }}"
         state: "present"
 
     # Delete the first rule.
@@ -753,25 +797,58 @@ Examples
         automation_secret: "$SECRET"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
-            conditions: {
-                "host_labels": [],
-                "host_name": {
-                    "match_on": [
-                        "test1.tld"
-                    ],
-                    "operator": "one_of"
-                },
-                "host_tags": [],
-                "service_labels": []
-            }
-            properties: {
-                "comment": "Warning at 80%\nCritical at 90%\n",
-                "description": "Allow higher memory usage",
-                "disabled": false,
-                "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-            }
-            value_raw: "{'levels': (80.0, 90.0)}"
+          conditions: {
+            "host_labels": [],
+            "host_name": {
+              "match_on": [
+                "test1.tld"
+              ],
+              "operator": "one_of"
+            },
+            "host_tags": [],
+            "service_labels": []
+          }
+          properties: {
+            "comment": "Warning at 80%\nCritical at 90%\n",
+            "description": "Allow higher memory usage",
+            "disabled": false,
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+          }
+          value_raw: "{'levels': (80.0, 90.0)}"
         state: "absent"
+
+    # Create a rule rule matching a host label
+    - name: "Create a rule matching a label."
+      checkmk.general.rule:
+        server_url: "http://localhost/"
+        site: "my_site"
+        automation_user: "automation"
+        automation_secret: "$SECRET"
+        ruleset: "checkgroup_parameters:memory_percentage_used"
+        rule:
+          conditions: {
+            "host_labels": [
+              {
+              "key": "cmk/check_mk_server",
+              "operator": "is",
+              "value": "yes"
+              }
+            ],
+            "host_name": {},
+            "host_tags": [],
+            "service_labels": []
+          }
+          properties: {
+            "comment": "Warning at 80%\nCritical at 90%\n",
+            "description": "Allow higher memory usage",
+            "disabled": false,
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+          }
+          value_raw: "{'levels': (80.0, 90.0)}"
+          location:
+            folder: "/"
+            position: "top"
+        state: "present"
 
 
 
@@ -785,12 +862,13 @@ Return Values
 -------------
 Common return values are documented :ref:`here <common_return_values>`, the following are the fields unique to this module:
 
-.. rst-class:: ansible-option-table
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
 .. list-table::
   :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Key
     - Description
@@ -810,9 +888,9 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <a class="ansibleOptionLink" href="#return-id" title="Permalink to this return value"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -855,9 +933,9 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <a class="ansibleOptionLink" href="#return-msg" title="Permalink to this return value"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -904,12 +982,15 @@ Authors
 Collection links
 ~~~~~~~~~~~~~~~~
 
-.. raw:: html
+.. ansible-links::
 
-  <p class="ansible-links">
-    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
-  </p>
+  - title: "Issue Tracker"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"
+    external: true
+  - title: "Repository (Sources)"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general"
+    external: true
+
 
 .. Parsing errors
 

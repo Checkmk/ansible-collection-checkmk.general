@@ -11,32 +11,32 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.activation_module:
+.. _ansible_collections.checkmk.general.hosts_lookup:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.activation module -- Activate changes in Checkmk.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.hosts lookup -- Get various information about a host
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.3.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.activation`.
+    To use it in a playbook, specify: :code:`checkmk.general.hosts`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 0.0.1
+New in checkmk.general 3.3.0
 
 .. contents::
    :local:
@@ -50,8 +50,8 @@ Synopsis
 
 .. Description
 
-- Activate changes within Checkmk.
-- This module only needs to be run once and not for every host. Use \ :literal:`run\_once`\ .
+- Returns a list of subhosts
+- Returns a list of hosts of the host
 
 
 .. Aliases
@@ -66,8 +66,11 @@ Synopsis
 
 .. Options
 
-Parameters
-----------
+Keyword parameters
+------------------
+
+This describes keyword parameters of the lookup. These are the values ``key1=value1``, ``key2=value2`` and so on in the following
+examples: ``lookup('checkmk.general.hosts', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.hosts', key1=value1, key2=value2, ...)``
 
 .. tabularcolumns:: \X{1}{3}\X{2}{3}
 
@@ -85,7 +88,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.activation_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.hosts_lookup__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -99,6 +102,9 @@ Parameters
 
         :ansible-option-type:`string` / :ansible-option-required:`required`
 
+
+
+
       .. raw:: html
 
         </div>
@@ -107,7 +113,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The secret to authenticate your automation user.
+      automation secret for the REST API access
 
 
       .. raw:: html
@@ -119,7 +125,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.activation_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.hosts_lookup__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -133,6 +139,9 @@ Parameters
 
         :ansible-option-type:`string` / :ansible-option-required:`required`
 
+
+
+
       .. raw:: html
 
         </div>
@@ -141,7 +150,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The automation user you want to use. It has to be an 'Automation' user, not a normal one.
+      automation user for the REST API access
 
 
       .. raw:: html
@@ -151,21 +160,24 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-force_foreign_changes"></div>
+        <div class="ansibleOptionAnchor" id="parameter-effective_attributes"></div>
 
-      .. _ansible_collections.checkmk.general.activation_module__parameter-force_foreign_changes:
+      .. _ansible_collections.checkmk.general.hosts_lookup__parameter-effective_attributes:
 
       .. rst-class:: ansible-option-title
 
-      **force_foreign_changes**
+      **effective_attributes**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-force_foreign_changes" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-effective_attributes" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
         :ansible-option-type:`boolean`
+
+
+
 
       .. raw:: html
 
@@ -175,7 +187,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Whether to active foreign changes.
+      show all effective attributes on hosts
 
 
       .. rst-class:: ansible-option-line
@@ -195,7 +207,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.activation_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.hosts_lookup__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -209,6 +221,9 @@ Parameters
 
         :ansible-option-type:`string` / :ansible-option-required:`required`
 
+
+
+
       .. raw:: html
 
         </div>
@@ -217,7 +232,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The base url of your Checkmk server.
+      URL of the Checkmk server
 
 
       .. raw:: html
@@ -229,7 +244,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.activation_module__parameter-site:
+      .. _ansible_collections.checkmk.general.hosts_lookup__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -243,39 +258,8 @@ Parameters
 
         :ansible-option-type:`string` / :ansible-option-required:`required`
 
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The site you want to connect to.
 
 
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-sites"></div>
-
-      .. _ansible_collections.checkmk.general.activation_module__parameter-sites:
-
-      .. rst-class:: ansible-option-title
-
-      **sites**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-sites" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`any`
 
       .. raw:: html
 
@@ -285,12 +269,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The sites that should be activated. Omitting this option activates all sites.
+      site name
 
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
 
       .. raw:: html
 
@@ -301,7 +281,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.activation_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.hosts_lookup__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -315,6 +295,9 @@ Parameters
 
         :ansible-option-type:`boolean`
 
+
+
+
       .. raw:: html
 
         </div>
@@ -323,7 +306,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Whether to validate the SSL certificate of the Checkmk server.
+      Wether or not to validate TLS cerificates
 
 
       .. rst-class:: ansible-option-line
@@ -356,32 +339,21 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    - name: "Activate changes on all sites."
-      checkmk.general.activation:
-          server_url: "http://localhost/"
-          site: "my_site"
-          automation_user: "automation"
-          automation_secret: "$SECRET"
-      run_once: 'true'
-
-    - name: "Activate changes on a specific site."
-      checkmk.general.activation:
-          server_url: "http://localhost/"
-          site: "my_site"
-          automation_user: "automation"
-          automation_secret: "$SECRET"
-          sites:
-            - "my_site"
-      run_once: 'true'
-
-    - name: "Activate changes including foreign changes."
-      checkmk.general.activation:
-          server_url: "http://localhost/"
-          site: "my_site"
-          automation_user: "automation"
-          automation_secret: "$SECRET"
-          force_foreign_changes: 'true'
-      run_once: 'true'
+    - name: Get all hosts
+      ansible.builtin.debug:
+        msg: "Host: {{ item.id }} in folder {{ item.extensions.folder }}, IP: {{ item.extensions.effective_attributes.ipaddress }}"
+      loop: "{{
+        lookup('checkmk.general.hosts',
+            effective_attributes=True,
+            server_url=server_url,
+            site=site,
+            automation_user=automation_user,
+            automation_secret=automation_secret,
+            validate_certs=False
+            )
+        }}"
+      loop_control:
+          label: "{{ item.id }}"
 
 
 
@@ -391,9 +363,8 @@ Examples
 
 .. Return values
 
-Return Values
--------------
-Common return values are documented :ref:`here <common_return_values>`, the following are the fields unique to this module:
+Return Value
+------------
 
 .. tabularcolumns:: \X{1}{3}\X{2}{3}
 
@@ -409,21 +380,21 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-http_code"></div>
+        <div class="ansibleOptionAnchor" id="return-_list"></div>
 
-      .. _ansible_collections.checkmk.general.activation_module__return-http_code:
+      .. _ansible_collections.checkmk.general.hosts_lookup__return-_list:
 
       .. rst-class:: ansible-option-title
 
-      **http_code**
+      **Return value**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#return-http_code" title="Permalink to this return value"></a>
+        <a class="ansibleOptionLink" href="#return-_list" title="Permalink to this return value"></a>
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`integer`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
 
       .. raw:: html
 
@@ -433,62 +404,12 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-cell">
 
-      The HTTP code the Checkmk API returns.
+      A list of hosts and their attributes
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-returned-bold:`Returned:` always
-
-      .. rst-class:: ansible-option-line
-      .. rst-class:: ansible-option-sample
-
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`200`
-
-
-      .. raw:: html
-
-        </div>
-
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-message"></div>
-
-      .. _ansible_collections.checkmk.general.activation_module__return-message:
-
-      .. rst-class:: ansible-option-title
-
-      **message**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The output message that the module generates.
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-returned-bold:`Returned:` always
-
-      .. rst-class:: ansible-option-line
-      .. rst-class:: ansible-option-sample
-
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Changes activated."`
+      :ansible-option-returned-bold:`Returned:` success
 
 
       .. raw:: html
@@ -505,9 +426,11 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- Robin Gierse (@robin-checkmk)
+- Lars Getwan (@lgetwan)
 
 
+.. hint::
+    Configuration entries for each entry type have a low to high priority order. For example, a variable that is lower in the list will override a variable that is higher up.
 
 .. Extra links
 

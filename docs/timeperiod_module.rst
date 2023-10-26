@@ -11,14 +11,14 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.contact_group_module:
+.. _ansible_collections.checkmk.general.timeperiod_module:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.contact_group module -- Manage contact groups in Checkmk (bulk version).
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.timeperiod module -- Manage time periods in checkmk.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -30,13 +30,13 @@ checkmk.general.contact_group module -- Manage contact groups in Checkmk (bulk v
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.contact_group`.
+    To use it in a playbook, specify: :code:`checkmk.general.timeperiod`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 0.12.0
+New in checkmk.general 3.3.0
 
 .. contents::
    :local:
@@ -50,7 +50,7 @@ Synopsis
 
 .. Description
 
-- Manage contact groups in Checkmk.
+- Manage time periods in checkmk.
 
 
 .. Aliases
@@ -82,9 +82,77 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-active_time_ranges"></div>
+
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-active_time_ranges:
+
+      .. rst-class:: ansible-option-title
+
+      **active_time_ranges**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-active_time_ranges" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`any`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The list of active time ranges.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-alias"></div>
+
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-alias:
+
+      .. rst-class:: ansible-option-title
+
+      **alias**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-alias" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      An alias for the time period.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -118,7 +186,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -150,17 +218,17 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-groups"></div>
+        <div class="ansibleOptionAnchor" id="parameter-exceptions"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-groups:
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-exceptions:
 
       .. rst-class:: ansible-option-title
 
-      **groups**
+      **exceptions**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-groups" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-exceptions" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -174,12 +242,42 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      instead of 'name', 'title' a list of dicts with elements of contact group name and title (alias) to be created/modified/deleted. If title is omitted in entry, it defaults to the contact group name.
+      A list of additional time ranges to be added.
 
 
-      .. rst-class:: ansible-option-line
+      .. raw:: html
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-exclude"></div>
+
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-exclude:
+
+      .. rst-class:: ansible-option-title
+
+      **exclude**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-exclude" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`any`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      A list of time period aliases whose periods are excluded.
+
 
       .. raw:: html
 
@@ -190,7 +288,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-name:
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-name:
 
       .. rst-class:: ansible-option-title
 
@@ -202,7 +300,7 @@ Parameters
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -212,7 +310,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The name of the contact group to be created/modified/deleted.
+      An unique identifier for the time period.
 
 
       .. raw:: html
@@ -224,7 +322,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -258,7 +356,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-site:
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -292,7 +390,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-state:
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -304,7 +402,7 @@ Parameters
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -314,49 +412,15 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The state of your contact group.
+      create/update or delete a time period.
 
 
       .. rst-class:: ansible-option-line
 
       :ansible-option-choices:`Choices:`
 
-      - :ansible-option-choices-entry-default:`"present"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"present"`
       - :ansible-option-choices-entry:`"absent"`
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-title"></div>
-
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-title:
-
-      .. rst-class:: ansible-option-title
-
-      **title**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-title" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The title (alias) of your contact group. If omitted defaults to the name.
 
 
       .. raw:: html
@@ -368,7 +432,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -423,67 +487,62 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    # Create a single contact group.
-    - name: "Create a single contact group."
-      checkmk.general.contact_group:
+    # Creating and Updating is the same.
+    - name: "Create a new time period. (Attributes in one line)"
+      checkmk.general.timeperiod:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        name: "my_contact_group"
-        title: "My Contact Group"
+        name: "worktime"
+        title: "Worktime"
+        active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]'
+        exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
+        exclude: '[ "Lunchtime" ]'
         state: "present"
 
-    # Create several contact groups.
-    - name: "Create several contact groups."
-      checkmk.general.contact_group:
+    - name: "Create a new time period. (Attributes in multiple lines)"
+      checkmk.general.timeperiod:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        groups:
-          - name: "my_contact_group_one"
-            title: "My Contact Group One"
-          - name: "my_contact_group_two"
-            title: "My Contact Group Two"
-          - name: "my_contact_group_test"
-            title: "My Test"
+        name: "worktime"
+        title: "Worktime"
+        active_time_ranges: [
+                  {
+                      "day": "all",
+                      "time_ranges": [
+                          {
+                              "start": "8:00",
+                              "end": "17:00"
+                          }
+                      ]
+                  },
+              ]
+        exceptions: [
+                  {
+                      "date": "2023-12-24",
+                      "time_ranges": [
+                          {
+                              "start": "8:00",
+                              "end": "12:00"
+                          }
+                      ]
+                  },
+              ]
+        exclude: [
+             "Lunchtime"
+              ]
         state: "present"
 
-    # Create several contact groups.
-    - name: "Create several contact groups."
-      checkmk.general.contact_group:
+    - name: "Delete a time period."
+      checkmk.general.timeperiod:
         server_url: "http://localhost/"
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
-        groups:
-          - name: "my_contact_group_one"
-            title: "My Contact Group One"
-          - name: "my_contact_group_two"
-          - name: "my_contact_group_test"
-        state: "present"
-
-    # Delete a single contact group.
-    - name: "Create a single contact group."
-      checkmk.general.contact_group:
-        server_url: "http://localhost/"
-        site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
-        name: "my_contact_group"
-        state: "absent"
-
-    # Delete several contact groups.
-    - name: "Delete several contact groups."
-      checkmk.general.contact_group:
-        server_url: "http://localhost/"
-        site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
-        groups:
-          - name: "my_contact_group_one"
-          - name: "my_contact_group_two"
+        name: "worktime"
         state: "absent"
 
 
@@ -512,9 +571,54 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-http_code"></div>
+
+      .. _ansible_collections.checkmk.general.timeperiod_module__return-http_code:
+
+      .. rst-class:: ansible-option-title
+
+      **http_code**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-http_code" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The HTTP code the Checkmk API returns.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`200`
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-message"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__return-message:
+      .. _ansible_collections.checkmk.general.timeperiod_module__return-message:
 
       .. rst-class:: ansible-option-title
 
@@ -546,7 +650,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Contact group created."`
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Done."`
 
 
       .. raw:: html
@@ -563,7 +667,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- Michael Sekania (@msekania)
+- Max Sickora (@max-checkmk)
 
 
 
