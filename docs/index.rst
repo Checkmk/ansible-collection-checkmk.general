@@ -1,12 +1,15 @@
 
 
+.. meta::
+  :antsibull-docs: 2.5.0
+
 
 .. _plugins_in_checkmk.general:
 
 Checkmk.General
 ===============
 
-Collection version 3.2.0
+Collection version 3.3.0
 
 .. contents::
    :local:
@@ -28,12 +31,15 @@ The official Checkmk Ansible collection - brought to you by the Checkmk company.
 
 * 2.12.0 or newer
 
-.. raw:: html
+.. ansible-links::
 
-  <p class="ansible-links">
-    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
-  </p>
+  - title: "Issue Tracker"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"
+    external: true
+  - title: "Repository (Sources)"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general"
+    external: true
+
 
 
 
@@ -62,6 +68,7 @@ Modules
 * :ansplugin:`rule module <checkmk.general.rule#module>` -- Manage rules in Checkmk.
 * :ansplugin:`service_group module <checkmk.general.service_group#module>` -- Manage service groups in Checkmk (bulk version).
 * :ansplugin:`tag_group module <checkmk.general.tag_group#module>` -- Manage tag\_group within Checkmk
+* :ansplugin:`timeperiod module <checkmk.general.timeperiod#module>` -- Manage time periods in checkmk.
 * :ansplugin:`user module <checkmk.general.user#module>` -- Manage users in Checkmk.
 
 .. toctree::
@@ -80,18 +87,27 @@ Modules
     rule_module
     service_group_module
     tag_group_module
+    timeperiod_module
     user_module
 
 
 Lookup Plugins
 ~~~~~~~~~~~~~~
 
+* :ansplugin:`folder lookup <checkmk.general.folder#lookup>` -- Get folder attributes
+* :ansplugin:`folders lookup <checkmk.general.folders#lookup>` -- Get various information about a folder
+* :ansplugin:`host lookup <checkmk.general.host#lookup>` -- Get host attributes
+* :ansplugin:`hosts lookup <checkmk.general.hosts#lookup>` -- Get various information about a host
 * :ansplugin:`version lookup <checkmk.general.version#lookup>` -- Get the version of a Checkmk server
 
 .. toctree::
     :maxdepth: 1
     :hidden:
 
+    folder_lookup
+    folders_lookup
+    host_lookup
+    hosts_lookup
     version_lookup
 
 
