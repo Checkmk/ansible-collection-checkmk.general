@@ -74,11 +74,13 @@ web interface to be accessible.
         update_conflict_resolution: abort
         state: started
         admin_pw: mypw
+        omd_auto_restart: 'false'
         omd_config:
           - var: AUTOSTART
             value: on
 
-A dictionary of sites, their version, admin password and state.
+A dictionary of sites, containing the desired version, admin password and state.
+There are also advanced settings, which will be outlined below.
 Valid values for `state` are:
 - `started`
 - `stopped`
@@ -89,9 +91,11 @@ Valid values for `state` are:
 
 If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
 Valid choices include `install`, `keepold` and `abort`.  
+
 Site configuration can be passed with the `omd_config` keyword.
 The format can be seen above, for a list of variables run `omd show`
-on an existing site.
+on an existing site.  
+**Pay special attention to the `omd_auto_restart` variable!** As site configuration needs the site to be stopped, this needs to be handled. By default the variable is set to `false` to avoid unexpected restarting. However, no configuration will be performed if the site is started.
 
     checkmk_server_backup_on_update: 'true'
 

@@ -14,15 +14,6 @@
   tags:
     - create-sites
 
-- name: "Include site configuration tasks."
-  ansible.builtin.include_tasks: configure-site.yml
-  loop: "{{ checkmk_server_sites }}"
-  loop_control:
-    loop_var: outer_item
-  when: outer_item.omd_config is defined
-  tags:
-    - configure-sites
-
 - name: "Get site version."
   become: true
   ansible.builtin.shell: |
@@ -117,6 +108,18 @@
   register: checkmk_server_sites_removed
   tags:
     - destroy-sites
+
+- name: "Include site configuration tasks."
+  ansible.builtin.include_tasks: configure-site.yml
+  loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    loop_var: outer_item
+  when: |
+    outer_item.omd_config is defined and
+    ((outer_item.omd_auto_restart is defined and outer_item.omd_auto_restart | bool) or
+    (outer_item.state == "stopped" or outer_item.state == "disabled"))
+  tags:
+    - configure-sites
 
 - name: "Update Site Admin Password for Checkmk < 2.1."  # noqa no-changed-when
   become: true

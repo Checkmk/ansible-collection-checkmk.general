@@ -37,6 +37,7 @@ checkmk_server_sites: []
   #   state: started
   #   admin_pw: "{{ automation_secret | default(omit) }}"
   #   update_conflict_resolution: abort
+  #   omd_auto_restart: 'false'
   #   omd_config:
   #     - var: LIVESTATUS_TCP
   #       value: "on"
