@@ -85,8 +85,8 @@ There are different approaches to the module options, depending on the nature of
 
 It is possible to implement an alias for a module option. This should be used rather carefully to not clutter the options. However, they can be an option, if one is uncertain how to name an option, or to deprecate an option, before actually removing it. If in doubt, feel free to ask for review in your PR.
 
-### Roles
-The following are guidelines to keep in mind, when changing roles.
+### Roles and Playbooks
+The following are guidelines to keep in mind, when creating or changing roles and playbooks.
 - Variables
     - Use snake case (`snake_case_variable`)
     - Name variables after their purpose.
@@ -95,7 +95,7 @@ The following are guidelines to keep in mind, when changing roles.
         - `checkmk_var_bat` for general variables
     - Do not prefix the variable with an underscore ( `_` )
 - Tags
-    - When tagging roles, separate single words with dashes (`my-custom-tag`)
+    - When tagging roles or playbooks, separate single words with dashes (`my-custom-tag`)
 
 ## Tests
 We strive to provide the best possible quality with this collection, hence we have implemented tests, that verify different aspects of code quality.
