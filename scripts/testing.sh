@@ -6,9 +6,9 @@
 # Run tests locally.
 #
 # Usage:
-#   ./testing.sh -s
-#   ./testing.sh -i -t host
-# 
+#   Run Sanity Tests:       ./testing.sh -s
+#   Run Integration Tests:  ./testing.sh -i -t host
+#   Run Linting:            ./testing.sh -s
 
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 collection_dir="${script_dir%/*}"
@@ -39,8 +39,13 @@ _run_sanity() {
 }
 
 _run_integration() {
-    echo "## Running Ansible Integration Tests for ${target} Module."
+    if [ -n "${target}" ]; then
+    echo "## Running Ansible Integration Tests for <${target}> Module."
     ansible-test integration "${target}" --docker
+    else
+    echo "## Running Ansible Integration Tests for all Modules."
+    ansible-test integration --docker
+    fi
     echo "## Ansible Integration Tests done."
 }
 
@@ -62,4 +67,8 @@ case "$mode" in
         _run_integration ;;
     lint)
         _run_linting ;;
+    ?) 
+      echo "Unknown mode!"
+      exit 1
+      ;;
 esac
