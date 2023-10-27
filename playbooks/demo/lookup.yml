@@ -10,9 +10,9 @@
 
     - name: "Get Checkmk version."
       ansible.builtin.debug:
-        msg: "Version is {{ version }}"
+        msg: "Version is {{ checkmk_var_version }}"
       vars:
-        version: "{{ lookup('checkmk.general.version',
+        checkmk_var_version: "{{ lookup('checkmk.general.version',
                        server_url + '/' + site,
                        validate_certs=False,
                        automation_user=automation_user,
@@ -43,7 +43,7 @@
       ansible.builtin.debug:
         msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
       vars:
-        looping: "{{
+        checkmk_var_looping: "{{
                      lookup('checkmk.general.all_folders',
                          '~tests',
                          show_hosts=True,
@@ -53,7 +53,7 @@
                          automation_secret=automation_secret,
                          validate_certs=False)
                   }}"
-      loop: "{{ looping | subelements('members.hosts.value') }}"
+      loop: "{{ checkmk_var_looping | subelements('members.hosts.value') }}"
       loop_control:
         label: "{{ item.0.id }}"
       delegate_to: localhost
@@ -61,9 +61,9 @@
 
     - name: "Get the attributes of folder /tests"
       ansible.builtin.debug:
-        msg: "Attributes of folder /network: {{ attributes }}"
+        msg: "Attributes of folder /network: {{ checkmk_var_attributes }}"
       vars:
-        attributes: "{{
+        checkmk_var_attributes: "{{
                         lookup('checkmk.general.folder',
                             '~tests',
                             site_url=server_url + '/' + site,
