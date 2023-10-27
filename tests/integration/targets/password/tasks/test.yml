@@ -1,10 +1,10 @@
 ---
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create new passwords."
   password:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     title: "{{ item.title }}"
     comment: "{{ item.comment }}"
@@ -19,10 +19,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -31,10 +31,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update passwords."
   password:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     title: "{{ item.title | default(omit) }}"
     comment: "{{ item.comment | default(omit) }}"
@@ -49,10 +49,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -61,10 +61,10 @@
 
 - name: "Delete a password."
   password:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
@@ -72,10 +72,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"

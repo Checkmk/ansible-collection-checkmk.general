@@ -24,7 +24,7 @@ checkmk_server_edition_mapping:
   cme: managed
 
 signature_key_id: 1
-signature_key_passphrase: "{{ automation_secret }}"
+signature_key_passphrase: "{{ checkmk_var_automation_secret }}"
 
 checkmk_hosts:
   - name: test1.tld

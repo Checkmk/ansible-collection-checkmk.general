@@ -1,10 +1,10 @@
 ---
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create new time periods."
   timeperiod:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     alias: "{{ item.alias }}"
     active_time_ranges: "{{ item.active_time_ranges }}"
@@ -17,10 +17,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -29,10 +29,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update time periods."
   timeperiod:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     alias: "{{ item.alias | default(omit) }}"
     active_time_ranges: "{{ item.active_time_ranges | default(omit) }}"
@@ -46,10 +46,10 @@
 # As this time period is equal to the existing one, no change should happen.
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update time equal periods."
   timeperiod:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     alias: "{{ item.alias | default(omit) }}"
     active_time_ranges: "{{ item.active_time_ranges | default(omit) }}"
@@ -62,10 +62,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -75,10 +75,10 @@
 # This should fail.
 - name: "Try to delete a time period which is used by another time period."
   timeperiod:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
@@ -87,10 +87,10 @@
 
 - name: "Delete other time period first."
   timeperiod:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
@@ -98,10 +98,10 @@
 
 - name: "Delete a time period."
   timeperiod:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
@@ -109,10 +109,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"

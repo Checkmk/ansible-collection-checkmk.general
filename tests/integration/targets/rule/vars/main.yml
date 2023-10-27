@@ -26,7 +26,7 @@ checkmk_server_edition_mapping:
   cce: cloud
   cme: managed
 
-checkmk_rules:
+checkmk_var_rules:
 
   - name: "Filesystem - Magic Factor."
     ruleset: "checkgroup_parameters:filesystem"

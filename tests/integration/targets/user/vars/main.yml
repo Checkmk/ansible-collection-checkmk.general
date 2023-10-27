@@ -31,7 +31,7 @@ checkmk_contact_groups:
   - team2
   - team3
 
-checkmk_users:
+checkmk_var_users:
   - name: user1
     fullname: User Eins
     password: "123"

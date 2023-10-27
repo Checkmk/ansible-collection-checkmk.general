@@ -29,7 +29,7 @@ checkmk_server_edition_mapping:
   cce: cloud
   cme: managed
 
-checkmk_folders:
+checkmk_var_folders:
   - name: "Folder 1"
     path: "/folder1"
     criticality: "test"
