@@ -35,6 +35,8 @@
     - name: "Test started site is running."  # noqa no-changed-when
       ansible.builtin.command: omd status started
       register: checkmk_server_site_started_state
+      changed_when: false
+      failed_when: (not checkmk_server_site_started_state.rc == 0) and (not checkmk_server_site_started_state.rc == 1)
 
     - name: "Verify started site is running."
       ansible.builtin.assert:
