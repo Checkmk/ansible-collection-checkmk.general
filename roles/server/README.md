@@ -90,7 +90,7 @@ Valid values for `state` are:
 - `absent`
 
 If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
-Valid choices include `install`, `keepold` and `abort`.  
+Valid choices include `install`, `keepold` and `abort`.
 
 Site configuration can be passed with the `omd_config` keyword.
 The format can be seen above, for a list of variables run `omd show`
