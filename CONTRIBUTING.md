@@ -89,6 +89,10 @@ It is possible to implement an alias for a module option. This should be used ra
 The following are guidelines to keep in mind, when changing roles.
 - Variables
     - Use snake case (`snake_case_variable`)
+    - Name variables after their purpose.
+        - `checkmk_server_foo` for a server role variable
+        - `checkmk_agent_bar` for a agent role variable
+        - `checkmk_var_bat` for general variables
     - Do not prefix the variable with an underscore ( `_` )
 - Tags
     - When tagging roles, separate single words with dashes (`my-custom-tag`)
