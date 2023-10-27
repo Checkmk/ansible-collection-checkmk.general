@@ -2,7 +2,6 @@
 # General
 checkmk_version: "2.0.0p39"
 checkmk_edition: "cre"
-checkmk_site: "my_site"
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
 automation_secret: "d7589df1"
@@ -25,6 +24,7 @@ checkmk_server_sites:
     state: started
     admin_pw: "{{ automation_secret }}"
     update_conflict_resolution: install
+    omd_auto_restart: 'true'
     omd_config:
       - var: LIVESTATUS_TCP
         value: "on"
@@ -40,6 +40,7 @@ checkmk_server_sites:
     state: enabled
     admin_pw: "{{ automation_secret }}"
     update_conflict_resolution: install
+    omd_auto_restart: 'true'
     omd_config:
       - var: AUTOSTART
         value: "on"
@@ -48,6 +49,7 @@ checkmk_server_sites:
     state: disabled
     admin_pw: "{{ automation_secret }}"
     update_conflict_resolution: install
+    omd_auto_restart: 'false'
     omd_config:
       - var: AUTOSTART
         value: "off"
@@ -56,6 +58,7 @@ checkmk_server_sites:
     state: present
     admin_pw: "{{ automation_secret }}"
     update_conflict_resolution: install
+    omd_auto_restart: 'false'
     omd_config:
       - var: LIVESTATUS_TCP
         value: "on"
