@@ -5,10 +5,10 @@
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ checkmk_agent_agent.file.cre }}"
   when: checkmk_agent_edition | lower == "cre"
-  register: result
+  register: checkmk_agent_download_state
   retries: 3
   delay: 10
-  until: "not result.failed | bool"
+  until: "not checkmk_agent_download_state.failed | bool"
   tags:
     - download-package
 
