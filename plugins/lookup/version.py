@@ -27,6 +27,11 @@ DOCUMENTATION = """
         type: boolean
         required: False
         default: True
+    notes:
+      - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'.
+        If you need to use different permissions, you must change the command or run Ansible as another user.
+      - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
+      - The directory of the play is used as the current working directory.
 """
 
 EXAMPLES = """
@@ -51,60 +56,30 @@ RETURN = """
 """
 
 import json
-from urllib.error import HTTPError, URLError
 
-from ansible.errors import AnsibleError
-from ansible.module_utils.common.text.converters import to_native, to_text
-from ansible.module_utils.urls import ConnectionError, SSLValidationError, open_url
 from ansible.plugins.lookup import LookupBase
+from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
+    CheckMKLookupAPI,
+)
 
 
 class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
-
         self.set_options(var_options=variables, direct=kwargs)
         user = self.get_option("automation_user")
         secret = self.get_option("automation_secret")
         validate_certs = self.get_option("validate_certs")
 
         ret = []
+
         for term in terms:
-            base_url = term + "/check_mk/api/1.0"
-            api_endpoint = "/version"
-            url = base_url + api_endpoint
+            api = CheckMKLookupAPI(
+                site_url=term,
+                user=user,
+                secret=secret,
+                validate_certs=validate_certs,
+            )
 
-            headers = {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-                "Authorization": "Bearer %s %s" % (user, secret),
-            }
-
-            try:
-                response = open_url(
-                    url,
-                    data=None,
-                    headers=headers,
-                    method="GET",
-                    validate_certs=validate_certs,
-                )
-
-            except HTTPError as e:
-                raise AnsibleError(
-                    "Received HTTP error for %s : %s" % (url, to_native(e))
-                )
-            except URLError as e:
-                raise AnsibleError(
-                    "Failed lookup url for %s : %s" % (url, to_native(e))
-                )
-            except SSLValidationError as e:
-                raise AnsibleError(
-                    "Error validating the server's certificate for %s: %s"
-                    % (url, to_native(e))
-                )
-            except ConnectionError as e:
-                raise AnsibleError("Error connecting to %s: %s" % (url, to_native(e)))
-
-            checkmkinfo = json.loads(to_text(response.read()))
-            ret.append(checkmkinfo.get("versions").get("checkmk"))
-
+            response = json.loads(api.get("/version"))
+            ret.append(response.get("versions", {}).get("checkmk"))
         return ret

@@ -64,17 +64,17 @@ EXAMPLES = r"""
     title: Virtualization
     topic: My_Tags
     choices:
-        - id: No_Virtualization
-          title: No Virtualization
-        - id: ESXi
-          title: ESXi
-        - id: vCenter
-          title: vCenter
-        - id: HyperV
-          title: HyperV
-        - id: KVM
-          title: KVM
-  state: present
+      - id: No_Virtualization
+        title: No Virtualization
+      - id: ESXi
+        title: ESXi
+      - id: vCenter
+        title: vCenter
+      - id: HyperV
+        title: HyperV
+      - id: KVM
+        title: KVM
+    state: present
 """
 
 RETURN = r"""

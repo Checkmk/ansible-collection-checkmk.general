@@ -15,12 +15,14 @@ on:
       - devel
     paths:
       - 'roles/**'
+      - 'playbooks/**'
   pull_request:
     branches:
       - main
       - devel
     paths:
       - 'roles/**'
+      - 'playbooks/**'
 
 jobs:
 
@@ -58,12 +60,12 @@ jobs:
 
       # Run the linting
       - name: Run yamllint on roles
-        run: yamllint -c .yamllint roles/
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        run: yamllint -c ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.yamllint ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles/
+        working-directory: ./ansible_collections/
 
       - name: Run yamllint on playbooks
-        run: yamllint -c .yamllint playbooks/
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        run: yamllint -c ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.yamllint ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/playbooks/
+        working-directory: ./ansible_collections/
 
       - name: Run ansible-lint on roles
         run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles/

@@ -8,3 +8,9 @@
   ansible.builtin.service:
     name: httpd
     state: started
+
+- name: "Warn site admin password"
+  ansible.builtin.debug:
+    msg:
+      - "You created at least one site without specifying an admin password!"
+      - "Please make sure to set it by different means, if you do not want to do it here."

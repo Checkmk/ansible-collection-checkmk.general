@@ -150,10 +150,12 @@ from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.dict_transformations import dict_merge
 from ansible.module_utils.urls import fetch_url
 
+PYTHON_VERSION = 3
+HAS_PATHLIB2_LIBRARY = True
+PATHLIB2_LIBRARY_IMPORT_ERROR = None
+
 if sys.version[0] == "3":
     from pathlib import Path
-
-    PYTHON_VERSION = 3
 else:
     PYTHON_VERSION = 2
     try:
@@ -161,9 +163,6 @@ else:
     except ImportError:
         HAS_PATHLIB2_LIBRARY = False
         PATHLIB2_LIBRARY_IMPORT_ERROR = traceback.format_exc()
-    else:
-        HAS_PATHLIB2_LIBRARY = True
-        PATHLIB2_LIBRARY_IMPORT_ERROR = None
 
 
 def exit_failed(module, msg):
@@ -237,8 +236,8 @@ def get_current_folder_state(module, base_url, headers):
     else:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s."
-            % (info["status"], info.get("body", "N/A")),
+            "Error calling API. HTTP code %d. Details: %s. URL: %s. Parameters: %s"
+            % (info["status"], info.get("body", "N/A"), url, parameters),
         )
 
     return current_state, current_explicit_attributes, current_title, etag
@@ -291,8 +290,8 @@ def create_folder(module, attributes, base_url, headers):
     if info["status"] != 200:
         exit_failed(
             module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            "Error calling API. HTTP code %d. Details: %s, URL: %s, Params: %s, "
+            % (info["status"], info["body"], url, str(params)),
         )
 
 
@@ -481,7 +480,9 @@ def run_module():
             )
 
     elif state == "present" and current_state == "absent":
-        if update_attributes != {} and (attributes or attributes == {}):
+        if (update_attributes and update_attributes != {}) and (
+            not attributes or attributes == {}
+        ):
             attributes = update_attributes
         if not module.check_mode:
             create_folder(module, attributes, base_url, headers)
