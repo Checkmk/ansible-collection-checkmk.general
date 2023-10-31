@@ -90,7 +90,7 @@
     executable: /bin/bash
   no_log: true
   loop: "{{ checkmk_server_sites }}"
-  when: (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '<'))
+  when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '<'))
   tags:
     - set-site-admin-pw
 
@@ -105,6 +105,16 @@
     executable: /bin/bash
   no_log: true
   loop: "{{ checkmk_server_sites }}"
-  when: (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '>='))
+  when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '>='))
   tags:
     - set-site-admin-pw
+
+- name: "Trigger warning about missing cmkadmin password."
+  ansible.builtin.debug:
+    msg:
+      - "Just a trigger."
+  loop: "{{ checkmk_server_sites_created.results }}"
+  when: checkmk_server_sites_created.changed | bool and not item.item.admin_pw is defined
+  changed_when: true
+  notify: Warn site admin password
+  no_log: true

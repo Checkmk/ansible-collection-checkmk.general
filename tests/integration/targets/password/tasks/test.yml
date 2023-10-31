@@ -1,5 +1,5 @@
 ---
-- name: "{{ outer_item.version }} - Create new passwords."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create new passwords."
   password:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -17,7 +17,7 @@
   loop: "{{ checkmk_passwords_create }}"
   no_log: true
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -29,7 +29,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Update passwords."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update passwords."
   password:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -47,7 +47,7 @@
   loop: "{{ checkmk_passwords_update }}"
   no_log: true
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -70,7 +70,7 @@
   delegate_to: localhost
   loop: "{{ checkmk_passwords_delete }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"

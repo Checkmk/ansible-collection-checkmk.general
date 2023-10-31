@@ -17,6 +17,59 @@
                        validate_certs=False,
                        automation_user=automation_user,
                        automation_secret=automation_secret)
+                   }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    - name: "Get all subfolders of the main folder recursively"
+      ansible.builtin.debug:
+        msg: "Folder tree: {{ item.id }}"
+      loop: "{{
+        lookup('checkmk.general.all_folders',
+            '~',
+            show_hosts=False,
+            recursive=True,
+            site_url=server_url + '/' + site,
+            automation_user=automation_user,
+            automation_secret=automation_secret,
+            validate_certs=False)
+        }}"
+      loop_control:
+        label: "{{ item.id }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    - name: "Get all hosts of the folder /test recursively"
+      ansible.builtin.debug:
+        msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
+      vars:
+        looping: "{{
+                     lookup('checkmk.general.all_folders',
+                         '~tests',
+                         show_hosts=True,
+                         recursive=True,
+                         site_url=server_url + '/' + site,
+                         automation_user=automation_user,
+                         automation_secret=automation_secret,
+                         validate_certs=False)
                   }}"
+      loop: "{{ looping | subelements('members.hosts.value') }}"
+      loop_control:
+        label: "{{ item.0.id }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    - name: "Get the attributes of folder /tests"
+      ansible.builtin.debug:
+        msg: "Attributes of folder /network: {{ attributes }}"
+      vars:
+        attributes: "{{
+                        lookup('checkmk.general.folder',
+                            '~tests',
+                            site_url=server_url + '/' + site,
+                            automation_user=automation_user,
+                            automation_secret=automation_secret,
+                            validate_certs=False)
+                     }}"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]

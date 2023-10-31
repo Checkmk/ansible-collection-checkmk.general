@@ -9,7 +9,7 @@
     customer: null
   when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
 
-- name: "{{ outer_item.version }} - Create contact groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create contact groups."
   contact_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -23,7 +23,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_contact_groups }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -35,7 +35,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Create users."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -55,7 +55,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_users }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -67,7 +67,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Create same users again."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create same users again."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -88,14 +88,14 @@
   register: rule_result
   loop: "{{ checkmk_users }}"
 
-- name: "{{ outer_item.version }} - Fail if changed."  # noqa no-handler
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
   ansible.builtin.fail:
     msg: "Rule changed!"
   when: "rule_result.changed"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Edit users."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Edit users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -109,7 +109,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_users }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -121,7 +121,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Change PW of users."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Change PW of users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -136,7 +136,7 @@
   register: rule_result
   loop: "{{ checkmk_users }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -148,7 +148,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete users."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -160,7 +160,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_users }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -172,7 +172,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete same users again."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete same users again."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -185,7 +185,7 @@
   register: rule_result
   loop: "{{ checkmk_users }}"
 
-- name: "{{ outer_item.version }} - Fail if changed."  # noqa no-handler
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
   ansible.builtin.fail:
     msg: "Rule changed!"
   when: "rule_result.changed"
