@@ -141,6 +141,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.types import RESUL
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
 
 # We count 404 not as failed, because we want to know if the time period exists or not.
 HTTP_CODES_GET = {
@@ -327,18 +330,10 @@ class TimeperiodGetAPI(CheckmkAPI):
         )
 
 
-def patched_version(checkmkversion):
-    if (
-        checkmkversion[0] == "2"
-        and checkmkversion[1] == "2"
-        and int(checkmkversion[2].replace("0p", "", 1)) >= 9
-    ):
+def patched_version(ver):
+    if ver > CheckmkVersion("2.1.0p32") and ver < CheckmkVersion("2.2.0"):
         return True
-    if (
-        checkmkversion[0] == "2"
-        and checkmkversion[1] == "1"
-        and int(checkmkversion[2].replace("0p", "", 1)) >= 33
-    ):
+    if ver > CheckmkVersion("2.2.0p8"):
         return True
     return False
 
@@ -475,10 +470,10 @@ def run_module():
 
         # Time period exists already - Do an update.
         if result.http_code == 200:
-            checkmkversion = timeperiodget.getversion()
+            ver = timeperiodget.getversion()
 
             # Check for value "exclude" as this wasn't possible to update before Werk #16052.
-            if module.params.get("exclude") and not patched_version(checkmkversion):
+            if module.params.get("exclude") and not patched_version(ver):
                 result = RESULT(
                     http_code=0,
                     msg="Can't update exclude value in Checkmk 2.2.0p8 or 2.1.0p32 and before. See Werk #16052",
@@ -495,7 +490,7 @@ def run_module():
             # Get the existing values of the time period.
             # Beware of different output of "Show a time period" in Version 2.0.
             existing = {}
-            if checkmkversion[0] == "2" and checkmkversion[1] == "0":
+            if ver == CheckmkVersion("2.0.0"):
                 for value in updatevalues:
                     existing[value] = json.loads(result.content).get(value)
             else:

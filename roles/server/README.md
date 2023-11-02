@@ -61,12 +61,12 @@ Uninstall unused Checkmk versions on the server.
 
     checkmk_server_configure_firewall: 'true'
 
-Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
+Automatically open the necessary ports on the Checkmk server for the
+web interface to be accessible.
 
     checkmk_server_allow_downgrades: 'false'
 
-Automatically open the necessary ports on the Checkmk server for the
-web interface to be accessible.
+Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
 
     checkmk_server_sites:
       - name: mysite
@@ -104,6 +104,14 @@ Whether to back up sites when updating between versions. Only disable this if yo
     checkmk_server_backup_dir: /tmp
 
 Directory to backup sites to when updating between versions.
+
+    checkmk_server_backup_on_update: 'true'
+
+Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
+
+    checkmk_agent_no_log: 'true'
+
+Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
 ## Tags
 Tasks are tagged with the following tags:

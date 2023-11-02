@@ -8,17 +8,19 @@
 env:
   NAMESPACE: checkmk
   COLLECTION_NAME: general
-  MODULE_NAME: lookup_folders
+  MODULE_NAME: timeperiod
 
-name: Ansible Integration Tests for Folders Lookup Module
+name: Ansible Integration Tests for Timeperiod Module
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
   pull_request:
     branches:
       - main
       - devel
     paths:
-      - 'plugins/lookup/folders.py'
+      - 'plugins/modules/timeperiod.py'
 
 jobs:
 

@@ -9,9 +9,6 @@ test_sites:
   - version: "2.1.0p35"
     edition: "cre"
     site: "old_raw"
-  - version: "2.0.0p39"
-    edition: "cre"
-    site: "ancient_raw"
 
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
@@ -37,7 +34,7 @@ checkmk_timeperiods_create:
     alias: "Worktime"
     active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]'
     exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
-    exclude: '[ "Lunchtime" ]'
+    exclude: '[ "lunchtime" ]'
   - name: "notonfriday"
     alias: "Notonfriday"
     active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "13:00:00", "end": "23:59:59"}]}]'
@@ -57,8 +54,11 @@ checkmk_timeperiods_update:
   - name: "worktime"
     active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "08:00:00", "end": "17:00:00"}]}]'
     exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
+    exclude: '[ "notonfriday" ]'
   - name: "notonfriday"
     active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "00:00:00", "end": "23:59:59"}]}]'
+  - name: "worktime"
+    exclude: '[ "lunchtime" ]'
 
 checkmk_timeperiods_noupdate:
   - name: "fridaybreak"

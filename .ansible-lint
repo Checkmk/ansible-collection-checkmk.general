@@ -31,6 +31,7 @@ exclude_paths:
 # requirements, like avoiding python identifiers. To disable add `var-naming`
 # to skip_list.
 # var_naming_pattern: "^[a-z_][a-z0-9_]*$"
+var_naming_pattern: "^checkmk_(server|agent)_.*$"
 
 use_default_rules: true
 # Load custom rules from this specific folder
@@ -41,6 +42,7 @@ use_default_rules: true
 skip_list:
   - experimental
   - name[template]  # https://ansible-lint.readthedocs.io/rules/name/
+  - var-naming[no-role-prefix]  # We do believe, that our naming which exceeds this rules requirements is sound
 
 # # Any rule that has the 'opt-in' tag will not be loaded unless its 'id' is
 # # mentioned in the enable_list:
