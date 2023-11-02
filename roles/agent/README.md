@@ -153,6 +153,9 @@ Define an IP address which will be added to the host in Checkmk. This is optiona
 
 Define attributes with which the host will be added to Checkmk.
 
+    checkmk_agent_no_log: 'true'
+
+Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
 ## Tags
 Tasks are tagged with the following tags:
