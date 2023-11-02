@@ -671,3 +671,55 @@ releases:
     - agent.yml
     - server.yml
     release_date: '2023-08-30'
+  3.3.0:
+    changes:
+      bugfixes:
+      - Agent role - Performing the agent registration on a remote would fail, if
+        the host was just created. This release introduces a workaround to enable
+        this.
+      - Folder module - When creating a new folder with "attributes" parameter, the
+        attributes were ignored. This is now fixed.
+      known_issues:
+      - Server role - Not having to provide an admin password introduces a problem
+        though, as users could create sites without knowing the randomly generated
+        password. A task is introduced to mitigate this, but the solution there could
+        be improved.
+      major_changes:
+      - Folder lookup plugin - Look up the configuration of a folder.
+      - Folders lookup plugin - Look up all folders.
+      - Host lookup plugin - Look up the configuration of a host.
+      - Hosts lookup plugin - Look up all hosts.
+      - Timeperiod module - Add timeperiod module.
+      minor_changes:
+      - Agent role - Add support for firewall configuration on Debian derivates.
+      - Discovery module - Use the version comparison utils.
+      - Server role - Site management can now be done without specifying 'admin_pw'.
+      - Utils - Provide a class CheckmkVersion to simplify version comparison.
+      release_summary: 'This is the librarian release: We added some lookups.'
+    fragments:
+    - admin_pw.yml
+    - agent.yml
+    - fix_folder_module.yml
+    - lookup_plugins.yml
+    - release_summary.yml
+    - timeperiod.yml
+    - version_utils.yml
+    modules:
+    - description: Manage time periods in checkmk.
+      name: timeperiod
+      namespace: ''
+    plugins:
+      lookup:
+      - description: Get folder attributes
+        name: folder
+        namespace: null
+      - description: Get various information about a folder
+        name: folders
+        namespace: null
+      - description: Get host attributes
+        name: host
+        namespace: null
+      - description: Get various information about a host
+        name: hosts
+        namespace: null
+    release_date: '2023-11-02'

@@ -6,23 +6,8 @@
 .. |antsibull-internal-nbsp| unicode:: 0xA0
     :trim:
 
-.. role:: ansible-attribute-support-label
-.. role:: ansible-attribute-support-property
-.. role:: ansible-attribute-support-full
-.. role:: ansible-attribute-support-partial
-.. role:: ansible-attribute-support-none
-.. role:: ansible-attribute-support-na
-.. role:: ansible-option-type
-.. role:: ansible-option-elements
-.. role:: ansible-option-required
-.. role:: ansible-option-versionadded
-.. role:: ansible-option-aliases
-.. role:: ansible-option-choices
-.. role:: ansible-option-choices-default-mark
-.. role:: ansible-option-default-bold
-.. role:: ansible-option-configuration
-.. role:: ansible-option-returned-bold
-.. role:: ansible-option-sample-bold
+.. meta::
+  :antsibull-docs: 2.5.0
 
 .. Anchors
 
@@ -38,7 +23,10 @@ checkmk.general.version lookup -- Get the version of a Checkmk server
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 3.2.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.3.0).
+
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
@@ -78,12 +66,13 @@ Synopsis
 Terms
 -----
 
-.. rst-class:: ansible-option-table
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
 .. list-table::
   :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Parameter
     - Comments
@@ -103,9 +92,9 @@ Terms
 
         <a class="ansibleOptionLink" href="#parameter-_terms" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
 
 
@@ -137,12 +126,13 @@ Keyword parameters
 This describes keyword parameters of the lookup. These are the values ``key1=value1``, ``key2=value2`` and so on in the following
 examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.version', key1=value1, key2=value2, ...)``
 
-.. rst-class:: ansible-option-table
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
 .. list-table::
   :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Parameter
     - Comments
@@ -162,9 +152,9 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
         <a class="ansibleOptionLink" href="#parameter-automation_secret" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
 
 
@@ -199,9 +189,9 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
         <a class="ansibleOptionLink" href="#parameter-automation_user" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
 
 
@@ -236,9 +226,9 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
         <a class="ansibleOptionLink" href="#parameter-validate_certs" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`boolean`
+        :ansible-option-type:`boolean`
 
 
 
@@ -278,6 +268,9 @@ Notes
 .. note::
    - When keyword and positional parameters are used together, positional parameters must be listed before keyword parameters:
      ``lookup('checkmk.general.version', term1, term2, key1=value1, key2=value2)`` and ``query('checkmk.general.version', term1, term2, key1=value1, key2=value2)``
+   - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'. If you need to use different permissions, you must change the command or run Ansible as another user.
+   - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
+   - The directory of the play is used as the current working directory.
 
 .. Seealso
 
@@ -312,12 +305,13 @@ Examples
 Return Value
 ------------
 
-.. rst-class:: ansible-option-table
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
 .. list-table::
   :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Key
     - Description
@@ -337,9 +331,9 @@ Return Value
 
         <a class="ansibleOptionLink" href="#return-_list" title="Permalink to this return value"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
 
       .. raw:: html
 
@@ -382,12 +376,15 @@ Authors
 Collection links
 ~~~~~~~~~~~~~~~~
 
-.. raw:: html
+.. ansible-links::
 
-  <p class="ansible-links">
-    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
-  </p>
+  - title: "Issue Tracker"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"
+    external: true
+  - title: "Repository (Sources)"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general"
+    external: true
+
 
 .. Parsing errors
 

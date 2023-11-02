@@ -2,7 +2,7 @@
 # Take this from playbooks/test-full.yml to ensure full coverage!
 # Be sure to remove header!
 
-- name: "{{ outer_item.version }} - Create folders."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folders."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -15,7 +15,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_folders }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -27,7 +27,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete folders."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete folders."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -40,7 +40,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_folders }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -52,7 +52,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Create folders for attributes test."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folders for attributes test."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -65,7 +65,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Update folder attributes without specifying title (name)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update folder attributes without specifying title (name)."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -79,7 +79,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Check the idempotency of Update attributes."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check the idempotency of Update attributes."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -94,7 +94,7 @@
   register: test_output
   failed_when: test_output.changed | bool
 
-- name: "{{ outer_item.version }} - Update folder title (name)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update folder title (name)."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -106,7 +106,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Remove folder attributes without specifying title (name)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove folder attributes without specifying title (name)."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -119,7 +119,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Check the idempotency of Remove attributes."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check the idempotency of Remove attributes."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -134,7 +134,7 @@
   register: test_output
   failed_when: test_output.changed | bool
 
-- name: "{{ outer_item.version }} - Delete folders."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete folders."
   folder:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -147,7 +147,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_folders }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"

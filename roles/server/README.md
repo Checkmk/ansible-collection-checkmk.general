@@ -23,7 +23,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_server_version: "2.2.0p8"
+    checkmk_server_version: "2.2.0p12"
 
 The Checkmk version of your site.
 
@@ -61,22 +61,12 @@ Uninstall unused Checkmk versions on the server.
 
     checkmk_server_configure_firewall: 'true'
 
-Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
-
-    checkmk_server_allow_downgrades: 'false'
-
 Automatically open the necessary ports on the Checkmk server for the
 web interface to be accessible.
 
-    checkmk_server_sites:
-      - name: test
-        version: "{{ checkmk_server_version }}"
-        state: started
-        admin_pw: test
+    checkmk_server_allow_downgrades: 'false'
 
-A dictionary of sites, their version, admin password and state.
-If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
-Valid choices include `install`, `keepold` and `abort`.
+Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
 
     checkmk_server_sites:
       - name: test
@@ -85,11 +75,21 @@ Valid choices include `install`, `keepold` and `abort`.
         state: started
         admin_pw: test
 
-Directory to backup sites to when updating between versions.
+A dictionary of sites, their version, admin password and state.
+If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
+Valid choices include `install`, `keepold` and `abort`.
+
     checkmk_server_backup_dir: /tmp
 
-Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
+Directory to backup sites to when updating between versions.
+
     checkmk_server_backup_on_update: 'true'
+
+Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
+
+    checkmk_agent_no_log: 'true'
+
+Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
 ## Tags
 Tasks are tagged with the following tags:

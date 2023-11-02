@@ -5,6 +5,58 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v3.3.0
+======
+
+Release Summary
+---------------
+
+This is the librarian release: We added some lookups.
+
+Major Changes
+-------------
+
+- Folder lookup plugin - Look up the configuration of a folder.
+- Folders lookup plugin - Look up all folders.
+- Host lookup plugin - Look up the configuration of a host.
+- Hosts lookup plugin - Look up all hosts.
+- Timeperiod module - Add timeperiod module.
+
+Minor Changes
+-------------
+
+- Agent role - Add support for firewall configuration on Debian derivates.
+- Discovery module - Use the version comparison utils.
+- Server role - Site management can now be done without specifying 'admin_pw'.
+- Utils - Provide a class CheckmkVersion to simplify version comparison.
+
+Bugfixes
+--------
+
+- Agent role - Performing the agent registration on a remote would fail, if the host was just created. This release introduces a workaround to enable this.
+- Folder module - When creating a new folder with "attributes" parameter, the attributes were ignored. This is now fixed.
+
+Known Issues
+------------
+
+- Server role - Not having to provide an admin password introduces a problem though, as users could create sites without knowing the randomly generated password. A task is introduced to mitigate this, but the solution there could be improved.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.folder - Get folder attributes
+- checkmk.general.folders - Get various information about a folder
+- checkmk.general.host - Get host attributes
+- checkmk.general.hosts - Get various information about a host
+
+New Modules
+-----------
+
+- checkmk.general.timeperiod - Manage time periods in checkmk.
+
 v3.2.0
 ======
 

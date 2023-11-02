@@ -1,5 +1,5 @@
 ---
-- name: "{{ outer_item.version }} - Get Checkmk version."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get Checkmk version."
   ansible.builtin.debug:
     msg: "Version is {{ version }}"
   vars:
@@ -12,6 +12,6 @@
   delegate_to: localhost
   register: looked_up_version
 
-- name: "{{ outer_item.version }} - Verify Checkmk version."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify Checkmk version."
   ansible.builtin.assert:
     that: "outer_item.version in looked_up_version.msg"

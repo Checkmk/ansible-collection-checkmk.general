@@ -17,7 +17,7 @@ It can be installed as easy as running:
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_agent_version: "2.2.0p8"
+    checkmk_agent_version: "2.2.0p12"
 
 The Checkmk version of your site.
 
@@ -117,7 +117,7 @@ for automatic updates. Otherwise this will fail.
 
     checkmk_agent_configure_firewall: 'true'
 
-Automatically configure the firewall (*currently only on RedHat derivatives*) to allow access to the Checkmk agent.
+Automatically configure the firewall (*currently only on RedHat and Debian derivatives*) to allow access to the Checkmk agent.
 
     checkmk_agent_configure_firewall_zone: 'public'
 
@@ -153,6 +153,9 @@ Define an IP address which will be added to the host in Checkmk. This is optiona
 
 Define attributes with which the host will be added to Checkmk.
 
+    checkmk_agent_no_log: 'true'
+
+Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
 ## Tags
 Tasks are tagged with the following tags:

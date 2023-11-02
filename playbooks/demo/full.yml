@@ -1,5 +1,5 @@
 ---
-- name: "Lookup."
+- name: "Lookup Plugins."
   ansible.builtin.import_playbook: lookup.yml
 - name: "Hosts and Folders."
   ansible.builtin.import_playbook: hosts-and-folders.yml

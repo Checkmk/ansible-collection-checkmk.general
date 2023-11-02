@@ -15,6 +15,7 @@
         site: "{{ site }}"
         automation_user: "{{ automation_user }}"
         automation_secret: "{{ automation_secret }}"
+        validate_certs: "{{ checkmk_agent_server_validate_certs }}"
         path: "{{ item.path }}"
         name: "{{ item.name }}"
         state: "present"

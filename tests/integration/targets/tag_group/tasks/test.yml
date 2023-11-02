@@ -1,5 +1,5 @@
 ---
-- name: "{{ outer_item.version }} - Create tag_group."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create tag_group."
   tag_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -22,7 +22,7 @@
     state: "present"
   delegate_to: localhost
 
-- name: "{{ outer_item.version }} - Activate changes."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -31,7 +31,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Update tag_group."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update tag_group."
   tag_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -52,7 +52,7 @@
     state: "present"
   delegate_to: localhost
 
-- name: "{{ outer_item.version }} - Activate changes."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -61,7 +61,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete tag_group."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete tag_group."
   tag_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -82,7 +82,7 @@
     state: "absent"
   delegate_to: localhost
 
-- name: "{{ outer_item.version }} - Activate changes."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
   activation:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
