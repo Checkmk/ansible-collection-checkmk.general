@@ -1,6 +1,6 @@
 ---
 # General
-checkmk_version: "2.1.0p35"
+checkmk_version: "2.1.0p36"
 checkmk_edition: "cre"
 checkmk_site: "my_site"
 server_url: "http://127.0.0.1/"
