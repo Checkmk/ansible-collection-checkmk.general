@@ -75,11 +75,15 @@ Whether to allow downgrading a sites version. Note this is not a recommended pro
         state: started
         admin_pw: test
 
+Automatically open the necessary ports on the Checkmk server for the
+web interface to be accessible.
+
+    checkmk_server_backup_dir: /tmp
+
 A dictionary of sites, their version, admin password and state.
 If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
 Valid choices include `install`, `keepold` and `abort`.
 
-    checkmk_server_backup_dir: /tmp
 
 Directory to backup sites to when updating between versions.
 
