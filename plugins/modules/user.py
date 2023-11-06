@@ -200,7 +200,6 @@ def log(msg):
 
 
 class User:
-
     default_attributes = {
         "disable_login": False,
         "contact_options": {"email": "", "fallback_contact": False},
@@ -230,7 +229,6 @@ class User:
 
     @classmethod
     def from_api_response(cls, module, api_params):
-
         # Determine the current state of this particular user
         api_attributes, state, etag = get_current_user_state(module, api_params)
 
@@ -240,7 +238,6 @@ class User:
 
     @classmethod
     def from_module(cls, params):
-
         attributes = cls.default_attributes
 
         attributes["username"] = params["name"]
@@ -317,7 +314,7 @@ class User:
         if _exists("authorized_sites"):
             attributes["authorized_sites"] = params["authorized_sites"]
 
-        #raise Exception(str(params))
+        # raise Exception(str(params))
         return cls(params["name"], state=params["state"], attributes=attributes)
 
     def satisfies(self, other_instance):
@@ -349,10 +346,18 @@ def get_current_user_state(module, api_params):
         extensions = body.get("extensions", {})
 
     elif info["status"] == 401:
-        exit_failed(module, "[get_current_user_state] Error calling API. HTTP code %d. Details: %s." %  (info["status"], info["body"]))
+        exit_failed(
+            module,
+            "[get_current_user_state] Error calling API. HTTP code %d. Details: %s."
+            % (info["status"], info["body"]),
+        )
 
     elif info["status"] == 403:
-        exit_failed(module, "[get_current_user_state] Error calling API. HTTP code %d. Details: %s." %  (info["status"], info["body"]))
+        exit_failed(
+            module,
+            "[get_current_user_state] Error calling API. HTTP code %d. Details: %s."
+            % (info["status"], info["body"]),
+        )
 
     elif info["status"] == 404:
         current_state = "absent"
@@ -430,7 +435,6 @@ def delete_user(module, api_params):
 
 
 def run_module():
-
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         server_url=dict(type="str", required=True),
