@@ -1,6 +1,9 @@
 ---
 test_sites:
   - version: "2.2.0p12"
+    edition: "cme"
+    site: "stable_cme"
+  - version: "2.2.0p12"
     edition: "cre"
     site: "stable_raw"
   - version: "2.2.0p12"

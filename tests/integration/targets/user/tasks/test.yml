@@ -1,10 +1,10 @@
 ---
-- name: "{{ outer_item.version }} - Set customer when needed."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
   ansible.builtin.set_fact:
     customer: "provider"
   when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
 
-- name: "{{ outer_item.version }} - Unset customer when needed."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
   ansible.builtin.set_fact:
     customer: null
   when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
@@ -15,7 +15,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item }}"
     title: "{{ item }}"
     state: "present"
@@ -41,7 +41,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     fullname: "{{ item.fullname }}"
     auth_type: "{{ item.auth_type }}"
@@ -73,7 +73,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     fullname: "{{ item.fullname }}"
     auth_type: "{{ item.auth_type }}"
@@ -101,7 +101,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     contactgroups: "{{ item.contactgroups }}"
     state: "present"
@@ -127,7 +127,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     password: "{{ item.newpassword }}"
     state: "present"

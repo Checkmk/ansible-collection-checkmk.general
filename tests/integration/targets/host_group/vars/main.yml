@@ -1,6 +1,9 @@
 ---
 test_sites:
   - version: "2.2.0p12"
+    edition: "cme"
+    site: "stable_cme"
+  - version: "2.2.0p12"
     edition: "cre"
     site: "stable_raw"
   - version: "2.2.0p12"
@@ -30,28 +33,28 @@ checkmk_server_edition_mapping:
   cme: managed
 
 checkmk_host_groups_create:
-  - name:  "test1"
+  - name: "test1"
     title: "Test_1"
-  - name:  "test2"
-  - name:  "test3"
-  - name:  "test4"
+  - name: "test2"
+  - name: "test3"
+  - name: "test4"
     title: "Test_4"
-  - name:  "test5"
+  - name: "test5"
     title: "Test_5"
 
 # 2 and 3 remains unchanged, good for idempotency check
 checkmk_host_groups_modify:
-  - name:  "test1"
+  - name: "test1"
     title: "Test_one"
-  - name:  "test2"
+  - name: "test2"
     title: "Test_2"
-  - name:  "test3"
+  - name: "test3"
     title: "Test_3"
-  - name:  "test4"
+  - name: "test4"
     title: "Test_four"
-  - name:  "test5"
+  - name: "test5"
     title: "Test_five"
 
 checkmk_host_groups_delete:
-  - name:  "test1"
-  - name:  "test3"
+  - name: "test1"
+  - name: "test3"
