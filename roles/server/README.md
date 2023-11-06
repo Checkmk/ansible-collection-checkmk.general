@@ -99,15 +99,11 @@ on an existing site.
 
     checkmk_server_backup_on_update: 'true'
 
-Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
+Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups.
 
     checkmk_server_backup_dir: /tmp
 
 Directory to backup sites to when updating between versions.
-
-    checkmk_server_backup_on_update: 'true'
-
-Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
 
     checkmk_agent_no_log: 'true'
 
