@@ -82,12 +82,12 @@ Whether to allow downgrading a sites version. Note this is not a recommended pro
 A dictionary of sites, containing the desired version, admin password and state.
 There are also advanced settings, which will be outlined below.
 Valid values for `state` are:
-- `started`
-- `stopped`
-- `enabled`
-- `disabled`
-- `present`
-- `absent`
+- `started`: The site is started and enabled for autostart on system boot.
+- `stopped`: The site is stopped and disabled for autostart on system boot.
+- `enabled`: The site is stopped, but enabled for autostart on system boot.
+- `disabled`: The site is stopped and disabled for autostart on system boot.
+- `present`: The site is stopped and disabled for autostart on system boot.
+- `absent`: The site is removed from the system entirely.
 
 If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
 Valid choices include `install`, `keepold` and `abort`.
