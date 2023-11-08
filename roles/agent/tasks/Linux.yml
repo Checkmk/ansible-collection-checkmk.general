@@ -120,3 +120,4 @@
   ansible.builtin.wait_for:
     port: 6556
     timeout: 60
+  when: checkmk_agent_mode == 'pull'
