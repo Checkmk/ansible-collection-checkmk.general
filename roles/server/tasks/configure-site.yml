@@ -1,0 +1,36 @@
+---
+- name: "Stop Site."
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd stop {{ outer_item.name }}
+  args:
+    executable: /bin/bash
+    removes: "/opt/omd/sites/{{ outer_item.name }}/tmp/run/live"
+  when: outer_item.state != "absent"
+  tags:
+    - configure-sites
+
+- name: "Configure Site '{{ outer_item.name }}'."  # noqa no-changed-when
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd config {{ outer_item.name }} set {{ item.var }} {{ item.value }}
+  args:
+    executable: /bin/bash
+  loop: "{{ outer_item.omd_config }}"
+  when: outer_item.state != "absent"  and outer_item.omd_config | length
+  tags:
+    - configure-sites
+
+- name: "Start Site."
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd start {{ outer_item.name }}
+  args:
+    executable: /bin/bash
+    creates: "/opt/omd/sites/{{ outer_item.name }}/tmp/run/live"
+  when: outer_item.state == "started"
+  tags:
+    - configure-sites

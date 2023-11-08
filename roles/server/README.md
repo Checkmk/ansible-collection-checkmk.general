@@ -23,7 +23,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_server_version: "2.2.0p13"
+    checkmk_server_version: "2.2.0p12"
 
 The Checkmk version of your site.
 
@@ -69,23 +69,41 @@ web interface to be accessible.
 Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
 
     checkmk_server_sites:
-      - name: test
+      - name: mysite
         version: "{{ checkmk_server_version }}"
         update_conflict_resolution: abort
         state: started
-        admin_pw: test
+        admin_pw: mypw
+        omd_auto_restart: 'false'
+        omd_config:
+          - var: AUTOSTART
+            value: on
 
-A dictionary of sites, their version, admin password and state.
+A dictionary of sites, containing the desired version, admin password and state.
+There are also advanced settings, which will be outlined below.
+Valid values for `state` are:
+- `started`: The site is started and enabled for autostart on system boot.
+- `stopped`: The site is stopped and disabled for autostart on system boot.
+- `enabled`: The site is stopped, but enabled for autostart on system boot.
+- `disabled`: The site is stopped and disabled for autostart on system boot.
+- `present`: The site is stopped and disabled for autostart on system boot.
+- `absent`: The site is removed from the system entirely.
+
 If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
 Valid choices include `install`, `keepold` and `abort`.
+
+Site configuration can be passed with the `omd_config` keyword.
+The format can be seen above, for a list of variables run `omd show`
+on an existing site.  
+**Pay special attention to the `omd_auto_restart` variable!** As site configuration needs the site to be stopped, this needs to be handled. By default the variable is set to `false` to avoid unexpected restarting. However, no configuration will be performed if the site is started.
+
+    checkmk_server_backup_on_update: 'true'
+
+Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups.
 
     checkmk_server_backup_dir: /tmp
 
 Directory to backup sites to when updating between versions.
-
-    checkmk_server_backup_on_update: 'true'
-
-Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
 
     checkmk_agent_no_log: 'true'
 

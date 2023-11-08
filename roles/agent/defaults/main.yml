@@ -1,5 +1,5 @@
 ---
-checkmk_agent_version: "2.2.0p13"
+checkmk_agent_version: "2.2.0p12"
 checkmk_agent_edition: cre
 checkmk_agent_protocol: http
 checkmk_agent_server: localhost
@@ -31,6 +31,7 @@ checkmk_agent_folder: "{{ checkmk_folder_path | default('/') }}"
 checkmk_agent_force_foreign_changes: 'false'
 checkmk_agent_host_attributes:
   ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
+checkmk_agent_mode: pull
 checkmk_agent_no_log: 'true'
 
 # If you trust your local hostnames, you could also use the following
