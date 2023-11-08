@@ -1,10 +1,21 @@
 ---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    customer: "provider"
+  when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    customer: null
+  when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create host groups."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     title: "{{ item.title | default(item.name) }}"
     state: "present"
@@ -18,6 +29,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     title: "{{ item.title | default(item.name) }}"
     groups: checkmk_host_groups_create
@@ -46,6 +58,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name | default(item.name) }}"
     title: "{{ item.title }}"
     state: "present"
@@ -71,6 +84,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
@@ -95,6 +109,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
@@ -119,6 +134,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_create }}"
     state: "present"
   delegate_to: localhost
@@ -130,6 +146,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_create }}"
     name: "test"
     state: "present"
@@ -144,6 +161,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_create }}"
     title: "Test"
     state: "present"
@@ -159,6 +177,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_modify }}"
     state: "present"
   delegate_to: localhost
@@ -170,6 +189,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_delete }}"
     state: "absent"
   delegate_to: localhost
@@ -181,6 +201,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_create }}"
     state: "absent"
   delegate_to: localhost

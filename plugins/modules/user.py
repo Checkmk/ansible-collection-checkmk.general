@@ -30,6 +30,10 @@ options:
     fullname:
         description: The alias or full name of the user.
         type: str
+    customer:
+        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        required: false
+        type: str
     password:
         description: The password or secret for login.
         type: str
@@ -95,6 +99,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "krichards"
     fullname: "Keith Richards"
+    customer: "provider"
     email: "keith.richards@rollingstones.com"
     password: "Open-G"
     contactgroups:
@@ -113,6 +118,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "registration"
     fullname: "Registration User"
+    customer: "provider"
     auth_type: "automation"
     password: "ZGSDHUVDSKJHSDF"
     roles:
@@ -128,6 +134,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "horst"
     fullname: "Horst Schlämmer"
+    customer: "provider"
     auth_type: "password"
     password: "uschi"
     enforce_password_change: True
@@ -197,7 +204,6 @@ def log(msg):
 
 
 class User:
-
     default_attributes = {
         "disable_login": False,
         "contact_options": {"email": "", "fallback_contact": False},
@@ -227,7 +233,6 @@ class User:
 
     @classmethod
     def from_api_response(cls, module, api_params):
-
         # Determine the current state of this particular user
         api_attributes, state, etag = get_current_user_state(module, api_params)
 
@@ -237,7 +242,6 @@ class User:
 
     @classmethod
     def from_module(cls, params):
-
         attributes = cls.default_attributes
 
         attributes["username"] = params["name"]
@@ -247,6 +251,9 @@ class User:
 
         if _exists("fullname"):
             attributes["fullname"] = params["fullname"]
+
+        if _exists("customer"):
+            attributes["customer"] = params["customer"]
 
         if _exists("disable_login"):
             attributes["disable_login"] = params["disable_login"]
@@ -341,6 +348,20 @@ def get_current_user_state(module, api_params):
         etag = info.get("etag", "")
         extensions = body.get("extensions", {})
 
+    elif info["status"] == 401:
+        exit_failed(
+            module,
+            "[get_current_user_state] Error calling API. HTTP code %d. Details: %s."
+            % (info["status"], info["body"]),
+        )
+
+    elif info["status"] == 403:
+        exit_failed(
+            module,
+            "[get_current_user_state] Error calling API. HTTP code %d. Details: %s."
+            % (info["status"], info["body"]),
+        )
+
     elif info["status"] == 404:
         current_state = "absent"
 
@@ -417,7 +438,6 @@ def delete_user(module, api_params):
 
 
 def run_module():
-
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         server_url=dict(type="str", required=True),
@@ -427,6 +447,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         name=dict(required=True, type="str"),
         fullname=dict(type="str"),
+        customer=dict(type="str", required=False),
         password=dict(type="str", no_log=True),
         enforce_password_change=dict(type="bool", no_log=False),
         auth_type=dict(type="str", choices=["password", "automation"]),
@@ -470,6 +491,7 @@ def run_module():
     )
 
     # Determine desired state and attributes
+    log("module.params: %s" % str(module.params))
     desired_user = User.from_module(module.params)
     log("desired_user: %s" % str(desired_user))
     desired_state = desired_user.state
