@@ -30,6 +30,10 @@ options:
     fullname:
         description: The alias or full name of the user.
         type: str
+    customer:
+        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        required: false
+        type: str
     password:
         description: The password or secret for login.
         type: str
@@ -95,7 +99,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "krichards"
     fullname: "Keith Richards"
-    customer: "Provider"
+    customer: "provider"
     email: "keith.richards@rollingstones.com"
     password: "Open-G"
     contactgroups:
@@ -114,7 +118,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "registration"
     fullname: "Registration User"
-    customer: "Provider"
+    customer: "provider"
     auth_type: "automation"
     password: "ZGSDHUVDSKJHSDF"
     roles:
@@ -130,7 +134,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "horst"
     fullname: "Horst Schlämmer"
-    customer: "Provider"
+    customer: "provider"
     auth_type: "password"
     password: "uschi"
     enforce_password_change: True
@@ -314,7 +318,6 @@ class User:
         if _exists("authorized_sites"):
             attributes["authorized_sites"] = params["authorized_sites"]
 
-        # raise Exception(str(params))
         return cls(params["name"], state=params["state"], attributes=attributes)
 
     def satisfies(self, other_instance):

@@ -31,7 +31,8 @@ options:
         description: The title (alias) of your contact group. If omitted defaults to the name.
         type: str
     customer:
-        description: The customer (required for CME)
+        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        required: false
         type: str
     groups:
         description:
@@ -63,7 +64,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "my_contact_group"
     title: "My Contact Group"
-    cutomer: "provider"
+    customer: "provider"
     state: "present"
 
 # Create several contact groups.

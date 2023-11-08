@@ -31,7 +31,8 @@ options:
         description: The title (alias) of your service group. If omitted defaults to the name.
         type: str
     customer:
-        description: The customer (required for CME)
+        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        required: false
         type: str
     groups:
         description:
@@ -63,7 +64,7 @@ EXAMPLES = r"""
     automation_secret: "$SECRET"
     name: "my_service_group"
     title: "My Service Group"
-    cutomer: "provider"
+    customer: "provider"
     state: "present"
 
 # Create several service groups.
@@ -73,7 +74,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    cutomer: "provider"
+    customer: "provider"
     groups:
       - name: "my_service_group_one"
         title: "My Service Group One"
@@ -90,7 +91,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "automation"
     automation_secret: "$SECRET"
-    cutomer: "provider"
+    customer: "provider"
     groups:
       - name: "my_service_group_one"
         title: "My Service Group One"

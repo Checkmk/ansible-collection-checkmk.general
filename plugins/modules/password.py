@@ -18,7 +18,7 @@ short_description: Manage passwords in checkmk.
 version_added: "2.3.0"
 
 description:
-- Manage passwords in checkmk.
+- Manage passwords in Checkmk.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -34,7 +34,7 @@ options:
         type: str
 
     customer:
-        description: For the Checkmk Managed Edition, you need to specify which customer a password belongs to.
+        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
         required: false
         type: str
 
