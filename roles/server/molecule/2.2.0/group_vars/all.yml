@@ -1,6 +1,6 @@
 ---
 # General
-checkmk_version: "2.2.0p13"
+checkmk_version: "2.2.0p12"
 checkmk_edition: "cre"
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
