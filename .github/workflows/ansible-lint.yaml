@@ -38,6 +38,12 @@ jobs:
           - '3.10'
           - '3.11'
           - '3.12'
+        exclude:
+          # Exclude unsupported sets.
+          - ansible: stable-2.14
+            python: '3.12'
+          - ansible: stable-2.15
+            python: '3.12'
     steps:
       - name: Check out code
         uses: actions/checkout@v4
