@@ -1,5 +1,5 @@
 ---
-checkmk_agent_version: "2.2.0p12"
+checkmk_agent_version: "2.2.0p14"
 checkmk_agent_edition: cre
 checkmk_agent_server_protocol: http
 checkmk_agent_server: localhost
@@ -33,7 +33,8 @@ checkmk_agent_force_foreign_changes: 'false'
 checkmk_agent_port_check: 'true'
 checkmk_agent_host_attributes:
   ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
-
+checkmk_agent_mode: pull
+checkmk_agent_no_log: 'true'
 
 # If you trust your local hostnames, you could also use the following
 # to use the local hostname instead of the inventory hostname:

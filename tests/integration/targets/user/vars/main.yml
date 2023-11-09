@@ -1,12 +1,15 @@
 ---
 test_sites:
-  - version: "2.2.0p12"
+  - version: "2.2.0p14"
+    edition: "cme"
+    site: "stable_cme"
+  - version: "2.2.0p14"
     edition: "cre"
     site: "stable_raw"
-  - version: "2.2.0p12"
+  - version: "2.2.0p14"
     edition: "cee"
     site: "stable_ent"
-  - version: "2.1.0p35"
+  - version: "2.1.0p36"
     edition: "cre"
     site: "old_raw"
 
@@ -32,6 +35,16 @@ checkmk_contact_groups:
   - team3
 
 checkmk_users:
+  - name: admin1
+    fullname: Admin Eins
+    password: "123"
+    newpassword: "abc"
+    auth_type: password
+    email: 123@company.com
+    contactgroups: []
+    roles:
+      - admin
+    fallback_contact: true
   - name: user1
     fullname: User Eins
     password: "123"
@@ -63,7 +76,7 @@ checkmk_users:
     fullname: Automation User 1
     password: "0123456789"
     newpassword: "abcdefghij"
-    auth_type: password
+    auth_type: automation
     contactgroups: []
     roles:
       - admin

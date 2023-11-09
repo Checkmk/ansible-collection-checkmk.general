@@ -73,7 +73,7 @@
   run_once: true  # noqa run-once[task]
 
 # This should fail.
-- name: "Try to delete a time period which is used by another time period."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test that a timeperiod which is still in use cannot be deleted."
   timeperiod:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -83,9 +83,10 @@
     state: "absent"
   delegate_to: localhost
   loop: "{{ checkmk_timeperiods_faildelete }}"
-  ignore_errors: true
+  register: checkmk_timeperiod_status
+  failed_when: "'The time period is still in use' not in checkmk_timeperiod_status.msg"
 
-- name: "Delete other time period first."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete other time period first."
   timeperiod:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
@@ -96,7 +97,7 @@
   delegate_to: localhost
   loop: "{{ checkmk_timeperiods_deletefirst }}"
 
-- name: "Delete a time period."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete a time period."
   timeperiod:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"

@@ -97,6 +97,7 @@
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }}
+  no_log: "{{ checkmk_agent_no_log | bool }}"
   register: checkmk_agent_update_state
   when: |
     checkmk_agent_edition | lower != "cre"
@@ -111,6 +112,7 @@
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
     -U {{ checkmk_agent_user }} -S {{ checkmk_agent_auth }}
+  no_log: "{{ checkmk_agent_no_log | bool }}"
   register: checkmk_agent_update_state
   when: |
     checkmk_agent_edition | lower != "cre"
@@ -124,6 +126,7 @@
     cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }} --trust-cert
+  no_log: "{{ checkmk_agent_no_log | bool }}"
   register: checkmk_agent_tls_state
   when: |
     checkmk_agent_controller_binary.stat.exists | bool
@@ -134,4 +137,5 @@
   ansible.builtin.wait_for:
     port: "{{ checkmk_agent_port }}"
     timeout: 60
-  when: checkmk_agent_port_check | bool
+  when: checkmk_agent_mode == 'pull'
+  
