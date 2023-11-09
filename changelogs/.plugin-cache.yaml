@@ -72,7 +72,7 @@ plugins:
       namespace: ''
       version_added: 0.11.0
     password:
-      description: Manage passwords in checkmk.
+      description: Manage passwords in Checkmk.
       name: password
       namespace: ''
       version_added: 2.3.0
@@ -106,4 +106,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 3.3.0
+version: 3.4.0

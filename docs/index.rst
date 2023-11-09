@@ -9,7 +9,7 @@
 Checkmk.General
 ===============
 
-Collection version 3.3.0
+Collection version 3.4.0
 
 .. contents::
    :local:
@@ -64,7 +64,7 @@ Modules
 * :ansplugin:`folder module <checkmk.general.folder#module>` -- Manage folders in Checkmk.
 * :ansplugin:`host module <checkmk.general.host#module>` -- Manage hosts in Checkmk.
 * :ansplugin:`host_group module <checkmk.general.host_group#module>` -- Manage host groups in Checkmk (bulk version).
-* :ansplugin:`password module <checkmk.general.password#module>` -- Manage passwords in checkmk.
+* :ansplugin:`password module <checkmk.general.password#module>` -- Manage passwords in Checkmk.
 * :ansplugin:`rule module <checkmk.general.rule#module>` -- Manage rules in Checkmk.
 * :ansplugin:`service_group module <checkmk.general.service_group#module>` -- Manage service groups in Checkmk (bulk version).
 * :ansplugin:`tag_group module <checkmk.general.tag_group#module>` -- Manage tag\_group within Checkmk
