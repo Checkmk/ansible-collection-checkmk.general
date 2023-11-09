@@ -12,7 +12,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_contact_groups_create }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Should fail because of 'groups', Create contact groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for mutually exclusive module args: 'groups|name'."
   contact_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -25,7 +25,8 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_contact_groups_create }}"
-  ignore_errors: true
+  register: checkmk_contact_group_status
+  failed_when: "'parameters are mutually exclusive: groups|name' not in checkmk_contact_group_status.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -123,7 +124,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Should fail because of 'name', Bulk create contact groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for mutually exclusive module args: 'groups|name'."
   contact_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -134,9 +135,10 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  ignore_errors: true
+  register: checkmk_contact_group_status
+  failed_when: "'parameters are mutually exclusive: groups|name' not in checkmk_contact_group_status.msg"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Should fail because of 'title', Bulk create contact groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for uneffective module args: 'groups' and 'title'."
   contact_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -147,7 +149,9 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  ignore_errors: true
+  register: checkmk_contact_group_status
+  failed_when: |
+    "'title' has only effect when 'name' is defined and not 'groups'" not in checkmk_contact_group_status.msg
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk modify part of contact groups (also checks for idempotency!)."
   contact_group:
@@ -171,7 +175,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk delete contact groups that were created at the beginning (also check for idempotency)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk delete contact groups checking for idempotency."
   contact_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"

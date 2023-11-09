@@ -17,7 +17,7 @@ It can be installed as easy as running:
 
 <!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
 
-    checkmk_agent_version: "2.2.0p12"
+    checkmk_agent_version: "2.2.0p14"
 
 The Checkmk version of your site.
 
@@ -153,6 +153,15 @@ Define an IP address which will be added to the host in Checkmk. This is optiona
 
 Define attributes with which the host will be added to Checkmk.
 
+    checkmk_agent_mode: pull
+
+The mode the agent operates in. For most deployments, this will be the `pull` mode. If you are uncertain, what you are using, this is most likely your mode.  
+If you are using an alternative way to call the agent, e.g. SSH, you can set the variable to `ssh`, so the agent port check is skipped.  
+If you are using the Checkmk Cloud Edition (CCE) with an agent in `push` mode, you want to set this to `push` to avoid the agent port check, as well as triggering an initial push of data.
+
+    checkmk_agent_no_log: 'true'
+
+Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
 ## Tags
 Tasks are tagged with the following tags:

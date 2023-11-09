@@ -1,0 +1,5 @@
+minor_changes:
+  - Agent role - Introduce variable to configure agent mode. Refer to the README.
+
+bugfixes:
+  - Agent role - Fix agent port check for agent modes other than "pull".

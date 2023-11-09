@@ -1,10 +1,21 @@
 ---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    customer: "provider"
+  when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    customer: null
+  when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create contact groups."
   contact_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item }}"
     title: "{{ item }}"
     state: "present"
@@ -25,11 +36,12 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create users."
-  user:
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     fullname: "{{ item.fullname }}"
     auth_type: "{{ item.auth_type }}"
@@ -56,11 +68,12 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create same users again."
-  user:
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     fullname: "{{ item.fullname }}"
     auth_type: "{{ item.auth_type }}"
@@ -83,11 +96,12 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Edit users."
-  user:
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     contactgroups: "{{ item.contactgroups }}"
     state: "present"
@@ -108,11 +122,12 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Change PW of users."
-  user:
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     password: "{{ item.newpassword }}"
     state: "present"
@@ -134,7 +149,7 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete users."
-  user:
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
@@ -158,7 +173,7 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete same users again."
-  user:
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"

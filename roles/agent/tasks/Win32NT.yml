@@ -49,6 +49,7 @@
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }}
+  no_log: "{{ checkmk_agent_no_log | bool }}"
   register: checkmk_agent_update_state
   args:
     chdir: "C:\\Program Files (x86)\\checkmk\\service\\"
@@ -64,6 +65,7 @@
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
     -U {{ checkmk_agent_user }} -S {{ checkmk_agent_auth }}
+  no_log: "{{ checkmk_agent_no_log | bool }}"
   register: checkmk_agent_update_state
   args:
     chdir: "C:\\Program Files (x86)\\checkmk\\service\\"
@@ -82,6 +84,7 @@
     cmk-agent-ctl.exe register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }} --trust-cert
+  no_log: "{{ checkmk_agent_no_log | bool }}"
   register: checkmk_agent_tls_state
   args:
     chdir: "C:\\Program Files (x86)\\checkmk\\service\\"
