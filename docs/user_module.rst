@@ -23,7 +23,7 @@ checkmk.general.user module -- Manage users in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -251,6 +251,40 @@ Parameters
         <div class="ansible-option-cell">
 
       Assign the user to one or multiple contact groups. If no contact group is specified then no monitoring contact will be created.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-customer"></div>
+
+      .. _ansible_collections.checkmk.general.user_module__parameter-customer:
+
+      .. rst-class:: ansible-option-title
+
+      **customer**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-customer" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
 
 
       .. raw:: html
@@ -922,6 +956,7 @@ Examples
         automation_secret: "$SECRET"
         name: "krichards"
         fullname: "Keith Richards"
+        customer: "provider"
         email: "keith.richards@rollingstones.com"
         password: "Open-G"
         contactgroups:
@@ -940,6 +975,7 @@ Examples
         automation_secret: "$SECRET"
         name: "registration"
         fullname: "Registration User"
+        customer: "provider"
         auth_type: "automation"
         password: "ZGSDHUVDSKJHSDF"
         roles:
@@ -955,6 +991,7 @@ Examples
         automation_secret: "$SECRET"
         name: "horst"
         fullname: "Horst Schlämmer"
+        customer: "provider"
         auth_type: "password"
         password: "uschi"
         enforce_password_change: True

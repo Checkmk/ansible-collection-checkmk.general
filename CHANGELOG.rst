@@ -5,6 +5,33 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v3.4.0
+======
+
+Release Summary
+---------------
+
+Supporting managed service providers, admins and security. All in one release.
+
+Minor Changes
+-------------
+
+- Agent role - Avoid logging passwords by default for extra security
+- Agent role - Introduce variable to configure agent mode. Refer to the README.
+- Contact group module - Add support for the Checkmk Managed Edition (CME).
+- Host group module - Add support for the Checkmk Managed Edition (CME).
+- Password module - Add support for the Checkmk Managed Edition (CME).
+- Server role - Add new states "enabled" and "disabled" for site management.
+- Server role - Avoid logging passwords by default for extra security
+- Server role - Enable configuration of omd config values. Refer to the README for details.
+- Service group module - Add support for the Checkmk Managed Edition (CME).
+- User module - Add support for the Checkmk Managed Edition (CME).
+
+Bugfixes
+--------
+
+- Agent role - Fix agent port check for agent modes other than "pull".
+
 v3.3.0
 ======
 

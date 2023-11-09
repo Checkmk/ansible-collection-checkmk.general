@@ -723,3 +723,28 @@ releases:
         name: hosts
         namespace: null
     release_date: '2023-11-02'
+  3.4.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix agent port check for agent modes other than "pull".
+      minor_changes:
+      - Agent role - Avoid logging passwords by default for extra security
+      - Agent role - Introduce variable to configure agent mode. Refer to the README.
+      - Contact group module - Add support for the Checkmk Managed Edition (CME).
+      - Host group module - Add support for the Checkmk Managed Edition (CME).
+      - Password module - Add support for the Checkmk Managed Edition (CME).
+      - Server role - Add new states "enabled" and "disabled" for site management.
+      - Server role - Avoid logging passwords by default for extra security
+      - Server role - Enable configuration of omd config values. Refer to the README
+        for details.
+      - Service group module - Add support for the Checkmk Managed Edition (CME).
+      - User module - Add support for the Checkmk Managed Edition (CME).
+      release_summary: Supporting managed service providers, admins and security.
+        All in one release.
+    fragments:
+    - agent_push.yml
+    - cme_support.yml
+    - no_log.yml
+    - release_summary.yml
+    - server-omd-config.yml
+    release_date: '2023-11-09'

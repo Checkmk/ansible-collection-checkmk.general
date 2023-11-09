@@ -23,7 +23,7 @@ checkmk.general.contact_group module -- Manage contact groups in Checkmk (bulk v
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -141,6 +141,40 @@ Parameters
         <div class="ansible-option-cell">
 
       The automation user you want to use. It has to be an 'Automation' user, not a normal one.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-customer"></div>
+
+      .. _ansible_collections.checkmk.general.contact_group_module__parameter-customer:
+
+      .. rst-class:: ansible-option-title
+
+      **customer**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-customer" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
 
 
       .. raw:: html
@@ -432,6 +466,7 @@ Examples
         automation_secret: "$SECRET"
         name: "my_contact_group"
         title: "My Contact Group"
+        customer: "provider"
         state: "present"
 
     # Create several contact groups.
@@ -441,6 +476,7 @@ Examples
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
+        customer: "provider"
         groups:
           - name: "my_contact_group_one"
             title: "My Contact Group One"
@@ -457,6 +493,7 @@ Examples
         site: "my_site"
         automation_user: "automation"
         automation_secret: "$SECRET"
+        customer: "provider"
         groups:
           - name: "my_contact_group_one"
             title: "My Contact Group One"
