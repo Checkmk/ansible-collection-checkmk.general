@@ -722,4 +722,4 @@ releases:
       - description: Get various information about a host
         name: hosts
         namespace: null
-    release_date: '2023-10-26'
+    release_date: '2023-11-02'

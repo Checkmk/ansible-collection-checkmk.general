@@ -1,10 +1,21 @@
 ---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    customer: "provider"
+  when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    customer: null
+  when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create host groups."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     title: "{{ item.title | default(item.name) }}"
     state: "present"
@@ -12,12 +23,13 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_host_groups_create }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Should fail because of 'groups', Create host groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for mutually exclusive module args: 'groups|name'."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     title: "{{ item.title | default(item.name) }}"
     groups: checkmk_host_groups_create
@@ -25,7 +37,8 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_host_groups_create }}"
-  ignore_errors: True
+  register: checkmk_host_group_status
+  failed_when: "'parameters are mutually exclusive: groups|name' not in checkmk_host_group_status.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -45,6 +58,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name | default(item.name) }}"
     title: "{{ item.title }}"
     state: "present"
@@ -70,6 +84,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
@@ -94,6 +109,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
@@ -118,36 +134,42 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_create }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Should fail because of 'name', Bulk create host groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for mutually exclusive module args: 'groups|name'."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_create }}"
     name: "test"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  ignore_errors: True
+  register: checkmk_host_group_status
+  failed_when: "'parameters are mutually exclusive: groups|name' not in checkmk_host_group_status.msg"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Should fail because of 'title', Bulk create host groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for uneffective module args: 'groups' and 'title'."
   host_group:
     server_url: "{{ server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_create }}"
     title: "Test"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  ignore_errors: True
+  register: checkmk_host_group_status
+  failed_when: |
+    "'title' has only effect when 'name' is defined and not 'groups'" not in checkmk_host_group_status.msg
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk modify part of host groups (also checks for idempotency!)."
   host_group:
@@ -155,6 +177,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_modify }}"
     state: "present"
   delegate_to: localhost
@@ -166,6 +189,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_delete }}"
     state: "absent"
   delegate_to: localhost
@@ -177,6 +201,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ automation_user }}"
     automation_secret: "{{ automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_host_groups_create }}"
     state: "absent"
   delegate_to: localhost
