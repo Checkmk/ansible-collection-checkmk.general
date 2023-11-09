@@ -142,7 +142,6 @@ Please do **not** consider a concrete planning document!
     - BI
     - Distributed Monitoring
     - Notification Rules
-    - Time Periods
 - Lookup Plugins
   - Rules
 - Dynamic Inventory
