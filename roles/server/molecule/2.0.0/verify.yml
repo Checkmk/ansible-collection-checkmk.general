@@ -44,7 +44,7 @@
 
     - name: "Test started site URL returns 200."
       ansible.builtin.uri:
-        url: "{{ server_url }}/started/"
+        url: "{{ checkmk_var_server_url }}/started/"
       register: checkmk_server_url_state
 
     - name: "Verify started site URL returns 200."
