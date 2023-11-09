@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: password
 
-short_description: Manage passwords in checkmk.
+short_description: Manage passwords in Checkmk.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
