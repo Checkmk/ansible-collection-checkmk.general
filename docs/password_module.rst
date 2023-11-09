@@ -17,13 +17,13 @@
 
 .. Title
 
-checkmk.general.password module -- Manage passwords in checkmk.
+checkmk.general.password module -- Manage passwords in Checkmk.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -50,7 +50,7 @@ Synopsis
 
 .. Description
 
-- Manage passwords in checkmk.
+- Manage passwords in Checkmk.
 
 
 .. Aliases
@@ -175,6 +175,40 @@ Parameters
         <div class="ansible-option-cell">
 
       A comment for the password.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-customer"></div>
+
+      .. _ansible_collections.checkmk.general.password_module__parameter-customer:
+
+      .. rst-class:: ansible-option-title
+
+      **customer**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-customer" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
 
 
       .. raw:: html
@@ -565,6 +599,7 @@ Examples
         automation_secret: "$SECRET"
         name: "mypassword"
         title: "My Password"
+        customer: "provider"
         comment: "Comment on my password"
         documentation_url: "https://url.to.mypassword/"
         password: "topsecret"
