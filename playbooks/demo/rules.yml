@@ -17,25 +17,25 @@
 
     - name: "Create folders."
       folder:
-        server_url: "{{ server_url }}"
+        server_url: "{{ checkmk_var_server_url }}"
         site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         path: "{{ item.path }}"
         name: "{{ item.name }}"
         state: "present"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_folders }}"
+      loop: "{{ checkmk_var_folders }}"
 
     - name: "Create hosts."
       host:
-        server_url: "{{ server_url }}"
+        server_url: "{{ checkmk_var_server_url }}"
         site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ inventory_hostname }}"
-        folder: "{{ checkmk_folder_path }}"
+        folder: "{{ checkmk_var_folder_path }}"
         attributes:
           site: "{{ site }}"
           ipaddress: 127.0.0.1
@@ -44,14 +44,14 @@
 
     - name: "Create rules."
       rule:
-        server_url: "{{ server_url }}"
+        server_url: "{{ checkmk_var_server_url }}"
         site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         ruleset: "{{ item.ruleset }}"
         rule: "{{ item.rule }}"
         state: "present"
-      loop: "{{ checkmk_rules }}"
+      loop: "{{ checkmk_var_rules }}"
       run_once: true  # noqa run-once[task]
       delegate_to: localhost
 
@@ -60,14 +60,14 @@
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
           "Press <Enter> to continue."
-      when: not run_unattended | bool
+      when: not checkmk_var_run_unattended | bool
 
     - name: "Activate changes on site."
       activation:
-        server_url: "{{ server_url }}"
+        server_url: "{{ checkmk_var_server_url }}"
         site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         force_foreign_changes: 'true'
         sites:
           - "{{ site }}"
@@ -76,54 +76,54 @@
 
     - name: "Delete rules."
       rule:
-        server_url: "{{ server_url }}"
+        server_url: "{{ checkmk_var_server_url }}"
         site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         ruleset: "{{ item.ruleset }}"
         rule: "{{ item.rule }}"
         state: "absent"
-      loop: "{{ checkmk_rules }}"
+      loop: "{{ checkmk_var_rules }}"
       run_once: true  # noqa run-once[task]
       delegate_to: localhost
 
     - name: "Delete Hosts."
       host:
-        server_url: "{{ server_url }}"
+        server_url: "{{ checkmk_var_server_url }}"
         site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ inventory_hostname }}"
-        folder: "{{ checkmk_folder_path }}"
+        folder: "{{ checkmk_var_folder_path }}"
         state: "absent"
       delegate_to: localhost
 
     - name: "Delete folders."
       folder:
-        server_url: "{{ server_url }}"
+        server_url: "{{ checkmk_var_server_url }}"
         site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         path: "{{ item.path }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_folders }}"
+      loop: "{{ checkmk_var_folders }}"
 
     - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ site }}."
           "Press <Enter> to continue."
-      when: not run_unattended | bool
+      when: not checkmk_var_run_unattended | bool
 
     - name: "Activate changes on site."
       activation:
-        server_url: "{{ server_url }}"
+        server_url: "{{ checkmk_var_server_url }}"
         site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         force_foreign_changes: 'true'
         sites:
           - "{{ site }}"

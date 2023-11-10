@@ -13,9 +13,9 @@ test_sites:
     edition: "cre"
     site: "ancient_raw"
 
-server_url: "http://127.0.0.1/"
-automation_user: "cmkadmin"
-automation_secret: "d7589df1"
+checkmk_var_server_url: "http://127.0.0.1/"
+checkmk_var_automation_user: "cmkadmin"
+checkmk_var_automation_secret: "d7589df1"
 
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
 download_user: "d-gh-ansible-dl"
@@ -29,7 +29,7 @@ checkmk_server_edition_mapping:
   cce: cloud
   cme: managed
 
-checkmk_folders:
+checkmk_var_folders:
   - path: /test
     name: Test
   - path: /foo

@@ -65,12 +65,12 @@ The site you want to use for registration tasks (Agent updates and TLS encryptio
 
 The user used to authenticate against your Checkmk site.
 
-    checkmk_agent_pass: "{{ automation_secret }}"
+    checkmk_agent_pass: "{{ checkmk_var_automation_secret }}"
 
 The password for the normal user used to authenticate against your Checkmk site.  
 This is mutually exclusive with `checkmk_agent_secret`.
 
-    checkmk_agent_secret: "{{ automation_secret }}"
+    checkmk_agent_secret: "{{ checkmk_var_automation_secret }}"
 
 The secret for the automation user used to authenticate against your Checkmk site.  
 This is mutually exclusive with `checkmk_agent_pass`.
