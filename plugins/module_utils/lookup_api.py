@@ -12,10 +12,8 @@ import json
 
 from ansible.module_utils.common.text.converters import to_text
 from ansible.module_utils.six.moves.urllib.parse import urlencode
-from ansible.module_utils.six.moves.urllib.error import HTTPError
-from ansible.module_utils.six.moves.urllib.error import URLError
+from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
 from ansible.module_utils.urls import open_url
-
 
 HTTP_ERROR_CODES = {
     400: "Bad Request: Parameter or validation failure.",
@@ -55,28 +53,14 @@ class CheckMKLookupAPI:
             response = to_text(raw_response.read())
         except HTTPError as e:
             if e.code in HTTP_ERROR_CODES:
-                response = json.dumps({
-                    "code": e.code,
-                    "msg": HTTP_ERROR_CODES[e.code],
-                    "url": url
-                })
+                response = json.dumps(
+                    {"code": e.code, "msg": HTTP_ERROR_CODES[e.code], "url": url}
+                )
             else:
-                response = json.dumps({
-                    "code": e.code,
-                    "msg": e.reason,
-                    "url": url
-                })
+                response = json.dumps({"code": e.code, "msg": e.reason, "url": url})
         except URLError as e:
-            response = json.dumps({
-                "code": 0,
-                "msg": str(e),
-                "url": url
-            })
+            response = json.dumps({"code": 0, "msg": str(e), "url": url})
         except Exception as e:
-            response = json.dumps({
-                "code": 0,
-                "msg": str(e),
-                "url": url
-            })
+            response = json.dumps({"code": 0, "msg": str(e), "url": url})
 
         return response
