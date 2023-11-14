@@ -11,8 +11,8 @@ __metaclass__ = type
 import json
 
 from ansible.module_utils.common.text.converters import to_text
-from ansible.module_utils.six.moves.urllib.parse import urlencode
 from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
+from ansible.module_utils.six.moves.urllib.parse import urlencode
 from ansible.module_utils.urls import open_url
 
 HTTP_ERROR_CODES = {
