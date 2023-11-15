@@ -44,23 +44,19 @@ class CheckMKLookupAPI:
         if parameters:
             url = "%s?%s" % (url, urlencode(parameters))
 
-        response = ""
-
         try:
             raw_response = open_url(
                 url, headers=self.headers, validate_certs=self.validate_certs
             )
-            response = to_text(raw_response.read())
+            return to_text(raw_response.read())
         except HTTPError as e:
             if e.code in HTTP_ERROR_CODES:
-                response = json.dumps(
+                return json.dumps(
                     {"code": e.code, "msg": HTTP_ERROR_CODES[e.code], "url": url}
                 )
             else:
-                response = json.dumps({"code": e.code, "msg": e.reason, "url": url})
+                return json.dumps({"code": e.code, "msg": e.reason, "url": url})
         except URLError as e:
-            response = json.dumps({"code": 0, "msg": str(e), "url": url})
+            return json.dumps({"code": 0, "msg": str(e), "url": url})
         except Exception as e:
-            response = json.dumps({"code": 0, "msg": str(e), "url": url})
-
-        return response
+            return json.dumps({"code": 0, "msg": str(e), "url": url})

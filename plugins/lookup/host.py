@@ -108,7 +108,7 @@ class LookupModule(LookupBase):
             if "code" in response:
                 raise AnsibleError(
                     "Received error for %s - %s: %s"
-                    % (response["url"], response["code"], response["msg"])
+                    % (response.get("url", ""), response.get("code", ""), response.get("msg", ""))
                 )
             ret.append(response.get("extensions"))
 
