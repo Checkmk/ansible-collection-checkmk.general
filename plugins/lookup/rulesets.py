@@ -14,7 +14,7 @@ DOCUMENTATION = """
       - Returns a list of Rulesets
     options:
       _terms:
-        description: A regex of the name.
+        description: A regex of the ruleset name.
         required: True
       rulesets_folder:
         description:
@@ -52,41 +52,38 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get all subfolders of the main folder recursively
+- name: Get all used rulesets with 'file' in their name
   ansible.builtin.debug:
-    msg: "Folder tree: {{ item.id }}"
+    msg: "Ruleset: {{ item.extensions.name }} has {{ item.extensions.number_of_rules }} rules."
   loop: "{{
-    lookup('checkmk.general.folders',
-        '~',
-        show_hosts=False,
-        recursive=True,
-        server_url=server_url,
-        site=site,
-        automation_user=automation_user,
-        automation_secret=automation_secret,
-        validate_certs=False
-        )
+    lookup('checkmk.general.rulesets',
+      'file',
+      rulesets_used=True,
+      server_url=server_url,
+      site=site,
+      automation_user=automation_user,
+      automation_secret=automation_secret,
+      validate_certs=False
+      )
     }}"
   loop_control:
       label: "{{ item.id }}"
 
-- name: Get all hosts of the folder /test recursively
+- name: Get all used deprecated rulesets
   ansible.builtin.debug:
-    msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
-  vars:
-    looping: "{{
-                 lookup('checkmk.general.folders',
-                     '~tests',
-                     show_hosts=True,
-                     recursive=True,
-                     server_url=server_url,
-                     site=site,
-                     automation_user=automation_user,
-                     automation_secret=automation_secret,
-                     validate_certs=False
-                     )
-              }}"
-  loop: "{{ looping|subelements('members.hosts.value') }}"
+    msg: "Ruleset {{ item.extension.name }} is deprecated."
+  loop: "{{
+    lookup('checkmk.general.rulesets',
+      '',
+      rulesets_deprecated=True,
+      rulesets_used=True,
+      server_url=server_url,
+      site=site,
+      automation_user=automation_user,
+      automation_secret=automation_secret,
+      validate_certs=False
+      )
+    }}"
   loop_control:
       label: "{{ item.0.id }}"
 """

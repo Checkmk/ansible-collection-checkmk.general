@@ -36,14 +36,12 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get all subfolders of the main folder recursively
+- name: Get all rules of the ruleset host_groups
   ansible.builtin.debug:
-    msg: "Folder tree: {{ item.id }}"
+    msg: "Rule: {{ item.extensions }}"
   loop: "{{
-    lookup('checkmk.general.folders',
-        '~',
-        show_hosts=False,
-        recursive=True,
+    lookup('checkmk.general.rules',
+        'host_groups
         server_url=server_url,
         site=site,
         automation_user=automation_user,
@@ -53,26 +51,6 @@ EXAMPLES = """
     }}"
   loop_control:
       label: "{{ item.id }}"
-
-- name: Get all hosts of the folder /test recursively
-  ansible.builtin.debug:
-    msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
-  vars:
-    looping: "{{
-                 lookup('checkmk.general.folders',
-                     '~tests',
-                     show_hosts=True,
-                     recursive=True,
-                     server_url=server_url,
-                     site=site,
-                     automation_user=automation_user,
-                     automation_secret=automation_secret,
-                     validate_certs=False
-                     )
-              }}"
-  loop: "{{ looping|subelements('members.hosts.value') }}"
-  loop_control:
-      label: "{{ item.0.id }}"
 """
 
 RETURN = """

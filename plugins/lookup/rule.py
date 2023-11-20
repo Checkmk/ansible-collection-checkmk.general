@@ -9,9 +9,9 @@ DOCUMENTATION = """
     name: rule
     author: Lars Getwan (@lgetwan)
     version_added: "4.0.0"
-    short_description: Show rulese
+    short_description: Show rule
     description:
-      - Returns details of a ruleet
+      - Returns details of a rule
     options:
       _terms:
         description: The rule id.
@@ -36,49 +36,26 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get all subfolders of the main folder recursively
+- name: Get a rule with a particular rule id
   ansible.builtin.debug:
-    msg: "Folder tree: {{ item.id }}"
-  loop: "{{
-    lookup('checkmk.general.folders',
-        '~',
-        show_hosts=False,
-        recursive=True,
+    msg: "Rule: {{ extensions }}"
+  vars: 
+    extensions: "{{
+      lookup('checkmk.general.rule',
+        'a9285bc1-dcaf-45e0-a3ba-ad398ef06a49',
         server_url=server_url,
         site=site,
         automation_user=automation_user,
         automation_secret=automation_secret,
         validate_certs=False
-        )
+      )
     }}"
-  loop_control:
-      label: "{{ item.id }}"
-
-- name: Get all hosts of the folder /test recursively
-  ansible.builtin.debug:
-    msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
-  vars:
-    looping: "{{
-                 lookup('checkmk.general.folders',
-                     '~tests',
-                     show_hosts=True,
-                     recursive=True,
-                     server_url=server_url,
-                     site=site,
-                     automation_user=automation_user,
-                     automation_secret=automation_secret,
-                     validate_certs=False
-                     )
-              }}"
-  loop: "{{ looping|subelements('members.hosts.value') }}"
-  loop_control:
-      label: "{{ item.0.id }}"
 """
 
 RETURN = """
   _list:
     description:
-      - A list of folders and, optionally, hosts of a folder
+      - The details of a particular rulw
     type: list
     elements: str
 """
