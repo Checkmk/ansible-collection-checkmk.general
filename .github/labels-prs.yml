@@ -64,3 +64,15 @@ lookup:host:
 
 lookup:hosts:
   - 'plugins/modules/lookup/hosts.py'
+
+lookup:rule:
+  - 'plugins/modules/lookup/rule.py'
+
+lookup:rules:
+  - 'plugins/modules/lookup/rules.py'
+
+lookup:ruleset:
+  - 'plugins/modules/lookup/ruleset.py'
+
+lookup:rulesets:
+  - 'plugins/modules/lookup/rulesets.py'
