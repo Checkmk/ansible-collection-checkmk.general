@@ -84,6 +84,7 @@ RETURN = """
 """
 
 import json
+
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
@@ -92,7 +93,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import 
 
 
 class LookupModule(LookupBase):
-
     def run(self, terms, variables, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
         server_url = self.get_option("server_url")
@@ -112,9 +112,7 @@ class LookupModule(LookupBase):
 
         ret = []
         for term in terms:
-            response = json.loads(
-                api.get("/objects/rule/" + term)
-            )
+            response = json.loads(api.get("/objects/rule/" + term))
 
             if "code" in response:
                 raise AnsibleError(

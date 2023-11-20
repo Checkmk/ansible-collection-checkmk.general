@@ -17,9 +17,9 @@ DOCUMENTATION = """
         description: A regex of the name.
         required: True
       rulesets_folder:
-        description: 
-            The folder in which to search for rules.
-            Path delimiters can be either ~, / or \. 
+        description:
+          - The folder in which to search for rules.
+          - Path delimiters can be either ~ or /.
         required: False
         default: "/"
       rulesets_deprecated:
@@ -100,6 +100,7 @@ RETURN = """
 """
 
 import json
+
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
@@ -108,7 +109,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import 
 
 
 class LookupModule(LookupBase):
-
     def run(self, terms, variables, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
         rulesets_folder = self.get_option("rulesets_folder")
@@ -135,7 +135,9 @@ class LookupModule(LookupBase):
             }
 
             if self.get_option("rulesets_deprecated") is not None:
-                parameters.update({"deprecated": self.get_option("rulesets_deprecated")})
+                parameters.update(
+                    {"deprecated": self.get_option("rulesets_deprecated")}
+                )
 
             if self.get_option("rulesets_used") is not None:
                 parameters.update({"used": self.get_option("rulesets_used")})
@@ -143,7 +145,6 @@ class LookupModule(LookupBase):
             response = json.loads(
                 api.get("/domain-types/ruleset/collections/all", parameters)
             )
-
 
             if "code" in response:
                 raise AnsibleError(
