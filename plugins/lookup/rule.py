@@ -39,7 +39,7 @@ EXAMPLES = """
 - name: Get a rule with a particular rule id
   ansible.builtin.debug:
     msg: "Rule: {{ extensions }}"
-  vars: 
+  vars:
     extensions: "{{
       lookup('checkmk.general.rule',
         'a9285bc1-dcaf-45e0-a3ba-ad398ef06a49',
