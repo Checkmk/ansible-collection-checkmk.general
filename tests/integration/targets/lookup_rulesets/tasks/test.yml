@@ -32,7 +32,7 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get list of all rulesets."
   ansible.builtin.debug:
     msg: "Ruleset {{ item.id }} contains {{ item.extensions.number_of_rules | default('0') }}"
-  loop: "{{ lookup('checkmk.general.ruleset',
+  loop: "{{ lookup('checkmk.general.rulesets',
              '',
              rulesets_used=True,
              rulesets_deprecated=False,

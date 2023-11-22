@@ -167,4 +167,3 @@ checkmk_rules:
           'severity_unmonitored': 0,
           'severity_vanished': 0
         }"
-
