@@ -9,9 +9,10 @@ test_sites:
   - version: "2.1.0p36"
     edition: "cre"
     site: "old_raw"
-  - version: "2.0.0p39"
-    edition: "cre"
-    site: "ancient_raw"
+# Rules were not part of the REST API in 2.0.0, yet
+#  - version: "2.0.0p39"
+#    edition: "cre"
+#    site: "ancient_raw"
 
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
