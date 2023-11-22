@@ -64,3 +64,6 @@ lookup:host:
 
 lookup:hosts:
   - 'plugins/modules/lookup/hosts.py'
+
+lookup:bakingstatus:
+  - 'plugins/modules/lookup/bakingstatus.py'

@@ -1,0 +1,17 @@
+---
+- name: "{{ outer_item.bakingstatus }} - {{ outer_item.edition | upper }} - Get Checkmk bakingstatus."
+  ansible.builtin.debug:
+    msg: "Bakingstatus is {{ bakingstatus }}"
+  vars:
+    bakingstatus: "{{ lookup('checkmk.general.bakingstatus',
+                    server_url + '/' + outer_item.site,
+                    validate_certs=False,
+                    automation_user=automation_user,
+                    automation_secret=automation_secret)
+              }}"
+  delegate_to: localhost
+  register: looked_up_bakingstatus
+
+- name: "{{ outer_item.bakingstatus }} - {{ outer_item.edition | upper }} - Verify Checkmk bakingstatus."
+  ansible.builtin.assert:
+    that: "outer_item.bakingstatus in looked_up_bakingstatus.msg"
