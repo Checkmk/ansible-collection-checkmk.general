@@ -67,9 +67,9 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules."
   ansible.builtin.assert:
     # For each rule that we created, check, if the number of rules in its ruleset is 1.
-    that: "ruleset[0].extensions.number_of_rules == 1"
+    that: "rulesets[0].extensions.number_of_rules == 1"
   vars:
-    folders: "{{ lookup('checkmk.general.rulesets',
+    rulesets: "{{ lookup('checkmk.general.rulesets',
                       'item.ruleset',
                       rulesets_used=True,
                       server_url=server_url,
