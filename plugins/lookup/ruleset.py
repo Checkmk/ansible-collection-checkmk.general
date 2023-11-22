@@ -8,7 +8,7 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: ruleset
     author: Lars Getwan (@lgetwan)
-    version_added: "4.0.0"
+    version_added: "3.5.0"
     short_description: Show ruleset
     description:
       - Returns details of a ruleset
@@ -42,7 +42,7 @@ EXAMPLES = """
   vars:
     extensions: "{{
       lookup('checkmk.general.ruleset',
-        'host_groups
+        'host_groups',
         server_url=server_url,
         site=site,
         automation_user=automation_user,
@@ -55,7 +55,7 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of folders and, optionally, hosts of a folder
+      - A ruleset
     type: list
     elements: str
 """
