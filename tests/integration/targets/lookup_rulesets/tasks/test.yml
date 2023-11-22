@@ -64,20 +64,37 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules."
-  ansible.builtin.assert:
-    # For each rule that we created, check, if the number of rules in its ruleset is 1.
-    that: "rulesets[0].extensions.number_of_rules == 1"
-  vars:
-    rulesets: "{{ lookup('checkmk.general.rulesets',
-                      item.ruleset,
-                      rulesets_used=True,
-                      server_url=server_url,
-                      site=outer_item.site,
-                      validate_certs=False,
-                      automation_user=automation_user,
-                      automation_secret=automation_secret)
-                  }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_rules }}"
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules using lookup-rulesets."
+ansible.builtin.assert:
+  # For each rule that we created, check, if the number of rules in its ruleset is 1.
+  that: "rulesets[0].extensions.number_of_rules == 1"
+vars:
+  rulesets: "{{ lookup('checkmk.general.rulesets',
+                    item.ruleset,
+                    rulesets_used=True,
+                    server_url=server_url,
+                    site=outer_item.site,
+                    validate_certs=False,
+                    automation_user=automation_user,
+                    automation_secret=automation_secret)
+                }}"
+delegate_to: localhost
+run_once: true  # noqa run-once[task]
+loop: "{{ checkmk_rules }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules using lookup-ruleset."
+ansible.builtin.assert:
+  # For each rule that we created, check, if the number of rules in its ruleset is 1.
+  that: "ruleset.number_of_rules == 1"
+vars:
+  ruleset: "{{ lookup('checkmk.general.ruleset',
+                    item.ruleset,
+                    server_url=server_url,
+                    site=outer_item.site,
+                    validate_certs=False,
+                    automation_user=automation_user,
+                    automation_secret=automation_secret)
+                }}"
+delegate_to: localhost
+run_once: true  # noqa run-once[task]
+loop: "{{ checkmk_rules }}"
