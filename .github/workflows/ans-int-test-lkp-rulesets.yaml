@@ -10,7 +10,7 @@ env:
   COLLECTION_NAME: general
   MODULE_NAME: lookup_rulesets
 
-name: Ansible Integration Tests for Rulesets Lookup Module
+name: Ansible Integration Tests for Ruleset Lookup Modules
 on:
   workflow_dispatch:
   pull_request:
