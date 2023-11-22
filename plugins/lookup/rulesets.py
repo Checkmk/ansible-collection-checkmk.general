@@ -8,8 +8,8 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: rulesets
     author: Lars Getwan (@lgetwan)
-    version_added: "4.0.0"
-    short_description: List rulesets
+    version_added: "3.5.0"
+    short_description: Search rulesets
     description:
       - Returns a list of Rulesets
     options:
@@ -91,7 +91,7 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of folders and, optionally, hosts of a folder
+      - A list of rulesets
     type: list
     elements: str
 """

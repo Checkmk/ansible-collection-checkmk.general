@@ -8,7 +8,7 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: rules
     author: Lars Getwan (@lgetwan)
-    version_added: "4.0.0"
+    version_added: "3.5.0"
     short_description: List rules
     description:
       - Returns a list of Rules
@@ -41,7 +41,7 @@ EXAMPLES = """
     msg: "Rule: {{ item.extensions }}"
   loop: "{{
     lookup('checkmk.general.rules',
-        'host_groups
+        'host_groups',
         server_url=server_url,
         site=site,
         automation_user=automation_user,
@@ -56,7 +56,7 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of folders and, optionally, hosts of a folder
+      - A list of all rules of a particular ruleset
     type: list
     elements: str
 """

@@ -8,7 +8,7 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: rule
     author: Lars Getwan (@lgetwan)
-    version_added: "4.0.0"
+    version_added: "3.5.0"
     short_description: Show rule
     description:
       - Returns details of a rule
@@ -55,7 +55,7 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - The details of a particular rulw
+      - The details of a particular rule
     type: list
     elements: str
 """
