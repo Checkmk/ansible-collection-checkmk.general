@@ -24,6 +24,10 @@ description:
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
+    redirect:
+        description: After starting the activation, redirect immediately to the 'Wait for completion' endpoint instead of waiting for the completion.
+        default: false
+        type: bool
     sites:
         description: The sites that should be activated. Omitting this option activates all sites.
         default: []
@@ -64,6 +68,16 @@ EXAMPLES = r"""
       automation_secret: "$SECRET"
       force_foreign_changes: 'true'
   run_once: 'true'
+
+- name: "Activate changes including foreign changes and redirect."
+  checkmk.general.activation:
+      server_url: "http://localhost/"
+      site: "my_site"
+      automation_user: "automation"
+      automation_secret: "$SECRET"
+      redirect: 'true'
+      force_foreign_changes: 'true'
+  run_once: 'true'
 """
 
 RETURN = r"""
@@ -90,7 +104,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
 HTTP_CODES = {
     # http_code: (changed, failed, "Message")
     200: (True, False, "Changes activated."),
-    204: (True, False, "Changes activated."),
+    204: (True, False, "No Content: The activation has been completed."),
     302: (True, False, "Redirected."),
     422: (False, False, "There are no changes to be activated."),
     401: (
@@ -107,7 +121,7 @@ class ActivationAPI(CheckmkAPI):
     def post(self):
         data = {
             "force_foreign_changes": self.params.get("force_foreign_changes"),
-            "redirect": False,
+            "redirect": self.params.get("redirect"),
             "sites": self.params.get("sites", []),
         }
 
@@ -129,6 +143,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         sites=dict(type="raw", default=[]),
         force_foreign_changes=dict(type="bool", default=False),
+        redirect=dict(type="bool", default=False),
     )
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 

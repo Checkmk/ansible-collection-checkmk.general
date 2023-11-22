@@ -29,10 +29,6 @@
   block:
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers
-    # ToDo: We should get rid of the following, once we can query the running activation process to know when it is fnished.
-    - name: "Give the activation process time to finish."
-      ansible.builtin.pause:
-        seconds: 30
 
 - name: "Check for Agent Controller Binary."
   ansible.windows.win_stat:
