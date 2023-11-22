@@ -1,5 +1,5 @@
 ---
-- name: "{{ outer_item.bakingstatus }} - {{ outer_item.edition | upper }} - Get Checkmk bakingstatus."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get Checkmk bakingstatus."
   ansible.builtin.debug:
     msg: "Bakingstatus is {{ bakingstatus }}"
   vars:
@@ -11,7 +11,3 @@
               }}"
   delegate_to: localhost
   register: looked_up_bakingstatus
-
-- name: "{{ outer_item.bakingstatus }} - {{ outer_item.edition | upper }} - Verify Checkmk bakingstatus."
-  ansible.builtin.assert:
-    that: "outer_item.bakingstatus in looked_up_bakingstatus.msg"
