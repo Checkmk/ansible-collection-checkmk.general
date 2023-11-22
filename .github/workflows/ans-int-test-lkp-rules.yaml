@@ -18,6 +18,7 @@ on:
       - main
       - devel
     paths:
+      - 'plugins/lookup/ruleset.py'
       - 'plugins/lookup/rulesets.py'
 
 jobs:
