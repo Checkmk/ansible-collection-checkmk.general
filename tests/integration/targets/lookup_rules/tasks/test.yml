@@ -31,7 +31,7 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - compare rules with ansible data."
   ansible.builtin.assert:
     # For each rule that we created, check, if the comment is identical
-    that: "rules[0].properties.comment == item.rule.properties.comment"
+    that: "rules[0].extensions.properties.comment == item.rule.properties.comment"
   vars:
     rules: "{{ lookup('checkmk.general.rules',
                       item.ruleset,

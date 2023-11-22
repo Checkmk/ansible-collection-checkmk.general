@@ -57,25 +57,7 @@ checkmk_rules:
         folder: "/"
         position: "bottom"
       conditions: {
-        "host_labels": [{'key': 'cmk/os_family', 'operator': 'is_not', 'value': 'linux'}],
-        "host_tags": [],
-        "service_labels": []
-      }
-      properties: {
-        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
-        "description": "",
-        "disabled": false
-      }
-      value_raw: "{'levels': (1.0, 2.0)}"
-
-  - name: "CPU - Load."
-    ruleset: "checkgroup_parameters:cpu_load"
-    rule:
-      location:
-        folder: "/"
-        position: "bottom"
-      conditions: {
-        "host_labels": [{'key': 'cmk/os_family', 'operator': 'is', 'value': 'linux'}],
+        "host_labels": [],
         "host_tags": [],
         "service_labels": []
       }
