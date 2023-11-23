@@ -6,12 +6,12 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-    name: bakingstatus
+    name: bakery
     author: Max Sickora (@max-checkmk)
     version_added: "3.5.0"
-    short_description: Get the baking status of a Checkmk server
+    short_description: Get the bakery status of a Checkmk server
     description:
-      - Returns the baking status of a Checkmk server as a string, e.g. 'running'
+      - Returns the bakery status of a Checkmk server as a string, e.g. 'running'
     options:
       _terms:
         description: site url
@@ -35,11 +35,11 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: "Show baking status"
+- name: "Show bakery status"
   debug:
-    msg: "Baking status is {{ bakingstatus }}"
+    msg: "Bakery status is {{ bakery }}"
   vars:
-    bakingstatus: "{{ lookup('checkmk.general.bakingstatus',
+    bakery: "{{ lookup('checkmk.general.bakery',
                    server_url + '/' + site,
                    validate_certs=False,
                    automation_user=automation_user,
@@ -50,7 +50,7 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - server baking status
+      - server bakery status
     type: list
     elements: str
 """

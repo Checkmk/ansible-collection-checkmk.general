@@ -1,13 +1,13 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get Checkmk bakingstatus."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get Checkmk bakery status."
   ansible.builtin.debug:
-    msg: "Bakingstatus is {{ bakingstatus }}"
+    msg: "Bakery status is {{ bakery }}"
   vars:
-    bakingstatus: "{{ lookup('checkmk.general.bakingstatus',
+    bakery: "{{ lookup('checkmk.general.bakery',
                     server_url + '/' + outer_item.site,
                     validate_certs=False,
                     automation_user=automation_user,
                     automation_secret=automation_secret)
               }}"
   delegate_to: localhost
-  register: looked_up_bakingstatus
+  register: looked_up_bakery

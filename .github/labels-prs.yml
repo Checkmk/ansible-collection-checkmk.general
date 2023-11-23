@@ -65,5 +65,5 @@ lookup:host:
 lookup:hosts:
   - 'plugins/modules/lookup/hosts.py'
 
-lookup:bakingstatus:
-  - 'plugins/modules/lookup/bakingstatus.py'
+lookup:bakery:
+  - 'plugins/modules/lookup/bakery.py'

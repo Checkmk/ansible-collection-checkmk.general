@@ -8,9 +8,9 @@
 env:
   NAMESPACE: checkmk
   COLLECTION_NAME: general
-  MODULE_NAME: lookup_bakingstatus
+  MODULE_NAME: lookup_bakery
 
-name: Ansible Integration Tests for Bakingstatus Lookup Module
+name: Ansible Integration Tests for bakery Lookup Module
 on:
   workflow_dispatch:
   schedule:
@@ -20,7 +20,7 @@ on:
       - main
       - devel
     paths:
-      - 'plugins/lookup/bakingstatus.py'
+      - 'plugins/lookup/bakery.py'
 
 jobs:
 
