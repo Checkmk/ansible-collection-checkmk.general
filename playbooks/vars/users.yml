@@ -1,5 +1,5 @@
 ---
-checkmk_users:
+checkmk_var_users:
   - name: user1
     fullname: User Eins
     password: "123"

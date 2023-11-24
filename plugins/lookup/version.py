@@ -42,8 +42,8 @@ EXAMPLES = """
     version: "{{ lookup('checkmk.general.version',
                    server_url + '/' + site,
                    validate_certs=False,
-                   automation_user=automation_user,
-                   automation_secret=automation_secret
+                   automation_user=my_user,
+                   automation_secret=my_secret
                )}}"
 """
 

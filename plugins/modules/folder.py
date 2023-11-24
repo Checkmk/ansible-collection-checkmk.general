@@ -74,10 +74,10 @@ EXAMPLES = r"""
 # Create a single folder.
 - name: "Create a single folder."
   checkmk.general.folder:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     path: "/my_folder"
     name: "My Folder"
     state: "present"
@@ -85,10 +85,10 @@ EXAMPLES = r"""
 # Create a folder who's hosts should be hosted on a remote site.
 - name: "Create a single folder."
   checkmk.general.folder:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     path: "/my_remote_folder"
     name: "My Remote Folder"
     attributes:
@@ -98,10 +98,10 @@ EXAMPLES = r"""
 # Create a folder with Criticality set to a Test system and Networking Segment WAN (high latency)"
 - name: "Create a folder with tag_criticality test and tag_networking wan"
   checkmk.general.folder:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     path: "/my_remote_folder"
     attributes:
       tag_criticality: "test"
@@ -111,10 +111,10 @@ EXAMPLES = r"""
 # Update only specified attributes
 - name: "Update only specified attributes"
   checkmk.general.folder:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     path: "/my_folder"
     update_attributes:
       tag_networking: "dmz"
@@ -123,10 +123,10 @@ EXAMPLES = r"""
 # Remove specified attributes
 - name: "Remove specified attributes"
   checkmk.general.folder:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     path: "/my_folder"
     remove_attributes:
       - tag_networking

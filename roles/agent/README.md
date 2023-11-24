@@ -33,7 +33,7 @@ The edition you are using. Valid values are `cre`, `cfe`, `cee`, `cce` and `cme`
 
 For details about the editions see: https://checkmk.com/product/editions
 
-    checkmk_agent_protocol: http
+    checkmk_agent_server_protocol: http
 
 The protocol used to connect to your Checkmk site.
 
@@ -45,7 +45,7 @@ The FQDN or IP address of your Checkmk server.
 
 Whether to validate the SSL certificate of the Checkmk server.
 
-    checkmk_agent_port: "{% if checkmk_agent_protocol == 'https' %}443{% else %}80{% endif %}"
+    checkmk_agent_server_port: "{% if checkmk_agent_server_protocol == 'https' %}443{% else %}80{% endif %}"
 
 The port of the web interface of your Checkmk server. Defaults to port 80 for http and port 443 for https.
 
@@ -65,15 +65,24 @@ The site you want to use for registration tasks (Agent updates and TLS encryptio
 
 The user used to authenticate against your Checkmk site.
 
-    checkmk_agent_pass: "{{ automation_secret }}"
+    checkmk_agent_pass: "{{ checkmk_var_automation_secret }}"
 
 The password for the normal user used to authenticate against your Checkmk site.  
 This is mutually exclusive with `checkmk_agent_secret`.
 
-    checkmk_agent_secret: "{{ automation_secret }}"
+    checkmk_agent_secret: "{{ checkmk_var_automation_secret }}"
 
 The secret for the automation user used to authenticate against your Checkmk site.  
 This is mutually exclusive with `checkmk_agent_pass`.
+
+    checkmk_agent_port: 6556
+
+Configure the port the agent listens on. We recommend to stick to the default.
+**This does not change the agent configuration! It merely tells Ansible which port to talk to.**
+
+    checkmk_agent_port_check: 'true'
+
+Verify, that the the `checkmk_agent_port` is actually open, before querying it.
 
     checkmk_agent_auto_activate: 'false'
 

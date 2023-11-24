@@ -1,10 +1,10 @@
 ---
-server_url: "http://localhost/"
-site: "my_site"
-automation_user: "automation"
-automation_secret: "$SECRET"
+checkmk_var_server_url: "http://localhost/"
+checkmk_var_site: "my_site"
+checkmk_var_automation_user: "automation"
+checkmk_var_automation_secret: "$SECRET"
 
-checkmk_folders:
+checkmk_var_folders:
   - path: /test
     title: Test
   - path: /foo
@@ -18,9 +18,9 @@ checkmk_folders:
   - path: /foo/bar/treasure
     title: Treasure
 
-checkmk_ruleset: "checkgroup_parameters:memory_percentage_used"
+checkmk_var_ruleset: "checkgroup_parameters:memory_percentage_used"
 
-checkmk_rule:
+checkmk_var_rule:
   conditions: {
     "host_labels": [],
     "host_name": {

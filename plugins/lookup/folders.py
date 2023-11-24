@@ -55,10 +55,10 @@ EXAMPLES = """
         '~',
         show_hosts=False,
         recursive=True,
-        server_url=server_url,
-        site=site,
-        automation_user=automation_user,
-        automation_secret=automation_secret,
+        server_url=my_server_url,
+        site=my_site,
+        automation_user=my_user,
+        automation_secret=my_secret,
         validate_certs=False
         )
     }}"
@@ -74,10 +74,10 @@ EXAMPLES = """
                      '~tests',
                      show_hosts=True,
                      recursive=True,
-                     server_url=server_url,
-                     site=site,
-                     automation_user=automation_user,
-                     automation_secret=automation_secret,
+                     server_url=my_server_url,
+                     site=my_site,
+                     automation_user=my_user,
+                     automation_secret=my_secret,
                      validate_certs=False
                      )
               }}"

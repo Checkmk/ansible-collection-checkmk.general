@@ -58,10 +58,10 @@ EXAMPLES = r"""
 # Create a single service group.
 - name: "Create a single service group."
   checkmk.general.service_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_service_group"
     title: "My Service Group"
     customer: "provider"
@@ -70,10 +70,10 @@ EXAMPLES = r"""
 # Create several service groups.
 - name: "Create several service groups."
   checkmk.general.service_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     customer: "provider"
     groups:
       - name: "my_service_group_one"
@@ -87,10 +87,10 @@ EXAMPLES = r"""
 # Create several service groups.
 - name: "Create several service groups."
   checkmk.general.service_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     customer: "provider"
     groups:
       - name: "my_service_group_one"
@@ -102,20 +102,20 @@ EXAMPLES = r"""
 # Delete a single service group.
 - name: "Create a single service group."
   checkmk.general.service_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_service_group"
     state: "absent"
 
 # Delete several service groups.
 - name: "Delete several service groups."
   checkmk.general.service_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     groups:
       - name: "my_service_group_one"
       - name: "my_service_group_two"
