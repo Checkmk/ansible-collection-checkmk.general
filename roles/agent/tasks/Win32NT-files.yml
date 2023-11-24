@@ -9,10 +9,10 @@
         dest: "{{ checkmk_agent_agent.file.cre }}"
       when: |
         checkmk_agent_edition | lower == "cre"
-      register: result
+      register: checkmk_agent_vanilla_download_state
       retries: 3
       delay: 10
-      until: "not result.failed | bool"
+      until: "not checkmk_agent_vanilla_download_state.failed | bool"
 
     - name: "{{ ansible_system }}: Download host-specific {{ checkmk_agent_edition | upper }} Agent."
       ansible.windows.win_get_url:
@@ -97,10 +97,10 @@
         dest: "{{ checkmk_agent_agent.file.cre }}"
       when: |
         checkmk_agent_edition | lower == "cre"
-      register: result
+      register: checkmk_agent_vanilla_download_state
       retries: 3
       delay: 10
-      until: "not result.failed | bool"
+      until: "not checkmk_agent_vanilla_download_state.failed | bool"
       delegate_to: "{{ checkmk_agent_delegate_download }}"
 
     - name: "{{ ansible_system }}: Download host-specific {{ checkmk_agent_edition | upper }} Agent (delegated)."
