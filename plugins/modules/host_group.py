@@ -54,10 +54,10 @@ EXAMPLES = r"""
 # Create a single host group.
 - name: "Create a single host group."
   checkmk.general.host_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_host_group"
     title: "My Host Group"
     customer: "provider"
@@ -66,10 +66,10 @@ EXAMPLES = r"""
 # Create several host groups.
 - name: "Create several host groups."
   checkmk.general.host_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     customer: "provider"
     groups:
       - name: "my_host_group_one"
@@ -83,10 +83,10 @@ EXAMPLES = r"""
 # Create several host groups.
 - name: "Create several host groups."
   checkmk.general.host_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     customer: "provider"
     groups:
       - name: "my_host_group_one"
@@ -98,20 +98,20 @@ EXAMPLES = r"""
 # Delete a single host group.
 - name: "Create a single host group."
   checkmk.general.host_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_host_group"
     state: "absent"
 
 # Delete several host groups.
 - name: "Delete several host groups."
   checkmk.general.host_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     groups:
       - name: "my_host_group_one"
       - name: "my_host_group_two"
