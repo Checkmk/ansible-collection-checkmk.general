@@ -29,7 +29,9 @@ options:
         required: false
         type: str
     hosts:
-        description: The list of hosts the services of which you want to manage. Mutually exclusive with host_name. Bulk mode.
+        description:
+            - The list of hosts the services of which you want to manage.
+              Mutually exclusive with host_name. This enables bulk discovery mode.
         required: false
         type: list
         elements: str

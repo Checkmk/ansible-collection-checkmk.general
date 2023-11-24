@@ -45,10 +45,10 @@ EXAMPLES = """
   loop: "{{
     lookup('checkmk.general.hosts',
         effective_attributes=True,
-        server_url=server_url,
-        site=site,
-        automation_user=automation_user,
-        automation_secret=automation_secret,
+        server_url=my_server_url,
+        site=my_site,
+        automation_user=my_user,
+        automation_secret=my_secret,
         validate_certs=False
         )
     }}"
