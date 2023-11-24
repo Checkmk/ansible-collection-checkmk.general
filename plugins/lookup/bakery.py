@@ -8,7 +8,7 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: bakery
     author: Max Sickora (@max-checkmk)
-    version_added: "3.5.0"
+    version_added: "4.0.0"
     short_description: Get the bakery status of a Checkmk server
     description:
       - Returns the bakery status of a Checkmk server as a string, e.g. 'running'
