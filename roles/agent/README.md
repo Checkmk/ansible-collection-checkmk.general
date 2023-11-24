@@ -65,12 +65,12 @@ The site you want to use for registration tasks (Agent updates and TLS encryptio
 
 The user used to authenticate against your Checkmk site.
 
-    checkmk_agent_pass: "{{ checkmk_var_automation_secret }}"
+    checkmk_agent_pass: "{{ my_secret }}"
 
 The password for the normal user used to authenticate against your Checkmk site.  
 This is mutually exclusive with `checkmk_agent_secret`.
 
-    checkmk_agent_secret: "{{ checkmk_var_automation_secret }}"
+    checkmk_agent_secret: "{{ my_secret }}"
 
 The secret for the automation user used to authenticate against your Checkmk site.  
 This is mutually exclusive with `checkmk_agent_pass`.
@@ -79,10 +79,6 @@ This is mutually exclusive with `checkmk_agent_pass`.
 
 Configure the port the agent listens on. We recommend to stick to the default.
 **This does not change the agent configuration! It merely tells Ansible which port to talk to.**
-
-    checkmk_agent_port_check: 'true'
-
-Verify, that the the `checkmk_agent_port` is actually open, before querying it.
 
     checkmk_agent_auto_activate: 'false'
 

@@ -8,7 +8,7 @@
 - name: "{{ ansible_system }}: Populate service facts."
   ansible.builtin.service_facts:
 
-- name: "{{ ansible_system }}: Import Legacy agent tasks."   # noqa key-order[task]
+- name: "{{ ansible_system }}: Run Legacy agent tasks."   # noqa key-order[task]
   block:
     - name: "{{ ansible_system }}: Install xinetd"
       become: true
@@ -138,3 +138,8 @@
     port: "{{ checkmk_agent_port }}"
     timeout: 60
   when: checkmk_agent_mode == 'pull'
+
+- name: "{{ ansible_system }}: Initial push of data for push agent"  # noqa no-changed-when
+  become: true
+  ansible.builtin.command: cmk-agent-ctl push
+  when: checkmk_agent_mode == 'push'

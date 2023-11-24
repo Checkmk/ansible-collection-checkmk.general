@@ -20,11 +20,6 @@
   tags:
     - include-system-tasks
 
-- name: "{{ ansible_system }}: Initial push of data for push agent"  # noqa no-changed-when
-  become: true
-  ansible.builtin.command: cmk-agent-ctl push
-  when: checkmk_agent_mode == 'push'
-
 - name: "Fetch fresh monitoring data from host."
   become: false
   checkmk.general.discovery:
