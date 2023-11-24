@@ -26,9 +26,9 @@ The Checkmk version of your site.
 The edition you are using. Valid values are `cre`, `cfe`, `cee`, `cce` and `cme`.
 
 - `cre`: Raw Edition, fully open source.
-- `cfe`: Free Edition, enterprise features, but limited hosts.
+- `cfe`: Free Edition, enterprise features, but limited hosts. **Only available until Checkmk 2.1!** For Checkmk 2.2, see `cce`.
 - `cee`: Enterprise Edition, full enterprise features.
-- `cce`: Cloud Edition, for cloud natives.
+- `cce`: Cloud Edition, for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
 - `cme`: Managed Edition, for service providers.
 
 For details about the editions see: https://checkmk.com/product/editions

@@ -32,9 +32,9 @@ The Checkmk version of your site.
 The edition you want to use. Valid values are `cre`, `cfe`, `cee`, `cce` and `cme`.
 
 - `cre`: Raw Edition, fully open source.
-- `cfe`: Free Edition, enterprise features, but limited hosts.
+- `cfe`: Free Edition, enterprise features, but limited hosts. **Only available until Checkmk 2.1!** For Checkmk 2.2, see `cce`.
 - `cee`: Enterprise Edition, full enterprise features.
-- `cce`: Cloud Edition, for cloud natives.
+- `cce`: Cloud Edition, for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
 - `cme`: Managed Edition, for service providers.
 
 For details about the editions see: https://checkmk.com/product/editions
@@ -81,6 +81,7 @@ Whether to allow downgrading a sites version. Note this is not a recommended pro
 
 A dictionary of sites, containing the desired version, admin password and state.
 There are also advanced settings, which will be outlined below.
+
 Valid values for `state` are:
 - `started`: The site is started and enabled for autostart on system boot.
 - `stopped`: The site is stopped and disabled for autostart on system boot.
