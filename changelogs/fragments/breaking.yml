@@ -7,3 +7,6 @@ breaking_changes:
     That entails a lot of changes, and we tried to keep everything stable.
     However, we cannot guarantee stability as we do not know all use-cases out there.
     Hence this change is also considered breaking.
+  - Server role - It became necessary to make the way states are handled more consistent.
+    The most siginificant change is, that all sites not in state "started" will be stopped.
+    For all other states please consult the role's README.
