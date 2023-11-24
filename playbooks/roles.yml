@@ -12,7 +12,7 @@
       tags: [agent]
       checkmk.general.folder:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         validate_certs: "{{ checkmk_agent_server_validate_certs }}"

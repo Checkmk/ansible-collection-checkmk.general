@@ -10,7 +10,7 @@
     - name: "Create folders."
       folder:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         path: "{{ item.path }}"
@@ -23,13 +23,13 @@
     - name: "Create hosts."
       host:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ inventory_hostname }}"
         folder: "{{ checkmk_var_folder_path }}"
         attributes:
-          site: "{{ site }}"
+          site: "{{ checkmk_var_site }}"
           ipaddress: 127.0.0.1
         state: "present"
       delegate_to: localhost
@@ -37,19 +37,19 @@
     - name: "Activate changes on site."
       activation:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         force_foreign_changes: 'true'
         sites:
-          - "{{ site }}"
+          - "{{ checkmk_var_site }}"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
 
     - name: "Downtime 1 - on services with relative timestamps"
       downtime:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: "{{ inventory_hostname }}"
@@ -68,7 +68,7 @@
     - name: "Downtime 2 - on services with absolute timestamps"
       downtime:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: "{{ inventory_hostname }}"
@@ -83,7 +83,7 @@
     - name: "Downtime 3 - on services without timestamps"
       downtime:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: "{{ inventory_hostname }}"
@@ -98,7 +98,7 @@
     - name: "Downtime 4 - on host with relative times"
       downtime:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: "{{ inventory_hostname }}"
@@ -114,7 +114,7 @@
     - name: "Downtime 5 - on host with absolute timestamps"
       downtime:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: "{{ inventory_hostname }}"
@@ -126,7 +126,7 @@
     - name: "Downtime 6 - on host without timestamps"
       downtime:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: "{{ inventory_hostname }}"
@@ -136,14 +136,14 @@
     - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
-          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
           "Press <Enter> to continue."
       when: not checkmk_var_run_unattended | bool
 
     - name: "Downtime delete 1 - service downtimes"
       downtime:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: "{{ inventory_hostname }}"
@@ -156,7 +156,7 @@
     - name: "Downtime delete 2 - host downtimes"
       downtime:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: "{{ inventory_hostname }}"
@@ -166,14 +166,14 @@
     - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
-          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
           "Press <Enter> to continue."
       when: not checkmk_var_run_unattended | bool
 
     - name: "Delete Hosts."
       host:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ inventory_hostname }}"
@@ -184,7 +184,7 @@
     - name: "Delete folders."
       folder:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         path: "{{ item.path }}"
@@ -197,11 +197,11 @@
     - name: "Activate changes on site."
       activation:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         force_foreign_changes: 'true'
         sites:
-          - "{{ site }}"
+          - "{{ checkmk_var_site }}"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]

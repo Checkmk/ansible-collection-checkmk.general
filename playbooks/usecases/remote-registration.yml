@@ -41,7 +41,7 @@
     checkmk_agent_delegate_api_calls: localhost
     checkmk_agent_delegate_download: "{{ inventory_hostname }}"
     checkmk_agent_host_name: "{{ inventory_hostname }}"
-    checkmk_agent_host_folder: "{{ site }}"
+    checkmk_agent_host_folder: "{{ checkmk_var_site }}"
     checkmk_agent_host_ip: "{{ ansible_host }}"
     checkmk_agent_host_attributes:
       ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"

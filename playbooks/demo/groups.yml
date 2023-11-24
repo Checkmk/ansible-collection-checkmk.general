@@ -18,7 +18,7 @@
     - name: "Create host groups."
       host_group:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ item.name }}"
@@ -26,12 +26,12 @@
         state: "present"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_host_groups }}"
+      loop: "{{ checkmk_var_host_groups }}"
 
     - name: "Create contact groups."
       contact_group:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ item.name }}"
@@ -39,12 +39,12 @@
         state: "present"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_contact_groups }}"
+      loop: "{{ checkmk_var_contact_groups }}"
 
     - name: "Create tag groups."
       tag_group:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         id: "{{ item.id }}"
@@ -59,7 +59,7 @@
     - name: "Create service groups."
       service_group:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ item.name }}"
@@ -67,12 +67,12 @@
         state: "present"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_service_groups }}"
+      loop: "{{ checkmk_var_service_groups }}"
 
     - name: "Assign hosts to host groups."
       rule:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         ruleset: "host_groups"
@@ -89,12 +89,12 @@
         state: "present"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_host_groups }}"
+      loop: "{{ checkmk_var_host_groups }}"
 
     - name: "Assign hosts to contact groups."
       rule:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         ruleset: "host_contactgroups"
@@ -111,12 +111,12 @@
         state: "present"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_contact_groups }}"
+      loop: "{{ checkmk_var_contact_groups }}"
 
     - name: "Assign services to service groups."
       rule:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         ruleset: "service_groups"
@@ -133,31 +133,31 @@
         state: "present"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_service_groups }}"
+      loop: "{{ checkmk_var_service_groups }}"
 
     - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
-          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
           "Press <Enter> to continue."
       when: not checkmk_var_run_unattended | bool
 
     - name: "Activate changes on site - Showcase creation of groups."
       activation:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         force_foreign_changes: 'true'
         sites:
-          - "{{ site }}"
+          - "{{ checkmk_var_site }}"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
 
     - name: "Unassign hosts to host groups."
       rule:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         ruleset: "host_groups"
@@ -174,12 +174,12 @@
         state: "absent"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_host_groups }}"
+      loop: "{{ checkmk_var_host_groups }}"
 
     - name: "Unassign hosts to contact groups."
       rule:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         ruleset: "host_contactgroups"
@@ -196,12 +196,12 @@
         state: "absent"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_contact_groups }}"
+      loop: "{{ checkmk_var_contact_groups }}"
 
     - name: "Unassign services to service groups."
       rule:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         ruleset: "service_groups"
@@ -218,24 +218,24 @@
         state: "absent"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_service_groups }}"
+      loop: "{{ checkmk_var_service_groups }}"
 
     - name: "Delete service groups."
       service_group:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_service_groups }}"
+      loop: "{{ checkmk_var_service_groups }}"
 
     - name: "Delete tag groups."
       tag_group:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         id: "{{ item.id }}"
@@ -247,42 +247,42 @@
     - name: "Delete contact groups."
       contact_group:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_contact_groups }}"
+      loop: "{{ checkmk_var_contact_groups }}"
 
     - name: "Delete host groups."
       host_group:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_host_groups }}"
+      loop: "{{ checkmk_var_host_groups }}"
 
     - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
-          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
           "Press <Enter> to continue."
       when: not checkmk_var_run_unattended | bool
 
     - name: "Activate changes on site - Showcase host and folders were deleted"
       activation:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         force_foreign_changes: 'true'
         sites:
-          - "{{ site }}"
+          - "{{ checkmk_var_site }}"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]

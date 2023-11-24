@@ -11,7 +11,7 @@
     - name: "Create folders."
       folder:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         path: "{{ item.path }}"
@@ -24,13 +24,13 @@
     - name: "Create hosts."
       host:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ inventory_hostname }}"
         folder: "{{ checkmk_var_folder_path }}"
         attributes:
-          site: "{{ site }}"
+          site: "{{ checkmk_var_site }}"
           ipaddress: 127.0.0.1
         state: "present"
       delegate_to: localhost
@@ -38,32 +38,32 @@
     - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
-          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
           "Press <Enter> to continue."
       when: not checkmk_var_run_unattended | bool
 
     - name: "Activate changes on site."
       activation:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         force_foreign_changes: 'true'
         sites:
-          - "{{ site }}"
+          - "{{ checkmk_var_site }}"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
 
     - name: "Change host attributes."
       host:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ inventory_hostname }}"
         folder: "{{ checkmk_var_folder_path }}"
         attributes:
-          site: "{{ site }}"
+          site: "{{ checkmk_var_site }}"
           alias: "Important Server"
           ipaddress: 127.0.0.2
         state: "present"
@@ -72,7 +72,7 @@
     - name: "Move host to another folder."
       host:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ inventory_hostname }}"
@@ -83,14 +83,14 @@
     - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
-          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
           "Press <Enter> to continue."
       when: not checkmk_var_run_unattended | bool
 
     - name: "Delete Hosts."
       host:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ inventory_hostname }}"
@@ -101,7 +101,7 @@
     - name: "Delete folders."
       folder:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         path: "{{ item.path }}"
@@ -114,18 +114,18 @@
     - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
-          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
           "Press <Enter> to continue."
       when: not checkmk_var_run_unattended | bool
 
     - name: "Activate changes on site."
       activation:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ site }}"
+        site: "{{ checkmk_var_site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         force_foreign_changes: 'true'
         sites:
-          - "{{ site }}"
+          - "{{ checkmk_var_site }}"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
