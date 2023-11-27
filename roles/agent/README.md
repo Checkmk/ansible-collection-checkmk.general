@@ -1,12 +1,10 @@
 # checkmk.general.agent
 
-<!-- A brief description of the role goes here. -->
-This role installs Checkmk agents.
+This role installs and manages Checkmk agents.
 
 ## Requirements
 
-<!-- Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required. -->
-The Ansible Checkmk Collection from this role originates is needed to
+The Checkmk Ansible Collection from which this role originates is needed to
 use it, as modules shipped by this collection are used in the role.
 
 It can be installed as easy as running:
@@ -15,11 +13,9 @@ It can be installed as easy as running:
 
 ## Role Variables
 
-<!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
-
     checkmk_agent_version: "2.2.0p14"
 
-The Checkmk version of your site.
+The Checkmk version of the site your agents will talk to.
 
     checkmk_agent_edition: cre
 
@@ -36,6 +32,7 @@ For details about the editions see: https://checkmk.com/product/editions
     checkmk_agent_server_protocol: http
 
 The protocol used to connect to your Checkmk site.
+This is used both for API calls and agent updates.
 
     checkmk_agent_server: localhost
 
@@ -61,18 +58,18 @@ The server you want to use for registration tasks (Agent updates and TLS encrypt
 
 The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_site }}`.
 
-    checkmk_agent_user: automation
+    checkmk_agent_user: my_user
 
 The user used to authenticate against your Checkmk site.
 
-    checkmk_agent_pass: "{{ my_secret }}"
+    checkmk_agent_pass: my_secret
 
-The password for the normal user used to authenticate against your Checkmk site.  
+The password for the normal user used to authenticate against your Checkmk site, both for API calls and agent updates.  
 This is mutually exclusive with `checkmk_agent_secret`.
 
-    checkmk_agent_secret: "{{ my_secret }}"
+    checkmk_agent_secret: my_secret
 
-The secret for the automation user used to authenticate against your Checkmk site.  
+The secret for the automation user used to authenticate against your Checkmk site, both for API calls and agent updates.  
 This is mutually exclusive with `checkmk_agent_pass`.
 
     checkmk_agent_port: 6556
@@ -91,15 +88,24 @@ Allow forcing foreign changes on activation by handler.
 
     checkmk_agent_add_host: 'false'
 
-Automatically add the host where the agent was installed to Checkmk.
+Automatically add the host where the agent was installed on to Checkmk.
 
     checkmk_agent_host_name: "{{ inventory_hostname }}"
 
-The hostname to use, when adding the host to Checkmk.
+Define the hostname which will be used to add the host to Checkmk.
 
     checkmk_agent_folder: "/"
 
-The folder into which the automatically created host will be places.
+The folder into which the automatically created host will be placed.
+
+    checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+Define an IP address which will be added to the host in Checkmk. This is optional, as long as the hostname is DNS-resolvable.
+
+    checkmk_agent_host_attributes:
+        ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
+
+Define attributes with which the host will be added to Checkmk.
 
     checkmk_agent_discover: 'false'
 
@@ -112,13 +118,13 @@ discovery tasks run at the same time in parallel.
 
     checkmk_agent_update: 'false'
 
-Register host for automatic updates. Make sure to have the server side prepared
-for automatic updates. Otherwise this will fail.
+Register host for automatic updates. Make sure to have the server side prepared for automatic updates. Otherwise this will fail.
+See [this link](hhttps://docs.checkmk.com/latest/en/agent_deployment.html) for more information on the preparations.
 
     checkmk_agent_tls: 'false'
 
-Register for TLS encryption. Make sure to have the server side prepared
-for automatic updates. Otherwise this will fail.
+Register for TLS encryption. Make sure to have the server side prepared for automatic updates. Otherwise this will fail.
+See [this link](https://docs.checkmk.com/latest/en/agent_linux.html#registration) for more information on the preparations.
 
     checkmk_agent_configure_firewall: 'true'
 
@@ -139,28 +145,17 @@ Enable this to automatically install `xinetd` on hosts with systemd prior to ver
 
     checkmk_agent_delegate_api_calls: localhost
 
-Configure the host to which Checkmk API calls are delegated to.
+Configure the host to which Checkmk API calls are delegated to.  
+Typically this would be your Ansible host, hence the default `localhost`.
 
     checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 
-Configure the host to which Checkmk API downloads are delegated to. After download the files are transfered to the remote node, when the remote node didn't do the download.
-
-    checkmk_agent_host_name: "{{ inventory_hostname }}"
-
-Define the hostname which will be used to add the host to Checkmk.
-
-    checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
-
-Define an IP address which will be added to the host in Checkmk. This is optional, as long as the hostname is DNS-resolvable.
-
-    checkmk_agent_host_attributes:
-        ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
-
-Define attributes with which the host will be added to Checkmk.
+Configure the host to which Checkmk API downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download.
 
     checkmk_agent_mode: pull
 
-The mode the agent operates in. For most deployments, this will be the `pull` mode. If you are uncertain, what you are using, this is most likely your mode.  
+The mode the agent operates in. For most deployments, this will be the `pull` mode.
+If you are uncertain, what you are using, this is most likely your mode.  
 If you are using an alternative way to call the agent, e.g. SSH, you can set the variable to `ssh`, so the agent port check is skipped.  
 If you are using the Checkmk Cloud Edition (CCE) with an agent in `push` mode, you want to set this to `push` to avoid the agent port check, as well as triggering an initial push of data.
 
@@ -169,6 +164,7 @@ If you are using the Checkmk Cloud Edition (CCE) with an agent in `push` mode, y
 Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
 ## Tags
+
 Tasks are tagged with the following tags:
 | Tag | Purpose |
 | ---- | ------- |
@@ -184,23 +180,21 @@ You can use Ansible to skip tasks, or only run certain tasks by using these tags
 
 ## Dependencies
 
-<!-- A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles. -->
 None.
 
 ## Example Playbook
-
-Including an example of how to use your role (for instance, with variables
-passed in as parameters) is always nice for users too:
 
     - hosts: all
       roles:
          - checkmk.general.agent
 
 ## Use Cases
+
 This is a brief collection of use cases, that outline how this role can be used.
 It should give you an idea of what is possible, but also what things to consider.
 
 ### Agent registration against a remote site
+
 See [remote-registration.yml](../../playbooks/usecases/remote-registration.yml).
 
 ## Contributing
@@ -219,5 +213,4 @@ See [LICENSE](../../LICENSE).
 
 ## Author Information
 
-<!-- An optional section for the role authors to include contact information, or a website (HTML is not allowed). -->
 Robin Gierse (@robin-checkmk)
