@@ -2,7 +2,7 @@
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
 # Copyright: (c) 2022, Stefan Mühling <muehling.stefan@googlemail.com> &
-#                      Robin Gierse <robin.gierse@tribe29.com>
+#                      Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
@@ -22,7 +22,7 @@ version_added: "0.11.0"
 description:
 - Manage tag_group within Checkmk.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     id:
@@ -55,26 +55,26 @@ author:
 
 EXAMPLES = r"""
 - name: "Create tag_group"
-  tribe29.checkmk.tag_group:
+  checkmk.general.tag_group:
     server_url: "https://localhost/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     id: Virtualization
     title: Virtualization
     topic: My_Tags
     choices:
-        - id: No_Virtualization
-          title: No Virtualization
-        - id: ESXi
-          title: ESXi
-        - id: vCenter
-          title: vCenter
-        - id: HyperV
-          title: HyperV
-        - id: KVM
-          title: KVM
-  state: present
+      - id: No_Virtualization
+        title: No Virtualization
+      - id: ESXi
+        title: ESXi
+      - id: vCenter
+        title: vCenter
+      - id: HyperV
+        title: HyperV
+      - id: KVM
+        title: KVM
+    state: present
 """
 
 RETURN = r"""
@@ -118,11 +118,9 @@ def read_tag_group(module, base_url, headers):
     http_code = info["status"]
     try:
         response_content = response.read()
-        detail = str(json.loads(info["body"])["detail"]), str(
-            json.loads(info["body"])["fields"]
-        )
     except Exception:
-        detail = response_content
+        response_content = {}
+
     msg = info["msg"]
 
     if info["status"] == 200:
@@ -139,11 +137,8 @@ def read_tag_group(module, base_url, headers):
             d["ident"] = d.pop("id")
             d.pop("aux_tags")
 
-    elif info["status"] == 404:
-        current_state = "absent"
-
     else:
-        failed = True
+        current_state = "absent"
 
     result["current_tag_group"] = current_tag_group
     result["msg"] = str(http_code) + " - " + msg
@@ -177,13 +172,6 @@ def create_tag_group(module, base_url, headers):
     )
 
     http_code = info["status"]
-    try:
-        response_content = response.read()
-        detail = str(json.loads(info["body"])["detail"]), str(
-            json.loads(info["body"])["fields"]
-        )
-    except Exception:
-        detail = ""
     msg = info["msg"]
 
     if info["status"] != 200:
@@ -222,13 +210,6 @@ def update_tag_group(module, base_url, headers, etag):
     )
 
     http_code = info["status"]
-    try:
-        response_content = response.read()
-        detail = str(json.loads(info["body"])["detail"]), str(
-            json.loads(info["body"])["fields"]
-        )
-    except Exception:
-        detail = ""
     msg = info["msg"]
 
     if info["status"] != 200:
@@ -267,13 +248,6 @@ def delete_tag_group(module, base_url, headers, etag):
     )
 
     http_code = info["status"]
-    try:
-        response_content = response.read()
-        detail = str(json.loads(info["body"])["detail"]), str(
-            json.loads(info["body"])["fields"]
-        )
-    except Exception:
-        detail = ""
     msg = info["msg"]
 
     if info["status"] != 204:
@@ -330,12 +304,12 @@ def run_module():
     # tag_group is "present"
     if result["etag"] != "":
         # tag_group needs to be deleted (DELETE)
-        if module.params.get("state") == "absent":
+        if state == "absent":
             result = delete_tag_group(module, base_url, headers, result["etag"])
             msg_tokens.append("Tag group deleted.")
             result["changed"] = True
         # tag_group needs to be updated (PUT)
-        elif module.params.get("state") == "present":
+        elif state == "present":
             choices = module.params.get("choices")
             current_choices = result["current_tag_group"]["tags"]
             for d in current_choices:
@@ -374,11 +348,11 @@ def run_module():
 
     else:
         # tag_group is "absent"
-        if module.params.get("state") == "absent":
+        if state == "absent":
             # nothing to do
             msg_tokens.append("Nothing to do.")
             result["changed"] = False
-        elif module.params.get("state") == "present":
+        elif state == "present":
             # tag_group needs to be created (POST)
             result = create_tag_group(module, base_url, headers)
             msg_tokens.append("Tag group created.")

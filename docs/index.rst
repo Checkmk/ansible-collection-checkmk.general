@@ -1,12 +1,15 @@
 
 
+.. meta::
+  :antsibull-docs: 2.5.0
 
-.. _plugins_in_tribe29.checkmk:
 
-Tribe29.Checkmk
+.. _plugins_in_checkmk.general:
+
+Checkmk.General
 ===============
 
-Collection version 0.18.0
+Collection version 3.4.0
 
 .. contents::
    :local:
@@ -15,24 +18,28 @@ Collection version 0.18.0
 Description
 -----------
 
-The official Checkmk Ansible collection - brought to you by tribe29 - the Checkmk company.
+The official Checkmk Ansible collection - brought to you by the Checkmk company.
 
 **Authors:**
 
 * Marcel Arentz (https://github.com/godspeed-you)
-* Robin Gierse (https://github.com/robin-tribe29)
+* Robin Gierse (https://github.com/robin-checkmk)
 * Lars Getwan (https://github.com/lgetwan)
+* Max Sickora (https://github.com/Max-checkmk)
 
 **Supported ansible-core versions:**
 
-* 2.11.1 or newer
+* 2.12.0 or newer
 
-.. raw:: html
+.. ansible-links::
 
-  <p class="ansible-links">
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
-  </p>
+  - title: "Issue Tracker"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"
+    external: true
+  - title: "Repository (Sources)"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general"
+    external: true
+
 
 
 
@@ -43,38 +50,64 @@ The official Checkmk Ansible collection - brought to you by tribe29 - the Checkm
 Plugin Index
 ------------
 
-These are the plugins in the tribe29.checkmk collection:
+These are the plugins in the checkmk.general collection:
 
 
 Modules
 ~~~~~~~
 
-* :ref:`activation module <ansible_collections.tribe29.checkmk.activation_module>` -- Activate changes in Checkmk.
-* :ref:`contact_group module <ansible_collections.tribe29.checkmk.contact_group_module>` -- Manage contact groups in Checkmk (bulk version).
-* :ref:`discovery module <ansible_collections.tribe29.checkmk.discovery_module>` -- Discover services in Checkmk.
-* :ref:`downtime module <ansible_collections.tribe29.checkmk.downtime_module>` -- Manage downtimes in Checkmk.
-* :ref:`folder module <ansible_collections.tribe29.checkmk.folder_module>` -- Manage folders in Checkmk.
-* :ref:`host module <ansible_collections.tribe29.checkmk.host_module>` -- Manage hosts in Checkmk.
-* :ref:`host_group module <ansible_collections.tribe29.checkmk.host_group_module>` -- Manage host groups in Checkmk (bulk version).
-* :ref:`rule module <ansible_collections.tribe29.checkmk.rule_module>` -- Manage rules in Checkmk.
-* :ref:`service_group module <ansible_collections.tribe29.checkmk.service_group_module>` -- Manage service groups in Checkmk (bulk version).
-* :ref:`tag_group module <ansible_collections.tribe29.checkmk.tag_group_module>` -- Manage tag\_group within Checkmk
-* :ref:`user module <ansible_collections.tribe29.checkmk.user_module>` -- Manage users in Checkmk.
+* :ansplugin:`activation module <checkmk.general.activation#module>` -- Activate changes in Checkmk.
+* :ansplugin:`bakery module <checkmk.general.bakery#module>` -- Trigger baking and signing in the agent bakery.
+* :ansplugin:`contact_group module <checkmk.general.contact_group#module>` -- Manage contact groups in Checkmk (bulk version).
+* :ansplugin:`discovery module <checkmk.general.discovery#module>` -- Discover services in Checkmk.
+* :ansplugin:`downtime module <checkmk.general.downtime#module>` -- Manage downtimes in Checkmk.
+* :ansplugin:`folder module <checkmk.general.folder#module>` -- Manage folders in Checkmk.
+* :ansplugin:`host module <checkmk.general.host#module>` -- Manage hosts in Checkmk.
+* :ansplugin:`host_group module <checkmk.general.host_group#module>` -- Manage host groups in Checkmk (bulk version).
+* :ansplugin:`password module <checkmk.general.password#module>` -- Manage passwords in Checkmk.
+* :ansplugin:`rule module <checkmk.general.rule#module>` -- Manage rules in Checkmk.
+* :ansplugin:`service_group module <checkmk.general.service_group#module>` -- Manage service groups in Checkmk (bulk version).
+* :ansplugin:`tag_group module <checkmk.general.tag_group#module>` -- Manage tag\_group within Checkmk
+* :ansplugin:`timeperiod module <checkmk.general.timeperiod#module>` -- Manage time periods in checkmk.
+* :ansplugin:`user module <checkmk.general.user#module>` -- Manage users in Checkmk.
 
 .. toctree::
     :maxdepth: 1
     :hidden:
 
     activation_module
+    bakery_module
     contact_group_module
     discovery_module
     downtime_module
     folder_module
     host_module
     host_group_module
+    password_module
     rule_module
     service_group_module
     tag_group_module
+    timeperiod_module
     user_module
+
+
+Lookup Plugins
+~~~~~~~~~~~~~~
+
+* :ansplugin:`folder lookup <checkmk.general.folder#lookup>` -- Get folder attributes
+* :ansplugin:`folders lookup <checkmk.general.folders#lookup>` -- Get various information about a folder
+* :ansplugin:`host lookup <checkmk.general.host#lookup>` -- Get host attributes
+* :ansplugin:`hosts lookup <checkmk.general.hosts#lookup>` -- Get various information about a host
+* :ansplugin:`version lookup <checkmk.general.version#lookup>` -- Get the version of a Checkmk server
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+
+    folder_lookup
+    folders_lookup
+    host_lookup
+    hosts_lookup
+    version_lookup
 
 

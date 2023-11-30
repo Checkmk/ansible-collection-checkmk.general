@@ -9,13 +9,38 @@ plugins:
   filter: {}
   httpapi: {}
   inventory: {}
-  lookup: {}
+  lookup:
+    folder:
+      description: Get folder attributes
+      name: folder
+      version_added: 3.3.0
+    folders:
+      description: Get various information about a folder
+      name: folders
+      version_added: 3.3.0
+    host:
+      description: Get host attributes
+      name: host
+      version_added: 3.3.0
+    hosts:
+      description: Get various information about a host
+      name: hosts
+      version_added: 3.3.0
+    version:
+      description: Get the version of a Checkmk server
+      name: version
+      version_added: 3.1.0
   module:
     activation:
       description: Activate changes in Checkmk.
       name: activation
       namespace: ''
       version_added: 0.0.1
+    bakery:
+      description: Trigger baking and signing in the agent bakery.
+      name: bakery
+      namespace: ''
+      version_added: 0.21.0
     contact_group:
       description: Manage contact groups in Checkmk (bulk version).
       name: contact_group
@@ -46,6 +71,11 @@ plugins:
       name: host_group
       namespace: ''
       version_added: 0.11.0
+    password:
+      description: Manage passwords in Checkmk.
+      name: password
+      namespace: ''
+      version_added: 2.3.0
     rule:
       description: Manage rules in Checkmk.
       name: rule
@@ -61,6 +91,11 @@ plugins:
       name: tag_group
       namespace: ''
       version_added: 0.11.0
+    timeperiod:
+      description: Manage time periods in checkmk.
+      name: timeperiod
+      namespace: ''
+      version_added: 3.3.0
     user:
       description: Manage users in Checkmk.
       name: user
@@ -71,4 +106,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 0.18.0
+version: 3.4.0

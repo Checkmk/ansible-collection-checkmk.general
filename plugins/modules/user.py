@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
+# Copyright: (c) 2023, Lars Getwan <lars.getwan@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -20,7 +20,7 @@ version_added: "0.18.0"
 description:
 - Create and delete users within Checkmk.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
@@ -29,6 +29,10 @@ options:
         type: str
     fullname:
         description: The alias or full name of the user.
+        type: str
+    customer:
+        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        required: false
         type: str
     password:
         description: The password or secret for login.
@@ -88,13 +92,14 @@ author:
 EXAMPLES = r"""
 # Create a user.
 - name: "Create a user."
-  tribe29.checkmk.user:
-    server_url: "http://localhost/"
+  checkmk.general.user:
+    server_url: "http://my_server/"
     site: "local"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "krichards"
     fullname: "Keith Richards"
+    customer: "provider"
     email: "keith.richards@rollingstones.com"
     password: "Open-G"
     contactgroups:
@@ -106,13 +111,14 @@ EXAMPLES = r"""
 
 # Create an automation user.
 - name: "Create an automation user."
-  tribe29.checkmk.user:
-    server_url: "http://localhost/"
+  checkmk.general.user:
+    server_url: "http://my_server/"
     site: "local"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "registration"
     fullname: "Registration User"
+    customer: "provider"
     auth_type: "automation"
     password: "ZGSDHUVDSKJHSDF"
     roles:
@@ -121,13 +127,14 @@ EXAMPLES = r"""
 
 # Create a detailed user.
 - name: "Create a detailed user."
-  tribe29.checkmk.user:
-    server_url: "http://localhost/"
+  checkmk.general.user:
+    server_url: "http://my_server/"
     site: "local"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "horst"
     fullname: "Horst Schlämmer"
+    customer: "provider"
     auth_type: "password"
     password: "uschi"
     enforce_password_change: True
@@ -143,7 +150,7 @@ EXAMPLES = r"""
     roles:
       - "user"
     authorized_sites:
-      - "{{ site }}"
+      - "{{ my_site }}"
     state: "present"
 """
 
@@ -191,6 +198,7 @@ class UserHTTPCodes:
         200: (False, False, "User found, nothing changed"),
         404: (False, False, "User not found"),
     }
+
     create = {200: (True, False, "User created")}
     edit = {200: (True, False, "User modified")}
     delete = {204: (True, False, "User deleted")}
@@ -333,6 +341,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         name=dict(required=True, type="str"),
         fullname=dict(type="str"),
+        customer=dict(type="str", required=False),
         password=dict(type="str", no_log=True),
         enforce_password_change=dict(type="bool", no_log=False),
         auth_type=dict(type="str", choices=["password", "automation"]),

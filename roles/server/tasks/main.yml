@@ -6,10 +6,16 @@
         (ansible_distribution_version is not defined) or
         (ansible_distribution + "-" + ansible_distribution_major_version not in checkmk_server_server_stable_os)
 
+- name: "Preflight - Fail if Checkmk Edition is incorrect."
+  ansible.builtin.fail:
+    msg: "The provided Checkmk Edition '{{ checkmk_server_edition | lower }}' does  not exist or is not supported by this role."
+  when: checkmk_server_edition | lower not in checkmk_server_edition_mapping
+
 - name: "Include OS Family specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-vars
+    - install-package
 
 - name: "Update APT Cache."
   become: true
@@ -54,9 +60,9 @@
   block:
     - name: "Import Checkmk GPG Key."
       ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
-      register: checkmk_gpg_import
+      register: checkmk_server_gpg_import
       when: checkmk_server_verify_setup | bool
-      changed_when: "'imported: 1' in checkmk_gpg_import"
+      changed_when: "'imported: 1' in checkmk_server_gpg_import"
       tags:
         - import-gpg-key
 
@@ -68,7 +74,7 @@
 
     - name: "Print Verification Output."
       ansible.builtin.debug:
-        msg: "{{ checkmk_server_verify_state.stderr_lines }} "
+        msg: "{{ checkmk_server_verify_state.stderr_lines }}"
 
 - name: "Import Checkmk GPG Key."
   become: true
@@ -85,6 +91,19 @@
 - name: Include Site Management Playbook.
   ansible.builtin.include_tasks: "sites.yml"
   when: checkmk_server_sites is defined
+
+- name: "Cleanup unused Checkmk Versions."
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd cleanup
+  args:
+    executable: /bin/bash
+  changed_when: "'Uninstalling' in checkmk_server_cleanup_state.stdout"
+  register: checkmk_server_cleanup_state
+  when: checkmk_server_cleanup | bool
+  tags:
+    - cleanup
 
 - name: "Flush Handlers."
   ansible.builtin.meta:

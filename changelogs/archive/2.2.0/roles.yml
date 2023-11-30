@@ -1,0 +1,5 @@
+minor_changes:
+  - Agent role - Add support for AlmaLinux and Rocky Linux, both versions 8 and 9.
+  - Agent role - Bump default Checkmk version to 2.2.0.
+  - Server role - Add support for AlmaLinux and Rocky Linux, both versions 8 and 9.
+  - Server role - Bump default Checkmk version to 2.2.0.

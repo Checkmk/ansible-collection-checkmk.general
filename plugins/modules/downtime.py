@@ -20,17 +20,7 @@ version_added: "0.2.0"
 description:
     - Manage downtimes within Checkmk.
 
-notes:
-    - Idempotency for creation was made for hostdowntimes by only using the hostname and comment attributes.
-      If this combination already exists as a downtime, the new downtime will not be created except using force.
-      The creation of servicedowntimes works accordingly, with hostname, service description and
-      comment.
-
-todo:
-    - Implement idempotency for deletion
-    - Fine tune deletion, so only delete dt by host and comment
-
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     comment:
@@ -39,6 +29,7 @@ options:
               default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
               a host or host/service will be removed.
         type: str
+        default: Created by Ansible
     duration:
         description:
             - Duration in seconds. When set, the downtime does not begin automatically at a nominated time,
@@ -89,6 +80,11 @@ options:
         default: present
         choices: [present, absent]
 
+notes:
+    - Idempotency for creation was made for host downtimes by only using the hostname and comment attributes.
+      If this combination already exists as a downtime, the new downtime will not be created except using the B(force) argument.
+      The creation of service downtimes works accordingly, with hostname, service description and comment.
+
 author:
     - Oliver Gaida (@ogaida)
     - Lars Getwan (@lgetwan)
@@ -96,11 +92,11 @@ author:
 
 EXAMPLES = r"""
 - name: "Schedule host downtime."
-  tribe29.checkmk.downtime:
-    server_url: "{{ server_url }}"
-    site: "{{ site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+  checkmk.general.downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ my_site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: my_host
     start_after:
       minutes: 5
@@ -109,11 +105,11 @@ EXAMPLES = r"""
       hours: 5
 
 - name: "Schedule service downtimes for two given services."
-  tribe29.checkmk.downtime:
-    server_url: "{{ server_url }}"
-    site: "{{ site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+  checkmk.general.downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ my_site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: my_host
     start_time: 2022-03-24T20:39:28Z
     end_time: 2022-03-24T20:40:28Z
@@ -124,11 +120,11 @@ EXAMPLES = r"""
       - "Memory"
 
 - name: "Delete all service downtimes for two given services."
-  tribe29.checkmk.downtime:
-    server_url: "{{ server_url }}"
-    site: "{{ site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+  checkmk.general.downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ my_site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: my_host
     service_descriptions:
       - "CPU utilization"
@@ -198,11 +194,9 @@ def _set_timestamps(module):
         if end_after == {}:
             end_time = default_end_time
         else:
-            start_time = re.sub(r"\+\d\d:\d\d$", "Z", start_time)
-            dt_start = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ")
-            end_time = (dt_start + timedelta(**end_after)).strftime(
-                "%Y-%m-%dT%H:%M:%SZ"
-            )
+            start_time = re.sub(r"Z$", "+00:00", start_time)
+            dt_start = datetime.fromisoformat(start_time)
+            end_time = (dt_start + timedelta(**end_after)).isoformat()
     return [start_time, end_time]
 
 
@@ -413,7 +407,7 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         host_name=dict(type="str", required=True),
-        comment=dict(type="str"),
+        comment=dict(type="str", default="Created by Ansible"),
         duration=dict(type="int", default=0),
         start_after=dict(type="dict", default={}),
         start_time=dict(type="str", default=""),

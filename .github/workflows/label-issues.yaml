@@ -1,0 +1,21 @@
+name: "Label Issues."
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Label Issues."
+      uses: github/issue-labeler@v3.3
+      with:
+        configuration-path: .github/labels-issues.yml
+        include-title: 1
+        repo-token: ${{ github.token }}
+        enable-versioned-regex: 0
+        sync-labels: 0

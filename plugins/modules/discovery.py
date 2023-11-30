@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
+# Copyright: (c) 2022, Michael Sekania &
+#                      Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -20,41 +21,79 @@ version_added: "0.0.1"
 description:
 - Discovery services within Checkmk.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     host_name:
-        description: The host who's services you want to manage.
-        required: true
+        description: The host who's services you want to manage. Mutually exclusive with hosts.
+        required: false
         type: str
+    hosts:
+        description:
+            - The list of hosts the services of which you want to manage.
+              Mutually exclusive with host_name. This enables bulk discovery mode.
+        required: false
+        type: list
+        elements: str
+        default: []
     state:
         description: The action to perform during discovery.
         type: str
         default: new
-        choices: [new, remove, fix_all, refresh, only_host_labels]
+        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels]
+    do_full_scan:
+        description: The option whether to perform a full scan or not. (Bulk mode only).
+        type: bool
+        default: True
+    bulk_size:
+        description: The number of hosts to be handled at once. (Bulk mode only).
+        type: int
+        default: 1
+    ignore_errors:
+        description: The option whether to ignore errors in single check plugins. (Bulk mode only).
+        type: bool
+        default: True
 
 author:
-    - Robin Gierse (@robin-tribe29)
+    - Robin Gierse (@robin-checkmk)
+    - Michael Sekania (@msekania)
 """
 
 EXAMPLES = r"""
 # Create a single host.
 - name: "Add newly discovered services on host."
-  tribe29.checkmk.discovery:
-    server_url: "http://localhost/"
+  checkmk.general.discovery:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     host_name: "my_host"
     state: "new"
 - name: "Add newly discovered services, update labels and remove vanished services on host."
-  tribe29.checkmk.discovery:
-    server_url: "http://localhost/"
+  checkmk.general.discovery:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     host_name: "my_host"
     state: "fix_all"
+- name: "Add newly discovered services on hosts. (Bulk)"
+  checkmk.general.discovery:
+    server_url: "http://my_server/"
+    site: "my_site"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    hosts: "[my_host_0, my_host_1]"
+    state: "new"
+- name: "Add newly discovered services, update labels and remove vanished services on host; 3 at once (Bulk)"
+  checkmk.general.discovery:
+    server_url: "http://my_server/"
+    site: "my_site"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    hosts: "[my_host_0, my_host_1, my_host_2, my_host_3, my_host_4, my_host_5]"
+    state: "fix_all"
+    bulk_size: 3
 """
 
 RETURN = r"""
@@ -70,9 +109,168 @@ message:
     sample: 'Host created.'
 """
 
+import json
+import time
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
+from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    result_as_dict,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
+
+HTTP_CODES = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "Discovery successful."),
+    302: (
+        True,
+        False,
+        "The service discovery background job has been initialized. Redirecting to the 'Wait for service discovery completion' endpoint.",
+    ),
+    400: (False, True, "Bad Request."),
+    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
+    404: (False, True, "Not Found: Host could not be found."),
+    406: (False, True, "Not Acceptable."),
+    409: (False, False, "Conflict: A discovery background job is already running"),
+    415: (False, True, "Unsupported Media Type."),
+    500: (False, True, "General Server Error."),
+}
+
+HTTP_CODES_SC = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "The service discovery has been completed."),
+    302: (
+        True,
+        False,
+        "The service discovery is still running. Redirecting to the 'Wait for completion' endpoint.",
+    ),
+    403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+    404: (False, False, "Not Found: There is no running service discovery"),
+    406: (False, True, "Not Acceptable."),
+    500: (False, True, "General Server Error."),
+}
+
+HTTP_CODES_BULK = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "Discovery successful."),
+    400: (False, True, "Bad Request."),
+    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
+    406: (False, True, "Not Acceptable."),
+    409: (False, False, "Conflict: A bulk discovery job is already active"),
+    415: (False, True, "Unsupported Media Type."),
+    500: (False, True, "General Server Error."),
+}
+
+HTTP_CODES_BULK_SC = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "The service discovery has been completed."),
+    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
+    404: (False, False, "Not Found: There is no running bulk_discovery job"),
+    406: (False, True, "Not Acceptable."),
+    500: (False, True, "General Server Error."),
+}
+
+
+class DiscoveryAPI(CheckmkAPI):
+    def post(self):
+        data = {
+            "host_name": self.params.get("host_name"),
+            "mode": self.params.get("state"),
+        }
+
+        return self._fetch(
+            code_mapping=HTTP_CODES,
+            endpoint="domain-types/service_discovery_run/actions/start/invoke",
+            data=data,
+            method="POST",
+        )
+
+
+class oldDiscoveryAPI(CheckmkAPI):
+    def post(self):
+        data = {
+            "mode": self.params.get("state"),
+        }
+
+        return self._fetch(
+            code_mapping=HTTP_CODES,
+            endpoint=(
+                "/objects/host/"
+                + self.params.get("host_name")
+                + "/actions/discover_services/invoke"
+            ),
+            data=data,
+            method="POST",
+        )
+
+
+class ServiceCompletionAPI(CheckmkAPI):
+    def get(self):
+        data = {}
+
+        return self._fetch(
+            code_mapping=HTTP_CODES_SC,
+            endpoint=(
+                "objects/service_discovery_run/"
+                + self.params.get("host_name")
+                + "/actions/wait-for-completion/invoke"
+            ),
+            data=data,
+            method="GET",
+        )
+
+
+class BulkDiscoveryAPI(CheckmkAPI):
+    def post(self):
+        data = {
+            "hostnames": self.params.get("hosts", []),
+            "mode": self.params.get("state"),
+            "do_full_scan": self.params.get("do_full_scan", True),
+            "bulk_size": self.params.get("bulk_size", 1),
+            "ignore_errors": self.params.get("ignore_errors", True),
+        }
+
+        return self._fetch(
+            code_mapping=HTTP_CODES_BULK,
+            endpoint="domain-types/discovery_run/actions/bulk-discovery-start/invoke",
+            data=data,
+            method="POST",
+        )
+
+
+class ServiceCompletionBulkAPI(CheckmkAPI):
+    def get(self):
+        data = {}
+
+        return self._fetch(
+            code_mapping=HTTP_CODES_BULK_SC,
+            endpoint=("objects/discovery_run/bulk_discovery"),
+            data=data,
+            method="GET",
+        )
+
+
+# If single_mode check if discovery process is already running. If API returns 302, check the service completion endpoint
+# until the discovery has completed successfully (or failed).
+# If not single_mode check if bulk_discovery process is already running. If active, check the service completion endpoint
+# until the bulk_discovery has completed successfully (or failed).
+def wait_for_completion(single_mode, servicecompletion, sleep_time=3):
+    while True:
+        result = servicecompletion.get()
+
+        if single_mode:
+            if result.http_code != 302:
+                break
+        else:
+            if not (json.loads(result.content).get("extensions").get("active")):
+                break
+
+            time.sleep(sleep_time)
+
+    return result
 
 
 def run_module():
@@ -82,87 +280,101 @@ def run_module():
         validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
-        host_name=dict(type="str", required=True),
+        host_name=dict(type="str", required=False),
+        hosts=dict(type="list", elements="str", required=False, default=[]),
         state=dict(
             type="str",
             default="new",
-            choices=["new", "remove", "fix_all", "refresh", "only_host_labels"],
+            choices=[
+                "new",
+                "remove",
+                "fix_all",
+                "refresh",
+                "tabula_rasa",
+                "only_host_labels",
+            ],
         ),
+        do_full_scan=dict(type="bool", default=True),
+        bulk_size=dict(type="int", default=1),
+        ignore_errors=dict(type="bool", default=True),
+    )
+    module = AnsibleModule(
+        argument_spec=module_args,
+        mutually_exclusive=[
+            ("host_name", "hosts"),
+        ],
+        required_one_of=[
+            ("host_name", "hosts"),
+        ],
+        supports_check_mode=False,
     )
 
-    result = dict(changed=False, failed=False, http_code="", msg="")
-
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
-
-    changed = False
-    failed = False
-    http_code = ""
-
-    http_code_mapping = {
-        # http_code: (changed, failed, "Message")
-        200: (True, False, "Discovery successful."),
-        400: (False, True, "Bad Request."),
-        403: (False, True, "Forbidden: Configuration via WATO is disabled."),
-        404: (False, True, "Not Found: Host could not be found."),
-        406: (False, True, "Not Acceptable."),
-        415: (False, True, "Unsupported Media Type."),
-        500: (False, True, "General Server Error."),
-    }
-
-    # Declare headers including authentication to send to the Checkmk API
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s"
-        % (
-            module.params.get("automation_user", ""),
-            module.params.get("automation_secret", ""),
-        ),
-    }
-
-    params = {
-        "mode": module.params.get("state", ""),
-    }
-
-    base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
-        module.params.get("site", ""),
+    result = RESULT(
+        http_code=0,
+        msg="Nothing to be done",
+        content="",
+        etag="",
+        failed=False,
+        changed=False,
     )
 
-    api_endpoint = (
-        "/objects/host/"
-        + module.params.get("host_name")
-        + "/actions/discover_services/invoke"
+    single_mode = not (
+        "hosts" in module.params
+        and module.params.get("hosts")
+        and len(module.params.get("hosts", [])) > 0
     )
-    url = base_url + api_endpoint
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST", timeout=60
-    )
-    http_code = info["status"]
 
-    # Kudos to Lars G.!
-    if http_code in http_code_mapping.keys():
-        changed, failed, msg = http_code_mapping[http_code]
+    discovery = None
+    servicecompletion = None
+
+    if single_mode:
+        discovery = DiscoveryAPI(module)
+        servicecompletion = ServiceCompletionAPI(module)
     else:
-        changed, failed, msg = (
-            False,
-            True,
-            "Error calling API. HTTP Return Code is %d" % http_code,
+        discovery = BulkDiscoveryAPI(module)
+        servicecompletion = ServiceCompletionBulkAPI(module)
+
+    ver = discovery.getversion()
+
+    if single_mode and ver < CheckmkVersion("2.1.0"):
+        discovery = oldDiscoveryAPI(module)
+
+    if ver < CheckmkVersion("2.2.0") and module.params.get("state") == "tabula_rasa":
+        result = RESULT(
+            http_code=0,
+            msg="State 'tabula_rasa' is not supported before 2.2.0",
+            content="",
+            etag="",
+            failed=True,
+            changed=False,
         )
+        module.fail_json(**result_as_dict(result))
 
-    if failed:
-        details = info.get("body", info.get("msg", "N/A"))
-        msg += " Details: %s" % details
+    result = wait_for_completion(single_mode, servicecompletion)
 
-    result["msg"] = msg
-    result["changed"] = changed
-    result["failed"] = failed
-    result["http_code"] = http_code
+    result = discovery.post()
 
-    if result["failed"]:
-        module.fail_json(**result)
+    # In case the API returns 409 (discovery running) we wait and try again.
+    # This can happen as example in versions where the endpoint doesn't respond with the correct redirect.
+    while (single_mode and result.http_code == 409) or (
+        len(module.params.get("hosts", [])) > 0 and result.http_code == 409
+    ):
+        if single_mode:
+            time.sleep(1)
+        else:
+            time.sleep(10)
 
-    module.exit_json(**result)
+        result = discovery.post()
+
+    # If single_mode and the API returns 302, check the service completion endpoint
+    # If not single_mode and the API returns 200, check the service completion endpoint
+    if (single_mode and result.http_code == 302) or (
+        len(module.params.get("hosts", [])) > 0 and result.http_code == 200
+    ):
+        result = wait_for_completion(single_mode, servicecompletion)
+
+    # content of json.loads(result.content).get("extensions").get("logs").get("result") is alos quite interesting
+    module.exit_json(**result_as_dict(result))
 
 
 def main():

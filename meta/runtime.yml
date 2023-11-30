@@ -1,24 +1,16 @@
-requires_ansible: '>=2.11.1'
+requires_ansible: '>=2.12.0'
 
 action_groups:
   checkmk:
     - activation
+    - bakery
+    - contact_group
     - discovery
+    - downtime
     - folder
     - host
-    - downtime
-    - rule
-    - tag_group
     - host_group
+    - rule
     - service_group
-    - contact_group
+    - tag_group
     - user
-
-# plugin_routing:
-#   modules:
-#     foo:
-#       deprecation:
-#         removal_date: 2022-06-01
-#         warning_text: >-
-#           foo was removed in Ansible 2.9.
-#           Please update your tasks.

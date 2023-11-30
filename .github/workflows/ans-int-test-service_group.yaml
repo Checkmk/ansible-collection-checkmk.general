@@ -1,8 +1,20 @@
-# https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# README:
+# - When changing the module name, it needs to be changed in 'env:MODULE_NAME' and in 'on:pull_requests:path'!
+#
+# Resources:
+# - Template for this file: https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# - About Ansible integration tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
+
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
+  MODULE_NAME: service_group
 
 name: Ansible Integration Tests for Service Group Module
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
   pull_request:
     branches:
       - main
@@ -10,16 +22,7 @@ on:
     paths:
       - 'plugins/modules/service_group.py'
 
-env:
-  NAMESPACE: tribe29
-  COLLECTION_NAME: checkmk 
-
 jobs:
-
-###
-# Integration tests (RECOMMENDED)
-#
-# https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
   integration:
     runs-on: ubuntu-latest
@@ -28,38 +31,43 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.12
-          - stable-2.13
+          - stable-2.14
+          - stable-2.15
+          - stable-2.16
           - devel
         python:
-          - '2.7'
-          - '3.6'
-          - '3.7'
           - '3.8'
           - '3.9'
           - '3.10'
           - '3.11'
+          - '3.12'
         exclude:
           # Exclude unsupported sets.
-          - ansible: stable-2.12
-            python: '3.11'
-          - ansible: stable-2.13
-            python: '3.11'
+          - ansible: stable-2.14
+            python: '3.12'
+          - ansible: stable-2.15
+            python: '3.12'
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
+      - name: Provide secrets file
+        run: echo "${{ secrets.CHECKMK_DOWNLOAD_PW }}" > ./tests/integration/files/.dl-secret
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        env:
+          CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
+
       - name: Run integration test
-        run: ansible-test integration service_group -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker
+        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}

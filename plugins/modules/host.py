@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, Robin Gierse <robin.gierse@tribe29.com>
+# Copyright: (c) 2022, Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -20,22 +20,35 @@ version_added: "0.0.1"
 description:
     - Manage hosts within Checkmk.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
         description: The host you want to manage.
         required: true
         type: str
-        aliases: [host_name]
     folder:
-        description: The folder your host is located in.
+        description: The folder your host is located in. On create it defaults to C(/).
         type: str
-        default: /
     attributes:
         description:
             - The attributes of your host as described in the API documentation.
               B(Attention! This option OVERWRITES all existing attributes!)
+              If you are using custom tags, make sure to prepend the attribute with C(tag_).
+        type: raw
+        default: {}
+    update_attributes:
+        description:
+            - The update_attributes of your host as described in the API documentation.
+              This will only update the given attributes.
+              If you are using custom tags, make sure to prepend the attribute with C(tag_).
+        type: raw
+        default: {}
+    remove_attributes:
+        description:
+            - The remove_attributes of your host as described in the API documentation.
+              This will only remove the given attributes.
+              If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
         default: []
     state:
@@ -45,29 +58,30 @@ options:
         choices: [present, absent]
 
 author:
-    - Robin Gierse (@robin-tribe29)
+    - Robin Gierse (@robin-checkmk)
     - Lars Getwan (@lgetwan)
+    - Oliver Gaida (@ogaida)
 """
 
 EXAMPLES = r"""
 # Create a host.
 - name: "Create a host."
-  tribe29.checkmk.host:
-    server_url: "http://localhost/"
+  checkmk.general.host:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_host"
     folder: "/"
     state: "present"
 
 # Create a host with IP.
 - name: "Create a host with IP address."
-  tribe29.checkmk.host:
-    server_url: "http://localhost/"
+  checkmk.general.host:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_host"
     attributes:
       alias: "My Host"
@@ -77,15 +91,64 @@ EXAMPLES = r"""
 
 # Create a host which is monitored on a distinct site.
 - name: "Create a host which is monitored on a distinct site."
-  tribe29.checkmk.host:
-    server_url: "http://localhost/"
+  checkmk.general.host:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_host"
     attributes:
       site: "my_remote_site"
     folder: "/"
+    state: "present"
+
+# Create a host with update_attributes.
+- name: "Create a host which is monitored on a distinct site."
+  checkmk.general.host:
+    server_url: "http://my_server/"
+    site: "my_site"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    name: "my_host"
+    update_attributes:
+      site: "my_remote_site"
+    state: "present"
+
+# Update only specified attributes
+- name: "Update only specified attributes"
+  checkmk.general.host:
+    server_url: "http://my_server/"
+    site: "my_site"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    name: "my_host"
+    update_attributes:
+      alias: "foo"
+    state: "present"
+
+# Remove specified attributes
+- name: "Remove specified attributes"
+  checkmk.general.host:
+    server_url: "http://my_server/"
+    site: "my_site"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    name: "my_host"
+    remove_attributes:
+      - alias
+    state: "present"
+
+# Add custom tags to a host (note the leading 'tag_')
+- name: "Remove specified attributes"
+  checkmk.general.host:
+    server_url: "http://my_server/"
+    site: "my_site"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    name: "my_host"
+    update_attributes:
+      - tag_my_tag_1: "Bar"
+      - tag_my_tag_2: "Foo"
     state: "present"
 """
 
@@ -100,6 +163,7 @@ message:
 import json
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.dict_transformations import dict_merge
 from ansible.module_utils.urls import fetch_url
 
 
@@ -153,10 +217,10 @@ def get_current_host_state(module, base_url, headers):
     return current_state, current_explicit_attributes, current_folder, etag
 
 
-def set_host_attributes(module, attributes, base_url, headers):
+def set_host_attributes(module, attributes, base_url, headers, update_method):
     api_endpoint = "/objects/host_config/" + module.params.get("name")
     params = {
-        "attributes": attributes,
+        update_method: attributes,
     }
     url = base_url + api_endpoint
 
@@ -164,7 +228,9 @@ def set_host_attributes(module, attributes, base_url, headers):
         module, url, module.jsonify(params), headers=headers, method="PUT"
     )
 
-    if info["status"] != 200:
+    if info["status"] == 400 and update_method == "remove_attributes":
+        return "Host attributes allready removed."
+    elif info["status"] != 200:
         exit_failed(
             module,
             "Error calling API. HTTP code %d. Details: %s, "
@@ -252,17 +318,11 @@ def run_module():
         name=dict(
             type="str",
             required=True,
-            aliases=["host_name"],
-            deprecated_aliases=[
-                {
-                    "name": "host_name",
-                    "date": "2024-01-01",
-                    "collection_name": "tribe29.checkmk",
-                }
-            ],
         ),
-        attributes=dict(type="raw", default=[]),
-        folder=dict(type="str", default="/"),
+        attributes=dict(type="raw", default={}),
+        remove_attributes=dict(type="raw", default=[]),
+        update_attributes=dict(type="raw", default={}),
+        folder=dict(type="str", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
@@ -286,11 +346,11 @@ def run_module():
 
     # Determine desired state and attributes
     attributes = module.params.get("attributes", {})
-    if attributes == []:
-        attributes = {}
+    remove_attributes = module.params.get("remove_attributes", [])
+    update_attributes = module.params.get("update_attributes", {})
     state = module.params.get("state", "present")
 
-    if "folder" in module.params:
+    if module.params["folder"]:
         module.params["folder"] = normalize_folder(module.params["folder"])
 
     # Determine the current state of this particular host
@@ -307,14 +367,30 @@ def run_module():
         msg_tokens = []
 
         current_folder = normalize_folder(current_folder)
+        merged_attributes = dict_merge(current_explicit_attributes, update_attributes)
 
-        if current_folder != module.params["folder"]:
+        if module.params["folder"] and current_folder != module.params["folder"]:
             move_host(module, base_url, headers)
             msg_tokens.append("Host was moved.")
 
         if attributes != {} and current_explicit_attributes != attributes:
-            set_host_attributes(module, attributes, base_url, headers)
-            msg_tokens.append("Host attributes changed.")
+            set_host_attributes(module, attributes, base_url, headers, "attributes")
+            msg_tokens.append("Host attributes replaced.")
+
+        if update_attributes != {} and current_explicit_attributes != merged_attributes:
+            set_host_attributes(
+                module, merged_attributes, base_url, headers, "attributes"
+            )
+            msg_tokens.append("Host attributes updated.")
+
+        if remove_attributes != []:
+            msg = set_host_attributes(
+                module, remove_attributes, base_url, headers, "remove_attributes"
+            )
+            if msg == "Host attributes allready removed.":
+                exit_ok(module, msg)
+            else:
+                msg_tokens.append("Host attributes removed.")
 
         if len(msg_tokens) >= 1:
             exit_changed(module, " ".join(msg_tokens))
@@ -322,6 +398,10 @@ def run_module():
             exit_ok(module, "Host already present. All explicit attributes as desired.")
 
     elif state == "present" and current_state == "absent":
+        if update_attributes != {} and attributes == {}:
+            attributes = update_attributes
+        if not module.params["folder"]:
+            module.params["folder"] = "/"
         create_host(module, attributes, base_url, headers)
         exit_changed(module, "Host created.")
 

@@ -8,6 +8,21 @@
 
   tasks:
 
+    - name: "Create folders."
+      tags: [agent]
+      checkmk.general.folder:
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ checkmk_var_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
+        validate_certs: "{{ checkmk_agent_server_validate_certs }}"
+        path: "{{ item.path }}"
+        name: "{{ item.name }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_var_folders }}"
+
     - name: "Run server role."
       tags: [server]
       ansible.builtin.import_role:

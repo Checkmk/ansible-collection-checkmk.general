@@ -1,10 +1,10 @@
 ---
-- name: "{{ outer_item.version }} - Create tag_group."
-  tribe29.checkmk.tag_group:
-    server_url: "{{ server_url }}"
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create tag_group."
+  tag_group:
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     id: Virtualization
     title: Virtualization
     topic: My_Tag_Group
@@ -22,12 +22,21 @@
     state: "present"
   delegate_to: localhost
 
-- name: "{{ outer_item.version }} - Update tag_group."
-  tribe29.checkmk.tag_group:
-    server_url: "{{ server_url }}"
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update tag_group."
+  tag_group:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     id: Virtualization
     title: Hypervisors
     topic: My_Tag_Group
@@ -43,12 +52,21 @@
     state: "present"
   delegate_to: localhost
 
-- name: "{{ outer_item.version }} - Delete tag_group."
-  tribe29.checkmk.tag_group:
-    server_url: "{{ server_url }}"
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete tag_group."
+  tag_group:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     id: Virtualization
     title: Hypervisors
     topic: My_Tag_Group
@@ -63,3 +81,12 @@
         title: Hyper
     state: "absent"
   delegate_to: localhost
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]

@@ -1,0 +1,4 @@
+release_summary: "Welcome to the new world!"
+
+breaking_changes:
+  - The renaming of the collection has concluded. If you are reading this, you on the right release and repository and should be able to use the collection just as you are used to. Make sure to double check, that you are using the new FQCNs!

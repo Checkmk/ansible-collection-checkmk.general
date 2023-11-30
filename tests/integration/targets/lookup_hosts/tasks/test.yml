@@ -1,0 +1,46 @@
+---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create host."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+      alias: "{{ item.alias }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get a list of all hosts."
+  ansible.builtin.debug:
+    msg: "Alias of {{ item.id }} is {{ item.extensions.attributes.alias }}"
+  loop: "{{ lookup('checkmk.general.hosts',
+             server_url=checkmk_var_server_url,
+             site=outer_item.site,
+             validate_certs=False,
+             automation_user=checkmk_var_automation_user,
+             automation_secret=checkmk_var_automation_secret)
+         }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop_control:
+    label: "{{ item.id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of hosts."
+  ansible.builtin.assert:
+    that: "checkmk_hosts|length == hosts|length"
+  vars:
+    hosts: "{{ lookup('checkmk.general.hosts',
+                      server_url=checkmk_var_server_url,
+                      site=outer_item.site,
+                      validate_certs=False,
+                      automation_user=checkmk_var_automation_user,
+                      automation_secret=checkmk_var_automation_secret)
+                  }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]

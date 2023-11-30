@@ -1,9 +1,376 @@
 =============================
-tribe29.checkmk Release Notes
+checkmk.general Release Notes
 =============================
 
 .. contents:: Topics
 
+
+v3.4.0
+======
+
+Release Summary
+---------------
+
+Supporting managed service providers, admins and security. All in one release.
+
+Minor Changes
+-------------
+
+- Agent role - Avoid logging passwords by default for extra security
+- Agent role - Introduce variable to configure agent mode. Refer to the README.
+- Contact group module - Add support for the Checkmk Managed Edition (CME).
+- Host group module - Add support for the Checkmk Managed Edition (CME).
+- Password module - Add support for the Checkmk Managed Edition (CME).
+- Server role - Add new states "enabled" and "disabled" for site management.
+- Server role - Avoid logging passwords by default for extra security
+- Server role - Enable configuration of omd config values. Refer to the README for details.
+- Service group module - Add support for the Checkmk Managed Edition (CME).
+- User module - Add support for the Checkmk Managed Edition (CME).
+
+Bugfixes
+--------
+
+- Agent role - Fix agent port check for agent modes other than "pull".
+
+v3.3.0
+======
+
+Release Summary
+---------------
+
+This is the librarian release: We added some lookups.
+
+Major Changes
+-------------
+
+- Folder lookup plugin - Look up the configuration of a folder.
+- Folders lookup plugin - Look up all folders.
+- Host lookup plugin - Look up the configuration of a host.
+- Hosts lookup plugin - Look up all hosts.
+- Timeperiod module - Add timeperiod module.
+
+Minor Changes
+-------------
+
+- Agent role - Add support for firewall configuration on Debian derivates.
+- Discovery module - Use the version comparison utils.
+- Server role - Site management can now be done without specifying 'admin_pw'.
+- Utils - Provide a class CheckmkVersion to simplify version comparison.
+
+Bugfixes
+--------
+
+- Agent role - Performing the agent registration on a remote would fail, if the host was just created. This release introduces a workaround to enable this.
+- Folder module - When creating a new folder with "attributes" parameter, the attributes were ignored. This is now fixed.
+
+Known Issues
+------------
+
+- Server role - Not having to provide an admin password introduces a problem though, as users could create sites without knowing the randomly generated password. A task is introduced to mitigate this, but the solution there could be improved.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.folder - Get folder attributes
+- checkmk.general.folders - Get various information about a folder
+- checkmk.general.host - Get host attributes
+- checkmk.general.hosts - Get various information about a host
+
+New Modules
+-----------
+
+- checkmk.general.timeperiod - Manage time periods in checkmk.
+
+v3.2.0
+======
+
+Minor Changes
+-------------
+
+- Agent role - Add preflight check for correct Checkmk edition.
+- Agent role - Allow the role to download folder-specific agents.
+- Server role - Add preflight check for correct Checkmk edition.
+
+Bugfixes
+--------
+
+- Agent role - Fix activation handler URL.
+- Agent role - Fix agent and update registration on remote sites.
+
+v3.1.0
+======
+
+Release Summary
+---------------
+
+It is summer and you want to look outside, so we added Windows.
+
+Major Changes
+-------------
+
+- Agent role - Add support for Windows.
+- Version lookup plugin - Add Version lookup plugin.
+
+Minor Changes
+-------------
+
+- Discovery module - Add handling for 409 response.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.version - Get the version of a Checkmk server
+
+v3.0.0
+======
+
+Release Summary
+---------------
+
+Removing deprecated module options and more cleaning.
+
+Minor Changes
+-------------
+
+- Agent role - Allow throttling of discovery task to limit load on Checkmk server.
+- Folder module - Warn about mutually exclusive attribute options on older Checkmk versions and fail on recent Checkmk versions. See 'Breaking Changes'.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Folder module - The module options 'attributes', 'update_attributes' and 'remove_attributes' are now mutually exclusive. Using more than one on a single task will cause a warning or error.
+- Host group module - Deprecated options 'host_group_name' and 'host_groups' were removed. Use 'name' and 'groups' instead!
+- Host module - Deprecated option 'host_name' was removed. Use 'name' instead!
+- Rule module - Deprecated option 'folder' was removed. Use 'location' instead!
+
+v2.4.1
+======
+
+Minor Changes
+-------------
+
+- Agent role - The activate changes handler was missing the server port. This is fixed now.
+
+v2.4.0
+======
+
+Release Summary
+---------------
+
+Enabling more operating systems!
+
+Minor Changes
+-------------
+
+- Agent role - Ensure fresh data before adding services to host.
+- Agent role - Ensure support for Debian 12.
+- Discovery module - Improve resilience and stability.
+- Server role - Add feature to clean up unused Checkmk versions on the server.
+- Server role - Enable explicit support for Oracle Linux 8.
+- Server role - Ensure explicit support for Debian 12.
+
+Known Issues
+------------
+
+- Discovery module - The module does not work on a controller host with Python 2.
+
+v2.3.0
+======
+
+Release Summary
+---------------
+
+Features all over the place!
+
+Major Changes
+-------------
+
+- Discovery module - Add support for bulk discoveries.
+- Password module - Add password module.
+
+Minor Changes
+-------------
+
+- Server role - Add support for RHEL and CentOS 9
+- Utils - Introduce retries for API calls in case of timeouts.
+
+New Modules
+-----------
+
+- checkmk.general.password - Manage passwords in checkmk.
+
+v2.2.0
+======
+
+Release Summary
+---------------
+
+Extend OS support in roles and fix some minor issues in modules.
+
+Minor Changes
+-------------
+
+- Activation module - Properly add If-Match header.
+- Agent role - Add support for AlmaLinux and Rocky Linux, both versions 8 and 9.
+- Agent role - Bump default Checkmk version to 2.2.0.
+- Module utils - Remove workaround from version 2.1.0, where all modules were passed the If-Match header.
+- Server role - Add support for AlmaLinux and Rocky Linux, both versions 8 and 9.
+- Server role - Bump default Checkmk version to 2.2.0.
+
+Bugfixes
+--------
+
+- Downtime module - The comment has a default value now
+
+v2.1.0
+======
+
+Major Changes
+-------------
+
+- Bakery module - Migrated to use module_utils.
+- Discovery module - Migrated to use module_utils.
+- contact_group module - The module was not compatible with Checkmk 2.2. This is fixed now.
+- host_group module - The module was not compatible with Checkmk 2.2. This is fixed now.
+- service_group module - The module was not compatible with Checkmk 2.2. This is fixed now.
+
+Bugfixes
+--------
+
+- Discovery module - Properly handle redirects to wait for completion of background jobs.
+- Downtime module - The module handles timezones properly now.
+- Integration tests - A bug was fixed, where the integration tests did not use the correct Checkmk version.
+- Utils - With Checkmk 2.2.0p3 the activation introduces a breaking change, which we need to handle. As a workaround we added the 'If-Match' header to all API requests.
+
+Known Issues
+------------
+
+- Utils - All API calls send the 'If-Match' header. This is a workaround and will be fixed in a future release.
+
+v2.0.0
+======
+
+Release Summary
+---------------
+
+Welcome to the new world!
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- The renaming of the collection has concluded. If you are reading this, you on the right release and repository and should be able to use the collection just as you are used to. Make sure to double check, that you are using the new FQCNs!
+
+v1.0.0
+======
+
+Release Summary
+---------------
+
+This collection was renamed to checkmk.general. Please use the new name moving forward!
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- This collection was renamed and module redirects have been activated. That means, if you are using this release, you also need the new collection to be installed. Otherwise things will break for you. In any way you should now move to the new collection name: checkmk.general.
+
+v0.23.0
+=======
+
+Major Changes
+-------------
+
+- folder module - Add support for 'update_attributes' and 'remove_attributes'. Read the documentation for further details.
+
+Minor Changes
+-------------
+
+- folder module - Add support for check mode.
+- tag_group module - Code cleanup. Should have no effect on functionality, but mentioning it here for transparency.
+
+v0.22.0
+=======
+
+Release Summary
+---------------
+
+Further centralizing.
+
+Major Changes
+-------------
+
+- module_utils - Extend centralization by providing types and further utils.
+
+Minor Changes
+-------------
+
+- Playbooks - Reorganize and clean up playbooks. This is a constant work in progress.
+
+v0.21.0
+=======
+
+Major Changes
+-------------
+
+- Add Bakery module
+
+Minor Changes
+-------------
+
+- Server role - Added support for almalinux
+
+Bugfixes
+--------
+
+- Agent role - Fix activate changes handler failing with self-signed certificate
+
+New Modules
+-----------
+
+- checkmk.general.bakery - Trigger baking and signing in the agent bakery.
+
+v0.20.0
+=======
+
+Minor Changes
+-------------
+
+- Agent role - Make firewall zone configurable on RedHat derivates.
+- Host module - Enable update and removal of attributes in addition to fully managing them. This is analogous to the Checkmk REST API. Additionally the "folder" attribute has no default value anymore except on creation.
+
+Bugfixes
+--------
+
+- Rule module - Fix crash, if the Checkmk REST API does not return a value for the "disabled" property.
+
+v0.19.0
+=======
+
+Release Summary
+---------------
+
+Centralizing functions.
+
+Major Changes
+-------------
+
+- We dropped support for Ansible 2.11 and Python 2 entirely. That means you can still use this collection with older versions, we just do not test against them anymore.
+- module_utils - Introduce a centralized library to call the Checkmk API.
+
+Minor Changes
+-------------
+
+- We added support for Ansible 2.14.
+
+Bugfixes
+--------
+
+- User module - Fix creation of automation users.
 
 v0.18.0
 =======
@@ -28,7 +395,7 @@ Known Issues
 New Modules
 -----------
 
-- tribe29.checkmk.user - Manage users in Checkmk.
+- checkmk.general.user - Manage users in Checkmk.
 
 v0.17.1
 =======
@@ -170,7 +537,7 @@ Bugfixes
 New Modules
 -----------
 
-- tribe29.checkmk.contact_group - Manage contact groups in Checkmk (bulk version).
+- checkmk.general.contact_group - Manage contact groups in Checkmk (bulk version).
 
 v0.11.0
 =======
@@ -190,8 +557,8 @@ Minor Changes
 New Modules
 -----------
 
-- tribe29.checkmk.host_group - Manage host groups in Checkmk (bulk version).
-- tribe29.checkmk.tag_group - Manage tag_group within Checkmk
+- checkmk.general.host_group - Manage host groups in Checkmk (bulk version).
+- checkmk.general.tag_group - Manage tag_group within Checkmk
 
 v0.10.0
 =======
@@ -214,7 +581,7 @@ Known Issues
 New Modules
 -----------
 
-- tribe29.checkmk.rule - Manage rules in Checkmk.
+- checkmk.general.rule - Manage rules in Checkmk.
 
 v0.9.0
 ======
@@ -400,7 +767,7 @@ Known Issues
 New Modules
 -----------
 
-- tribe29.checkmk.downtime - Manage downtimes in Checkmk.
+- checkmk.general.downtime - Manage downtimes in Checkmk.
 
 v0.1.0
 ======
@@ -459,7 +826,7 @@ Known Issues
 New Modules
 -----------
 
-- tribe29.checkmk.activation - Activate changes in Checkmk.
-- tribe29.checkmk.discovery - discovery services in Checkmk.
-- tribe29.checkmk.folder - Manage folders in Checkmk.
-- tribe29.checkmk.host - Manage hosts in Checkmk.
+- checkmk.general.activation - Activate changes in Checkmk.
+- checkmk.general.discovery - discovery services in Checkmk.
+- checkmk.general.folder - Manage folders in Checkmk.
+- checkmk.general.host - Manage hosts in Checkmk.

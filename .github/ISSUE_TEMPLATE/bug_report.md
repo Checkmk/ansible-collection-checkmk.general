@@ -3,11 +3,11 @@ name: Bug report
 about: Create a report to help us improve
 title: "[BUG]"
 labels: bug
-assignees: robin-tribe29
+assignees: robin-checkmk
 
 ---
 
-Verify first that your issue is not already reported [here](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
+Verify first that your issue is not already reported [here](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
 Where possible also test if the latest release and main branch are affected too.
 Complete all sections as described!
 
@@ -15,8 +15,8 @@ Complete all sections as described!
 <!--  A clear and concise description of what the bug is. -->
 
 **Component Name**
-<!--  Write the short name of the module or plugin below, use your best guess if unsure. -->
-e.g. `activation`
+<!--  Write the short name of the module or plugin below, use your best guess if unsure. Keeping the below syntax helps us match the issues to labels. -->
+Component Name: activation
 
 **Ansible Version**
 <!-- Paste verbatim output from `ansible --version` between triple backticks. -->
@@ -25,8 +25,8 @@ $ ansible --version
 
 ```
 
-**Checkmk Version**
-<!-- Paste the version string, that can be found in the 'Help' menu. -->
+**Checkmk Version and Edition**
+<!-- Paste the version string, that can be found in the 'Help' menu. Please make sure to include the edition!-->
 ```console
 e.g. 2.X.YpZ (CRE)
 ```
@@ -37,8 +37,6 @@ e.g. 2.X.YpZ (CRE)
 $ ansible-galaxy collection list
 
 ```
-**Environment**
-<!-- Provide all relevant information below, e.g. control node OS versions, Python version, etc. -->
 
 **To Reproduce**
 Steps to reproduce the behavior:
@@ -53,8 +51,11 @@ Steps to reproduce the behavior:
 **Actual behavior**
 <!-- A clear and concise description of what actually happens. -->
 
-**Screenshots**
-<!-- If applicable, add screenshots to help explain your problem. -->
+**Minimum reproduction example**
+<!-- If you can, please provide a minimum example of your configuration. This really helps us quickly understand the situation. -->
+```yaml
+
+```
 
 **Additional context**
-<!-- Add any other context about the problem here. -->
+<!-- Add any other context, e.g. OS information about control and managed node, screenshots or background information about the problem. -->

@@ -6,53 +6,37 @@
 .. |antsibull-internal-nbsp| unicode:: 0xA0
     :trim:
 
-.. role:: ansible-attribute-support-label
-.. role:: ansible-attribute-support-property
-.. role:: ansible-attribute-support-full
-.. role:: ansible-attribute-support-partial
-.. role:: ansible-attribute-support-none
-.. role:: ansible-attribute-support-na
-.. role:: ansible-option-type
-.. role:: ansible-option-elements
-.. role:: ansible-option-required
-.. role:: ansible-option-versionadded
-.. role:: ansible-option-aliases
-.. role:: ansible-option-choices
-.. role:: ansible-option-choices-default-mark
-.. role:: ansible-option-default-bold
-.. role:: ansible-option-configuration
-.. role:: ansible-option-returned-bold
-.. role:: ansible-option-sample-bold
+.. meta::
+  :antsibull-docs: 2.5.0
 
 .. Anchors
 
-.. _ansible_collections.tribe29.checkmk.user_module:
+.. _ansible_collections.checkmk.general.user_module:
 
 .. Anchors: short name for ansible.builtin
 
-.. Anchors: aliases
-
-
-
 .. Title
 
-tribe29.checkmk.user module -- Manage users in Checkmk.
+checkmk.general.user module -- Manage users in Checkmk.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.18.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
 
-    To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To use it in a playbook, specify: :code:`tribe29.checkmk.user`.
+    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
+
+    To use it in a playbook, specify: :code:`checkmk.general.user`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in tribe29.checkmk 0.18.0
+New in checkmk.general 0.18.0
 
 .. contents::
    :local:
@@ -84,12 +68,13 @@ Synopsis
 Parameters
 ----------
 
-.. rst-class:: ansible-option-table
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
 .. list-table::
   :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Parameter
     - Comments
@@ -99,7 +84,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-auth_type"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-auth_type:
+      .. _ansible_collections.checkmk.general.user_module__parameter-auth_type:
 
       .. rst-class:: ansible-option-title
 
@@ -109,9 +94,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-auth_type" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -129,7 +114,7 @@ Parameters
       :ansible-option-choices:`Choices:`
 
       - :ansible-option-choices-entry:`"password"`
-      - :ansible-option-choices-entry:`"secret"`
+      - :ansible-option-choices-entry:`"automation"`
 
 
       .. raw:: html
@@ -141,7 +126,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-authorized_sites"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-authorized_sites:
+      .. _ansible_collections.checkmk.general.user_module__parameter-authorized_sites:
 
       .. rst-class:: ansible-option-title
 
@@ -151,9 +136,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-authorized_sites" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`any`
+        :ansible-option-type:`any`
 
       .. raw:: html
 
@@ -175,7 +160,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.user_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -185,9 +170,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-automation_secret" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -209,7 +194,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.user_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -219,9 +204,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-automation_user" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -243,7 +228,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-contactgroups"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-contactgroups:
+      .. _ansible_collections.checkmk.general.user_module__parameter-contactgroups:
 
       .. rst-class:: ansible-option-title
 
@@ -253,9 +238,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-contactgroups" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`any`
+        :ansible-option-type:`any`
 
       .. raw:: html
 
@@ -275,9 +260,43 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-customer"></div>
+
+      .. _ansible_collections.checkmk.general.user_module__parameter-customer:
+
+      .. rst-class:: ansible-option-title
+
+      **customer**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-customer" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-disable_login"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-disable_login:
+      .. _ansible_collections.checkmk.general.user_module__parameter-disable_login:
 
       .. rst-class:: ansible-option-title
 
@@ -287,9 +306,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-disable_login" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`boolean`
+        :ansible-option-type:`boolean`
 
       .. raw:: html
 
@@ -319,7 +338,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-disable_notifications"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-disable_notifications:
+      .. _ansible_collections.checkmk.general.user_module__parameter-disable_notifications:
 
       .. rst-class:: ansible-option-title
 
@@ -329,9 +348,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-disable_notifications" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`any`
+        :ansible-option-type:`any`
 
       .. raw:: html
 
@@ -353,7 +372,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-email"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-email:
+      .. _ansible_collections.checkmk.general.user_module__parameter-email:
 
       .. rst-class:: ansible-option-title
 
@@ -363,9 +382,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-email" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -387,7 +406,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-enforce_password_change"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-enforce_password_change:
+      .. _ansible_collections.checkmk.general.user_module__parameter-enforce_password_change:
 
       .. rst-class:: ansible-option-title
 
@@ -397,9 +416,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-enforce_password_change" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`boolean`
+        :ansible-option-type:`boolean`
 
       .. raw:: html
 
@@ -429,7 +448,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-fallback_contact"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-fallback_contact:
+      .. _ansible_collections.checkmk.general.user_module__parameter-fallback_contact:
 
       .. rst-class:: ansible-option-title
 
@@ -439,9 +458,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-fallback_contact" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`boolean`
+        :ansible-option-type:`boolean`
 
       .. raw:: html
 
@@ -471,7 +490,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-fullname"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-fullname:
+      .. _ansible_collections.checkmk.general.user_module__parameter-fullname:
 
       .. rst-class:: ansible-option-title
 
@@ -481,9 +500,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-fullname" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -505,7 +524,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-idle_timeout_duration"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-idle_timeout_duration:
+      .. _ansible_collections.checkmk.general.user_module__parameter-idle_timeout_duration:
 
       .. rst-class:: ansible-option-title
 
@@ -515,9 +534,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-idle_timeout_duration" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -539,7 +558,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-idle_timeout_option"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-idle_timeout_option:
+      .. _ansible_collections.checkmk.general.user_module__parameter-idle_timeout_option:
 
       .. rst-class:: ansible-option-title
 
@@ -549,9 +568,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-idle_timeout_option" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -582,7 +601,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-language"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-language:
+      .. _ansible_collections.checkmk.general.user_module__parameter-language:
 
       .. rst-class:: ansible-option-title
 
@@ -592,9 +611,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-language" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -626,7 +645,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-name:
+      .. _ansible_collections.checkmk.general.user_module__parameter-name:
 
       .. rst-class:: ansible-option-title
 
@@ -636,9 +655,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -660,7 +679,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-pager_address"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-pager_address:
+      .. _ansible_collections.checkmk.general.user_module__parameter-pager_address:
 
       .. rst-class:: ansible-option-title
 
@@ -670,9 +689,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-pager_address" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -694,7 +713,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-password"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-password:
+      .. _ansible_collections.checkmk.general.user_module__parameter-password:
 
       .. rst-class:: ansible-option-title
 
@@ -704,9 +723,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-password" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -728,7 +747,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-roles"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-roles:
+      .. _ansible_collections.checkmk.general.user_module__parameter-roles:
 
       .. rst-class:: ansible-option-title
 
@@ -738,9 +757,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-roles" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`any`
+        :ansible-option-type:`any`
 
       .. raw:: html
 
@@ -762,7 +781,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.user_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -772,9 +791,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-server_url" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -796,7 +815,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-site:
+      .. _ansible_collections.checkmk.general.user_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -806,9 +825,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-site" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -830,7 +849,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-state:
+      .. _ansible_collections.checkmk.general.user_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -840,9 +859,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -873,7 +892,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.user_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -883,9 +902,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-validate_certs" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`boolean`
+        :ansible-option-type:`boolean`
 
       .. raw:: html
 
@@ -930,13 +949,14 @@ Examples
     
     # Create a user.
     - name: "Create a user."
-      tribe29.checkmk.user:
+      checkmk.general.user:
         server_url: "http://localhost/"
         site: "local"
         automation_user: "automation"
         automation_secret: "$SECRET"
         name: "krichards"
         fullname: "Keith Richards"
+        customer: "provider"
         email: "keith.richards@rollingstones.com"
         password: "Open-G"
         contactgroups:
@@ -948,14 +968,15 @@ Examples
 
     # Create an automation user.
     - name: "Create an automation user."
-      tribe29.checkmk.user:
+      checkmk.general.user:
         server_url: "http://localhost/"
         site: "local"
         automation_user: "automation"
         automation_secret: "$SECRET"
         name: "registration"
         fullname: "Registration User"
-        auth_type: "secret"
+        customer: "provider"
+        auth_type: "automation"
         password: "ZGSDHUVDSKJHSDF"
         roles:
             - "registration"
@@ -963,13 +984,14 @@ Examples
 
     # Create a detailed user.
     - name: "Create a detailed user."
-      tribe29.checkmk.user:
+      checkmk.general.user:
         server_url: "http://localhost/"
         site: "local"
         automation_user: "automation"
         automation_secret: "$SECRET"
         name: "horst"
         fullname: "Horst Schlämmer"
+        customer: "provider"
         auth_type: "password"
         password: "uschi"
         enforce_password_change: True
@@ -1000,12 +1022,13 @@ Return Values
 -------------
 Common return values are documented :ref:`here <common_return_values>`, the following are the fields unique to this module:
 
-.. rst-class:: ansible-option-table
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
 .. list-table::
   :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Key
     - Description
@@ -1015,7 +1038,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-message"></div>
 
-      .. _ansible_collections.tribe29.checkmk.user_module__return-message:
+      .. _ansible_collections.checkmk.general.user_module__return-message:
 
       .. rst-class:: ansible-option-title
 
@@ -1025,9 +1048,9 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -1073,12 +1096,15 @@ Authors
 Collection links
 ~~~~~~~~~~~~~~~~
 
-.. raw:: html
+.. ansible-links::
 
-  <p class="ansible-links">
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
-  </p>
+  - title: "Issue Tracker"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"
+    external: true
+  - title: "Repository (Sources)"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general"
+    external: true
+
 
 .. Parsing errors
 

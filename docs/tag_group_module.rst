@@ -6,53 +6,37 @@
 .. |antsibull-internal-nbsp| unicode:: 0xA0
     :trim:
 
-.. role:: ansible-attribute-support-label
-.. role:: ansible-attribute-support-property
-.. role:: ansible-attribute-support-full
-.. role:: ansible-attribute-support-partial
-.. role:: ansible-attribute-support-none
-.. role:: ansible-attribute-support-na
-.. role:: ansible-option-type
-.. role:: ansible-option-elements
-.. role:: ansible-option-required
-.. role:: ansible-option-versionadded
-.. role:: ansible-option-aliases
-.. role:: ansible-option-choices
-.. role:: ansible-option-choices-default-mark
-.. role:: ansible-option-default-bold
-.. role:: ansible-option-configuration
-.. role:: ansible-option-returned-bold
-.. role:: ansible-option-sample-bold
+.. meta::
+  :antsibull-docs: 2.5.0
 
 .. Anchors
 
-.. _ansible_collections.tribe29.checkmk.tag_group_module:
+.. _ansible_collections.checkmk.general.tag_group_module:
 
 .. Anchors: short name for ansible.builtin
 
-.. Anchors: aliases
-
-
-
 .. Title
 
-tribe29.checkmk.tag_group module -- Manage tag\_group within Checkmk
+checkmk.general.tag_group module -- Manage tag\_group within Checkmk
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `tribe29.checkmk collection <https://galaxy.ansible.com/tribe29/checkmk>`_ (version 0.18.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
 
-    To install it, use: :code:`ansible-galaxy collection install tribe29.checkmk`.
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To use it in a playbook, specify: :code:`tribe29.checkmk.tag_group`.
+    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
+
+    To use it in a playbook, specify: :code:`checkmk.general.tag_group`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in tribe29.checkmk 0.11.0
+New in checkmk.general 0.11.0
 
 .. contents::
    :local:
@@ -84,12 +68,13 @@ Synopsis
 Parameters
 ----------
 
-.. rst-class:: ansible-option-table
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
 .. list-table::
   :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Parameter
     - Comments
@@ -99,7 +84,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -109,9 +94,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-automation_secret" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -133,7 +118,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -143,9 +128,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-automation_user" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -167,7 +152,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-choices"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-choices:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-choices:
 
       .. rst-class:: ansible-option-title
 
@@ -177,9 +162,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-choices" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
 
       .. raw:: html
 
@@ -205,7 +190,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-id"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-id:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-id:
 
       .. rst-class:: ansible-option-title
 
@@ -215,9 +200,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-id" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -243,7 +228,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -253,9 +238,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-server_url" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -277,7 +262,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-site:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -287,9 +272,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-site" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -311,7 +296,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-state:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -321,9 +306,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -353,7 +338,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-title"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-title:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-title:
 
       .. rst-class:: ansible-option-title
 
@@ -363,9 +348,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-title" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -391,7 +376,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-topic"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-topic:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-topic:
 
       .. rst-class:: ansible-option-title
 
@@ -401,9 +386,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-topic" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -429,7 +414,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -439,9 +424,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-validate_certs" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`boolean`
+        :ansible-option-type:`boolean`
 
       .. raw:: html
 
@@ -485,7 +470,7 @@ Examples
 
     
     - name: "Create tag_group"
-      tribe29.checkmk.tag_group:
+      checkmk.general.tag_group:
         server_url: "https://localhost/"
         site: "my_site"
         automation_user: "automation"
@@ -494,17 +479,17 @@ Examples
         title: Virtualization
         topic: My_Tags
         choices:
-            - id: No_Virtualization
-              title: No Virtualization
-            - id: ESXi
-              title: ESXi
-            - id: vCenter
-              title: vCenter
-            - id: HyperV
-              title: HyperV
-            - id: KVM
-              title: KVM
-      state: present
+          - id: No_Virtualization
+            title: No Virtualization
+          - id: ESXi
+            title: ESXi
+          - id: vCenter
+            title: vCenter
+          - id: HyperV
+            title: HyperV
+          - id: KVM
+            title: KVM
+        state: present
 
 
 
@@ -518,12 +503,13 @@ Return Values
 -------------
 Common return values are documented :ref:`here <common_return_values>`, the following are the fields unique to this module:
 
-.. rst-class:: ansible-option-table
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
 .. list-table::
   :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Key
     - Description
@@ -533,7 +519,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-http_code"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__return-http_code:
+      .. _ansible_collections.checkmk.general.tag_group_module__return-http_code:
 
       .. rst-class:: ansible-option-title
 
@@ -543,9 +529,9 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <a class="ansibleOptionLink" href="#return-http_code" title="Permalink to this return value"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`integer`
+        :ansible-option-type:`integer`
 
       .. raw:: html
 
@@ -578,7 +564,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-message"></div>
 
-      .. _ansible_collections.tribe29.checkmk.tag_group_module__return-message:
+      .. _ansible_collections.checkmk.general.tag_group_module__return-message:
 
       .. rst-class:: ansible-option-title
 
@@ -588,9 +574,9 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -636,12 +622,15 @@ Authors
 Collection links
 ~~~~~~~~~~~~~~~~
 
-.. raw:: html
+.. ansible-links::
 
-  <p class="ansible-links">
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/tribe29/ansible-collection-tribe29.checkmk" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
-  </p>
+  - title: "Issue Tracker"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"
+    external: true
+  - title: "Repository (Sources)"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general"
+    external: true
+
 
 .. Parsing errors
 

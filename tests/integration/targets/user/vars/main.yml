@@ -1,21 +1,50 @@
 ---
-checkmk_versions:
-  - version: "2.2.0b1"
-    site: "beta"
-  - version: "2.1.0p24"
-    site: "stable"
-download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-raw-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"
-site: "test"
-server_url: "http://127.0.0.1/"
-automation_user: "cmkadmin"
-automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
+test_sites:
+  - version: "2.2.0p14"
+    edition: "cme"
+    site: "stable_cme"
+  - version: "2.2.0p14"
+    edition: "cre"
+    site: "stable_raw"
+  - version: "2.2.0p14"
+    edition: "cee"
+    site: "stable_ent"
+  - version: "2.1.0p36"
+    edition: "cre"
+    site: "old_raw"
 
-checkmk_contact_groups:
+checkmk_var_server_url: "http://127.0.0.1/"
+checkmk_var_automation_user: "cmkadmin"
+checkmk_var_automation_secret: "d7589df1"
+
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
+download_user: "d-gh-ansible-dl"
+download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret', errors='ignore') | default(omit) }}"  # noqa yaml[line-length]
+
+# Due to inconsistent naming of editions, we normalize them here for convenience
+checkmk_server_edition_mapping:
+  cre: raw
+  cfe: free
+  cee: enterprise
+  cce: cloud
+  cme: managed
+
+checkmk_var_contact_groups:
   - team1
   - team2
   - team3
 
-checkmk_users:
+checkmk_var_users:
+  - name: admin1
+    fullname: Admin Eins
+    password: "123"
+    newpassword: "abc"
+    auth_type: password
+    email: 123@company.com
+    contactgroups: []
+    roles:
+      - admin
+    fallback_contact: true
   - name: user1
     fullname: User Eins
     password: "123"

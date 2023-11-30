@@ -1,12 +1,13 @@
 ---
 - name: "Activate Changes."
   listen: activate changes
-  tribe29.checkmk.activation:
-    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}"
+  checkmk.general.activation:
+    server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
     site: "{{ checkmk_agent_site }}"
     automation_user: "{{ checkmk_agent_user }}"
     automation_secret: "{{ checkmk_agent_auth }}"
     force_foreign_changes: "{{ checkmk_agent_force_foreign_changes }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs }}"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   run_once: true  # noqa run-once[task]
   when: checkmk_agent_auto_activate | bool

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, diademiemi <emilia@diademiemi.me> & Robin Gierse <robin.gierse@tribe29.com>
+# Copyright: (c) 2022, diademiemi <emilia@diademiemi.me> & Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -21,7 +21,7 @@ description:
     - Manage rules within Checkmk. Importing rules from the output of the Checkmk API.
     - Make sure these were exported with Checkmk 2.1.0p10 or above. See https://checkmk.com/werk/14670 for more information.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     rule:
@@ -61,12 +61,6 @@ options:
                             - Mutually exclusive with I(rule_id).
                         default: "/"
                         type: str
-            folder:
-                description:
-                  - Folder of the rule.
-                  - Deprecated, use I(location) instead.
-                  - Mutually exclusive with I(location).
-                type: str
             conditions:
                 description: Conditions of the rule.
                 type: dict
@@ -99,103 +93,135 @@ EXAMPLES = r"""
 # Create a rule in checkgroup_parameters:memory_percentage_used
 # at the top of the main folder.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
-  tribe29.checkmk.rule:
-    server_url: "http://localhost/"
+  checkmk.general.rule:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_labels": [],
-            "host_name": {
-                "match_on": [
-                    "test1.tld"
-                ],
-                "operator": "one_of"
-            },
-            "host_tags": [],
-            "service_labels": []
-        }
-        properties: {
-            "comment": "Warning at 80%\nCritical at 90%\n",
-            "description": "Allow higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
-        }
+      conditions: {
+        "host_labels": [],
+        "host_name": {
+          "match_on": [
+            "test1.tld"
+          ],
+          "operator": "one_of"
+        },
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 80%\nCritical at 90%\n",
+        "description": "Allow higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (80.0, 90.0)}"
+      location:
         folder: "/"
-        value_raw: "{'levels': (80.0, 90.0)}"
-        location:
-            folder: "/"
-            position: "top"
+        position: "top"
     state: "present"
-    register: response
+  register: response
 
 - name: Show the ID of the new rule
-  debug:
+  ansible.builtin.debug:
     msg: "RULE ID : {{ response.id }}"
 
 # Create another rule in checkgroup_parameters:memory_percentage_used
 # and put it after the rule created above.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
-  tribe29.checkmk.rule:
-    server_url: "http://localhost/"
+  checkmk.general.rule:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_labels": [],
-            "host_name": {
-                "match_on": [
-                    "test2.tld"
-                ],
-                "operator": "one_of"
-            },
-            "host_tags": [],
-            "service_labels": []
-        }
-        properties: {
-            "comment": "Warning at 85%\nCritical at 99%\n",
-            "description": "Allow even higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
-        }
-        value_raw: "{'levels': (85.0, 99.0)}"
-        location:
-            position: "after"
-            rule_id: "{{ response.id }}"
+      conditions: {
+        "host_labels": [],
+        "host_name": {
+          "match_on": [
+            "test2.tld"
+          ],
+          "operator": "one_of"
+        },
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 85%\nCritical at 99%\n",
+        "description": "Allow even higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (85.0, 99.0)}"
+      location:
+        position: "after"
+        rule_id: "{{ response.id }}"
     state: "present"
 
 # Delete the first rule.
 - name: "Delete a rule."
-  tribe29.checkmk.rule:
-    server_url: "http://localhost/"
+  checkmk.general.rule:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_labels": [],
-            "host_name": {
-                "match_on": [
-                    "test1.tld"
-                ],
-                "operator": "one_of"
-            },
-            "host_tags": [],
-            "service_labels": []
-        }
-        properties: {
-            "comment": "Warning at 80%\nCritical at 90%\n",
-            "description": "Allow higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/tribe29/ansible-collection-tribe29.checkmk/blob/main/plugins/modules/rules.py"
-        }
-        value_raw: "{'levels': (80.0, 90.0)}"
+      conditions: {
+        "host_labels": [],
+        "host_name": {
+          "match_on": [
+            "test1.tld"
+          ],
+          "operator": "one_of"
+        },
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 80%\nCritical at 90%\n",
+        "description": "Allow higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (80.0, 90.0)}"
     state: "absent"
+
+# Create a rule rule matching a host label
+- name: "Create a rule matching a label."
+  checkmk.general.rule:
+    server_url: "http://my_server/"
+    site: "my_site"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      conditions: {
+        "host_labels": [
+          {
+          "key": "cmk/check_mk_server",
+          "operator": "is",
+          "value": "yes"
+          }
+        ],
+        "host_name": {},
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 80%\nCritical at 90%\n",
+        "description": "Allow higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (80.0, 90.0)}"
+      location:
+        folder: "/"
+        position: "top"
+    state: "present"
 """
 
 RETURN = r"""
@@ -283,8 +309,8 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
             if (
                 r["extensions"]["folder"] == rule["folder"]
                 and r["extensions"]["conditions"] == rule["conditions"]
-                and r["extensions"]["properties"]["disabled"]
-                == rule["properties"]["disabled"]
+                and r["extensions"]["properties"].get("disabled", "")
+                == rule["properties"].get("disabled", "")
                 and value_api == value_mod
             ):
                 # If they are the same, return the ID
@@ -418,7 +444,6 @@ def run_module():
             type="dict",
             required=True,
             options=dict(
-                folder=dict(type="str"),
                 conditions=dict(type="dict"),
                 properties=dict(type="dict"),
                 value_raw=dict(type="str"),
@@ -444,16 +469,8 @@ def run_module():
                     ],
                     mutually_exclusive=[("folder", "rule_id")],
                     apply_defaults=True,
-                    deprecated_aliases=[
-                        dict(
-                            name="folder",
-                            collection_name="tribe29.checkmk",
-                            version="1.0.0",
-                        ),
-                    ],
                 ),
             ),
-            mutually_exclusive=[("folder", "location")],
         ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )

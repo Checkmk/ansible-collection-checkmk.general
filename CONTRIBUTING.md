@@ -24,7 +24,7 @@ There are several ways in which you can contribute:
 
 1. Submit an [issue](#Submitting-Issues).
 2. Create a [pull request](#Pull-Requests).
-3. Pick an [issue, which needs help](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+3. Pick an [issue, which needs help](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
 
 Everything helps, really!
 We do test everything to the best of our abilities, but nothing beats real world
@@ -33,17 +33,18 @@ the functionality, [pull requests](#Pull-Requests) are appreciated.
 
 ### Submitting Issues
 
-If you encounter any bugs or have ideas for improvements feel free to open an [issue](https://github.com/tribe29/ansible-collection-tribe29.checkmk/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) or even better a [pull request](#Pull-Requests).
+If you encounter any bugs or have ideas for improvements feel free to open an [issue](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) or even better a [pull request](#Pull-Requests).
 Dedicated requirements will be added here as suitable.
 
 ### Pull Requests
 
-Please open a [pull request](https://github.com/tribe29/ansible-collection-tribe29.checkmk/pulls?q=is%3Apr+is%3Aopen)
+Please open a [pull request](https://github.com/Checkmk/ansible-collection-checkmk.general/pulls?q=is%3Apr+is%3Aopen)
 if you have something to contribute.
 On pull request creation, checks will run and tell you,
 if your changes work with the collection. If errors are detected, please try to
 fix them and update your pull request accordingly.
 If you need help, do ask for it.
+After submitting a PR, follow the instructions to sign the [CLA](https://github.com/Checkmk/checkmk/blob/master/doc/cla/cla_readme.md) as asked by the bot.
 
 ### Changelog
 
@@ -84,13 +85,17 @@ There are different approaches to the module options, depending on the nature of
 
 It is possible to implement an alias for a module option. This should be used rather carefully to not clutter the options. However, they can be an option, if one is uncertain how to name an option, or to deprecate an option, before actually removing it. If in doubt, feel free to ask for review in your PR.
 
-### Roles
-The following are guidelines to keep in mind, when changing roles.
+### Roles and Playbooks
+The following are guidelines to keep in mind, when creating or changing roles and playbooks.
 - Variables
     - Use snake case (`snake_case_variable`)
+    - Name variables after their purpose.
+        - `checkmk_server_foo` for a server role variable
+        - `checkmk_agent_bar` for a agent role variable
+        - `checkmk_var_bat` for general variables
     - Do not prefix the variable with an underscore ( `_` )
 - Tags
-    - When tagging roles, separate single words with dashes (`my-custom-tag`)
+    - When tagging roles or playbooks, separate single words with dashes (`my-custom-tag`)
 
 ## Tests
 We strive to provide the best possible quality with this collection, hence we have implemented tests, that verify different aspects of code quality.
@@ -123,11 +128,11 @@ You can also run a subset by mentioning them as follows. See `tests/integration/
     ansible-test integration $TEST_CASE --docker
 
 ### Molecule
-To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/testing-your-ansible-roles-molecule). It can be installed using the `requirements.txt`in this project or manually. The tests are crafted by the maintainers of this project to reflect real world scenarios a role would be used in. To run the tests, you need to navigate to the role directory and choose a scenario. At the time of writing those are named after the supported Checkmk versions: `2.0.0`and `2.1.0`.
+To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/testing-your-ansible-roles-molecule). It can be installed using the `requirements.txt`in this project or manually. The tests are crafted by the maintainers of this project to reflect real world scenarios a role would be used in. To run the tests, you need to navigate to the role directory and choose a scenario. At the time of writing those are named after the supported Checkmk versions: `2.1.0`and `2.2.0`.
 
     cd roles/server/
-    molecule test -s 2.0.0
     molecule test -s 2.1.0
+    molecule test -s 2.2.0
 
 ### Unit
 There are currently no unit tests.
@@ -138,17 +143,20 @@ Before running the action `Release Collection` against the `main` branch, the
 following needs to be done:
 
 1. Update the collection version in `galaxy.yml` and `requirements.yml`. Look for `version:`.
-2. Update the compatibility matrix in `SUPPORT.md`.
-3. Double check `changelogs/fragments` if all changes have a changelog.
-4. After all changes have been performed, merge them into the `main` branch.
-5. Release the collection by running the action `Release Collection` against the `main` branch.
-6. Merge the automatically created pull request and update the `devel` branch from `main`.
+2. Check the integration and molecule tests for up-to-date Checkmk versions.
+3. Check the GitHub Workflows for [EOL Ansible and Python versions and add new releases](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix).
+4. Update the compatibility matrix in `SUPPORT.md` accordingly.
+5. Double check `changelogs/fragments` if all changes have a changelog.
+6. After all changes have been performed, merge them into the `main` branch.
+7. Release the collection by running the action `Release Collection` against the `main` branch.
+8. Merge the automatically created pull request into `devel` and then update the `main` branch from `devel`.
+
+Some of these steps can already be checked and done with `scripts/release.sh`. This is a work in progress and should be used carefully.
+You should definitely check the resulting changes thoroughly before committing.
 
 ## Code of Conduct
-
 See [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Forum
-
 If you have questions, feedback and or simply no Github account feel free to
 reach out to our awesome [Checkmk Community (using the 'ansible' tag)](https://forum.checkmk.com/tag/ansible).

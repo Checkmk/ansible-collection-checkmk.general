@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
+# Copyright: (c) 2022, Michael Sekania &
+#                      Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -19,7 +21,7 @@ version_added: "0.12.0"
 description:
 - Manage contact groups in Checkmk.
 
-extends_documentation_fragment: [tribe29.checkmk.common]
+extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
@@ -27,6 +29,10 @@ options:
         type: str
     title:
         description: The title (alias) of your contact group. If omitted defaults to the name.
+        type: str
+    customer:
+        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        required: false
         type: str
     groups:
         description:
@@ -51,22 +57,24 @@ author:
 EXAMPLES = r"""
 # Create a single contact group.
 - name: "Create a single contact group."
-  tribe29.checkmk.contact_group:
-    server_url: "http://localhost/"
+  checkmk.general.contact_group:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_contact_group"
     title: "My Contact Group"
+    customer: "provider"
     state: "present"
 
 # Create several contact groups.
 - name: "Create several contact groups."
-  tribe29.checkmk.contact_group:
-    server_url: "http://localhost/"
+  checkmk.general.contact_group:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    customer: "provider"
     groups:
       - name: "my_contact_group_one"
         title: "My Contact Group One"
@@ -78,11 +86,12 @@ EXAMPLES = r"""
 
 # Create several contact groups.
 - name: "Create several contact groups."
-  tribe29.checkmk.contact_group:
-    server_url: "http://localhost/"
+  checkmk.general.contact_group:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    customer: "provider"
     groups:
       - name: "my_contact_group_one"
         title: "My Contact Group One"
@@ -92,21 +101,21 @@ EXAMPLES = r"""
 
 # Delete a single contact group.
 - name: "Create a single contact group."
-  tribe29.checkmk.contact_group:
-    server_url: "http://localhost/"
+  checkmk.general.contact_group:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_contact_group"
     state: "absent"
 
 # Delete several contact groups.
 - name: "Delete several contact groups."
-  tribe29.checkmk.contact_group:
-    server_url: "http://localhost/"
+  checkmk.general.contact_group:
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     groups:
       - name: "my_contact_group_one"
       - name: "my_contact_group_two"
@@ -184,13 +193,24 @@ def get_current_contact_groups(module, base_url, headers):
     if info["status"] == 200:
         body = json.loads(response.read())
         tmp = body.get("value", [])
-        current_groups = [
-            {
-                "name": el.get("href").rsplit("/", 1)[-1],
-                "title": el.get("title", el.get("name")),
-            }
-            for el in tmp
-        ]
+        # Response from 2.2.0 is different. So this should fix it until module is migrated to new CheckMKAPI
+        for el in tmp:
+            if el.get("domainType") == "contact_group_config":  # 2.2.0
+                current_groups = [
+                    {
+                        "name": el.get("id"),
+                        "title": el.get("title", el.get("name")),
+                    }
+                    for el in tmp
+                ]
+            else:  # 2.0.0 and 2.1.0
+                current_groups = [
+                    {
+                        "name": el.get("href").rsplit("/", 1)[-1],
+                        "title": el.get("title", el.get("name")),
+                    }
+                    for el in tmp
+                ]
     else:
         exit_failed(
             module,
@@ -253,10 +273,17 @@ def create_single_contact_group(module, base_url, headers):
     name = module.params["name"]
 
     api_endpoint = "/domain-types/contact_group_config/collections/all"
-    params = {
-        "name": name,
-        "alias": module.params.get("title", name),
-    }
+    if module.params.get("customer") is not None:
+        params = {
+            "name": name,
+            "alias": module.params.get("title", name),
+            "customer": module.params.get("customer", "provider"),
+        }
+    else:
+        params = {
+            "name": name,
+            "alias": module.params.get("title", name),
+        }
     url = base_url + api_endpoint
 
     response, info = fetch_url(
@@ -273,15 +300,29 @@ def create_single_contact_group(module, base_url, headers):
 
 def create_contact_groups(module, base_url, groups, headers):
     api_endpoint = "/domain-types/contact_group_config/actions/bulk-create/invoke"
-    params = {
-        "entries": [
-            {
-                "name": el.get("name"),
-                "alias": el.get("title", el.get("name")),
-            }
-            for el in groups
-        ],
-    }
+
+    if module.params.get("customer") is not None:
+        params = {
+            "entries": [
+                {
+                    "name": el.get("name"),
+                    "alias": el.get("title", el.get("name")),
+                    "customer": el.get("customer", "provider"),
+                }
+                for el in groups
+            ],
+        }
+    else:
+        params = {
+            "entries": [
+                {
+                    "name": el.get("name"),
+                    "alias": el.get("title", el.get("name")),
+                }
+                for el in groups
+            ],
+        }
+
     url = base_url + api_endpoint
 
     response, info = fetch_url(
@@ -338,6 +379,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         name=dict(type="str", required=False),
         title=dict(type="str", required=False),
+        customer=dict(type="str", required=False),
         groups=dict(type="raw", required=False, default=[]),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
@@ -385,7 +427,7 @@ def run_module():
 
         groups = module.params.get("groups")
 
-        # Determine which contact groups do already exest
+        # Determine which contact groups do already exist
         current_groups = get_current_contact_groups(module, base_url, headers)
 
         # Determine intersection and difference with input, according to 'name' only

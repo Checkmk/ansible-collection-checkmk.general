@@ -10,11 +10,16 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import json
+
 from ansible.module_utils.urls import fetch_url
-from ansible_collections.tribe29.checkmk.plugins.module_utils.types import RESULT
-from ansible_collections.tribe29.checkmk.plugins.module_utils.utils import (
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     GENERIC_HTTP_CODES,
     result_as_dict,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
 )
 
 
@@ -43,17 +48,27 @@ class CheckmkAPI:
         http_mapping = GENERIC_HTTP_CODES.copy()
         http_mapping.update(code_mapping)
 
-        response, info = fetch_url(
-            module=self.module,
-            url="%s/%s" % (self.url, endpoint),
-            data=self.module.jsonify(data),
-            headers=self.headers,
-            method=method,
-            use_proxy=None,
-            timeout=10,
-        )
+        # retry if timed out and each time double the timeout value
+        num_of_retries = 3
+        timeout = 10
+        for i in range(num_of_retries):
+            response, info = fetch_url(
+                module=self.module,
+                url="%s/%s" % (self.url, endpoint),
+                data=self.module.jsonify(data),
+                headers=self.headers,
+                method=method,
+                use_proxy=None,
+                timeout=timeout,
+            )
 
-        http_code = info["status"]
+            http_code = info["status"]
+
+            if http_code != -1:
+                break
+
+            timeout *= 2
+
         (
             changed,
             failed,
@@ -62,6 +77,9 @@ class CheckmkAPI:
         # Better translate to json later and keep the original response here.
         content = response.read() if response else ""
         msg = "%s - %s" % (str(http_code), http_readable)
+        if failed:
+            details = info.get("body", info.get("msg", "N/A"))
+            msg += " Details: %s" % details
 
         result = RESULT(
             http_code=http_code,
@@ -75,3 +93,20 @@ class CheckmkAPI:
         if failed:
             self.module.fail_json(**result_as_dict(result))
         return result
+
+    def getversion(self):
+        data = {}
+
+        result = self._fetch(
+            code_mapping={
+                200: (True, False, "Discovery successful."),
+                406: (False, True, "Not Acceptable."),
+            },
+            endpoint="version",
+            data=data,
+            method="GET",
+        )
+
+        content = result.content
+        checkmkinfo = json.loads(content)
+        return CheckmkVersion(checkmkinfo.get("versions").get("checkmk"))

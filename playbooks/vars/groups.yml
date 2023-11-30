@@ -1,0 +1,69 @@
+---
+# Contact Groups ############################################
+checkmk_var_contact_groups:
+  - name: "contacts_linux"
+    title: "Linux Admins"
+  - name: "contacts_windows"
+  - name: "contacts_security"
+  - name: "contacts_network"
+    title: "Network Admins"
+  - name: "contacts_managers"
+    title: "Managers"
+#############################################################
+
+# Host Groups ###############################################
+checkmk_var_host_groups:
+  - name: "hosts_linux"
+    title: "Linux Hosts"
+  - name: "hosts_windows"
+  - name: "hosts_solaris"
+  - name: "hosts_network"
+    title: "Network Hosts"
+  - name: "hosts_firewalls"
+    title: "Firewalls"
+#############################################################
+
+# Tag Groups ###############################################
+checkmk_var_tag_groups:
+  - id: "operating_system"
+    title: "Operating System"
+    topic: "Technical"
+    choices:
+      - id: operating_system_none
+        title: None
+      - id: operating_system_ubuntu
+        title: Ubuntu
+      - id: operating_system_debian
+        title: Debian
+      - id: operating_system_windows
+        title: Windows
+      - id: operating_system_aix
+        title: AIX
+      - id: operating_system_solaris
+        title: Solaris
+  - id: "device_type"
+    title: "Device Type"
+    topic: "Technical"
+    choices:
+      - id: device_type_none
+        title: None
+      - id: device_type_switch
+        title: Switch
+      - id: device_type_firewall
+        title: Firewall
+      - id: device_type_router
+        title: Router
+      - id: device_type_ups
+        title: UPS
+#############################################################
+
+# Service Groups ############################################
+checkmk_var_service_groups:
+  - name: "services_updates"
+    title: "Operating System Updates"
+  - name: "services_filesystems"
+  - name: "services_http"
+    title: "HTTP/S Services"
+  - name: "services_compute"
+    title: "Compute related Services"
+#############################################################

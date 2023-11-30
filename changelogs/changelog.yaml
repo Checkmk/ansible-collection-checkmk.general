@@ -239,6 +239,23 @@ releases:
       name: user
       namespace: ''
     release_date: '2023-03-14'
+  0.19.0:
+    changes:
+      bugfixes:
+      - User module - Fix creation of automation users.
+      major_changes:
+      - We dropped support for Ansible 2.11 and Python 2 entirely. That means you
+        can still use this collection with older versions, we just do not test against
+        them anymore.
+      - module_utils - Introduce a centralized library to call the Checkmk API.
+      minor_changes:
+      - We added support for Ansible 2.14.
+      release_summary: Centralizing functions.
+    fragments:
+    - api.yml
+    - support.yml
+    - user.yml
+    release_date: '2023-04-03'
   0.2.0:
     changes:
       known_issues:
@@ -283,6 +300,63 @@ releases:
     fragments:
     - discovery.yml
     release_date: '2022-05-11'
+  0.20.0:
+    changes:
+      bugfixes:
+      - Rule module - Fix crash, if the Checkmk REST API does not return a value for
+        the "disabled" property.
+      minor_changes:
+      - Agent role - Make firewall zone configurable on RedHat derivates.
+      - Host module - Enable update and removal of attributes in addition to fully
+        managing them. This is analogous to the Checkmk REST API. Additionally the
+        "folder" attribute has no default value anymore except on creation.
+    fragments:
+    - agent.yml
+    - host.yml
+    - rule.yml
+    release_date: '2023-04-12'
+  0.21.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix activate changes handler failing with self-signed certificate
+      major_changes:
+      - Add Bakery module
+      minor_changes:
+      - Server role - Added support for almalinux
+    fragments:
+    - agent.yml
+    - almalinux.yml
+    - bakery.yml
+    modules:
+    - description: Trigger baking and signing in the agent bakery.
+      name: bakery
+      namespace: ''
+    release_date: '2023-05-08'
+  0.22.0:
+    changes:
+      major_changes:
+      - module_utils - Extend centralization by providing types and further utils.
+      minor_changes:
+      - Playbooks - Reorganize and clean up playbooks. This is a constant work in
+        progress.
+      release_summary: Further centralizing.
+    fragments:
+    - playbooks.yml
+    - utils.yml
+    release_date: '2023-05-12'
+  0.23.0:
+    changes:
+      major_changes:
+      - folder module - Add support for 'update_attributes' and 'remove_attributes'.
+        Read the documentation for further details.
+      minor_changes:
+      - folder module - Add support for check mode.
+      - tag_group module - Code cleanup. Should have no effect on functionality, but
+        mentioning it here for transparency.
+    fragments:
+    - folder.yml
+    - tag_group.yml
+    release_date: '2023-06-07'
   0.3.2:
     changes:
       minor_changes:
@@ -422,3 +496,255 @@ releases:
     - host_module.yml
     - server_role.yml
     release_date: '2022-09-12'
+  1.0.0:
+    changes:
+      breaking_changes:
+      - 'This collection was renamed and module redirects have been activated. That
+        means, if you are using this release, you also need the new collection to
+        be installed. Otherwise things will break for you. In any way you should now
+        move to the new collection name: checkmk.general.'
+      release_summary: This collection was renamed to checkmk.general. Please use
+        the new name moving forward!
+    fragments:
+    - renaming_preparation.yml
+    release_date: '2023-06-07'
+  2.0.0:
+    changes:
+      breaking_changes:
+      - The renaming of the collection has concluded. If you are reading this, you
+        on the right release and repository and should be able to use the collection
+        just as you are used to. Make sure to double check, that you are using the
+        new FQCNs!
+      release_summary: Welcome to the new world!
+    fragments:
+    - renaming_complete.yml
+    release_date: '2023-06-07'
+  2.1.0:
+    changes:
+      bugfixes:
+      - Discovery module - Properly handle redirects to wait for completion of background
+        jobs.
+      - Downtime module - The module handles timezones properly now.
+      - Integration tests - A bug was fixed, where the integration tests did not use
+        the correct Checkmk version.
+      - Utils - With Checkmk 2.2.0p3 the activation introduces a breaking change,
+        which we need to handle. As a workaround we added the 'If-Match' header to
+        all API requests.
+      known_issues:
+      - Utils - All API calls send the 'If-Match' header. This is a workaround and
+        will be fixed in a future release.
+      major_changes:
+      - Bakery module - Migrated to use module_utils.
+      - Discovery module - Migrated to use module_utils.
+      - contact_group module - The module was not compatible with Checkmk 2.2. This
+        is fixed now.
+      - host_group module - The module was not compatible with Checkmk 2.2. This is
+        fixed now.
+      - service_group module - The module was not compatible with Checkmk 2.2. This
+        is fixed now.
+    fragments:
+    - activation.yml
+    - discovery.yml
+    - downtime.yml
+    - modules.yml
+    - tests.yml
+    release_date: '2023-06-15'
+  2.2.0:
+    changes:
+      bugfixes:
+      - Downtime module - The comment has a default value now
+      minor_changes:
+      - Activation module - Properly add If-Match header.
+      - Agent role - Add support for AlmaLinux and Rocky Linux, both versions 8 and
+        9.
+      - Agent role - Bump default Checkmk version to 2.2.0.
+      - Module utils - Remove workaround from version 2.1.0, where all modules were
+        passed the If-Match header.
+      - Server role - Add support for AlmaLinux and Rocky Linux, both versions 8 and
+        9.
+      - Server role - Bump default Checkmk version to 2.2.0.
+      release_summary: Extend OS support in roles and fix some minor issues in modules.
+    fragments:
+    - activation.yml
+    - downtime.yml
+    - roles.yml
+    - summary.yml
+    release_date: '2023-06-19'
+  2.3.0:
+    changes:
+      major_changes:
+      - Discovery module - Add support for bulk discoveries.
+      - Password module - Add password module.
+      minor_changes:
+      - Server role - Add support for RHEL and CentOS 9
+      - Utils - Introduce retries for API calls in case of timeouts.
+      release_summary: Features all over the place!
+    fragments:
+    - discovery.yml
+    - password.yml
+    - server.yml
+    - summary.yml
+    modules:
+    - description: Manage passwords in checkmk.
+      name: password
+      namespace: ''
+    release_date: '2023-06-30'
+  2.4.0:
+    changes:
+      known_issues:
+      - Discovery module - The module does not work on a controller host with Python
+        2.
+      minor_changes:
+      - Agent role - Ensure fresh data before adding services to host.
+      - Agent role - Ensure support for Debian 12.
+      - Discovery module - Improve resilience and stability.
+      - Server role - Add feature to clean up unused Checkmk versions on the server.
+      - Server role - Enable explicit support for Oracle Linux 8.
+      - Server role - Ensure explicit support for Debian 12.
+      release_summary: Enabling more operating systems!
+    fragments:
+    - agent.yml
+    - debian12.yml
+    - discovery.yml
+    - oraclelinux8.yml
+    - release.yml
+    - server.yml
+    release_date: '2023-07-31'
+  2.4.1:
+    changes:
+      minor_changes:
+      - Agent role - The activate changes handler was missing the server port. This
+        is fixed now.
+    fragments:
+    - agent.yml
+    release_date: '2023-08-03'
+  3.0.0:
+    changes:
+      breaking_changes:
+      - Folder module - The module options 'attributes', 'update_attributes' and 'remove_attributes'
+        are now mutually exclusive. Using more than one on a single task will cause
+        a warning or error.
+      - Host group module - Deprecated options 'host_group_name' and 'host_groups'
+        were removed. Use 'name' and 'groups' instead!
+      - Host module - Deprecated option 'host_name' was removed. Use 'name' instead!
+      - Rule module - Deprecated option 'folder' was removed. Use 'location' instead!
+      minor_changes:
+      - Agent role - Allow throttling of discovery task to limit load on Checkmk server.
+      - Folder module - Warn about mutually exclusive attribute options on older Checkmk
+        versions and fail on recent Checkmk versions. See 'Breaking Changes'.
+      release_summary: Removing deprecated module options and more cleaning.
+    fragments:
+    - agent.yml
+    - breaking.yml
+    - folder.yml
+    - release_summary.yml
+    release_date: '2023-08-11'
+  3.1.0:
+    changes:
+      major_changes:
+      - Agent role - Add support for Windows.
+      - Version lookup plugin - Add Version lookup plugin.
+      minor_changes:
+      - Discovery module - Add handling for 409 response.
+      release_summary: It is summer and you want to look outside, so we added Windows.
+    fragments:
+    - discovery.yml
+    - lookup.yml
+    - release_summary.yml
+    - windows.yml
+    plugins:
+      lookup:
+      - description: Get the version of a Checkmk server
+        name: version
+        namespace: null
+    release_date: '2023-08-22'
+  3.2.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix activation handler URL.
+      - Agent role - Fix agent and update registration on remote sites.
+      minor_changes:
+      - Agent role - Add preflight check for correct Checkmk edition.
+      - Agent role - Allow the role to download folder-specific agents.
+      - Server role - Add preflight check for correct Checkmk edition.
+    fragments:
+    - agent.yml
+    - server.yml
+    release_date: '2023-08-30'
+  3.3.0:
+    changes:
+      bugfixes:
+      - Agent role - Performing the agent registration on a remote would fail, if
+        the host was just created. This release introduces a workaround to enable
+        this.
+      - Folder module - When creating a new folder with "attributes" parameter, the
+        attributes were ignored. This is now fixed.
+      known_issues:
+      - Server role - Not having to provide an admin password introduces a problem
+        though, as users could create sites without knowing the randomly generated
+        password. A task is introduced to mitigate this, but the solution there could
+        be improved.
+      major_changes:
+      - Folder lookup plugin - Look up the configuration of a folder.
+      - Folders lookup plugin - Look up all folders.
+      - Host lookup plugin - Look up the configuration of a host.
+      - Hosts lookup plugin - Look up all hosts.
+      - Timeperiod module - Add timeperiod module.
+      minor_changes:
+      - Agent role - Add support for firewall configuration on Debian derivates.
+      - Discovery module - Use the version comparison utils.
+      - Server role - Site management can now be done without specifying 'admin_pw'.
+      - Utils - Provide a class CheckmkVersion to simplify version comparison.
+      release_summary: 'This is the librarian release: We added some lookups.'
+    fragments:
+    - admin_pw.yml
+    - agent.yml
+    - fix_folder_module.yml
+    - lookup_plugins.yml
+    - release_summary.yml
+    - timeperiod.yml
+    - version_utils.yml
+    modules:
+    - description: Manage time periods in checkmk.
+      name: timeperiod
+      namespace: ''
+    plugins:
+      lookup:
+      - description: Get folder attributes
+        name: folder
+        namespace: null
+      - description: Get various information about a folder
+        name: folders
+        namespace: null
+      - description: Get host attributes
+        name: host
+        namespace: null
+      - description: Get various information about a host
+        name: hosts
+        namespace: null
+    release_date: '2023-11-02'
+  3.4.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix agent port check for agent modes other than "pull".
+      minor_changes:
+      - Agent role - Avoid logging passwords by default for extra security
+      - Agent role - Introduce variable to configure agent mode. Refer to the README.
+      - Contact group module - Add support for the Checkmk Managed Edition (CME).
+      - Host group module - Add support for the Checkmk Managed Edition (CME).
+      - Password module - Add support for the Checkmk Managed Edition (CME).
+      - Server role - Add new states "enabled" and "disabled" for site management.
+      - Server role - Avoid logging passwords by default for extra security
+      - Server role - Enable configuration of omd config values. Refer to the README
+        for details.
+      - Service group module - Add support for the Checkmk Managed Edition (CME).
+      - User module - Add support for the Checkmk Managed Edition (CME).
+      release_summary: Supporting managed service providers, admins and security.
+        All in one release.
+    fragments:
+    - agent_push.yml
+    - cme_support.yml
+    - no_log.yml
+    - release_summary.yml
+    - server-omd-config.yml
+    release_date: '2023-11-09'

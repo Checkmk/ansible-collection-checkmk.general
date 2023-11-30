@@ -1,0 +1,7 @@
+# https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
+
+major_changes:
+  - We dropped support for Ansible 2.11 and Python 2 entirely. That means you can still use this collection with older versions, we just do not test against them anymore.
+
+minor_changes:
+  - We added support for Ansible 2.14.

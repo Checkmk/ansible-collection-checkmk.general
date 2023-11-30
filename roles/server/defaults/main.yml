@@ -1,29 +1,48 @@
 ---
+# This variable is used to declare explicit support for distinct distributions.
+# Adding a distribution here states, that you tested this role against that
+# distribution and found it working. Many distributions might work without
+# modification of the role. This should be tested however, so this variable
+# actually provides value. That being said, this is a artificial limitation
+# and you are free to circumvent it at your own risk.
 checkmk_server_server_stable_os:
+  - AlmaLinux-8
+  - AlmaLinux-9
+  - CentOS-7
+  - CentOS-8
+  - CentOS-9
   - Debian-10
   - Debian-11
+  - Debian-12
+  - RedHat-7
+  - RedHat-8
+  - RedHat-9
+  - OracleLinux-8
+  - Rocky-8
+  - Rocky-9
   - Ubuntu-18
   - Ubuntu-20
   - Ubuntu-22
-  - CentOS-7
-  - CentOS-8
-  - RedHat-7
-  - RedHat-8
 
+checkmk_server_version: "2.2.0p14"
 checkmk_server_edition: cre
-checkmk_server_version: 2.1.0p18
 checkmk_server_verify_setup: 'true'
 
 checkmk_server_download_user: []
 checkmk_server_download_pass: []
 
 checkmk_server_sites: []
-# - name: test
+# - name: mysite
 #   version: "{{ checkmk_server_version }}"
 #   state: started
-#   admin_pw: test
+#   admin_pw: "{{ automation_secret | default(omit) }}"
 #   update_conflict_resolution: abort
-
+#   omd_auto_restart: 'false'
+#   omd_config:
+#     - var: LIVESTATUS_TCP
+#       value: "on"
+#     - var: LIVESTATUS_TCP_PORT
+#       value: "6557"
 checkmk_server_configure_firewall: 'true'
 
 checkmk_server_backup_on_update: 'true'  # Not recommended to disable this option
@@ -32,3 +51,6 @@ checkmk_server_backup_opts: '--no-past'
 checkmk_server_allow_downgrades: 'false'
 
 checkmk_server_epel_gpg_check: 'true'
+
+checkmk_server_cleanup: 'false'
+checkmk_server_no_log: 'true'

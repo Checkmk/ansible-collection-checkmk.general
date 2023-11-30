@@ -1,0 +1,79 @@
+# https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
+
+name: Molecule Tests for Agent Role
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - devel
+    paths:
+      - 'roles/agent/**'
+  push:
+    branches:
+      - main
+      - devel
+    paths:
+      - 'roles/agent/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    name: Checkmk ${{ matrix.checkmk }}
+    strategy:
+      fail-fast: false
+      matrix:
+        checkmk:
+          - '2.0.0'
+          - '2.1.0'
+          - '2.2.0'
+
+    steps:
+
+      - name: "Free Disk Space."
+        uses: jlumbroso/free-disk-space@main
+        with:
+          # this might remove tools that are actually needed,
+          # if set to "true" but frees about 6 GB
+          tool-cache: false
+
+      - name: "Add swap file to avoid memory shortage."
+        run: |
+          sudo fallocate -l 8G /swap
+          sudo chmod 600 /swap
+          sudo mkswap /swap
+          sudo swapon /swap
+          free -h
+          swapon --show
+
+      - name: "Check out code."
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: "Set up Python."
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: "Install dependencies."
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: "Provide secrets file."
+        run: echo "${{ secrets.CHECKMK_DOWNLOAD_PW }}" > .dl-secret
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        env:
+          CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
+
+      - name: "Run Molecule."
+        run: |
+          cd roles/agent/
+          molecule test -s ${{ matrix.checkmk }}
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
