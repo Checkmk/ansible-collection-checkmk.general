@@ -1,4 +1,4 @@
-# Copyright: (c) 2023, Lars Getwan <lars.getwan@checkmk.com>
+# Copyright: (c) 2023, Max Sickora <max.sickora@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -6,27 +6,27 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-    name: version
-    author: Lars Getwan (@lgetwan)
-    version_added: "3.1.0"
-    short_description: Get the version of a Checkmk server
+    name: bakery
+    author: Max Sickora (@max-checkmk)
+    version_added: "4.0.0"
+    short_description: Get the bakery status of a Checkmk server
     description:
-      - Returns the version of a Checkmk server as a string, e.g. '2.1.0p31.cre'
+      - Returns the bakery status of a Checkmk server as a string, e.g. 'running'
     options:
       server_url:
         description: URL of the Checkmk server
         required: True
       site:
-        description: Site name.
+        description: site name
         required: True
       automation_user:
-        description: Automation user for the REST API access.
+        description: automation user for the REST API access
         required: True
       automation_secret:
-        description: Automation secret for the REST API access.
+        description: automation secret for the REST API access
         required: True
       validate_certs:
-        description: Whether or not to validate TLS certificates.
+        description: Wether or not to validate TLS certificates
         type: boolean
         required: False
         default: True
@@ -38,22 +38,23 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: "Show Checkmk version"
+- name: "Show bakery status"
   debug:
-    msg: "Server version is {{ version }}"
+    msg: "Bakery status is {{ bakery }}"
   vars:
-    version: "{{ lookup('checkmk.general.version',
-                   server_url + '/' + site,
+    bakery: "{{ lookup('checkmk.general.bakery',
+                   server_url=http://myserver,
+                   site=mysite,
                    validate_certs=False,
-                   automation_user=my_user,
-                   automation_secret=my_secret
+                   automation_user=automation_user,
+                   automation_secret=automation_secret
                )}}"
 """
 
 RETURN = """
   _list:
     description:
-      - server Checkmk version
+      - server bakery status
     type: list
     elements: str
 """
@@ -76,16 +77,18 @@ class LookupModule(LookupBase):
         secret = self.get_option("automation_secret")
         validate_certs = self.get_option("validate_certs")
 
-        site_url = server_url + "/" + site
+        ret = []
 
         api = CheckMKLookupAPI(
-            site_url=site_url,
+            site_url=server_url + "/" + site,
             user=user,
             secret=secret,
             validate_certs=validate_certs,
         )
 
-        response = json.loads(api.get("/version"))
+        response = json.loads(
+            api.get("/domain-types/agent/actions/baking_status/invoke")
+        )
 
         if "code" in response:
             raise AnsibleError(
@@ -97,4 +100,5 @@ class LookupModule(LookupBase):
                 )
             )
 
-        return [response.get("versions", {}).get("checkmk")]
+        ret.append(response.get("result", {}).get("value").get("state"))
+        return ret

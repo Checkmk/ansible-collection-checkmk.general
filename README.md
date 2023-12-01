@@ -1,17 +1,15 @@
 # Checkmk Ansible Collection
 
-Checkmk already provides the needed APIs to automate and 
-configure your monitoring. With this project we want to create
-and share modules and roles for Ansible to both simplify your first steps
-with automating Checkmk and keep your daily operations smooth and efficient.
-
----
+Checkmk already provides the needed APIs to automate and configure your monitoring.
+With this project we want to augment the experience and provide easy to use
+modules and roles for Ansible to both simplify your first steps with automating
+Checkmk and keep your daily operations smooth and efficient.
 
 ## Here be dragons!
 
-This repository is provided as is and we cannot guarantee stability at this point.
+This collection is provided AS IS and we cannot guarantee proper functionality.
 Additionally, there is no commercial support whatsoever!
-This is an open source endeavour, which we want to share and progress with the community.
+This is an open source endeavour, on which we want to collaborate with the community.
 
 [![Ansible Sanity Tests](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml)
 <!-- [![Ansible Unit Tests](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-unit-tests.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-unit-tests.yaml) -->
@@ -32,14 +30,9 @@ or run the following command substituting the `$MODULE_NAME`:
 
 For any form of support queries or requests refer to [SUPPORT.md](SUPPORT.md).
 
-## Repository Structure
-
-For information about the structure and organization of this repository
-have a look at [STRUCTURE.md](docs/STRUCTURE.md).
-
-You can find playbooks, demonstrating several aspects of this collection in the folder [playbooks/demo/](playbooks/demo/).
-
 ## Included content
+
+You can find playbooks, demonstrating the content of this collection in the folder [playbooks/demo/](playbooks/demo/).
 
 <!--start collection content-->
 <!-- ### Inventory plugins
@@ -49,6 +42,7 @@ Name | Description
 -->
 
 ### Lookup plugins
+
 Name | Description | Tests
 --- | --- | ---
 [checkmk.general.folder](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/folder.py)|Look up folder attributes.|[![Integration Tests for Folder Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folder.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folder.yaml)
@@ -58,6 +52,7 @@ Name | Description | Tests
 [checkmk.general.version](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/version.py)|Look up version and edition information.|[![Integration Tests for Version Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-version.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-version.yaml)
 
 ### Modules
+
 Name | Description | Tests
 --- | --- | ---
 [checkmk.general.activation](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/activation.py)|Activate changes.|[![Integration Tests for Activation Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-activation.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-activation.yaml)
@@ -74,6 +69,7 @@ Name | Description | Tests
 [checkmk.general.user](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/user.py)|Manage users.|[![Integration Tests for User Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-user.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-user.yaml)
 
 ### Roles
+
 Name | Description | Tests
 --- | --- | ---
 [checkmk.general.agent](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/roles/agent/README.md)|Installs Checkmk agents.| [![Molecule Tests for Agent Role](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-agent.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-agent.yaml)
@@ -126,7 +122,7 @@ if you list the `checkmk.general` collection in the playbook's [`collections`](h
 See [CONTRIBUTING](CONTRIBUTING.md).
 
 ## Release notes
-<!--Add a link to a changelog.rst file or an external docsite to cover this information. -->
+
 See [CHANGELOG.rst](CHANGELOG.rst).
 
 ## Roadmap
@@ -152,4 +148,5 @@ Please do **not** consider a concrete planning document!
 - [Ansible Community code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
 
 ## Licensing
+
 See [LICENSE](LICENSE).

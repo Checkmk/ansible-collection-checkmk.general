@@ -96,6 +96,7 @@ RETURN = """
 
 import json
 
+from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
@@ -134,7 +135,15 @@ class LookupModule(LookupBase):
                 api.get("/domain-types/folder_config/collections/all", parameters)
             )
 
+            if "code" in response:
+                raise AnsibleError(
+                    "Received error for %s - %s: %s"
+                    % (
+                        response.get("url", ""),
+                        response.get("code", ""),
+                        response.get("msg", ""),
+                    )
+                )
             ret.append(response.get("value"))
-            # ret.append([{"name": "debug %s" % term, "extensions": { "attributes": { "tag_criticality": "prod" } } }])
 
         return ret

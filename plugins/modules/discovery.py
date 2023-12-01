@@ -83,7 +83,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "my_user"
     automation_secret: "my_secret"
-    hosts: "[my_host_0, my_host_1]"
+    hosts: ["my_host_0", "my_host_1"]
     state: "new"
 - name: "Add newly discovered services, update labels and remove vanished services on host; 3 at once (Bulk)"
   checkmk.general.discovery:
@@ -91,7 +91,7 @@ EXAMPLES = r"""
     site: "my_site"
     automation_user: "my_user"
     automation_secret: "my_secret"
-    hosts: "[my_host_0, my_host_1, my_host_2, my_host_3, my_host_4, my_host_5]"
+    hosts: ["my_host_0", "my_host_1", "my_host_2", "my_host_3", "my_host_4", "my_host_5"]
     state: "fix_all"
     bulk_size: 3
 """

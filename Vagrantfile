@@ -22,14 +22,14 @@ Vagrant.configure("2") do |config|
     $script = <<-SCRIPT
     apt-get -y update --quiet
     apt-get -y install python3-pip ca-certificates curl gnupg lsb-release
-    wget "https://download.checkmk.com/checkmk/2.1.0p31/check-mk-raw-2.1.0p31_0.jammy_amd64.deb" -O /tmp/checkmk-oldstable.deb
-    wget "https://download.checkmk.com/checkmk/2.2.0p7/check-mk-raw-2.2.0p7_0.jammy_amd64.deb" -O /tmp/checkmk-stable.deb
-    apt-get install -y /tmp/checkmk-oldstable.deb
-    omd create --admin-password 'd7589df1' stable
-    apt-get install -y /tmp/checkmk-stable.deb
-    omd create --admin-password 'd7589df1' beta
-    omd status -b stable || omd start stable
-    omd status -b beta || omd start beta
+    #wget "https://download.checkmk.com/checkmk/2.1.0p31/check-mk-raw-2.1.0p31_0.jammy_amd64.deb" -O /tmp/checkmk-oldstable.deb
+    #wget "https://download.checkmk.com/checkmk/2.2.0p7/check-mk-raw-2.2.0p7_0.jammy_amd64.deb" -O /tmp/checkmk-stable.deb
+    #apt-get install -y /tmp/checkmk-oldstable.deb
+    #omd create --admin-password 'd7589df1' stable
+    #apt-get install -y /tmp/checkmk-stable.deb
+    #omd create --admin-password 'd7589df1' beta
+    #omd status -b stable || omd start stable
+    #omd status -b beta || omd start beta
     python3 -m pip install pip --upgrade
     python3 -m pip install -r /vagrant/requirements.txt
     sudo -u vagrant ansible-galaxy collection install -f -r /vagrant/requirements.yml
@@ -42,6 +42,7 @@ Vagrant.configure("2") do |config|
     usermod -aG docker vagrant
     grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='ansible-galaxy collection build --force ~/ansible_collections/checkmk/general && ansible-galaxy collection install -f ./checkmk-general-*.tar.gz && rm ./checkmk-general-*.tar.gz'" >> /home/vagrant/.bashrc
     grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
+    hostnamectl set-hostname collection
     SCRIPT
     srv.vm.provision "shell", inline: $script
     srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/"
@@ -54,20 +55,20 @@ Vagrant.configure("2") do |config|
     srv.ssh.insert_key = false
     srv.vm.provider "virtualbox" do |v|
       v.name = 'molecule'
-      v.memory = 6144
+      v.memory = 8096
       v.cpus = 4
     end
     $script = <<-SCRIPT
     apt-get -y update --quiet
     apt-get -y install python3-pip ca-certificates curl gnupg lsb-release
-    wget "https://download.checkmk.com/checkmk/2.1.0p31/check-mk-raw-2.1.0p31_0.focal_amd64.deb" -O /tmp/checkmk-oldstable.deb
-    wget "https://download.checkmk.com/checkmk/2.2.0p7/check-mk-raw-2.2.0p7_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
-    apt-get install -y /tmp/checkmk-oldstable.deb
-    omd create --admin-password 'd7589df1' stable
-    apt-get install -y /tmp/checkmk-stable.deb
-    omd create --admin-password 'd7589df1' beta
-    omd status -b stable || omd start stable
-    omd status -b beta || omd start beta
+    #wget "https://download.checkmk.com/checkmk/2.1.0p31/check-mk-raw-2.1.0p31_0.focal_amd64.deb" -O /tmp/checkmk-oldstable.deb
+    #wget "https://download.checkmk.com/checkmk/2.2.0p7/check-mk-raw-2.2.0p7_0.focal_amd64.deb" -O /tmp/checkmk-stable.deb
+    #apt-get install -y /tmp/checkmk-oldstable.deb
+    #omd create --admin-password 'd7589df1' stable
+    #apt-get install -y /tmp/checkmk-stable.deb
+    #omd create --admin-password 'd7589df1' beta
+    #omd status -b stable || omd start stable
+    #omd status -b beta || omd start beta
     python3 -m pip install pip --upgrade
     python3 -m pip install -r /vagrant/requirements.txt
     python3 -m pip install molecule molecule-plugins[docker]
@@ -81,6 +82,7 @@ Vagrant.configure("2") do |config|
     usermod -aG docker vagrant
     grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='ansible-galaxy collection build --force ~/ansible_collections/checkmk/general && ansible-galaxy collection install -f ./checkmk-general-*.tar.gz && rm ./checkmk-general-*.tar.gz'" >> /home/vagrant/.bashrc
     grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
+    hostnamectl set-hostname molecule
     SCRIPT
     srv.vm.provision "shell", inline: $script
     srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/"
