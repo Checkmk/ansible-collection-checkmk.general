@@ -17,7 +17,7 @@
     var: rules
   vars:
     rules: "{{ lookup('checkmk.general.rules',
-                  'checkgroup_parameters:cpu_load',
+                  ruleset='checkgroup_parameters:cpu_load',
                   server_url=server_url,
                   site=outer_item.site,
                   validate_certs=False,
@@ -34,7 +34,7 @@
     that: "rules[0].extensions.properties.comment == item.rule.properties.comment"
   vars:
     rules: "{{ lookup('checkmk.general.rules',
-                      item.ruleset,
+                      ruleset=item.ruleset,
                       rulesets_used=True,
                       server_url=server_url,
                       site=outer_item.site,
@@ -51,7 +51,7 @@
     var: "rule"
   vars:
     rule: "{{ lookup('checkmk.general.rule',
-                      item.id,
+                      rule_id=item.id,
                       server_url=server_url,
                       site=outer_item.site,
                       validate_certs=False,
