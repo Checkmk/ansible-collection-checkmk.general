@@ -17,16 +17,16 @@ DOCUMENTATION = """
         description: URL of the Checkmk server
         required: True
       site:
-        description: Site name
+        description: Site name.
         required: True
       automation_user:
-        description: Automation user for the REST API access
+        description: Automation user for the REST API access.
         required: True
       automation_secret:
-        description: Automation secret for the REST API access
+        description: Automation secret for the REST API access.
         required: True
       validate_certs:
-        description: Whether or not to validate TLS certificates
+        description: Whether or not to validate TLS certificates.
         type: boolean
         required: False
         default: True
@@ -77,7 +77,7 @@ class LookupModule(LookupBase):
         validate_certs = self.get_option("validate_certs")
 
         site_url = server_url + "/" + site
-        
+
         api = CheckMKLookupAPI(
             site_url=site_url,
             user=user,
