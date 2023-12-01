@@ -25,7 +25,9 @@ extends_documentation_fragment: [checkmk.general.common]
 
 options:
     redirect:
-        description: After starting the activation, redirect immediately to the 'Wait for completion' endpoint instead of waiting for the completion.
+        description:
+          - If set to C(true), wait for the activation to complete.
+            If set to C(false), start the activation, but do not wait for it to finish.
         default: false
         type: bool
     sites:
@@ -42,7 +44,7 @@ author:
 """
 
 EXAMPLES = r"""
-- name: "Activate changes on all sites."
+- name: "Start activation on all sites."
   checkmk.general.activation:
       server_url: "http://localhost/"
       site: "my_site"
@@ -50,7 +52,7 @@ EXAMPLES = r"""
       automation_secret: "$SECRET"
   run_once: 'true'
 
-- name: "Activate changes on a specific site."
+- name: "Start activation on a specific site."
   checkmk.general.activation:
       server_url: "http://localhost/"
       site: "my_site"
@@ -60,7 +62,7 @@ EXAMPLES = r"""
         - "my_site"
   run_once: 'true'
 
-- name: "Activate changes including foreign changes."
+- name: "Start activation including foreign changes."
   checkmk.general.activation:
       server_url: "http://localhost/"
       site: "my_site"
@@ -69,7 +71,7 @@ EXAMPLES = r"""
       force_foreign_changes: 'true'
   run_once: 'true'
 
-- name: "Activate changes including foreign changes and redirect."
+- name: "Activate changes including foreign changes and wait for completion."
   checkmk.general.activation:
       server_url: "http://localhost/"
       site: "my_site"
@@ -90,7 +92,7 @@ message:
     description: The output message that the module generates.
     type: str
     returned: always
-    sample: 'Changes activated.'
+    sample: 'Activation started.'
 """
 
 import time
@@ -103,17 +105,17 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
 
 HTTP_CODES = {
     # http_code: (changed, failed, "Message")
-    200: (True, False, "Changes activated."),
-    204: (True, False, "No Content: The activation has been completed."),
+    200: (True, False, "Activation started."),
+    204: (True, False, "Activation has been completed."),
     302: (True, False, "Redirected."),
     422: (False, False, "There are no changes to be activated."),
     401: (
         False,
         True,
-        "Unauthorized: There are foreign changes, which you may not activate, or you did not use <force_foreign_changes>.",
+        "There are foreign changes, which you do not have permission to activate, or you did not use <force_foreign_changes>.",
     ),
-    409: (False, True, "Conflict: Some sites could not be activated."),
-    423: (False, True, "Locked: There is already an activation running."),
+    409: (False, True, "Some sites could not be activated."),
+    423: (False, True, "There is already an activation running."),
 }
 
 
