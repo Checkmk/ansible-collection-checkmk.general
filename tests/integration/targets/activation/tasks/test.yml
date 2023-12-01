@@ -96,3 +96,16 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate with explicit site and redirect."
+  activation:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    redirect: 'true'
+    force_foreign_changes: 'false'
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
