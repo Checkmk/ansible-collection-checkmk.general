@@ -4,7 +4,8 @@
     msg: "Bakery status is {{ bakery }}"
   vars:
     bakery: "{{ lookup('checkmk.general.bakery',
-                    server_url + '/' + outer_item.site,
+                    server_url= server_url,
+                    site=outer_item.site,
                     validate_certs=False,
                     automation_user=automation_user,
                     automation_secret=automation_secret)
