@@ -13,7 +13,7 @@ DOCUMENTATION = """
     description:
       - Returns a list of Rulesets
     options:
-      _terms:
+      regex:
         description: A regex of the ruleset name.
         required: True
       rulesets_folder:
@@ -33,19 +33,19 @@ DOCUMENTATION = """
         required: False
         default: True
       server_url:
-        description: URL of the Checkmk server
+        description: URL of the Checkmk server.
         required: True
       site:
-        description: site name
+        description: Site name
         required: True
       automation_user:
-        description: automation user for the REST API access
+        description: Automation user for the REST API access.
         required: True
       automation_secret:
-        description: automation secret for the REST API access
+        description: Automation secret for the REST API access.
         required: True
       validate_certs:
-        description: Wether or not to validate TLS cerificates
+        description: Whether or not to validate TLS cerificates.
         type: boolean
         required: False
         default: True
@@ -57,7 +57,7 @@ EXAMPLES = """
     msg: "Ruleset: {{ item.extensions.name }} has {{ item.extensions.number_of_rules }} rules."
   loop: "{{
     lookup('checkmk.general.rulesets',
-      'file',
+      regex='file',
       rulesets_used=True,
       server_url=server_url,
       site=site,
@@ -74,7 +74,7 @@ EXAMPLES = """
     msg: "Ruleset {{ item.extension.name }} is deprecated."
   loop: "{{
     lookup('checkmk.general.rulesets',
-      '',
+      regex='',
       rulesets_deprecated=True,
       rulesets_used=True,
       server_url=server_url,
@@ -108,6 +108,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import 
 class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
+        regex = self.get_option("regex")
         rulesets_folder = self.get_option("rulesets_folder")
         server_url = self.get_option("server_url")
         site = self.get_option("site")
@@ -124,35 +125,29 @@ class LookupModule(LookupBase):
             validate_certs=validate_certs,
         )
 
-        ret = []
-        for term in terms:
-            parameters = {
-                "name": term,
-                "folder": rulesets_folder.replace("/", "~"),
-            }
+        parameters = {
+            "name": regex,
+            "folder": rulesets_folder.replace("/", "~"),
+        }
 
-            if self.get_option("rulesets_deprecated") is not None:
-                parameters.update(
-                    {"deprecated": self.get_option("rulesets_deprecated")}
+        if self.get_option("rulesets_deprecated") is not None:
+            parameters.update({"deprecated": self.get_option("rulesets_deprecated")})
+
+        if self.get_option("rulesets_used") is not None:
+            parameters.update({"used": self.get_option("rulesets_used")})
+
+        response = json.loads(
+            api.get("/domain-types/ruleset/collections/all", parameters)
+        )
+
+        if "code" in response:
+            raise AnsibleError(
+                "Received error for %s - %s: %s"
+                % (
+                    response.get("url", ""),
+                    response.get("code", ""),
+                    response.get("msg", ""),
                 )
-
-            if self.get_option("rulesets_used") is not None:
-                parameters.update({"used": self.get_option("rulesets_used")})
-
-            response = json.loads(
-                api.get("/domain-types/ruleset/collections/all", parameters)
             )
 
-            if "code" in response:
-                raise AnsibleError(
-                    "Received error for %s - %s: %s"
-                    % (
-                        response.get("url", ""),
-                        response.get("code", ""),
-                        response.get("msg", ""),
-                    )
-                )
-
-            ret.append(response.get("value"))
-
-        return ret
+        return [response.get("value")]

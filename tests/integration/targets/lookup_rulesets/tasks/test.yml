@@ -17,7 +17,7 @@
     var: rulesets
   vars:
     rulesets: "{{ lookup('checkmk.general.rulesets',
-                  '',
+                  regex='',
                   rulesets_used=True,
                   rulesets_deprecated=False,
                   server_url=server_url,
@@ -33,7 +33,7 @@
   ansible.builtin.debug:
     msg: "Ruleset {{ item.id }} contains {{ item.extensions.number_of_rules | default('0') }}"
   loop: "{{ lookup('checkmk.general.rulesets',
-             '',
+             regex='',
              rulesets_used=True,
              rulesets_deprecated=False,
              server_url=server_url,
@@ -52,7 +52,7 @@
     var: rulesets
   vars:
     rulesets: "{{ lookup('checkmk.general.rulesets',
-                  'file',
+                  regex='file',
                   rulesets_used=False,
                   rulesets_deprecated=False,
                   server_url=server_url,
@@ -70,7 +70,7 @@
     that: "rulesets[0].extensions.number_of_rules == 1"
   vars:
     rulesets: "{{ lookup('checkmk.general.rulesets',
-                      item.ruleset,
+                      regex=item.ruleset,
                       rulesets_used=True,
                       server_url=server_url,
                       site=outer_item.site,
@@ -88,7 +88,7 @@
     that: "ruleset.number_of_rules == 1"
   vars:
     ruleset: "{{ lookup('checkmk.general.ruleset',
-                      item.ruleset,
+                      ruleset=item.ruleset,
                       server_url=server_url,
                       site=outer_item.site,
                       validate_certs=False,

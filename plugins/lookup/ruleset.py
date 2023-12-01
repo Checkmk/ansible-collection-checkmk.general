@@ -13,23 +13,23 @@ DOCUMENTATION = """
     description:
       - Returns details of a ruleset
     options:
-      _terms:
+      ruleset:
         description: The ruleset name.
         required: True
       server_url:
-        description: URL of the Checkmk server
+        description: URL of the Checkmk server.
         required: True
       site:
-        description: site name
+        description: Site name.
         required: True
       automation_user:
-        description: automation user for the REST API access
+        description: Automation user for the REST API access.
         required: True
       automation_secret:
-        description: automation secret for the REST API access
+        description: Automation secret for the REST API access.
         required: True
       validate_certs:
-        description: Wether or not to validate TLS cerificates
+        description: Whether or not to validate TLS cerificates.
         type: boolean
         required: False
         default: True
@@ -42,7 +42,7 @@ EXAMPLES = """
   vars:
     extensions: "{{
       lookup('checkmk.general.ruleset',
-        'host_groups',
+        ruleset='host_groups',
         server_url=server_url,
         site=site,
         automation_user=automation_user,
@@ -72,6 +72,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import 
 class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
+        ruleset = self.get_option("ruleset")
         server_url = self.get_option("server_url")
         site = self.get_option("site")
         user = self.get_option("automation_user")
@@ -87,20 +88,16 @@ class LookupModule(LookupBase):
             validate_certs=validate_certs,
         )
 
-        ret = []
-        for term in terms:
-            response = json.loads(api.get("/objects/ruleset/" + term))
+        response = json.loads(api.get("/objects/ruleset/" + ruleset))
 
-            if "code" in response:
-                raise AnsibleError(
-                    "Received error for %s - %s: %s"
-                    % (
-                        response.get("url", ""),
-                        response.get("code", ""),
-                        response.get("msg", ""),
-                    )
+        if "code" in response:
+            raise AnsibleError(
+                "Received error for %s - %s: %s"
+                % (
+                    response.get("url", ""),
+                    response.get("code", ""),
+                    response.get("msg", ""),
                 )
+            )
 
-            ret.append(response.get("extensions", {}))
-
-        return ret
+        return [response.get("extensions", {})]
