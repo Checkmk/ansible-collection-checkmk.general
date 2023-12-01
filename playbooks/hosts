@@ -1,20 +1,20 @@
 [test]
-test1.tld checkmk_folder_path="/test" 
-test2.tld checkmk_folder_path="/foo" 
-test3.tld checkmk_folder_path="/bar" 
-test4.tld checkmk_folder_path="/" 
-test5.tld checkmk_folder_path="/foo/bar" 
+test1.tld checkmk_var_folder_path="/test" 
+test2.tld checkmk_var_folder_path="/foo" 
+test3.tld checkmk_var_folder_path="/bar" 
+test4.tld checkmk_var_folder_path="/" 
+test5.tld checkmk_var_folder_path="/foo/bar" 
 
 [linux]
-ansibuntu ansible_host=192.168.56.61 checkmk_folder_path="/test"
-debsible ansible_host=192.168.56.62 checkmk_folder_path="/foo"
-anstream ansible_host=192.168.56.63 checkmk_folder_path="foo/bar"
-ansuse ansible_host=192.168.56.64 checkmk_folder_path="/bar"
-ansles ansible_host=192.168.56.65 checkmk_folder_path="/bar/foo"
-ansoracle ansible_host=192.168.56.66 checkmk_folder_path="/foo"
+ansibuntu ansible_host=192.168.56.61 checkmk_var_folder_path="/test"
+debsible ansible_host=192.168.56.62 checkmk_var_folder_path="/foo"
+anstream ansible_host=192.168.56.63 checkmk_var_folder_path="foo/bar"
+ansuse ansible_host=192.168.56.64 checkmk_var_folder_path="/bar"
+ansles ansible_host=192.168.56.65 checkmk_var_folder_path="/bar/foo"
+ansoracle ansible_host=192.168.56.66 checkmk_var_folder_path="/foo"
 
 [windows]
-ansidows ansible_host=192.168.56.67 checkmk_folder_path="/"
+ansidows ansible_host=192.168.56.67 checkmk_var_folder_path="/"
 
 [windows:vars]
 ansible_shell_type = cmd

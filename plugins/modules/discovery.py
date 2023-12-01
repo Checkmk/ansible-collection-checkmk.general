@@ -29,7 +29,9 @@ options:
         required: false
         type: str
     hosts:
-        description: The list of hosts the services of which you want to manage. Mutually exclusive with host_name. Bulk mode.
+        description:
+            - The list of hosts the services of which you want to manage.
+              Mutually exclusive with host_name. This enables bulk discovery mode.
         required: false
         type: list
         elements: str
@@ -61,35 +63,35 @@ EXAMPLES = r"""
 # Create a single host.
 - name: "Add newly discovered services on host."
   checkmk.general.discovery:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     host_name: "my_host"
     state: "new"
 - name: "Add newly discovered services, update labels and remove vanished services on host."
   checkmk.general.discovery:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     host_name: "my_host"
     state: "fix_all"
 - name: "Add newly discovered services on hosts. (Bulk)"
   checkmk.general.discovery:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
-    hosts: "[my_host_0, my_host_1]"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    hosts: ["my_host_0", "my_host_1"]
     state: "new"
 - name: "Add newly discovered services, update labels and remove vanished services on host; 3 at once (Bulk)"
   checkmk.general.discovery:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
-    hosts: "[my_host_0, my_host_1, my_host_2, my_host_3, my_host_4, my_host_5]"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    hosts: ["my_host_0", "my_host_1", "my_host_2", "my_host_3", "my_host_4", "my_host_5"]
     state: "fix_all"
     bulk_size: 3
 """

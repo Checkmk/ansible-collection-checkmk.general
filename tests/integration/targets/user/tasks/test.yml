@@ -1,23 +1,34 @@
 ---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    customer: "provider"
+  when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    customer: null
+  when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create contact groups."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item }}"
     title: "{{ item }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_contact_groups }}"
+  loop: "{{ checkmk_var_contact_groups }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -25,11 +36,12 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create users."
-  user:
-    server_url: "{{ server_url }}"
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     fullname: "{{ item.fullname }}"
     auth_type: "{{ item.auth_type }}"
@@ -41,14 +53,14 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_users }}"
+  loop: "{{ checkmk_var_users }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -56,11 +68,12 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create same users again."
-  user:
-    server_url: "{{ server_url }}"
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     fullname: "{{ item.fullname }}"
     auth_type: "{{ item.auth_type }}"
@@ -73,7 +86,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   register: rule_result
-  loop: "{{ checkmk_users }}"
+  loop: "{{ checkmk_var_users }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
   ansible.builtin.fail:
@@ -83,24 +96,25 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Edit users."
-  user:
-    server_url: "{{ server_url }}"
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     contactgroups: "{{ item.contactgroups }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_users }}"
+  loop: "{{ checkmk_var_users }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -108,25 +122,26 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Change PW of users."
-  user:
-    server_url: "{{ server_url }}"
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     password: "{{ item.newpassword }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   register: rule_result
-  loop: "{{ checkmk_users }}"
+  loop: "{{ checkmk_var_users }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -134,23 +149,23 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete users."
-  user:
-    server_url: "{{ server_url }}"
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_users }}"
+  loop: "{{ checkmk_var_users }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -158,17 +173,17 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete same users again."
-  user:
-    server_url: "{{ server_url }}"
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   register: rule_result
-  loop: "{{ checkmk_users }}"
+  loop: "{{ checkmk_var_users }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
   ansible.builtin.fail:

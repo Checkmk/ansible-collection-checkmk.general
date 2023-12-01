@@ -1,45 +1,48 @@
 # checkmk.general.server
 
-<!-- A brief description of the role goes here. -->
 This role installs Checkmk on servers and manages sites.
 
 ## Requirements
 
-<!-- Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required. -->
-None.
+The Checkmk Ansible Collection from which this role originates is needed to
+use it, as modules shipped by this collection are used in the role.
+
+It can be installed as easy as running:
+
+    ansible-galaxy collection install checkmk.general
 
 ## Distribution Support
+
 This roles includes explicit distribution support.
 That means, that even if the role might run on other distributions,
 we can only verify, that it works on the ones listed in `defaults/main.yml` in the variable `checkmk_server_server_stable_os`.
 
 To elaborate: We do **not** guarantee, that this role will work on them.
-But we do our best to have them stable. On top of that we have
-automated tests, that continuously test this role against a set of distributions.
+But we do our best to stay as stable as possible on them. On top of that we have
+automated tests, that continuously test this role against a subset of distributions.
 
 To learn about the distributions used in automated tests, inspect the corresponding `molecule/*/molecule.yml`.
 
 ## Role Variables
 
-<!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. -->
+    checkmk_server_version: "2.2.0p14"
 
-    checkmk_server_version: "2.2.0p12"
-
-The Checkmk version of your site.
+The global Checkmk version. This is used for installing Checkmk.
+To manage sites and their version, see `checkmk_server_sites`.
 
     checkmk_server_edition: cre
 
 The edition you want to use. Valid values are `cre`, `cfe`, `cee`, `cce` and `cme`.
 
 - `cre`: Raw Edition, fully open source.
-- `cfe`: Free Edition, enterprise features, but limited hosts.
+- `cfe`: Free Edition, enterprise features, but limited hosts. **Only available until Checkmk 2.1!** For Checkmk 2.2, see `cce`.
 - `cee`: Enterprise Edition, full enterprise features.
-- `cce`: Cloud Edition, for cloud natives.
+- `cce`: Cloud Edition, for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
 - `cme`: Managed Edition, for service providers.
 
 For details about the editions see: https://checkmk.com/product/editions
 
-Note, that you need credentials, to download all editions apart from `cre` and `cfe`.  
+Note, that you need credentials, to download the following editions: `cee` and `cme`.  
 See below variables, to set those.
 
     checkmk_server_download_user: []
@@ -66,32 +69,55 @@ web interface to be accessible.
 
     checkmk_server_allow_downgrades: 'false'
 
-Whether to allow downgrading a sites version. Note this is not a recommended procedure, and will not be supported for enterprise customers.
+Whether to allow downgrading a site's version.
+Note: this is not a recommended procedure, and will not be supported for enterprise customers.
 
     checkmk_server_sites:
-      - name: test
+      - name: mysite
         version: "{{ checkmk_server_version }}"
         update_conflict_resolution: abort
         state: started
-        admin_pw: test
+        admin_pw: mypw
+        omd_auto_restart: 'false'
+        omd_config:
+          - var: AUTOSTART
+            value: on
 
-A dictionary of sites, their version, admin password and state.
+A dictionary of sites, containing the desired version, admin password and state.
+There are also advanced settings, which will be outlined below.
+
+Valid values for `state` are:
+- `started`: The site is started and enabled for autostart on system boot.
+- `stopped`: The site is stopped and disabled for autostart on system boot.
+- `enabled`: The site is stopped, but enabled for autostart on system boot.
+- `disabled`: The site is stopped and disabled for autostart on system boot.
+- `present`: The site is stopped and disabled for autostart on system boot.
+- `absent`: The site is removed from the system entirely.
+
 If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
 Valid choices include `install`, `keepold` and `abort`.
+
+Site configuration can be passed with the `omd_config` keyword.
+The format can be seen above, for a list of variables run `omd show`
+on an existing site.  
+**Pay special attention to the `omd_auto_restart` variable!** As site configuration needs the site to be stopped, this needs to be handled. By default the variable is set to `false` to avoid unexpected restarting. However, no configuration will be performed if the site is started.
+
+    checkmk_server_backup_on_update: 'true'
+
+Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups.
 
     checkmk_server_backup_dir: /tmp
 
 Directory to backup sites to when updating between versions.
-
-    checkmk_server_backup_on_update: 'true'
-
-Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups
+Of course `/tmp/` is not a sane backup location, so change it!
 
     checkmk_agent_no_log: 'true'
 
-Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
+Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default.
+Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
 ## Tags
+
 Tasks are tagged with the following tags:
 | Tag | Purpose |
 | ---- | ------- |
@@ -118,12 +144,9 @@ You can use Ansible to skip tasks, or only run certain tasks by using these tags
 
 ## Dependencies
 
-<!-- A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles. -->
 None.
 
 ## Example Playbook
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
     - hosts: all
       roles:
@@ -145,5 +168,4 @@ See [LICENSE](../../LICENSE).
 
 ## Author Information
 
-<!-- An optional section for the role authors to include contact information, or a website (HTML is not allowed). -->
 Robin Gierse (@robin-checkmk)

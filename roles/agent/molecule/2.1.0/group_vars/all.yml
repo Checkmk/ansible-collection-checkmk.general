@@ -1,26 +1,27 @@
 ---
 # General
-checkmk_version: "2.1.0p35"
-checkmk_edition: "cre"
-checkmk_site: "my_site"
-automation_user: "cmkadmin"
-automation_secret: "d7589df1"
+checkmk_var_version: "2.1.0p36"
+checkmk_var_edition: "cre"
+checkmk_var_checkmk_site: "my_site"
+checkmk_var_automation_user: "cmkadmin"
+checkmk_var_automation_secret: "d7589df1"
 
 # Agent Role
-checkmk_agent_version: "{{ checkmk_version }}"
-checkmk_agent_edition: "{{ checkmk_edition }}"
-checkmk_agent_protocol: http
+checkmk_agent_version: "{{ checkmk_var_version }}"
+checkmk_agent_edition: "{{ checkmk_var_edition }}"
+checkmk_agent_server_protocol: http
 checkmk_agent_server: 127.0.0.1
-checkmk_agent_site: "{{ checkmk_site }}"
+checkmk_agent_site: "{{ checkmk_var_checkmk_site }}"
 checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
 checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
 checkmk_agent_server_validate_certs: 'false'
-checkmk_agent_port: "{% if checkmk_agent_protocol == 'https' %}443{% else %}80{% endif %}"
-checkmk_agent_user: "{{ automation_user | default('automation') }}"
+checkmk_agent_server_port: "{% if checkmk_agent_server_protocol == 'https' %}443{% else %}80{% endif %}"
+checkmk_agent_user: "{{ checkmk_var_automation_user | default('automation') }}"
+checkmk_agent_port: 6556
 
 # Depending on which user you will be using, set the password or secret:
-checkmk_agent_pass: "{{ automation_secret }}"
-# checkmk_agent_secret: "{{ automation_secret }}"
+checkmk_agent_pass: "{{ checkmk_var_automation_secret }}"
+# checkmk_agent_secret: "{{ checkmk_var_automation_secret }}"
 
 checkmk_agent_auto_activate: 'true'
 checkmk_agent_add_host: 'true'
@@ -34,7 +35,7 @@ checkmk_agent_prep_legacy: 'false'
 checkmk_agent_delegate_api_calls: "{{ inventory_hostname }}"
 checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 checkmk_agent_host_name: "{{ inventory_hostname }}"
-checkmk_agent_folder: "{{ checkmk_folder_path | default('/') }}"
+checkmk_agent_folder: "{{ checkmk_var_folder_path | default('/') }}"
 checkmk_agent_force_foreign_changes: 'false'
 checkmk_agent_host_attributes:
   ipaddress: 127.0.0.1
@@ -49,13 +50,13 @@ checkmk_agent_host_attributes:
 
 # Server Role
 
-checkmk_server_edition: "{{ checkmk_edition }}"
-checkmk_server_version: "{{ checkmk_version }}"
+checkmk_server_edition: "{{ checkmk_var_edition }}"
+checkmk_server_version: "{{ checkmk_var_version }}"
 checkmk_server_verify_setup: 'true'
 
 checkmk_server_sites:
-  - name: "{{ checkmk_site }}"
-    version: "{{ checkmk_version }}"
+  - name: "{{ checkmk_var_checkmk_site }}"
+    version: "{{ checkmk_var_version }}"
     state: started
-    admin_pw: "{{ automation_secret }}"
+    admin_pw: "{{ checkmk_var_automation_secret }}"
     update_conflict_resolution: install

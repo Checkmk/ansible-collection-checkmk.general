@@ -40,28 +40,28 @@ author:
 EXAMPLES = r"""
 - name: "Activate changes on all sites."
   checkmk.general.activation:
-      server_url: "http://localhost/"
+      server_url: "http://my_server/"
       site: "my_site"
-      automation_user: "automation"
-      automation_secret: "$SECRET"
+      automation_user: "my_user"
+      automation_secret: "my_secret"
   run_once: 'true'
 
 - name: "Activate changes on a specific site."
   checkmk.general.activation:
-      server_url: "http://localhost/"
+      server_url: "http://my_server/"
       site: "my_site"
-      automation_user: "automation"
-      automation_secret: "$SECRET"
+      automation_user: "my_user"
+      automation_secret: "my_secret"
       sites:
         - "my_site"
   run_once: 'true'
 
 - name: "Activate changes including foreign changes."
   checkmk.general.activation:
-      server_url: "http://localhost/"
+      server_url: "http://my_server/"
       site: "my_site"
-      automation_user: "automation"
-      automation_secret: "$SECRET"
+      automation_user: "my_user"
+      automation_secret: "my_secret"
       force_foreign_changes: 'true'
   run_once: 'true'
 """

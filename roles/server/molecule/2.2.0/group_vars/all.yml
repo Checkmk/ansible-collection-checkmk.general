@@ -1,15 +1,14 @@
 ---
 # General
-checkmk_version: "2.2.0p12"
-checkmk_edition: "cre"
-checkmk_site: "my_site"
-server_url: "http://127.0.0.1/"
-automation_user: "cmkadmin"
-automation_secret: "d7589df1"
+checkmk_var_version: "2.2.0p14"
+checkmk_var_edition: "cre"
+checkmk_var_server_url: "http://127.0.0.1/"
+checkmk_var_automation_user: "cmkadmin"
+checkmk_var_automation_secret: "d7589df1"
 
 # Server Role
-checkmk_server_edition: "{{ checkmk_edition }}"
-checkmk_server_version: "{{ checkmk_version }}"
+checkmk_server_edition: "{{ checkmk_var_edition }}"
+checkmk_server_version: "{{ checkmk_var_version }}"
 checkmk_server_verify_setup: 'true'
 
 checkmk_server_configure_firewall: 'false'
@@ -20,23 +19,51 @@ checkmk_server_backup_opts: '--no-past'
 checkmk_server_allow_downgrades: 'true'
 
 checkmk_server_sites:
-  - name: "{{ checkmk_site }}"
-    version: "{{ checkmk_version }}"
+  - name: "started"
+    version: "{{ checkmk_var_version }}"
     state: started
-    admin_pw: "{{ automation_secret }}"
+    admin_pw: "{{ checkmk_var_automation_secret }}"
     update_conflict_resolution: install
+    omd_auto_restart: 'true'
+    omd_config:
+      - var: LIVESTATUS_TCP
+        value: "on"
+      - var: LIVESTATUS_TCP_PORT
+        value: "6557"
   - name: "stopped"
-    version: "{{ checkmk_version }}"
+    version: "{{ checkmk_var_version }}"
     state: stopped
-    admin_pw: "{{ automation_secret }}"
+    admin_pw: "{{ checkmk_var_automation_secret }}"
     update_conflict_resolution: install
+  - name: "enabled"
+    version: "{{ checkmk_var_version }}"
+    state: enabled
+    admin_pw: "{{ checkmk_var_automation_secret }}"
+    update_conflict_resolution: install
+    omd_auto_restart: 'true'
+    omd_config:
+      - var: AUTOSTART
+        value: "on"
+  - name: "disabled"
+    version: "{{ checkmk_var_version }}"
+    state: disabled
+    admin_pw: "{{ checkmk_var_automation_secret }}"
+    update_conflict_resolution: install
+    omd_auto_restart: 'false'
+    omd_config:
+      - var: AUTOSTART
+        value: "off"
   - name: "present"
-    version: "{{ checkmk_version }}"
+    version: "{{ checkmk_var_version }}"
     state: present
-    admin_pw: "{{ automation_secret }}"
+    admin_pw: "{{ checkmk_var_automation_secret }}"
     update_conflict_resolution: install
+    omd_auto_restart: 'false'
+    omd_config:
+      - var: LIVESTATUS_TCP
+        value: "on"
   - name: "absent"
-    version: "{{ checkmk_version }}"
+    version: "{{ checkmk_var_version }}"
     state: absent
-    admin_pw: "{{ automation_secret }}"
+    admin_pw: "{{ checkmk_var_automation_secret }}"
     update_conflict_resolution: install

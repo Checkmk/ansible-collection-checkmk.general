@@ -1,10 +1,10 @@
 ---
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
   host:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     attributes:
@@ -17,10 +17,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Discover hosts."
   discovery:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     state: "fix_all"
   delegate_to: localhost
@@ -29,20 +29,20 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run activation."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host without comment."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
@@ -51,10 +51,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete downtime on host without comment."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
@@ -63,10 +63,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services with relative times."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on services with relative timestamps
     start_after:
@@ -82,10 +82,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services with relative times in strings."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on services with relative timestamps in strings
     start_after:
@@ -101,10 +101,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services with absolute timestamps."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on services with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
@@ -116,10 +116,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services without timestamps."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on services without timestamps
     service_descriptions:
@@ -131,10 +131,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with relative times."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host with relative timestamps
     start_after:
@@ -147,10 +147,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with absolute timestamps."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
@@ -159,10 +159,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with absolute timestamps. Again."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
@@ -171,10 +171,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with absolute timestamps. Again. With force."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     force: "yes"
     comment: Schedule downtime on host with absolute timestamps
@@ -184,10 +184,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime forcibly on host with absolute timestamps."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
@@ -197,20 +197,20 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host without timestamps."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host without timestamps
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete service downtimes with comment."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on services with relative timestamps
     service_descriptions:
@@ -221,10 +221,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host downtimes with comment."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host without timestamps
     state: absent
@@ -232,10 +232,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete service downtimes with comment again."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on services with relative timestamps
     service_descriptions:
@@ -246,10 +246,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host downtimes with comment again."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host without timestamps
     state: absent
@@ -257,10 +257,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete service downtimes."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     service_descriptions:
       - "CPU load"
@@ -272,20 +272,20 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host downtimes."
   downtime:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     state: absent
   loop: "{{ checkmk_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     state: "absent"
@@ -295,10 +295,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run activation."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
   delegate_to: localhost
   run_once: true  # noqa run-once[task]

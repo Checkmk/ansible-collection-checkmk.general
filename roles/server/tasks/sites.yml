@@ -36,6 +36,20 @@
   tags:
     - update-sites
 
+- name: "Enable Sites."  # noqa no-changed-when
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd config {{ item.name }} AUTOSTART on
+  args:
+    executable: /bin/bash
+  no_log: true
+  loop: "{{ checkmk_server_sites }}"
+  when: (item.state == "enabled") or (item.state == "started")
+  register: checkmk_server_sites_stopped
+  tags:
+    - stop-sites
+
 - name: "Start Sites."
   become: true
   ansible.builtin.shell: |
@@ -61,7 +75,21 @@
     removes: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
-  when: (item.state == "absent") or (item.state == "stopped")
+  when: item.state != "started"
+  register: checkmk_server_sites_stopped
+  tags:
+    - stop-sites
+
+- name: "Disable Sites."  # noqa no-changed-when
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd config {{ item.name }} AUTOSTART off
+  args:
+    executable: /bin/bash
+  no_log: true
+  loop: "{{ checkmk_server_sites }}"
+  when: (item.state == "disabled") or (item.state == "present") or (item.state == "stopped")
   register: checkmk_server_sites_stopped
   tags:
     - stop-sites
@@ -80,6 +108,18 @@
   register: checkmk_server_sites_removed
   tags:
     - destroy-sites
+
+- name: "Include site configuration tasks."
+  ansible.builtin.include_tasks: configure-site.yml
+  loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    loop_var: outer_item
+  when: |
+    outer_item.omd_config is defined and
+    ((outer_item.omd_auto_restart is defined and outer_item.omd_auto_restart | bool) or
+    (outer_item.state == "stopped" or outer_item.state == "disabled" or outer_item.state == "present"))
+  tags:
+    - configure-sites
 
 - name: "Update Site Admin Password for Checkmk < 2.1."  # noqa no-changed-when
   become: true

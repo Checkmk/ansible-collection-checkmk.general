@@ -9,6 +9,12 @@
   tags:
     - include-os-family-vars
 
+- name: "{{ ansible_system }}: Include File Management."
+  ansible.builtin.include_tasks: "{{ ansible_system }}-files.yml"
+  tags:
+    - include-system-tasks
+    - download-package
+
 - name: "{{ ansible_system }}: Include OS specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_system }}.yml"
   tags:
@@ -17,7 +23,7 @@
 - name: "Fetch fresh monitoring data from host."
   become: false
   checkmk.general.discovery:
-    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
+    server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
@@ -27,15 +33,15 @@
   throttle: "{{ checkmk_agent_discover_max_parallel_tasks }}"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_discover | bool
-  register: result
+  register: checkmk_agent_refresh_state
   retries: 3
   delay: 10
-  until: "result.changed | bool"
+  until: "checkmk_agent_refresh_state.changed | bool"
 
 - name: "Update monitored services and labels on host."
   become: false
   checkmk.general.discovery:
-    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
+    server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
@@ -45,8 +51,8 @@
   throttle: "{{ checkmk_agent_discover_max_parallel_tasks }}"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_discover | bool
-  register: result
+  register: checkmk_agent_discovery_state
   retries: 3
   delay: 10
-  until: "result.changed | bool"
+  until: "checkmk_agent_discovery_state.changed | bool"
   notify: "activate changes"
