@@ -11,3 +11,11 @@
               }}"
   delegate_to: localhost
   register: looked_up_bakery
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify bakery status."
+  ansible.builtin.assert:
+    that: ("'finished' in looked_up_bakery.msg") or
+          ("'running' in looked_up_bakery.msg") or
+          ("'initialized' in looked_up_bakery.msg") or
+          ("'stopped' in looked_up_bakery.msg") or
+          ("'exception' in looked_up_bakery.msg")

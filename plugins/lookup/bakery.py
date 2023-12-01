@@ -13,8 +13,11 @@ DOCUMENTATION = """
     description:
       - Returns the bakery status of a Checkmk server as a string, e.g. 'running'
     options:
-      _terms:
-        description: site url
+      server_url:
+        description: URL of the Checkmk server
+        required: True
+      site:
+        description: site name
         required: True
       automation_user:
         description: automation user for the REST API access
@@ -40,7 +43,8 @@ EXAMPLES = """
     msg: "Bakery status is {{ bakery }}"
   vars:
     bakery: "{{ lookup('checkmk.general.bakery',
-                   server_url + '/' + site,
+                   server_url=http://myserver,
+                   site=mysite,
                    validate_certs=False,
                    automation_user=automation_user,
                    automation_secret=automation_secret
@@ -67,33 +71,34 @@ from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import 
 class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
+        server_url = self.get_option("server_url")
+        site = self.get_option("site")
         user = self.get_option("automation_user")
         secret = self.get_option("automation_secret")
         validate_certs = self.get_option("validate_certs")
 
         ret = []
 
-        for term in terms:
-            api = CheckMKLookupAPI(
-                site_url=term,
-                user=user,
-                secret=secret,
-                validate_certs=validate_certs,
-            )
+        api = CheckMKLookupAPI(
+            site_url=server_url + "/" + site,
+            user=user,
+            secret=secret,
+            validate_certs=validate_certs,
+        )
 
-            response = json.loads(
-                api.get("/domain-types/agent/actions/baking_status/invoke")
-            )
+        response = json.loads(
+            api.get("/domain-types/agent/actions/baking_status/invoke")
+        )
 
-            if "code" in response:
-                raise AnsibleError(
-                    "Received error for %s - %s: %s"
-                    % (
-                        response.get("url", ""),
-                        response.get("code", ""),
-                        response.get("msg", ""),
-                    )
+        if "code" in response:
+            raise AnsibleError(
+                "Received error for %s - %s: %s"
+                % (
+                    response.get("url", ""),
+                    response.get("code", ""),
+                    response.get("msg", ""),
                 )
+            )
 
-            ret.append(response.get("result", {}).get("value").get("state"))
+        ret.append(response.get("result", {}).get("value").get("state"))
         return ret
