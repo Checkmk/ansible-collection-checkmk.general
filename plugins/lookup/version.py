@@ -17,16 +17,16 @@ DOCUMENTATION = """
         description: URL of the Checkmk server
         required: True
       site:
-        description: Site name
+        description: Site name.
         required: True
       automation_user:
-        description: Automation user for the REST API access
+        description: Automation user for the REST API access.
         required: True
       automation_secret:
-        description: Automation secret for the REST API access
+        description: Automation secret for the REST API access.
         required: True
       validate_certs:
-        description: Whether or not to validate TLS certificates
+        description: Whether or not to validate TLS certificates.
         type: boolean
         required: False
         default: True
@@ -60,6 +60,7 @@ RETURN = """
 
 import json
 
+from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
@@ -76,7 +77,6 @@ class LookupModule(LookupBase):
         validate_certs = self.get_option("validate_certs")
 
         site_url = server_url + "/" + site
-        ret = []
 
         api = CheckMKLookupAPI(
             site_url=site_url,
@@ -86,5 +86,15 @@ class LookupModule(LookupBase):
         )
 
         response = json.loads(api.get("/version"))
-        ret.append(response.get("versions", {}).get("checkmk"))
-        return ret
+
+        if "code" in response:
+            raise AnsibleError(
+                "Received error for %s - %s: %s"
+                % (
+                    response.get("url", ""),
+                    response.get("code", ""),
+                    response.get("msg", ""),
+                )
+            )
+
+        return response.get("versions", {}).get("checkmk")
