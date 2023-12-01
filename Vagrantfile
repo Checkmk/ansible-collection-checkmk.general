@@ -42,6 +42,7 @@ Vagrant.configure("2") do |config|
     usermod -aG docker vagrant
     grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='ansible-galaxy collection build --force ~/ansible_collections/checkmk/general && ansible-galaxy collection install -f ./checkmk-general-*.tar.gz && rm ./checkmk-general-*.tar.gz'" >> /home/vagrant/.bashrc
     grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
+    hostnamectl set-hostname collection
     SCRIPT
     srv.vm.provision "shell", inline: $script
     srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/"
@@ -81,6 +82,7 @@ Vagrant.configure("2") do |config|
     usermod -aG docker vagrant
     grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='ansible-galaxy collection build --force ~/ansible_collections/checkmk/general && ansible-galaxy collection install -f ./checkmk-general-*.tar.gz && rm ./checkmk-general-*.tar.gz'" >> /home/vagrant/.bashrc
     grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
+    hostnamectl set-hostname molecule
     SCRIPT
     srv.vm.provision "shell", inline: $script
     srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/"
