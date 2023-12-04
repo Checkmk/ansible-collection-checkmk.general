@@ -23,7 +23,7 @@ checkmk.general.bakery module -- Trigger baking and signing in the agent bakery.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -389,28 +389,28 @@ Examples
     # Bake all agents without signing, as example in a fresh installation without a signature key.
     - name: "Bake all agents without signing."
       checkmk.general.bakery:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         state: "baked"
     # Sign all agents.
     - name: "Sign all agents."
       checkmk.general.bakery:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         signature_key_id: 1
         signature_key_passphrase: "secretkey"
         state: "signed"
     # Bake and sign all agents.
     - name: "Bake and sign all agents."
       checkmk.general.bakery:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         signature_key_id: 1
         signature_key_passphrase: "secretkey"
         state: "baked_signed"
