@@ -1,9 +1,9 @@
 ---
 test_sites:
-  - version: "2.2.0p14"
+  - version: "2.2.0p16"
     edition: "cre"
     site: "stable_raw"
-  - version: "2.2.0p14"
+  - version: "2.2.0p16"
     edition: "cee"
     site: "stable_ent"
   - version: "2.1.0p36"
