@@ -43,7 +43,7 @@
     omd config {{ item.name }} AUTOSTART on
   args:
     executable: /bin/bash
-  no_log: "{{ checkmk_agent_no_log | bool }}"
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: (item.state == "enabled") or (item.state == "started")
   register: checkmk_server_sites_stopped
@@ -87,7 +87,7 @@
     omd config {{ item.name }} AUTOSTART off
   args:
     executable: /bin/bash
-  no_log: "{{ checkmk_agent_no_log | bool }}"
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: (item.state == "disabled") or (item.state == "present") or (item.state == "stopped")
   register: checkmk_server_sites_stopped
