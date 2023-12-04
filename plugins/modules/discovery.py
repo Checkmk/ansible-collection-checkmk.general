@@ -350,6 +350,17 @@ def run_module():
         )
         module.fail_json(**result_as_dict(result))
 
+    if not single_mode and module.params.get("state") == "tabula_rasa":
+        result = RESULT(
+            http_code=0,
+            msg="State 'tabula_rasa' does not exist in bulk_discovery, please use refresh!",
+            content="",
+            etag="",
+            failed=True,
+            changed=False,
+        )
+        module.fail_json(**result_as_dict(result))
+
     result = wait_for_completion(single_mode, servicecompletion)
 
     result = discovery.post()
