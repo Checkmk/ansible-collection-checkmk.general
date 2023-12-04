@@ -23,7 +23,7 @@ checkmk.general.downtime module -- Manage downtimes in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -651,7 +651,7 @@ Notes
 -----
 
 .. note::
-   - Idempotency for creation was made for hostdowntimes by only using the hostname and comment attributes. If this combination already exists as a downtime, the new downtime will not be created except using force. The creation of servicedowntimes works accordingly, with hostname, service description and comment.
+   - Idempotency for creation was made for host downtimes by only using the hostname and comment attributes. If this combination already exists as a downtime, the new downtime will not be created except using the \ :strong:`force`\  argument. The creation of service downtimes works accordingly, with hostname, service description and comment.
 
 .. Seealso
 
@@ -666,10 +666,10 @@ Examples
     
     - name: "Schedule host downtime."
       checkmk.general.downtime:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ my_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: my_host
         start_after:
           minutes: 5
@@ -679,10 +679,10 @@ Examples
 
     - name: "Schedule service downtimes for two given services."
       checkmk.general.downtime:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ my_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: my_host
         start_time: 2022-03-24T20:39:28Z
         end_time: 2022-03-24T20:40:28Z
@@ -694,10 +694,10 @@ Examples
 
     - name: "Delete all service downtimes for two given services."
       checkmk.general.downtime:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ my_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: my_host
         service_descriptions:
           - "CPU utilization"

@@ -23,7 +23,7 @@ checkmk.general.activation module -- Activate changes in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -176,6 +176,48 @@ Parameters
         <div class="ansible-option-cell">
 
       Whether to active foreign changes.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-redirect"></div>
+
+      .. _ansible_collections.checkmk.general.activation_module__parameter-redirect:
+
+      .. rst-class:: ansible-option-title
+
+      **redirect**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-redirect" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      If set to \ :literal:`true`\ , wait for the activation to complete. If set to \ :literal:`false`\ , start the activation, but do not wait for it to finish.
 
 
       .. rst-class:: ansible-option-line
@@ -356,30 +398,40 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    - name: "Activate changes on all sites."
+    - name: "Start activation on all sites."
       checkmk.general.activation:
-          server_url: "http://localhost/"
+          server_url: "http://my_server/"
           site: "my_site"
-          automation_user: "automation"
-          automation_secret: "$SECRET"
+          automation_user: "my_user"
+          automation_secret: "my_secret"
       run_once: 'true'
 
-    - name: "Activate changes on a specific site."
+    - name: "Start activation on a specific site."
       checkmk.general.activation:
-          server_url: "http://localhost/"
+          server_url: "http://my_server/"
           site: "my_site"
-          automation_user: "automation"
-          automation_secret: "$SECRET"
+          automation_user: "my_user"
+          automation_secret: "my_secret"
           sites:
             - "my_site"
       run_once: 'true'
 
-    - name: "Activate changes including foreign changes."
+    - name: "Start activation including foreign changes."
+      checkmk.general.activation:
+          server_url: "http://my_server/"
+          site: "my_site"
+          automation_user: "my_user"
+          automation_secret: "my_secret"
+          force_foreign_changes: 'true'
+      run_once: 'true'
+
+    - name: "Activate changes including foreign changes and wait for completion."
       checkmk.general.activation:
           server_url: "http://localhost/"
           site: "my_site"
           automation_user: "automation"
           automation_secret: "$SECRET"
+          redirect: 'true'
           force_foreign_changes: 'true'
       run_once: 'true'
 
@@ -488,7 +540,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Changes activated."`
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Activation started."`
 
 
       .. raw:: html

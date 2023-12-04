@@ -23,7 +23,7 @@ checkmk.general.version lookup -- Get the version of a Checkmk server
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -58,61 +58,6 @@ Synopsis
 
 .. Requirements
 
-
-
-
-.. Terms
-
-Terms
------
-
-.. tabularcolumns:: \X{1}{3}\X{2}{3}
-
-.. list-table::
-  :width: 100%
-  :widths: auto
-  :header-rows: 1
-  :class: longtable ansible-option-table
-
-  * - Parameter
-    - Comments
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-_terms"></div>
-
-      .. _ansible_collections.checkmk.general.version_lookup__parameter-_terms:
-
-      .. rst-class:: ansible-option-title
-
-      **Terms**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-_terms" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string` / :ansible-option-required:`required`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      site url
-
-
-      .. raw:: html
-
-        </div>
 
 
 
@@ -167,7 +112,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
         <div class="ansible-option-cell">
 
-      automation secret for the REST API access
+      Automation secret for the REST API access.
 
 
       .. raw:: html
@@ -204,7 +149,81 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
         <div class="ansible-option-cell">
 
-      automation user for the REST API access
+      Automation user for the REST API access.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
+
+      .. _ansible_collections.checkmk.general.version_lookup__parameter-server_url:
+
+      .. rst-class:: ansible-option-title
+
+      **server_url**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-server_url" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      URL of the Checkmk server
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-site"></div>
+
+      .. _ansible_collections.checkmk.general.version_lookup__parameter-site:
+
+      .. rst-class:: ansible-option-title
+
+      **site**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-site" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Site name.
 
 
       .. raw:: html
@@ -241,7 +260,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
         <div class="ansible-option-cell">
 
-      Wether or not to validate TLS certificates
+      Whether or not to validate TLS certificates.
 
 
       .. rst-class:: ansible-option-line
@@ -266,8 +285,6 @@ Notes
 -----
 
 .. note::
-   - When keyword and positional parameters are used together, positional parameters must be listed before keyword parameters:
-     ``lookup('checkmk.general.version', term1, term2, key1=value1, key2=value2)`` and ``query('checkmk.general.version', term1, term2, key1=value1, key2=value2)``
    - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'. If you need to use different permissions, you must change the command or run Ansible as another user.
    - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
    - The directory of the play is used as the current working directory.
@@ -290,8 +307,8 @@ Examples
         version: "{{ lookup('checkmk.general.version',
                        server_url + '/' + site,
                        validate_certs=False,
-                       automation_user=automation_user,
-                       automation_secret=automation_secret
+                       automation_user=my_user,
+                       automation_secret=my_secret
                    )}}"
 
 
