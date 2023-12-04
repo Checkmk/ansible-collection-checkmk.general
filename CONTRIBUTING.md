@@ -34,15 +34,15 @@ the functionality, [pull requests](#Pull-Requests) are appreciated.
 ### Submitting Issues
 
 If you encounter any bugs or have ideas for improvements feel free to open an [issue](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) or even better a [pull request](#Pull-Requests).
-Dedicated requirements will be added here as suitable.
+Please use the existing templates, especially for bug reports, as that helps you
+and us to gather the necessary information to tackle the issue efficiently.
 
 ### Pull Requests
 
 Please open a [pull request](https://github.com/Checkmk/ansible-collection-checkmk.general/pulls?q=is%3Apr+is%3Aopen)
-if you have something to contribute.
-On pull request creation, checks will run and tell you,
-if your changes work with the collection. If errors are detected, please try to
-fix them and update your pull request accordingly.
+against the `devel` branch, if you have something to contribute.
+On pull request creation, checks will run and tell you, if your changes work with the collection.
+If errors are detected, please try to fix them and update your pull request accordingly.
 If you need help, do ask for it.
 After submitting a PR, follow the instructions to sign the [CLA](https://github.com/Checkmk/checkmk/blob/master/doc/cla/cla_readme.md) as asked by the bot.
 
@@ -56,10 +56,9 @@ at the file `changelogs/template.yml`.
 
 ### Documentation
 
-Documentation is still a work in progress.
-Module documentation is compiled during a release and stored as `docs/module.rst`,
-but this is not ideal yet. However, please use the inline documentation as seen
-in the existing modules when creating additional modules.
+Module documentation is compiled during a release and stored as `docs/module.rst`.
+It also becomes available [in the Galaxy](https://galaxy.ansible.com/ui/repo/published/checkmk/general/docs/).
+Please use the inline documentation as seen in the existing modules when creating additional modules.
 
 ## Style Guide
 
@@ -71,6 +70,7 @@ in the existing modules when creating additional modules.
 * Write [good commit messages](https://chris.beams.io/posts/git-commit/)
 
 ### Plugins
+
 In general, stick to Ansible coding best practices and look out for test gotchas.
 
 **Module Options**
@@ -85,19 +85,26 @@ There are different approaches to the module options, depending on the nature of
 
 It is possible to implement an alias for a module option. This should be used rather carefully to not clutter the options. However, they can be an option, if one is uncertain how to name an option, or to deprecate an option, before actually removing it. If in doubt, feel free to ask for review in your PR.
 
-### Roles
-The following are guidelines to keep in mind, when changing roles.
+### Roles and Playbooks
+
+The following are guidelines to keep in mind, when creating or changing roles and playbooks.
 - Variables
     - Use snake case (`snake_case_variable`)
+    - Name variables after their purpose.
+        - `checkmk_server_foo` for a server role variable
+        - `checkmk_agent_bar` for a agent role variable
+        - `checkmk_var_bat` for general variables
     - Do not prefix the variable with an underscore ( `_` )
 - Tags
-    - When tagging roles, separate single words with dashes (`my-custom-tag`)
+    - When tagging roles or playbooks, separate single words with dashes (`my-custom-tag`)
 
 ## Tests
+
 We strive to provide the best possible quality with this collection, hence we have implemented tests, that verify different aspects of code quality.
-We urge you to run the following tests locally as applicable, so the turnaround on your pull request ist as low as possible.
+We urge you to run the following tests locally as applicable, so the turnaround on your pull request is as low as possible.
 
 ### Sanity
+
 [Ansible Sanity Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html) enforce Ansible coding standards and requirements facilitating static code analysis. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
 We recommend using the `--docker` option, so you get the best results, as that uses a Docker image crafted and maintained by the Ansible project.  
 **Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
@@ -106,11 +113,12 @@ To run the tests locally, use the following command in the project root:
 
     ansible-test sanity --docker
 
-You can also run a subset by mentioning them as follows. See `ansible-test sanity --list-tests` for available tests). We strongly recommend to run all tests though.
+You can also run a subset by mentioning them as follows. See `ansible-test sanity --list-tests` for available tests. We strongly recommend to run all tests though.
 
     ansible-test sanity $TEST_CASE --docker
 
 ### Integration
+
 [Ansible Integration Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html) run test cases created by the maintainers of this project, to ensure the collection actually does what is intended. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
 We strongly recommend using the `--docker` option, so you do not modify your local system with these tests.  
 **Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
@@ -124,6 +132,7 @@ You can also run a subset by mentioning them as follows. See `tests/integration/
     ansible-test integration $TEST_CASE --docker
 
 ### Molecule
+
 To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/testing-your-ansible-roles-molecule). It can be installed using the `requirements.txt`in this project or manually. The tests are crafted by the maintainers of this project to reflect real world scenarios a role would be used in. To run the tests, you need to navigate to the role directory and choose a scenario. At the time of writing those are named after the supported Checkmk versions: `2.1.0`and `2.2.0`.
 
     cd roles/server/
@@ -131,9 +140,11 @@ To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/test
     molecule test -s 2.2.0
 
 ### Unit
+
 There are currently no unit tests.
 
 ## Releasing this collection
+
 Releasing this collection is automated using GitHub Actions.
 Before running the action `Release Collection` against the `main` branch, the
 following needs to be done:
@@ -151,8 +162,10 @@ Some of these steps can already be checked and done with `scripts/release.sh`. T
 You should definitely check the resulting changes thoroughly before committing.
 
 ## Code of Conduct
+
 See [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Forum
+
 If you have questions, feedback and or simply no Github account feel free to
 reach out to our awesome [Checkmk Community (using the 'ansible' tag)](https://forum.checkmk.com/tag/ansible).

@@ -67,3 +67,6 @@ lookup:host:
 
 lookup:hosts:
   - 'Component Name: lookup_hosts'
+
+lookup:bakery:
+  - 'Component Name: lookup_bakery'

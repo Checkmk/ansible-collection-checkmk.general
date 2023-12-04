@@ -6,16 +6,17 @@
 # Run tests locally.
 #
 # Usage:
-#   Run Sanity Tests:       ./testing.sh -s
-#   Run Integration Tests:  ./testing.sh -i -t host
-#   Run Linting:            ./testing.sh -s
+#   Run Sanity Tests:                               ./testing.sh -s
+#   Run Integration Tests:                          ./testing.sh -i -t host
+#   Run Linting:                                    ./testing.sh -l
+#   Run Molecule for server role and Checkmk 2.2.0: ./testing.sh -m -r server -v 2.2.0
 
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 collection_dir="${script_dir%/*}"
 
 mode="sanity"
 
-while getopts 'silt:' OPTION; do
+while getopts 'silmt:r:v:' OPTION; do
   case "$OPTION" in 
     s) 
       mode="sanity" ;;
@@ -23,8 +24,14 @@ while getopts 'silt:' OPTION; do
       mode="integration" ;;
     l)
       mode="lint" ;;
+    m)
+      mode="molecule" ;;
     t)
       target="$OPTARG" ;;
+    r)
+      role="$OPTARG" ;;
+    v)
+      version="$OPTARG" ;;
     ?) 
       echo "Unknown option!"
       exit 1
@@ -60,6 +67,14 @@ _run_linting() {
     echo "## ansible-lint done."
 }
 
+_run_molecule() {
+    echo "## Running Molecule for ${role} role and Checkmk ${version}."
+    cd "./roles/${role}/" || exit 1
+    molecule test -s "${version}"
+    cd - || exit 1
+    echo "## Molecule done."
+}
+
 case "$mode" in 
     sanity) 
         _run_sanity ;;
@@ -67,6 +82,8 @@ case "$mode" in
         _run_integration ;;
     lint)
         _run_linting ;;
+    molecule)
+        _run_molecule ;;
     ?) 
       echo "Unknown mode!"
       exit 1

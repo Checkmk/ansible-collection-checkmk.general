@@ -49,10 +49,10 @@ EXAMPLES = """
                     lookup('checkmk.general.host',
                         'example.com',
                         effective_attributes=True,
-                        server_url=server_url,
-                        site=site,
-                        automation_user=automation_user,
-                        automation_secret=automation_secret,
+                        server_url=my_server_url,
+                        site=my_site,
+                        automation_user=my_user,
+                        automation_secret=my_secret,
                         validate_certs=False
                         )
                  }}"
@@ -68,6 +68,7 @@ RETURN = """
 
 import json
 
+from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
@@ -103,6 +104,16 @@ class LookupModule(LookupBase):
             api_endpoint = "/objects/host_config/" + term
 
             response = json.loads(api.get("/objects/host_config/" + term, parameters))
+
+            if "code" in response:
+                raise AnsibleError(
+                    "Received error for %s - %s: %s"
+                    % (
+                        response.get("url", ""),
+                        response.get("code", ""),
+                        response.get("msg", ""),
+                    )
+                )
             ret.append(response.get("extensions"))
 
         return ret

@@ -60,9 +60,9 @@
   block:
     - name: "Import Checkmk GPG Key."
       ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
-      register: checkmk_gpg_import
+      register: checkmk_server_gpg_import
       when: checkmk_server_verify_setup | bool
-      changed_when: "'imported: 1' in checkmk_gpg_import"
+      changed_when: "'imported: 1' in checkmk_server_gpg_import"
       tags:
         - import-gpg-key
 
