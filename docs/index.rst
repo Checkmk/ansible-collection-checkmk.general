@@ -9,7 +9,7 @@
 Checkmk.General
 ===============
 
-Collection version 3.4.0
+Collection version 4.0.0
 
 .. contents::
    :local:
@@ -94,6 +94,7 @@ Modules
 Lookup Plugins
 ~~~~~~~~~~~~~~
 
+* :ansplugin:`bakery lookup <checkmk.general.bakery#lookup>` -- Get the bakery status of a Checkmk server
 * :ansplugin:`folder lookup <checkmk.general.folder#lookup>` -- Get folder attributes
 * :ansplugin:`folders lookup <checkmk.general.folders#lookup>` -- Get various information about a folder
 * :ansplugin:`host lookup <checkmk.general.host#lookup>` -- Get host attributes
@@ -104,6 +105,7 @@ Lookup Plugins
     :maxdepth: 1
     :hidden:
 
+    bakery_lookup
     folder_lookup
     folders_lookup
     host_lookup

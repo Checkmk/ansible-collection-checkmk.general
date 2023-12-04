@@ -11,14 +11,14 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.host_lookup:
+.. _ansible_collections.checkmk.general.bakery_lookup:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.host lookup -- Get host attributes
-++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.bakery lookup -- Get the bakery status of a Checkmk server
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -30,13 +30,13 @@ checkmk.general.host lookup -- Get host attributes
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.host`.
+    To use it in a playbook, specify: :code:`checkmk.general.bakery`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 3.3.0
+New in checkmk.general 4.0.0
 
 .. contents::
    :local:
@@ -50,7 +50,7 @@ Synopsis
 
 .. Description
 
-- Returns the attributes of a host
+- Returns the bakery status of a Checkmk server as a string, e.g. 'running'
 
 
 .. Aliases
@@ -58,61 +58,6 @@ Synopsis
 
 .. Requirements
 
-
-
-
-.. Terms
-
-Terms
------
-
-.. tabularcolumns:: \X{1}{3}\X{2}{3}
-
-.. list-table::
-  :width: 100%
-  :widths: auto
-  :header-rows: 1
-  :class: longtable ansible-option-table
-
-  * - Parameter
-    - Comments
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-_terms"></div>
-
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-_terms:
-
-      .. rst-class:: ansible-option-title
-
-      **Terms**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-_terms" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string` / :ansible-option-required:`required`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      host name
-
-
-      .. raw:: html
-
-        </div>
 
 
 
@@ -124,7 +69,7 @@ Keyword parameters
 ------------------
 
 This describes keyword parameters of the lookup. These are the values ``key1=value1``, ``key2=value2`` and so on in the following
-examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.host', key1=value1, key2=value2, ...)``
+examples: ``lookup('checkmk.general.bakery', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.bakery', key1=value1, key2=value2, ...)``
 
 .. tabularcolumns:: \X{1}{3}\X{2}{3}
 
@@ -142,7 +87,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.bakery_lookup__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -179,7 +124,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.bakery_lookup__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -214,54 +159,9 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-effective_attributes"></div>
-
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-effective_attributes:
-
-      .. rst-class:: ansible-option-title
-
-      **effective_attributes**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-effective_attributes" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`boolean`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      show all effective attributes on hosts
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-choices:`Choices:`
-
-      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
-      - :ansible-option-choices-entry:`true`
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-server_url:
+      .. _ansible_collections.checkmk.general.bakery_lookup__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -298,7 +198,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-site:
+      .. _ansible_collections.checkmk.general.bakery_lookup__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -335,7 +235,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.bakery_lookup__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -360,7 +260,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
         <div class="ansible-option-cell">
 
-      Wether or not to validate TLS cerificates
+      Wether or not to validate TLS certificates
 
 
       .. rst-class:: ansible-option-line
@@ -385,8 +285,9 @@ Notes
 -----
 
 .. note::
-   - When keyword and positional parameters are used together, positional parameters must be listed before keyword parameters:
-     ``lookup('checkmk.general.host', term1, term2, key1=value1, key2=value2)`` and ``query('checkmk.general.host', term1, term2, key1=value1, key2=value2)``
+   - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'. If you need to use different permissions, you must change the command or run Ansible as another user.
+   - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
+   - The directory of the play is used as the current working directory.
 
 .. Seealso
 
@@ -399,21 +300,17 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    - name: Get the attributes of host example.com
-      ansible.builtin.debug:
-        msg: "Attributes of host example: {{ attributes }}"
+    - name: "Show bakery status"
+      debug:
+        msg: "Bakery status is {{ bakery }}"
       vars:
-        attributes: "{{
-                        lookup('checkmk.general.host',
-                            'example.com',
-                            effective_attributes=True,
-                            server_url=my_server_url,
-                            site=my_site,
-                            automation_user=my_user,
-                            automation_secret=my_secret,
-                            validate_certs=False
-                            )
-                     }}"
+        bakery: "{{ lookup('checkmk.general.bakery',
+                       server_url=http://myserver,
+                       site=mysite,
+                       validate_certs=False,
+                       automation_user=automation_user,
+                       automation_secret=automation_secret
+                   )}}"
 
 
 
@@ -442,7 +339,7 @@ Return Value
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-_list"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__return-_list:
+      .. _ansible_collections.checkmk.general.bakery_lookup__return-_list:
 
       .. rst-class:: ansible-option-title
 
@@ -464,7 +361,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A list of dicts of attributes of the host(s)
+      server bakery status
 
 
       .. rst-class:: ansible-option-line
@@ -486,7 +383,7 @@ Return Value
 Authors
 ~~~~~~~
 
-- Lars Getwan (@lgetwan)
+- Max Sickora (@max-checkmk)
 
 
 .. hint::
