@@ -1,3 +1,6 @@
+# We need to avoid the Checkmk setup detecting systemd somehow.
+# See the postinst script of the package for the mechanism.
+
 FROM ubuntu:jammy
 LABEL maintainer="Robin Gierse"
 
