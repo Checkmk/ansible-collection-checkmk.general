@@ -69,7 +69,7 @@
     var: rulesets
   vars:
     rulesets: "{{ lookup('checkmk.general.rulesets',
-                      regex='file'
+                      regex='file',
                       rulesets_used=True,
                       server_url=server_url,
                       site=outer_item.site,
