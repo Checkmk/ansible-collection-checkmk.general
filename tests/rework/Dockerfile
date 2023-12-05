@@ -1,6 +1,3 @@
-# We need to avoid the Checkmk setup detecting systemd somehow.
-# See the postinst script of the package for the mechanism.
-
 FROM ubuntu:jammy
 LABEL maintainer="Robin Gierse"
 
@@ -9,7 +6,7 @@ ENV pip_packages "ansible"
 ARG distro="jammy"
 ARG DEBIAN_FRONTEND=noninteractives
 
-ENV stable "2.2.0p14"
+ENV stable "2.2.0p16"
 ENV old "2.1.0p36"
 ENV ancient "2.0.0p39"
 
@@ -55,13 +52,18 @@ RUN rm -f /lib/systemd/system/systemd*udev* \
   && rm -f /lib/systemd/system/getty.target
 
 # Install Checkmk
-RUN apt-get update &&\
-    # wget https://download.checkmk.com/checkmk/${ancient}/check-mk-raw-${ancient}_0.${distro}_amd64.deb && \
-    # wget https://download.checkmk.com/checkmk/${old}/check-mk-raw-${old}_0.${distro}_amd64.deb && \
+RUN apt-get update && \
+    mv /usr/bin/systemctl /usr/bin/systemctl.bak && \
+    echo "exit 0" > /usr/bin/systemctl && \
+    chmod +x /usr/bin/systemctl && \
+    wget https://download.checkmk.com/checkmk/${ancient}/check-mk-raw-${ancient}_0.${distro}_amd64.deb && \
+    wget https://download.checkmk.com/checkmk/${old}/check-mk-raw-${old}_0.${distro}_amd64.deb && \
     wget https://download.checkmk.com/checkmk/${stable}/check-mk-raw-${stable}_0.${distro}_amd64.deb && \
-    # apt-get install -y ./check-mk-raw-${ancient}_0.${distro}_amd64.deb && \
-    # apt-get install -y ./check-mk-raw-${old}_0.${distro}_amd64.deb && \
-    apt-get install -y ./check-mk-raw-${stable}_0.${distro}_amd64.deb
+    apt-get install -y ./check-mk-raw-${ancient}_0.${distro}_amd64.deb && \
+    apt-get install -y ./check-mk-raw-${old}_0.${distro}_amd64.deb && \
+    apt-get install -y ./check-mk-raw-${stable}_0.${distro}_amd64.deb && \
+    mv /usr/bin/systemctl.bak /usr/bin/systemctl && \
+    chmod +x /usr/bin/systemctl
 
 VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
 CMD ["/lib/systemd/systemd"]
