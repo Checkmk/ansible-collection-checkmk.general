@@ -11,23 +11,23 @@
 
     - name: "Create contact groups."
       contact_group:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ checkmk_var_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ item.name }}"
         title: "{{ item.title | default(item.name) }}"
         state: "present"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_contact_groups }}"
+      loop: "{{ checkmk_var_contact_groups }}"
 
     - name: "Create users."
       user:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ checkmk_var_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ item.name }}"
         fullname: "{{ item.fullname }}"
         auth_type: "{{ item.auth_type }}"
@@ -35,70 +35,70 @@
         roles:
           - "guest"
         authorized_sites:
-          - "{{ site }}"
+          - "{{ checkmk_var_site }}"
         state: "present"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_users }}"
+      loop: "{{ checkmk_var_users }}"
 
     - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
-          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
           "Press <Enter> to continue."
-      when: not run_unattended | bool
+      when: not checkmk_var_run_unattended | bool
 
     - name: "Activate changes on site."
       activation:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ checkmk_var_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         force_foreign_changes: 'true'
         sites:
-          - "{{ site }}"
+          - "{{ checkmk_var_site }}"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
 
     - name: "Delete users."
       user:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ checkmk_var_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_users }}"
+      loop: "{{ checkmk_var_users }}"
 
     - name: "Delete contact groups."
       contact_group:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ checkmk_var_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_contact_groups }}"
+      loop: "{{ checkmk_var_contact_groups }}"
 
     - name: "Pause to review changes."
       ansible.builtin.pause:
         prompt: |
-          "Feel free to review the changes in your Checkmk site: {{ site }}."
+          "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
           "Press <Enter> to continue."
-      when: not run_unattended | bool
+      when: not checkmk_var_run_unattended | bool
 
     - name: "Activate changes on site."
       activation:
-        server_url: "{{ server_url }}"
-        site: "{{ site }}"
-        automation_user: "{{ automation_user }}"
-        automation_secret: "{{ automation_secret }}"
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ checkmk_var_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
         force_foreign_changes: 'true'
         sites:
-          - "{{ site }}"
+          - "{{ checkmk_var_site }}"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]

@@ -76,3 +76,6 @@ lookup:ruleset:
 
 lookup:rulesets:
   - 'plugins/modules/lookup/rulesets.py'
+
+lookup:bakery:
+  - 'plugins/modules/lookup/bakery.py'

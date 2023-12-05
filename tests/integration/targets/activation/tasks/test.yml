@@ -1,19 +1,19 @@
 ---
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate without changes."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
   host:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     attributes:
@@ -26,19 +26,19 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate without explicit site."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     state: "absent"
@@ -48,20 +48,20 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate forcing foreign changes."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
   host:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     attributes:
@@ -74,10 +74,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate with explicit site."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: 'false'
     sites:
       - "{{ outer_item.site }}"
@@ -86,13 +86,26 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate with explicit site and redirect."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    redirect: 'true'
+    force_foreign_changes: 'false'
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]

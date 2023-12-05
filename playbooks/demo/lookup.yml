@@ -4,19 +4,19 @@
   strategy: linear
   gather_facts: false
   vars_files:
-    - ../vars/auth.yml      # This vars file provides details about your site
+    - ../vars/auth.yml      # This vars file provides details about your checkmk_var_site
 
   tasks:
 
     - name: "Get Checkmk version."
       ansible.builtin.debug:
-        msg: "Version is {{ version }}"
+        msg: "Version is {{ checkmk_var_version }}"
       vars:
-        version: "{{ lookup('checkmk.general.version',
-                       server_url + '/' + site,
+        checkmk_var_version: "{{ lookup('checkmk.general.version',
+                       checkmk_var_server_url + '/' + checkmk_var_site,
                        validate_certs=False,
-                       automation_user=automation_user,
-                       automation_secret=automation_secret)
+                       automation_user=checkmk_var_automation_user,
+                       automation_secret=checkmk_var_automation_secret)
                    }}"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
@@ -25,13 +25,14 @@
       ansible.builtin.debug:
         msg: "Folder tree: {{ item.id }}"
       loop: "{{
-        lookup('checkmk.general.all_folders',
+        lookup('checkmk.general.folders',
             '~',
             show_hosts=False,
             recursive=True,
-            site_url=server_url + '/' + site,
-            automation_user=automation_user,
-            automation_secret=automation_secret,
+            server_url=checkmk_var_server_url,
+            site=checkmk_var_site,
+            automation_user=checkmk_var_automation_user,
+            automation_secret=checkmk_var_automation_secret,
             validate_certs=False)
         }}"
       loop_control:
@@ -39,37 +40,41 @@
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
 
-    - name: "Get all hosts of the folder /test recursively"
-      ansible.builtin.debug:
-        msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
-      vars:
-        looping: "{{
-                     lookup('checkmk.general.all_folders',
-                         '~tests',
-                         show_hosts=True,
-                         recursive=True,
-                         site_url=server_url + '/' + site,
-                         automation_user=automation_user,
-                         automation_secret=automation_secret,
-                         validate_certs=False)
-                  }}"
-      loop: "{{ looping | subelements('members.hosts.value') }}"
-      loop_control:
-        label: "{{ item.0.id }}"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
+    ## TODO: @lgetwan: Please take a look at these tasks and fix them. Bonus: Add the new lookup modules. :)
 
-    - name: "Get the attributes of folder /tests"
-      ansible.builtin.debug:
-        msg: "Attributes of folder /network: {{ attributes }}"
-      vars:
-        attributes: "{{
-                        lookup('checkmk.general.folder',
-                            '~tests',
-                            site_url=server_url + '/' + site,
-                            automation_user=automation_user,
-                            automation_secret=automation_secret,
-                            validate_certs=False)
-                     }}"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
+    # - name: "Get all hosts of the folder /test recursively"
+    #   ansible.builtin.debug:
+    #     msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
+    #   vars:
+    #     checkmk_var_looping: "{{
+    #                  lookup('checkmk.general.folders',
+    #                      '~tests',
+    #                      show_hosts=True,
+    #                      recursive=True,
+    #                      server_url=checkmk_var_server_url,
+    #                      site=checkmk_var_site,
+    #                      automation_user=checkmk_var_automation_user,
+    #                      automation_secret=checkmk_var_automation_secret,
+    #                      validate_certs=False)
+    #               }}"
+    #   loop: "{{ checkmk_var_looping | subelements('members.hosts.value') }}"
+    #   loop_control:
+    #     label: "{{ item.0.id }}"
+    #   delegate_to: localhost
+    #   run_once: true  # noqa run-once[task]
+
+    # - name: "Get the attributes of folder /tests"
+    #   ansible.builtin.debug:
+    #     msg: "Attributes of folder /network: {{ checkmk_var_attributes }}"
+    #   vars:
+    #     checkmk_var_attributes: "{{
+    #                     lookup('checkmk.general.folder',
+    #                         '~tests',
+    #                         server_url=checkmk_var_server_url,
+    #                         site=checkmk_var_site,
+    #                         automation_user=checkmk_var_automation_user,
+    #                         automation_secret=checkmk_var_automation_secret,
+    #                         validate_certs=False)
+    #                  }}"
+    #   delegate_to: localhost
+    #   run_once: true  # noqa run-once[task]

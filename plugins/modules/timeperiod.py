@@ -62,10 +62,10 @@ EXAMPLES = r"""
 # Creating and Updating is the same.
 - name: "Create a new time period. (Attributes in one line)"
   checkmk.general.timeperiod:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "worktime"
     title: "Worktime"
     active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]'
@@ -75,10 +75,10 @@ EXAMPLES = r"""
 
 - name: "Create a new time period. (Attributes in multiple lines)"
   checkmk.general.timeperiod:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "worktime"
     title: "Worktime"
     active_time_ranges: [
@@ -110,10 +110,10 @@ EXAMPLES = r"""
 
 - name: "Delete a time period."
   checkmk.general.timeperiod:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "worktime"
     state: "absent"
 """

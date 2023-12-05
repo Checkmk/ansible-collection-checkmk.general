@@ -58,8 +58,8 @@ EXAMPLES = r"""
   checkmk.general.tag_group:
     server_url: "https://localhost/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     id: Virtualization
     title: Virtualization
     topic: My_Tags

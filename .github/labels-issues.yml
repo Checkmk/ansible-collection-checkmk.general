@@ -79,3 +79,6 @@ lookup:ruleset:
 
 lookup:rulesets:
   - 'Component Name: lookup_rulesets'
+
+lookup:bakery:
+  - 'Component Name: lookup_bakery'

@@ -23,7 +23,7 @@ checkmk.general.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -721,10 +721,10 @@ Examples
     # at the top of the main folder.
     - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
       checkmk.general.rule:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           conditions: {
@@ -759,10 +759,10 @@ Examples
     # and put it after the rule created above.
     - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
       checkmk.general.rule:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           conditions: {
@@ -791,10 +791,10 @@ Examples
     # Delete the first rule.
     - name: "Delete a rule."
       checkmk.general.rule:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           conditions: {
@@ -820,10 +820,10 @@ Examples
     # Create a rule rule matching a host label
     - name: "Create a rule matching a label."
       checkmk.general.rule:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           conditions: {

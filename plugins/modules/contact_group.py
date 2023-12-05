@@ -58,10 +58,10 @@ EXAMPLES = r"""
 # Create a single contact group.
 - name: "Create a single contact group."
   checkmk.general.contact_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_contact_group"
     title: "My Contact Group"
     customer: "provider"
@@ -70,10 +70,10 @@ EXAMPLES = r"""
 # Create several contact groups.
 - name: "Create several contact groups."
   checkmk.general.contact_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     customer: "provider"
     groups:
       - name: "my_contact_group_one"
@@ -87,10 +87,10 @@ EXAMPLES = r"""
 # Create several contact groups.
 - name: "Create several contact groups."
   checkmk.general.contact_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     customer: "provider"
     groups:
       - name: "my_contact_group_one"
@@ -102,20 +102,20 @@ EXAMPLES = r"""
 # Delete a single contact group.
 - name: "Create a single contact group."
   checkmk.general.contact_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_contact_group"
     state: "absent"
 
 # Delete several contact groups.
 - name: "Delete several contact groups."
   checkmk.general.contact_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     groups:
       - name: "my_contact_group_one"
       - name: "my_contact_group_two"

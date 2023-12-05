@@ -8,8 +8,25 @@
 - name: "{{ ansible_system }}: Populate service facts."
   ansible.builtin.service_facts:
 
-- name: "{{ ansible_system }}: Import Legacy agent tasks."
-  ansible.builtin.include_tasks: "legacy.yml"
+- name: "{{ ansible_system }}: Run Legacy agent tasks."   # noqa key-order[task]
+  block:
+    - name: "{{ ansible_system }}: Install xinetd"
+      become: true
+      ansible.builtin.package:
+        name: xinetd
+        state: present
+      tags:
+        - install-package
+        - install-prerequisites
+
+    - name: "{{ ansible_system }}: Enable xinetd"
+      become: true
+      ansible.builtin.service:
+        name: xinetd
+        state: started
+        enabled: true
+      tags:
+        - enable-xinetd
   when: |
     checkmk_agent_prep_legacy | bool
     and ansible_facts.packages['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
@@ -21,10 +38,10 @@
     dest: "{{ checkmk_agent_agent.file.cre }}"
     mode: '0640'
   when: checkmk_agent_edition | lower == "cre"
-  register: result
+  register: checkmk_agent_download_state
   retries: 3
   delay: 10
-  until: "not result.failed | bool"
+  until: "not checkmk_agent_download_state.failed | bool"
   delegate_to: "{{ checkmk_agent_delegate_download }}"
   tags:
     - download-package
@@ -34,9 +51,9 @@
   tags:
     - include-os-family-tasks
 
-- name: "Create host on server."
+- name: "{{ ansible_system }}: Create host on server."
   checkmk.general.host:
-    server_url: "{{ checkmk_agent_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_port }}/"
+    server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
@@ -59,10 +76,6 @@
   block:
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers
-    # ToDo: We should get rid of the following, once we can query the running activation process to know when it is fnished.
-    - name: "Give the activation process time to finish."
-      ansible.builtin.pause:
-        seconds: 30
 
 - name: "{{ ansible_system }}: Check for Agent Updater Binary."
   ansible.builtin.stat:
@@ -78,7 +91,7 @@
   become: true
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_server_protocol }} \
     -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }}
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: checkmk_agent_update_state
@@ -93,7 +106,7 @@
   become: true
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_protocol }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_server_protocol }} \
     -U {{ checkmk_agent_user }} -S {{ checkmk_agent_auth }}
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: checkmk_agent_update_state
@@ -116,8 +129,13 @@
     and checkmk_agent_tls | bool
     and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
 
-- name: "Verify Checkmk Agent Port is open."
+- name: "{{ ansible_system }}: Verify Checkmk Agent Port is open."
   ansible.builtin.wait_for:
-    port: 6556
+    port: "{{ checkmk_agent_port }}"
     timeout: 60
   when: checkmk_agent_mode == 'pull'
+
+- name: "{{ ansible_system }}: Initial push of data for push agent"  # noqa no-changed-when
+  become: true
+  ansible.builtin.command: cmk-agent-ctl push
+  when: checkmk_agent_mode == 'push'
