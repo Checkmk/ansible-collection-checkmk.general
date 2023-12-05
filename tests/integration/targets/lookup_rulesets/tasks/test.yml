@@ -79,6 +79,7 @@
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_rules }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules using lookup-rulesets."
   ansible.builtin.assert:
