@@ -81,6 +81,20 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_rules }}"
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: WHY DOES THAT LEAD TO AN ERROR?"
+  ansible.builtin.debug:
+    var: item
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_rules }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: WHY DOES THAT LEAD TO AN ERROR?"
+  ansible.builtin.debug:
+    var: item.ruleset
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_rules }}"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules using lookup-rulesets."
   ansible.builtin.assert:
     # For each rule that we created, check, if the number of rules in its ruleset is 1.
