@@ -783,3 +783,5 @@ releases:
         name: bakery
         namespace: null
     release_date: '2023-12-04'
+  4.0.1:
+    release_date: '2023-12-05'
