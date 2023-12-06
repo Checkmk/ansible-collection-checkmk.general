@@ -88,27 +88,42 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_rules }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: WHY DOES THAT LEAD TO AN ERROR?"
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: Content of checkmk_ruleset_regexes"
   ansible.builtin.debug:
-    var: item
+      msg: "{{ checkmk_ruleset_regexes }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: run over checkmk_ruleset_regexes"
+  ansible.builtin.assert:
+    # For each rule that we created, check, if the number of rules in its ruleset is 1.
+    that: "rulesets[0].extensions.number_of_rules == 1"
+  vars:
+    rulesets: "{{ lookup('checkmk.general.rulesets',
+                      regex=item,
+                      rulesets_used=True,
+                      server_url=server_url,
+                      site=outer_item.site,
+                      validate_certs=False,
+                      automation_user=automation_user,
+                      automation_secret=automation_secret)
+                  }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_ruleset_regexes }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: WHY DOES THAT LEAD TO AN ERROR?"
-  ansible.builtin.debug:
-    var: item
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_rules|selectattr('ruleset', 'defined')|map(attribute='ruleset') }}"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: Looping variable"
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: Looping variable ruleset_regexes"
   set_fact:
       ruleset_regexes: "{{ checkmk_rules|selectattr('ruleset', 'defined')|map(attribute='ruleset') }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules using lookup-rulesets."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: Content of Looping variable ruleset_regexes"
+  ansible.builtin.debug:
+      msg: "{{ ruleset_regexes }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: run over ruleset_regexes"
   ansible.builtin.assert:
-    # For each rule that we created, check, if the number of rules in its ruleset is 1.
     that: "rulesets[0].extensions.number_of_rules == 1"
   vars:
     rulesets: "{{ lookup('checkmk.general.rulesets',
