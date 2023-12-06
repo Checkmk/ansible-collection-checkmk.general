@@ -101,7 +101,7 @@
     that: "rulesets[0].extensions.number_of_rules == 1"
   vars:
     rulesets: "{{ lookup('checkmk.general.rulesets',
-                      regex=item.ruleset,
+                      regex=item['ruleset'],
                       rulesets_used=True,
                       server_url=server_url,
                       site=outer_item.site,
