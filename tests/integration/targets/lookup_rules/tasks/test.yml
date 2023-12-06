@@ -35,7 +35,7 @@
   vars:
     eitem: "checkgroup_parameters:cpu_load"
     rules: "{{ lookup('checkmk.general.rules',
-                      ruleset=eitem,
+                      ruleset=kack.ruleset,
                       rulesets_used=True,
                       server_url=server_url,
                       site=outer_item.site,
@@ -46,6 +46,9 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_rules }}"
+  loop_control:
+      loop_var: kack
+
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get each single rule of a ruleset."
   ansible.builtin.debug:
