@@ -102,6 +102,10 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_rules|selectattr('ruleset', 'defined')|map(attribute='ruleset') }}"
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: Looping variable"
+  set_fact:
+      ruleset_regexes: "{{ checkmk_rules|selectattr('ruleset', 'defined')|map(attribute='ruleset') }}"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules using lookup-rulesets."
   ansible.builtin.assert:
     # For each rule that we created, check, if the number of rules in its ruleset is 1.
@@ -118,7 +122,7 @@
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_rules|selectattr('ruleset', 'defined')|map(attribute='ruleset') }}"
+  loop: "{{ ruleset_regexes }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules using lookup-ruleset."
   ansible.builtin.assert:
