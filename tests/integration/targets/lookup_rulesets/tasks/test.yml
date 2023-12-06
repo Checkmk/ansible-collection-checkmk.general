@@ -69,7 +69,7 @@
     var: rulesets
   vars:
     rulesets: "{{ lookup('checkmk.general.rulesets',
-                      regex='checkgroup_parameters:memory_percentage_used',
+                      regex=item,
                       rulesets_used=True,
                       server_url=server_url,
                       site=outer_item.site,
@@ -79,7 +79,7 @@
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_rules }}"
+  loop: "{{ checkmk_ruleset_regexes }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - DEBUGGING: WHY DOES THAT LEAD TO AN ERROR?"
   ansible.builtin.debug:

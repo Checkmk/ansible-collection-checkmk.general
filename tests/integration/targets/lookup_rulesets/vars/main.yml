@@ -26,6 +26,11 @@ checkmk_server_edition_mapping:
   cce: cloud
   cme: managed
 
+checkmk_ruleset_regexes:
+    - "filesystem"
+    - "cpu_load"
+    - "cpu_iowait"
+
 checkmk_rules:
 
   - name: "Filesystem - Magic Factor."
