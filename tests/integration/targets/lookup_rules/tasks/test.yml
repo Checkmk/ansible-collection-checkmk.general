@@ -33,7 +33,7 @@
     # For each rule that we created, check, if the comment is identical
     that: "rules[0].extensions.properties.comment == item.rule.properties.comment"
   vars:
-    eitem: "{{ item.ruleset }}"
+    eitem: "checkgroup_parameters:cpu_load"
     rules: "{{ lookup('checkmk.general.rules',
                       ruleset=eitem,
                       rulesets_used=True,
