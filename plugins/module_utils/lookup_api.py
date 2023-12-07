@@ -41,10 +41,10 @@ class CheckMKLookupAPI:
     def get(self, endpoint="", parameters=None):
         url = self.url + endpoint
 
-        if parameters:
-            url = "%s?%s" % (url, urlencode(parameters))
-
         try:
+            if parameters:
+                url = "%s?%s" % (url, urlencode(parameters))
+
             raw_response = open_url(
                 url, headers=self.headers, validate_certs=self.validate_certs
             )
@@ -52,11 +52,11 @@ class CheckMKLookupAPI:
         except HTTPError as e:
             if e.code in HTTP_ERROR_CODES:
                 return json.dumps(
-                    {"code": e.code, "msg": HTTP_ERROR_CODES[e.code], "url": url}
+                    {"code": e.code, "msg": HTTP_ERROR_CODES[e.code], "url": url, "parameters": str(parameters)}
                 )
             else:
-                return json.dumps({"code": e.code, "msg": e.reason, "url": url})
+                return json.dumps({"code": e.code, "msg": e.reason, "url": url, "parameters": str(parameters)})
         except URLError as e:
-            return json.dumps({"code": 0, "msg": str(e), "url": url})
+            return json.dumps({"code": 0, "msg": str(e), "url": url, "parameters": str(parameters)})
         except Exception as e:
-            return json.dumps({"code": 0, "msg": str(e), "url": url})
+            return json.dumps({"code": 0, "msg": str(e), "url": url, "parameters": str(parameters)})
