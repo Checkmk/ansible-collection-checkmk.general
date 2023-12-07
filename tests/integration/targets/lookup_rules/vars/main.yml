@@ -134,7 +134,7 @@ checkmk_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "Warning at 80%\nCritical at 90%\n",
+        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
         "description": "Allow higher memory usage",
         "disabled": false,
         "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
