@@ -30,6 +30,10 @@ checkmk_ruleset_regexes:
     - "checkgroup_parameters:filesystem"
     - "checkgroup_parameters:cpu_load"
     - "checkgroup_parameters:cpu_iowait"
+    - "checkgroup_parameters:logwatch_ec"
+    - "usewalk_hosts"
+    - "checkgroup_parameters:memory_percentage_used"
+
 
 checkmk_rules:
 

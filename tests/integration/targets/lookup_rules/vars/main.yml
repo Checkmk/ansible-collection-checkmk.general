@@ -26,6 +26,14 @@ checkmk_server_edition_mapping:
   cce: cloud
   cme: managed
 
+checkmk_rulesets:
+    - "checkgroup_parameters:filesystem"
+    - "checkgroup_parameters:cpu_load"
+    - "checkgroup_parameters:cpu_iowait"
+    - "checkgroup_parameters:logwatch_ec"
+    - "usewalk_hosts"
+    - "checkgroup_parameters:memory_percentage_used"
+
 checkmk_rules:
 
   - name: "Filesystem - Magic Factor."

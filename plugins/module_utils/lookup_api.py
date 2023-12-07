@@ -42,9 +42,7 @@ class CheckMKLookupAPI:
         url = self.url + endpoint
 
         try:
-            p_msg = ""
             if parameters:
-                p_msg = str(parameters)
                 url = "%s?%s" % (url, urlencode(parameters))
 
             raw_response = open_url(
@@ -54,11 +52,11 @@ class CheckMKLookupAPI:
         except HTTPError as e:
             if e.code in HTTP_ERROR_CODES:
                 return json.dumps(
-                    {"code": e.code, "msg": HTTP_ERROR_CODES[e.code], "url": url, "parameters": p_msg}
+                    {"code": e.code, "msg": HTTP_ERROR_CODES[e.code], "url": url}
                 )
             else:
-                return json.dumps({"code": e.code, "msg": e.reason, "url": url, "parameters": p_msg})
+                return json.dumps({"code": e.code, "msg": e.reason, "url": url})
         except URLError as e:
-            return json.dumps({"code": 0, "msg": str(e), "url": url, "parameters": p_msg})
+            return json.dumps({"code": 0, "msg": str(e), "url": url})
         except Exception as e:
-            return json.dumps({"code": 0, "msg": str(e), "url": url, "parameters": p_msg})
+            return json.dumps({"code": 0, "msg": str(e), "url": url})
