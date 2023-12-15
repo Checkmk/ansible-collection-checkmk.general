@@ -137,9 +137,9 @@ EXAMPLES = r"""
     customer: "provider"
     auth_type: "password"
     password: "uschi"
-    enforce_password_change: True
+    enforce_password_change: true
     email: "checker@grevenbroich.de"
-    fallback_contact: True
+    fallback_contact: true
     pager_address: 089-123456789
     contactgroups:
       - "sport"
