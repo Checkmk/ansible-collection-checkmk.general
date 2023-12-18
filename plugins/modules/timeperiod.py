@@ -67,7 +67,7 @@ EXAMPLES = r"""
     automation_user: "my_user"
     automation_secret: "my_secret"
     name: "worktime"
-    title: "Worktime"
+    alias: "Worktime"
     active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]'
     exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
     exclude: '[ "Lunchtime" ]'
@@ -80,32 +80,32 @@ EXAMPLES = r"""
     automation_user: "my_user"
     automation_secret: "my_secret"
     name: "worktime"
-    title: "Worktime"
+    alias: "Worktime"
     active_time_ranges: [
-              {
-                  "day": "all",
-                  "time_ranges": [
-                      {
-                          "start": "8:00",
-                          "end": "17:00"
-                      }
-                  ]
-              },
-          ]
+      {
+        "day": "all",
+        "time_ranges": [
+          {
+            "start": "8:00",
+            "end": "17:00"
+          }
+        ]
+      },
+    ]
     exceptions: [
-              {
-                  "date": "2023-12-24",
-                  "time_ranges": [
-                      {
-                          "start": "8:00",
-                          "end": "12:00"
-                      }
-                  ]
-              },
-          ]
+      {
+        "date": "2023-12-24",
+        "time_ranges": [
+          {
+            "start": "8:00",
+            "end": "12:00"
+          }
+        ]
+      },
+    ]
     exclude: [
-         "Lunchtime"
-          ]
+      "Lunchtime"
+    ]
     state: "present"
 
 - name: "Delete a time period."
