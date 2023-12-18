@@ -240,6 +240,9 @@ class PasswordsCreateAPI(CheckmkAPI):
                 "shared": self.params.get("shared", ""),
             }
 
+        # Remove all keys without value, as otherwise they would be None.
+        data = {key: val for key, val in data.items() if val}
+
         return self._fetch(
             code_mapping=HTTP_CODES_CREATE,
             endpoint="/domain-types/password/collections/all",
