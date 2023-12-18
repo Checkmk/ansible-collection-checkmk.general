@@ -4,10 +4,6 @@
 ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
 ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
 Vagrant.configure("2") do |config|
 
   # We are using boxes from here: https://app.vagrantup.com/generic
@@ -16,32 +12,25 @@ Vagrant.configure("2") do |config|
   config.vm.define "collection", primary: true do |srv|
     srv.vm.box = "generic/ubuntu2204"
     srv.vm.network :private_network,
-        :type                       => "dhcp",
-        :libvirt__network_name      => "test_network",
-        :libvirt__domain_name       => "test.local",
-        :libvirt__dhcp_enabled      => true,
-        :libvirt__network_address   => "192.168.125.42",
-        :ip                         => "192.168.125.0",
+        :ip                         => "192.168.123.42",
         :libvirt__netmask           => "255.255.255.0",
-        :libvirt__dhcp_start        => "192.168.125.201",
-        :libvirt__dhcp_stop         => "192.168.125.250"
+        :libvirt__network_name      => "ansible_collection",
+        :libvirt__network_address   => "192.168.123.0"
     srv.ssh.insert_key = false
-    srv.vm.provider "libvirt" do |libv|
-      libv.default_prefix = "test_"
-      libv.description = 'collection'
-      libv.memory = 6144
-      libv.cpus = 4
-      libv.title = 'collection'
-      libv.keymap = "de"
-      libv.memorybacking :access, :mode => 'shared'
-      libv.memorybacking :source, :type => 'memfd'
+    srv.vm.provider "libvirt" do |libvirt|
+      libvirt.default_prefix = "ansible_"
+      libvirt.description = 'This box is used for development of the Checkmk Ansible Collection.'
+      libvirt.memory = 8096
+      libvirt.cpus = 4
+      libvirt.title = 'collection'
+      libvirt.keymap = "de"
     end
     $script = <<-SCRIPT
     apt-get -y update --quiet
     apt-get -y install python3-pip ca-certificates curl gnupg lsb-release
     python3 -m pip install pip --upgrade
-    python3 -m pip install -r /vagrant/requirements.txt
-    sudo -u vagrant ansible-galaxy collection install -f -r /vagrant/requirements.yml
+    python3 -m pip install -r /home/vagrant/ansible_collections/checkmk/general/requirements.txt
+    sudo -u vagrant ansible-galaxy collection install -f -r /home/vagrant/ansible_collections/checkmk/general/requirements.yml
     mkdir -p /home/vagrant/ansible_collections/checkmk/general
     mkdir -p /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
@@ -53,42 +42,34 @@ Vagrant.configure("2") do |config|
     grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
     hostnamectl set-hostname collection
     SCRIPT
-    srv.vm.synced_folder "./", "/vagrant"
     srv.vm.provision "shell", inline: $script
     srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/"
   end
-  
-  # Main Box Old
+
+  # Molecule
   config.vm.define "molecule", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/ubuntu2004"
     srv.vm.network :private_network,
-        :type                       => "dhcp",
-        :libvirt__network_name      => "test_network",
-        :libvirt__domain_name       => "test.local",
-        :libvirt__dhcp_enabled      => true,
-        :libvirt__network_address   => "192.168.125.42",
-        :ip                         => "192.168.125.0",
-        :libvirt__netmask           => "255.255.255.0",
-        :libvirt__dhcp_start        => "192.168.125.201",
-        :libvirt__dhcp_stop         => "192.168.125.250"
+    :ip                         => "192.168.123.43",
+    :libvirt__netmask           => "255.255.255.0",
+    :libvirt__network_name      => "ansible_collection",
+    :libvirt__network_address   => "192.168.123.0"
     srv.ssh.insert_key = false
-    srv.vm.provider "libvirt" do |libv|
-      libv.default_prefix = "test_"
-      libv.description = 'molecule'
-      libv.memory = 6144
-      libv.cpus = 4
-      libv.title = 'molecule'
-      libv.keymap = "de"
-      libv.memorybacking :access, :mode => 'shared'
-      libv.memorybacking :source, :type => 'memfd'
+    srv.vm.provider "libvirt" do |libvirt|
+      libvirt.default_prefix = "ansible_"
+      libvirt.description = 'This box is used for molecule testing of the Checkmk Ansible Collection.'
+      libvirt.memory = 8096
+      libvirt.cpus = 4
+      libvirt.title = 'molecule'
+      libvirt.keymap = "de"
     end
     $script = <<-SCRIPT
     apt-get -y update --quiet
     apt-get -y install python3-pip ca-certificates curl gnupg lsb-release
     python3 -m pip install pip --upgrade
-    python3 -m pip install -r /vagrant/requirements.txt
+    python3 -m pip install -r /home/vagrant/ansible_collections/checkmk/general/requirements.txt
     python3 -m pip install molecule molecule-plugins[docker]
-    sudo -u vagrant ansible-galaxy collection install -f -r /vagrant/requirements.yml
+    sudo -u vagrant ansible-galaxy collection install -f -r /home/vagrant/ansible_collections/checkmk/general/requirements.yml
     mkdir -p /home/vagrant/ansible_collections/checkmk/general
     mkdir -p /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
@@ -108,20 +89,17 @@ Vagrant.configure("2") do |config|
   config.vm.define "ansibuntu", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/ubuntu2204"
     srv.vm.network :private_network,
-          :libvirt__network_name      => "test_network",
-          :libvirt__domain_name       => "test.local",
-          :ip                         => "192.168.125.61",
-          :libvirt__netmask           => "255.255.255.0",
-          :libvirt__host_ip           => "192.168.125.1" 
+    :ip                         => "192.168.123.61",
+    :libvirt__netmask           => "255.255.255.0",
+    :libvirt__network_name      => "ansible_collection",
+    :libvirt__network_address   => "192.168.123.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
-      libvirt.default_prefix = "test_"
-      libvirt.description = "ansibuntu"
+      libvirt.default_prefix = "ansible_"
+      libvirt.description = 'This box is used to test roles against.'
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "ansibuntu"
-      libvirt.memorybacking :access, :mode => 'shared'
-      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
           inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git"
@@ -131,20 +109,17 @@ Vagrant.configure("2") do |config|
   config.vm.define "debsible", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/debian12"
     srv.vm.network :private_network,
-          :libvirt__network_name      => "test_network",
-          :libvirt__domain_name       => "test.local",
-          :ip                         => "192.168.125.62",
-          :libvirt__netmask           => "255.255.255.0",
-          :libvirt__host_ip           => "192.168.125.1" 
+    :ip                         => "192.168.123.62",
+    :libvirt__netmask           => "255.255.255.0",
+    :libvirt__network_name      => "ansible_collection",
+    :libvirt__network_address   => "192.168.123.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
-      libvirt.default_prefix = "test_"
-      libvirt.description = "debsible"
+      libvirt.default_prefix = "ansible_"
+      libvirt.description = 'This box is used to test roles against.'
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "debsible"
-      libvirt.memorybacking :access, :mode => 'shared'
-      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git"
@@ -154,20 +129,17 @@ Vagrant.configure("2") do |config|
   config.vm.define "anstream", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/centos9s"
     srv.vm.network :private_network,
-          :libvirt__network_name      => "test_network",
-          :libvirt__domain_name       => "test.local",
-          :ip                         => "192.168.125.63",
-          :libvirt__netmask           => "255.255.255.0",
-          :libvirt__host_ip           => "192.168.125.1" 
+    :ip                         => "192.168.123.63",
+    :libvirt__netmask           => "255.255.255.0",
+    :libvirt__network_name      => "ansible_collection",
+    :libvirt__network_address   => "192.168.123.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
-      libvirt.default_prefix = "test_"
-      libvirt.description = "anstream"
+      libvirt.default_prefix = "ansible_"
+      libvirt.description = 'This box is used to test roles against.'
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "anstream"
-      libvirt.memorybacking :access, :mode => 'shared'
-      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "dnf --quiet check-update ; dnf -y install vim curl wget git"
@@ -177,20 +149,17 @@ Vagrant.configure("2") do |config|
   config.vm.define "ansuse", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/opensuse42"
     srv.vm.network :private_network,
-    :libvirt__network_name      => "test_network",
-    :libvirt__domain_name       => "test.local",
-    :ip                         => "192.168.125.64",
+    :ip                         => "192.168.123.64",
     :libvirt__netmask           => "255.255.255.0",
-    :libvirt__host_ip           => "192.168.125.1" 
+    :libvirt__network_name      => "ansible_collection",
+    :libvirt__network_address   => "192.168.123.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
-      libvirt.default_prefix = "test_"
-      libvirt.description = "ansuse"
+      libvirt.default_prefix = "ansible_"
+      libvirt.description = 'This box is used to test roles against.'
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "ansuse"
-      libvirt.memorybacking :access, :mode => 'shared'
-      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "zypper --quiet up -y"
@@ -200,20 +169,17 @@ Vagrant.configure("2") do |config|
   config.vm.define "ansles", autostart: false , primary: false do |srv|
     srv.vm.box = "saltstack/cicd-sles15"
     srv.vm.network :private_network,
-    :libvirt__network_name      => "test_network",
-    :libvirt__domain_name       => "test.local",
-    :ip                         => "192.168.125.65",
+    :ip                         => "192.168.123.64",
     :libvirt__netmask           => "255.255.255.0",
-    :libvirt__host_ip           => "192.168.125.1" 
+    :libvirt__network_name      => "ansible_collection",
+    :libvirt__network_address   => "192.168.123.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
-      libvirt.default_prefix = "test_"
-      libvirt.description = "ansles"
+      libvirt.default_prefix = "ansible_"
+      libvirt.description = 'This box is used to test roles against.'
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "ansles"
-      libvirt.memorybacking :access, :mode => 'shared'
-      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "zypper --quiet up -y"
@@ -224,20 +190,17 @@ Vagrant.configure("2") do |config|
   config.vm.define "ansoracle", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/oracle8"
     srv.vm.network :private_network,
-    :libvirt__network_name      => "test_network",
-    :libvirt__domain_name       => "test.local",
-    :ip                         => "192.168.125.66",
+    :ip                         => "192.168.123.66",
     :libvirt__netmask           => "255.255.255.0",
-    :libvirt__host_ip           => "192.168.125.1" 
+    :libvirt__network_name      => "ansible_collection",
+    :libvirt__network_address   => "192.168.123.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
-      libvirt.default_prefix = "test_"
-      libvirt.description = "ansoracle"
+      libvirt.default_prefix = "ansible_"
+      libvirt.description = 'This box is used to test roles against.'
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "ansoracle"
-      libvirt.memorybacking :access, :mode => 'shared'
-      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "dnf --quiet check-update ; dnf -y install vim curl wget git"
@@ -247,25 +210,21 @@ Vagrant.configure("2") do |config|
   config.vm.define "ansidows", autostart: false , primary: false do |srv|
     srv.vm.box = "peru/windows-server-2019-standard-x64-eval"
     srv.vm.network :private_network,
-    :libvirt__network_name      => "test_network",
-    :libvirt__domain_name       => "test.local",
-    :ip                         => "192.168.125.67",
+    :ip                         => "192.168.123.67",
     :libvirt__netmask           => "255.255.255.0",
-    :libvirt__host_ip           => "192.168.125.1" 
+    :libvirt__network_name      => "ansible_collection",
+    :libvirt__network_address   => "192.168.123.0"
     srv.winrm.max_tries = 100
     srv.winrm.retry_delay = 2
     srv.vm.boot_timeout = 180
     srv.vm.hostname = "ansidows"
     srv.vm.provider "libvirt" do |libvirt|
-      libvirt.default_prefix = "test_"
-      libvirt.description = "ansidows"
+      libvirt.default_prefix = "ansible_"
+      libvirt.description = 'This box is used to test roles against.'
       libvirt.memory = 4096
       libvirt.cpus = 2
       libvirt.title = "ansidows"
       libvirt.keymap = "de"
-      # libvirt.gui = "false"
-      libvirt.memorybacking :access, :mode => 'shared'
-      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "powershell Set-NetFirewallRule -name 'FPS-ICMP4-ERQ-In*' -Enabled true"

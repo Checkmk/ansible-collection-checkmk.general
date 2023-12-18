@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
     srv.ssh.insert_key = false
     srv.vm.provider "virtualbox" do |v|
       v.name = 'collection'
-      v.memory = 6144
+      v.memory = 8096
       v.cpus = 4
     end
     $script = <<-SCRIPT
@@ -39,7 +39,7 @@ Vagrant.configure("2") do |config|
     srv.vm.provision "shell", inline: $script
     srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/"
   end
-  
+
   # Main Box Old
   config.vm.define "molecule", autostart: false , primary: false do |srv|
     srv.vm.box = "ubuntu/focal64"
