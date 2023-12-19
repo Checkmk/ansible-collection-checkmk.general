@@ -7,7 +7,9 @@ help:
 	@echo ""
 	@echo "setup-python    - Prepare the system for development with Python."
 	@echo ""
-	@echo "setup-vm        - Prepare the system for running the necessary VMs."
+	@echo "setup-kvm       - Install and enable KVM/QEMUand prepare Vagrant."
+	@echo ""
+	@echo "setup-vbox      - Copy the correct Vagrantfile for use with VirtualBox."
 	@echo ""
 	@echo "vm              - Create a virtual development environment."
 	@echo "molecule        - Create a virtual environment for molecule tests."
@@ -63,7 +65,6 @@ setup-kvm:
 	cp Vagrantfile.kvm Vagrantfile
 
 setup-vbox:
-	## TBD
 	cp Vagrantfile.vbox Vagrantfile
 
 clean: clean-vm
