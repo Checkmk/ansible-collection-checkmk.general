@@ -79,7 +79,7 @@ Name | Description | Tests
 
 ## Additional content
 
-We love to see the community build things on top of this collection.  
+We love to see the community build things on top of this collection.
 Check out [COMMUNITY.md](COMMUNITY.md) for a listing of interesting projects that build upon this collection in some way.
 
 ## Installing this collection
@@ -140,6 +140,7 @@ Please do **not** consider a concrete planning document!
     - Distributed Monitoring
     - Notification Rules
 - Dynamic Inventory
+- OMD Module
 
 ## More information about Ansible
 
