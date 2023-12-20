@@ -68,7 +68,7 @@ options:
                 description: Properties of the rule.
                 type: dict
             rule_id:
-                description: 
+                description:
                   - If given, it will be C(the only condition) to identify the rule to work on.
                   - When there's no rule found with this id, the task will fail.
                 type: str
@@ -300,28 +300,9 @@ def show_rule(module, base_url, headers, rule_id):
 
     url = "%s%s" % (base_url, api_endpoint)
 
-    response, info = fetch_url(
-        module, url, headers=headers, method="GET"
-    )
-
-    if info["status"] != 200:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
-        )
-
-    return json.loads(response.read().decode("utf-8"))
-
-
-def get_rule_by_id(module, base_url, headers, rule_id):
-    api_endpoint = "/objects/rule/" + rule_id
-
-    url = base_url + api_endpoint
-
     response, info = fetch_url(module, url, headers=headers, method="GET")
 
-    if info["status"] not in [200, 204]:
+    if info["status"] != 200:
         exit_failed(
             module,
             "Error calling API. HTTP code %d. Details: %s, "
@@ -337,7 +318,7 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
         if module.params.get("state") == "absent":
             # When deleting and we already know the ID, don't compare
             return rule.get("rule_id")
-        rules = [ show_rule(module, base_url, headers, rule.get("rule_id")) ]
+        rules = [show_rule(module, base_url, headers, rule.get("rule_id"))]
     else:
         # Get rules in ruleset
         rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
@@ -345,13 +326,6 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     (value_mod, exc) = safe_eval(rule["value_raw"], include_exceptions=True)
     if exc is not None:
         exit_failed(module, "value_raw in rule has invalid format")
-
-    # Get folder from neighbour rule if relative rule_id is given in location
-    if rule["location"]["rule_id"] is not None:
-        neighbour_rule = get_rule_by_id(
-            module, base_url, headers, rule["location"]["rule_id"]
-        )
-        rule["folder"] = neighbour_rule["extensions"]["folder"]
 
     if rules is not None:
         # Loop through all rules
@@ -418,6 +392,9 @@ def modify_rule(module, base_url, headers, ruleset, rule):
     if not rule_id:
         return not changed
 
+    if get_existing_rule(module, base_url, headers, ruleset, rule):
+        return not changed
+
     if module.check_mode:
         return (None, changed)
 
@@ -435,7 +412,6 @@ def modify_rule(module, base_url, headers, ruleset, rule):
     info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="PUT"
     )[1]
-    #exit_failed(module, "###### INFO: %s" % str(info))
 
     if info["status"] not in [200, 204]:
         exit_failed(
