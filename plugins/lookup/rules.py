@@ -16,6 +16,14 @@ DOCUMENTATION = """
       ruleset:
         description: The ruleset name.
         required: True
+      description_regex:
+        description: A regex to filter for certain descriptions.
+        required: False
+        default: ""
+      comment_regex:
+        description: A regex to filter for certain comment stings.
+        required: False
+        default: ""
       server_url:
         description: URL of the Checkmk server.
         required: True
@@ -51,6 +59,24 @@ EXAMPLES = """
     }}"
   loop_control:
       label: "{{ item.id }}"
+
+- name: actice_checks:http rules that match a certain description AND comment
+  ansible.builtin.debug:
+    msg: "Rule: {{ item.extensions }}"
+  loop: "{{
+    lookup('checkmk.general.rules',
+        ruleset='actice_checks:http',
+        description_regex='foo.*bar',
+        comment_regex='xmas-edition',
+        server_url=server_url,
+        site=site,
+        automation_user=automation_user,
+        automation_secret=automation_secret,
+        validate_certs=False
+        )
+    }}"
+  loop_control:
+      label: "{{ item.id }}"
 """
 
 RETURN = """
@@ -62,6 +88,7 @@ RETURN = """
 """
 
 import json
+import re
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
@@ -72,8 +99,11 @@ from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import 
 
 class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
+        regex_params = {}
         self.set_options(var_options=variables, direct=kwargs)
         ruleset = self.get_option("ruleset")
+        regex_params["description"] = self.get_option("description_regex")
+        regex_params["comment"] = self.get_option("comment_regex")
         server_url = self.get_option("server_url")
         site = self.get_option("site")
         user = self.get_option("automation_user")
@@ -105,4 +135,23 @@ class LookupModule(LookupBase):
                 )
             )
 
-        return [response.get("value")]
+        rule_list = response.get("value")
+
+        for what, regex in regex_params.items():
+            try:
+                if regex:
+                    rule_list = [
+                        r
+                        for r in rule_list
+                        if re.search(
+                            regex,
+                            r.get("extensions", {}).get("properties", {}).get(what, ""),
+                        )
+                    ]
+            except re.error as e:
+                raise AnsibleError(
+                    "Invalid regex for %s, pattern: %s, position: %s error: %s"
+                    % (what, e.pattern, e.pos, e.msg)
+                )
+
+        return [rule_list]

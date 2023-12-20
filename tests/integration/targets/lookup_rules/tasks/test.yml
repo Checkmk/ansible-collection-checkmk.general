@@ -33,10 +33,8 @@
     # For each rule that we created, check, if the comment is identical
     that: "'- Ansible managed' in rules[0].extensions.properties.comment"
   vars:
-    eitem: "checkgroup_parameters:cpu_load"
     rules: "{{ lookup('checkmk.general.rules',
                       ruleset=item,
-                      rulesets_used=True,
                       server_url=server_url,
                       site=outer_item.site,
                       validate_certs=False,
@@ -47,6 +45,39 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_rulesets }}"
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - filter for certain rulesets."
+  ansible.builtin.debug:
+    var: rules
+  vars:
+    rules: "{{ lookup('checkmk.general.rules',
+                      ruleset=item,
+                      server_url=server_url,
+                      site=outer_item.site,
+                      validate_certs=False,
+                      automation_user=automation_user,
+                      automation_secret=automation_secret)
+                  }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_rulesets }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - filter for certain rulesets and check the count."
+  ansible.builtin.assert:
+    # Check the number of rules
+    that: rules|length == 1
+  vars:
+    rules: "{{ lookup('checkmk.general.rules',
+                      ruleset=item,
+                      commebt_regex='Ansible managed',
+                      server_url=server_url,
+                      site=outer_item.site,
+                      validate_certs=False,
+                      automation_user=automation_user,
+                      automation_secret=automation_secret)
+                  }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_rulesets }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get each single rule of a ruleset."
   ansible.builtin.debug:
