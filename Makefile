@@ -26,7 +26,7 @@ help:
 	@echo "  publish       - Make files available, update git and announce"
 	@echo ""
 
-release: 
+release:
 
 publish:
 
@@ -35,19 +35,19 @@ announce:
 setup: setup-python setup-kvm
 
 setup-python:
-	sudo apt-get -y update --quiet
-	sudo apt-get -y install -y \
+	@sudo apt-get -y update --quiet
+	@sudo apt-get -y install -y \
 		python3-pip \
 		ca-certificates \
 		curl \
 		gnupg \
 		lsb-release
-	python3 -m pip install pip --upgrade
-	python3 -m pip install -r requirements.txt
+	@python3 -m pip install pip --upgrade
+	@python3 -m pip install -r requirements.txt
 
 setup-kvm:
-	sudo apt update -y
-	sudo apt install -y \
+	@sudo apt update -y
+	@sudo apt install -y \
 		virt-manager \
 		qemu-kvm \
 		libvirt-clients \
@@ -60,24 +60,26 @@ setup-kvm:
 		libxslt-dev \
 		libxml2-dev \
 		zlib1g-dev
-	sudo systemctl enable --now libvirtd
-	vagrant plugin install vagrant-libvirt
+	@sudo systemctl enable --now libvirtd
+	@vagrant plugin install vagrant-libvirt
+	if [ -f Vagrantfile ] ; then cp Vagrantfile Vagrantfile.bak ; fi
 	cp Vagrantfile.kvm Vagrantfile
 
 setup-vbox:
+	if [ -f Vagrantfile ] ; then cp Vagrantfile Vagrantfile.bak ; fi
 	cp Vagrantfile.vbox Vagrantfile
-
-clean: clean-vm
 
 version:
 	@newversion=$$(dialog --stdout --inputbox "New Version:" 0 0 "$(VERSION)") ; \
 	if [ -n "$$newversion" ] ; then ./scripts/release.sh -s "$(VERSION)" -t $$newversion ; fi
 
+clean: clean-vm
+
 clean-vm:
-	vagrant destroy --force
+	@vagrant destroy --force
 
 molecule:
-	vagrant up molecule
+	@vagrant up molecule
 
 vm:
-	vagrant up collection
+	@vagrant up collection
