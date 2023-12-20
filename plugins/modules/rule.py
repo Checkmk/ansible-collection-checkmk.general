@@ -202,9 +202,9 @@ EXAMPLES = r"""
       conditions: {
         "host_labels": [
           {
-          "key": "cmk/check_mk_server",
-          "operator": "is",
-          "value": "yes"
+            "key": "cmk/check_mk_server",
+            "operator": "is",
+            "value": "yes"
           }
         ],
         "host_name": {},

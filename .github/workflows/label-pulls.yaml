@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: "Label Pull Requests."
-      uses: actions/labeler@v4
+      uses: actions/labeler@v5
       with:
         configuration-path: .github/labels-prs.yml
         sync-labels: false

@@ -26,7 +26,7 @@ help:
 	@echo "  publish       - Make files available, update git and announce"
 	@echo ""
 
-release:
+release: 
 
 publish:
 

@@ -90,7 +90,7 @@ EXAMPLES = r"""
     password: "topsecret"
     owner: "admin"
     shared: [
-        "all"
+      "all"
     ]
     state: "present"
   no_log: true
