@@ -68,5 +68,17 @@ lookup:host:
 lookup:hosts:
   - 'Component Name: lookup_hosts'
 
+lookup:rule:
+  - 'Component Name: lookup_rule'
+
+lookup:rules:
+  - 'Component Name: lookup_rules'
+
+lookup:ruleset:
+  - 'Component Name: lookup_ruleset'
+
+lookup:rulesets:
+  - 'Component Name: lookup_rulesets'
+
 lookup:bakery:
   - 'Component Name: lookup_bakery'
