@@ -244,6 +244,7 @@ class PasswordsUpdateAPI(CheckmkAPI):
     def put(self):
         data = {
             "title": self.params.get("title", ""),
+            "customer": self.params.get("customer", ""),
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
