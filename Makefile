@@ -7,7 +7,9 @@ help:
 	@echo ""
 	@echo "setup-python    - Prepare the system for development with Python."
 	@echo ""
-	@echo "setup-vm        - Prepare the system for running the necessary VMs."
+	@echo "setup-kvm       - Install and enable KVM/QEMUand prepare Vagrant."
+	@echo ""
+	@echo "setup-vbox      - Copy the correct Vagrantfile for use with VirtualBox."
 	@echo ""
 	@echo "vm              - Create a virtual development environment."
 	@echo "molecule        - Create a virtual environment for molecule tests."
@@ -24,38 +26,60 @@ help:
 	@echo "  publish       - Make files available, update git and announce"
 	@echo ""
 
-release: 
+release:
 
 publish:
 
 announce:
 
-setup: setup-python setup-vm
+setup: setup-python setup-kvm
 
 setup-python:
-	sudo apt-get -y update --quiet && sudo apt-get -y install python3-pip ca-certificates curl gnupg lsb-release
-	python3 -m pip install pip --upgrade
-	python3 -m pip install -r requirements.txt
+	@sudo apt-get -y update --quiet
+	@sudo apt-get -y install -y \
+		python3-pip \
+		ca-certificates \
+		curl \
+		gnupg \
+		lsb-release
+	@python3 -m pip install pip --upgrade
+	@python3 -m pip install -r requirements.txt
 
-setup-vm:
-	@echo
-	@echo "This command will alter your system."
-	@echo "Do you want to proceed? If not, press CTRL + C!"
-	@read
-	sudo apt install -y vagrant libvirt-dev
-	vagrant plugin install vagrant-libvirt
+setup-kvm:
+	@sudo apt update -y
+	@sudo apt install -y \
+		virt-manager \
+		qemu-kvm \
+		libvirt-clients \
+		libvirt-daemon-system \
+		bridge-utils \
+		virtinst \
+		libguestfs-tools \
+		libvirt-daemon\
+		libvirt-dev \
+		libxslt-dev \
+		libxml2-dev \
+		zlib1g-dev
+	@sudo systemctl enable --now libvirtd
+	@vagrant plugin install vagrant-libvirt
+	if [ -f Vagrantfile ] ; then cp Vagrantfile Vagrantfile.bak ; fi
+	cp Vagrantfile.kvm Vagrantfile
 
-clean: clean-vm
+setup-vbox:
+	if [ -f Vagrantfile ] ; then cp Vagrantfile Vagrantfile.bak ; fi
+	cp Vagrantfile.vbox Vagrantfile
 
 version:
 	@newversion=$$(dialog --stdout --inputbox "New Version:" 0 0 "$(VERSION)") ; \
 	if [ -n "$$newversion" ] ; then ./scripts/release.sh -s "$(VERSION)" -t $$newversion ; fi
 
+clean: clean-vm
+
 clean-vm:
-	vagrant destroy --force
+	@vagrant destroy --force
 
 molecule:
-	vagrant up molecule
+	@vagrant up molecule
 
 vm:
-	vagrant up collection
+	@vagrant up collection

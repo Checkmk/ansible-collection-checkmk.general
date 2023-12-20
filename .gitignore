@@ -9,3 +9,5 @@ build/
 tests/output
 playbooks/vars/config.yml
 playbooks/test*.yml
+Vagrantfile
+Vagrantfile.bak
