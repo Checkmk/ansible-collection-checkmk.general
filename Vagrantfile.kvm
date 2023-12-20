@@ -24,6 +24,8 @@ Vagrant.configure("2") do |config|
       libvirt.cpus = 4
       libvirt.title = 'collection'
       libvirt.keymap = "de"
+      libvirt.memorybacking :access, :mode => 'shared'
+      libvirt.memorybacking :source, :type => 'memfd'
     end
     $script = <<-SCRIPT
     apt-get -y update --quiet
@@ -62,6 +64,8 @@ Vagrant.configure("2") do |config|
       libvirt.cpus = 4
       libvirt.title = 'molecule'
       libvirt.keymap = "de"
+      libvirt.memorybacking :access, :mode => 'shared'
+      libvirt.memorybacking :source, :type => 'memfd'
     end
     $script = <<-SCRIPT
     apt-get -y update --quiet
@@ -100,6 +104,8 @@ Vagrant.configure("2") do |config|
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "ansibuntu"
+      libvirt.memorybacking :access, :mode => 'shared'
+      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
           inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git"
@@ -120,6 +126,8 @@ Vagrant.configure("2") do |config|
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "debsible"
+      libvirt.memorybacking :access, :mode => 'shared'
+      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git"
@@ -140,6 +148,8 @@ Vagrant.configure("2") do |config|
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "anstream"
+      libvirt.memorybacking :access, :mode => 'shared'
+      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "dnf --quiet check-update ; dnf -y install vim curl wget git"
@@ -160,6 +170,8 @@ Vagrant.configure("2") do |config|
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "ansuse"
+      libvirt.memorybacking :access, :mode => 'shared'
+      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "zypper --quiet up -y"
@@ -180,6 +192,8 @@ Vagrant.configure("2") do |config|
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "ansles"
+      libvirt.memorybacking :access, :mode => 'shared'
+      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "zypper --quiet up -y"
@@ -201,6 +215,8 @@ Vagrant.configure("2") do |config|
       libvirt.memory = 2048
       libvirt.cpus = 2
       libvirt.title = "ansoracle"
+      libvirt.memorybacking :access, :mode => 'shared'
+      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "dnf --quiet check-update ; dnf -y install vim curl wget git"
@@ -225,6 +241,8 @@ Vagrant.configure("2") do |config|
       libvirt.cpus = 2
       libvirt.title = "ansidows"
       libvirt.keymap = "de"
+      libvirt.memorybacking :access, :mode => 'shared'
+      libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
       inline: "powershell Set-NetFirewallRule -name 'FPS-ICMP4-ERQ-In*' -Enabled true"
