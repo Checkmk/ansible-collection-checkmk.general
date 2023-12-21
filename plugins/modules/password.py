@@ -125,7 +125,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.types import RESUL
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
-
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )
@@ -345,7 +344,10 @@ def run_module():
             passwordcreate = PasswordsCreateAPI(module)
 
             checkmkversion = CheckmkVersion(str(passwordcreate.getversion()))
-            if checkmkversion.edition == "cme" and module.params.get("customer") is None:
+            if (
+                checkmkversion.edition == "cme"
+                and module.params.get("customer") is None
+            ):
                 result = RESULT(
                     http_code=0,
                     msg="Missing required parameter 'customer' for CME",
