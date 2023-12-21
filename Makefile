@@ -7,7 +7,7 @@ help:
 	@echo ""
 	@echo "setup-python    - Prepare the system for development with Python."
 	@echo ""
-	@echo "setup-kvm       - Install and enable KVM/QEMUand prepare Vagrant."
+	@echo "setup-kvm       - Install and enable KVM/QEMU and prepare Vagrant."
 	@echo ""
 	@echo "setup-vbox      - Copy the correct Vagrantfile for use with VirtualBox."
 	@echo ""
