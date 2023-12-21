@@ -11,13 +11,13 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.host_lookup:
+.. _ansible_collections.checkmk.general.rulesets_lookup:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.host lookup -- Get host attributes
+checkmk.general.rulesets lookup -- Search rulesets
 ++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
@@ -30,13 +30,13 @@ checkmk.general.host lookup -- Get host attributes
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.host`.
+    To use it in a playbook, specify: :code:`checkmk.general.rulesets`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 3.3.0
+New in checkmk.general 3.5.0
 
 .. contents::
    :local:
@@ -50,7 +50,7 @@ Synopsis
 
 .. Description
 
-- Returns the attributes of a host
+- Returns a list of Rulesets
 
 
 .. Aliases
@@ -58,61 +58,6 @@ Synopsis
 
 .. Requirements
 
-
-
-
-.. Terms
-
-Terms
------
-
-.. tabularcolumns:: \X{1}{3}\X{2}{3}
-
-.. list-table::
-  :width: 100%
-  :widths: auto
-  :header-rows: 1
-  :class: longtable ansible-option-table
-
-  * - Parameter
-    - Comments
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-_terms"></div>
-
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-_terms:
-
-      .. rst-class:: ansible-option-title
-
-      **Terms**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-_terms" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string` / :ansible-option-required:`required`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      host name
-
-
-      .. raw:: html
-
-        </div>
 
 
 
@@ -124,7 +69,7 @@ Keyword parameters
 ------------------
 
 This describes keyword parameters of the lookup. These are the values ``key1=value1``, ``key2=value2`` and so on in the following
-examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.host', key1=value1, key2=value2, ...)``
+examples: ``lookup('checkmk.general.rulesets', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.rulesets', key1=value1, key2=value2, ...)``
 
 .. tabularcolumns:: \X{1}{3}\X{2}{3}
 
@@ -142,7 +87,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -167,7 +112,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
         <div class="ansible-option-cell">
 
-      automation secret for the REST API access
+      Automation secret for the REST API access.
 
 
       .. raw:: html
@@ -179,7 +124,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -204,7 +149,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
         <div class="ansible-option-cell">
 
-      automation user for the REST API access
+      Automation user for the REST API access.
 
 
       .. raw:: html
@@ -214,17 +159,54 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-effective_attributes"></div>
+        <div class="ansibleOptionAnchor" id="parameter-regex"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-effective_attributes:
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-regex:
 
       .. rst-class:: ansible-option-title
 
-      **effective_attributes**
+      **regex**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-effective_attributes" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-regex" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      A regex of the ruleset name.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rulesets_deprecated"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-rulesets_deprecated:
+
+      .. rst-class:: ansible-option-title
+
+      **rulesets_deprecated**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rulesets_deprecated" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -241,7 +223,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
         <div class="ansible-option-cell">
 
-      show all effective attributes on hosts
+      Only show deprecated rulesets. Defaults to False.
 
 
       .. rst-class:: ansible-option-line
@@ -259,9 +241,97 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rulesets_folder"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-rulesets_folder:
+
+      .. rst-class:: ansible-option-title
+
+      **rulesets_folder**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rulesets_folder" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The folder in which to search for rules.
+
+      Path delimiters can be either ~ or /.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"/"`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rulesets_used"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-rulesets_used:
+
+      .. rst-class:: ansible-option-title
+
+      **rulesets_used**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rulesets_used" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Only show used rulesets. Defaults to True.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-server_url:
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -286,7 +356,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
         <div class="ansible-option-cell">
 
-      URL of the Checkmk server
+      URL of the Checkmk server.
 
 
       .. raw:: html
@@ -298,7 +368,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-site:
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -323,7 +393,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
         <div class="ansible-option-cell">
 
-      site name
+      Site name
 
 
       .. raw:: html
@@ -335,7 +405,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -360,7 +430,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
         <div class="ansible-option-cell">
 
-      Wether or not to validate TLS cerificates
+      Whether or not to validate TLS cerificates.
 
 
       .. rst-class:: ansible-option-line
@@ -381,12 +451,6 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
 .. Notes
 
-Notes
------
-
-.. note::
-   - When keyword and positional parameters are used together, positional parameters must be listed before keyword parameters:
-     ``lookup('checkmk.general.host', term1, term2, key1=value1, key2=value2)`` and ``query('checkmk.general.host', term1, term2, key1=value1, key2=value2)``
 
 .. Seealso
 
@@ -399,21 +463,40 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    - name: Get the attributes of host example.com
+    - name: Get all used rulesets with 'file' in their name
       ansible.builtin.debug:
-        msg: "Attributes of host example: {{ attributes }}"
-      vars:
-        attributes: "{{
-                        lookup('checkmk.general.host',
-                            'example.com',
-                            effective_attributes=True,
-                            server_url=my_server_url,
-                            site=my_site,
-                            automation_user=my_user,
-                            automation_secret=my_secret,
-                            validate_certs=False
-                            )
-                     }}"
+        msg: "Ruleset: {{ item.extensions.name }} has {{ item.extensions.number_of_rules }} rules."
+      loop: "{{
+        lookup('checkmk.general.rulesets',
+          regex='file',
+          rulesets_used=True,
+          server_url=server_url,
+          site=site,
+          automation_user=automation_user,
+          automation_secret=automation_secret,
+          validate_certs=False
+          )
+        }}"
+      loop_control:
+          label: "{{ item.id }}"
+
+    - name: Get all used deprecated rulesets
+      ansible.builtin.debug:
+        msg: "Ruleset {{ item.extension.name }} is deprecated."
+      loop: "{{
+        lookup('checkmk.general.rulesets',
+          regex='',
+          rulesets_deprecated=True,
+          rulesets_used=True,
+          server_url=server_url,
+          site=site,
+          automation_user=automation_user,
+          automation_secret=automation_secret,
+          validate_certs=False
+          )
+        }}"
+      loop_control:
+          label: "{{ item.0.id }}"
 
 
 
@@ -442,7 +525,7 @@ Return Value
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-_list"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__return-_list:
+      .. _ansible_collections.checkmk.general.rulesets_lookup__return-_list:
 
       .. rst-class:: ansible-option-title
 
@@ -464,7 +547,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A list of dicts of attributes of the host(s)
+      A list of rulesets
 
 
       .. rst-class:: ansible-option-line

@@ -5,6 +5,32 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v4.1.0
+======
+
+Release Summary
+---------------
+
+Happy holidays, everyone!
+
+Major Changes
+-------------
+
+- Rule lookup plugin - Show a particular rule.
+- Rules lookup plugin - List the rules of a ruleset.
+- Ruleset lookup plugin - Show a particular ruleset.
+- Rulesets lookup plugin - Search rulesets.
+
+Minor Changes
+-------------
+
+- Password module - Improve error handling.
+
+Bugfixes
+--------
+
+- Password module - Fix non-required module options being wrongly required.
+
 v4.0.1
 ======
 
