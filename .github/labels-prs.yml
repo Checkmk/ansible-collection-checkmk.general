@@ -110,16 +110,24 @@ lookup:hosts:
           - any-glob-to-any-file: 'plugins/modules/lookup/hosts.py'
 
 lookup:rule:
-  - 'plugins/modules/lookup/rule.py'
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/rule.py'
 
 lookup:rules:
-  - 'plugins/modules/lookup/rules.py'
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/rules.py'
 
 lookup:ruleset:
-  - 'plugins/modules/lookup/ruleset.py'
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/ruleset.py'
 
 lookup:rulesets:
-  - 'plugins/modules/lookup/rulesets.py'
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/rulesets.py'
 
 lookup:bakery:
   - any:
