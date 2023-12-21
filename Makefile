@@ -7,9 +7,13 @@ help:
 	@echo ""
 	@echo "setup-python    - Prepare the system for development with Python."
 	@echo ""
-	@echo "setup-kvm       - Install and enable KVM/QEMU and prepare Vagrant."
+	@echo "setup-kvm       - Install and enable KVM and prepare Vagrant."
+	@echo ""
+	@echo "kvm             - Only copy the correct Vagrantfile for use with KVM."
 	@echo ""
 	@echo "setup-vbox      - Copy the correct Vagrantfile for use with VirtualBox."
+	@echo ""
+	@echo "vbox            - Copy the correct Vagrantfile for use with VirtualBox."
 	@echo ""
 	@echo "vm              - Create a virtual development environment."
 	@echo "molecule        - Create a virtual environment for molecule tests."
@@ -45,7 +49,11 @@ setup-python:
 	@python3 -m pip install pip --upgrade
 	@python3 -m pip install -r requirements.txt
 
-setup-kvm:
+kvm:
+	if [ -f Vagrantfile ] ; then cp Vagrantfile Vagrantfile.bak ; fi
+	cp Vagrantfile.kvm Vagrantfile
+
+setup-kvm: kvm
 	@sudo apt update -y
 	@sudo apt install -y \
 		virt-manager \
@@ -62,12 +70,12 @@ setup-kvm:
 		zlib1g-dev
 	@sudo systemctl enable --now libvirtd
 	@vagrant plugin install vagrant-libvirt
-	if [ -f Vagrantfile ] ; then cp Vagrantfile Vagrantfile.bak ; fi
-	cp Vagrantfile.kvm Vagrantfile
 
-setup-vbox:
+vbox:
 	if [ -f Vagrantfile ] ; then cp Vagrantfile Vagrantfile.bak ; fi
 	cp Vagrantfile.vbox Vagrantfile
+
+setup-vbox: vbox
 
 version:
 	@newversion=$$(dialog --stdout --inputbox "New Version:" 0 0 "$(VERSION)") ; \
