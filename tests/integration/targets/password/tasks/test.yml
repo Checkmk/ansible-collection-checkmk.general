@@ -44,7 +44,7 @@
     shared: "{{ item.shared }}"
     state: "present"
   delegate_to: localhost
-  loop: "{{ checkmk_passwords_create }}"
+  loop: "{{ checkmk_passwords_create_cme }}"
   no_log: true
   when: (outer_item.edition == "cme")
   register: checkmk_password_status
