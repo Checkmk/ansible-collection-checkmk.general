@@ -45,10 +45,15 @@ Name | Description
 
 Name | Description | Tests
 --- | --- | ---
+[checkmk.general.bakery](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/bakery.py)|Look up the status pf the Checkmk agent bakery.|[![Integration Tests for bakery Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-bakery.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-bakery.yaml)
 [checkmk.general.folder](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/folder.py)|Look up folder attributes.|[![Integration Tests for Folder Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folder.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folder.yaml)
 [checkmk.general.folders](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/folders.py)|Look up all folders.|[![Integration Tests for Folders Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folders.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folders.yaml)
 [checkmk.general.host](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/host.py)|Look up host attributes.|[![Integration Tests for Host Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-host.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-host.yaml)
 [checkmk.general.hosts](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/hosts.py)|Look up all hosts.|[![Integration Tests for Hosts Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-hosts.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-hosts.yaml)
+[checkmk.general.rule](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/rule.py)|Look up rule attributes.|[![Integration Tests for Rule Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rules.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rules.yaml)
+[checkmk.general.rules](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/rules.py)|Look up all rules.|[![Integration Tests for Rules Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rules.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rules.yaml)
+[checkmk.general.ruleset](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/ruleset.py)|Look up ruleset attributes.|[![Integration Tests for Ruleset Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rulesets.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rulesets.yaml)
+[checkmk.general.rulesets](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/rulesets.py)|Look up all rulesets.|[![Integration Tests for Rulesets Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rulesets.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rulesets.yaml)
 [checkmk.general.version](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/version.py)|Look up version and edition information.|[![Integration Tests for Version Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-version.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-version.yaml)
 
 ### Modules
@@ -78,7 +83,7 @@ Name | Description | Tests
 
 ## Additional content
 
-We love to see the community build things on top of this collection.  
+We love to see the community build things on top of this collection.
 Check out [COMMUNITY.md](COMMUNITY.md) for a listing of interesting projects that build upon this collection in some way.
 
 ## Installing this collection
@@ -127,8 +132,8 @@ See [CHANGELOG.rst](CHANGELOG.rst).
 
 ## Roadmap
 <!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
-This is merely a collection of possible additions to the role.
-Please do **not** consider a concrete planning document!
+This is merely a collection of possible additions to the collection.
+Please do **not** consider it a concrete planning document!
 
 - Modules
   - Monitoring
@@ -139,6 +144,7 @@ Please do **not** consider a concrete planning document!
     - Distributed Monitoring
     - Notification Rules
 - Dynamic Inventory
+- OMD Module
 
 ## More information about Ansible
 

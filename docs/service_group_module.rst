@@ -23,7 +23,7 @@ checkmk.general.service_group module -- Manage service groups in Checkmk (bulk v
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.0.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -460,10 +460,10 @@ Examples
     # Create a single service group.
     - name: "Create a single service group."
       checkmk.general.service_group:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "my_service_group"
         title: "My Service Group"
         customer: "provider"
@@ -472,10 +472,10 @@ Examples
     # Create several service groups.
     - name: "Create several service groups."
       checkmk.general.service_group:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         customer: "provider"
         groups:
           - name: "my_service_group_one"
@@ -489,10 +489,10 @@ Examples
     # Create several service groups.
     - name: "Create several service groups."
       checkmk.general.service_group:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         customer: "provider"
         groups:
           - name: "my_service_group_one"
@@ -504,20 +504,20 @@ Examples
     # Delete a single service group.
     - name: "Create a single service group."
       checkmk.general.service_group:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "my_service_group"
         state: "absent"
 
     # Delete several service groups.
     - name: "Delete several service groups."
       checkmk.general.service_group:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         groups:
           - name: "my_service_group_one"
           - name: "my_service_group_two"

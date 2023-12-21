@@ -5,6 +5,44 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v4.0.1
+======
+
+v4.0.0
+======
+
+Release Summary
+---------------
+
+Move fast, break things.
+
+Major Changes
+-------------
+
+- Bakery lookup plugin - Get the status of the Checkmk Agent Bakery.
+
+Minor Changes
+-------------
+
+- Activation module - Implement proper support for `redirect` parameter. This means, the activation module can now optionally wait for a completed activation or just trigger it and move on.
+- Discovery module - Print error message, when using state "tabula_rasa" in bulk discovery mode, because that state is not supported by the API.
+- Lookup API - Add improved error handling.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Agent role - We restructured the agent. That entails a lot of changes, and we tried to keep everything stable. However, we cannot guarantee stability as we do not know all use-cases out there. Hence this change is also considered breaking.
+- Server role - It became necessary to make the way states are handled more consistent. The most siginificant change is, that all sites not in state "started" will be stopped. For all other states please consult the role's README.
+- Variable names - We aligned the names of variables throughout the collection. This can impact your existing configuration. Please review the variable names and apapt your configuration accordingly. For more details see `CONTRIBUTING.md`.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.bakery - Get the bakery status of a Checkmk server
+
 v3.4.0
 ======
 

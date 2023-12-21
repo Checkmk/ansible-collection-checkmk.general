@@ -1,0 +1,4 @@
+minor_changes:
+  - Activation module - Implement proper support for `redirect` parameter.
+    This means, the activation module can now optionally wait for a completed
+    activation or just trigger it and move on.

@@ -41,10 +41,10 @@ class CheckMKLookupAPI:
     def get(self, endpoint="", parameters=None):
         url = self.url + endpoint
 
-        if parameters:
-            url = "%s?%s" % (url, urlencode(parameters))
-
         try:
+            if parameters:
+                url = "%s?%s" % (url, urlencode(parameters))
+
             raw_response = open_url(
                 url, headers=self.headers, validate_certs=self.validate_certs
             )

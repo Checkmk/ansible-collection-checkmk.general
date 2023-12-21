@@ -23,7 +23,7 @@ checkmk.general.tag_group module -- Manage tag\_group within Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.0.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -473,8 +473,8 @@ Examples
       checkmk.general.tag_group:
         server_url: "https://localhost/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         id: Virtualization
         title: Virtualization
         topic: My_Tags

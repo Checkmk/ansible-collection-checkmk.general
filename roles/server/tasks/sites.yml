@@ -40,15 +40,20 @@
   become: true
   ansible.builtin.shell: |
     set -o pipefail
-    omd config {{ item.name }} AUTOSTART on
+    if [ "$(omd config {{ item.name }} show AUTOSTART)" != "on" ]
+    then
+      omd config {{ item.name }} set AUTOSTART on
+      echo "Autostart enabled."
+    fi
   args:
     executable: /bin/bash
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: (item.state == "enabled") or (item.state == "started")
   register: checkmk_server_sites_stopped
+  changed_when: "'Autostart enabled.' in checkmk_server_sites_stopped.stdout"
   tags:
-    - stop-sites
+    - enable-sites
 
 - name: "Start Sites."
   become: true
@@ -83,16 +88,20 @@
 - name: "Disable Sites."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: |
-    set -o pipefail
-    omd config {{ item.name }} AUTOSTART off
+    if [ "$(omd config {{ item.name }} show AUTOSTART)" != "off" ]
+    then
+      omd config {{ item.name }} set AUTOSTART off
+      echo "Autostart disabled."
+    fi
   args:
     executable: /bin/bash
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: (item.state == "disabled") or (item.state == "present") or (item.state == "stopped")
   register: checkmk_server_sites_stopped
+  changed_when: "'Autostart disabled.' in checkmk_server_sites_stopped.stdout"
   tags:
-    - stop-sites
+    - disable-sites
 
 - name: "Destroy Sites."
   become: true

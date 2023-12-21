@@ -23,7 +23,7 @@ checkmk.general.user module -- Manage users in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.0.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -950,10 +950,10 @@ Examples
     # Create a user.
     - name: "Create a user."
       checkmk.general.user:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "local"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "krichards"
         fullname: "Keith Richards"
         customer: "provider"
@@ -969,10 +969,10 @@ Examples
     # Create an automation user.
     - name: "Create an automation user."
       checkmk.general.user:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "local"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "registration"
         fullname: "Registration User"
         customer: "provider"
@@ -985,10 +985,10 @@ Examples
     # Create a detailed user.
     - name: "Create a detailed user."
       checkmk.general.user:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "local"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "horst"
         fullname: "Horst Schlämmer"
         customer: "provider"
@@ -1007,7 +1007,7 @@ Examples
         roles:
           - "user"
         authorized_sites:
-          - "{{ site }}"
+          - "{{ my_site }}"
         state: "present"
 
 
