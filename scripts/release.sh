@@ -6,7 +6,7 @@
 # Prepare this repository for a release.
 #
 # Usage: ./release.sh -s 0.21.0 -t 0.22.0
-# 
+#
 
 # ToDo
 # - Collection version prüfen!
@@ -20,12 +20,12 @@ checkmk_oldstable="2.1.0p37"
 checkmk_stable="2.2.0p17"
 
 while getopts 's:t:' OPTION; do
-  case "$OPTION" in 
-    s) 
+  case "$OPTION" in
+    s)
       source_version="$OPTARG" ;;
     t)
       target_version="$OPTARG" ;;
-    ?) 
+    ?)
       echo "Unknown option!"
       exit 1
       ;;
