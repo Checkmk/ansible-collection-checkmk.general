@@ -68,6 +68,26 @@ checkmk_passwords_create:
       "all"
     ]
 
+checkmk_passwords_create_cme:
+  - name: "pwtest1_cme"
+    title: "Password Test 1"
+    comment: "Comment on PW 1"
+    documentation_url: "http://something/"
+    password: "topsecret"
+    owner: "admin"
+    shared: [
+      "all"
+    ]
+  - name: "pwtest2_cme"
+    title: "Password Test 2"
+    comment: "Comment on PW 2"
+    documentation_url: "http://something.too/"
+    password: "topsecret"
+    owner: "admin"
+    shared: [
+      "all"
+    ]
+
 checkmk_passwords_update:
   - name: "pwtest2"
     title: "Password Test 2 CHANGED"
