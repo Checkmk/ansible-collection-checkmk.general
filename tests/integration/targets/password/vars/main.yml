@@ -1,15 +1,15 @@
 ---
 test_sites:
-  - version: "2.2.0p16"
+  - version: "2.2.0p17"
     edition: "cme"
     site: "stable_cme"
-  - version: "2.2.0p16"
+  - version: "2.2.0p17"
     edition: "cre"
     site: "stable_raw"
-  - version: "2.2.0p16"
+  - version: "2.2.0p17"
     edition: "cee"
     site: "stable_ent"
-  - version: "2.1.0p36"
+  - version: "2.1.0p37"
     edition: "cre"
     site: "old_raw"
   - version: "2.0.0p39"
@@ -45,7 +45,6 @@ checkmk_passwords_create:
   - name: "pwtest2"
     title: "Password Test 2"
     comment: "Comment on PW 2"
-    documentation_url: "http://something.too/"
     password: "topsecret"
     owner: "admin"
     shared: [
@@ -62,8 +61,27 @@ checkmk_passwords_create:
     ]
   - name: "pwtest4"
     title: "Password Test 4"
-    comment: "Comment on PW 4"
     documentation_url: "http://something.4/"
+    password: "topsecret"
+    owner: "admin"
+    shared: [
+      "all"
+    ]
+
+checkmk_passwords_create_cme:
+  - name: "pwtest1_cme"
+    title: "Password Test 1"
+    comment: "Comment on PW 1"
+    documentation_url: "http://something/"
+    password: "topsecret"
+    owner: "admin"
+    shared: [
+      "all"
+    ]
+  - name: "pwtest2_cme"
+    title: "Password Test 2"
+    comment: "Comment on PW 2"
+    documentation_url: "http://something.too/"
     password: "topsecret"
     owner: "admin"
     shared: [

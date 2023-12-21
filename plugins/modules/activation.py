@@ -59,7 +59,7 @@ EXAMPLES = r"""
       automation_user: "my_user"
       automation_secret: "my_secret"
       sites:
-        - "my_site"
+          - "my_site"
   run_once: 'true'
 
 - name: "Start activation including foreign changes."

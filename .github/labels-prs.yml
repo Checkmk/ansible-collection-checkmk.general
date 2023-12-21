@@ -109,6 +109,26 @@ lookup:hosts:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/hosts.py'
 
+lookup:rule:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/rule.py'
+
+lookup:rules:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/rules.py'
+
+lookup:ruleset:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/ruleset.py'
+
+lookup:rulesets:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/rulesets.py'
+
 lookup:bakery:
   - any:
       - changed-files:
