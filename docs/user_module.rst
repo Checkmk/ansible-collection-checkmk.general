@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.5.0
+  :antsibull-docs: 2.6.1
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.user module -- Manage users in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.0.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.1.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -960,10 +960,10 @@ Examples
         email: "keith.richards@rollingstones.com"
         password: "Open-G"
         contactgroups:
-            - "rolling_stones"
-            - "glimmer_twins"
-            - "x-pensive_winos"
-            - "potc_cast"
+          - "rolling_stones"
+          - "glimmer_twins"
+          - "x-pensive_winos"
+          - "potc_cast"
         state: "present"
 
     # Create an automation user.
@@ -979,7 +979,7 @@ Examples
         auth_type: "automation"
         password: "ZGSDHUVDSKJHSDF"
         roles:
-            - "registration"
+          - "registration"
         state: "present"
 
     # Create a detailed user.
@@ -994,9 +994,9 @@ Examples
         customer: "provider"
         auth_type: "password"
         password: "uschi"
-        enforce_password_change: True
+        enforce_password_change: true
         email: "checker@grevenbroich.de"
-        fallback_contact: True
+        fallback_contact: true
         pager_address: 089-123456789
         contactgroups:
           - "sport"

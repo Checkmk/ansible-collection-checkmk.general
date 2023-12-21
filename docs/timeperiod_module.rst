@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.5.0
+  :antsibull-docs: 2.6.1
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.timeperiod module -- Manage time periods in checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.0.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.1.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -495,7 +495,7 @@ Examples
         automation_user: "my_user"
         automation_secret: "my_secret"
         name: "worktime"
-        title: "Worktime"
+        alias: "Worktime"
         active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]'
         exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
         exclude: '[ "Lunchtime" ]'
@@ -508,32 +508,32 @@ Examples
         automation_user: "my_user"
         automation_secret: "my_secret"
         name: "worktime"
-        title: "Worktime"
+        alias: "Worktime"
         active_time_ranges: [
-                  {
-                      "day": "all",
-                      "time_ranges": [
-                          {
-                              "start": "8:00",
-                              "end": "17:00"
-                          }
-                      ]
-                  },
-              ]
+          {
+            "day": "all",
+            "time_ranges": [
+              {
+                "start": "8:00",
+                "end": "17:00"
+              }
+            ]
+          },
+        ]
         exceptions: [
-                  {
-                      "date": "2023-12-24",
-                      "time_ranges": [
-                          {
-                              "start": "8:00",
-                              "end": "12:00"
-                          }
-                      ]
-                  },
-              ]
+          {
+            "date": "2023-12-24",
+            "time_ranges": [
+              {
+                "start": "8:00",
+                "end": "12:00"
+              }
+            ]
+          },
+        ]
         exclude: [
-             "Lunchtime"
-              ]
+          "Lunchtime"
+        ]
         state: "present"
 
     - name: "Delete a time period."

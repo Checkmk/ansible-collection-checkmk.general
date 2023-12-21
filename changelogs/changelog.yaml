@@ -785,3 +785,20 @@ releases:
     release_date: '2023-12-04'
   4.0.1:
     release_date: '2023-12-05'
+  4.1.0:
+    changes:
+      bugfixes:
+      - Password module - Fix non-required module options being wrongly required.
+      major_changes:
+      - Rule lookup plugin - Show a particular rule.
+      - Rules lookup plugin - List the rules of a ruleset.
+      - Ruleset lookup plugin - Show a particular ruleset.
+      - Rulesets lookup plugin - Search rulesets.
+      minor_changes:
+      - Password module - Improve error handling.
+      release_summary: Happy holidays, everyone!
+    fragments:
+    - password.yml
+    - release_summary.yml
+    - rule_lookup_plugins.yml
+    release_date: '2023-12-21'

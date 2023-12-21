@@ -11,14 +11,14 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.folder_lookup:
+.. _ansible_collections.checkmk.general.rules_lookup:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.folder lookup -- Get folder attributes
-++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.rules lookup -- List rules
+++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -30,13 +30,13 @@ checkmk.general.folder lookup -- Get folder attributes
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.folder`.
+    To use it in a playbook, specify: :code:`checkmk.general.rules`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 3.3.0
+New in checkmk.general 3.5.0
 
 .. contents::
    :local:
@@ -50,7 +50,7 @@ Synopsis
 
 .. Description
 
-- Returns the attributes of a folder
+- Returns a list of Rules
 
 
 .. Aliases
@@ -58,61 +58,6 @@ Synopsis
 
 .. Requirements
 
-
-
-
-.. Terms
-
-Terms
------
-
-.. tabularcolumns:: \X{1}{3}\X{2}{3}
-
-.. list-table::
-  :width: 100%
-  :widths: auto
-  :header-rows: 1
-  :class: longtable ansible-option-table
-
-  * - Parameter
-    - Comments
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-_terms"></div>
-
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-_terms:
-
-      .. rst-class:: ansible-option-title
-
-      **Terms**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-_terms" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string` / :ansible-option-required:`required`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      complete folder path using tilde as a delimiter
-
-
-      .. raw:: html
-
-        </div>
 
 
 
@@ -124,7 +69,7 @@ Keyword parameters
 ------------------
 
 This describes keyword parameters of the lookup. These are the values ``key1=value1``, ``key2=value2`` and so on in the following
-examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.folder', key1=value1, key2=value2, ...)``
+examples: ``lookup('checkmk.general.rules', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.rules', key1=value1, key2=value2, ...)``
 
 .. tabularcolumns:: \X{1}{3}\X{2}{3}
 
@@ -142,7 +87,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.rules_lookup__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -167,7 +112,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
 
         <div class="ansible-option-cell">
 
-      automation secret for the REST API access
+      Automation secret for the REST API access.
 
 
       .. raw:: html
@@ -179,7 +124,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.rules_lookup__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -204,7 +149,126 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
 
         <div class="ansible-option-cell">
 
-      automation user for the REST API access
+      Automation user for the REST API access.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-comment_regex"></div>
+
+      .. _ansible_collections.checkmk.general.rules_lookup__parameter-comment_regex:
+
+      .. rst-class:: ansible-option-title
+
+      **comment_regex**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-comment_regex" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      A regex to filter for certain comment stings.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`""`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-description_regex"></div>
+
+      .. _ansible_collections.checkmk.general.rules_lookup__parameter-description_regex:
+
+      .. rst-class:: ansible-option-title
+
+      **description_regex**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-description_regex" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      A regex to filter for certain descriptions.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`""`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-ruleset"></div>
+
+      .. _ansible_collections.checkmk.general.rules_lookup__parameter-ruleset:
+
+      .. rst-class:: ansible-option-title
+
+      **ruleset**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-ruleset" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The ruleset name.
 
 
       .. raw:: html
@@ -216,7 +280,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-server_url:
+      .. _ansible_collections.checkmk.general.rules_lookup__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -241,7 +305,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
 
         <div class="ansible-option-cell">
 
-      URL of the Checkmk server
+      URL of the Checkmk server.
 
 
       .. raw:: html
@@ -253,7 +317,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-site:
+      .. _ansible_collections.checkmk.general.rules_lookup__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -278,7 +342,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
 
         <div class="ansible-option-cell">
 
-      site name
+      Site name.
 
 
       .. raw:: html
@@ -290,7 +354,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.rules_lookup__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -315,7 +379,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
 
         <div class="ansible-option-cell">
 
-      Wether or not to validate TLS certificates
+      Whether or not to validate TLS cerificates.
 
 
       .. rst-class:: ansible-option-line
@@ -336,12 +400,6 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
 
 .. Notes
 
-Notes
------
-
-.. note::
-   - When keyword and positional parameters are used together, positional parameters must be listed before keyword parameters:
-     ``lookup('checkmk.general.folder', term1, term2, key1=value1, key2=value2)`` and ``query('checkmk.general.folder', term1, term2, key1=value1, key2=value2)``
 
 .. Seealso
 
@@ -354,20 +412,39 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    - name: Get the attributes of folder /tests
+    - name: Get all rules of the ruleset host_groups
       ansible.builtin.debug:
-        msg: "Attributes of folder /network: {{ attributes }}"
-      vars:
-        attributes: "{{
-                        lookup('checkmk.general.folder',
-                            '~tests',
-                            server_url=my_server_url,
-                            site=my_site,
-                            automation_user=my_user,
-                            automation_secret=my_secret,
-                            validate_certs=False
-                            )
-                     }}"
+        msg: "Rule: {{ item.extensions }}"
+      loop: "{{
+        lookup('checkmk.general.rules',
+            ruleset='host_groups',
+            server_url=server_url,
+            site=site,
+            automation_user=automation_user,
+            automation_secret=automation_secret,
+            validate_certs=False
+            )
+        }}"
+      loop_control:
+          label: "{{ item.id }}"
+
+    - name: actice_checks:http rules that match a certain description AND comment
+      ansible.builtin.debug:
+        msg: "Rule: {{ item.extensions }}"
+      loop: "{{
+        lookup('checkmk.general.rules',
+            ruleset='actice_checks:http',
+            description_regex='foo.*bar',
+            comment_regex='xmas-edition',
+            server_url=server_url,
+            site=site,
+            automation_user=automation_user,
+            automation_secret=automation_secret,
+            validate_certs=False
+            )
+        }}"
+      loop_control:
+          label: "{{ item.id }}"
 
 
 
@@ -396,7 +473,7 @@ Return Value
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-_list"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__return-_list:
+      .. _ansible_collections.checkmk.general.rules_lookup__return-_list:
 
       .. rst-class:: ansible-option-title
 
@@ -418,7 +495,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A list of dicts of attributes of the folder(s)
+      A list of all rules of a particular ruleset
 
 
       .. rst-class:: ansible-option-line
