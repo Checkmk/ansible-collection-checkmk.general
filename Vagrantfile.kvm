@@ -45,7 +45,7 @@ Vagrant.configure("2") do |config|
     hostnamectl set-hostname collection
     SCRIPT
     srv.vm.provision "shell", inline: $script
-    srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/"
+    srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/", type: "virtiofs"
   end
 
   # Molecule
@@ -86,7 +86,7 @@ Vagrant.configure("2") do |config|
     hostnamectl set-hostname molecule
     SCRIPT
     srv.vm.provision "shell", inline: $script
-    srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/"
+    srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/", type: "virtiofs"
   end
 
   # Ubuntu
