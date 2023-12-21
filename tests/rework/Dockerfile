@@ -6,8 +6,8 @@ ENV pip_packages "ansible"
 ARG distro="jammy"
 ARG DEBIAN_FRONTEND=noninteractives
 
-ENV stable "2.2.0p16"
-ENV old "2.1.0p36"
+ENV stable "2.2.0p17"
+ENV old "2.1.0p37"
 ENV ancient "2.0.0p39"
 
 # Install dependencies.
@@ -63,7 +63,22 @@ RUN apt-get update && \
     apt-get install -y ./check-mk-raw-${old}_0.${distro}_amd64.deb && \
     apt-get install -y ./check-mk-raw-${stable}_0.${distro}_amd64.deb && \
     mv /usr/bin/systemctl.bak /usr/bin/systemctl && \
-    chmod +x /usr/bin/systemctl
+    chmod +x /usr/bin/systemctl && \
+    systemctl enable apache2.service
 
 VOLUME ["/sys/fs/cgroup", "/tmp", "/run"]
-CMD ["/lib/systemd/systemd"]
+
+# COPY entrypoint.sh /
+
+# ENTRYPOINT ["/entrypoint.sh"]
+
+# Remove unnecessary units
+RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
+  /etc/systemd/system/*.wants/* \
+  /lib/systemd/system/local-fs.target.wants/* \
+  /lib/systemd/system/sockets.target.wants/*udev* \
+  /lib/systemd/system/sockets.target.wants/*initctl* \
+  /lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
+  /lib/systemd/system/systemd-update-utmp*
+
+CMD [ "/lib/systemd/systemd", "log-level=info", "unit=sysinit.target" ]
