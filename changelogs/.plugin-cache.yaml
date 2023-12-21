@@ -30,6 +30,22 @@ plugins:
       description: Get various information about a host
       name: hosts
       version_added: 3.3.0
+    rule:
+      description: Show rule
+      name: rule
+      version_added: 3.5.0
+    rules:
+      description: List rules
+      name: rules
+      version_added: 3.5.0
+    ruleset:
+      description: Show ruleset
+      name: ruleset
+      version_added: 3.5.0
+    rulesets:
+      description: Search rulesets
+      name: rulesets
+      version_added: 3.5.0
     version:
       description: Get the version of a Checkmk server
       name: version
@@ -110,4 +126,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 4.0.1
+version: 4.1.0
