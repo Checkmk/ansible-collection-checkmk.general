@@ -218,27 +218,19 @@ HTTP_CODES_UPDATE = {
 
 class PasswordsCreateAPI(CheckmkAPI):
     def post(self):
-        if self.params.get("customer", None) is not None:
-            data = {
-                "ident": self.params.get("name", ""),
-                "title": self.params.get("title", ""),
-                "customer": self.params.get("customer", ""),
-                "comment": self.params.get("comment", ""),
-                "documentation_url": self.params.get("documentation_url", ""),
-                "password": self.params.get("password", ""),
-                "owner": self.params.get("owner", ""),
-                "shared": self.params.get("shared", ""),
-            }
-        else:
-            data = {
-                "ident": self.params.get("name", ""),
-                "title": self.params.get("title", ""),
-                "comment": self.params.get("comment", ""),
-                "documentation_url": self.params.get("documentation_url", ""),
-                "password": self.params.get("password", ""),
-                "owner": self.params.get("owner", ""),
-                "shared": self.params.get("shared", ""),
-            }
+        data = {
+            "ident": self.params.get("name", ""),
+            "title": self.params.get("title", ""),
+            "customer": self.params.get("customer", ""),
+            "comment": self.params.get("comment", ""),
+            "documentation_url": self.params.get("documentation_url", ""),
+            "password": self.params.get("password", ""),
+            "owner": self.params.get("owner", ""),
+            "shared": self.params.get("shared", ""),
+        }
+
+        # Remove all keys without value, as otherwise they would be None.
+        data = {key: val for key, val in data.items() if val}
 
         return self._fetch(
             code_mapping=HTTP_CODES_CREATE,
@@ -252,6 +244,7 @@ class PasswordsUpdateAPI(CheckmkAPI):
     def put(self):
         data = {
             "title": self.params.get("title", ""),
+            "customer": self.params.get("customer", ""),
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),

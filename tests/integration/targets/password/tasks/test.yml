@@ -18,8 +18,8 @@
     customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     title: "{{ item.title }}"
-    comment: "{{ item.comment }}"
-    documentation_url: "{{ item.documentation_url }}"
+    comment: "{{ item.comment | default(omit) }}"
+    documentation_url: "{{ item.documentation_url | default(omit) }}"
     password: "{{ item.password }}"
     owner: "{{ item.owner }}"
     shared: "{{ item.shared }}"

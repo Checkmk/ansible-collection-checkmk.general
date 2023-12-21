@@ -45,7 +45,6 @@ checkmk_passwords_create:
   - name: "pwtest2"
     title: "Password Test 2"
     comment: "Comment on PW 2"
-    documentation_url: "http://something.too/"
     password: "topsecret"
     owner: "admin"
     shared: [
@@ -62,7 +61,6 @@ checkmk_passwords_create:
     ]
   - name: "pwtest4"
     title: "Password Test 4"
-    comment: "Comment on PW 4"
     documentation_url: "http://something.4/"
     password: "topsecret"
     owner: "admin"
