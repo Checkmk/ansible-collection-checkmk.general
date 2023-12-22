@@ -5,22 +5,14 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    id: Virtualization
-    title: Virtualization
-    topic: My_Tag_Group
-    choices:
-      - id: No_Virtualization
-        title: No Virtualization
-      - id: ESXi
-        title: ESXi
-      - id: vCenter
-        title: vCenter
-      - id: HyperV
-        title: Hyper
-      - id: KVM
-        title: KVM
+    name: "{{ item.name }}"
+    title: "{{ item.title }}"
+    topic: "{{ item.topic }}"
+    help: "{{ item.help }}"
+    tags: "{{ item.tags }}"
     state: "present"
   delegate_to: localhost
+  loop: "{{ checkmk_taggroups_create }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
   activation:
@@ -37,20 +29,14 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    id: Virtualization
-    title: Hypervisors
-    topic: My_Tag_Group
-    choices:
-      - id: No_Virtualization
-        title: No Virtualization
-      - id: ESXi
-        title: ESXi
-      - id: vCenter
-        title: vCenter
-      - id: HyperV
-        title: Hyper
+    name: "{{ item.name }}"
+    title: "{{ item.title }}"
+    topic: "{{ item.topic }}"
+    help: "{{ item.help }}"
+    tags: "{{ item.tags }}"
     state: "present"
   delegate_to: localhost
+  loop: "{{ checkmk_taggroups_update }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
   activation:
@@ -67,20 +53,10 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    id: Virtualization
-    title: Hypervisors
-    topic: My_Tag_Group
-    choices:
-      - id: No_Virtualization
-        title: No Virtualization
-      - id: ESXi
-        title: ESXi
-      - id: vCenter
-        title: vCenter
-      - id: HyperV
-        title: Hyper
+    name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
+  loop: "{{ checkmk_taggroups_delete }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
   activation:

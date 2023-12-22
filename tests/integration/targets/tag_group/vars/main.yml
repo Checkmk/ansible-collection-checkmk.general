@@ -1,14 +1,8 @@
 ---
 test_sites:
   - version: "2.2.0p17"
-    edition: "cme"
-    site: "stable_cme"
-  - version: "2.2.0p17"
     edition: "cre"
     site: "stable_raw"
-  - version: "2.2.0p17"
-    edition: "cee"
-    site: "stable_ent"
   - version: "2.1.0p37"
     edition: "cre"
     site: "old_raw"
@@ -31,3 +25,57 @@ checkmk_server_edition_mapping:
   cee: enterprise
   cce: cloud
   cme: managed
+
+checkmk_taggroups_create:
+  - name: Datacenter
+    title: Datacenter
+    topic: Custom_Tags
+    help: "something useful"
+    tags:
+      - ident: No_Datacenter
+        title: No Datacenter
+      - ident: Datacenter 1
+        title: Datacenter 2
+      - ident: Datacenter 2
+        title: Datacenter 2
+      - ident: Datacenter US
+        title: Datacenter US
+      - ident: Datacenter ASIA
+        title: Datacenter ASIA
+  - name: Supporter
+    title: Supporter
+    topic: Custom_Tags
+    help: "Who to blame"
+    tags:
+      - ident: Nobody
+        title: Nobody
+      - ident: RoyTrenneman
+        title: Roy Trenneman
+      - ident: MauriceMoss
+        title: Maurice Moss
+      - ident: JenBarber
+        title: Jen Barber
+
+checkmk_taggroups_update:
+  - name: Datacenter
+    title: Datacenter
+    topic: Custom_Tags
+    help: "something even more useful"
+    tags:
+      - ident: No_Datacenter
+        title: No Datacenter
+      - ident: Datacenter 1
+        title: Datacenter 2
+      - ident: Datacenter 2
+        title: Datacenter 2
+      - ident: Datacenter 3
+        title: Datacenter 3
+      - ident: Datacenter US
+        title: Datacenter US
+      - ident: Datacenter ASIA
+        title: Datacenter ASIA
+      - ident: Datacenter AFRICA
+        title: Datacenter AFRICA
+
+checkmk_taggroups_delete:
+  - name: Supporter
