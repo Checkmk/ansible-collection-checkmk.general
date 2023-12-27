@@ -1,6 +1,6 @@
 ---
 - name: "Run preparations."
-  ansible.builtin.include_tasks: prep.yml
+  ansible.builtin.include_tasks: /root/ansible_collections/checkmk/general/tests/integration/files/prep.yml
 
 - name: "Wait for site to be ready."
   ansible.builtin.pause:
