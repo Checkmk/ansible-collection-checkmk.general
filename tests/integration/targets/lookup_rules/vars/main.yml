@@ -2,13 +2,13 @@
 test_sites:
   - version: "2.2.0p17"
     edition: "cre"
-    site: "stable_raw"
+    site: "stable_cre"
   - version: "2.2.0p17"
     edition: "cee"
-    site: "stable_ent"
+    site: "stable_cee"
   - version: "2.1.0p37"
     edition: "cre"
-    site: "old_raw"
+    site: "old_cre"
 
 server_url: "http://127.0.0.1/"
 automation_user: "cmkadmin"
