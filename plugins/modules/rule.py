@@ -258,6 +258,23 @@ def get_rules_in_ruleset(module, base_url, headers, ruleset):
     return json.loads(response.read().decode("utf-8"))
 
 
+def get_rule_by_id(module, base_url, headers, rule_id):
+    api_endpoint = "/objects/rule/" + rule_id
+
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, headers=headers, method="GET")
+
+    if info["status"] not in [200, 204]:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+
+    return json.loads(response.read().decode("utf-8"))
+
+
 def get_existing_rule(module, base_url, headers, ruleset, rule):
     # Get rules in ruleset
     rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
@@ -265,6 +282,13 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     (value_mod, exc) = safe_eval(rule["value_raw"], include_exceptions=True)
     if exc is not None:
         exit_failed(module, "value_raw in rule has invalid format")
+
+    # Get folder from neighbour rule if relative rule_id is given in location
+    if rule["location"]["rule_id"] is not None:
+        neighbour_rule = get_rule_by_id(
+            module, base_url, headers, rule["location"]["rule_id"]
+        )
+        rule["folder"] = neighbour_rule["extensions"]["folder"]
 
     if rules is not None:
         # Loop through all rules
