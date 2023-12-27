@@ -1,0 +1,4 @@
+tests/rework/files/systemctl3.py pep8!skip
+tests/rework/files/systemctl3.py no-basestring!skip
+tests/rework/files/systemctl3.py pylint!skip
+tests/rework/files/systemctl3.py shebang!skip
