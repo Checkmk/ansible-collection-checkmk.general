@@ -1,0 +1,39 @@
+name: Build Test Container Images
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build Container
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - name: Provide secrets file
+        run: echo "${{ secrets.CHECKMK_DOWNLOAD_PW }}" > ./tests/integration/files/.dl-secret
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        env:
+          CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
+
+      - name: Docker Build
+        run: docker build -t ansible-checkmk-test ./ --build-arg DL_USER=d-gh-ansible-dl --build-arg DL_PW=${{ secrets.CHECKMK_DOWNLOAD_PW }}
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/rework
+
+      - name: Run integration tests
+        run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python 3.11 --docker ansible-checkmk-test
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
