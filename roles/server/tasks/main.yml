@@ -20,28 +20,24 @@
 - name: "Get installed Packages."
   ansible.builtin.package_facts:
 
-- name: "Ensure Prerequisites are met."
-  when: not 'check-mk-' + checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
-  block:
+- name: "Update APT Cache."
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+  when: ansible_os_family == "Debian"
 
-    - name: "Update APT Cache."
-      become: true
-      ansible.builtin.apt:
-        update_cache: true
-      when: ansible_os_family == "Debian"
+- name: "Install Checkmk Prerequisites."
+  become: true
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "{{ checkmk_server_prerequisites }}"
+  tags:
+    - install-package
+    - install-prerequisites
 
-    - name: "Install Checkmk Prerequisites."
-      become: true
-      ansible.builtin.package:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - "{{ checkmk_server_prerequisites }}"
-      tags:
-        - install-package
-        - install-prerequisites
-
-- name: "Perform Downloads."
+- name: "Downloads Management."
   when: not 'check-mk-' + checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
   block:
 
