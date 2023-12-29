@@ -17,6 +17,10 @@ help:
 	@echo ""
 	@echo "vm              - Create a virtual development environment."
 	@echo "molecule        - Create a virtual environment for molecule tests."
+	@echo "vms        	   - Create a virtual environment with all boxes (exept for the development ones and ansidows)."
+	@echo "vms-debian 	   - Create a virtual environment with all Debian family OSes."
+	@echo "vms-redhat 	   - Create a virtual environment with all RedHat family OSes."
+	@echo "vms-suse 	   - Create a virtual environment with all Suse family OSes."
 	@echo ""
 	@echo "clean           - Clean up several things"
 	@echo "clean-vm        - Clean up virtual development environment."
@@ -52,6 +56,8 @@ setup-python:
 kvm:
 	if [ -f Vagrantfile ] ; then cp Vagrantfile Vagrantfile.bak ; fi
 	cp Vagrantfile.kvm Vagrantfile
+	if [ -f playbooks/hosts ] ; then cp playbooks/hosts playbooks/hosts.bak ; fi
+	cp playbooks/hosts.kvm playbooks/hosts
 
 setup-kvm: kvm
 	@sudo apt update -y
@@ -74,6 +80,8 @@ setup-kvm: kvm
 vbox:
 	if [ -f Vagrantfile ] ; then cp Vagrantfile Vagrantfile.bak ; fi
 	cp Vagrantfile.vbox Vagrantfile
+	if [ -f playbooks/hosts ] ; then cp playbooks/hosts playbooks/hosts.bak ; fi
+	cp playbooks/hosts.vbox playbooks/hosts
 
 setup-vbox: vbox
 
@@ -91,3 +99,18 @@ molecule:
 
 vm:
 	@vagrant up collection
+
+vms:
+	@vagrant up debsible ansibuntu anstream ansuse ansoracle # ansles ## currently no SLES box for libvirt!
+
+vms-debian:
+	@vagrant up debsible ansibuntu
+
+vms-redhat:
+	@vagrant up anstream ansoracle
+
+vms-suse:
+	@vagrant up ansuse # ansles ## currently no SLES box for libvirt!
+
+vms-windows:
+	@vagrant up ansidows
