@@ -31,14 +31,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: "Install ansible-base (${{ matrix.ansible }})"
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
-
-      - name: "Provide secrets file"
-        run: echo "${{ secrets.CHECKMK_DOWNLOAD_PW }}" > ./tests/integration/files/.dl-secret
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-        env:
-          CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
+      - name: "Install ansible-base devel"
+        run: pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
 
       - name: "Docker Build"
         run: docker build -t ${{ env.CONTAINER_NAME }} ./ --build-arg DL_USER=d-gh-ansible-dl --build-arg DL_PW=${{ secrets.CHECKMK_DOWNLOAD_PW }}
