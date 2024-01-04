@@ -1,3 +1,9 @@
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
+  CONTAINER_ROOT: "./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/container"
+  CONTAINER_NAME: "ansible-checkmk-test"
+
 name: Build Test Container Images
 on:
   workflow_dispatch:
@@ -14,29 +20,40 @@ jobs:
     name: Build Container
 
     steps:
-      - name: Check out code
+      - name: "Check out code"
         uses: actions/checkout@v4
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: Set up Python
+      - name: "Set up Python"
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install ansible-base (${{ matrix.ansible }})
+      - name: "Install ansible-base (${{ matrix.ansible }})"
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      - name: Provide secrets file
+      - name: "Provide secrets file"
         run: echo "${{ secrets.CHECKMK_DOWNLOAD_PW }}" > ./tests/integration/files/.dl-secret
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
         env:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
-      - name: Docker Build
-        run: docker build -t ansible-checkmk-test ./ --build-arg DL_USER=d-gh-ansible-dl --build-arg DL_PW=${{ secrets.CHECKMK_DOWNLOAD_PW }}
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/rework
+      - name: "Docker Build"
+        run: docker build -t ${{ env.CONTAINER_NAME }} ./ --build-arg DL_USER=d-gh-ansible-dl --build-arg DL_PW=${{ secrets.CHECKMK_DOWNLOAD_PW }}
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/container
 
-      - name: Run integration tests
-        run: ansible-test integration -v --color --retry-on-error --continue-on-error --diff --python 3.11 --docker ansible-checkmk-test
+      - name: "Docker Save"
+        run: docker save ${{ env.CONTAINER_NAME }}:latest > ${{ env.CONTAINER_ROOT }}/${{ env.CONTAINER_NAME }}-latest-image.tar.gz"
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/container
+
+      - name: "Upload Artifact"
+        run: CLOUDSEND_PASSWORD=${{ secrets.NEXTCLOUD_PW }} ./scripts/cloudsend/cloudsend.sh -e ${{ env.CONTAINER_NAME }}-latest-image.tar.gz $(CLOUD_SHARE)
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/container
+        env:
+          NEXTCLOUD_PW: ${{ secrets.NEXTCLOUD_PW }}
+          CLOUDSEND_PASSWORD: ${{ secrets.NEXTCLOUD_PW }}
+
+      - name: "Run integration test for testing"
+        run: ansible-test integration activation -v --color --retry-on-error --continue-on-error --diff --python 3.11 --docker-privileged ${{ env.CONTAINER_NAME }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
