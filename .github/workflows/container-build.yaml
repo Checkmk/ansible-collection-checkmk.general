@@ -39,7 +39,7 @@ jobs:
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/container
 
       - name: "Docker Save"
-        run: docker save ${{ env.CONTAINER_NAME }}:latest > ${{ env.CONTAINER_ROOT }}/${{ env.CONTAINER_NAME }}-latest-image.tar.gz"
+        run: docker save ${{ env.CONTAINER_NAME }}:latest > ${{ env.CONTAINER_ROOT }}/${{ env.CONTAINER_NAME }}-latest-image.tar.gz
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/container
 
       - name: "Upload Artifact"
