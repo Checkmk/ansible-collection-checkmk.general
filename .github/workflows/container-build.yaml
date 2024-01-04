@@ -11,7 +11,9 @@ on:
     - cron: '0 0 * * 0'
   push:
     paths:
-      - 'tests/container/'
+      - 'tests/container/**'
+    branches:
+      - "build/integration-tests-docker"
 
 jobs:
 
