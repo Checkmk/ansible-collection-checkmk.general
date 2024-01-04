@@ -46,8 +46,6 @@ RUN \
     wget --user=${DL_USER} --password=${DL_PW} https://download.checkmk.com/checkmk/${ancient}/check-mk-enterprise-${ancient}_0.${distro}_amd64.deb ; \
     wget --user=${DL_USER} --password=${DL_PW} https://download.checkmk.com/checkmk/${ancient}/check-mk-managed-${ancient}_0.${distro}_amd64.deb
 
-# RUN sed -i 's/^\($ModLoad imklog\)/#\1/' /etc/rsyslog.conf
-
 # Fix potential UTF-8 errors with ansible-test.
 RUN locale-gen en_US.UTF-8
 
