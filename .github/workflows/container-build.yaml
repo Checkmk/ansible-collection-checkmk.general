@@ -2,6 +2,7 @@ env:
   NAMESPACE: checkmk
   COLLECTION_NAME: general
   CONTAINER_NAME: "ansible-checkmk-test"
+  CLOUD_SHARE: "https://cloud.checkmk.com/index.php/s/jMbHWxM5mT4WN2r"
 
 name: Build Test Container Images
 on:
@@ -51,10 +52,9 @@ jobs:
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/container
 
       - name: "Upload Artifact"
-        run: CLOUDSEND_PASSWORD=${{ secrets.NEXTCLOUD_PW }} ./scripts/cloudsend/cloudsend.sh -e ./tests/container/${{ env.CONTAINER_NAME }}-latest-image.tar.gz $(CLOUD_SHARE)
+        run: ./scripts/cloudsend/cloudsend.sh -e ./tests/container/${{ env.CONTAINER_NAME }}-latest-image.tar.gz ${{ env.CLOUD_SHARE }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
         env:
-          NEXTCLOUD_PW: ${{ secrets.NEXTCLOUD_PW }}
           CLOUDSEND_PASSWORD: ${{ secrets.NEXTCLOUD_PW }}
 
       - name: "Run integration test for testing"
