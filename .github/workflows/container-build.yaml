@@ -39,12 +39,12 @@ jobs:
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/container
 
       - name: "Docker Save"
-        run: docker save ${{ env.CONTAINER_NAME }}:latest > ${{ env.CONTAINER_ROOT }}/${{ env.CONTAINER_NAME }}-latest-image.tar.gz
+        run: docker save ${{ env.CONTAINER_NAME }}:latest > ./${{ env.CONTAINER_NAME }}-latest-image.tar.gz
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/container
 
       - name: "Upload Artifact"
-        run: CLOUDSEND_PASSWORD=${{ secrets.NEXTCLOUD_PW }} ./scripts/cloudsend/cloudsend.sh -e ${{ env.CONTAINER_NAME }}-latest-image.tar.gz $(CLOUD_SHARE)
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/container
+        run: CLOUDSEND_PASSWORD=${{ secrets.NEXTCLOUD_PW }} ./scripts/cloudsend/cloudsend.sh -e ./tests/container/${{ env.CONTAINER_NAME }}-latest-image.tar.gz $(CLOUD_SHARE)
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
         env:
           NEXTCLOUD_PW: ${{ secrets.NEXTCLOUD_PW }}
           CLOUDSEND_PASSWORD: ${{ secrets.NEXTCLOUD_PW }}
