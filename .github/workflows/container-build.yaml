@@ -1,7 +1,6 @@
 env:
   NAMESPACE: checkmk
   COLLECTION_NAME: general
-  CONTAINER_ROOT: "./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/container"
   CONTAINER_NAME: "ansible-checkmk-test"
 
 name: Build Test Container Images
