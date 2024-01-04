@@ -1,4 +1,7 @@
-tests/rework/files/systemctl3.py pep8!skip
-tests/rework/files/systemctl3.py no-basestring!skip
-tests/rework/files/systemctl3.py pylint!skip
-tests/rework/files/systemctl3.py shebang!skip
+tests/container/files/systemctl3.py pep8!skip
+tests/container/files/systemctl3.py no-basestring!skip
+tests/container/files/systemctl3.py pylint!skip
+tests/container/files/systemctl3.py shebang!skip
+tests/container/files/systemctl3.py compile-3.12!skip
+scripts/cloudsend/cloudsend.sh shebang!skip
+scripts/cloudsend/cloudsend.sh shellcheck!skip
