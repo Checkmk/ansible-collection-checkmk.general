@@ -9,11 +9,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * 0'
-  push:
-    paths:
-      - 'tests/container/**'
-    branches:
-      - "build/integration-tests-docker"
 
 jobs:
 
@@ -56,7 +51,3 @@ jobs:
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
         env:
           CLOUDSEND_PASSWORD: ${{ secrets.NEXTCLOUD_PW }}
-
-      - name: "Run integration test for testing"
-        run: ansible-test integration activation -v --color --retry-on-error --continue-on-error --diff --python 3.11 --docker-privileged ${{ env.CONTAINER_NAME }}
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
