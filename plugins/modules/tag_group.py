@@ -65,6 +65,7 @@ author:
 """
 
 EXAMPLES = r"""
+# Create a tag group
 - name: "Create tag_group"
   checkmk.general.tag_group:
     server_url: "https://localhost/"
@@ -73,7 +74,7 @@ EXAMPLES = r"""
     automation_secret: "my_secret"
     name: Datacenter
     title: Datacenter
-    topic: Custom_Tags
+    topic: Tags
     help: "something useful"
     tags:
       - ident: No_Datacenter
@@ -87,6 +88,16 @@ EXAMPLES = r"""
       - ident: Datacenter ASIA
         title: Datacenter ASIA
     state: present
+
+# Delete a tag group
+- name: "Delete tag_group."
+  checkmk.general.tag_group:
+    server_url: "https://localhost/"
+    site: "my_site"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    name: Datacenter
+    state: "absent"
 """
 
 RETURN = r"""
