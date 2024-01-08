@@ -226,6 +226,7 @@ class UserAPI(CheckmkAPI):
             if key in (
                 "username",
                 "fullname",
+                "customer",
                 "disable_login",
                 "pager_address",
                 "roles",
