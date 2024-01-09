@@ -44,17 +44,25 @@
     customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     fullname: "{{ item.fullname }}"
+    email: "{{ item.email | default(omit) }}"
+    disable_notifications: "{{ item.disable_notifications | default(omit) }}"
+    disable_notifications_timerange: "{{ item.disable_notifications_timerange | default(omit) }}"
+    pager_address: "{{ item.pager_address | default(omit) }}"
+    language: "{{ item.language | default(omit) }}"
+    disable_login: "{{ item.disable_login | default(omit) }}"
     auth_type: "{{ item.auth_type }}"
     password: "{{ item.password }}"
-    roles:
-      - "admin"
+    contactgroups: "{{ item.contactgroups | default(omit) }}"
+    idle_timeout_duration: "{{ item.idle_timeout_duration | default(omit) }}"
+    idle_timeout_option: "{{ item.idle_timeout_option | default(omit) }}"
+    roles: "{{ item.roles }}"
     authorized_sites:
       - "{{ outer_item.site }}"
     state: "present"
   delegate_to: localhost
   run_once: true # noqa run-once[task]
   register: rule_result
-  loop: "{{ checkmk_var_users }}"
+  loop: "{{ checkmk_var_users_create }}"
 
 - name: "{{ outer_item.version }} - Fail if not changed." # noqa no-handler
   ansible.builtin.fail:
@@ -83,17 +91,25 @@
     customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     fullname: "{{ item.fullname }}"
+    email: "{{ item.email | default(omit) }}"
+    disable_notifications: "{{ item.disable_notifications | default(omit) }}"
+    disable_notifications_timerange: "{{ item.disable_notifications_timerange | default(omit) }}"
+    pager_address: "{{ item.pager_address | default(omit) }}"
+    language: "{{ item.language | default(omit) }}"
+    disable_login: "{{ item.disable_login | default(omit) }}"
     auth_type: "{{ item.auth_type }}"
     password: "{{ item.password }}"
-    roles:
-      - "admin"
+    contactgroups: "{{ item.contactgroups | default(omit) }}"
+    idle_timeout_duration: "{{ item.idle_timeout_duration | default(omit) }}"
+    idle_timeout_option: "{{ item.idle_timeout_option | default(omit) }}"
+    roles: "{{ item.roles }}"
     authorized_sites:
       - "{{ outer_item.site }}"
     state: "present"
   delegate_to: localhost
   run_once: true # noqa run-once[task]
   register: rule_result
-  loop: "{{ checkmk_var_users }}"
+  loop: "{{ checkmk_var_users_create }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
   ansible.builtin.fail:
@@ -110,11 +126,20 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
+    email: "{{ item.email | default(omit) }}"
+    disable_notifications: "{{ item.disable_notifications | default(omit) }}"
+    disable_notifications_timerange: "{{ item.disable_notifications_timerange | default(omit) }}"
+    pager_address: "{{ item.pager_address | default(omit) }}"
+    language: "{{ item.language | default(omit) }}"
+    disable_login: "{{ item.disable_login | default(omit) }}"
     contactgroups: "{{ item.contactgroups }}"
+    idle_timeout_duration: "{{ item.idle_timeout_duration | default(omit) }}"
+    idle_timeout_option: "{{ item.idle_timeout_option | default(omit) }}"
+    roles: "{{ item.roles }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_var_users }}"
+  loop: "{{ checkmk_var_users_edit }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -136,13 +161,13 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
-    password: "{{ item.newpassword }}"
+    password: "{{ item.password }}"
     auth_type: "{{ item.auth_type }}"
     state: "reset_password"
   delegate_to: localhost
   run_once: true # noqa run-once[task]
   register: rule_result
-  loop: "{{ checkmk_var_users }}"
+  loop: "{{ checkmk_var_users_newpw }}"
 
 - name: "{{ outer_item.version }} - Fail if not changed." # noqa no-handler
   ansible.builtin.fail:
@@ -174,7 +199,7 @@
   delegate_to: localhost
   run_once: true # noqa run-once[task]
   register: rule_result
-  loop: "{{ checkmk_var_users }}"
+  loop: "{{ checkmk_var_users_create }}"
 
 - name: "{{ outer_item.version }} - Fail if not changed." # noqa no-handler
   ansible.builtin.fail:
@@ -206,7 +231,7 @@
   delegate_to: localhost
   run_once: true # noqa run-once[task]
   register: rule_result
-  loop: "{{ checkmk_var_users }}"
+  loop: "{{ checkmk_var_users_create }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
   ansible.builtin.fail:

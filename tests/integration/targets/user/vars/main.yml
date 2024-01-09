@@ -1,15 +1,15 @@
 ---
 test_sites:
-  - version: "2.2.0p14"
+  - version: "2.2.0p17"
     edition: "cme"
     site: "stable_cme"
-  - version: "2.2.0p14"
+  - version: "2.2.0p17"
     edition: "cre"
     site: "stable_raw"
-  - version: "2.2.0p14"
+  - version: "2.2.0p17"
     edition: "cee"
     site: "stable_ent"
-  - version: "2.1.0p36"
+  - version: "2.1.0p37"
     edition: "cre"
     site: "old_raw"
 
@@ -18,8 +18,11 @@ checkmk_var_automation_user: "cmkadmin"
 checkmk_var_automation_secret: "d7589df1"
 
 download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
-download_user: "d-gh-ansible-dl"
-download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret', errors='ignore') | default(omit) }}"  # noqa yaml[line-length]
+#download_user: "d-gh-ansible-dl"
+#download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret', errors='ignore') | default(omit) }}"  # noqa yaml[line-length]
+
+download_user: "d-intern"
+download_pass: "77TbjY23"
 
 # Due to inconsistent naming of editions, we normalize them here for convenience
 checkmk_server_edition_mapping:
@@ -33,49 +36,158 @@ checkmk_var_contact_groups:
   - team1
   - team2
   - team3
+  - noteam
 
-checkmk_var_users:
+checkmk_var_users_create:
   - name: admin1
     fullname: Admin Eins
     password: "123"
-    newpassword: "abc"
     auth_type: password
     email: 123@company.com
     contactgroups: []
     roles:
       - admin
     fallback_contact: true
+    idle_timeout_duration: 5400
+    idle_timeout_option: individual
   - name: user1
     fullname: User Eins
     password: "123"
-    newpassword: "abc"
     auth_type: password
     email: 123@company.com
+    pager_address: "0123/4567890"
     contactgroups:
       - team1
     fallback_contact: true
+    roles:
+      - admin
+    disable_notifications: true
+    disable_notifications_timerange: { "end_time": "2024-01-09T12:10:00+00:00", "start_time": "2024-01-09T10:10:00+00:00" }
   - name: user2
     fullname: User Zwei
     password: "234"
-    newpassword: "bcd"
     auth_type: password
-    email: 234@company.com
     contactgroups:
       - team2
-    fallback_contact: true
+    roles:
+      - guest
+    language: en
   - name: user3
     fullname: User Drei
     password: "345"
-    newpassword: "cde"
+    auth_type: password
+    email: 345@company.com
+    contactgroups:
+      - noteam
+    fallback_contact: false
+    roles:
+      - user
+    language: de
+    disable_login: true
+  - name: user4
+    fullname: User four
+    password: "4444"
+    auth_type: password
+    contactgroups:
+      - noteam
+    fallback_contact: false
+    roles:
+      - user
+    disable_notifications: false
+  - name: auto1
+    fullname: Automation User 1
+    password: "0123456789"
+    auth_type: automation
+    contactgroups: []
+    roles:
+      - admin
+
+checkmk_var_users_newpw:
+  - name: admin1
+    password: "abc"
+    auth_type: password
+  - name: user1
+    password: "abc"
+    auth_type: password
+  - name: user2
+    password: "bcd"
+    auth_type: password
+  - name: user3
+    password: "cde"
+    auth_type: password
+  - name: auto1
+    password: "abcdefghij"
+    auth_type: automation
+
+checkmk_var_users_edit:
+  - name: admin1
+    fullname: Admin Eins
+    auth_type: password
+    email: 123@company.com
+    contactgroups: []
+    roles:
+      - admin
+    fallback_contact: true
+    idle_timeout_option: global
+  - name: user1
+    fullname: User One
+    password: "345egtd"
+    auth_type: password
+    email: user1@company.com
+    pager_address: "4567/9753210"
+    contactgroups:
+      - team1
+    fallback_contact: true
+    roles:
+      - user
+    idle_timeout_duration: 5400
+    idle_timeout_option: individual
+    disable_notifications: false
+    disable_notifications_timerange: { "end_time": "2024-01-09T08:10:00+00:00", "start_time": "2024-01-09T18:10:00+00:00" }
+  - name: user2
+    fullname: User Zwei
+    auth_type: password
+    email: 234@company.com
+    pager_address: "0123/4567890"
+    contactgroups:
+      - team2
+    fallback_contact: true
+    roles:
+      - guest
+    idle_timeout_option: disable
+    disable_login: true
+    disable_notifications: true
+  - name: user3
+    fullname: User Drei
     auth_type: password
     email: 345@company.com
     contactgroups:
       - team3
     fallback_contact: false
+    roles:
+      - admin
+    language: default
+    disable_login: false
+    disable_notifications: false
+  - name: user4
+    fullname: User four
+    password: "4444"
+    auth_type: password
+    contactgroups:
+      - noteam
+    fallback_contact: false
+    roles:
+      - user
+    disable_notifications_timerange: { "end_time": "2024-04-01T08:00:00+00:00", "start_time": "2024-04-01T20:00:00+00:00" }
   - name: auto1
     fullname: Automation User 1
     password: "0123456789"
-    newpassword: "abcdefghij"
+    auth_type: automation
+    contactgroups: []
+    roles:
+      - admin
+  - name: auto1
+    fullname: Automation User 1
     auth_type: automation
     contactgroups: []
     roles:

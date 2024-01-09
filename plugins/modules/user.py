@@ -53,12 +53,13 @@ options:
     fallback_contact:
         description: In case none of your notification rules handles a certain event a notification will be sent to the specified email.
         type: bool
-    pager_address:
+    pager:
         description: The pager address.
         type: str
+        aliases: ["pager_address"]
     idle_timeout_duration:
         description: The duration in seconds of the individual idle timeout if individual is selected as idle timeout option.
-        type: str
+        type: int
     idle_timeout_option:
         description: Specify if the idle timeout should use the global configuration, be disabled or use an individual duration
         type: str
@@ -74,7 +75,10 @@ options:
         type: raw
     disable_notifications:
         description: Option if all notifications should be temporarily disabled.
-        type: raw
+        type: bool
+    disable_notifications_timerange:
+        description: A custom timerange during which notifications are disabled.
+        type: dict
     language:
         description: Configure the language to be used by the user in the user interface. Omitting this will configure the default language.
         type: str
@@ -140,12 +144,13 @@ EXAMPLES = r"""
     enforce_password_change: True
     email: "checker@grevenbroich.de"
     fallback_contact: True
-    pager_address: 089-123456789
+    pager: 089-123456789
     contactgroups:
       - "sport"
       - "vereinsgeschehen"
       - "lokalpolitik"
-    disable_notifications: '{"disable": true, "timerange": { "start_time": "2023-02-23T15:06:48+00:00", "end_time": "2023-02-23T16:06:48+00:00"}}'
+    disable_notifications: True
+    disable_notifications_timerange: { "start_time": "2023-02-23T15:06:48+00:00", "end_time": "2023-02-23T16:06:48+00:00"}
     language: "de"
     roles:
       - "user"
@@ -175,6 +180,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
 USER = (
     "username",
     "fullname",
+    "customer",
     "password",
     "enforce_password_change",
     "auth_type",
@@ -182,12 +188,13 @@ USER = (
     "email",
     "fallback_contact",
     "pager_address",
-    "idle_timout_option",
+    "idle_timeout_option",
     "idle_timeout_duration",
     "roles",
     "authorized_sites",
     "contactgroups",
     "disable_notifications",
+    "disable_notifications_timerange",
     "language",
 )
 
@@ -213,6 +220,8 @@ class UserAPI(CheckmkAPI):
     def _build_user_data(self):
         user = {}
 
+        user["disable_notifications"] = {}
+
         # For some keys the API has required sub keys. We can use them as indicator,
         # that the key must be used
         if self.required.get("auth_type"):
@@ -232,9 +241,12 @@ class UserAPI(CheckmkAPI):
                 "roles",
                 "authorized_sites",
                 "contactgroups",
-                "language",
             ):
                 user[key] = value
+
+            if key in "language":
+                if value != "default":
+                    user["language"] = value
 
             if key in ("auth_type", "password", "enforce_password_change"):
                 if key == "password" and self.params.get("auth_type") == "automation":
@@ -246,21 +258,40 @@ class UserAPI(CheckmkAPI):
             if key in ("email", "fallback_contact"):
                 user["contact_options"][key] = value
 
-            if key in ("idle_timeout_option", "idle_timeout_duration"):
-                user["idle_timeout"] = value
+            if key == "idle_timeout_option":
+                user["idle_timeout"]["option"] = value
+            if key == "idle_timeout_duration":
+                user["idle_timeout"]["duration"] = value
 
             if key == "disable_notifications":
                 user["disable_notifications"]["disable"] = value
+            if key == "disable_notifications_timerange":
+                user["disable_notifications"]["timerange"] = value
 
         return user
 
     def _set_current(self, result):
         # A flat hierarchy allows an easy comparison of differences
-        if result.http_code == 200:
-            content = json.loads(result.content)["extensions"]
-            for key in USER:
-                if key in content:
+        content = json.loads(result.content)["extensions"]
+        for key in USER:
+            if key in content:
+                if key != "disable_notifications":
                     self.current[key] = content[key]
+            if key in ("email", "fallback_contact"):
+                self.current[key] = content["contact_options"][key]
+            if key == "idle_timeout_option":
+                self.current[key] = content["idle_timeout"]["option"]
+            if key == "idle_timeout_duration":
+                if "duration" in content["idle_timeout"]:
+                    self.current[key] = content["idle_timeout"]["duration"]
+            if key == "disable_notifications":
+                if "disable" in content["disable_notifications"]:
+                    self.current[key] = content["disable_notifications"]["disable"]
+                else:
+                    self.current[key] = False
+            if key == "disable_notifications_timerange":
+                if "timerange" in content["disable_notifications"]:
+                    self.current[key] = content["disable_notifications"]["timerange"]
 
     def _build_default_endpoint(self):
         return "%s/%s" % (UserEndpoints.default, self.params.get("name"))
@@ -289,9 +320,11 @@ class UserAPI(CheckmkAPI):
             method="GET",
         )
 
-        self.state = "present" if result.http_code == 200 else "absent"
-        self._set_current(result)
-
+        if result.http_code == 200:
+            self.state = "present"
+            self._set_current(result)
+        else:
+            self.state = "absent"
         return result
 
     def create(self):
@@ -349,15 +382,16 @@ def run_module():
         disable_login=dict(type="bool"),
         email=dict(type="str"),
         fallback_contact=dict(type="bool"),
-        pager_address=dict(type="str"),
-        idle_timeout_duration=dict(type="str"),
+        pager=dict(type="str", aliases=["pager_address"]),
+        idle_timeout_duration=dict(type="int"),
         idle_timeout_option=dict(
             type="str", choices=["global", "disable", "individual"]
         ),
         roles=dict(type="raw"),
         authorized_sites=dict(type="raw"),
         contactgroups=dict(type="raw"),
-        disable_notifications=dict(type="raw"),
+        disable_notifications=dict(type="bool"),
+        disable_notifications_timerange=dict(type="dict"),
         language=dict(type="str", choices=["default", "en", "de", "ro"]),
         state=dict(
             type="str",
