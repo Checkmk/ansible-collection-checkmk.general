@@ -317,7 +317,10 @@ def show_rule(module, base_url, headers, rule_id):
 def get_existing_rule(module, base_url, headers, ruleset, rule):
     if rule.get("rule_id"):
         # We already know whih rule to get
-        return rule.get("rule_id")
+        if module.params.get("state") == "absent":
+            # When deleting and we already know the ID, don't compare
+            return rule.get("rule_id")
+        rules = [ show_rule(module, base_url, headers, rule.get("rule_id")) ]
     else:
         # Get rules in ruleset
         rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
@@ -529,9 +532,9 @@ def run_module():
     location = rule.get("location")
 
     # Check if required params to create a rule are given
+    if rule.get("folder") is None or rule.get("folder") == "":
+        rule["folder"] = location["folder"]
     if rule.get("rule_id") is None or rule.get("rule_id") == "":
-        if rule.get("folder") is None or rule.get("folder") == "":
-            rule["folder"] = location["folder"]
         if rule.get("properties") is None or rule.get("properties") == "":
             exit_failed(module, "Rule properties are required")
         if rule.get("value_raw") is None or rule.get("value_raw") == "":
