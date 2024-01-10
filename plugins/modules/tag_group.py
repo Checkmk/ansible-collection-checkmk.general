@@ -113,6 +113,7 @@ message:
     sample: 'OK'
 """
 
+import json
 import time
 
 from ansible.module_utils.basic import AnsibleModule
@@ -243,6 +244,35 @@ class TaggroupGetAPI(CheckmkAPI):
         )
 
 
+def changes_detected(module, current):
+    if module.params.get("title") != current.get("title"):
+        # The title has changed
+        return True
+
+    if module.params.get("topic") != current.get("extensions", {}).get("topic"):
+        # The topic has changed
+        return True
+
+    desired_tags = module.params.get("tags")
+    current_tags = current.get("extensions", {}).get("tags", [])
+
+    if len(desired_tags) != len(current_tags):
+        # The number of tags has changed
+        return True
+
+    for d in current_tags:
+        d["ident"] = d.pop("id")
+        d.pop("aux_tags")
+
+    pairs = zip(desired_tags, current_tags)
+
+    if not all(a == b for a, b in pairs):
+        # At least one of the tags or the order has changed
+        return True
+
+    return False
+
+
 def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
@@ -272,16 +302,19 @@ def run_module():
 
     if module.params.get("state") == "present":
         taggroupget = TaggroupGetAPI(module)
-        result = taggroupget.get()
+        current = taggroupget.get()
 
-        if result.http_code == 200:
-            taggroupupdate = TaggroupUpdateAPI(module)
-            taggroupupdate.headers["If-Match"] = result.etag
-            result = taggroupupdate.put()
+        if current.http_code == 200:
+            # If tag group has changed then update it.
+            if changes_detected(module, json.loads(current.content.decode("utf-8"))):
+                taggroupupdate = TaggroupUpdateAPI(module)
+                taggroupupdate.headers["If-Match"] = current.etag
+                result = taggroupupdate.put()
 
-            time.sleep(3)
+                time.sleep(3)
 
-        elif result.http_code == 404:
+        elif current.http_code == 404:
+            # Tag group is not there. Create it.
             taggroupcreate = TaggroupCreateAPI(module)
 
             result = taggroupcreate.post()
