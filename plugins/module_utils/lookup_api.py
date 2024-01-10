@@ -8,9 +8,19 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import json
+
 from ansible.module_utils.common.text.converters import to_text
+from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
 from ansible.module_utils.six.moves.urllib.parse import urlencode
 from ansible.module_utils.urls import open_url
+
+HTTP_ERROR_CODES = {
+    400: "Bad Request: Parameter or validation failure.",
+    403: "Forbidden: Configuration via Setup is disabled.",
+    404: "Not Found: The requested object has not been found.",
+    406: "Not Acceptable: The requests accept headers can not be satisfied.",
+}
 
 
 class CheckMKLookupAPI:
@@ -31,13 +41,22 @@ class CheckMKLookupAPI:
     def get(self, endpoint="", parameters=None):
         url = self.url + endpoint
 
-        if parameters:
-            url = "%s?%s" % (url, urlencode(parameters))
+        try:
+            if parameters:
+                url = "%s?%s" % (url, urlencode(parameters))
 
-        response = ""
-        raw_response = open_url(
-            url, headers=self.headers, validate_certs=self.validate_certs
-        )
-        response = to_text(raw_response.read())
-
-        return response
+            raw_response = open_url(
+                url, headers=self.headers, validate_certs=self.validate_certs
+            )
+            return to_text(raw_response.read())
+        except HTTPError as e:
+            if e.code in HTTP_ERROR_CODES:
+                return json.dumps(
+                    {"code": e.code, "msg": HTTP_ERROR_CODES[e.code], "url": url}
+                )
+            else:
+                return json.dumps({"code": e.code, "msg": e.reason, "url": url})
+        except URLError as e:
+            return json.dumps({"code": 0, "msg": str(e), "url": url})
+        except Exception as e:
+            return json.dumps({"code": 0, "msg": str(e), "url": url})

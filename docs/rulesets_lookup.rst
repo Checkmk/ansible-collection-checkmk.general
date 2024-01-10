@@ -1,0 +1,594 @@
+
+.. Document meta
+
+:orphan:
+
+.. |antsibull-internal-nbsp| unicode:: 0xA0
+    :trim:
+
+.. meta::
+  :antsibull-docs: 2.6.1
+
+.. Anchors
+
+.. _ansible_collections.checkmk.general.rulesets_lookup:
+
+.. Anchors: short name for ansible.builtin
+
+.. Title
+
+checkmk.general.rulesets lookup -- Search rulesets
+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+.. Collection note
+
+.. note::
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.1.0).
+
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
+
+    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
+
+    To use it in a playbook, specify: :code:`checkmk.general.rulesets`.
+
+.. version_added
+
+.. rst-class:: ansible-version-added
+
+New in checkmk.general 3.5.0
+
+.. contents::
+   :local:
+   :depth: 1
+
+.. Deprecated
+
+
+Synopsis
+--------
+
+.. Description
+
+- Returns a list of Rulesets
+
+
+.. Aliases
+
+
+.. Requirements
+
+
+
+
+
+
+.. Options
+
+Keyword parameters
+------------------
+
+This describes keyword parameters of the lookup. These are the values ``key1=value1``, ``key2=value2`` and so on in the following
+examples: ``lookup('checkmk.general.rulesets', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.rulesets', key1=value1, key2=value2, ...)``
+
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
+
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
+
+  * - Parameter
+    - Comments
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-automation_secret:
+
+      .. rst-class:: ansible-option-title
+
+      **automation_secret**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-automation_secret" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Automation secret for the REST API access.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-automation_user:
+
+      .. rst-class:: ansible-option-title
+
+      **automation_user**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-automation_user" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Automation user for the REST API access.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-regex"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-regex:
+
+      .. rst-class:: ansible-option-title
+
+      **regex**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-regex" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      A regex of the ruleset name.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rulesets_deprecated"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-rulesets_deprecated:
+
+      .. rst-class:: ansible-option-title
+
+      **rulesets_deprecated**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rulesets_deprecated" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Only show deprecated rulesets. Defaults to False.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rulesets_folder"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-rulesets_folder:
+
+      .. rst-class:: ansible-option-title
+
+      **rulesets_folder**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rulesets_folder" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The folder in which to search for rules.
+
+      Path delimiters can be either ~ or /.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"/"`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rulesets_used"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-rulesets_used:
+
+      .. rst-class:: ansible-option-title
+
+      **rulesets_used**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rulesets_used" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Only show used rulesets. Defaults to True.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-server_url:
+
+      .. rst-class:: ansible-option-title
+
+      **server_url**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-server_url" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      URL of the Checkmk server.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-site"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-site:
+
+      .. rst-class:: ansible-option-title
+
+      **site**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-site" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Site name
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__parameter-validate_certs:
+
+      .. rst-class:: ansible-option-title
+
+      **validate_certs**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-validate_certs" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Whether or not to validate TLS cerificates.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+
+.. Attributes
+
+
+.. Notes
+
+
+.. Seealso
+
+
+.. Examples
+
+Examples
+--------
+
+.. code-block:: yaml+jinja
+
+    
+    - name: Get all used rulesets with 'file' in their name
+      ansible.builtin.debug:
+        msg: "Ruleset: {{ item.extensions.name }} has {{ item.extensions.number_of_rules }} rules."
+      loop: "{{
+        lookup('checkmk.general.rulesets',
+          regex='file',
+          rulesets_used=True,
+          server_url=server_url,
+          site=site,
+          automation_user=automation_user,
+          automation_secret=automation_secret,
+          validate_certs=False
+          )
+        }}"
+      loop_control:
+          label: "{{ item.id }}"
+
+    - name: Get all used deprecated rulesets
+      ansible.builtin.debug:
+        msg: "Ruleset {{ item.extension.name }} is deprecated."
+      loop: "{{
+        lookup('checkmk.general.rulesets',
+          regex='',
+          rulesets_deprecated=True,
+          rulesets_used=True,
+          server_url=server_url,
+          site=site,
+          automation_user=automation_user,
+          automation_secret=automation_secret,
+          validate_certs=False
+          )
+        }}"
+      loop_control:
+          label: "{{ item.0.id }}"
+
+
+
+
+.. Facts
+
+
+.. Return values
+
+Return Value
+------------
+
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
+
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
+
+  * - Key
+    - Description
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-_list"></div>
+
+      .. _ansible_collections.checkmk.general.rulesets_lookup__return-_list:
+
+      .. rst-class:: ansible-option-title
+
+      **Return value**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-_list" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      A list of rulesets
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` success
+
+
+      .. raw:: html
+
+        </div>
+
+
+
+..  Status (Presently only deprecated)
+
+
+.. Authors
+
+Authors
+~~~~~~~
+
+- Lars Getwan (@lgetwan)
+
+
+.. hint::
+    Configuration entries for each entry type have a low to high priority order. For example, a variable that is lower in the list will override a variable that is higher up.
+
+.. Extra links
+
+Collection links
+~~~~~~~~~~~~~~~~
+
+.. ansible-links::
+
+  - title: "Issue Tracker"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"
+    external: true
+  - title: "Repository (Sources)"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general"
+    external: true
+
+
+.. Parsing errors
+

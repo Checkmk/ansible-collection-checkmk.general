@@ -1,0 +1,82 @@
+---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules."
+  rule:
+    server_url: "{{ server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ automation_user }}"
+    automation_secret: "{{ automation_secret }}"
+    ruleset: "{{ item.ruleset }}"
+    rule: "{{ item.rule }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_rules }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all rulesets."
+  ansible.builtin.debug:
+    var: rulesets
+  vars:
+    rulesets: "{{ lookup('checkmk.general.rulesets',
+                  regex='',
+                  rulesets_used=True,
+                  rulesets_deprecated=False,
+                  server_url=server_url,
+                  site=outer_item.site,
+                  validate_certs=False,
+                  automation_user=automation_user,
+                  automation_secret=automation_secret)
+              }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get list of all rulesets."
+  ansible.builtin.debug:
+    msg: "Ruleset {{ item.id }} contains {{ item.extensions.number_of_rules | default('0') }}"
+  loop: "{{ lookup('checkmk.general.rulesets',
+             regex='',
+             rulesets_used=True,
+             rulesets_deprecated=False,
+             server_url=server_url,
+             site=outer_item.site,
+             validate_certs=False,
+             automation_user=automation_user,
+             automation_secret=automation_secret)
+         }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop_control:
+    label: "{{ item.id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get particular rulesets."
+  ansible.builtin.debug:
+    var: rulesets
+  vars:
+    rulesets: "{{ lookup('checkmk.general.rulesets',
+                  regex='file',
+                  rulesets_used=False,
+                  rulesets_deprecated=False,
+                  server_url=server_url,
+                  site=outer_item.site,
+                  validate_certs=False,
+                  automation_user=automation_user,
+                  automation_secret=automation_secret)
+              }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules using lookup-ruleset."
+  ansible.builtin.assert:
+    # For each rule that we created, check, if the number of rules in its ruleset is 1.
+    that: "ruleset.number_of_rules == 1"
+  vars:
+    ruleset: "{{ lookup('checkmk.general.ruleset',
+                      ruleset=item,
+                      server_url=server_url,
+                      site=outer_item.site,
+                      validate_certs=False,
+                      automation_user=automation_user,
+                      automation_secret=automation_secret)
+                  }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_ruleset_regexes }}"

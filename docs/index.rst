@@ -1,7 +1,7 @@
 
 
 .. meta::
-  :antsibull-docs: 2.5.0
+  :antsibull-docs: 2.6.1
 
 
 .. _plugins_in_checkmk.general:
@@ -9,7 +9,7 @@
 Checkmk.General
 ===============
 
-Collection version 3.4.0
+Collection version 4.1.0
 
 .. contents::
    :local:
@@ -94,20 +94,30 @@ Modules
 Lookup Plugins
 ~~~~~~~~~~~~~~
 
+* :ansplugin:`bakery lookup <checkmk.general.bakery#lookup>` -- Get the bakery status of a Checkmk server
 * :ansplugin:`folder lookup <checkmk.general.folder#lookup>` -- Get folder attributes
 * :ansplugin:`folders lookup <checkmk.general.folders#lookup>` -- Get various information about a folder
 * :ansplugin:`host lookup <checkmk.general.host#lookup>` -- Get host attributes
 * :ansplugin:`hosts lookup <checkmk.general.hosts#lookup>` -- Get various information about a host
+* :ansplugin:`rule lookup <checkmk.general.rule#lookup>` -- Show rule
+* :ansplugin:`rules lookup <checkmk.general.rules#lookup>` -- List rules
+* :ansplugin:`ruleset lookup <checkmk.general.ruleset#lookup>` -- Show ruleset
+* :ansplugin:`rulesets lookup <checkmk.general.rulesets#lookup>` -- Search rulesets
 * :ansplugin:`version lookup <checkmk.general.version#lookup>` -- Get the version of a Checkmk server
 
 .. toctree::
     :maxdepth: 1
     :hidden:
 
+    bakery_lookup
     folder_lookup
     folders_lookup
     host_lookup
     hosts_lookup
+    rule_lookup
+    rules_lookup
+    ruleset_lookup
+    rulesets_lookup
     version_lookup
 
 

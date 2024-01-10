@@ -1,0 +1,5408 @@
+debsible | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3",
+        "packages": {
+            "adduser": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "adduser",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.134"
+                }
+            ],
+            "apache2": [
+                {
+                    "arch": "amd64",
+                    "category": "httpd",
+                    "name": "apache2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.4.57-2"
+                }
+            ],
+            "apache2-bin": [
+                {
+                    "arch": "amd64",
+                    "category": "httpd",
+                    "name": "apache2-bin",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.4.57-2"
+                }
+            ],
+            "apache2-data": [
+                {
+                    "arch": "all",
+                    "category": "httpd",
+                    "name": "apache2-data",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.4.57-2"
+                }
+            ],
+            "apache2-utils": [
+                {
+                    "arch": "amd64",
+                    "category": "httpd",
+                    "name": "apache2-utils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.4.57-2"
+                }
+            ],
+            "apparmor": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "apparmor",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.0.8-3"
+                }
+            ],
+            "apt": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "apt",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.6.1"
+                }
+            ],
+            "apt-listchanges": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "apt-listchanges",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.24"
+                }
+            ],
+            "apt-utils": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "apt-utils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.6.1"
+                }
+            ],
+            "base-files": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "base-files",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "12.4+deb12u2"
+                }
+            ],
+            "base-passwd": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "base-passwd",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.6.1"
+                }
+            ],
+            "bash": [
+                {
+                    "arch": "amd64",
+                    "category": "shells",
+                    "name": "bash",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "5.2.15-2+b2"
+                }
+            ],
+            "bash-completion": [
+                {
+                    "arch": "all",
+                    "category": "shells",
+                    "name": "bash-completion",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:2.11-6"
+                }
+            ],
+            "bind9-dnsutils": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "bind9-dnsutils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:9.18.19-1~deb12u1"
+                }
+            ],
+            "bind9-host": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "bind9-host",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:9.18.19-1~deb12u1"
+                }
+            ],
+            "bind9-libs": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "bind9-libs",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:9.18.19-1~deb12u1"
+                }
+            ],
+            "binutils": [
+                {
+                    "arch": "amd64",
+                    "category": "devel",
+                    "name": "binutils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.40-2"
+                }
+            ],
+            "binutils-common": [
+                {
+                    "arch": "amd64",
+                    "category": "devel",
+                    "name": "binutils-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.40-2"
+                }
+            ],
+            "binutils-x86-64-linux-gnu": [
+                {
+                    "arch": "amd64",
+                    "category": "devel",
+                    "name": "binutils-x86-64-linux-gnu",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.40-2"
+                }
+            ],
+            "bsdextrautils": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "bsdextrautils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5+b1"
+                }
+            ],
+            "bsdutils": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "bsdutils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:2.38.1-5+b1"
+                }
+            ],
+            "busybox": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "busybox",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:1.35.0-4+b3"
+                }
+            ],
+            "bzip2": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "bzip2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0.8-5+b1"
+                }
+            ],
+            "ca-certificates": [
+                {
+                    "arch": "all",
+                    "category": "misc",
+                    "name": "ca-certificates",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "20230311"
+                }
+            ],
+            "check-mk-raw-2.2.0p8": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "check-mk-raw-2.2.0p8",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "0.bookworm"
+                }
+            ],
+            "console-setup": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "console-setup",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.221"
+                }
+            ],
+            "console-setup-linux": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "console-setup-linux",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.221"
+                }
+            ],
+            "coreutils": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "coreutils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "9.1-1"
+                }
+            ],
+            "cpio": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "cpio",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.13+dfsg-7.1"
+                }
+            ],
+            "cron": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "cron",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.0pl1-162"
+                }
+            ],
+            "cron-daemon-common": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "cron-daemon-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.0pl1-162"
+                }
+            ],
+            "curl": [
+                {
+                    "arch": "amd64",
+                    "category": "web",
+                    "name": "curl",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "7.88.1-10+deb12u5"
+                }
+            ],
+            "dash": [
+                {
+                    "arch": "amd64",
+                    "category": "shells",
+                    "name": "dash",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.5.12-2"
+                }
+            ],
+            "dbus": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "dbus",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.14.10-1~deb12u1"
+                }
+            ],
+            "dbus-bin": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "dbus-bin",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.14.10-1~deb12u1"
+                }
+            ],
+            "dbus-daemon": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "dbus-daemon",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.14.10-1~deb12u1"
+                }
+            ],
+            "dbus-session-bus-common": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "dbus-session-bus-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.14.10-1~deb12u1"
+                }
+            ],
+            "dbus-system-bus-common": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "dbus-system-bus-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.14.10-1~deb12u1"
+                }
+            ],
+            "dbus-user-session": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "dbus-user-session",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.14.10-1~deb12u1"
+                }
+            ],
+            "debconf": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "debconf",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.5.82"
+                }
+            ],
+            "debconf-i18n": [
+                {
+                    "arch": "all",
+                    "category": "localization",
+                    "name": "debconf-i18n",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.5.82"
+                }
+            ],
+            "debian-archive-keyring": [
+                {
+                    "arch": "all",
+                    "category": "misc",
+                    "name": "debian-archive-keyring",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2023.3+deb12u1"
+                }
+            ],
+            "debian-faq": [
+                {
+                    "arch": "all",
+                    "category": "doc",
+                    "name": "debian-faq",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "11.1"
+                }
+            ],
+            "debianutils": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "debianutils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "5.7-0.5~deb12u1"
+                }
+            ],
+            "debugedit": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "debugedit",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:5.0-5"
+                }
+            ],
+            "dialog": [
+                {
+                    "arch": "amd64",
+                    "category": "misc",
+                    "name": "dialog",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.3-20230209-1"
+                }
+            ],
+            "dictionaries-common": [
+                {
+                    "arch": "all",
+                    "category": "text",
+                    "name": "dictionaries-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.29.5"
+                }
+            ],
+            "diffutils": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "diffutils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:3.8-4"
+                }
+            ],
+            "dirmngr": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "dirmngr",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2.40-1.1"
+                }
+            ],
+            "discover": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "discover",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.2-10"
+                }
+            ],
+            "discover-data": [
+                {
+                    "arch": "all",
+                    "category": "libs",
+                    "name": "discover-data",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2013.01.13"
+                }
+            ],
+            "distro-info-data": [
+                {
+                    "arch": "all",
+                    "category": "devel",
+                    "name": "distro-info-data",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "0.58"
+                }
+            ],
+            "dmidecode": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "dmidecode",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.4-1"
+                }
+            ],
+            "dmsetup": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "dmsetup",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:1.02.185-2"
+                }
+            ],
+            "doc-debian": [
+                {
+                    "arch": "all",
+                    "category": "doc",
+                    "name": "doc-debian",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "11.3+nmu1"
+                }
+            ],
+            "dpkg": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "dpkg",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.21.22"
+                }
+            ],
+            "e2fsprogs": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "e2fsprogs",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.47.0-2"
+                }
+            ],
+            "eject": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "eject",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5+b1"
+                }
+            ],
+            "emacsen-common": [
+                {
+                    "arch": "all",
+                    "category": "editors",
+                    "name": "emacsen-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.0.5"
+                }
+            ],
+            "fdisk": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "fdisk",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5+b1"
+                }
+            ],
+            "file": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "file",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:5.44-3"
+                }
+            ],
+            "findutils": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "findutils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.9.0-4"
+                }
+            ],
+            "firmware-linux-free": [
+                {
+                    "arch": "all",
+                    "category": "kernel",
+                    "name": "firmware-linux-free",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "20200122-1"
+                }
+            ],
+            "fontconfig": [
+                {
+                    "arch": "amd64",
+                    "category": "fonts",
+                    "name": "fontconfig",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.14.1-4"
+                }
+            ],
+            "fontconfig-config": [
+                {
+                    "arch": "amd64",
+                    "category": "fonts",
+                    "name": "fontconfig-config",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.14.1-4"
+                }
+            ],
+            "fonts-dejavu-core": [
+                {
+                    "arch": "all",
+                    "category": "fonts",
+                    "name": "fonts-dejavu-core",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.37-6"
+                }
+            ],
+            "fonts-liberation2": [
+                {
+                    "arch": "all",
+                    "category": "fonts",
+                    "name": "fonts-liberation2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.5-1"
+                }
+            ],
+            "freeipmi": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "freeipmi",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.10-1"
+                }
+            ],
+            "freeipmi-bmc-watchdog": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "freeipmi-bmc-watchdog",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.10-1+b1"
+                }
+            ],
+            "freeipmi-common": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "freeipmi-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.10-1"
+                }
+            ],
+            "freeipmi-ipmidetect": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "freeipmi-ipmidetect",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.10-1+b1"
+                }
+            ],
+            "freeipmi-tools": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "freeipmi-tools",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.10-1+b1"
+                }
+            ],
+            "gcc-12-base": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "gcc-12-base",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "12.2.0-14"
+                }
+            ],
+            "gettext-base": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "gettext-base",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.21-12"
+                }
+            ],
+            "git": [
+                {
+                    "arch": "amd64",
+                    "category": "vcs",
+                    "name": "git",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:2.39.2-1.1"
+                }
+            ],
+            "git-man": [
+                {
+                    "arch": "all",
+                    "category": "doc",
+                    "name": "git-man",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:2.39.2-1.1"
+                }
+            ],
+            "gnupg": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "gnupg",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2.40-1.1"
+                }
+            ],
+            "gnupg-l10n": [
+                {
+                    "arch": "all",
+                    "category": "localization",
+                    "name": "gnupg-l10n",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2.40-1.1"
+                }
+            ],
+            "gnupg-utils": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "gnupg-utils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2.40-1.1"
+                }
+            ],
+            "gpg": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "gpg",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2.40-1.1"
+                }
+            ],
+            "gpg-agent": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "gpg-agent",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2.40-1.1"
+                }
+            ],
+            "gpg-wks-client": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "gpg-wks-client",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2.40-1.1"
+                }
+            ],
+            "gpg-wks-server": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "gpg-wks-server",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2.40-1.1"
+                }
+            ],
+            "gpgconf": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "gpgconf",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2.40-1.1"
+                }
+            ],
+            "gpgsm": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "gpgsm",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2.40-1.1"
+                }
+            ],
+            "gpgv": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "gpgv",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2.40-1.1"
+                }
+            ],
+            "graphviz": [
+                {
+                    "arch": "amd64",
+                    "category": "graphics",
+                    "name": "graphviz",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.42.2-7+b3"
+                }
+            ],
+            "grep": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "grep",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.8-5"
+                }
+            ],
+            "groff-base": [
+                {
+                    "arch": "amd64",
+                    "category": "text",
+                    "name": "groff-base",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.22.4-10"
+                }
+            ],
+            "grub-common": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "grub-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.06-13+deb12u1"
+                }
+            ],
+            "grub-pc": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "grub-pc",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.06-13+deb12u1"
+                }
+            ],
+            "grub-pc-bin": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "grub-pc-bin",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.06-13+deb12u1"
+                }
+            ],
+            "grub2-common": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "grub2-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.06-13+deb12u1"
+                }
+            ],
+            "gzip": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "gzip",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.12-1"
+                }
+            ],
+            "haveged": [
+                {
+                    "arch": "amd64",
+                    "category": "misc",
+                    "name": "haveged",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.9.14-1+b1"
+                }
+            ],
+            "hostname": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "hostname",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.23+nmu1"
+                }
+            ],
+            "htop": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "htop",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.2.2-2"
+                }
+            ],
+            "iamerican": [
+                {
+                    "arch": "all",
+                    "category": "text",
+                    "name": "iamerican",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.4.05-1"
+                }
+            ],
+            "ibritish": [
+                {
+                    "arch": "all",
+                    "category": "text",
+                    "name": "ibritish",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.4.05-1"
+                }
+            ],
+            "ienglish-common": [
+                {
+                    "arch": "all",
+                    "category": "text",
+                    "name": "ienglish-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.4.05-1"
+                }
+            ],
+            "ifplugd": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "ifplugd",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.28-19.5"
+                }
+            ],
+            "ifupdown": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "ifupdown",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.8.41"
+                }
+            ],
+            "inetutils-telnet": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "inetutils-telnet",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:2.4-2+deb12u1"
+                }
+            ],
+            "init": [
+                {
+                    "arch": "amd64",
+                    "category": "metapackages",
+                    "name": "init",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.65.2"
+                }
+            ],
+            "init-system-helpers": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "init-system-helpers",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.65.2"
+                }
+            ],
+            "initramfs-tools": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "initramfs-tools",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.142"
+                }
+            ],
+            "initramfs-tools-core": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "initramfs-tools-core",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.142"
+                }
+            ],
+            "inotify-tools": [
+                {
+                    "arch": "amd64",
+                    "category": "misc",
+                    "name": "inotify-tools",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.22.6.0-4"
+                }
+            ],
+            "intel-microcode": [
+                {
+                    "arch": "amd64",
+                    "category": "non-free-firmware/admin",
+                    "name": "intel-microcode",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.20231114.1~deb12u1"
+                }
+            ],
+            "iproute2": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "iproute2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.1.0-3"
+                }
+            ],
+            "iputils-ping": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "iputils-ping",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3:20221126-1"
+                }
+            ],
+            "isc-dhcp-client": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "isc-dhcp-client",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.4.3-P1-2"
+                }
+            ],
+            "isc-dhcp-common": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "isc-dhcp-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.4.3-P1-2"
+                }
+            ],
+            "iso-codes": [
+                {
+                    "arch": "all",
+                    "category": "misc",
+                    "name": "iso-codes",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.15.0-1"
+                }
+            ],
+            "ispell": [
+                {
+                    "arch": "amd64",
+                    "category": "text",
+                    "name": "ispell",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.4.05-1"
+                }
+            ],
+            "iucode-tool": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "iucode-tool",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.3.1-3"
+                }
+            ],
+            "kbd": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "kbd",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.5.1-1+b1"
+                }
+            ],
+            "keyboard-configuration": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "keyboard-configuration",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.221"
+                }
+            ],
+            "klibc-utils": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "klibc-utils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.0.12-1"
+                }
+            ],
+            "kmod": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "kmod",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "30+20221128-1"
+                }
+            ],
+            "krb5-locales": [
+                {
+                    "arch": "all",
+                    "category": "localization",
+                    "name": "krb5-locales",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.20.1-2+deb12u1"
+                }
+            ],
+            "laptop-detect": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "laptop-detect",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.16"
+                }
+            ],
+            "less": [
+                {
+                    "arch": "amd64",
+                    "category": "text",
+                    "name": "less",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "590-2"
+                }
+            ],
+            "libabsl20220623": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libabsl20220623",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "20220623.1-1"
+                }
+            ],
+            "libacl1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libacl1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.3.1-3"
+                }
+            ],
+            "libann0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libann0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.1.2+doc-9+b1"
+                }
+            ],
+            "libaom3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libaom3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.6.0-1"
+                }
+            ],
+            "libapache2-mod-php8.2": [
+                {
+                    "arch": "amd64",
+                    "category": "httpd",
+                    "name": "libapache2-mod-php8.2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2.7-1~deb12u1"
+                }
+            ],
+            "libapparmor1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libapparmor1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.0.8-3"
+                }
+            ],
+            "libapr1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libapr1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.7.2-3"
+                }
+            ],
+            "libaprutil1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libaprutil1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.3-1"
+                }
+            ],
+            "libaprutil1-dbd-sqlite3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libaprutil1-dbd-sqlite3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.3-1"
+                }
+            ],
+            "libaprutil1-ldap": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libaprutil1-ldap",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.3-1"
+                }
+            ],
+            "libapt-pkg6.0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libapt-pkg6.0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.6.1"
+                }
+            ],
+            "libarchive13": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libarchive13",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.6.2-1"
+                }
+            ],
+            "libargon2-1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libargon2-1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0~20171227-0.3+deb12u1"
+                }
+            ],
+            "libassuan0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libassuan0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.5.5-5"
+                }
+            ],
+            "libattr1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libattr1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:2.5.1-4"
+                }
+            ],
+            "libaudit-common": [
+                {
+                    "arch": "all",
+                    "category": "libs",
+                    "name": "libaudit-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:3.0.9-1"
+                }
+            ],
+            "libaudit1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libaudit1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:3.0.9-1"
+                }
+            ],
+            "libavahi-client3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libavahi-client3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.8-10"
+                }
+            ],
+            "libavahi-common-data": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libavahi-common-data",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.8-10"
+                }
+            ],
+            "libavahi-common3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libavahi-common3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.8-10"
+                }
+            ],
+            "libavif15": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libavif15",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.11.1-1"
+                }
+            ],
+            "libbinutils": [
+                {
+                    "arch": "amd64",
+                    "category": "devel",
+                    "name": "libbinutils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.40-2"
+                }
+            ],
+            "libblkid1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libblkid1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5+b1"
+                }
+            ],
+            "libbpf1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libbpf1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:1.1.0-1"
+                }
+            ],
+            "libbrotli1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libbrotli1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0.9-2+b6"
+                }
+            ],
+            "libbsd0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libbsd0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.11.7-2"
+                }
+            ],
+            "libbz2-1.0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libbz2-1.0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0.8-5+b1"
+                }
+            ],
+            "libc-bin": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libc-bin",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.36-9+deb12u3"
+                }
+            ],
+            "libc-l10n": [
+                {
+                    "arch": "all",
+                    "category": "localization",
+                    "name": "libc-l10n",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.36-9+deb12u3"
+                }
+            ],
+            "libc6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libc6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.36-9+deb12u3"
+                }
+            ],
+            "libcairo2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcairo2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.16.0-7"
+                }
+            ],
+            "libcap-ng0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcap-ng0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.8.3-1+b3"
+                }
+            ],
+            "libcap2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcap2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:2.66-4"
+                }
+            ],
+            "libcap2-bin": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "libcap2-bin",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:2.66-4"
+                }
+            ],
+            "libcbor0.8": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcbor0.8",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.8.0-2+b1"
+                }
+            ],
+            "libcdb1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcdb1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.78+b1"
+                }
+            ],
+            "libcdt5": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcdt5",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.42.2-7+b3"
+                }
+            ],
+            "libcgraph6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcgraph6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.42.2-7+b3"
+                }
+            ],
+            "libcom-err2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcom-err2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.47.0-2"
+                }
+            ],
+            "libcrypt1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcrypt1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:4.4.33-2"
+                }
+            ],
+            "libcryptsetup12": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcryptsetup12",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:2.6.1-4~deb12u1"
+                }
+            ],
+            "libctf-nobfd0": [
+                {
+                    "arch": "amd64",
+                    "category": "devel",
+                    "name": "libctf-nobfd0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.40-2"
+                }
+            ],
+            "libctf0": [
+                {
+                    "arch": "amd64",
+                    "category": "devel",
+                    "name": "libctf0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.40-2"
+                }
+            ],
+            "libcups2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcups2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.4.2-3+deb12u5"
+                }
+            ],
+            "libcurl3-gnutls": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcurl3-gnutls",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "7.88.1-10+deb12u5"
+                }
+            ],
+            "libcurl4": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libcurl4",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "7.88.1-10+deb12u5"
+                }
+            ],
+            "libdaemon0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libdaemon0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.14-7.1"
+                }
+            ],
+            "libdatrie1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libdatrie1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.2.13-2+b1"
+                }
+            ],
+            "libdav1d6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libdav1d6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0.0-2"
+                }
+            ],
+            "libdb5.3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libdb5.3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "5.3.28+dfsg2-1"
+                }
+            ],
+            "libdbus-1-3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libdbus-1-3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.14.10-1~deb12u1"
+                }
+            ],
+            "libde265-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libde265-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0.11-1+deb12u1"
+                }
+            ],
+            "libdebconfclient0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libdebconfclient0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.270"
+                }
+            ],
+            "libdeflate0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libdeflate0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.14-1"
+                }
+            ],
+            "libdevmapper1.02.1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libdevmapper1.02.1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:1.02.185-2"
+                }
+            ],
+            "libdiscover2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libdiscover2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.2-10"
+                }
+            ],
+            "libdw1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libdw1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.188-2.1"
+                }
+            ],
+            "libedit2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libedit2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.1-20221030-2"
+                }
+            ],
+            "libefiboot1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libefiboot1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "37-6"
+                }
+            ],
+            "libefivar1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libefivar1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "37-6"
+                }
+            ],
+            "libelf1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libelf1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.188-2.1"
+                }
+            ],
+            "liberror-perl": [
+                {
+                    "arch": "all",
+                    "category": "perl",
+                    "name": "liberror-perl",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.17029-2"
+                }
+            ],
+            "libestr0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libestr0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.1.11-1"
+                }
+            ],
+            "libevent-2.1-7": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libevent-2.1-7",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.12-stable-8"
+                }
+            ],
+            "libevent-core-2.1-7": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libevent-core-2.1-7",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.12-stable-8"
+                }
+            ],
+            "libevent-dev": [
+                {
+                    "arch": "amd64",
+                    "category": "libdevel",
+                    "name": "libevent-dev",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.12-stable-8"
+                }
+            ],
+            "libevent-extra-2.1-7": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libevent-extra-2.1-7",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.12-stable-8"
+                }
+            ],
+            "libevent-openssl-2.1-7": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libevent-openssl-2.1-7",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.12-stable-8"
+                }
+            ],
+            "libevent-pthreads-2.1-7": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libevent-pthreads-2.1-7",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.12-stable-8"
+                }
+            ],
+            "libexpat1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libexpat1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.5.0-1"
+                }
+            ],
+            "libext2fs2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libext2fs2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.47.0-2"
+                }
+            ],
+            "libfastjson4": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libfastjson4",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.2304.0-1"
+                }
+            ],
+            "libfdisk1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libfdisk1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5+b1"
+                }
+            ],
+            "libffi8": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libffi8",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.4.4-1"
+                }
+            ],
+            "libfido2-1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libfido2-1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.12.0-2+b1"
+                }
+            ],
+            "libfontconfig1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libfontconfig1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.14.1-4"
+                }
+            ],
+            "libfreeipmi17": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libfreeipmi17",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.10-1+b1"
+                }
+            ],
+            "libfreeradius3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libfreeradius3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.2.1+dfsg-4+deb12u1"
+                }
+            ],
+            "libfreetype6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libfreetype6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.12.1+dfsg-5"
+                }
+            ],
+            "libfribidi0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libfribidi0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0.8-2.1"
+                }
+            ],
+            "libfstrm0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libfstrm0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.6.1-1"
+                }
+            ],
+            "libfsverity0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libfsverity0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.5-1.1"
+                }
+            ],
+            "libfuse2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libfuse2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.9.9-6+b1"
+                }
+            ],
+            "libgav1-1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgav1-1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.18.0-1+b1"
+                }
+            ],
+            "libgcc-s1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgcc-s1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "12.2.0-14"
+                }
+            ],
+            "libgcrypt20": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgcrypt20",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.10.1-3"
+                }
+            ],
+            "libgd3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgd3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.3.3-9"
+                }
+            ],
+            "libgdbm-compat4": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgdbm-compat4",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.23-3"
+                }
+            ],
+            "libgdbm6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgdbm6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.23-3"
+                }
+            ],
+            "libglib2.0-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libglib2.0-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.74.6-2"
+                }
+            ],
+            "libglib2.0-data": [
+                {
+                    "arch": "all",
+                    "category": "libs",
+                    "name": "libglib2.0-data",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.74.6-2"
+                }
+            ],
+            "libgmp10": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgmp10",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:6.2.1+dfsg1-1.1"
+                }
+            ],
+            "libgnutls30": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgnutls30",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "3.7.9-2"
+                }
+            ],
+            "libgomp1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgomp1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "12.2.0-14"
+                }
+            ],
+            "libgpg-error0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgpg-error0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.46-1"
+                }
+            ],
+            "libgpgme11": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgpgme11",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.18.0-3+b1"
+                }
+            ],
+            "libgpm2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgpm2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.20.7-10+b1"
+                }
+            ],
+            "libgprofng0": [
+                {
+                    "arch": "amd64",
+                    "category": "devel",
+                    "name": "libgprofng0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.40-2"
+                }
+            ],
+            "libgraphite2-3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgraphite2-3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.3.14-1"
+                }
+            ],
+            "libgsf-1-114": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgsf-1-114",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.14.50-1"
+                }
+            ],
+            "libgsf-1-common": [
+                {
+                    "arch": "all",
+                    "category": "libs",
+                    "name": "libgsf-1-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.14.50-1"
+                }
+            ],
+            "libgssapi-krb5-2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgssapi-krb5-2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.20.1-2+deb12u1"
+                }
+            ],
+            "libgts-0.7-5": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgts-0.7-5",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.7.6+darcs121130-5+b1"
+                }
+            ],
+            "libgts-bin": [
+                {
+                    "arch": "amd64",
+                    "category": "math",
+                    "name": "libgts-bin",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.7.6+darcs121130-5+b1"
+                }
+            ],
+            "libgvc6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgvc6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.42.2-7+b3"
+                }
+            ],
+            "libgvpr2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libgvpr2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.42.2-7+b3"
+                }
+            ],
+            "libharfbuzz0b": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libharfbuzz0b",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.0.0+dfsg-3"
+                }
+            ],
+            "libhavege2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libhavege2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.9.14-1+b1"
+                }
+            ],
+            "libheif1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libheif1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.15.1-1"
+                }
+            ],
+            "libhogweed6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libhogweed6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.8.1-2"
+                }
+            ],
+            "libice6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libice6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:1.0.10-1"
+                }
+            ],
+            "libicu72": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libicu72",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "72.1-3"
+                }
+            ],
+            "libidn2-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libidn2-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.3.3-1+b1"
+                }
+            ],
+            "libinotifytools0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libinotifytools0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.22.6.0-4"
+                }
+            ],
+            "libip4tc2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libip4tc2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.8.9-2"
+                }
+            ],
+            "libipmiconsole2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libipmiconsole2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.10-1+b1"
+                }
+            ],
+            "libipmidetect0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libipmidetect0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.10-1+b1"
+                }
+            ],
+            "libjansson4": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libjansson4",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.14-2"
+                }
+            ],
+            "libjbig0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libjbig0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1-6.1"
+                }
+            ],
+            "libjemalloc2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libjemalloc2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "5.3.0-1"
+                }
+            ],
+            "libjpeg62-turbo": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libjpeg62-turbo",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:2.1.5-2"
+                }
+            ],
+            "libjson-c5": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libjson-c5",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.16-2"
+                }
+            ],
+            "libk5crypto3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libk5crypto3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.20.1-2+deb12u1"
+                }
+            ],
+            "libkeyutils1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libkeyutils1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.3-2"
+                }
+            ],
+            "libklibc": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libklibc",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.0.12-1"
+                }
+            ],
+            "libkmod2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libkmod2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "30+20221128-1"
+                }
+            ],
+            "libkrb5-3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libkrb5-3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.20.1-2+deb12u1"
+                }
+            ],
+            "libkrb5support0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libkrb5support0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.20.1-2+deb12u1"
+                }
+            ],
+            "libksba8": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libksba8",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.3-2"
+                }
+            ],
+            "liblab-gamut1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "liblab-gamut1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.42.2-7+b3"
+                }
+            ],
+            "liblcms2-2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "liblcms2-2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.14-2"
+                }
+            ],
+            "libldap-2.5-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libldap-2.5-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.5.13+dfsg-5"
+                }
+            ],
+            "libldap-common": [
+                {
+                    "arch": "all",
+                    "category": "libs",
+                    "name": "libldap-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.5.13+dfsg-5"
+                }
+            ],
+            "libldb2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libldb2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:2.6.2+samba4.17.12+dfsg-0+deb12u1"
+                }
+            ],
+            "liblerc4": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "liblerc4",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.0.0+ds-2"
+                }
+            ],
+            "liblmdb0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "liblmdb0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.9.24-1"
+                }
+            ],
+            "liblocale-gettext-perl": [
+                {
+                    "arch": "amd64",
+                    "category": "perl",
+                    "name": "liblocale-gettext-perl",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.07-5"
+                }
+            ],
+            "liblockfile-bin": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "liblockfile-bin",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.17-1+b1"
+                }
+            ],
+            "liblognorm5": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "liblognorm5",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.0.6-4"
+                }
+            ],
+            "libltdl7": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libltdl7",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.4.7-5"
+                }
+            ],
+            "liblua5.3-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "liblua5.3-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "5.3.6-2"
+                }
+            ],
+            "liblz4-1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "liblz4-1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.9.4-1"
+                }
+            ],
+            "liblzma5": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "liblzma5",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "5.4.1-0.2"
+                }
+            ],
+            "libmagic-mgc": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libmagic-mgc",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:5.44-3"
+                }
+            ],
+            "libmagic1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libmagic1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:5.44-3"
+                }
+            ],
+            "libmaxminddb0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libmaxminddb0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.7.1-1"
+                }
+            ],
+            "libmd0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libmd0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0.4-2"
+                }
+            ],
+            "libmnl0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libmnl0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0.4-3"
+                }
+            ],
+            "libmount1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libmount1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5+b1"
+                }
+            ],
+            "libncurses6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libncurses6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.4-4"
+                }
+            ],
+            "libncursesw6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libncursesw6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.4-4"
+                }
+            ],
+            "libnettle8": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnettle8",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.8.1-2"
+                }
+            ],
+            "libnewt0.52": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnewt0.52",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.52.23-1+b1"
+                }
+            ],
+            "libnftables1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnftables1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0.6-2+deb12u2"
+                }
+            ],
+            "libnftnl11": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnftnl11",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.2.4-2"
+                }
+            ],
+            "libnghttp2-14": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnghttp2-14",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "1.52.0-1"
+                }
+            ],
+            "libnl-3-200": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnl-3-200",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.7.0-0.2+b1"
+                }
+            ],
+            "libnl-genl-3-200": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnl-genl-3-200",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.7.0-0.2+b1"
+                }
+            ],
+            "libnpth0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnpth0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6-3"
+                }
+            ],
+            "libnsl2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnsl2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.3.0-2"
+                }
+            ],
+            "libnspr4": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnspr4",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:4.35-1"
+                }
+            ],
+            "libnss-systemd": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "libnss-systemd",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "252.17-1~deb12u1"
+                }
+            ],
+            "libnss3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnss3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:3.87.1-1"
+                }
+            ],
+            "libnuma1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libnuma1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.0.16-1"
+                }
+            ],
+            "libopenjp2-7": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libopenjp2-7",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.5.0-2"
+                }
+            ],
+            "libp11-kit0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libp11-kit0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.24.1-2"
+                }
+            ],
+            "libpam-modules": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "libpam-modules",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.5.2-6+deb12u1"
+                }
+            ],
+            "libpam-modules-bin": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "libpam-modules-bin",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.5.2-6+deb12u1"
+                }
+            ],
+            "libpam-runtime": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "libpam-runtime",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.5.2-6+deb12u1"
+                }
+            ],
+            "libpam-systemd": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "libpam-systemd",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "252.17-1~deb12u1"
+                }
+            ],
+            "libpam0g": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpam0g",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.5.2-6+deb12u1"
+                }
+            ],
+            "libpango-1.0-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpango-1.0-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.50.12+ds-1"
+                }
+            ],
+            "libpango1.0-0": [
+                {
+                    "arch": "amd64",
+                    "category": "oldlibs",
+                    "name": "libpango1.0-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.50.12+ds-1"
+                }
+            ],
+            "libpangocairo-1.0-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpangocairo-1.0-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.50.12+ds-1"
+                }
+            ],
+            "libpangoft2-1.0-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpangoft2-1.0-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.50.12+ds-1"
+                }
+            ],
+            "libpangoxft-1.0-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpangoxft-1.0-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.50.12+ds-1"
+                }
+            ],
+            "libpathplan4": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpathplan4",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.42.2-7+b3"
+                }
+            ],
+            "libpcap0.8": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpcap0.8",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.10.3-1"
+                }
+            ],
+            "libpci3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpci3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:3.9.0-4"
+                }
+            ],
+            "libpcre2-8-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpcre2-8-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "10.42-1"
+                }
+            ],
+            "libpcre3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpcre3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:8.39-15"
+                }
+            ],
+            "libperl5.36": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libperl5.36",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "5.36.0-7"
+                }
+            ],
+            "libpipeline1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpipeline1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.5.7-1"
+                }
+            ],
+            "libpixman-1-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpixman-1-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.42.2-1"
+                }
+            ],
+            "libpng16-16": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpng16-16",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.39-2"
+                }
+            ],
+            "libpoppler126": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpoppler126",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "22.12.0-2+b1"
+                }
+            ],
+            "libpopt0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpopt0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.19+dfsg-1"
+                }
+            ],
+            "libpq5": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpq5",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "15.5-0+deb12u1"
+                }
+            ],
+            "libproc2-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libproc2-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:4.0.2-3"
+                }
+            ],
+            "libprotobuf-c1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libprotobuf-c1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.4.1-1+b1"
+                }
+            ],
+            "libpsl5": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpsl5",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.21.2-1"
+                }
+            ],
+            "libpython3-stdlib": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "libpython3-stdlib",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.11.2-1+b1"
+                }
+            ],
+            "libpython3.11": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libpython3.11",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.11.2-6"
+                }
+            ],
+            "libpython3.11-minimal": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "libpython3.11-minimal",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.11.2-6"
+                }
+            ],
+            "libpython3.11-stdlib": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "libpython3.11-stdlib",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.11.2-6"
+                }
+            ],
+            "librav1e0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "librav1e0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.5.1-6"
+                }
+            ],
+            "libreadline8": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libreadline8",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2-1.3"
+                }
+            ],
+            "librpm9": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "librpm9",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.18.0+dfsg-1+b1"
+                }
+            ],
+            "librpmbuild9": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "librpmbuild9",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.18.0+dfsg-1+b1"
+                }
+            ],
+            "librpmio9": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "librpmio9",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.18.0+dfsg-1+b1"
+                }
+            ],
+            "librpmsign9": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "librpmsign9",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.18.0+dfsg-1+b1"
+                }
+            ],
+            "librtmp1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "librtmp1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.4+20151223.gitfa8646d.1-2+b2"
+                }
+            ],
+            "libsasl2-2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsasl2-2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.28+dfsg-10"
+                }
+            ],
+            "libsasl2-modules": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsasl2-modules",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.28+dfsg-10"
+                }
+            ],
+            "libsasl2-modules-db": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsasl2-modules-db",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.1.28+dfsg-10"
+                }
+            ],
+            "libseccomp2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libseccomp2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.5.4-1+b3"
+                }
+            ],
+            "libselinux1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libselinux1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.4-1+b6"
+                }
+            ],
+            "libsemanage-common": [
+                {
+                    "arch": "all",
+                    "category": "libs",
+                    "name": "libsemanage-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.4-1"
+                }
+            ],
+            "libsemanage2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsemanage2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.4-1+b5"
+                }
+            ],
+            "libsensors-config": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "libsensors-config",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:3.6.0-7.1"
+                }
+            ],
+            "libsensors5": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsensors5",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:3.6.0-7.1"
+                }
+            ],
+            "libsepol2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsepol2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.4-2.1"
+                }
+            ],
+            "libslang2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libslang2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.3.3-3"
+                }
+            ],
+            "libsm6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsm6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:1.2.3-1"
+                }
+            ],
+            "libsmartcols1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsmartcols1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5+b1"
+                }
+            ],
+            "libsmbclient": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsmbclient",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:4.17.12+dfsg-0+deb12u1"
+                }
+            ],
+            "libsodium23": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsodium23",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0.18-1"
+                }
+            ],
+            "libsqlite3-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsqlite3-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.40.1-2"
+                }
+            ],
+            "libss2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libss2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.47.0-2"
+                }
+            ],
+            "libssh2-1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libssh2-1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.10.0-3+b1"
+                }
+            ],
+            "libssl3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libssl3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.0.11-1~deb12u2"
+                }
+            ],
+            "libstdc++6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libstdc++6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "12.2.0-14"
+                }
+            ],
+            "libsvtav1enc1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsvtav1enc1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.4.1+dfsg-1"
+                }
+            ],
+            "libsystemd-shared": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsystemd-shared",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "252.17-1~deb12u1"
+                }
+            ],
+            "libsystemd0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libsystemd0",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "252.17-1~deb12u1"
+                }
+            ],
+            "libtalloc2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libtalloc2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.4.0-f2"
+                }
+            ],
+            "libtasn1-6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libtasn1-6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.19.0-2"
+                }
+            ],
+            "libtdb1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libtdb1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.4.8-2"
+                }
+            ],
+            "libtevent0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libtevent0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.14.1-1"
+                }
+            ],
+            "libtext-charwidth-perl": [
+                {
+                    "arch": "amd64",
+                    "category": "perl",
+                    "name": "libtext-charwidth-perl",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.04-11"
+                }
+            ],
+            "libtext-iconv-perl": [
+                {
+                    "arch": "amd64",
+                    "category": "perl",
+                    "name": "libtext-iconv-perl",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.7-8"
+                }
+            ],
+            "libtext-wrapi18n-perl": [
+                {
+                    "arch": "all",
+                    "category": "perl",
+                    "name": "libtext-wrapi18n-perl",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.06-10"
+                }
+            ],
+            "libthai-data": [
+                {
+                    "arch": "all",
+                    "category": "libs",
+                    "name": "libthai-data",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.1.29-1"
+                }
+            ],
+            "libthai0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libthai0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.1.29-1"
+                }
+            ],
+            "libtiff6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libtiff6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.5.0-6+deb12u1"
+                }
+            ],
+            "libtinfo6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libtinfo6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.4-4"
+                }
+            ],
+            "libtirpc-common": [
+                {
+                    "arch": "all",
+                    "category": "libs",
+                    "name": "libtirpc-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.3.3+ds-1"
+                }
+            ],
+            "libtirpc3": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libtirpc3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.3.3+ds-1"
+                }
+            ],
+            "libuchardet0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libuchardet0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.0.7-1"
+                }
+            ],
+            "libudev1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libudev1",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "252.17-1~deb12u1"
+                }
+            ],
+            "libunistring2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libunistring2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0-2"
+                }
+            ],
+            "liburing2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "liburing2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.3-3"
+                }
+            ],
+            "libusb-1.0-0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libusb-1.0-0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:1.0.26-1"
+                }
+            ],
+            "libuuid1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libuuid1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5+b1"
+                }
+            ],
+            "libuv1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libuv1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.44.2-1"
+                }
+            ],
+            "libwbclient0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libwbclient0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:4.17.12+dfsg-0+deb12u1"
+                }
+            ],
+            "libwebp7": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libwebp7",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.2.4-0.2+deb12u1"
+                }
+            ],
+            "libwrap0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libwrap0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "7.6.q-32"
+                }
+            ],
+            "libx11-6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libx11-6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:1.8.4-2+deb12u2"
+                }
+            ],
+            "libx11-data": [
+                {
+                    "arch": "all",
+                    "category": "x11",
+                    "name": "libx11-data",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:1.8.4-2+deb12u2"
+                }
+            ],
+            "libx265-199": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libx265-199",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.5-2+b1"
+                }
+            ],
+            "libxau6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxau6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:1.0.9-1"
+                }
+            ],
+            "libxaw7": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxaw7",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:1.0.14-1"
+                }
+            ],
+            "libxcb-render0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxcb-render0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.15-1"
+                }
+            ],
+            "libxcb-shm0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxcb-shm0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.15-1"
+                }
+            ],
+            "libxcb1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxcb1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.15-1"
+                }
+            ],
+            "libxdmcp6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxdmcp6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:1.1.2-3"
+                }
+            ],
+            "libxext6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxext6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:1.3.4-1+b1"
+                }
+            ],
+            "libxft2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxft2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.3.6-1"
+                }
+            ],
+            "libxml2": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxml2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.9.14+dfsg-1.3~deb12u1"
+                }
+            ],
+            "libxmu6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxmu6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:1.1.3-3"
+                }
+            ],
+            "libxmuu1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxmuu1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:1.1.3-3"
+                }
+            ],
+            "libxpm4": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxpm4",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:3.5.12-1.1+deb12u1"
+                }
+            ],
+            "libxrender1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxrender1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:0.9.10-1.1"
+                }
+            ],
+            "libxslt1.1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxslt1.1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.1.35-1"
+                }
+            ],
+            "libxt6": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxt6",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:1.2.1-1.1"
+                }
+            ],
+            "libxtables12": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxtables12",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.8.9-2"
+                }
+            ],
+            "libxxhash0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libxxhash0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.8.1-1"
+                }
+            ],
+            "libyuv0": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libyuv0",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.0~git20230123.b2528b0-1"
+                }
+            ],
+            "libzstd1": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "libzstd1",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.5.4+dfsg2-5"
+                }
+            ],
+            "linux-base": [
+                {
+                    "arch": "all",
+                    "category": "kernel",
+                    "name": "linux-base",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.9"
+                }
+            ],
+            "linux-image-6.1.0-13-amd64": [
+                {
+                    "arch": "amd64",
+                    "category": "kernel",
+                    "name": "linux-image-6.1.0-13-amd64",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.1.55-1"
+                }
+            ],
+            "linux-image-amd64": [
+                {
+                    "arch": "amd64",
+                    "category": "kernel",
+                    "name": "linux-image-amd64",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "6.1.55-1"
+                }
+            ],
+            "locales": [
+                {
+                    "arch": "all",
+                    "category": "localization",
+                    "name": "locales",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.36-9+deb12u3"
+                }
+            ],
+            "login": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "login",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:4.13+dfsg1-1+b1"
+                }
+            ],
+            "logrotate": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "logrotate",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.21.0-1"
+                }
+            ],
+            "logsave": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "logsave",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.47.0-2"
+                }
+            ],
+            "lsb-release": [
+                {
+                    "arch": "all",
+                    "category": "misc",
+                    "name": "lsb-release",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "12.0-1"
+                }
+            ],
+            "lsof": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "lsof",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.95.0-1"
+                }
+            ],
+            "mailcap": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "mailcap",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.70+nmu1"
+                }
+            ],
+            "man-db": [
+                {
+                    "arch": "amd64",
+                    "category": "doc",
+                    "name": "man-db",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.11.2-2"
+                }
+            ],
+            "manpages": [
+                {
+                    "arch": "all",
+                    "category": "doc",
+                    "name": "manpages",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.03-2"
+                }
+            ],
+            "mawk": [
+                {
+                    "arch": "amd64",
+                    "category": "interpreters",
+                    "name": "mawk",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.3.4.20200120-3.1"
+                }
+            ],
+            "media-types": [
+                {
+                    "arch": "all",
+                    "category": "net",
+                    "name": "media-types",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "10.0.0"
+                }
+            ],
+            "memcached": [
+                {
+                    "arch": "amd64",
+                    "category": "web",
+                    "name": "memcached",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.6.18-1"
+                }
+            ],
+            "mime-support": [
+                {
+                    "arch": "all",
+                    "category": "net",
+                    "name": "mime-support",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.66"
+                }
+            ],
+            "mlocate": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "mlocate",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.1.18-1"
+                }
+            ],
+            "mount": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "mount",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5+b1"
+                }
+            ],
+            "nano": [
+                {
+                    "arch": "amd64",
+                    "category": "editors",
+                    "name": "nano",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "7.2-1"
+                }
+            ],
+            "ncurses-base": [
+                {
+                    "arch": "all",
+                    "category": "misc",
+                    "name": "ncurses-base",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.4-4"
+                }
+            ],
+            "ncurses-bin": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "ncurses-bin",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.4-4"
+                }
+            ],
+            "ncurses-term": [
+                {
+                    "arch": "all",
+                    "category": "misc",
+                    "name": "ncurses-term",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.4-4"
+                }
+            ],
+            "net-tools": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "net-tools",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.10-0.1"
+                }
+            ],
+            "netbase": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "netbase",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.4"
+                }
+            ],
+            "netcat-traditional": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "netcat-traditional",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.10-47"
+                }
+            ],
+            "nftables": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "nftables",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.0.6-2+deb12u2"
+                }
+            ],
+            "openssh-client": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "openssh-client",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:9.2p1-2+deb12u1"
+                }
+            ],
+            "openssh-server": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "openssh-server",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:9.2p1-2+deb12u1"
+                }
+            ],
+            "openssh-sftp-server": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "openssh-sftp-server",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:9.2p1-2+deb12u1"
+                }
+            ],
+            "openssl": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "openssl",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.0.11-1~deb12u2"
+                }
+            ],
+            "os-prober": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "os-prober",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.81"
+                }
+            ],
+            "passwd": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "passwd",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:4.13+dfsg1-1+b1"
+                }
+            ],
+            "patch": [
+                {
+                    "arch": "amd64",
+                    "category": "vcs",
+                    "name": "patch",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.7.6-7"
+                }
+            ],
+            "pci.ids": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "pci.ids",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.0~2023.04.11-1"
+                }
+            ],
+            "pciutils": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "pciutils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:3.9.0-4"
+                }
+            ],
+            "perl": [
+                {
+                    "arch": "amd64",
+                    "category": "perl",
+                    "name": "perl",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "5.36.0-7"
+                }
+            ],
+            "perl-base": [
+                {
+                    "arch": "amd64",
+                    "category": "perl",
+                    "name": "perl-base",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "5.36.0-7"
+                }
+            ],
+            "perl-modules-5.36": [
+                {
+                    "arch": "all",
+                    "category": "libs",
+                    "name": "perl-modules-5.36",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "5.36.0-7"
+                }
+            ],
+            "php": [
+                {
+                    "arch": "all",
+                    "category": "php",
+                    "name": "php",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:8.2+93"
+                }
+            ],
+            "php-cgi": [
+                {
+                    "arch": "all",
+                    "category": "php",
+                    "name": "php-cgi",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:8.2+93"
+                }
+            ],
+            "php-cli": [
+                {
+                    "arch": "all",
+                    "category": "php",
+                    "name": "php-cli",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:8.2+93"
+                }
+            ],
+            "php-common": [
+                {
+                    "arch": "all",
+                    "category": "php",
+                    "name": "php-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:93"
+                }
+            ],
+            "php-gd": [
+                {
+                    "arch": "all",
+                    "category": "php",
+                    "name": "php-gd",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:8.2+93"
+                }
+            ],
+            "php-pear": [
+                {
+                    "arch": "all",
+                    "category": "php",
+                    "name": "php-pear",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:1.10.13+submodules+notgz+2022032202-2"
+                }
+            ],
+            "php-sqlite3": [
+                {
+                    "arch": "all",
+                    "category": "php",
+                    "name": "php-sqlite3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:8.2+93"
+                }
+            ],
+            "php-xml": [
+                {
+                    "arch": "all",
+                    "category": "php",
+                    "name": "php-xml",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:8.2+93"
+                }
+            ],
+            "php8.2": [
+                {
+                    "arch": "all",
+                    "category": "php",
+                    "name": "php8.2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2.7-1~deb12u1"
+                }
+            ],
+            "php8.2-cgi": [
+                {
+                    "arch": "amd64",
+                    "category": "php",
+                    "name": "php8.2-cgi",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2.7-1~deb12u1"
+                }
+            ],
+            "php8.2-cli": [
+                {
+                    "arch": "amd64",
+                    "category": "php",
+                    "name": "php8.2-cli",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2.7-1~deb12u1"
+                }
+            ],
+            "php8.2-common": [
+                {
+                    "arch": "amd64",
+                    "category": "php",
+                    "name": "php8.2-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2.7-1~deb12u1"
+                }
+            ],
+            "php8.2-gd": [
+                {
+                    "arch": "amd64",
+                    "category": "php",
+                    "name": "php8.2-gd",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2.7-1~deb12u1"
+                }
+            ],
+            "php8.2-opcache": [
+                {
+                    "arch": "amd64",
+                    "category": "php",
+                    "name": "php8.2-opcache",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2.7-1~deb12u1"
+                }
+            ],
+            "php8.2-readline": [
+                {
+                    "arch": "amd64",
+                    "category": "php",
+                    "name": "php8.2-readline",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2.7-1~deb12u1"
+                }
+            ],
+            "php8.2-sqlite3": [
+                {
+                    "arch": "amd64",
+                    "category": "php",
+                    "name": "php8.2-sqlite3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2.7-1~deb12u1"
+                }
+            ],
+            "php8.2-xml": [
+                {
+                    "arch": "amd64",
+                    "category": "php",
+                    "name": "php8.2-xml",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2.7-1~deb12u1"
+                }
+            ],
+            "pinentry-curses": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "pinentry-curses",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.2.1-1"
+                }
+            ],
+            "plocate": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "plocate",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.1.18-1"
+                }
+            ],
+            "poppler-data": [
+                {
+                    "arch": "all",
+                    "category": "misc",
+                    "name": "poppler-data",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.4.12-1"
+                }
+            ],
+            "poppler-utils": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "poppler-utils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "22.12.0-2+b1"
+                }
+            ],
+            "postfix": [
+                {
+                    "arch": "amd64",
+                    "category": "mail",
+                    "name": "postfix",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.7.6-0+deb12u2"
+                }
+            ],
+            "postfix-cdb": [
+                {
+                    "arch": "amd64",
+                    "category": "mail",
+                    "name": "postfix-cdb",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.7.6-0+deb12u2"
+                }
+            ],
+            "procps": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "procps",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:4.0.2-3"
+                }
+            ],
+            "psmisc": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "psmisc",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "23.6-1"
+                }
+            ],
+            "publicsuffix": [
+                {
+                    "arch": "all",
+                    "category": "net",
+                    "name": "publicsuffix",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "20230209.2326-1"
+                }
+            ],
+            "python-apt-common": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python-apt-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.6.0"
+                }
+            ],
+            "python3": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "python3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.11.2-1+b1"
+                }
+            ],
+            "python3-apt": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "python3-apt",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.6.0"
+                }
+            ],
+            "python3-certifi": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-certifi",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2022.9.24-1"
+                }
+            ],
+            "python3-chardet": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-chardet",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "5.1.0+dfsg-2"
+                }
+            ],
+            "python3-charset-normalizer": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-charset-normalizer",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.0.1-2"
+                }
+            ],
+            "python3-debconf": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-debconf",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.5.82"
+                }
+            ],
+            "python3-debian": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-debian",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.1.49"
+                }
+            ],
+            "python3-debianbts": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-debianbts",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.0.1"
+                }
+            ],
+            "python3-gpg": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "python3-gpg",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.18.0-3+b1"
+                }
+            ],
+            "python3-httplib2": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-httplib2",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.20.4-3"
+                }
+            ],
+            "python3-idna": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-idna",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.3-1"
+                }
+            ],
+            "python3-ldb": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "python3-ldb",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:2.6.2+samba4.17.12+dfsg-0+deb12u1"
+                }
+            ],
+            "python3-minimal": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "python3-minimal",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.11.2-1+b1"
+                }
+            ],
+            "python3-pkg-resources": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-pkg-resources",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "66.1.1-1"
+                }
+            ],
+            "python3-pycurl": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "python3-pycurl",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "7.45.2-3"
+                }
+            ],
+            "python3-pyparsing": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-pyparsing",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.0.9-1"
+                }
+            ],
+            "python3-pysimplesoap": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-pysimplesoap",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.16.2-5"
+                }
+            ],
+            "python3-reportbug": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-reportbug",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "12.0.0"
+                }
+            ],
+            "python3-requests": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-requests",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.28.1+dfsg-1"
+                }
+            ],
+            "python3-samba": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "python3-samba",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:4.17.12+dfsg-0+deb12u1"
+                }
+            ],
+            "python3-six": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-six",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.16.0-4"
+                }
+            ],
+            "python3-talloc": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "python3-talloc",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.4.0-f2"
+                }
+            ],
+            "python3-tdb": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "python3-tdb",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.4.8-2"
+                }
+            ],
+            "python3-urllib3": [
+                {
+                    "arch": "all",
+                    "category": "python",
+                    "name": "python3-urllib3",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.26.12-1"
+                }
+            ],
+            "python3.11": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "python3.11",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.11.2-6"
+                }
+            ],
+            "python3.11-minimal": [
+                {
+                    "arch": "amd64",
+                    "category": "python",
+                    "name": "python3.11-minimal",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.11.2-6"
+                }
+            ],
+            "qemu-guest-agent": [
+                {
+                    "arch": "amd64",
+                    "category": "otherosfs",
+                    "name": "qemu-guest-agent",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "1:7.2+dfsg-7+deb12u2"
+                }
+            ],
+            "readline-common": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "readline-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2-1.3"
+                }
+            ],
+            "reportbug": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "reportbug",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "12.0.0"
+                }
+            ],
+            "resolvconf": [
+                {
+                    "arch": "all",
+                    "category": "net",
+                    "name": "resolvconf",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.91+nmu1"
+                }
+            ],
+            "rpcbind": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "rpcbind",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.2.6-6+b1"
+                }
+            ],
+            "rpm": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "rpm",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.18.0+dfsg-1+b1"
+                }
+            ],
+            "rpm-common": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "rpm-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.18.0+dfsg-1+b1"
+                }
+            ],
+            "rpm2cpio": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "rpm2cpio",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.18.0+dfsg-1+b1"
+                }
+            ],
+            "rsync": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "rsync",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.2.7-1"
+                }
+            ],
+            "rsyslog": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "rsyslog",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "8.2302.0-1"
+                }
+            ],
+            "runit-helper": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "runit-helper",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.15.2"
+                }
+            ],
+            "samba-common": [
+                {
+                    "arch": "all",
+                    "category": "net",
+                    "name": "samba-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:4.17.12+dfsg-0+deb12u1"
+                }
+            ],
+            "samba-common-bin": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "samba-common-bin",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:4.17.12+dfsg-0+deb12u1"
+                }
+            ],
+            "samba-dsdb-modules": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "samba-dsdb-modules",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:4.17.12+dfsg-0+deb12u1"
+                }
+            ],
+            "samba-libs": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "samba-libs",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:4.17.12+dfsg-0+deb12u1"
+                }
+            ],
+            "sed": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "sed",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.9-1"
+                }
+            ],
+            "sensible-utils": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "sensible-utils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.0.17+nmu1"
+                }
+            ],
+            "shared-mime-info": [
+                {
+                    "arch": "amd64",
+                    "category": "misc",
+                    "name": "shared-mime-info",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.2-1"
+                }
+            ],
+            "smbclient": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "smbclient",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:4.17.12+dfsg-0+deb12u1"
+                }
+            ],
+            "ssl-cert": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "ssl-cert",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.1.2"
+                }
+            ],
+            "sudo": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "sudo",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.9.13p3-1+deb12u1"
+                }
+            ],
+            "sysstat": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "sysstat",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "12.6.1-1"
+                }
+            ],
+            "systemd": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "systemd",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "252.17-1~deb12u1"
+                }
+            ],
+            "systemd-sysv": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "systemd-sysv",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "252.17-1~deb12u1"
+                }
+            ],
+            "systemd-timesyncd": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "systemd-timesyncd",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "252.17-1~deb12u1"
+                }
+            ],
+            "sysvinit-utils": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "sysvinit-utils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.06-4"
+                }
+            ],
+            "tar": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "tar",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.34+dfsg-1.2"
+                }
+            ],
+            "task-english": [
+                {
+                    "arch": "all",
+                    "category": "tasks",
+                    "name": "task-english",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.73"
+                }
+            ],
+            "tasksel": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "tasksel",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.73"
+                }
+            ],
+            "tasksel-data": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "tasksel-data",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.73"
+                }
+            ],
+            "time": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "time",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.9-0.2"
+                }
+            ],
+            "traceroute": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "traceroute",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:2.1.2-1"
+                }
+            ],
+            "tzdata": [
+                {
+                    "arch": "all",
+                    "category": "localization",
+                    "name": "tzdata",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "2023c-5"
+                }
+            ],
+            "ucf": [
+                {
+                    "arch": "all",
+                    "category": "utils",
+                    "name": "ucf",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "3.0043+nmu1"
+                }
+            ],
+            "udev": [
+                {
+                    "arch": "amd64",
+                    "category": "admin",
+                    "name": "udev",
+                    "origin": "",
+                    "source": "apt",
+                    "version": "252.17-1~deb12u1"
+                }
+            ],
+            "unzip": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "unzip",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "6.0-28"
+                }
+            ],
+            "update-inetd": [
+                {
+                    "arch": "all",
+                    "category": "admin",
+                    "name": "update-inetd",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "4.53"
+                }
+            ],
+            "usr-is-merged": [
+                {
+                    "arch": "all",
+                    "category": "oldlibs",
+                    "name": "usr-is-merged",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "35"
+                }
+            ],
+            "util-linux": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "util-linux",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5+b1"
+                }
+            ],
+            "util-linux-extra": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "util-linux-extra",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5+b1"
+                }
+            ],
+            "util-linux-locales": [
+                {
+                    "arch": "all",
+                    "category": "localization",
+                    "name": "util-linux-locales",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.38.1-5"
+                }
+            ],
+            "vim": [
+                {
+                    "arch": "amd64",
+                    "category": "editors",
+                    "name": "vim",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:9.0.1378-2"
+                }
+            ],
+            "vim-common": [
+                {
+                    "arch": "all",
+                    "category": "editors",
+                    "name": "vim-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:9.0.1378-2"
+                }
+            ],
+            "vim-runtime": [
+                {
+                    "arch": "all",
+                    "category": "editors",
+                    "name": "vim-runtime",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:9.0.1378-2"
+                }
+            ],
+            "vim-tiny": [
+                {
+                    "arch": "amd64",
+                    "category": "editors",
+                    "name": "vim-tiny",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2:9.0.1378-2"
+                }
+            ],
+            "wamerican": [
+                {
+                    "arch": "all",
+                    "category": "text",
+                    "name": "wamerican",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2020.12.07-2"
+                }
+            ],
+            "wget": [
+                {
+                    "arch": "amd64",
+                    "category": "web",
+                    "name": "wget",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.21.3-1+b2"
+                }
+            ],
+            "whiptail": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "whiptail",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.52.23-1+b1"
+                }
+            ],
+            "x11-common": [
+                {
+                    "arch": "all",
+                    "category": "x11",
+                    "name": "x11-common",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:7.7+23"
+                }
+            ],
+            "xauth": [
+                {
+                    "arch": "amd64",
+                    "category": "x11",
+                    "name": "xauth",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:1.1.2-1"
+                }
+            ],
+            "xdg-user-dirs": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "xdg-user-dirs",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "0.18-1"
+                }
+            ],
+            "xinetd": [
+                {
+                    "arch": "amd64",
+                    "category": "net",
+                    "name": "xinetd",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:2.3.15.3-1+b1"
+                }
+            ],
+            "xkb-data": [
+                {
+                    "arch": "all",
+                    "category": "x11",
+                    "name": "xkb-data",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "2.35.1-1"
+                }
+            ],
+            "xz-utils": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "xz-utils",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "5.4.1-0.2"
+                }
+            ],
+            "zlib1g": [
+                {
+                    "arch": "amd64",
+                    "category": "libs",
+                    "name": "zlib1g",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1:1.2.13.dfsg-1"
+                }
+            ],
+            "zstd": [
+                {
+                    "arch": "amd64",
+                    "category": "utils",
+                    "name": "zstd",
+                    "origin": "Debian",
+                    "source": "apt",
+                    "version": "1.5.4+dfsg2-5"
+                }
+            ]
+        }
+    },
+    "changed": false
+}

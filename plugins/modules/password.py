@@ -90,7 +90,7 @@ EXAMPLES = r"""
     password: "topsecret"
     owner: "admin"
     shared: [
-        "all"
+      "all"
     ]
     state: "present"
   no_log: true
@@ -124,6 +124,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
 )
 
 # We count 404 not as failed, because we want to know if the password exists or not.
@@ -218,27 +221,19 @@ HTTP_CODES_UPDATE = {
 
 class PasswordsCreateAPI(CheckmkAPI):
     def post(self):
-        if self.params.get("customer", None) is not None:
-            data = {
-                "ident": self.params.get("name", ""),
-                "title": self.params.get("title", ""),
-                "customer": self.params.get("customer", ""),
-                "comment": self.params.get("comment", ""),
-                "documentation_url": self.params.get("documentation_url", ""),
-                "password": self.params.get("password", ""),
-                "owner": self.params.get("owner", ""),
-                "shared": self.params.get("shared", ""),
-            }
-        else:
-            data = {
-                "ident": self.params.get("name", ""),
-                "title": self.params.get("title", ""),
-                "comment": self.params.get("comment", ""),
-                "documentation_url": self.params.get("documentation_url", ""),
-                "password": self.params.get("password", ""),
-                "owner": self.params.get("owner", ""),
-                "shared": self.params.get("shared", ""),
-            }
+        data = {
+            "ident": self.params.get("name", ""),
+            "title": self.params.get("title", ""),
+            "customer": self.params.get("customer", ""),
+            "comment": self.params.get("comment", ""),
+            "documentation_url": self.params.get("documentation_url", ""),
+            "password": self.params.get("password", ""),
+            "owner": self.params.get("owner", ""),
+            "shared": self.params.get("shared", ""),
+        }
+
+        # Remove all keys without value, as otherwise they would be None.
+        data = {key: val for key, val in data.items() if val}
 
         return self._fetch(
             code_mapping=HTTP_CODES_CREATE,
@@ -252,6 +247,7 @@ class PasswordsUpdateAPI(CheckmkAPI):
     def put(self):
         data = {
             "title": self.params.get("title", ""),
+            "customer": self.params.get("customer", ""),
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
@@ -339,6 +335,22 @@ def run_module():
 
         elif result.http_code == 404:
             passwordcreate = PasswordsCreateAPI(module)
+
+            checkmkversion = CheckmkVersion(str(passwordcreate.getversion()))
+            if (
+                checkmkversion.edition == "cme"
+                and module.params.get("customer") is None
+            ):
+                result = RESULT(
+                    http_code=0,
+                    msg="Missing required parameter 'customer' for CME",
+                    content="",
+                    etag="",
+                    failed=True,
+                    changed=False,
+                )
+                module.fail_json(**result_as_dict(result))
+
             result = passwordcreate.post()
 
             time.sleep(3)

@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.5.0
+  :antsibull-docs: 2.6.1
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.folder lookup -- Get folder attributes
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.1.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -361,10 +361,10 @@ Examples
         attributes: "{{
                         lookup('checkmk.general.folder',
                             '~tests',
-                            server_url=server_url,
-                            site=site,
-                            automation_user=automation_user,
-                            automation_secret=automation_secret,
+                            server_url=my_server_url,
+                            site=my_site,
+                            automation_user=my_user,
+                            automation_secret=my_secret,
                             validate_certs=False
                             )
                      }}"

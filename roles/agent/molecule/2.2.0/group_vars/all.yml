@@ -1,6 +1,6 @@
 ---
 # General
-checkmk_var_version: "2.2.0p14"
+checkmk_var_version: "2.2.0p17"
 checkmk_var_edition: "cre"
 checkmk_var_checkmk_site: "my_site"
 checkmk_var_automation_user: "cmkadmin"

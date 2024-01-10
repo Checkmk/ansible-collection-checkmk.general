@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.5.0
+  :antsibull-docs: 2.6.1
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.folder module -- Manage folders in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.1.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -494,10 +494,10 @@ Examples
     # Create a single folder.
     - name: "Create a single folder."
       checkmk.general.folder:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         path: "/my_folder"
         name: "My Folder"
         state: "present"
@@ -505,10 +505,10 @@ Examples
     # Create a folder who's hosts should be hosted on a remote site.
     - name: "Create a single folder."
       checkmk.general.folder:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         path: "/my_remote_folder"
         name: "My Remote Folder"
         attributes:
@@ -518,10 +518,10 @@ Examples
     # Create a folder with Criticality set to a Test system and Networking Segment WAN (high latency)"
     - name: "Create a folder with tag_criticality test and tag_networking wan"
       checkmk.general.folder:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         path: "/my_remote_folder"
         attributes:
           tag_criticality: "test"
@@ -531,10 +531,10 @@ Examples
     # Update only specified attributes
     - name: "Update only specified attributes"
       checkmk.general.folder:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         path: "/my_folder"
         update_attributes:
           tag_networking: "dmz"
@@ -543,10 +543,10 @@ Examples
     # Remove specified attributes
     - name: "Remove specified attributes"
       checkmk.general.folder:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         path: "/my_folder"
         remove_attributes:
           - tag_networking

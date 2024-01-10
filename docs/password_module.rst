@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.5.0
+  :antsibull-docs: 2.6.1
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.password module -- Manage passwords in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 3.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.1.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -593,10 +593,10 @@ Examples
     # If passwords are configured, no_log should be set to true.
     - name: "Create a new password."
       checkmk.general.password:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "mypassword"
         title: "My Password"
         customer: "provider"
@@ -605,16 +605,16 @@ Examples
         password: "topsecret"
         owner: "admin"
         shared: [
-            "all"
+          "all"
         ]
         state: "present"
       no_log: true
     - name: "Delete a password."
       checkmk.general.password:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "mypassword"
         state: "absent"
 

@@ -107,10 +107,10 @@ EXAMPLES = r"""
     email: "keith.richards@rollingstones.com"
     password: "Open-G"
     contactgroups:
-        - "rolling_stones"
-        - "glimmer_twins"
-        - "x-pensive_winos"
-        - "potc_cast"
+      - "rolling_stones"
+      - "glimmer_twins"
+      - "x-pensive_winos"
+      - "potc_cast"
     state: "present"
 
 # Create an automation user.
@@ -126,7 +126,7 @@ EXAMPLES = r"""
     auth_type: "automation"
     password: "ZGSDHUVDSKJHSDF"
     roles:
-        - "registration"
+      - "registration"
     state: "present"
 
 # Create a detailed user.
@@ -141,7 +141,7 @@ EXAMPLES = r"""
     customer: "provider"
     auth_type: "password"
     password: "uschi"
-    enforce_password_change: True
+    enforce_password_change: true
     email: "checker@grevenbroich.de"
     fallback_contact: True
     pager: 089-123456789

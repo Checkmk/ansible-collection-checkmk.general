@@ -40,7 +40,7 @@
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
 
-## TODO: @lgetwan: Please take a look at these tasks and fix them. Bonus: Add the new lookup modules. :)
+    ## TODO: @lgetwan: Please take a look at these tasks and fix them. Bonus: Add the new lookup modules. :)
 
     # - name: "Get all hosts of the folder /test recursively"
     #   ansible.builtin.debug:
