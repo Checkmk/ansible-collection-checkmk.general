@@ -94,6 +94,11 @@ checkmk_var_users_create:
     roles:
       - user
     disable_notifications: false
+    interface_theme: "dark"
+    sidebar_position: "right"
+    navigation_bar_icons: "show"
+    mega_menu_icons: "entry"
+    show_mode: "default_show_more"
   - name: auto1
     fullname: Automation User 1
     password: "0123456789"
@@ -129,6 +134,11 @@ checkmk_var_users_edit:
       - admin
     fallback_contact: true
     idle_timeout_option: global
+    interface_theme: "dark"
+    sidebar_position: "right"
+    navigation_bar_icons: "show"
+    mega_menu_icons: "entry"
+    show_mode: "default_show_more"
   - name: user1
     fullname: User One
     password: "345egtd"
@@ -179,6 +189,11 @@ checkmk_var_users_edit:
     roles:
       - user
     disable_notifications_timerange: { "end_time": "2024-04-01T08:00:00+00:00", "start_time": "2024-04-01T20:00:00+00:00" }
+    interface_theme: "light"
+    sidebar_position: "left"
+    navigation_bar_icons: "hide"
+    mega_menu_icons: "topic"
+    show_mode: "enforce_show_more"
   - name: auto1
     fullname: Automation User 1
     password: "0123456789"

@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2023, Lars Getwan <lars.getwan@checkmk.com>
+# Copyright: (c) 2023, Lars Getwan <lars.getwan@checkmk.com> &
+#                      Marcel Arentz <gdspd_you@open-one.de> &
+#                      Max Sickora <max.sickora@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -88,9 +90,31 @@ options:
         type: str
         default: present
         choices: [present, absent, reset_password]
+    interface_theme:
+        description: The theme of the interface
+        type: str
+        choices: [default, dark, light]
+    sidebar_position:
+        description: The position of the sidebar
+        type: str
+        choices: [left, right]
+    navigation_bar_icons:
+        description: This option decides if icons in the navigation bar should show/hide the respective titles
+        type: str
+        choices: [hide, show]
+    mega_menu_icons:
+        description: This option decides if colored icon should be shown foe every entry in the mega menus or alternatively only for the headlines (the 'topics')
+        type: str
+        choices: [topic, entry]
+    show_mode:
+        description: This option decides what show mode should be used for unvisited menus. Alternatively, this option can also be used to enforce show more removing the three dots for all menus.
+        type: str
+        choices: [default, default_show_less, default_show_more, enforce_show_more]
 
 author:
     - Lars Getwan (@lgetwan)
+    - Marcel Arentz (@godspeed-you)
+    - Max Sickora (@max-checkmk)
 """
 
 EXAMPLES = r"""
@@ -111,7 +135,6 @@ EXAMPLES = r"""
       - "glimmer_twins"
       - "x-pensive_winos"
       - "potc_cast"
-    state: "present"
 
 # Create an automation user.
 - name: "Create an automation user."
@@ -156,6 +179,11 @@ EXAMPLES = r"""
       - "user"
     authorized_sites:
       - "{{ my_site }}"
+    interface_theme: "dark"
+    sidebar_position: "right"
+    navigation_bar_icons: "show"
+    mega_menu_icons: "entry"
+    show_mode: "default_show_more"
     state: "present"
 """
 
@@ -187,7 +215,7 @@ USER = (
     "disable_login",
     "email",
     "fallback_contact",
-    "pager_address",
+    "pager",
     "idle_timeout_option",
     "idle_timeout_duration",
     "roles",
@@ -196,6 +224,11 @@ USER = (
     "disable_notifications",
     "disable_notifications_timerange",
     "language",
+    "interface_theme",
+    "sidebar_position",
+    "navigation_bar_icons",
+    "mega_menu_icons",
+    "show_mode",
 )
 
 
@@ -221,6 +254,7 @@ class UserAPI(CheckmkAPI):
         user = {}
 
         user["disable_notifications"] = {}
+        user["interface_options"] = {}
 
         # For some keys the API has required sub keys. We can use them as indicator,
         # that the key must be used
@@ -237,11 +271,14 @@ class UserAPI(CheckmkAPI):
                 "fullname",
                 "customer",
                 "disable_login",
-                "pager_address",
                 "roles",
                 "authorized_sites",
                 "contactgroups",
             ):
+                user[key] = value
+
+            if key in "pager":
+                key = "pager_address"
                 user[key] = value
 
             if key in "language":
@@ -268,6 +305,9 @@ class UserAPI(CheckmkAPI):
             if key == "disable_notifications_timerange":
                 user["disable_notifications"]["timerange"] = value
 
+            if key in ("interface_theme", "sidebar_position", "navigation_bar_icons", "mega_menu_icons", "show_mode"):
+                user["interface_options"][key] = value
+
         return user
 
     def _set_current(self, result):
@@ -277,6 +317,8 @@ class UserAPI(CheckmkAPI):
             if key in content:
                 if key != "disable_notifications":
                     self.current[key] = content[key]
+            if key in "pager":
+                self.current[key] = content["pager_address"]
             if key in ("email", "fallback_contact"):
                 self.current[key] = content["contact_options"][key]
             if key == "idle_timeout_option":
@@ -292,6 +334,9 @@ class UserAPI(CheckmkAPI):
             if key == "disable_notifications_timerange":
                 if "timerange" in content["disable_notifications"]:
                     self.current[key] = content["disable_notifications"]["timerange"]
+
+            if key in ("interface_theme", "sidebar_position", "navigation_bar_icons", "mega_menu_icons", "show_mode"):
+                self.current[key] = content["interface_options"][key]
 
     def _build_default_endpoint(self):
         return "%s/%s" % (UserEndpoints.default, self.params.get("name"))
@@ -393,6 +438,14 @@ def run_module():
         disable_notifications=dict(type="bool"),
         disable_notifications_timerange=dict(type="dict"),
         language=dict(type="str", choices=["default", "en", "de", "ro"]),
+        interface_theme=dict(type="str", choices=["default", "dark", "light"]),
+        sidebar_position=dict(type="str", choices=["left", "right"]),
+        navigation_bar_icons=dict(type="str", choices=["hide", "show"]),
+        mega_menu_icons=dict(type="str", choices=["topic", "entry"]),
+        show_mode=dict(
+            type="str",
+            choices=["default", "default_show_less", "default_show_more", "enforce_show_more"],
+        ),
         state=dict(
             type="str",
             default="present",
