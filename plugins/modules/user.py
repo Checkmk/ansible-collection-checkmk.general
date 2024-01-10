@@ -103,11 +103,14 @@ options:
         type: str
         choices: [hide, show]
     mega_menu_icons:
-        description: This option decides if colored icon should be shown foe every entry in the mega menus or alternatively only for the headlines (the 'topics')
+        description:
+          - This option decides if colored icon should be shown foe every entry in the mega menus or alternatively only for the headlines (the 'topics')
         type: str
         choices: [topic, entry]
     show_mode:
-        description: This option decides what show mode should be used for unvisited menus. Alternatively, this option can also be used to enforce show more removing the three dots for all menus.
+        description:
+          - This option decides what show mode should be used for unvisited menus.
+            Alternatively, this option can also be used to enforce show more removing the three dots for all menus.
         type: str
         choices: [default, default_show_less, default_show_more, enforce_show_more]
 
@@ -305,7 +308,13 @@ class UserAPI(CheckmkAPI):
             if key == "disable_notifications_timerange":
                 user["disable_notifications"]["timerange"] = value
 
-            if key in ("interface_theme", "sidebar_position", "navigation_bar_icons", "mega_menu_icons", "show_mode"):
+            if key in (
+                "interface_theme",
+                "sidebar_position",
+                "navigation_bar_icons",
+                "mega_menu_icons",
+                "show_mode",
+            ):
                 user["interface_options"][key] = value
 
         return user
@@ -335,7 +344,13 @@ class UserAPI(CheckmkAPI):
                 if "timerange" in content["disable_notifications"]:
                     self.current[key] = content["disable_notifications"]["timerange"]
 
-            if key in ("interface_theme", "sidebar_position", "navigation_bar_icons", "mega_menu_icons", "show_mode"):
+            if key in (
+                "interface_theme",
+                "sidebar_position",
+                "navigation_bar_icons",
+                "mega_menu_icons",
+                "show_mode",
+            ):
                 self.current[key] = content["interface_options"][key]
 
     def _build_default_endpoint(self):
@@ -444,7 +459,12 @@ def run_module():
         mega_menu_icons=dict(type="str", choices=["topic", "entry"]),
         show_mode=dict(
             type="str",
-            choices=["default", "default_show_less", "default_show_more", "enforce_show_more"],
+            choices=[
+                "default",
+                "default_show_less",
+                "default_show_more",
+                "enforce_show_more",
+            ],
         ),
         state=dict(
             type="str",
