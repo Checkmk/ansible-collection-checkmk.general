@@ -12,7 +12,14 @@
     tags: "{{ item.tags }}"
     state: "present"
   delegate_to: localhost
+  register: create_result
   loop: "{{ checkmk_taggroups_create }}"
+
+- name: "{{ outer_item.version }} - Fail if not changed." # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Tag groups not created! Maybe already existing?"
+  when: create_result is not changed
+  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
   activation:
@@ -23,7 +30,42 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update tag_group."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create tag_group again."
+  tag_group:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    title: "{{ item.title }}"
+    topic: "{{ item.topic }}"
+    help: "{{ item.help }}"
+    tags: "{{ item.tags }}"
+    state: "present"
+  delegate_to: localhost
+  register: createagain_result
+  loop: "{{ checkmk_taggroups_create }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Tried to create the same tag group twice!"
+  when: "createagain_result.changed"
+  delegate_to: localhost
+  run_once: true # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create Host"
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "repairtest"
+    attributes:
+      tag_Datacenter: "Datacenter 1"
+      tag_Supporter: "Nobody"
+    state: "present"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update tag_group without repair. (Should fail)"
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -37,26 +79,24 @@
     state: "present"
   delegate_to: localhost
   loop: "{{ checkmk_taggroups_update }}"
+  register: update_taggroup_status
+  failed_when: "'You must authorize Checkmk to update the relevant instances using the repair parameter' not in update_taggroup_status.msg"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
-  activation:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete tag_group."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update tag_group."
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    state: "absent"
+    title: "{{ item.title }}"
+    topic: "{{ item.topic }}"
+    help: "{{ item.help }}"
+    tags: "{{ item.tags }}"
+    repair: "{{ item.repair | default(omit) }}"
+    state: "present"
   delegate_to: localhost
-  loop: "{{ checkmk_taggroups_delete }}"
+  loop: "{{ checkmk_taggroups_update }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
   activation:
@@ -66,3 +106,52 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete tag_groups."
+  tag_group:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    repair: "{{ item.repair | default(omit) }}"
+    state: "absent"
+  delegate_to: localhost
+  register: delete_result
+  loop: "{{ checkmk_taggroups_delete }}"
+
+- name: "{{ outer_item.version }} - Fail if not changed." # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Tag groups not deleted"
+  when: delete_result is not changed
+  delegate_to: localhost
+  run_once: true # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete tag_groups again."
+  tag_group:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    repair: "{{ item.repair | default(omit) }}"
+    state: "absent"
+  delegate_to: localhost
+  register: deleteagain_result
+  loop: "{{ checkmk_taggroups_delete }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Rule changed!"
+  when: "deleteagain_result.changed"
+  delegate_to: localhost
+  run_once: true # noqa run-once[task]

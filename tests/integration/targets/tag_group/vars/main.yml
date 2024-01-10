@@ -3,6 +3,9 @@ test_sites:
   - version: "2.2.0p17"
     edition: "cre"
     site: "stable_raw"
+  - version: "2.2.0p17"
+    edition: "cee"
+    site: "stable_ent"
   - version: "2.1.0p37"
     edition: "cre"
     site: "old_raw"
@@ -35,7 +38,7 @@ checkmk_taggroups_create:
       - ident: No_Datacenter
         title: No Datacenter
       - ident: Datacenter 1
-        title: Datacenter 2
+        title: Datacenter 1
       - ident: Datacenter 2
         title: Datacenter 2
       - ident: Datacenter US
@@ -61,11 +64,12 @@ checkmk_taggroups_update:
     title: Datacenter
     topic: Tags
     help: "something even more useful"
+    repair: True
     tags:
       - ident: No_Datacenter
         title: No Datacenter
-      - ident: Datacenter 1
-        title: Datacenter 2
+      - ident: Datacenter 1000
+        title: Datacenter 1000
       - ident: Datacenter 2
         title: Datacenter 2
       - ident: Datacenter 3
@@ -76,6 +80,22 @@ checkmk_taggroups_update:
         title: Datacenter ASIA
       - ident: Datacenter AFRICA
         title: Datacenter AFRICA
+  - name: Supporter
+    title: Supporter
+    topic: Tags
+    help: "Who to blame"
+    repair: True
+    tags:
+      - ident: Somebody
+        title: Somebody
+      - ident: RoyTrenneman
+        title: Roy Trenneman
+      - ident: MauriceMoss
+        title: Maurice Moss
+      - ident: JenBarber
+        title: Jen Barber
+
 
 checkmk_taggroups_delete:
   - name: Supporter
+    repair: True

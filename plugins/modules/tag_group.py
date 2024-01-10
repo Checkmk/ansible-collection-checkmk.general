@@ -62,6 +62,7 @@ options:
 
 author:
     - Max Sickora (@Max-checkmk)
+    - Stefan Mühling (@muehlings)
 """
 
 EXAMPLES = r"""
@@ -220,13 +221,12 @@ class TaggroupUpdateAPI(CheckmkAPI):
 
 class TaggroupDeleteAPI(CheckmkAPI):
     def delete(self):
-        data = {
-            "repair": self.params.get("repair"),
-        }
+        data = {}
 
         return self._fetch(
             code_mapping=HTTP_CODES_DELETE,
-            endpoint="/objects/host_tag_group/%s" % self.params.get("name"),
+            endpoint="/objects/host_tag_group/%s?repair=%s"
+            % (self.params.get("name"), self.params.get("repair")),
             data=data,
             method="DELETE",
         )
@@ -300,10 +300,10 @@ def run_module():
         changed=False,
     )
 
-    if module.params.get("state") == "present":
-        taggroupget = TaggroupGetAPI(module)
-        current = taggroupget.get()
+    taggroupget = TaggroupGetAPI(module)
+    current = taggroupget.get()
 
+    if module.params.get("state") == "present":
         if current.http_code == 200:
             # If tag group has changed then update it.
             if changes_detected(module, json.loads(current.content.decode("utf-8"))):
@@ -322,10 +322,21 @@ def run_module():
             time.sleep(3)
 
     if module.params.get("state") == "absent":
-        taggroupdelete = TaggroupDeleteAPI(module)
-        result = taggroupdelete.delete()
+        # Only delete if the Taggroup exists
+        if current.http_code == 200:
+            taggroupdelete = TaggroupDeleteAPI(module)
+            result = taggroupdelete.delete()
 
-        time.sleep(3)
+            time.sleep(3)
+        elif current.http_code == 404:
+            result = RESULT(
+                http_code=0,
+                msg="Taggroup doesn't exist.",
+                content="",
+                etag="",
+                failed=False,
+                changed=False,
+            )
 
     module.exit_json(**result_as_dict(result))
 
