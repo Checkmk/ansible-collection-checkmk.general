@@ -1,9 +1,9 @@
 ---
 test_sites:
-  - version: "2.2.0p17"
+  - version: "2.2.0p18"
     edition: "cee"
     site: "stable_ent"
-  - version: "2.1.0p37"
+  - version: "2.1.0p38"
     edition: "cee"
     site: "old_ent"
 
