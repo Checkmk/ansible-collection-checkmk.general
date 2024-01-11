@@ -20,7 +20,7 @@ short_description: Manage users in Checkmk.
 version_added: "0.18.0"
 
 description:
-- Create and delete users within Checkmk.
+- Manage users in Checkmk.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -30,81 +30,88 @@ options:
         required: true
         type: str
     fullname:
-        description: The alias or full name of the user.
+        description: A alias or the full name of the user.
         type: str
     customer:
-        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
-        required: false
+        description:
+            - For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
         type: str
-    password:
-        description: The password or secret for login.
-        type: str
-    enforce_password_change:
-        description: If set to true, the user will be forced to change his/her password at the next login.
-        type: bool
+    authorized_sites:
+        description: The names of the sites the user is authorized to access.
+        type: raw
     auth_type:
-        description: The authentication type.
+        description:
+            - The authentication type.
+              Setting this to C(password) will create a normal user, C(automation) will create an automation user.
         type: str
         choices: [password, automation]
+    password:
+        description:
+            - The password or secret for login. Depending on the C(auth_type), this is interpreted as a password or secret.
+        type: str
+    enforce_password_change:
+        description: If set to C(true), the user will be forced to change their password on the next login.
+        type: bool
     disable_login:
-        description: The user can be blocked from login but will remain part of the site. The disabling does not affect notification and alerts.
+        description:
+            - If set to C(true), the user cannot log in anymore, but will remain part of the site.
+              Disabling a user does not affect notifications.
         type: bool
     email:
-        description: The mail address of the user. Required if the user is a monitoring contact and receives notifications via mail.
+        description:
+            - The mail address of the user. Required if the user is a monitoring contact and should receive notifications via mail.
         type: str
-    fallback_contact:
-        description: In case none of your notification rules handles a certain event a notification will be sent to the specified email.
-        type: bool
     pager:
-        description: The pager address.
+        description: A (mobile) phone number, used to receive e.g., SMS.
         type: str
         aliases: ["pager_address"]
-    idle_timeout_duration:
-        description: The duration in seconds of the individual idle timeout if individual is selected as idle timeout option.
-        type: int
+    fallback_contact:
+        description:
+            - This user will receive fallback notifications.
+              This means, if no notification rules match a certain event, they are sent to the fallback contacts.
+        type: bool
     idle_timeout_option:
-        description: Specify if the idle timeout should use the global configuration, be disabled or use an individual duration
+        description:
+            - Specify, whether the idle timeout should use the global configuration, use an individual duration or be disabled entirely.
         type: str
         choices: [global, disable, individual]
+    idle_timeout_duration:
+        description: The duration in seconds, if C(idle_timeout_option) is set to C(individual).
+        type: int
     roles:
-        description: The list of assigned roles to the user.
-        type: raw
-    authorized_sites:
-        description: The names of the sites the user is authorized to handle.
+        description: A list of roles assigned to the user.
         type: raw
     contactgroups:
-        description: Assign the user to one or multiple contact groups. If no contact group is specified then no monitoring contact will be created.
+        description: A list of contact groups assigned to the user.
         type: raw
     disable_notifications:
-        description: Option if all notifications should be temporarily disabled.
+        description: Temporarily disable B(all) notifications for this user.
         type: bool
     disable_notifications_timerange:
-        description: A custom timerange during which notifications are disabled.
+        description: The duration, for how log notifications should be disabled, if C(disable_notifications) is set to C(true).
         type: dict
     language:
-        description: Configure the language to be used by the user in the user interface. Omitting this will configure the default language.
+        description:
+            - Configure the language to be used by the user in the user interface.
+              Omitting this will configure the default language.
         type: str
-        choices: [default, en, de, ro]
-    state:
-        description: Desired state
-        type: str
-        default: present
-        choices: [present, absent, reset_password]
+        choices: [default, en, de]
     interface_theme:
-        description: The theme of the interface
+        description: The theme of the user interface.
         type: str
         choices: [default, dark, light]
     sidebar_position:
-        description: The position of the sidebar
+        description: The position of the sidebar.
         type: str
         choices: [left, right]
     navigation_bar_icons:
-        description: This option decides if icons in the navigation bar should show/hide the respective titles
+        description: This option decides if icons in the navigation bar should show/hide the respective titles.
         type: str
         choices: [hide, show]
     mega_menu_icons:
         description:
-          - This option decides if colored icon should be shown foe every entry in the mega menus or alternatively only for the headlines (the 'topics')
+          - This option decides if colored icons should be shown for every entry in the mega menus
+            or only for the headlines (the 'topics').
         type: str
         choices: [topic, entry]
     show_mode:
@@ -113,6 +120,11 @@ options:
             Alternatively, this option can also be used to enforce show more removing the three dots for all menus.
         type: str
         choices: [default, default_show_less, default_show_more, enforce_show_more]
+    state:
+        description: Desired state
+        type: str
+        default: present
+        choices: [present, absent, reset_password]
 
 author:
     - Lars Getwan (@lgetwan)
@@ -130,7 +142,6 @@ EXAMPLES = r"""
     automation_secret: "my_secret"
     name: "krichards"
     fullname: "Keith Richards"
-    customer: "provider"
     email: "keith.richards@rollingstones.com"
     password: "Open-G"
     contactgroups:
@@ -148,15 +159,32 @@ EXAMPLES = r"""
     automation_secret: "my_secret"
     name: "registration"
     fullname: "Registration User"
-    customer: "provider"
     auth_type: "automation"
     password: "ZGSDHUVDSKJHSDF"
     roles:
       - "registration"
     state: "present"
 
+# Create a user with the Checkmk Managed Edition (CME), using the `customer` parameter.
+- name: "Create a user."
+  checkmk.general.user:
+    server_url: "http://my_server/"
+    site: "local"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    name: "krichards"
+    fullname: "Keith Richards"
+    email: "keith.richards@rollingstones.com"
+    customer: "provider"
+    password: "Open-G"
+    contactgroups:
+      - "rolling_stones"
+      - "glimmer_twins"
+      - "x-pensive_winos"
+      - "potc_cast"
+
 # Create a detailed user.
-- name: "Create a detailed user."
+- name: "Create a more complex user."
   checkmk.general.user:
     server_url: "http://my_server/"
     site: "local"
