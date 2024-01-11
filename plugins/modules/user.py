@@ -480,7 +480,7 @@ def run_module():
         contactgroups=dict(type="raw"),
         disable_notifications=dict(type="bool"),
         disable_notifications_timerange=dict(type="dict"),
-        language=dict(type="str", choices=["default", "en", "de", "ro"]),
+        language=dict(type="str", choices=["default", "en", "de"]),
         interface_theme=dict(type="str", choices=["default", "dark", "light"]),
         sidebar_position=dict(type="str", choices=["left", "right"]),
         navigation_bar_icons=dict(type="str", choices=["hide", "show"]),
