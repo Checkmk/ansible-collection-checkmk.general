@@ -38,7 +38,7 @@ options:
         description:
             - Give permission to update or remove the tag on hosts using it automatically.
               B(Use with caution!)
-        default: "False"
+        default: False
         type: bool
     state:
         description: The desired state.
@@ -304,7 +304,7 @@ def run_module():
                 title=dict(type="str", required=True),
             ),
         ),
-        repair=dict(type="bool", default="False"),
+        repair=dict(type="bool", default=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
