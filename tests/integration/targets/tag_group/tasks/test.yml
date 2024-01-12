@@ -61,8 +61,8 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "repairtest"
     attributes:
-      tag_Datacenter: "Datacenter 1"
-      tag_Supporter: "Nobody"
+      tag_Datacenter: "datacenter_1"
+      tag_Supporter: "nobody"
     state: "present"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update tag_group without repair. (Should fail)"

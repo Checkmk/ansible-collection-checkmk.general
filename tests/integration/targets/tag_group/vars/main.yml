@@ -38,28 +38,26 @@ checkmk_taggroups_create:
     topic: Tags
     help: "something useful"
     tags:
-      - id: No_Datacenter
+      - id: datacenter_none
         title: No Datacenter
-      - id: Datacenter 1
+      - id: datacenter_1
         title: Datacenter 1
-      - id: Datacenter 2
+      - id: datacenter_2
         title: Datacenter 2
-      - id: Datacenter US
-        title: Datacenter US
-      - id: Datacenter ASIA
-        title: Datacenter ASIA
+      - id: datacenter_3
+        title: Datacenter 3
   - name: Supporter
     title: Supporter
     topic: Tags
     help: "Who to blame"
     tags:
-      - id: Nobody
+      - id: nobody
         title: Nobody
-      - id: RoyTrenneman
+      - id: roytrenneman
         title: Roy Trenneman
-      - id: MauriceMoss
+      - id: mauricemoss
         title: Maurice Moss
-      - id: JenBarber
+      - id: jenbarber
         title: Jen Barber
 
 checkmk_taggroups_update:
@@ -67,38 +65,31 @@ checkmk_taggroups_update:
     title: Datacenter
     topic: Tags
     help: "something even more useful"
-    repair: True
+    repair: true
     tags:
-      - id: No_Datacenter
+      - id: datacenter_none
         title: No Datacenter
-      - id: Datacenter 1000
+      - id: datacenter_1000
         title: Datacenter 1000
-      - id: Datacenter 2
+      - id: datacenter_2
         title: Datacenter 2
-      - id: Datacenter 3
+      - id: datacenter_3
         title: Datacenter 3
-      - id: Datacenter US
-        title: Datacenter US
-      - id: Datacenter ASIA
-        title: Datacenter ASIA
-      - id: Datacenter AFRICA
-        title: Datacenter AFRICA
   - name: Supporter
     title: Supporter
     topic: Tags
     help: "Who to blame"
-    repair: True
+    repair: true
     tags:
-      - id: Somebody
+      - id: somebody
         title: Somebody
-      - id: RoyTrenneman
+      - id: roytrenneman
         title: Roy Trenneman
-      - id: MauriceMoss
+      - id: mauricemoss
         title: Maurice Moss
-      - id: JenBarber
+      - id: jenbarber
         title: Jen Barber
-
 
 checkmk_taggroups_delete:
   - name: Supporter
-    repair: True
+    repair: true
