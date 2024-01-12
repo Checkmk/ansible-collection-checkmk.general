@@ -29,7 +29,7 @@ options:
     name:
         description: The name of the tag_group to be created/
                      modified/deleted.
-        default: ""
+        required: true
         type: str
         aliases: ["id"]
     title:
@@ -50,6 +50,15 @@ options:
         type: list
         elements: dict
         aliases: ["choices"]
+        suboptions:
+            id:
+                description: The id of the tag
+                required: true
+                type: str
+            title:
+                description: The title of the tag
+                required: true
+                type: str
     repair:
         description: Give permission to update or remove the tag automatically on hosts using it.
         default: "False"
@@ -78,15 +87,15 @@ EXAMPLES = r"""
     topic: Tags
     help: "something useful"
     tags:
-      - ident: No_Datacenter
+      - id: No_Datacenter
         title: No Datacenter
-      - ident: Datacenter 1
+      - id: Datacenter 1
         title: Datacenter 2
-      - ident: Datacenter 2
+      - id: Datacenter 2
         title: Datacenter 2
-      - ident: Datacenter US
+      - id: Datacenter US
         title: Datacenter US
-      - ident: Datacenter ASIA
+      - id: Datacenter ASIA
         title: Datacenter ASIA
     state: present
 
@@ -165,6 +174,27 @@ HTTP_CODES_UPDATE = {
 }
 
 
+def normalize_data(raw_data):
+    data = {
+        "title": raw_data.get("title", ""),
+        "topic": raw_data.get("topic", ""),
+        "help": raw_data.get("help", ""),
+        "tags": raw_data.get("tags", ""),
+        "repair": raw_data.get("repair"),
+    }
+
+    # Remove all keys without value, as they would be emptied.
+    data = {key: val for key, val in data.items() if val}
+
+    # The API uses "ident" instead of "id" for the put & post endpoints
+    if "tags" in data:
+        for d in data["tags"]:
+            if "id" in d:
+                d["ident"] = d.pop("id")
+
+    return data
+
+
 class TaggroupCreateAPI(CheckmkAPI):
     def post(self):
         if not self.params.get("title") or not self.params.get("tags"):
@@ -179,16 +209,8 @@ class TaggroupCreateAPI(CheckmkAPI):
             return result
 
         else:
-            data = {
-                "ident": self.params.get("name", ""),
-                "title": self.params.get("title", ""),
-                "topic": self.params.get("topic", ""),
-                "help": self.params.get("help", ""),
-                "tags": self.params.get("tags", ""),
-            }
-
-            # Remove all keys without value, as otherwise they would be None.
-            data = {key: val for key, val in data.items() if val}
+            data = normalize_data(self.params)
+            data["ident"] = self.params.get("name")
 
             return self._fetch(
                 code_mapping=HTTP_CODES_CREATE,
@@ -200,16 +222,7 @@ class TaggroupCreateAPI(CheckmkAPI):
 
 class TaggroupUpdateAPI(CheckmkAPI):
     def put(self):
-        data = {
-            "title": self.params.get("title", ""),
-            "topic": self.params.get("topic", ""),
-            "help": self.params.get("help", ""),
-            "tags": self.params.get("tags", ""),
-            "repair": self.params.get("repair"),
-        }
-
-        # Remove all keys without value, as they would be emptied.
-        data = {key: val for key, val in data.items() if val}
+        data = normalize_data(self.params)
 
         return self._fetch(
             code_mapping=HTTP_CODES_UPDATE,
@@ -227,7 +240,7 @@ class TaggroupDeleteAPI(CheckmkAPI):
             code_mapping=HTTP_CODES_DELETE,
             endpoint="/objects/host_tag_group/%s?repair=%s"
             % (self.params.get("name"), self.params.get("repair")),
-            data=data,
+            # data=data,
             method="DELETE",
         )
 
@@ -261,7 +274,6 @@ def changes_detected(module, current):
         return True
 
     for d in current_tags:
-        d["ident"] = d.pop("id")
         d.pop("aux_tags")
 
     pairs = zip(desired_tags, current_tags)
@@ -281,10 +293,19 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         title=dict(type="str", default=""),
-        name=dict(type="str", default="", aliases=["id"]),
+        name=dict(type="str", required=True, aliases=["id"]),
         topic=dict(type="str", default=""),
         help=dict(type="str", default=""),
-        tags=dict(type="list", elements="dict", default=[], aliases=["choices"]),
+        tags=dict(
+            type="list",
+            elements="dict",
+            default=[],
+            aliases=["choices"],
+            options=dict(
+                id=dict(type="str", required=True),
+                title=dict(type="str", required=True),
+            ),
+        ),
         repair=dict(type="bool", default="False"),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )

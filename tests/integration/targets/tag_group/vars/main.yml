@@ -35,28 +35,28 @@ checkmk_taggroups_create:
     topic: Tags
     help: "something useful"
     tags:
-      - ident: No_Datacenter
+      - id: No_Datacenter
         title: No Datacenter
-      - ident: Datacenter 1
+      - id: Datacenter 1
         title: Datacenter 1
-      - ident: Datacenter 2
+      - id: Datacenter 2
         title: Datacenter 2
-      - ident: Datacenter US
+      - id: Datacenter US
         title: Datacenter US
-      - ident: Datacenter ASIA
+      - id: Datacenter ASIA
         title: Datacenter ASIA
   - name: Supporter
     title: Supporter
     topic: Tags
     help: "Who to blame"
     tags:
-      - ident: Nobody
+      - id: Nobody
         title: Nobody
-      - ident: RoyTrenneman
+      - id: RoyTrenneman
         title: Roy Trenneman
-      - ident: MauriceMoss
+      - id: MauriceMoss
         title: Maurice Moss
-      - ident: JenBarber
+      - id: JenBarber
         title: Jen Barber
 
 checkmk_taggroups_update:
@@ -66,19 +66,19 @@ checkmk_taggroups_update:
     help: "something even more useful"
     repair: True
     tags:
-      - ident: No_Datacenter
+      - id: No_Datacenter
         title: No Datacenter
-      - ident: Datacenter 1000
+      - id: Datacenter 1000
         title: Datacenter 1000
-      - ident: Datacenter 2
+      - id: Datacenter 2
         title: Datacenter 2
-      - ident: Datacenter 3
+      - id: Datacenter 3
         title: Datacenter 3
-      - ident: Datacenter US
+      - id: Datacenter US
         title: Datacenter US
-      - ident: Datacenter ASIA
+      - id: Datacenter ASIA
         title: Datacenter ASIA
-      - ident: Datacenter AFRICA
+      - id: Datacenter AFRICA
         title: Datacenter AFRICA
   - name: Supporter
     title: Supporter
@@ -86,13 +86,13 @@ checkmk_taggroups_update:
     help: "Who to blame"
     repair: True
     tags:
-      - ident: Somebody
+      - id: Somebody
         title: Somebody
-      - ident: RoyTrenneman
+      - id: RoyTrenneman
         title: Roy Trenneman
-      - ident: MauriceMoss
+      - id: MauriceMoss
         title: Maurice Moss
-      - ident: JenBarber
+      - id: JenBarber
         title: Jen Barber
 
 
