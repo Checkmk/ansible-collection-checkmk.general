@@ -185,7 +185,7 @@ checkmk_var_users_edit:
     auth_type: password
     contactgroups:
       - noteam
-    fallback_contact: false
+    fallback_contact: true
     roles:
       - user
     disable_notifications_timerange: { "end_time": "2024-04-01T08:00:00+00:00", "start_time": "2024-04-01T20:00:00+00:00" }
@@ -207,3 +207,5 @@ checkmk_var_users_edit:
     contactgroups: []
     roles:
       - admin
+  - name: cmkadmin
+    show_mode: "enforce_show_more"

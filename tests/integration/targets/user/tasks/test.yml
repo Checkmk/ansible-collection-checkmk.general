@@ -142,7 +142,7 @@
     pager_address: "{{ item.pager_address | default(omit) }}"
     language: "{{ item.language | default(omit) }}"
     disable_login: "{{ item.disable_login | default(omit) }}"
-    contactgroups: "{{ item.contactgroups }}"
+    contactgroups: "{{ item.contactgroups | default(omit) }}"
     idle_timeout_duration: "{{ item.idle_timeout_duration | default(omit) }}"
     idle_timeout_option: "{{ item.idle_timeout_option | default(omit) }}"
     interface_theme: "{{ item.interface_theme | default(omit) }}"
@@ -150,7 +150,7 @@
     navigation_bar_icons: "{{ item.navigation_bar_icons | default(omit) }}"
     mega_menu_icons: "{{ item.mega_menu_icons | default(omit) }}"
     show_mode: "{{ item.show_mode | default(omit) }}"
-    roles: "{{ item.roles }}"
+    roles: "{{ item.roles | default(omit) }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
