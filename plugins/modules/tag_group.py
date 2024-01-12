@@ -3,7 +3,6 @@
 
 # Copyright: (c) 2023, Max Sickora <max.sickora@checkmk.com> &
 #                      Stefan Mühling <muehling.stefan@googlemail.com> &
-#                      Robin Gierse <robin.gierse@checkmk.com>
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
@@ -14,38 +13,37 @@ DOCUMENTATION = r"""
 ---
 module: tag_group
 
-short_description: Manage tag_group within Checkmk
+short_description: Manage tag groups in Checkmk.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "0.11.0"
 
 description:
-- Manage tag_group within Checkmk.
+- Manage tag groups in Checkmk.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
-        description: The name of the tag_group to be created/
-                     modified/deleted.
+        description: The name of the tag group to manage.
         required: true
         type: str
         aliases: ["id"]
     title:
-        description: The title of the tag_group
+        description: The title of the tag group.
         default: ""
         type: str
     topic:
-        description: The topic of the tag_group
+        description: The topic of the tag group.
         default: ""
         type: str
     help:
-        description: The help of the tag_group
+        description: The help text for the tag group.
         default: ""
         type: str
     tags:
-        description: The list of the tags for the tag_group as dicts.
+        description: A list of the tag groups to be created.
         default: []
         type: list
         elements: dict
@@ -60,11 +58,13 @@ options:
                 required: true
                 type: str
     repair:
-        description: Give permission to update or remove the tag automatically on hosts using it.
+        description:
+            - Give permission to update or remove the tag on hosts using it automatically.
+              B(Use with caution!)
         default: "False"
         type: bool
     state:
-        description: The desired state
+        description: The desired state.
         default: "present"
         choices: ["present", "absent"]
         type: str
@@ -76,37 +76,35 @@ author:
 
 EXAMPLES = r"""
 # Create a tag group
-- name: "Create tag_group"
+- name: "Create tag group"
   checkmk.general.tag_group:
-    server_url: "https://localhost/"
+    server_url: "https://my_server/"
     site: "my_site"
     automation_user: "my_user"
     automation_secret: "my_secret"
-    name: Datacenter
+    name: datacenter
     title: Datacenter
     topic: Tags
-    help: "something useful"
+    help: "The datacenter this host resides in."
     tags:
-      - id: No_Datacenter
+      - id: datacenter_none
         title: No Datacenter
-      - id: Datacenter 1
+      - id: datacenter_1
         title: Datacenter 2
-      - id: Datacenter 2
+      - id: datacenter_2
         title: Datacenter 2
-      - id: Datacenter US
-        title: Datacenter US
-      - id: Datacenter ASIA
-        title: Datacenter ASIA
+      - id: datacenter_3
+        title: Datacenter 3
     state: present
 
 # Delete a tag group
-- name: "Delete tag_group."
+- name: "Delete tag group."
   checkmk.general.tag_group:
-    server_url: "https://localhost/"
+    server_url: "https://my_server/"
     site: "my_site"
     automation_user: "my_user"
     automation_secret: "my_secret"
-    name: Datacenter
+    name: datacenter
     state: "absent"
 """
 
