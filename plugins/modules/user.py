@@ -25,103 +25,103 @@ description:
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
-    name:
-        description: The user you want to manage.
-        required: true
-        type: str
-    fullname:
-        description: A alias or the full name of the user.
-        type: str
-    customer:
-        description:
-            - For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
-        type: str
-    authorized_sites:
-        description: The names of the sites the user is authorized to access.
-        type: raw
     auth_type:
         description:
             - The authentication type.
               Setting this to C(password) will create a normal user, C(automation) will create an automation user.
         type: str
         choices: [password, automation]
-    password:
+    authorized_sites:
+        description: The names of the sites the user is authorized to access.
+        type: raw
+    contactgroups:
+        description: A list of contact groups assigned to the user.
+        type: raw
+    customer:
         description:
-            - The password or secret for login. Depending on the C(auth_type), this is interpreted as a password or secret.
+            - For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
         type: str
-    enforce_password_change:
-        description: If set to C(true), the user will be forced to change their password on the next login.
+    disable_notifications:
+        description: Temporarily disable B(all) notifications for this user.
         type: bool
     disable_login:
         description:
             - If set to C(true), the user cannot log in anymore, but will remain part of the site.
               Disabling a user does not affect notifications.
         type: bool
+    disable_notifications_timerange:
+        description: The duration, for how log notifications should be disabled, if C(disable_notifications) is set to C(true).
+        type: dict
     email:
         description:
             - The mail address of the user. Required if the user is a monitoring contact and should receive notifications via mail.
         type: str
-    pager:
-        description: A (mobile) phone number, used to receive e.g., SMS.
-        type: str
-        aliases: ["pager_address"]
+    enforce_password_change:
+        description: If set to C(true), the user will be forced to change their password on the next login.
+        type: bool
     fallback_contact:
         description:
             - This user will receive fallback notifications.
               This means, if no notification rules match a certain event, they are sent to the fallback contacts.
         type: bool
+    fullname:
+        description: A alias or the full name of the user.
+        type: str
+    idle_timeout_duration:
+        description: The duration in seconds, if C(idle_timeout_option) is set to C(individual).
+        type: int
     idle_timeout_option:
         description:
             - Specify, whether the idle timeout should use the global configuration, use an individual duration or be disabled entirely.
         type: str
         choices: [global, disable, individual]
-    idle_timeout_duration:
-        description: The duration in seconds, if C(idle_timeout_option) is set to C(individual).
-        type: int
-    roles:
-        description: A list of roles assigned to the user.
-        type: raw
-    contactgroups:
-        description: A list of contact groups assigned to the user.
-        type: raw
-    disable_notifications:
-        description: Temporarily disable B(all) notifications for this user.
-        type: bool
-    disable_notifications_timerange:
-        description: The duration, for how log notifications should be disabled, if C(disable_notifications) is set to C(true).
-        type: dict
+    interface_theme:
+        description: The theme of the user interface.
+        type: str
+        choices: [default, dark, light]
     language:
         description:
             - Configure the language to be used by the user in the user interface.
               Omitting this will configure the default language.
         type: str
         choices: [default, en, de]
-    interface_theme:
-        description: The theme of the user interface.
-        type: str
-        choices: [default, dark, light]
-    sidebar_position:
-        description: The position of the sidebar.
-        type: str
-        choices: [left, right]
-    navigation_bar_icons:
-        description: This option decides if icons in the navigation bar should show/hide the respective titles.
-        type: str
-        choices: [hide, show]
     mega_menu_icons:
         description:
           - This option decides if colored icons should be shown for every entry in the mega menus
             or only for the headlines (the 'topics').
         type: str
         choices: [topic, entry]
+    name:
+        description: The user you want to manage.
+        required: true
+        type: str
+    navigation_bar_icons:
+        description: This option decides if icons in the navigation bar should show/hide the respective titles.
+        type: str
+        choices: [hide, show]
+    pager:
+        description: A (mobile) phone number, used to receive e.g., SMS.
+        type: str
+        aliases: ["pager_address"]
+    password:
+        description:
+            - The password or secret for login. Depending on the C(auth_type), this is interpreted as a password or secret.
+        type: str
+    roles:
+        description: A list of roles assigned to the user.
+        type: raw
     show_mode:
         description:
           - This option decides what show mode should be used for unvisited menus.
             Alternatively, this option can also be used to enforce show more removing the three dots for all menus.
         type: str
         choices: [default, default_show_less, default_show_more, enforce_show_more]
+    sidebar_position:
+        description: The position of the sidebar.
+        type: str
+        choices: [left, right]
     state:
-        description: Desired state
+        description: The desired state.
         type: str
         default: present
         choices: [present, absent, reset_password]
