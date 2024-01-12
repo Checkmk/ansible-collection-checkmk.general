@@ -354,7 +354,7 @@ class UserAPI(CheckmkAPI):
             if key in content:
                 if key != "disable_notifications":
                     self.current[key] = content[key]
-            if key in "pager" and "pager_address"in content:
+            if key in "pager" and "pager_address" in content:
                 self.current[key] = content["pager_address"]
             if key in ("email", "fallback_contact") and "contact_options" in content:
                 self.current[key] = content["contact_options"][key]
@@ -372,13 +372,17 @@ class UserAPI(CheckmkAPI):
                 if "timerange" in content["disable_notifications"]:
                     self.current[key] = content["disable_notifications"]["timerange"]
 
-            if key in (
-                "interface_theme",
-                "sidebar_position",
-                "navigation_bar_icons",
-                "mega_menu_icons",
-                "show_mode",
-            ) and key in content["interface_options"]:
+            if (
+                key
+                in (
+                    "interface_theme",
+                    "sidebar_position",
+                    "navigation_bar_icons",
+                    "mega_menu_icons",
+                    "show_mode",
+                )
+                and key in content["interface_options"]
+            ):
                 self.current[key] = content["interface_options"][key]
 
     def _build_default_endpoint(self):
