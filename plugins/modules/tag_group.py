@@ -2,7 +2,7 @@
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
 # Copyright: (c) 2023, Max Sickora <max.sickora@checkmk.com> &
-#                      Stefan Mühling <muehling.stefan@googlemail.com> &
+#                      Stefan Mühling <muehling.stefan@googlemail.com>
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
@@ -25,22 +25,25 @@ description:
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
+    help:
+        description: The help text for the tag group.
+        default: ""
+        type: str
     name:
         description: The name of the tag group to manage.
         required: true
         type: str
         aliases: ["id"]
-    title:
-        description: The title of the tag group.
-        default: ""
-        type: str
-    topic:
-        description: The topic of the tag group.
-        default: ""
-        type: str
-    help:
-        description: The help text for the tag group.
-        default: ""
+    repair:
+        description:
+            - Give permission to update or remove the tag on hosts using it automatically.
+              B(Use with caution!)
+        default: "False"
+        type: bool
+    state:
+        description: The desired state.
+        default: "present"
+        choices: ["present", "absent"]
         type: str
     tags:
         description: A list of the tag groups to be created.
@@ -57,16 +60,13 @@ options:
                 description: The title of the tag
                 required: true
                 type: str
-    repair:
-        description:
-            - Give permission to update or remove the tag on hosts using it automatically.
-              B(Use with caution!)
-        default: "False"
-        type: bool
-    state:
-        description: The desired state.
-        default: "present"
-        choices: ["present", "absent"]
+    title:
+        description: The title of the tag group.
+        default: ""
+        type: str
+    topic:
+        description: The topic of the tag group.
+        default: ""
         type: str
 
 author:
