@@ -1,12 +1,15 @@
 ---
 test_sites:
-  - version: "2.2.0p17"
+  - version: "2.2.0p18"
+    edition: "cme"
+    site: "stable_cme"
+  - version: "2.2.0p18"
     edition: "cre"
     site: "stable_raw"
-  - version: "2.2.0p17"
+  - version: "2.2.0p18"
     edition: "cee"
     site: "stable_ent"
-  - version: "2.1.0p37"
+  - version: "2.1.0p38"
     edition: "cre"
     site: "old_raw"
   - version: "2.0.0p39"
