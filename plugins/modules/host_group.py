@@ -96,7 +96,7 @@ EXAMPLES = r"""
     state: "present"
 
 # Delete a single host group.
-- name: "Create a single host group."
+- name: "Delete a single host group."
   checkmk.general.host_group:
     server_url: "http://my_server/"
     site: "my_site"
