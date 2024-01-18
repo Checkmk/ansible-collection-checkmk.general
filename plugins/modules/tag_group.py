@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, Stefan Mühling <muehling.stefan@googlemail.com> &
-#                      Robin Gierse <robin.gierse@checkmk.com>
+# Copyright: (c) 2023, Max Sickora <max.sickora@checkmk.com> &
+#                      Stefan Mühling <muehling.stefan@googlemail.com>
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
@@ -13,68 +13,99 @@ DOCUMENTATION = r"""
 ---
 module: tag_group
 
-short_description: Manage tag_group within Checkmk
+short_description: Manage tag groups in Checkmk.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "0.11.0"
 
 description:
-- Manage tag_group within Checkmk.
+- Manage tag groups in Checkmk.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
-    id:
-        description: The id of the tag_group to be created/
-                     modified/deleted.
+    help:
+        description: The help text for the tag group.
         default: ""
         type: str
-    title:
-        description: The title of the tag_group
-        default: ""
+    name:
+        description: The name of the tag group to manage.
+        required: true
         type: str
-    topic:
-        description: The topic of the tag_group
-        default: ""
-        type: str
-    choices:
-        description: The list of the tags for the tag_group as dicts.
-        default: []
-        type: list
-        elements: dict
+        aliases: ["id"]
+    repair:
+        description:
+            - Give permission to update or remove the tag on hosts using it automatically.
+              B(Use with caution!)
+        default: False
+        type: bool
     state:
-        description: The desired state
+        description: The desired state.
         default: "present"
         choices: ["present", "absent"]
         type: str
+    tags:
+        description: A list of the tag groups to be created.
+        default: []
+        type: list
+        elements: dict
+        aliases: ["choices"]
+        suboptions:
+            id:
+                description: The id of the tag
+                required: true
+                type: str
+            title:
+                description: The title of the tag
+                required: true
+                type: str
+    title:
+        description: The title of the tag group.
+        default: ""
+        type: str
+    topic:
+        description: The topic of the tag group.
+        default: ""
+        type: str
 
 author:
+    - Max Sickora (@Max-checkmk)
     - Stefan Mühling (@muehlings)
 """
 
 EXAMPLES = r"""
-- name: "Create tag_group"
+# Create a tag group
+- name: "Create tag group"
   checkmk.general.tag_group:
-    server_url: "https://localhost/"
+    server_url: "https://my_server/"
     site: "my_site"
     automation_user: "my_user"
     automation_secret: "my_secret"
-    id: Virtualization
-    title: Virtualization
-    topic: My_Tags
-    choices:
-      - id: No_Virtualization
-        title: No Virtualization
-      - id: ESXi
-        title: ESXi
-      - id: vCenter
-        title: vCenter
-      - id: HyperV
-        title: HyperV
-      - id: KVM
-        title: KVM
+    name: datacenter
+    title: Datacenter
+    topic: Tags
+    help: "The datacenter this host resides in."
+    tags:
+      - id: datacenter_none
+        title: No Datacenter
+      - id: datacenter_1
+        title: Datacenter 2
+      - id: datacenter_2
+        title: Datacenter 2
+      - id: datacenter_3
+        title: Datacenter 3
     state: present
+
+# Delete a tag group
+- name: "Delete tag group."
+  checkmk.general.tag_group:
+    server_url: "https://my_server/"
+    site: "my_site"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    name: datacenter
+    state: "absent"
 """
 
 RETURN = r"""
@@ -90,180 +121,169 @@ message:
     sample: 'OK'
 """
 
-
 import json
+import time
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
+from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    result_as_dict,
+)
+
+# from ansible_collections.checkmk.general.plugins.module_utils.version import (
+#     CheckmkVersion,
+# )
+
+# We count 404 not as failed, because we want to know if the taggroup exists or not.
+HTTP_CODES_GET = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "OK: The operation was done successfully."),
+    404: (False, False, "Not Found: The requested object has not been found."),
+    500: (False, True, "General Server Error."),
+}
+
+HTTP_CODES_DELETE = {
+    # http_code: (changed, failed, "Message")
+    405: (
+        False,
+        True,
+        "Method Not Allowed: This request is only allowed with other HTTP methods",
+    ),
+    500: (False, True, "General Server Error."),
+}
+
+HTTP_CODES_CREATE = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "OK: The operation was done successfully."),
+    500: (False, True, "General Server Error."),
+}
+
+HTTP_CODES_UPDATE = {
+    # http_code: (changed, failed, "Message")
+    200: (True, False, "OK: The operation was done successfully."),
+    401: (False, True, "Unauthorized: The user is not authorized to do this request"),
+    405: (
+        False,
+        True,
+        "Method Not Allowed: This request is only allowed with other HTTP methods",
+    ),
+    500: (False, True, "General Server Error."),
+}
 
 
-def read_tag_group(module, base_url, headers):
-    result = dict(
-        changed=False, failed=False, http_code="", msg="", current_tag_group={}, etag=""
-    )
+def normalize_data(raw_data):
+    data = {
+        "title": raw_data.get("title", ""),
+        "topic": raw_data.get("topic", ""),
+        "help": raw_data.get("help", ""),
+        "tags": raw_data.get("tags", ""),
+        "repair": raw_data.get("repair"),
+    }
 
-    current_state = "unknown"
-    current_tag_group = dict(title="", topic="", tags=[], ident="")
-    etag = ""
+    # Remove all keys without value, as they would be emptied.
+    data = {key: val for key, val in data.items() if val}
 
-    ident = module.params.get("id", "")
+    # The API uses "ident" instead of "id" for the put & post endpoints
+    if "tags" in data:
+        for d in data["tags"]:
+            if "id" in d:
+                d["ident"] = d.pop("id")
 
-    api_endpoint = "/objects/host_tag_group/" + ident
-    url = base_url + api_endpoint
-
-    response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
-
-    response_content = ""
-
-    http_code = info["status"]
-    try:
-        response_content = response.read()
-    except Exception:
-        response_content = {}
-
-    msg = info["msg"]
-
-    if info["status"] == 200:
-        current_state = "present"
-        etag = info.get("etag", "")
-
-        extensions = json.loads(response_content).get("extensions", {})
-        current_tag_group["tags"] = extensions["tags"]
-        current_tag_group["topic"] = extensions["topic"]
-        current_tag_group["title"] = json.loads(response_content).get("title", "")
-        current_tag_group["ident"] = json.loads(response_content).get("id", "")
-
-        for d in current_tag_group["tags"]:
-            d["ident"] = d.pop("id")
-            d.pop("aux_tags")
-
-    else:
-        current_state = "absent"
-
-    result["current_tag_group"] = current_tag_group
-    result["msg"] = str(http_code) + " - " + msg
-    result["http_code"] = http_code
-    result["state"] = current_state
-    result["etag"] = etag
-
-    return result
+    return data
 
 
-def create_tag_group(module, base_url, headers):
-    result = dict(changed=False, failed=False, http_code="", msg="")
+class TaggroupCreateAPI(CheckmkAPI):
+    def post(self):
+        if not self.params.get("title") or not self.params.get("tags"):
+            result = RESULT(
+                http_code=0,
+                msg="Need parameter title and tags to create hosttag",
+                content="",
+                etag="",
+                failed=True,
+                changed=False,
+            )
+            return result
 
-    changed = False
-    failed = False
-    http_code = ""
+        else:
+            data = normalize_data(self.params)
+            data["ident"] = self.params.get("name")
 
-    ident = module.params.get("id", "")
-    tag_group = {}
-    tag_group["ident"] = ident
-    tag_group["title"] = module.params.get("title", "")
-    tag_group["topic"] = module.params.get("topic", "")
-    tag_group["tags"] = module.params.get("choices", "")
-    for d in tag_group["tags"]:
-        d["ident"] = d.pop("id")
-
-    api_endpoint = "/domain-types/host_tag_group/collections/all"
-    url = base_url + api_endpoint
-    response, info = fetch_url(
-        module, url, module.jsonify(tag_group), headers=headers, method="POST"
-    )
-
-    http_code = info["status"]
-    msg = info["msg"]
-
-    if info["status"] != 200:
-        failed = True
-
-    result["msg"] = str(http_code) + " - " + msg
-    result["changed"] = changed
-    result["failed"] = failed
-    result["http_code"] = http_code
-    result["info"] = info
-
-    return result
+            return self._fetch(
+                code_mapping=HTTP_CODES_CREATE,
+                endpoint="/domain-types/host_tag_group/collections/all",
+                data=data,
+                method="POST",
+            )
 
 
-def update_tag_group(module, base_url, headers, etag):
-    result = dict(changed=False, failed=False, http_code="", msg="")
+class TaggroupUpdateAPI(CheckmkAPI):
+    def put(self):
+        data = normalize_data(self.params)
 
-    changed = False
-    failed = False
-    http_code = ""
-
-    ident = module.params.get("id", "")
-    tag_group = {}
-    tag_group["repair"] = True
-    tag_group["title"] = module.params.get("title", "")
-    tag_group["topic"] = module.params.get("topic", "")
-    tag_group["tags"] = module.params.get("choices", "")
-    for d in tag_group["tags"]:
-        d["ident"] = d.pop("id")
-
-    api_endpoint = "/objects/host_tag_group/" + ident
-    url = base_url + api_endpoint
-    headers["If-Match"] = etag
-    response, info = fetch_url(
-        module, url, module.jsonify(tag_group), headers=headers, method="PUT"
-    )
-
-    http_code = info["status"]
-    msg = info["msg"]
-
-    if info["status"] != 200:
-        failed = True
-
-    result["msg"] = str(http_code) + " - " + msg
-    result["changed"] = changed
-    result["failed"] = failed
-    result["http_code"] = http_code
-    result["info"] = info
-
-    return result
+        return self._fetch(
+            code_mapping=HTTP_CODES_UPDATE,
+            endpoint="/objects/host_tag_group/%s" % self.params.get("name"),
+            data=data,
+            method="PUT",
+        )
 
 
-def delete_tag_group(module, base_url, headers, etag):
-    result = dict(changed=False, failed=False, http_code="", msg="")
+class TaggroupDeleteAPI(CheckmkAPI):
+    def delete(self):
+        data = {}
 
-    changed = False
-    failed = False
-    http_code = ""
+        return self._fetch(
+            code_mapping=HTTP_CODES_DELETE,
+            endpoint="/objects/host_tag_group/%s?repair=%s"
+            % (self.params.get("name"), self.params.get("repair")),
+            # data=data,
+            method="DELETE",
+        )
 
-    ident = module.params.get("id")
-    tag_group = {}
-    tag_group["repair"] = True
-    tag_group["title"] = module.params.get("title", "")
-    tag_group["topic"] = module.params.get("topic", "")
-    tag_group["tags"] = module.params.get("choices", "")
-    for d in tag_group["tags"]:
-        d["ident"] = d.pop("id")
 
-    api_endpoint = "/objects/host_tag_group/" + ident
-    url = base_url + api_endpoint
-    headers["If-Match"] = etag
-    response, info = fetch_url(
-        module, url, module.jsonify(tag_group), headers=headers, method="DELETE"
-    )
+class TaggroupGetAPI(CheckmkAPI):
+    def get(self):
+        data = {}
 
-    http_code = info["status"]
-    msg = info["msg"]
+        return self._fetch(
+            code_mapping=HTTP_CODES_GET,
+            endpoint="/objects/host_tag_group/%s" % self.params.get("name"),
+            data=data,
+            method="GET",
+        )
 
-    if info["status"] != 204:
-        failed = True
 
-    result["msg"] = str(http_code) + " - " + msg
-    result["changed"] = changed
-    result["failed"] = failed
-    result["http_code"] = http_code
-    result["info"] = info
+def changes_detected(module, current):
+    if module.params.get("title") != current.get("title"):
+        # The title has changed
+        return True
 
-    return result
+    if module.params.get("topic") != current.get("extensions", {}).get("topic"):
+        # The topic has changed
+        return True
+
+    desired_tags = module.params.get("tags")
+    current_tags = current.get("extensions", {}).get("tags", [])
+
+    if len(desired_tags) != len(current_tags):
+        # The number of tags has changed
+        return True
+
+    for d in current_tags:
+        d.pop("aux_tags")
+
+    pairs = zip(desired_tags, current_tags)
+
+    if not all(a == b for a, b in pairs):
+        # At least one of the tags or the order has changed
+        return True
+
+    return False
 
 
 def run_module():
-    # define available arguments/parameters a user can pass to the module
     module_args = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
@@ -271,100 +291,73 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         title=dict(type="str", default=""),
-        id=dict(type="str", default=""),
+        name=dict(type="str", required=True, aliases=["id"]),
         topic=dict(type="str", default=""),
-        choices=dict(type="list", elements="dict", default=[]),
+        help=dict(type="str", default=""),
+        tags=dict(
+            type="list",
+            elements="dict",
+            default=[],
+            aliases=["choices"],
+            options=dict(
+                id=dict(type="str", required=True),
+                title=dict(type="str", required=True),
+            ),
+        ),
+        repair=dict(type="bool", default=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
-    # Declare headers including authentication to send to the Checkmk API
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s"
-        % (
-            module.params.get("automation_user", ""),
-            module.params.get("automation_secret", ""),
-        ),
-    }
-
-    state = module.params.get("state", "present")
-
-    base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
-        module.params.get("site", ""),
+    result = RESULT(
+        http_code=0,
+        msg="Nothing to be done",
+        content="",
+        etag="",
+        failed=False,
+        changed=False,
     )
 
-    # read current state (GET)
-    result = read_tag_group(module, base_url, headers)
-    msg_tokens = []
+    taggroupget = TaggroupGetAPI(module)
+    current = taggroupget.get()
 
-    # tag_group is "present"
-    if result["etag"] != "":
-        # tag_group needs to be deleted (DELETE)
-        if state == "absent":
-            result = delete_tag_group(module, base_url, headers, result["etag"])
-            msg_tokens.append("Tag group deleted.")
-            result["changed"] = True
-        # tag_group needs to be updated (PUT)
-        elif state == "present":
-            choices = module.params.get("choices")
-            current_choices = result["current_tag_group"]["tags"]
-            for d in current_choices:
-                d["id"] = d.pop("ident")
-            pairs = zip(choices, current_choices)
-            current_len = len(current_choices)
-            current_etag = result["etag"]
-            current_title = result["current_tag_group"]["title"]
-            current_topic = result["current_tag_group"]["topic"]
-            changed_len = False
-            changed_content = False
-            changed_title = False
-            changed_topic = False
-            if not all(a == b for a, b in pairs):
-                changed_content = True
-                msg_tokens.append("Content of choices changed.")
-            if len(module.params.get("choices")) != current_len:
-                changed_len = True
-                msg_tokens.append("Number of choices changed.")
-            if module.params.get("title") != current_title:
-                changed_title = True
-                msg_tokens.append("Title changed.")
-            if module.params.get("topic") != current_topic:
-                changed_topic = True
-                msg_tokens.append("Topic changed.")
-            if (
-                changed_content is True
-                or changed_len is True
-                or changed_title is True
-                or changed_topic is True
-            ):
-                result = update_tag_group(module, base_url, headers, current_etag)
-                result["changed"] = True
-            else:
-                msg_tokens.append("Tag group as desired. Nothing to do.")
+    if module.params.get("state") == "present":
+        if current.http_code == 200:
+            # If tag group has changed then update it.
+            if changes_detected(module, json.loads(current.content.decode("utf-8"))):
+                taggroupupdate = TaggroupUpdateAPI(module)
+                taggroupupdate.headers["If-Match"] = current.etag
+                result = taggroupupdate.put()
 
-    else:
-        # tag_group is "absent"
-        if state == "absent":
-            # nothing to do
-            msg_tokens.append("Nothing to do.")
-            result["changed"] = False
-        elif state == "present":
-            # tag_group needs to be created (POST)
-            result = create_tag_group(module, base_url, headers)
-            msg_tokens.append("Tag group created.")
-            result["changed"] = True
+                time.sleep(3)
 
-    if len(msg_tokens) > 0:
-        result["msg"] = " ".join(msg_tokens)
+        elif current.http_code == 404:
+            # Tag group is not there. Create it.
+            taggroupcreate = TaggroupCreateAPI(module)
 
-    if result["failed"]:
-        module.fail_json(**result)
+            result = taggroupcreate.post()
 
-    module.exit_json(**result)
+            time.sleep(3)
+
+    if module.params.get("state") == "absent":
+        # Only delete if the Taggroup exists
+        if current.http_code == 200:
+            taggroupdelete = TaggroupDeleteAPI(module)
+            result = taggroupdelete.delete()
+
+            time.sleep(3)
+        elif current.http_code == 404:
+            result = RESULT(
+                http_code=0,
+                msg="Taggroup doesn't exist.",
+                content="",
+                etag="",
+                failed=False,
+                changed=False,
+            )
+
+    module.exit_json(**result_as_dict(result))
 
 
 def main():

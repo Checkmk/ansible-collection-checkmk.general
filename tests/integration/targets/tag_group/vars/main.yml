@@ -31,3 +31,65 @@ checkmk_server_edition_mapping:
   cee: enterprise
   cce: cloud
   cme: managed
+
+checkmk_taggroups_create:
+  - name: Datacenter
+    title: Datacenter
+    topic: Tags
+    help: "something useful"
+    tags:
+      - id: datacenter_none
+        title: No Datacenter
+      - id: datacenter_1
+        title: Datacenter 1
+      - id: datacenter_2
+        title: Datacenter 2
+      - id: datacenter_3
+        title: Datacenter 3
+  - name: Supporter
+    title: Supporter
+    topic: Tags
+    help: "Who to blame"
+    tags:
+      - id: nobody
+        title: Nobody
+      - id: roytrenneman
+        title: Roy Trenneman
+      - id: mauricemoss
+        title: Maurice Moss
+      - id: jenbarber
+        title: Jen Barber
+
+checkmk_taggroups_update:
+  - name: Datacenter
+    title: Datacenter
+    topic: Tags
+    help: "something even more useful"
+    repair: true
+    tags:
+      - id: datacenter_none
+        title: No Datacenter
+      - id: datacenter_1000
+        title: Datacenter 1000
+      - id: datacenter_2
+        title: Datacenter 2
+      - id: datacenter_3
+        title: Datacenter 3
+  - name: Supporter
+    title: Supporter
+    topic: Tags
+    help: "Who to blame"
+    repair: true
+    tags:
+      - id: somebody
+        title: Somebody
+      - id: roytrenneman
+        title: Roy Trenneman
+      - id: mauricemoss
+        title: Maurice Moss
+      - id: jenbarber
+        title: Jen Barber
+
+checkmk_taggroups_delete:
+  - name: Supporter
+    repair: true
