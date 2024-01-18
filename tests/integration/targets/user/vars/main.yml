@@ -33,50 +33,176 @@ checkmk_var_contact_groups:
   - team1
   - team2
   - team3
+  - noteam
 
-checkmk_var_users:
+checkmk_var_users_create:
   - name: admin1
     fullname: Admin Eins
     password: "123"
-    newpassword: "abc"
     auth_type: password
     email: 123@company.com
     contactgroups: []
     roles:
       - admin
     fallback_contact: true
+    idle_timeout_duration: 5400
+    idle_timeout_option: individual
   - name: user1
     fullname: User Eins
     password: "123"
-    newpassword: "abc"
     auth_type: password
     email: 123@company.com
+    pager_address: "0123/4567890"
     contactgroups:
       - team1
     fallback_contact: true
+    roles:
+      - admin
+    disable_notifications: true
+    disable_notifications_timerange: { "end_time": "2024-01-09T12:10:00+00:00", "start_time": "2024-01-09T10:10:00+00:00" }
   - name: user2
     fullname: User Zwei
     password: "234"
-    newpassword: "bcd"
     auth_type: password
-    email: 234@company.com
     contactgroups:
       - team2
-    fallback_contact: true
+    roles:
+      - guest
+    language: en
   - name: user3
     fullname: User Drei
     password: "345"
-    newpassword: "cde"
+    auth_type: password
+    email: 345@company.com
+    contactgroups:
+      - noteam
+    fallback_contact: false
+    roles:
+      - user
+    language: de
+    disable_login: true
+  - name: user4
+    fullname: User four
+    password: "4444"
+    auth_type: password
+    contactgroups:
+      - noteam
+    fallback_contact: false
+    roles:
+      - user
+    disable_notifications: false
+    interface_theme: "dark"
+    sidebar_position: "right"
+    navigation_bar_icons: "show"
+    mega_menu_icons: "entry"
+    show_mode: "default_show_more"
+  - name: auto1
+    fullname: Automation User 1
+    password: "0123456789"
+    auth_type: automation
+    contactgroups: []
+    roles:
+      - admin
+
+checkmk_var_users_newpw:
+  - name: admin1
+    password: "abc"
+    auth_type: password
+  - name: user1
+    password: "abc"
+    auth_type: password
+  - name: user2
+    password: "bcd"
+    auth_type: password
+  - name: user3
+    password: "cde"
+    auth_type: password
+  - name: auto1
+    password: "abcdefghij"
+    auth_type: automation
+
+checkmk_var_users_edit:
+  - name: admin1
+    fullname: Admin Eins
+    auth_type: password
+    email: 123@company.com
+    contactgroups: []
+    roles:
+      - admin
+    fallback_contact: true
+    idle_timeout_option: global
+    interface_theme: "dark"
+    sidebar_position: "right"
+    navigation_bar_icons: "show"
+    mega_menu_icons: "entry"
+    show_mode: "default_show_more"
+  - name: user1
+    fullname: User One
+    password: "345egtd"
+    auth_type: password
+    email: user1@company.com
+    pager_address: "4567/9753210"
+    contactgroups:
+      - team1
+    fallback_contact: true
+    roles:
+      - user
+    idle_timeout_duration: 5400
+    idle_timeout_option: individual
+    disable_notifications: false
+    disable_notifications_timerange: { "end_time": "2024-01-09T08:10:00+00:00", "start_time": "2024-01-09T18:10:00+00:00" }
+  - name: user2
+    fullname: User Zwei
+    auth_type: password
+    email: 234@company.com
+    pager_address: "0123/4567890"
+    contactgroups:
+      - team2
+    fallback_contact: true
+    roles:
+      - guest
+    idle_timeout_option: disable
+    disable_login: true
+    disable_notifications: true
+  - name: user3
+    fullname: User Drei
     auth_type: password
     email: 345@company.com
     contactgroups:
       - team3
     fallback_contact: false
+    roles:
+      - admin
+    language: default
+    disable_login: false
+    disable_notifications: false
+  - name: user4
+    fullname: User four
+    password: "4444"
+    auth_type: password
+    contactgroups:
+      - noteam
+    fallback_contact: true
+    roles:
+      - user
+    disable_notifications_timerange: { "end_time": "2024-04-01T08:00:00+00:00", "start_time": "2024-04-01T20:00:00+00:00" }
+    interface_theme: "light"
+    sidebar_position: "left"
+    navigation_bar_icons: "hide"
+    mega_menu_icons: "topic"
+    show_mode: "enforce_show_more"
   - name: auto1
     fullname: Automation User 1
     password: "0123456789"
-    newpassword: "abcdefghij"
     auth_type: automation
     contactgroups: []
     roles:
       - admin
+  - name: auto1
+    fullname: Automation User 1
+    auth_type: automation
+    contactgroups: []
+    roles:
+      - admin
+  - name: cmkadmin
+    show_mode: "enforce_show_more"
