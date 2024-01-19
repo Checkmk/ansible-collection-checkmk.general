@@ -411,6 +411,42 @@ def create_rule(module, base_url, headers, ruleset, rule):
     return (r["id"], changed)
 
 
+def modify_rule(module, base_url, headers, ruleset, rule):
+    changed = True
+    rule_id = rule.get("rule_id")
+
+    if not rule_id:
+        return not changed
+
+    if module.check_mode:
+        return (None, changed)
+
+    headers["If-Match"] = get_rule_etag(module, base_url, headers, rule_id)
+
+    params = {
+        "properties": rule["properties"],
+        "value_raw": rule["value_raw"],
+        "conditions": rule["conditions"],
+    }
+
+    api_endpoint = "/objects/rule/" + rule_id
+    url = base_url + api_endpoint
+
+    info = fetch_url(
+        module, url, module.jsonify(params), headers=headers, method="PUT"
+    )[1]
+    #exit_failed(module, "###### INFO: %s" % str(info))
+
+    if info["status"] not in [200, 204]:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+
+    return changed
+
+
 def delete_rule(module, base_url, headers, ruleset, rule):
     changed = True
     rule_id = get_existing_rule(module, base_url, headers, ruleset, rule)
@@ -556,15 +592,15 @@ def run_module():
     location = rule.get("location")
 
     # Check if required params to create a rule are given
-    if rule.get("folder") is None or rule.get("folder") == "":
+    if not rule.get("folder"):
         rule["folder"] = location["folder"]
-    if rule.get("rule_id") is None or rule.get("rule_id") == "":
-        if rule.get("properties") is None or rule.get("properties") == "":
+    if not rule.get("rule_id"):
+        if not rule.get("properties"):
             exit_failed(module, "Rule properties are required")
-        if rule.get("value_raw") is None or rule.get("value_raw") == "":
+        if not rule.get("value_raw"):
             exit_failed(module, "Rule value_raw is required")
         # Default to all hosts if conditions arent given
-        if rule.get("conditions") is None or rule.get("conditions") == "":
+        if rule.get("conditions"):
             rule["conditions"] = {
                 "host_tags": [],
                 "host_labels": [],
@@ -583,13 +619,24 @@ def run_module():
             exit_ok(module, "Rule does not exist")
     # If state is present, create the rule
     elif module.params.get("state") == "present":
-        (rule_id, created) = create_rule(module, base_url, headers, ruleset, rule)
-        if created:
+        action = None
+        if rule.get("rule_id"):
+            # Modify an existing rule
+            rule_id = rule.get("rule_id")
+            if modify_rule(module, base_url, headers, ruleset, rule):
+                action = "changed"
+        else:
+            # If no rule_id is mentioned, we check if our rule exists. If not, then create it.
+            (rule_id, changed) = create_rule(module, base_url, headers, ruleset, rule)
+            if changed:
+                action = "created"
+
+        if action:
             # Move rule to specified location, if it's not default
             if location["position"] != "bottom" and not module.check_mode:
                 move_rule(module, base_url, headers, rule_id, location)
-            exit_changed(module, "Rule created", rule_id)
-        exit_ok(module, "Rule already exists", rule_id)
+            exit_changed(module, "Rule %s" % action, rule_id)
+        exit_ok(module, "Rule already exists with equal settings", rule_id)
 
     # Fallback
     exit_failed(module, "Unknown error")
