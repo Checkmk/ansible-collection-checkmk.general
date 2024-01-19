@@ -9,6 +9,7 @@
     force_foreign_changes: "{{ checkmk_agent_force_foreign_changes }}"
     redirect: 'true'
     validate_certs: "{{ checkmk_agent_server_validate_certs }}"
+  become: false
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   run_once: true  # noqa run-once[task]
   when: checkmk_agent_auto_activate | bool
