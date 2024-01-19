@@ -2,5 +2,3 @@ tests/container/files/systemctl3.py pep8!skip
 tests/container/files/systemctl3.py no-basestring!skip
 tests/container/files/systemctl3.py pylint!skip
 tests/container/files/systemctl3.py shebang!skip
-scripts/cloudsend/cloudsend.sh shebang!skip
-scripts/cloudsend/cloudsend.sh shellcheck!skip
