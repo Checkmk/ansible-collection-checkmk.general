@@ -46,3 +46,11 @@
   changed_when: site_status.rc == "0"
   loop: "{{ test_sites }}"
   when: (download_pass is defined and download_pass | length) or item.edition == "cre"
+
+- name: "Wait for site to be ready."
+  ansible.builtin.pause:
+    seconds: 5
+  when: |
+    ((download_pass is defined and download_pass | length) or item.item.edition == 'cre')
+    and (item.stdout_lines is defined and 'OVERALL 1' in item.stdout_lines)
+  loop: "{{ site_status.results }}"
