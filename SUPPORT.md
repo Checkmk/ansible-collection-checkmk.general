@@ -48,3 +48,4 @@ Collection Version | Checkmk Versions | Ansible Versions | Remarks
 4.0.0 | 2.0.0p39, 2.1.0p36, 2.2.0p16 | 2.14, 2.15, 2.16 | Breaking changes to the following roles: `agent`, `server`.
 4.0.1 | 2.0.0p39, 2.1.0p36, 2.2.0p16 | 2.14, 2.15, 2.16 | None
 4.1.0 | 2.0.0p39, 2.1.0p37, 2.2.0p17 | 2.14, 2.15, 2.16 | None
+4.2.0 | 2.0.0p39, 2.1.0p38, 2.2.0p19 | 2.14, 2.15, 2.16 | None
