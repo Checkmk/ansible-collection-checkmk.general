@@ -1,0 +1,5 @@
+bugfixes:
+  - Agent role - Fix `become` in handler, which could cause errors on delegation.
+
+minor_changes:
+  - Server role - Improve role speed by skipping downloads.
