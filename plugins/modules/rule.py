@@ -394,6 +394,9 @@ def modify_rule(module, base_url, headers, ruleset, rule):
     if not rule_id:
         return not changed
 
+    if get_existing_rule(module, base_url, headers, ruleset, rule):
+        return not changed
+
     if module.check_mode:
         return (None, changed)
 
