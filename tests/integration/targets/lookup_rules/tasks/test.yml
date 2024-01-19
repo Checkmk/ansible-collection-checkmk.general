@@ -68,7 +68,7 @@
   vars:
     rules: "{{ lookup('checkmk.general.rules',
                       ruleset=item,
-                      commebt_regex='Ansible managed',
+                      comment_regex='Ansible managed',
                       server_url=server_url,
                       site=outer_item.site,
                       validate_certs=False,
