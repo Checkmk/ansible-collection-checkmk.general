@@ -2,10 +2,10 @@
 test_sites:
   - version: "2.2.0p19"
     edition: "cee"
-    site: "stable_ent"
+    site: "stable_cee"
   - version: "2.1.0p38"
     edition: "cee"
-    site: "old_ent"
+    site: "old_cee"
 
 checkmk_var_server_url: "http://127.0.0.1/"
 checkmk_var_automation_user: "cmkadmin"
