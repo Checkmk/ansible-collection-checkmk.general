@@ -59,7 +59,7 @@
         }
     state: "present"
   vars:
-    existing_rule:"{{ lookup('checkmk.general.rules',
+    existing_rule: "{{ lookup('checkmk.general.rules',
                       ruleset=item.ruleset,
                       comment_regex='Ansible managed',
                       server_url=server_url,
