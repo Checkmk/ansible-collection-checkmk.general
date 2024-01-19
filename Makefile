@@ -6,8 +6,6 @@ COLLECTION_ROOT="/home/vagrant/ansible_collections/checkmk/general"
 CONTAINER_BUILD_ROOT="$(COLLECTION_ROOT)/tests/container"
 CONTAINER_NAME="ansible-checkmk-test"
 
-CLOUD_SHARE=https://cloud.checkmk.com/index.php/s/jMbHWxM5mT4WN2r
-
 help:
 	@echo "setup           				- Run all setup target at once."
 	@echo ""
@@ -56,10 +54,6 @@ announce:
 version:
 	@newversion=$$(dialog --stdout --inputbox "New Version:" 0 0 "$(VERSION)") ; \
 	if [ -n "$$newversion" ] ; then ./scripts/release.sh -s "$(VERSION)" -t $$newversion ; fi
-
-cloudsend:
-	CLOUDSEND_PASSWORD=$$(dialog --stdout --inputbox "Share Password:" 0 0) \
-	./scripts/cloudsend/cloudsend.sh -e ansible-checkmk-test-latest-image.tar.gz $(CLOUD_SHARE)
 
 setup: setup-python setup-kvm
 
@@ -129,6 +123,7 @@ vms-suse:
 
 vms-windows:
 	@vagrant up ansidows
+
 container: molecule
 	vagrant ssh molecule -c "\
 	docker build -t $(CONTAINER_NAME) $(CONTAINER_BUILD_ROOT) --build-arg DL_PW=$$(cat .secret) && \
