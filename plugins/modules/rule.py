@@ -68,7 +68,7 @@ options:
                 description: Properties of the rule.
                 type: dict
             rule_id:
-                description: 
+                description:
                   - If given, it will be C(the only condition) to identify the rule to work on.
                   - When there's no rule found with this id, the task will fail.
                 type: str
@@ -300,9 +300,7 @@ def show_rule(module, base_url, headers, rule_id):
 
     url = "%s%s" % (base_url, api_endpoint)
 
-    response, info = fetch_url(
-        module, url, headers=headers, method="GET"
-    )
+    response, info = fetch_url(module, url, headers=headers, method="GET")
 
     if info["status"] != 200:
         exit_failed(
@@ -320,7 +318,7 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
         if module.params.get("state") == "absent":
             # When deleting and we already know the ID, don't compare
             return rule.get("rule_id")
-        rules = [ show_rule(module, base_url, headers, rule.get("rule_id")) ]
+        rules = [show_rule(module, base_url, headers, rule.get("rule_id"))]
     else:
         # Get rules in ruleset
         rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
@@ -414,7 +412,6 @@ def modify_rule(module, base_url, headers, ruleset, rule):
     info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="PUT"
     )[1]
-    #exit_failed(module, "###### INFO: %s" % str(info))
 
     if info["status"] not in [200, 204]:
         exit_failed(
