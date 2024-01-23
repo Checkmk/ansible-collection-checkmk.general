@@ -9,7 +9,7 @@
 Checkmk.General
 ===============
 
-Collection version 4.1.0
+Collection version 4.2.0
 
 .. contents::
    :local:
@@ -67,7 +67,7 @@ Modules
 * :ansplugin:`password module <checkmk.general.password#module>` -- Manage passwords in Checkmk.
 * :ansplugin:`rule module <checkmk.general.rule#module>` -- Manage rules in Checkmk.
 * :ansplugin:`service_group module <checkmk.general.service_group#module>` -- Manage service groups in Checkmk (bulk version).
-* :ansplugin:`tag_group module <checkmk.general.tag_group#module>` -- Manage tag\_group within Checkmk
+* :ansplugin:`tag_group module <checkmk.general.tag_group#module>` -- Manage tag groups in Checkmk.
 * :ansplugin:`timeperiod module <checkmk.general.timeperiod#module>` -- Manage time periods in checkmk.
 * :ansplugin:`user module <checkmk.general.user#module>` -- Manage users in Checkmk.
 
