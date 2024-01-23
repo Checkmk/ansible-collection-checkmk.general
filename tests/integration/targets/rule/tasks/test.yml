@@ -55,9 +55,14 @@
     rule: 
       rule_id: "{{ existing_rule[0].id }}"
       properties: {
-        "description": "Modified this intentionally."
+        "comment": "{{ existing_rule[0].extensions.properties.comment }}",
+        "description": "Modified this intentionally.",
+        "disabled": "{{ existing_rule[0].extensions.properties.disabled }}"
         }
+      conditions: "{{ existing_rule[0].extensions.conditions }}"
+      value_raw: "{{ existing_rule[0].extensions.value_raw | string }}"
     state: "present"
+  when: "existing_rule|length>0"
   vars:
     existing_rule: "{{ lookup('checkmk.general.rules',
                       ruleset=item.ruleset,
