@@ -5,6 +5,33 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v4.2.0
+======
+
+Release Summary
+---------------
+
+Happy New Year!
+
+Major Changes
+-------------
+
+- Tag_group module - Rewrite module and migrate to new collection API.
+- User module - Rewrite module and migrate to new collection API.
+
+Minor Changes
+-------------
+
+- Server role - Improve role speed by skipping downloads.
+- Tag_group module - Enable `help` and `repair` options.
+- User module - Enable several interface options.
+
+Bugfixes
+--------
+
+- Agent role - Fix `become` in handler, which could cause errors on delegation.
+- Rule module - Fix idempotency for rule location relative to another rule_id, by getting the target folder from neighbour rule.
+
 v4.1.0
 ======
 

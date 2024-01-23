@@ -802,3 +802,24 @@ releases:
     - release_summary.yml
     - rule_lookup_plugins.yml
     release_date: '2023-12-21'
+  4.2.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix `become` in handler, which could cause errors on delegation.
+      - Rule module - Fix idempotency for rule location relative to another rule_id,
+        by getting the target folder from neighbour rule.
+      major_changes:
+      - Tag_group module - Rewrite module and migrate to new collection API.
+      - User module - Rewrite module and migrate to new collection API.
+      minor_changes:
+      - Server role - Improve role speed by skipping downloads.
+      - Tag_group module - Enable `help` and `repair` options.
+      - User module - Enable several interface options.
+      release_summary: Happy New Year!
+    fragments:
+    - release_summary.yml
+    - roles.yml
+    - rule.yml
+    - tag_group.yml
+    - user.yml
+    release_date: '2024-01-23'
