@@ -12,10 +12,10 @@ Vagrant.configure("2") do |config|
   config.vm.define "collection", primary: true do |srv|
     srv.vm.box = "generic/ubuntu2204"
     srv.vm.network :private_network,
-        :ip                         => "192.168.123.42",
+        :ip                         => "192.168.124.42",
         :libvirt__netmask           => "255.255.255.0",
         :libvirt__network_name      => "ansible_collection",
-        :libvirt__network_address   => "192.168.123.0"
+        :libvirt__network_address   => "192.168.124.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
       libvirt.default_prefix = "ansible_"
@@ -52,10 +52,10 @@ Vagrant.configure("2") do |config|
   config.vm.define "molecule", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/ubuntu2004"
     srv.vm.network :private_network,
-    :ip                         => "192.168.123.43",
+    :ip                         => "192.168.124.43",
     :libvirt__netmask           => "255.255.255.0",
     :libvirt__network_name      => "ansible_collection",
-    :libvirt__network_address   => "192.168.123.0"
+    :libvirt__network_address   => "192.168.124.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
       libvirt.default_prefix = "ansible_"
@@ -93,10 +93,10 @@ Vagrant.configure("2") do |config|
   config.vm.define "ansibuntu", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/ubuntu2204"
     srv.vm.network :private_network,
-    :ip                         => "192.168.123.61",
+    :ip                         => "192.168.124.61",
     :libvirt__netmask           => "255.255.255.0",
     :libvirt__network_name      => "ansible_collection",
-    :libvirt__network_address   => "192.168.123.0"
+    :libvirt__network_address   => "192.168.124.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
       libvirt.default_prefix = "ansible_"
@@ -115,10 +115,10 @@ Vagrant.configure("2") do |config|
   config.vm.define "debsible", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/debian12"
     srv.vm.network :private_network,
-    :ip                         => "192.168.123.62",
+    :ip                         => "192.168.124.62",
     :libvirt__netmask           => "255.255.255.0",
     :libvirt__network_name      => "ansible_collection",
-    :libvirt__network_address   => "192.168.123.0"
+    :libvirt__network_address   => "192.168.124.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
       libvirt.default_prefix = "ansible_"
@@ -137,10 +137,10 @@ Vagrant.configure("2") do |config|
   config.vm.define "anstream", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/centos9s"
     srv.vm.network :private_network,
-    :ip                         => "192.168.123.63",
+    :ip                         => "192.168.124.63",
     :libvirt__netmask           => "255.255.255.0",
     :libvirt__network_name      => "ansible_collection",
-    :libvirt__network_address   => "192.168.123.0"
+    :libvirt__network_address   => "192.168.124.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
       libvirt.default_prefix = "ansible_"
@@ -159,10 +159,10 @@ Vagrant.configure("2") do |config|
   config.vm.define "ansuse", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/opensuse42"
     srv.vm.network :private_network,
-    :ip                         => "192.168.123.64",
+    :ip                         => "192.168.124.64",
     :libvirt__netmask           => "255.255.255.0",
     :libvirt__network_name      => "ansible_collection",
-    :libvirt__network_address   => "192.168.123.0"
+    :libvirt__network_address   => "192.168.124.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
       libvirt.default_prefix = "ansible_"
@@ -177,37 +177,36 @@ Vagrant.configure("2") do |config|
       inline: "zypper --quiet up -y"
   end
 
-  # SLES15 (No Box for libvirt found!!)
-  config.vm.define "ansles", autostart: false , primary: false do |srv|
-    srv.vm.box = "saltstack/cicd-sles15"
-    srv.vm.network :private_network,
-    :ip                         => "192.168.123.64",
-    :libvirt__netmask           => "255.255.255.0",
-    :libvirt__network_name      => "ansible_collection",
-    :libvirt__network_address   => "192.168.123.0"
-    srv.ssh.insert_key = false
-    srv.vm.provider "libvirt" do |libvirt|
-      libvirt.default_prefix = "ansible_"
-      libvirt.description = 'This box is used to test roles against.'
-      libvirt.memory = 2048
-      libvirt.cpus = 2
-      libvirt.title = "ansles"
-      libvirt.memorybacking :access, :mode => 'shared'
-      libvirt.memorybacking :source, :type => 'memfd'
-    end
-    srv.vm.provision "shell",
-      inline: "zypper --quiet up -y"
-  end
-
+  # # SLES15 (No Box for libvirt found!!)
+  # config.vm.define "ansles", autostart: false , primary: false do |srv|
+  #   srv.vm.box = "saltstack/cicd-sles15"
+  #   srv.vm.network :private_network,
+  #   :ip                         => "192.168.124.64",
+  #   :libvirt__netmask           => "255.255.255.0",
+  #   :libvirt__network_name      => "ansible_collection",
+  #   :libvirt__network_address   => "192.168.124.0"
+  #   srv.ssh.insert_key = false
+  #   srv.vm.provider "libvirt" do |libvirt|
+  #     libvirt.default_prefix = "ansible_"
+  #     libvirt.description = 'This box is used to test roles against.'
+  #     libvirt.memory = 2048
+  #     libvirt.cpus = 2
+  #     libvirt.title = "ansles"
+  #     libvirt.memorybacking :access, :mode => 'shared'
+  #     libvirt.memorybacking :source, :type => 'memfd'
+  #   end
+  #   srv.vm.provision "shell",
+  #     inline: "zypper --quiet up -y"
+  # end
 
   # Oracle Linux
   config.vm.define "ansoracle", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/oracle8"
     srv.vm.network :private_network,
-    :ip                         => "192.168.123.66",
+    :ip                         => "192.168.124.66",
     :libvirt__netmask           => "255.255.255.0",
     :libvirt__network_name      => "ansible_collection",
-    :libvirt__network_address   => "192.168.123.0"
+    :libvirt__network_address   => "192.168.124.0"
     srv.ssh.insert_key = false
     srv.vm.provider "libvirt" do |libvirt|
       libvirt.default_prefix = "ansible_"
@@ -226,10 +225,10 @@ Vagrant.configure("2") do |config|
   config.vm.define "ansidows", autostart: false , primary: false do |srv|
     srv.vm.box = "peru/windows-server-2019-standard-x64-eval"
     srv.vm.network :private_network,
-    :ip                         => "192.168.123.67",
+    :ip                         => "192.168.124.67",
     :libvirt__netmask           => "255.255.255.0",
     :libvirt__network_name      => "ansible_collection",
-    :libvirt__network_address   => "192.168.123.0"
+    :libvirt__network_address   => "192.168.124.0"
     srv.winrm.max_tries = 100
     srv.winrm.retry_delay = 2
     srv.vm.boot_timeout = 180

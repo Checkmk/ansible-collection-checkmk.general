@@ -17,6 +17,9 @@
     - include-os-family-vars
     - install-package
 
+- name: "Get installed Packages."
+  ansible.builtin.package_facts:
+
 - name: "Update APT Cache."
   become: true
   ansible.builtin.apt:
@@ -34,56 +37,56 @@
     - install-package
     - install-prerequisites
 
-- name: "Download Checkmk Server Setup."
-  ansible.builtin.get_url:
-    url: "{{ checkmk_server_download_url }}"
-    dest: "/tmp/{{ checkmk_server_setup_file }}"
-    mode: "0640"
-    url_username: "{{ checkmk_server_download_user | default(omit) }}"
-    url_password: "{{ checkmk_server_download_pass | default(omit) }}"
-  retries: 3
-  tags:
-    - download-package
-
-- name: "Download Checkmk GPG Key."
-  ansible.builtin.get_url:
-    url: "https://download.checkmk.com/checkmk/Check_MK-pubkey.gpg"
-    dest: "/tmp/Check_MK-pubkey.gpg"
-    mode: "0640"
-  when: checkmk_server_verify_setup | bool
-  retries: 3
-  tags:
-    - download-gpg-key
-
-- name: "GPG Verification on Debian Derivatives."
-  when: checkmk_server_verify_setup | bool and ansible_os_family == "Debian"
+- name: "Downloads Management."
+  when: not 'check-mk-' + checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
   block:
-    - name: "Import Checkmk GPG Key."
-      ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
-      register: checkmk_server_gpg_import
+
+    - name: "Download Checkmk Server Setup."
+      ansible.builtin.get_url:
+        url: "{{ checkmk_server_download_url }}"
+        dest: "/tmp/{{ checkmk_server_setup_file }}"
+        mode: "0640"
+        url_username: "{{ checkmk_server_download_user | default(omit) }}"
+        url_password: "{{ checkmk_server_download_pass | default(omit) }}"
+      retries: 3
+      tags:
+        - download-package
+
+    - name: "Download Checkmk GPG Key."
+      ansible.builtin.get_url:
+        url: "https://download.checkmk.com/checkmk/Check_MK-pubkey.gpg"
+        dest: "/tmp/Check_MK-pubkey.gpg"
+        mode: "0640"
       when: checkmk_server_verify_setup | bool
-      changed_when: "'imported: 1' in checkmk_server_gpg_import"
+      retries: 3
+      tags:
+        - download-gpg-key
+
+    - name: "GPG Verification on Debian Derivatives."
+      when: checkmk_server_verify_setup | bool and ansible_os_family == "Debian"
+      block:
+        - name: "Import Checkmk GPG Key."
+          ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
+          register: checkmk_server_gpg_import
+          when: checkmk_server_verify_setup | bool
+          changed_when: "'imported: 1' in checkmk_server_gpg_import"
+          tags:
+            - import-gpg-key
+
+        - name: "Verify Checkmk Setup."
+          ansible.builtin.command: gpg --verify "/tmp/{{ checkmk_server_setup_file }}"
+          register: checkmk_server_verify_state
+          changed_when: false
+          failed_when: "'Bad signature' in checkmk_server_verify_state.stderr"
+
+    - name: "Import Checkmk GPG Key."
+      become: true
+      ansible.builtin.rpm_key:
+        key: "/tmp/Check_MK-pubkey.gpg"
+        state: present
+      when: checkmk_server_verify_setup | bool and ansible_os_family == "RedHat"
       tags:
         - import-gpg-key
-
-    - name: "Verify Checkmk Setup."
-      ansible.builtin.command: gpg --verify "/tmp/{{ checkmk_server_setup_file }}"
-      register: checkmk_server_verify_state
-      changed_when: false
-      failed_when: "'Bad signature' in checkmk_server_verify_state.stderr"
-
-    - name: "Print Verification Output."
-      ansible.builtin.debug:
-        msg: "{{ checkmk_server_verify_state.stderr_lines }}"
-
-- name: "Import Checkmk GPG Key."
-  become: true
-  ansible.builtin.rpm_key:
-    key: "/tmp/Check_MK-pubkey.gpg"
-    state: present
-  when: checkmk_server_verify_setup | bool and ansible_os_family == "RedHat"
-  tags:
-    - import-gpg-key
 
 - name: Include OS Family specific Playbook.
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"

@@ -9,5 +9,7 @@ build/
 tests/output
 playbooks/vars/config.yml
 playbooks/test*.yml
+playbooks/hosts
+playbooks/hosts.bak
 Vagrantfile
 Vagrantfile.bak

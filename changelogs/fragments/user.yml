@@ -1,0 +1,5 @@
+major_changes:
+  - User module - Rewrite module and migrate to new collection API.
+
+minor_changes:
+  - User module - Enable several interface options.
