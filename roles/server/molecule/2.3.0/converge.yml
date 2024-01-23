@@ -1,0 +1,35 @@
+---
+- name: Converge
+  hosts: all
+
+  pre_tasks:
+
+    - name: Update apt cache.
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 600
+      when: ansible_os_family == 'Debian'
+
+    - name: Install prerequisites.
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apt-utils
+        - man
+      when: ansible_os_family == 'Debian'
+
+    - name: Create '/usr/share/man/man8/' on Ubuntu.
+      ansible.builtin.file:
+        path: /usr/share/man/man8/
+        state: directory
+        mode: "0755"
+        owner: root
+        group: root
+      when: ansible_distribution == 'Ubuntu'
+
+  tasks:
+
+    - name: "Run server role."
+      ansible.builtin.include_role:
+        name: server
