@@ -174,28 +174,10 @@ else:
 
 FOLDER = (
     "name",
-    "fullname",
+    "title",
     "customer",
-    "password",
-    "enforce_password_change",
-    "auth_type",
-    "disable_login",
-    "email",
-    "fallback_contact",
-    "pager",
-    "idle_timeout_option",
-    "idle_timeout_duration",
-    "roles",
-    "authorized_sites",
-    "contactgroups",
-    "disable_notifications",
-    "disable_notifications_timerange",
-    "language",
-    "interface_theme",
-    "sidebar_position",
-    "navigation_bar_icons",
-    "mega_menu_icons",
-    "show_mode",
+    "parent",
+    "attributes",
     )
 
 
@@ -217,126 +199,91 @@ class FolderEndpoints:
 
 
 class FolderAPI(CheckmkAPI):
-    def _build_folder_data(self):
-        folder = {}
+    def __init__(self, module):
+        super().__init__()
 
-        folder["disable_notifications"] = {}
-        folder["interface_options"] = {}
+        (self.desired["parent"], self.desired["name"]) = _normalize_path(self.params.get("path"))
+        self.desired["title"] = self.params.get("title", self.desired["name"])
+        # TODO: Decide whether to use attributes, update_attributes or remove_attributes and fill
+        # the parameters.
+        # self.desired["attributes"] = self.params.get("attributes")
 
-        # For some keys the API has required sub keys. We can use them as indicator,
-        # that the key must be used
-        if self.required.get("auth_type"):
-            folder["auth_option"] = {}
-        if self.required.get("email"):
-            folder["contact_options"] = {}
-        if self.required.get("idle_timeout_option"):
-            folder["idle_timeout"] = {}
+        if self.params.get("customer"):
+            self.desired["customer"] = self.params.get("customer")
 
-        for key, value in self.required.items():
-            if key in (
-                "username",
-                "fullname",
-                "customer",
-                "disable_login",
-                "roles",
-                "authorized_sites",
-                "contactgroups",
-            ):
-                folder[key] = value
+        # Get the current folder from the API and set the etag
+        result = self.get()
+        self.etag = result.etag
 
-            if key in "pager":
-                key = "pager_address"
-                folder[key] = value
+    def _normalize_path(self, path):
+        p = Path(path)
+        if not p.is_absolute():
+            p = Path("/").joinpath(p)
+        return str(p.parent).lower(), p.name
+    
+    def _urlize_path(self, path):
+        return path.replace("/", "~")
 
-            if key in "language":
-                if value != "default":
-                    folder["language"] = value
+    # def _build_folder_data(self):
+    #     folder = {}
 
-            if key in ("auth_type", "password", "enforce_password_change"):
-                if key == "password" and self.params.get("auth_type") == "automation":
-                    # Unfortunately the API uses different strings for the password
-                    # depending on the kind of folder...
-                    key = "secret"
-                folder["auth_option"][key] = value
+    #     for key, value in self.desired.items():
+    #         if key in (
+    #             "username",
+    #             "fullname",
+    #             "customer",
+    #             "disable_login",
+    #             "roles",
+    #             "authorized_sites",
+    #             "contactgroups",
+    #         ):
+    #             folder[key] = value
 
-            if key in ("email", "fallback_contact"):
-                folder["contact_options"][key] = value
+    #         if key in "pager":
+    #             key = "pager_address"
+    #             folder[key] = value
 
-            if key == "idle_timeout_option":
-                folder["idle_timeout"]["option"] = value
-            if key == "idle_timeout_duration":
-                folder["idle_timeout"]["duration"] = value
+    #         if key in "language":
+    #             if value != "default":
+    #                 folder["language"] = value
 
-            if key == "disable_notifications":
-                folder["disable_notifications"]["disable"] = value
-            if key == "disable_notifications_timerange":
-                folder["disable_notifications"]["timerange"] = value
+    #         if key in ("auth_type", "password", "enforce_password_change"):
+    #             if key == "password" and self.params.get("auth_type") == "automation":
+    #                 # Unfortunately the API uses different strings for the password
+    #                 # depending on the kind of folder...
+    #                 key = "secret"
+    #             folder["auth_option"][key] = value
 
-            if key in (
-                "interface_theme",
-                "sidebar_position",
-                "navigation_bar_icons",
-                "mega_menu_icons",
-                "show_mode",
-            ):
-                folder["interface_options"][key] = value
+    #         if key in ("email", "fallback_contact"):
+    #             folder["contact_options"][key] = value
 
-        return folder
+    #         if key == "idle_timeout_option":
+    #             folder["idle_timeout"]["option"] = value
+    #         if key == "idle_timeout_duration":
+    #             folder["idle_timeout"]["duration"] = value
 
-    def _set_current(self, result):
-        # A flat hierarchy allows an easy comparison of differences
-        content = json.loads(result.content)["extensions"]
-        for key in FOLDER:
-            if key in content:
-                if key != "disable_notifications":
-                    self.current[key] = content[key]
-            if key in "pager" and "pager_address" in content:
-                self.current[key] = content["pager_address"]
-            if key in ("email", "fallback_contact") and "contact_options" in content:
-                self.current[key] = content["contact_options"][key]
-            if key == "idle_timeout_option":
-                self.current[key] = content["idle_timeout"]["option"]
-            if key == "idle_timeout_duration":
-                if "duration" in content["idle_timeout"]:
-                    self.current[key] = content["idle_timeout"]["duration"]
-            if key == "disable_notifications":
-                if "disable" in content["disable_notifications"]:
-                    self.current[key] = content["disable_notifications"]["disable"]
-                else:
-                    self.current[key] = False
-            if key == "disable_notifications_timerange":
-                if "timerange" in content["disable_notifications"]:
-                    self.current[key] = content["disable_notifications"]["timerange"]
+    #         if key == "disable_notifications":
+    #             folder["disable_notifications"]["disable"] = value
+    #         if key == "disable_notifications_timerange":
+    #             folder["disable_notifications"]["timerange"] = value
 
-            if (
-                key
-                in (
-                    "interface_theme",
-                    "sidebar_position",
-                    "navigation_bar_icons",
-                    "mega_menu_icons",
-                    "show_mode",
-                )
-                and key in content["interface_options"]
-            ):
-                self.current[key] = content["interface_options"][key]
+    #         if key in (
+    #             "interface_theme",
+    #             "sidebar_position",
+    #             "navigation_bar_icons",
+    #             "mega_menu_icons",
+    #             "show_mode",
+    #         ):
+    #             folder["interface_options"][key] = value
+
+    #     return folder
 
     def _build_default_endpoint(self):
         return "%s/%s" % (FolderEndpoints.default, self.params.get("name"))
 
-    def build_required(self):
-        # A flat hierarchy allows an easy comparison of differences
-        for key in FOLDER:
-            if key == "username":
-                self.required[key] = self.params["name"]
-                continue
-            if self.params.get(key) is None:
-                continue
-            self.required[key] = self.params[key]
-
     def needs_editing(self):
         black_list = ("username", "password", "auth_type", "authorized_sites")
-        for key, value in self.required.items():
+        for key, value in self.desired.items():
             if key not in black_list and self.current.get(key) != value:
                 return True
         return False
@@ -350,16 +297,17 @@ class FolderAPI(CheckmkAPI):
 
         if result.http_code == 200:
             self.state = "present"
-            self._set_current(result)
+            content = json.loads(result.content)["extensions"]
+            for key in FOLDER:
+                if key in content:
+                    self.current[key] = content[key]
         else:
             self.state = "absent"
         return result
 
     def create(self):
-        data = self._build_folder_data()
-        # It's allowed in Ansible to skip the fullname, but it's not allowed
-        # in the Checkmk API...
-        data.setdefault("fullname", data["username"])
+        data = self.desired
+        data["path"] = _urlize_path(self.desired["path"])
 
         result = self._fetch(
             code_mapping=FolderHTTPCodes.create,
@@ -370,9 +318,10 @@ class FolderAPI(CheckmkAPI):
 
         return result
 
-    def edit(self, etag):
-        data = self._build_folder_data()
-        self.headers["if-Match"] = etag
+    def edit(self):
+        data = self.desired
+        data["path"] = _urlize_path(self.desired["path"])
+        self.headers["if-Match"] = self.etag
 
         result = self._fetch(
             code_mapping=FolderHTTPCodes.edit,
@@ -599,26 +548,44 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
-    # Use the parameters to initialize some common api variables
-    folder = FolderAPI(module)
+    # Create an API object that contains the current and desired state
+    current_folder = FolderAPI(module)
 
-    folder.build_required()
-    result = folder.get()
-    etag = result.etag
+    # Check if parameters are compatible with CMK version
+    if sum(
+        [
+            1
+            for el in ["attributes", "remove_attributes", "update_attributes"]
+            if module.params.get(el)
+        ]
+    ) > 1:
+        result = RESULT(
+            http_code=0,
+            msg="As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of"
+                "attributes, remove_attributes, and update_attributes is no longer supported."
+            content="",
+            etag="",
+            failed=True,
+            changed=False,
+        )
+        ver = current_folder.getversion()
+        if ver >= CheckmkVersion("2.2.0p7"):
+            # TODO: exit with error
+            # "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported.",
+        else:
+            # TODO: print warning
+            # "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported."
 
-    required_state = folder.params.get("state")
-    if folder.state == "present":
-        if required_state == "reset_password":
-            folder.required.pop("username")
-            result = folder.edit(etag)
-        elif required_state == "absent":
-            result = folder.delete()
-        elif folder.needs_editing():
-            folder.required.pop("username")
-            result = folder.edit(etag)
-    elif folder.state == "absent":
-        if required_state in ("present", "reset_password"):
-            result = folder.create()
+    desired_state = current_folder.params.get("state")
+    if current_folder.state == "present":
+        if desired_state == "absent":
+            result = current_folder.delete()
+        elif current_folder.needs_editing():
+            current_folder.desired.pop("name")
+            result = current_folder.edit()
+    elif current_folder.state == "absent":
+        if desired_state in ("present"):
+            result = current_folder.create()
 
     module.exit_json(**result_as_dict(result))
 
