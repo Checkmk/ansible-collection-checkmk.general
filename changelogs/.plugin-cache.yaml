@@ -107,7 +107,7 @@ plugins:
       namespace: ''
       version_added: 0.12.0
     tag_group:
-      description: Manage tag_group within Checkmk
+      description: Manage tag groups in Checkmk.
       name: tag_group
       namespace: ''
       version_added: 0.11.0
@@ -126,4 +126,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 4.1.0
+version: 4.2.0

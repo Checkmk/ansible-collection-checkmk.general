@@ -23,7 +23,7 @@ checkmk.general.host_group module -- Manage host groups in Checkmk (bulk version
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -502,7 +502,7 @@ Examples
         state: "present"
 
     # Delete a single host group.
-    - name: "Create a single host group."
+    - name: "Delete a single host group."
       checkmk.general.host_group:
         server_url: "http://my_server/"
         site: "my_site"

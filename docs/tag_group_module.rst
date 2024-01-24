@@ -17,13 +17,13 @@
 
 .. Title
 
-checkmk.general.tag_group module -- Manage tag\_group within Checkmk
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.tag_group module -- Manage tag groups in Checkmk.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -50,7 +50,7 @@ Synopsis
 
 .. Description
 
-- Manage tag\_group within Checkmk.
+- Manage tag groups in Checkmk.
 
 
 .. Aliases
@@ -150,55 +150,17 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-choices"></div>
+        <div class="ansibleOptionAnchor" id="parameter-help"></div>
 
-      .. _ansible_collections.checkmk.general.tag_group_module__parameter-choices:
-
-      .. rst-class:: ansible-option-title
-
-      **choices**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-choices" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The list of the tags for the tag\_group as dicts.
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-id"></div>
-
-      .. _ansible_collections.checkmk.general.tag_group_module__parameter-id:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-help:
 
       .. rst-class:: ansible-option-title
 
-      **id**
+      **help**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-id" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-help" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -212,12 +174,92 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The id of the tag\_group to be created/ modified/deleted.
+      The help text for the tag group.
 
 
       .. rst-class:: ansible-option-line
 
       :ansible-option-default-bold:`Default:` :ansible-option-default:`""`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-name"></div>
+        <div class="ansibleOptionAnchor" id="parameter-id"></div>
+
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-id:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-name:
+
+      .. rst-class:: ansible-option-title
+
+      **name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: id`
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The name of the tag group to manage.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-repair"></div>
+
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-repair:
+
+      .. rst-class:: ansible-option-title
+
+      **repair**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-repair" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Give permission to update or remove the tag on hosts using it automatically. \ :strong:`Use with caution!`\ 
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
 
       .. raw:: html
 
@@ -318,7 +360,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The desired state
+      The desired state.
 
 
       .. rst-class:: ansible-option-line
@@ -332,6 +374,137 @@ Parameters
       .. raw:: html
 
         </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-tags"></div>
+        <div class="ansibleOptionAnchor" id="parameter-choices"></div>
+
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-choices:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-tags:
+
+      .. rst-class:: ansible-option-title
+
+      **tags**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-tags" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: choices`
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      A list of the tag groups to be created.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
+
+      .. raw:: html
+
+        </div>
+    
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-tags/id"></div>
+        <div class="ansibleOptionAnchor" id="parameter-choices/id"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-choices/id:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-tags/id:
+
+      .. rst-class:: ansible-option-title
+
+      **id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-tags/id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The id of the tag
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-tags/title"></div>
+        <div class="ansibleOptionAnchor" id="parameter-choices/title"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-choices/title:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-tags/title:
+
+      .. rst-class:: ansible-option-title
+
+      **title**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-tags/title" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The title of the tag
+
+
+      .. raw:: html
+
+        </div>
+
 
   * - .. raw:: html
 
@@ -360,7 +533,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The title of the tag\_group
+      The title of the tag group.
 
 
       .. rst-class:: ansible-option-line
@@ -398,7 +571,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The topic of the tag\_group
+      The topic of the tag group.
 
 
       .. rst-class:: ansible-option-line
@@ -469,27 +642,37 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    - name: "Create tag_group"
+    # Create a tag group
+    - name: "Create tag group"
       checkmk.general.tag_group:
-        server_url: "https://localhost/"
+        server_url: "https://my_server/"
         site: "my_site"
         automation_user: "my_user"
         automation_secret: "my_secret"
-        id: Virtualization
-        title: Virtualization
-        topic: My_Tags
-        choices:
-          - id: No_Virtualization
-            title: No Virtualization
-          - id: ESXi
-            title: ESXi
-          - id: vCenter
-            title: vCenter
-          - id: HyperV
-            title: HyperV
-          - id: KVM
-            title: KVM
+        name: datacenter
+        title: Datacenter
+        topic: Tags
+        help: "The datacenter this host resides in."
+        tags:
+          - id: datacenter_none
+            title: No Datacenter
+          - id: datacenter_1
+            title: Datacenter 2
+          - id: datacenter_2
+            title: Datacenter 2
+          - id: datacenter_3
+            title: Datacenter 3
         state: present
+
+    # Delete a tag group
+    - name: "Delete tag group."
+      checkmk.general.tag_group:
+        server_url: "https://my_server/"
+        site: "my_site"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
+        name: datacenter
+        state: "absent"
 
 
 
@@ -613,6 +796,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
+- Max Sickora (@Max-checkmk)
 - Stefan Mühling (@muehlings)
 
 
