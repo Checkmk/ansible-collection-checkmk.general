@@ -202,7 +202,9 @@ class FolderAPI(CheckmkAPI):
 
         self.desired = {}
 
-        (self.desired["parent"], self.desired["name"]) = self._normalize_path(self.params.get("path"))
+        (self.desired["parent"], self.desired["name"]) = self._normalize_path(
+            self.params.get("path")
+        )
         self.desired["title"] = self.params.get("title", self.desired["name"])
 
         for key in FOLDER:
@@ -217,17 +219,22 @@ class FolderAPI(CheckmkAPI):
 
     def _verify_compatibility(self):
         # Check if parameters are compatible with CMK version
-        if sum(
-            [
-                1
-                for el in ["attributes", "remove_attributes", "update_attributes"]
-                if self.module.params.get(el)
-            ]
-        ) > 1:
+        if (
+            sum(
+                [
+                    1
+                    for el in ["attributes", "remove_attributes", "update_attributes"]
+                    if self.module.params.get(el)
+                ]
+            )
+            > 1
+        ):
 
             ver = self.getversion()
-            msg = ("As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of"
-                   " attributes, remove_attributes, and update_attributes is no longer supported.")
+            msg = (
+                "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of"
+                " attributes, remove_attributes, and update_attributes is no longer supported."
+            )
 
             if ver >= CheckmkVersion("2.2.0p7"):
                 result = RESULT(
@@ -252,8 +259,10 @@ class FolderAPI(CheckmkAPI):
         return path.replace("/", "~").replace("~~", "~")
 
     def _build_default_endpoint(self):
-        return "%s/%s" % (FolderEndpoints.default,
-                          self._urlize_path("%s/%s" % (self.desired["parent"], self.desired["name"])))
+        return "%s/%s" % (
+            FolderEndpoints.default,
+            self._urlize_path("%s/%s" % (self.desired["parent"], self.desired["name"])),
+        )
 
     def _detect_changes(self):
         current_attributes = self.current.get("attributes", {})
@@ -262,15 +271,16 @@ class FolderAPI(CheckmkAPI):
 
         if desired_attributes.get("update_attributes"):
             merged_attributes = dict_merge(
-                current_attributes,
-                desired_attributes.get("update_attributes")
+                current_attributes, desired_attributes.get("update_attributes")
             )
 
             if merged_attributes != current_attributes:
                 desired_attributes["update_attributes"] = merged_attributes
                 changes.append("update attributes")
 
-        if desired_attributes.get("attributes") and current_attributes != desired_attributes.get("attributes"):
+        if desired_attributes.get(
+            "attributes"
+        ) and current_attributes != desired_attributes.get("attributes"):
             changes.append("attributes")
 
         if self.current.get("title") != desired_attributes.get("title"):
@@ -358,7 +368,9 @@ class FolderAPI(CheckmkAPI):
             method="PUT",
         )
 
-        return result._replace(msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items))
+        return result._replace(
+            msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items)
+        )
 
     def delete(self):
         if self.module.check_mode:
@@ -424,7 +436,9 @@ def run_module():
 
     desired_state = current_folder.params.get("state")
     if current_folder.state == "present":
-        result = result._replace(msg="Folder already exists with the desired parameters.")
+        result = result._replace(
+            msg="Folder already exists with the desired parameters."
+        )
         if desired_state == "absent":
             result = current_folder.delete()
         elif current_folder.needs_update():
