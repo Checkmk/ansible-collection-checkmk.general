@@ -173,12 +173,11 @@ else:
         PATHLIB2_LIBRARY_IMPORT_ERROR = traceback.format_exc()
 
 FOLDER = (
-    "name",
-    "title",
     "customer",
-    "parent",
     "attributes",
-    )
+    "update_attributes",
+    "remove_attributes",
+)
 
 
 class FolderHTTPCodes:
@@ -200,95 +199,93 @@ class FolderEndpoints:
 
 class FolderAPI(CheckmkAPI):
     def __init__(self, module):
-        super().__init__()
+        super().__init__(module)
 
-        (self.desired["parent"], self.desired["name"]) = _normalize_path(self.params.get("path"))
+        self.desired = {}
+
+        (self.desired["parent"], self.desired["name"]) = self._normalize_path(self.params.get("path"))
         self.desired["title"] = self.params.get("title", self.desired["name"])
-        # TODO: Decide whether to use attributes, update_attributes or remove_attributes and fill
-        # the parameters.
-        # self.desired["attributes"] = self.params.get("attributes")
 
-        if self.params.get("customer"):
-            self.desired["customer"] = self.params.get("customer")
+        for key in FOLDER:
+            if self.params.get(key):
+                self.desired[key] = self.params.get(key)
 
-        # Get the current folder from the API and set the etag
-        result = self.get()
-        self.etag = result.etag
+        # Get the current folder from the API and set some parameters
+        self._get_current()
+        self._changed_items = self._detect_changes()
+
+        self._verify_compatibility()
+
+    def _verify_compatibility(self):
+        # Check if parameters are compatible with CMK version
+        if sum(
+            [
+                1
+                for el in ["attributes", "remove_attributes", "update_attributes"]
+                if self.module.params.get(el)
+            ]
+        ) > 1:
+
+            ver = self.getversion()
+            msg = ("As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of"
+                   " attributes, remove_attributes, and update_attributes is no longer supported.")
+
+            if ver >= CheckmkVersion("2.2.0p7"):
+                result = RESULT(
+                    http_code=0,
+                    msg=msg,
+                    content="",
+                    etag="",
+                    failed=True,
+                    changed=False,
+                )
+                self.module.exit_json(**result_as_dict(result))
+            else:
+                self.module.warn(msg)
 
     def _normalize_path(self, path):
         p = Path(path)
         if not p.is_absolute():
             p = Path("/").joinpath(p)
         return str(p.parent).lower(), p.name
-    
+
     def _urlize_path(self, path):
-        return path.replace("/", "~")
-
-    # def _build_folder_data(self):
-    #     folder = {}
-
-    #     for key, value in self.desired.items():
-    #         if key in (
-    #             "username",
-    #             "fullname",
-    #             "customer",
-    #             "disable_login",
-    #             "roles",
-    #             "authorized_sites",
-    #             "contactgroups",
-    #         ):
-    #             folder[key] = value
-
-    #         if key in "pager":
-    #             key = "pager_address"
-    #             folder[key] = value
-
-    #         if key in "language":
-    #             if value != "default":
-    #                 folder["language"] = value
-
-    #         if key in ("auth_type", "password", "enforce_password_change"):
-    #             if key == "password" and self.params.get("auth_type") == "automation":
-    #                 # Unfortunately the API uses different strings for the password
-    #                 # depending on the kind of folder...
-    #                 key = "secret"
-    #             folder["auth_option"][key] = value
-
-    #         if key in ("email", "fallback_contact"):
-    #             folder["contact_options"][key] = value
-
-    #         if key == "idle_timeout_option":
-    #             folder["idle_timeout"]["option"] = value
-    #         if key == "idle_timeout_duration":
-    #             folder["idle_timeout"]["duration"] = value
-
-    #         if key == "disable_notifications":
-    #             folder["disable_notifications"]["disable"] = value
-    #         if key == "disable_notifications_timerange":
-    #             folder["disable_notifications"]["timerange"] = value
-
-    #         if key in (
-    #             "interface_theme",
-    #             "sidebar_position",
-    #             "navigation_bar_icons",
-    #             "mega_menu_icons",
-    #             "show_mode",
-    #         ):
-    #             folder["interface_options"][key] = value
-
-    #     return folder
+        return path.replace("/", "~").replace("~~", "~")
 
     def _build_default_endpoint(self):
-        return "%s/%s" % (FolderEndpoints.default, self.params.get("name"))
+        return "%s/%s" % (FolderEndpoints.default,
+                          self._urlize_path("%s/%s" % (self.desired["parent"], self.desired["name"])))
 
-    def needs_editing(self):
-        black_list = ("username", "password", "auth_type", "authorized_sites")
-        for key, value in self.desired.items():
-            if key not in black_list and self.current.get(key) != value:
-                return True
-        return False
+    def _detect_changes(self):
+        current_attributes = self.current.get("attributes", {})
+        desired_attributes = self.desired.copy()
+        changes = []
 
-    def get(self):
+        if desired_attributes.get("update_attributes"):
+            merged_attributes = dict_merge(
+                current_attributes,
+                desired_attributes.get("update_attributes")
+            )
+
+            if merged_attributes != current_attributes:
+                desired_attributes["update_attributes"] = merged_attributes
+                changes.append("update attributes")
+
+        if desired_attributes.get("attributes") and current_attributes != desired_attributes.get("attributes"):
+            changes.append("attributes")
+
+        if self.current.get("title") != desired_attributes.get("title"):
+            changes.append("title")
+
+        if desired_attributes.get("remove_attributes"):
+            for a in desired_attributes.get("remove_attributes"):
+                if current_attributes.get(a):
+                    changes.append("remove attributes")
+                    break
+
+        return changes
+
+    def _get_current(self):
         result = self._fetch(
             code_mapping=FolderHTTPCodes.get,
             endpoint=self._build_default_endpoint(),
@@ -297,17 +294,45 @@ class FolderAPI(CheckmkAPI):
 
         if result.http_code == 200:
             self.state = "present"
-            content = json.loads(result.content)["extensions"]
-            for key in FOLDER:
-                if key in content:
-                    self.current[key] = content[key]
+
+            content = json.loads(result.content)
+
+            self.current["title"] = content["title"]
+
+            extensions = content["extensions"]
+            for key, value in extensions.items():
+                if key == "attributes":
+                    value.pop("meta_data")
+                self.current[key] = value
+
+            self.etag = result.etag
+
         else:
             self.state = "absent"
-        return result
+
+    def _check_output(self, mode):
+        return RESULT(
+            http_code=0,
+            msg="Running in check mode. Would have done an %s" % mode,
+            content="",
+            etag="",
+            failed=False,
+            changed=False,
+        )
+
+    def needs_update(self):
+        return len(self._changed_items) > 0
 
     def create(self):
-        data = self.desired
-        data["path"] = _urlize_path(self.desired["path"])
+        data = self.desired.copy()
+        if not data.get("attributes"):
+            data["attributes"] = data.pop("update_attributes", {})
+
+        if data.get("remove_attribute"):
+            data.pop("remove_attribute")
+
+        if self.module.check_mode:
+            return self._check_output("create")
 
         result = self._fetch(
             code_mapping=FolderHTTPCodes.create,
@@ -319,9 +344,13 @@ class FolderAPI(CheckmkAPI):
         return result
 
     def edit(self):
-        data = self.desired
-        data["path"] = _urlize_path(self.desired["path"])
+        data = self.desired.copy()
+        data.pop("name")
+        data.pop("parent")
         self.headers["if-Match"] = self.etag
+
+        if self.module.check_mode:
+            return self._check_output("edit")
 
         result = self._fetch(
             code_mapping=FolderHTTPCodes.edit,
@@ -330,9 +359,12 @@ class FolderAPI(CheckmkAPI):
             method="PUT",
         )
 
-        return result
+        return result._replace(msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items))
 
     def delete(self):
+        if self.module.check_mode:
+            return self._check_output("delete")
+
         result = self._fetch(
             code_mapping=FolderHTTPCodes.delete,
             endpoint=self._build_default_endpoint(),
@@ -341,187 +373,16 @@ class FolderAPI(CheckmkAPI):
 
         return result
 
-# 
-# 
-# def exit_failed(module, msg):
-#     result = {"msg": msg, "changed": False, "failed": True}
-#     module.fail_json(**result)
-# 
-# 
-# def exit_changed(module, msg):
-#     result = {"msg": msg, "changed": True, "failed": False}
-#     module.exit_json(**result)
-# 
-# 
-# def exit_ok(module, msg):
-#     result = {"msg": msg, "changed": False, "failed": False}
-#     module.exit_json(**result)
-# 
-# 
-# def cleanup_path(path):
-#     p = Path(path)
-#     if not p.is_absolute():
-#         p = Path("/").joinpath(p)
-#     return str(p.parent).lower(), p.name
-# 
-# 
-# def path_for_url(module):
-#     return module.params["path"].replace("/", "~")
-# 
-# 
-# def get_version(module, base_url, headers):
-#     api_endpoint = "version"
-#     url = base_url + api_endpoint
-# 
-#     response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
-# 
-#     if info["status"] != 200:
-#         exit_failed(
-#             module,
-#             "Error calling API. HTTP code %d. Details: %s, "
-#             % (info["status"], info["body"]),
-#         )
-# 
-#     checkmkinfo = json.loads(json.loads(response.read()))
-#     return (checkmkinfo.get("versions").get("checkmk")).split(".")
-# 
-# 
-# def get_current_folder_state(module, base_url, headers):
-#     current_state = "unknown"
-#     current_explicit_attributes = {}
-#     current_title = ""
-#     etag = ""
-# 
-#     api_endpoint = "/objects/folder_config/" + path_for_url(module)
-#     parameters = "?show_hosts=false"
-#     url = base_url + api_endpoint + parameters
-# 
-#     response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
-# 
-#     if info["status"] == 200:
-#         body = json.loads(response.read())
-#         current_state = "present"
-#         etag = info.get("etag", "")
-#         extensions = body.get("extensions", {})
-#         current_explicit_attributes = extensions.get("attributes", {})
-#         current_title = "%s" % body.get("title", "")
-#         if "meta_data" in current_explicit_attributes:
-#             del current_explicit_attributes["meta_data"]
-# 
-#     elif info["status"] == 404:
-#         current_state = "absent"
-# 
-#     else:
-#         exit_failed(
-#             module,
-#             "Error calling API. HTTP code %d. Details: %s. URL: %s. Parameters: %s"
-#             % (info["status"], info.get("body", "N/A"), url, parameters),
-#         )
-# 
-#     return current_state, current_explicit_attributes, current_title, etag
-# 
-# 
-# def set_folder_attributes(module, base_url, headers, params):
-#     api_endpoint = "/objects/folder_config/" + path_for_url(module)
-#     url = base_url + api_endpoint
-# 
-#     response, info = fetch_url(
-#         module, url, module.jsonify(params), headers=headers, method="PUT"
-#     )
-# 
-#     if (
-#         info["status"] == 400
-#         and params.get("remove_attributes")
-#         and not params.get("title")
-#         and not params.get("attributes")
-#         and not params.get("update_attributes")
-#     ):
-#         # "Folder attributes allready removed."
-#         return False
-#     elif info["status"] != 200:
-#         exit_failed(
-#             module,
-#             "Error calling API. HTTP code %d. Details: %s, "
-#             % (info["status"], info["body"]),
-#         )
-# 
-#     return True
-# 
-# 
-# def create_folder(module, attributes, base_url, headers):
-#     parent, foldername = cleanup_path(module.params["path"])
-#     name = module.params.get("name", foldername)
-# 
-#     api_endpoint = "/domain-types/folder_config/collections/all"
-#     params = {
-#         "name": foldername,
-#         "title": name,
-#         "parent": parent,
-#         "attributes": attributes if attributes else {},
-#     }
-#     url = base_url + api_endpoint
-# 
-#     response, info = fetch_url(
-#         module, url, module.jsonify(params), headers=headers, method="POST"
-#     )
-# 
-#     if info["status"] != 200:
-#         exit_failed(
-#             module,
-#             "Error calling API. HTTP code %d. Details: %s, URL: %s, Params: %s, "
-#             % (info["status"], info["body"], url, str(params)),
-#         )
-# 
-# 
-# def delete_folder(module, base_url, headers):
-#     api_endpoint = "/objects/folder_config/" + path_for_url(module)
-#     url = base_url + api_endpoint
-# 
-#     response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
-# 
-#     if info["status"] != 204:
-#         exit_failed(
-#             module,
-#             "Error calling API. HTTP code %d. Details: %s, "
-#             % (info["status"], info["body"]),
-#         )
-# 
-# 
-# def get_version_ge_220p7(module, checkmkversion):
-#     if "p" in checkmkversion[2]:
-#         patchlevel = checkmkversion[2].split("p")
-#         patchtype = "p"
-#     elif "a" in checkmkversion[2]:
-#         patchlevel = checkmkversion[2].split("a")
-#         patchtype = "a"
-#     elif "b" in checkmkversion[2]:
-#         patchlevel = checkmkversion[2].split("b")
-#         patchtype = "b"
-#     else:
-#         exit_failed(
-#             module,
-#             "Not supported patch-level schema: %s" % (checkmkversion[2]),
-#         )
-# 
-#     if (
-#         int(checkmkversion[0]) > 2
-#         or (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) > 2)
-#         or (
-#             int(checkmkversion[0]) == 2
-#             and int(checkmkversion[1]) == 2
-#             and int(patchlevel[0]) > 0
-#         )
-#         or (
-#             int(checkmkversion[0]) == 2
-#             and int(checkmkversion[1]) == 2
-#             and int(patchlevel[0]) == 0
-#             and patchtype == "p"
-#             and int(patchlevel[1]) >= 7
-#         )
-#     ):
-#         return True
-#     else:
-#         return False
+
+def _exit_if_missing_pathlib(module):
+    # Handle library import error according to the following link:
+    # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
+    if PYTHON_VERSION == 2 and not HAS_PATHLIB2_LIBRARY:
+        # Needs: from ansible.module_utils.basic import missing_required_lib
+        module.fail_json(
+            msg=missing_required_lib("pathlib2"),
+            exception=PATHLIB2_LIBRARY_IMPORT_ERROR,
+        )
 
 
 def run_module():
@@ -548,176 +409,33 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
+    _exit_if_missing_pathlib(module)
+
     # Create an API object that contains the current and desired state
     current_folder = FolderAPI(module)
 
-    # Check if parameters are compatible with CMK version
-    if sum(
-        [
-            1
-            for el in ["attributes", "remove_attributes", "update_attributes"]
-            if module.params.get(el)
-        ]
-    ) > 1:
-        result = RESULT(
-            http_code=0,
-            msg="As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of"
-                "attributes, remove_attributes, and update_attributes is no longer supported."
-            content="",
-            etag="",
-            failed=True,
-            changed=False,
-        )
-        ver = current_folder.getversion()
-        if ver >= CheckmkVersion("2.2.0p7"):
-            # TODO: exit with error
-            # "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported.",
-        else:
-            # TODO: print warning
-            # "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported."
+    result = RESULT(
+        http_code=0,
+        msg="No changes needed.",
+        content="",
+        etag="",
+        failed=False,
+        changed=False,
+    )
 
     desired_state = current_folder.params.get("state")
     if current_folder.state == "present":
+        result = result._replace(msg="Folder already exists with the desired parameters.")
         if desired_state == "absent":
             result = current_folder.delete()
-        elif current_folder.needs_editing():
-            current_folder.desired.pop("name")
+        elif current_folder.needs_update():
             result = current_folder.edit()
     elif current_folder.state == "absent":
+        result = result._replace(msg="Folder already deleted.")
         if desired_state in ("present"):
             result = current_folder.create()
 
     module.exit_json(**result_as_dict(result))
-
-#     # Handle library import error according to the following link:
-#     # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
-#     if PYTHON_VERSION == 2 and not HAS_PATHLIB2_LIBRARY:
-#         # Needs: from ansible.module_utils.basic import missing_required_lib
-#         module.fail_json(
-#             msg=missing_required_lib("pathlib2"),
-#             exception=PATHLIB2_LIBRARY_IMPORT_ERROR,
-#         )
-# 
-#     # Use the parameters to initialize some common variables
-#     headers = {
-#         "Accept": "application/json",
-#         "Content-Type": "application/json",
-#         "Authorization": "Bearer %s %s"
-#         % (
-#             module.params.get("automation_user", ""),
-#             module.params.get("automation_secret", ""),
-#         ),
-#     }
-# 
-#     base_url = "%s/%s/check_mk/api/1.0" % (
-#         module.params.get("server_url", ""),
-#         module.params.get("site", ""),
-#     )
-# 
-#     count_options = sum(
-#         [
-#             1
-#             for el in ["attributes", "remove_attributes", "update_attributes"]
-#             if module.params.get(el)
-#         ]
-#     )
-# 
-#     if count_options > 1:
-#         checkmkversion = get_version(module, base_url, headers)
-# 
-#         version_ge_220p7 = get_version_ge_220p7(module, checkmkversion)
-# 
-#         if version_ge_220p7:
-#             exit_failed(
-#                 module,
-#                 "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported.",
-#             )
-#         else:
-#             module.warn(
-#                 "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of attributes, remove_attributes, and update_attributes is no longer supported."
-#             )
-# 
-#     # Determine desired state and attributes
-#     attributes = module.params.get("attributes")
-#     remove_attributes = module.params.get("remove_attributes")
-#     update_attributes = module.params.get("update_attributes")
-#     if attributes == []:
-#         attributes = {}
-# 
-#     state = module.params.get("state", "present")
-# 
-#     # Determine the current state of this particular folder
-#     (
-#         current_state,
-#         current_explicit_attributes,
-#         current_title,
-#         etag,
-#     ) = get_current_folder_state(module, base_url, headers)
-# 
-#     # Handle the folder accordingly to above findings and desired state
-#     if state == "present" and current_state == "present":
-#         headers["If-Match"] = etag
-#         msg_tokens = []
-# 
-#         if update_attributes:
-#             merged_attributes = dict_merge(
-#                 current_explicit_attributes, update_attributes
-#             )
-# 
-#         params = {}
-#         changed = False
-#         if module.params["name"] and current_title != module.params["name"]:
-#             params["title"] = module.params.get("name")
-#             changed = True
-# 
-#         if attributes and current_explicit_attributes != attributes:
-#             params["attributes"] = attributes
-#             changed = True
-# 
-#         if update_attributes and current_explicit_attributes != merged_attributes:
-#             params["update_attributes"] = merged_attributes
-#             changed = True
-# 
-#         if remove_attributes:
-#             for el in remove_attributes:
-#                 if current_explicit_attributes.get(el):
-#                     changed = True
-#                     break
-#             params["remove_attributes"] = remove_attributes
-# 
-#         if params != {}:
-#             if not module.check_mode:
-#                 changed = set_folder_attributes(module, base_url, headers, params)
-# 
-#             if changed:
-#                 msg_tokens.append("Folder attributes updated.")
-# 
-#         if len(msg_tokens) >= 1:
-#             exit_changed(module, " ".join(msg_tokens))
-#         else:
-#             exit_ok(
-#                 module, "Folder already present. All explicit attributes as desired."
-#             )
-# 
-#     elif state == "present" and current_state == "absent":
-#         if (update_attributes and update_attributes != {}) and (
-#             not attributes or attributes == {}
-#         ):
-#             attributes = update_attributes
-#         if not module.check_mode:
-#             create_folder(module, attributes, base_url, headers)
-#         exit_changed(module, "Folder created.")
-# 
-#     elif state == "absent" and current_state == "absent":
-#         exit_ok(module, "Folder already absent.")
-# 
-#     elif state == "absent" and current_state == "present":
-#         if not module.check_mode:
-#             delete_folder(module, base_url, headers)
-#         exit_changed(module, "Folder deleted.")
-# 
-#     else:
-#         exit_failed(module, "Unknown error")
 
 
 def main():
