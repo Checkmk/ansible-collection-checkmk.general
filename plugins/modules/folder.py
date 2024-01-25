@@ -153,7 +153,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.types import RESUL
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
-
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )
