@@ -444,7 +444,7 @@ def run_module():
         elif current_folder.needs_update():
             result = current_folder.edit()
     elif current_folder.state == "absent":
-        result = result._replace(msg="Folder already deleted.")
+        result = result._replace(msg="Folder already absent.")
         if desired_state in ("present"):
             result = current_folder.create()
 
