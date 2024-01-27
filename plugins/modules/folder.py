@@ -312,12 +312,12 @@ class FolderAPI(CheckmkAPI):
                         self.desired.pop("remove_attributes")
                         self.desired["retained_attributes"] = c_m
                 except Exception as e:
-                    module.fail_json(
+                    self.module.fail_json(
                         msg="ERROR: incompatible parameter: remove_attributes!",
                         exception=e,
                     )
             else:
-                module.fail_json(
+                self.module.fail_json(
                     msg="ERROR: The parameter remove_attributes can be a list of strings or a dictionary!",
                     exception=e,
                 )
