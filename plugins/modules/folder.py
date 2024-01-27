@@ -506,7 +506,7 @@ def run_module():
         else:
             if current_folder.needs_update():
                 result = current_folder.edit()
-            if current_folder.needs_reduction()
+            if current_folder.needs_reduction():
                 result = current_folder.reduct()
     elif current_folder.state == "absent":
         result = result._replace(msg="Folder already absent.")
