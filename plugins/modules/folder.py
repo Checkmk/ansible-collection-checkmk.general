@@ -297,9 +297,11 @@ class FolderAPI(CheckmkAPI):
         if desired_attributes.get("remove_attributes"):
             tmp_remove_attributes = desired_attributes.get("remove_attributes")
             if isinstance(tmp_remove_attributes, list):
-                removes_which = [a for a in tmp_remove_attributes if current_attributes.get(a)]
+                removes_which = [
+                    a for a in tmp_remove_attributes if current_attributes.get(a)
+                ]
                 if len(removes_which) > 0:
-                    changes.append("remove attributes: %s" % " ".join(removes_which) )
+                    changes.append("remove attributes: %s" % " ".join(removes_which))
             elif isinstance(tmp_remove_attributes, dict):
                 try:
                     (c_m, _) = recursive_diff(current_attributes, tmp_remove_attributes)
@@ -360,7 +362,7 @@ class FolderAPI(CheckmkAPI):
         return len(self._changed_items) > 0
 
     def needs_reduction(self):
-        return ("retained_attributes" in self.desired)
+        return "retained_attributes" in self.desired
 
     def create(self):
         data = self.desired.copy()
@@ -421,7 +423,9 @@ class FolderAPI(CheckmkAPI):
             data.pop("remove_attributes")
 
         if self.module.check_mode:
-            return self._check_output("reduct (remove_attributes supplied by dict object)")
+            return self._check_output(
+                "reduct (remove_attributes supplied by dict object)"
+            )
 
         result = self._fetch(
             code_mapping=FolderHTTPCodes.create,
