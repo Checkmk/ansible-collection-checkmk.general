@@ -280,7 +280,7 @@ class FolderAPI(CheckmkAPI):
             if merged_attributes != current_attributes:
                 try:
                     (c_m, m_c) = recursive_diff(current_attributes, merged_attributes)
-                    changes.append("update attributes: %" % json.dumps(m_c))
+                    changes.append("update attributes: %s" % json.dumps(m_c))
                 except Exception as e:
                     changes.append("update attributes")
                 desired_attributes["update_attributes"] = merged_attributes
@@ -303,10 +303,12 @@ class FolderAPI(CheckmkAPI):
                     changes.append("remove attributes: %s" % " ".join(removes_which))
             elif isinstance(tmp_remove_attributes, dict):
                 try:
-                    (c_m, m_c) = recursive_diff(current_attributes, tmp_remove_attributes)
+                    (c_m, m_c) = recursive_diff(
+                        current_attributes, tmp_remove_attributes
+                    )
                     (c_c_m, c_m_c) = recursive_diff(current_attributes, c_m)
                     if c_c_m:
-                        changes.append("remove attributes: %" % json.dumps(c_c_m))
+                        changes.append("remove attributes: %s" % json.dumps(c_c_m))
                         self.desired.pop("remove_attributes")
                         self.desired["retained_attributes"] = c_m
                 except Exception as e:
