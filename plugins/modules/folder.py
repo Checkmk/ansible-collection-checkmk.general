@@ -54,8 +54,8 @@ options:
         description:
             - The remove_attributes of your host as described in the API documentation.
               B(If a list of strings is supplied, the listed attributes are removed.)
-              B(If instead a dict is supplied, the attributes (key: value) that
-              exactly match the passed attributes are removed.)
+              B(If instead a dict is supplied, the attributes that exactly match
+              the passed attributes are removed.)
               This will only remove the given attributes.
               As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
               I(remove_attributes), and I(update_attributes) is no longer supported.
