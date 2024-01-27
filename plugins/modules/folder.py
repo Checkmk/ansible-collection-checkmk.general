@@ -54,7 +54,8 @@ options:
         description:
             - The remove_attributes of your host as described in the API documentation.
               B(If a list of strings is supplied, the listed attributes are removed.)
-              B(If instead a dict is supplied, the attributes {key: value} that exactly match the passed attributes are removed.)
+              B(If instead a dict is supplied, the attributes (key: value) that
+              exactly match the passed attributes are removed.)
               This will only remove the given attributes.
               As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
               I(remove_attributes), and I(update_attributes) is no longer supported.
@@ -204,7 +205,7 @@ class FolderAPI(CheckmkAPI):
 
         self.desired = {}
 
-        (self.desired["parent"], self.desired["name"]) = _normalize_path(
+        (self.desired["parent"], self.desired["name"]) = self._normalize_path(
             self.params.get("path")
         )
         self.desired["title"] = self.params.get("title", self.desired["name"])
@@ -251,21 +252,19 @@ class FolderAPI(CheckmkAPI):
             else:
                 self.module.warn(msg)
 
-    @staticmethod
-    def _normalize_path(path):
+    def _normalize_path(self, path):
         p = Path(path)
         if not p.is_absolute():
             p = Path("/").joinpath(p)
         return str(p.parent).lower(), p.name
 
-    @staticmethod
-    def _urlize_path(path):
+    def _urlize_path(self, path):
         return path.replace("/", "~").replace("~~", "~")
 
     def _build_default_endpoint(self):
         return "%s/%s" % (
             FolderEndpoints.default,
-            _urlize_path("%s/%s" % (self.desired["parent"], self.desired["name"])),
+            self._urlize_path("%s/%s" % (self.desired["parent"], self.desired["name"])),
         )
 
     def _detect_changes(self):
@@ -280,7 +279,7 @@ class FolderAPI(CheckmkAPI):
 
             if merged_attributes != current_attributes:
                 try:
-                    (_, m_c) = recursive_diff(current_attributes, merged_attributes)
+                    (c_m, m_c) = recursive_diff(current_attributes, merged_attributes)
                     changes.append("update attributes: %" % json.dumps(m_c))
                 except Exception as e:
                     changes.append("update attributes")
@@ -304,8 +303,8 @@ class FolderAPI(CheckmkAPI):
                     changes.append("remove attributes: %s" % " ".join(removes_which))
             elif isinstance(tmp_remove_attributes, dict):
                 try:
-                    (c_m, _) = recursive_diff(current_attributes, tmp_remove_attributes)
-                    (c_c_m, _) = recursive_diff(current_attributes, c_m)
+                    (c_m, m_c) = recursive_diff(current_attributes, tmp_remove_attributes)
+                    (c_c_m, c_m_c) = recursive_diff(current_attributes, c_m)
                     if c_c_m:
                         changes.append("remove attributes: %" % json.dumps(c_c_m))
                         self.desired.pop("remove_attributes")
