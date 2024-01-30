@@ -3,7 +3,7 @@ test_sites:
   - version: "2.3.0-2024.01.30"
     edition: "cme"
     site: "beta_cme"
-  - version: "2.2.0p20"
+  - version: "2.2.0p21"
     edition: "cee"
     site: "stable_cee"
   - version: "2.1.0p38"
