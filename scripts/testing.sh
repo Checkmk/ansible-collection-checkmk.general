@@ -9,6 +9,7 @@
 #   Run Sanity Tests:                               ./testing.sh -s
 #   Run Integration Tests:                          ./testing.sh -i -t host
 #   Run Linting:                                    ./testing.sh -l
+#   Run QA:                                         ./testing.sh -q
 #   Run Molecule for server role and Checkmk 2.2.0: ./testing.sh -m -r server -v 2.2.0
 
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -16,10 +17,12 @@ collection_dir="${script_dir%/*}"
 
 mode="sanity"
 
-while getopts 'silmt:r:v:' OPTION; do
+while getopts 'sqilmt:r:v:' OPTION; do
   case "$OPTION" in 
     s) 
       mode="sanity" ;;
+    q) 
+      mode="qa" ;;
     i)
       mode="integration" ;;
     l)
@@ -43,6 +46,15 @@ _run_sanity() {
     echo "## Running Ansible Sanity Tests."
     ansible-test sanity --docker
     echo "## Ansible Sanity Tests done."
+}
+
+_run_qa() {
+    echo "## Running black."
+    black --check --diff "${collection_dir}/plugins/"
+    echo "## black done."
+    echo "## Running isort."
+    isort --check --diff "${collection_dir}/plugins/"
+    echo "## isort done."
 }
 
 _run_integration() {
@@ -78,6 +90,8 @@ _run_molecule() {
 case "$mode" in 
     sanity) 
         _run_sanity ;;
+    qa) 
+        _run_qa ;;
     integration)
         _run_integration ;;
     lint)
