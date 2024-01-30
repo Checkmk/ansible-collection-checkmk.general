@@ -474,9 +474,7 @@ def run_module():
         state=dict(
             type="str", required=False, default="present", choices=["present", "absent"]
         ),
-        extended_functionality=dict(
-            type="bool", required=False, default=True
-        ),
+        extended_functionality=dict(type="bool", required=False, default=True),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
