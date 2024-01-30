@@ -1,0 +1,4 @@
+tests/container/files/systemctl3.py pep8!skip
+tests/container/files/systemctl3.py pylint!skip
+tests/container/files/systemctl3.py shebang!skip
+tests/container/files/systemctl3.py compile-3.12!skip
