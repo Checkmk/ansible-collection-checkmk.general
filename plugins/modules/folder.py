@@ -54,7 +54,7 @@ options:
         description:
             - The remove_attributes of your host as described in the API documentation.
               B(If a list of strings is supplied, the listed attributes are removed.)
-              B(If instead a dict is supplied, the attributes that exactly match
+              B(If extended_functionality and a dict is supplied, the attributes that exactly match
               the passed attributes are removed.)
               This will only remove the given attributes.
               As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
@@ -66,6 +66,10 @@ options:
         type: str
         default: present
         choices: [present, absent]
+    extended_functionality:
+        description: The state of your folder.
+        type: bool
+        default: true
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -203,6 +207,8 @@ class FolderAPI(CheckmkAPI):
     def __init__(self, module):
         super().__init__(module)
 
+        self.extended_functionality = self.params.get("extended_functionality", True)
+
         self.desired = {}
 
         (self.desired["parent"], self.desired["name"]) = self._normalize_path(
@@ -295,6 +301,7 @@ class FolderAPI(CheckmkAPI):
 
         if desired_attributes.get("remove_attributes"):
             tmp_remove_attributes = desired_attributes.get("remove_attributes")
+
             if isinstance(tmp_remove_attributes, list):
                 removes_which = [
                     a for a in tmp_remove_attributes if current_attributes.get(a)
@@ -302,25 +309,46 @@ class FolderAPI(CheckmkAPI):
                 if len(removes_which) > 0:
                     changes.append("remove attributes: %s" % " ".join(removes_which))
             elif isinstance(tmp_remove_attributes, dict):
-                try:
-                    (c_m, m_c) = recursive_diff(
-                        current_attributes, tmp_remove_attributes
-                    )
-                    (c_c_m, c_m_c) = recursive_diff(current_attributes, c_m)
-                    if c_c_m:
-                        changes.append("remove attributes: %s" % json.dumps(c_c_m))
-                        self.desired.pop("remove_attributes")
-                        self.desired["retained_attributes"] = c_m
-                except Exception as e:
+                if not self.extended_functionality:
                     self.module.fail_json(
-                        msg="ERROR: incompatible parameter: remove_attributes!",
-                        exception=e,
+                        msg="ERROR: The parameter remove_attributes of dict type is not supported for set paramter extended_functionality: false!",
                     )
+
+                (tmp_remove, tmp_rest) = (current_attributes, {})
+                if current_attributes != tmp_remove_attributes:
+                    try:
+                        (c_m, m_c) = recursive_diff(
+                            current_attributes, tmp_remove_attributes
+                        )
+
+                        if c_m:
+                            # if nothing to remove
+                            if current_attributes == c_m:
+                                (tmp_remove, tmp_rest) = ({}, current_attributes)
+                            else:
+                                (c_c_m, c_m_c) = recursive_diff(current_attributes, c_m)
+                                (tmp_remove, tmp_rest) = (c_c_m, c_m)
+                    except Exception as e:
+                        self.module.fail_json(
+                            msg="ERROR: incompatible parameter: remove_attributes!",
+                            exception=e,
+                        )
+
+                desired_attributes.pop("remove_attributes")
+                if tmp_remove != {}:
+                    changes.append("remove attributes: %s" % json.dumps(tmp_remove))
+                    if tmp_rest != {}:
+                        desired_attributes["update_attributes"] = tmp_rest
             else:
                 self.module.fail_json(
                     msg="ERROR: The parameter remove_attributes can be a list of strings or a dictionary!",
                     exception=e,
                 )
+
+        if self.extended_functionality:
+            self.desired = desired_attributes.copy()
+
+        # self.module.fail_json(json.dumps(desired_attributes))
 
         return changes
 
@@ -362,9 +390,6 @@ class FolderAPI(CheckmkAPI):
     def needs_update(self):
         return len(self._changed_items) > 0
 
-    def needs_reduction(self):
-        return "retained_attributes" in self.desired
-
     def create(self):
         data = self.desired.copy()
         if not data.get("attributes"):
@@ -372,9 +397,6 @@ class FolderAPI(CheckmkAPI):
 
         if data.get("remove_attributes"):
             data.pop("remove_attributes")
-
-        if data.get("retained_attributes"):
-            data.pop("retained_attributes")
 
         if self.module.check_mode:
             return self._check_output("create")
@@ -394,9 +416,6 @@ class FolderAPI(CheckmkAPI):
         data.pop("parent")
         self.headers["if-Match"] = self.etag
 
-        if data.get("retained_attributes"):
-            data.pop("retained_attributes")
-
         if self.module.check_mode:
             return self._check_output("edit")
 
@@ -405,34 +424,6 @@ class FolderAPI(CheckmkAPI):
             endpoint=self._build_default_endpoint(),
             data=data,
             method="PUT",
-        )
-
-        return result._replace(
-            msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items)
-        )
-
-    def reduct(self):
-        data = self.desired.copy()
-
-        if data.get("attributes"):
-            data.pop("attributes")
-
-        if data.get("update_attributes"):
-            data.pop("remove_attributes")
-
-        if data.get("remove_attributes"):
-            data.pop("remove_attributes")
-
-        if self.module.check_mode:
-            return self._check_output(
-                "reduct (remove_attributes supplied by dict object)"
-            )
-
-        result = self._fetch(
-            code_mapping=FolderHTTPCodes.create,
-            endpoint=FolderEndpoints.create,
-            data=data,
-            method="POST",
         )
 
         return result._replace(
@@ -483,6 +474,9 @@ def run_module():
         state=dict(
             type="str", required=False, default="present", choices=["present", "absent"]
         ),
+        extended_functionality=dict(
+            type="bool", required=False, default=True
+        ),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
@@ -511,8 +505,6 @@ def run_module():
         else:
             if current_folder.needs_update():
                 result = current_folder.edit()
-            if current_folder.needs_reduction():
-                result = current_folder.reduct()
     elif current_folder.state == "absent":
         result = result._replace(msg="Folder already absent.")
         if desired_state in ("present"):
