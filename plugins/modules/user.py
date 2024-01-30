@@ -232,8 +232,12 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
 )
 
 USER = (
@@ -405,6 +409,19 @@ class UserAPI(CheckmkAPI):
                 return True
         return False
 
+    def shortpassword(self, data):
+        ver = self.getversion()
+        if ver >= CheckmkVersion("2.3.0") and "auth_option" in data:
+            if (
+                "password" in data["auth_option"]
+                and len(data["auth_option"]["password"]) < 12
+            ) or (
+                "secret" in data["auth_option"]
+                and len(data["auth_option"]["secret"]) < 10
+            ):
+                return True
+        return False
+
     def get(self):
         result = self._fetch(
             code_mapping=UserHTTPCodes.get,
@@ -425,25 +442,44 @@ class UserAPI(CheckmkAPI):
         # in the Checkmk API...
         data.setdefault("fullname", data["username"])
 
-        result = self._fetch(
-            code_mapping=UserHTTPCodes.create,
-            endpoint=UserEndpoints.create,
-            data=data,
-            method="POST",
-        )
-
+        if self.shortpassword(data):
+            result = RESULT(
+                http_code=0,
+                msg="Password too short. For 2.3 and higher, please provide at least 12 characters (automation min. 10).",
+                content="",
+                etag="",
+                failed=True,
+                changed=False,
+            )
+        else:
+            result = self._fetch(
+                code_mapping=UserHTTPCodes.create,
+                endpoint=UserEndpoints.create,
+                data=data,
+                method="POST",
+            )
         return result
 
     def edit(self, etag):
         data = self._build_user_data()
         self.headers["if-Match"] = etag
 
-        result = self._fetch(
-            code_mapping=UserHTTPCodes.edit,
-            endpoint=self._build_default_endpoint(),
-            data=data,
-            method="PUT",
-        )
+        if self.shortpassword(data):
+            result = RESULT(
+                http_code=0,
+                msg="Password too short. For 2.3 and higher, please provide at least 12 characters (automation min. 10).",
+                content="",
+                etag="",
+                failed=True,
+                changed=False,
+            )
+        else:
+            result = self._fetch(
+                code_mapping=UserHTTPCodes.edit,
+                endpoint=self._build_default_endpoint(),
+                data=data,
+                method="PUT",
+            )
 
         return result
 
@@ -525,8 +561,17 @@ def run_module():
             user.required.pop("username")
             result = user.edit(etag)
     elif user.state == "absent":
-        if required_state in ("present", "reset_password"):
+        if required_state in "present":
             result = user.create()
+        if required_state in "reset_password":
+            result = RESULT(
+                http_code=0,
+                msg="Can't reset the password for an absent user.",
+                content="",
+                etag="",
+                failed=False,
+                changed=False,
+            )
 
     module.exit_json(**result_as_dict(result))
 
