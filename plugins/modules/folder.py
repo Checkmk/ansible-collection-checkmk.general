@@ -155,6 +155,7 @@ import traceback
 # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.dict_transformations import dict_merge, recursive_diff
+from ansible.module_utils.common.validation import check_type_list
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
@@ -183,6 +184,11 @@ FOLDER = (
     "attributes",
     "update_attributes",
     "remove_attributes",
+)
+
+FOLDER_PARENTS_PARSE = (
+    "attributes",
+    "update_attributes",
 )
 
 
@@ -219,6 +225,13 @@ class FolderAPI(CheckmkAPI):
         for key in FOLDER:
             if self.params.get(key):
                 self.desired[key] = self.params.get(key)
+
+        for key in FOLDER_PARENTS_PARSE:
+            if self.desired.get(key):
+                if self.desired.get(key).get("parents"):
+                    self.desired[key]["parents"] = check_type_list(
+                        self.desired.get(key).get("parents")
+                    )
 
         # Get the current folder from the API and set some parameters
         self._get_current()
@@ -500,9 +513,8 @@ def run_module():
         )
         if desired_state == "absent":
             result = current_folder.delete()
-        else:
-            if current_folder.needs_update():
-                result = current_folder.edit()
+        elif current_folder.needs_update():
+            result = current_folder.edit()
     elif current_folder.state == "absent":
         result = result._replace(msg="Folder already absent.")
         if desired_state in ("present"):
