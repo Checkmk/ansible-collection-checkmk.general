@@ -148,6 +148,7 @@ import traceback
 # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.dict_transformations import dict_merge
+from ansible.module_utils.common.validation import check_type_list
 from ansible.module_utils.urls import fetch_url
 
 PYTHON_VERSION = 3
@@ -423,6 +424,14 @@ def run_module():
     update_attributes = module.params.get("update_attributes")
     if attributes == []:
         attributes = {}
+
+    if attributes or attributes != {}:
+        if attributes.get("parents"):
+            attributes["parents"] = check_type_list(attributes.get("parents"))
+
+    if update_attributes or update_attributes != {}:
+        if update_attributes.get("parents"):
+            update_attributes["parents"] = check_type_list(update_attributes.get("parents"))
 
     state = module.params.get("state", "present")
 

@@ -164,6 +164,7 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.dict_transformations import dict_merge
+from ansible.module_utils.common.validation import check_type_list
 from ansible.module_utils.urls import fetch_url
 
 
@@ -349,6 +350,14 @@ def run_module():
     remove_attributes = module.params.get("remove_attributes", [])
     update_attributes = module.params.get("update_attributes", {})
     state = module.params.get("state", "present")
+
+    if attributes != {}:
+        if attributes.get("parents"):
+            attributes["parents"] = check_type_list(attributes.get("parents"))
+
+    if update_attributes != {}:
+        if update_attributes.get("parents"):
+            update_attributes["parents"] = check_type_list(update_attributes.get("parents"))
 
     if module.params["folder"]:
         module.params["folder"] = normalize_folder(module.params["folder"])
