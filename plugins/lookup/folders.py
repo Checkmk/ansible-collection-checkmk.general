@@ -30,20 +30,55 @@ DOCUMENTATION = """
       server_url:
         description: URL of the Checkmk server
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_server_url
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_SERVER_URL
+        ini:
+          - section: checkmk_lookup
+            key: server_url
       site:
         description: site name
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_site
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_SITE
+        ini:
+          - section: checkmk_lookup
+            key: site
       automation_user:
         description: automation user for the REST API access
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_automation_user
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_USER
+        ini:
+          - section: checkmk_lookup
+            key: automation_user
       automation_secret:
         description: automation secret for the REST API access
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_automation_secret
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_SECRET
+        ini:
+          - section: checkmk_lookup
+            key: automation_secret
       validate_certs:
         description: Wether or not to validate TLS cerificates
         type: boolean
         required: False
         default: True
+        vars:
+          - name: ansible_lookup_checkmk_validate_certs
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_VALIDATE_CERTS
+        ini:
+          - section: checkmk_lookup
+            key: validate_certs
 """
 
 EXAMPLES = """
