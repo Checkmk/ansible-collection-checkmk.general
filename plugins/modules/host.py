@@ -357,7 +357,9 @@ def run_module():
 
     if update_attributes != {}:
         if update_attributes.get("parents"):
-            update_attributes["parents"] = check_type_list(update_attributes.get("parents"))
+            update_attributes["parents"] = check_type_list(
+                update_attributes.get("parents")
+            )
 
     if module.params["folder"]:
         module.params["folder"] = normalize_folder(module.params["folder"])
