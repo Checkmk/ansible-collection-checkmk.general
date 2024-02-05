@@ -212,55 +212,102 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
 
+
 class Site_connectionHTTPCodes:
-#    [Response matrix needs adjustment]
+    #    [Response matrix needs adjustment]
     # http_code: (changed, failed, "Message")
 
     delete = {
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'),
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'),
-        404: (False, True, 'Not Found: The requested object has not been found.'),
-        415: (False, True, 'Unsupported Media Type: The submitted content-type is not supported.'),
-        204: (True, False, 'No Content: Operation done successfully. No further output.'),
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        404: (False, True, "Not Found: The requested object has not been found."),
+        415: (
+            False,
+            True,
+            "Unsupported Media Type: The submitted content-type is not supported.",
+        ),
+        204: (
+            True,
+            False,
+            "No Content: Operation done successfully. No further output.",
+        ),
     }
 
     post = {
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        404: (False, True, 'Not Found: The requested object has not been found.'), 
-        415: (False, True, 'Unsupported Media Type: The submitted content-type is not supported.'), 
-        400: (False, True, 'Bad Request: Parameter or validation failure.'), 
-        204: (True, False, 'No Content: Operation done successfully. No further output.'),
-        200: (True, False, 'OK: The operation was done successfully.'),
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        404: (False, True, "Not Found: The requested object has not been found."),
+        415: (
+            False,
+            True,
+            "Unsupported Media Type: The submitted content-type is not supported.",
+        ),
+        400: (False, True, "Bad Request: Parameter or validation failure."),
+        204: (
+            True,
+            False,
+            "No Content: Operation done successfully. No further output.",
+        ),
+        200: (True, False, "OK: The operation was done successfully."),
     }
 
-    get = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        404: (False, False, 'Not Found: The requested object has not been found.'), 
-        200: (False, False, 'OK: The operation was done successfully.'),
+    get = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        404: (False, False, "Not Found: The requested object has not been found."),
+        200: (False, False, "OK: The operation was done successfully."),
     }
 
-    put = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        404: (False, True, 'Not Found: The requested object has not been found.'), 
-        415: (False, True, 'Unsupported Media Type: The submitted content-type is not supported.'), 
-        400: (False, True, 'Bad Request: Parameter or validation failure.'), 
-        200: (True, False, 'OK: The operation was done successfully.'),
+    put = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        404: (False, True, "Not Found: The requested object has not been found."),
+        415: (
+            False,
+            True,
+            "Unsupported Media Type: The submitted content-type is not supported.",
+        ),
+        400: (False, True, "Bad Request: Parameter or validation failure."),
+        200: (True, False, "OK: The operation was done successfully."),
     }
+
 
 class Site_connectionEndpoints:
     default = "/objects/site_connection"
     create = "/domain-types/site_connection/collections/all"
 
+
 def _build_default_endpoint(module):
-#    ["name" is not always the identifier field, e.g. "new_role_id" for user_role]
-    return "%s/%s" % (Site_connectionEndpoints.default, module.params.get("site_config")['basic_settings']['site_id'])
+    #    ["name" is not always the identifier field, e.g. "new_role_id" for user_role]
+    return "%s/%s" % (
+        Site_connectionEndpoints.default,
+        module.params.get("site_config")["basic_settings"]["site_id"],
+    )
+
 
 def _build_delete_endpoint(module):
-#    [delete is a POST endpoint here]
-    return "%s/%s/actions/delete/invoke" % (Site_connectionEndpoints.default, module.params.get("site_config")["basic_settings"]["site_id"])
+    #    [delete is a POST endpoint here]
+    return "%s/%s/actions/delete/invoke" % (
+        Site_connectionEndpoints.default,
+        module.params.get("site_config")["basic_settings"]["site_id"],
+    )
+
 
 class Site_connectionCreateAPI(CheckmkAPI):
     def post(self, data):
@@ -283,6 +330,7 @@ class Site_connectionCreateAPI(CheckmkAPI):
                 method="POST",
             )
 
+
 class Site_connectionUpdateAPI(CheckmkAPI):
     def put(self, data):
         return self._fetch(
@@ -291,6 +339,7 @@ class Site_connectionUpdateAPI(CheckmkAPI):
             data=data,
             method="PUT",
         )
+
 
 class Site_connectionDeleteAPI(CheckmkAPI):
     def delete(self):
@@ -301,6 +350,7 @@ class Site_connectionDeleteAPI(CheckmkAPI):
             endpoint=_build_delete_endpoint(self),
             method="POST",
         )
+
 
 class Site_connectionGetAPI(CheckmkAPI):
     def get(self):
@@ -313,29 +363,32 @@ class Site_connectionGetAPI(CheckmkAPI):
             method="GET",
         )
 
-def changes_detected(_current, _module): # PUT
-#    raise Exception(_current, _module)
+
+def changes_detected(_current, _module):  # PUT
+    #    raise Exception(_current, _module)
     for k in _current:
         if k in _module:
             if type(_current[k]) is dict:
-                changes_detected(_current[k],_module[k])
+                changes_detected(_current[k], _module[k])
             if _current[k] != _module[k]:
-                #changes[k] = [_current[k], _module[k]]
+                # changes[k] = [_current[k], _module[k]]
                 return True
         else:
             return True
     return False
 
-def normalize_data(raw_data): # POST
-#    [Probably needs some adjustments, wrong named input/output fields are possible]
+
+def normalize_data(raw_data):  # POST
+    #    [Probably needs some adjustments, wrong named input/output fields are possible]
     data = {
         "site_config": raw_data.get("site_config", ""),
     }
-#    [e.g.  "role_id": raw_data.get("new_basedon", ""), # "new_basedon" is named "role_id" in POST schema
+    #    [e.g.  "role_id": raw_data.get("new_basedon", ""), # "new_basedon" is named "role_id" in POST schema
 
     # Remove all keys without value, as they would be emptied.
     data = {key: val for key, val in data.items() if val}
     return data
+
 
 def run_module():
     module_args = dict(
@@ -344,12 +397,10 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         validate_certs=dict(type="bool", required=False, default=True),
-
-#        [Probably needs some adjustments, parameter fields can vary in type]
+        #        [Probably needs some adjustments, parameter fields can vary in type]
         site_config=dict(type="dict", required=True),
         secret=dict(type="str", no_log=True),
-#        [...]
-
+        #        [...]
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
@@ -372,12 +423,14 @@ def run_module():
             # If site_connection has changed then update it.
             current_content = json.loads(current.content.decode("utf-8"))
 
-            changes = changes_detected(current_content['extensions'], module.params['site_config'])
+            changes = changes_detected(
+                current_content["extensions"], module.params["site_config"]
+            )
             if changes:
-                data = {'site_config': module.params['site_config'] }
-#                if module.params.get('secret'): how to handle change of secret?
-#                    data['secret'] = module.params.get('secret')
-#                 [Some fields are not allowed during update or create or need special treatment like re-building a dict of permissions because the GET endpoint only delivers a list of names]
+                data = {"site_config": module.params["site_config"]}
+                #                if module.params.get('secret'): how to handle change of secret?
+                #                    data['secret'] = module.params.get('secret')
+                #                 [Some fields are not allowed during update or create or need special treatment like re-building a dict of permissions because the GET endpoint only delivers a list of names]
                 site_connectionupdate = Site_connectionUpdateAPI(module)
                 site_connectionupdate.headers["If-Match"] = current.etag
                 result = site_connectionupdate.put(data)
@@ -386,7 +439,7 @@ def run_module():
         elif current.http_code == 404:
             # site_connection is not there. Create it.
             site_connectioncreate = Site_connectionCreateAPI(module)
-            data = normalize_data(module.params) # remove unnessecary parameters
+            data = normalize_data(module.params)  # remove unnessecary parameters
             result = site_connectioncreate.post(data)
 
     if module.params.get("state") == "absent":
@@ -408,8 +461,10 @@ def run_module():
 
     module.exit_json(**result_as_dict(result))
 
+
 def main():
     run_module()
+
 
 if __name__ == "__main__":
     main()
