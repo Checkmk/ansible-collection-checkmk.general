@@ -57,48 +57,80 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
 
+
 class User_roleHTTPCodes:
-#    [Response matrix needs adjustment]
+    #    [Response matrix needs adjustment]
     # http_code: (changed, failed, "Message")
 
-    post = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        415: (False, True, 'Unsupported Media Type: The submitted content-type is not supported.'), 
-        400: (False, True, 'Bad Request: Parameter or validation failure.'), 
-        200: (True, False, 'OK: The operation was done successfully.'),
+    post = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        415: (
+            False,
+            True,
+            "Unsupported Media Type: The submitted content-type is not supported.",
+        ),
+        400: (False, True, "Bad Request: Parameter or validation failure."),
+        200: (True, False, "OK: The operation was done successfully."),
     }
 
-    get = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        404: (False, False, 'Not Found: The requested object has not been found.'), 
-        200: (False, False, 'OK: The operation was done successfully.'),
+    get = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        404: (False, False, "Not Found: The requested object has not been found."),
+        200: (False, False, "OK: The operation was done successfully."),
     }
 
-    delete = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        404: (False, False, 'Not Found: The requested object has not been found.'), 
-        204: (True, False, 'No Content: Operation done successfully. No further output.'),
+    delete = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        404: (False, False, "Not Found: The requested object has not been found."),
+        204: (
+            True,
+            False,
+            "No Content: Operation done successfully. No further output.",
+        ),
     }
 
-    put = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        404: (False, True, 'Not Found: The requested object has not been found.'), 
-        415: (False, True, 'Unsupported Media Type: The submitted content-type is not supported.'), 
-        400: (False, True, 'Bad Request: Parameter or validation failure.'), 
-        200: (True, False, 'OK: The operation was done successfully.'),
+    put = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        404: (False, True, "Not Found: The requested object has not been found."),
+        415: (
+            False,
+            True,
+            "Unsupported Media Type: The submitted content-type is not supported.",
+        ),
+        400: (False, True, "Bad Request: Parameter or validation failure."),
+        200: (True, False, "OK: The operation was done successfully."),
     }
+
 
 class User_roleEndpoints:
     default = "/objects/user_role"
     create = "/domain-types/user_role/collections/all"
 
+
 def _build_default_endpoint(module):
-#    ["name" is not always the identifier field, e.g. "new_role_id" for user_role]
+    #    ["name" is not always the identifier field, e.g. "new_role_id" for user_role]
     return "%s/%s" % (User_roleEndpoints.default, module.params.get("new_role_id"))
+
 
 class User_roleCreateAPI(CheckmkAPI):
     def post(self, data):
@@ -121,6 +153,7 @@ class User_roleCreateAPI(CheckmkAPI):
                 method="POST",
             )
 
+
 class User_roleUpdateAPI(CheckmkAPI):
     def put(self, data):
         return self._fetch(
@@ -129,6 +162,7 @@ class User_roleUpdateAPI(CheckmkAPI):
             data=data,
             method="PUT",
         )
+
 
 class User_roleDeleteAPI(CheckmkAPI):
     def delete(self):
@@ -139,6 +173,7 @@ class User_roleDeleteAPI(CheckmkAPI):
             endpoint=_build_default_endpoint(self),
             method="DELETE",
         )
+
 
 class User_roleGetAPI(CheckmkAPI):
     def get(self):
@@ -151,10 +186,11 @@ class User_roleGetAPI(CheckmkAPI):
             method="GET",
         )
 
-def changes_detected(module, current): # PUT
+
+def changes_detected(module, current):  # PUT
     new = module.params
-    old = current.get('extensions')
-    old['role_id'] = current.get('id')
+    old = current.get("extensions")
+    old["role_id"] = current.get("id")
 
     mapping = []
     for old_key in old.keys():
@@ -165,18 +201,20 @@ def changes_detected(module, current): # PUT
         if new.get(new_mapping) != old.get(old_mapping):
             yield new_mapping
 
-def normalize_data(raw_data): # POST
-#    [Probably needs some adjustments, wrong named input/output fields are possible]
+
+def normalize_data(raw_data):  # POST
+    #    [Probably needs some adjustments, wrong named input/output fields are possible]
     data = {
         "role_id": raw_data.get("role_id", ""),
         "new_role_id": raw_data.get("new_role_id", ""),
         "new_alias": raw_data.get("new_alias", ""),
     }
-#    [e.g.  "role_id": raw_data.get("new_basedon", ""), # "new_basedon" is named "role_id" in POST schema
+    #    [e.g.  "role_id": raw_data.get("new_basedon", ""), # "new_basedon" is named "role_id" in POST schema
 
     # Remove all keys without value, as they would be emptied.
     data = {key: val for key, val in data.items() if val}
     return data
+
 
 def run_module():
     module_args = dict(
@@ -185,15 +223,13 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         validate_certs=dict(type="bool", required=False, default=True),
-
-#        [Probably needs some adjustments, parameter fields can vary in type]
+        #        [Probably needs some adjustments, parameter fields can vary in type]
         new_basedon=dict(type="str", default=""),
         new_role_id=dict(type="str", default=""),
         role_id=dict(type="str", default=""),
         new_alias=dict(type="str", default=""),
         new_permissions=dict(type="list", default=[]),
-#        [...]
-
+        #        [...]
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
@@ -216,11 +252,13 @@ def run_module():
             # If user_role has changed then update it.
             current_content = json.loads(current.content.decode("utf-8"))
             changes = list(changes_detected(module, current_content))
-            if len(changes) > 0: 
-                data = { change: module.params[change] for change in changes }
-#                 [Some fields are not allowed during update or create or need special treatment like re-building a dict of permissions because the GET endpoint only delivers a list of names]
-                if data.get('new_permissions') != None:
-                    data["new_permissions"] = { key: "yes" for key in data["new_permissions"] }
+            if len(changes) > 0:
+                data = {change: module.params[change] for change in changes}
+                #                 [Some fields are not allowed during update or create or need special treatment like re-building a dict of permissions because the GET endpoint only delivers a list of names]
+                if data.get("new_permissions") != None:
+                    data["new_permissions"] = {
+                        key: "yes" for key in data["new_permissions"]
+                    }
                 user_roleupdate = User_roleUpdateAPI(module)
                 user_roleupdate.headers["If-Match"] = current.etag
                 result = user_roleupdate.put(data)
@@ -229,7 +267,7 @@ def run_module():
         elif current.http_code == 404:
             # user_role is not there. Create it.
             user_rolecreate = User_roleCreateAPI(module)
-            data = normalize_data(module.params) # remove unnessecary parameters
+            data = normalize_data(module.params)  # remove unnessecary parameters
             result = user_rolecreate.post()
 
     if module.params.get("state") == "absent":
@@ -251,8 +289,10 @@ def run_module():
 
     module.exit_json(**result_as_dict(result))
 
+
 def main():
     run_module()
+
 
 if __name__ == "__main__":
     main()
