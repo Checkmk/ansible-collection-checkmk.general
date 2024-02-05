@@ -57,65 +57,105 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
 
+
 class Aux_tagHTTPCodes:
-# [Response matrix needs adjustment:
-#    delete = {
-#        204: (True, False, 'No Content: Operation done successfully. No further output.'),
-#    }
-#    get = {
-#        404: (False, False, 'Not Found: The requested object has not been found.'),
-#        200: (False, False, 'OK: The operation was done successfully.'),
-#    }
-#    post = {
-#        204: (True, False, 'No Content: Operation done successfully. No further output.'),
-#        200: (True, False, 'OK: The operation was done successfully.'),
-#    }
-# ]
+    # [Response matrix needs adjustment:
+    #    delete = {
+    #        204: (True, False, 'No Content: Operation done successfully. No further output.'),
+    #    }
+    #    get = {
+    #        404: (False, False, 'Not Found: The requested object has not been found.'),
+    #        200: (False, False, 'OK: The operation was done successfully.'),
+    #    }
+    #    post = {
+    #        204: (True, False, 'No Content: Operation done successfully. No further output.'),
+    #        200: (True, False, 'OK: The operation was done successfully.'),
+    #    }
+    # ]
 
     # http_code: (changed, failed, "Message")
 
     delete = {
-        204: (True, False, 'No Content: Operation done successfully. No further output.'),
+        204: (
+            True,
+            False,
+            "No Content: Operation done successfully. No further output.",
+        ),
     }
 
-    post = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        404: (False, True, 'Not Found: The requested object has not been found.'), 
-        409: (False, True, 'Conflict: The request is in conflict with the stored resource.'), 
-        415: (False, True, 'Unsupported Media Type: The submitted content-type is not supported.'), 
-        400: (False, True, 'Bad Request: Parameter or validation failure.'), 
-        204: (True, False, 'No Content: Operation done successfully. No further output.'),
-        200: (True, False, 'OK: The operation was done successfully.'),
+    post = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        404: (False, True, "Not Found: The requested object has not been found."),
+        409: (
+            False,
+            True,
+            "Conflict: The request is in conflict with the stored resource.",
+        ),
+        415: (
+            False,
+            True,
+            "Unsupported Media Type: The submitted content-type is not supported.",
+        ),
+        400: (False, True, "Bad Request: Parameter or validation failure."),
+        204: (
+            True,
+            False,
+            "No Content: Operation done successfully. No further output.",
+        ),
+        200: (True, False, "OK: The operation was done successfully."),
     }
 
-    get = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        404: (False, False, 'Not Found: The requested object has not been found.'), 
-        200: (False, False, 'OK: The operation was done successfully.'),
+    get = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        404: (False, False, "Not Found: The requested object has not been found."),
+        200: (False, False, "OK: The operation was done successfully."),
     }
 
-    put = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        404: (False, True, 'Not Found: The requested object has not been found.'), 
-        415: (False, True, 'Unsupported Media Type: The submitted content-type is not supported.'), 
-        400: (False, True, 'Bad Request: Parameter or validation failure.'), 
-        200: (True, False, 'OK: The operation was done successfully.'),
+    put = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        404: (False, True, "Not Found: The requested object has not been found."),
+        415: (
+            False,
+            True,
+            "Unsupported Media Type: The submitted content-type is not supported.",
+        ),
+        400: (False, True, "Bad Request: Parameter or validation failure."),
+        200: (True, False, "OK: The operation was done successfully."),
     }
+
 
 class Aux_tagEndpoints:
     default = "/objects/aux_tag"
     create = "/domain-types/aux_tag/collections/all"
 
+
 def _build_default_endpoint(module):
-#    ["name" is not always the identifier field, e.g. "new_role_id" for user_role]
+    #    ["name" is not always the identifier field, e.g. "new_role_id" for user_role]
     return "%s/%s" % (Aux_tagEndpoints.default, module.params.get("aux_tag_id"))
 
+
 def _build_delete_endpoint(module):
-#    [delete is a POST endpoint here]
-    return "%s/%s/actions/delete/invoke" % (Aux_tagEndpoints.default, module.params.get("aux_tag_id"))
+    #    [delete is a POST endpoint here]
+    return "%s/%s/actions/delete/invoke" % (
+        Aux_tagEndpoints.default,
+        module.params.get("aux_tag_id"),
+    )
+
 
 class Aux_tagCreateAPI(CheckmkAPI):
     def post(self, data):
@@ -158,6 +198,7 @@ class Aux_tagCreateAPI(CheckmkAPI):
                 method="POST",
             )
 
+
 class Aux_tagUpdateAPI(CheckmkAPI):
     def put(self, data):
         return self._fetch(
@@ -167,17 +208,19 @@ class Aux_tagUpdateAPI(CheckmkAPI):
             method="PUT",
         )
 
+
 class Aux_tagDeleteAPI(CheckmkAPI):
     def delete(self):
         data = {}
 
         return self._fetch(
             code_mapping=Aux_tagHTTPCodes.delete,
-#            endpoint=_build_default_endpoint(self),
-#            method="DELETE",
+            #            endpoint=_build_default_endpoint(self),
+            #            method="DELETE",
             endpoint=_build_delete_endpoint(self),
             method="POST",
         )
+
 
 class Aux_tagGetAPI(CheckmkAPI):
     def get(self):
@@ -190,27 +233,29 @@ class Aux_tagGetAPI(CheckmkAPI):
             method="GET",
         )
 
-class Aux_tag():
+
+class Aux_tag:
     aux_tag_id = None
     topic = None
     title = None
     help = None
+
     def from_module(self, module):
-        self.aux_tag_id = module.get('aux_tag_id')
-        self.topic = module.get('topic')
-        self.title = module.get('title')
-        self.help = module.get('help')
+        self.aux_tag_id = module.get("aux_tag_id")
+        self.topic = module.get("topic")
+        self.title = module.get("title")
+        self.help = module.get("help")
 
     def from_current(self, current):
-#        self.aux_tag_id = current.get('aux_tag_id')
-#        self.topic = current.get('topic')
-#        self.title = current.get('title')
-#        self.help = current.get('help')
-# [Example]
-        self.aux_tag_id = current.get('id')
-        self.title = current.get('title')
-        self.topic = current.get('extensions').get('topic')
-        self.help = current.get('extensions').get('help')
+        #        self.aux_tag_id = current.get('aux_tag_id')
+        #        self.topic = current.get('topic')
+        #        self.title = current.get('title')
+        #        self.help = current.get('help')
+        # [Example]
+        self.aux_tag_id = current.get("id")
+        self.title = current.get("title")
+        self.topic = current.get("extensions").get("topic")
+        self.help = current.get("extensions").get("help")
 
     def post(self):
         data = self.__dict__
@@ -219,7 +264,7 @@ class Aux_tag():
 
     def put(self):
         data = self.__dict__
-        data.pop('aux_tag_id')
+        data.pop("aux_tag_id")
         data = {key: val for key, val in data.items() if val}
         return data
 
@@ -229,12 +274,13 @@ class Aux_tag():
         for k in _current:
             if k in _module:
                 if type(_current[k]) is dict:
-                    self.changes_detected(_current[k],_module[k])
+                    self.changes_detected(_current[k], _module[k])
                 if _current[k] != _module[k]:
                     return True
             else:
                 return True
         return False
+
 
 def run_module():
     module_args = dict(
@@ -243,14 +289,12 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         validate_certs=dict(type="bool", required=False, default=True),
-
-#        [Probably needs some adjustments, parameter fields can vary in type]
+        #        [Probably needs some adjustments, parameter fields can vary in type]
         aux_tag_id=dict(type="str", required=True),
         title=dict(type="str", required=True),
         topic=dict(type="str", required=True),
         help=dict(type="str", default=""),
-#        [...]
-
+        #        [...]
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
@@ -306,8 +350,10 @@ def run_module():
 
     module.exit_json(**result_as_dict(result))
 
+
 def main():
     run_module()
+
 
 if __name__ == "__main__":
     main()
