@@ -57,60 +57,88 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
 
+
 class Notification_ruleHTTPCodes:
-# [Response matrix needs adjustment:
-#    delete = {
-#        204: (True, False, 'No Content: Operation done successfully. No further output.'),
-#    }
-#    get = {
-#        404: (False, False, 'Not Found: The requested object has not been found.'),
-#        200: (False, False, 'OK: The operation was done successfully.'),
-#    }
-#    post = {
-#        204: (True, False, 'No Content: Operation done successfully. No further output.'),
-#        200: (True, False, 'OK: The operation was done successfully.'),
-#    }
-# ]
+    # [Response matrix needs adjustment:
+    #    delete = {
+    #        204: (True, False, 'No Content: Operation done successfully. No further output.'),
+    #    }
+    #    get = {
+    #        404: (False, False, 'Not Found: The requested object has not been found.'),
+    #        200: (False, False, 'OK: The operation was done successfully.'),
+    #    }
+    #    post = {
+    #        204: (True, False, 'No Content: Operation done successfully. No further output.'),
+    #        200: (True, False, 'OK: The operation was done successfully.'),
+    #    }
+    # ]
 
     # http_code: (changed, failed, "Message")
 
-    post = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        415: (False, True, 'Unsupported Media Type: The submitted content-type is not supported.'), 
-        400: (False, True, 'Bad Request: Parameter or validation failure.'), 
-        200: (True, False, 'OK: Created.'),
+    post = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        415: (
+            False,
+            True,
+            "Unsupported Media Type: The submitted content-type is not supported.",
+        ),
+        400: (False, True, "Bad Request: Parameter or validation failure."),
+        200: (True, False, "OK: Created."),
     }
 
-    get = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        #2
-        404: (False, False, 'Not Found: The requested object has not been found.'), 
-        200: (False, False, 'OK: The operation was done successfully.'),
+    get = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        # 2
+        404: (False, False, "Not Found: The requested object has not been found."),
+        200: (False, False, "OK: The operation was done successfully."),
     }
 
-    put = { 
-        406: (False, True, 'Not Acceptable: The requests accept headers can not be satisfied.'), 
-        403: (False, True, 'Forbidden: Configuration via Setup is disabled.'), 
-        404: (False, True, 'Not Found: The requested object has not been found.'), 
-        415: (False, True, 'Unsupported Media Type: The submitted content-type is not supported.'), 
-        400: (False, True, 'Bad Request: Parameter or validation failure.'), 
-        200: (True, False, 'OK: Updated.'),
+    put = {
+        406: (
+            False,
+            True,
+            "Not Acceptable: The requests accept headers can not be satisfied.",
+        ),
+        403: (False, True, "Forbidden: Configuration via Setup is disabled."),
+        404: (False, True, "Not Found: The requested object has not been found."),
+        415: (
+            False,
+            True,
+            "Unsupported Media Type: The submitted content-type is not supported.",
+        ),
+        400: (False, True, "Bad Request: Parameter or validation failure."),
+        200: (True, False, "OK: Updated."),
     }
+
 
 class Notification_ruleEndpoints:
     default = "/objects/notification_rule"
     create = "/domain-types/notification_rule/collections/all"
 
+
 def _build_default_endpoint(module):
-    #1
-#    ["None" is not always the identifier field, e.g. "new_role_id" for user_role]
+    # 1
+    #    ["None" is not always the identifier field, e.g. "new_role_id" for user_role]
     return "%s/%s" % (Notification_ruleEndpoints.default, module.params.get("id"))
 
+
 def _build_delete_endpoint(module):
-#    [delete is a POST endpoint here]
-    return "%s/%s/actions/delete/invoke" % (Notification_ruleEndpoints.default, module.params.get("id"))
+    #    [delete is a POST endpoint here]
+    return "%s/%s/actions/delete/invoke" % (
+        Notification_ruleEndpoints.default,
+        module.params.get("id"),
+    )
+
 
 class Notification_ruleCreateAPI(CheckmkAPI):
     def post(self, data):
@@ -133,6 +161,7 @@ class Notification_ruleCreateAPI(CheckmkAPI):
                 method="POST",
             )
 
+
 class Notification_ruleUpdateAPI(CheckmkAPI):
     def put(self, data):
         return self._fetch(
@@ -142,6 +171,7 @@ class Notification_ruleUpdateAPI(CheckmkAPI):
             method="PUT",
         )
 
+
 class Notification_ruleDeleteAPI(CheckmkAPI):
     def delete(self):
         data = {}
@@ -150,9 +180,10 @@ class Notification_ruleDeleteAPI(CheckmkAPI):
             code_mapping=Notification_ruleHTTPCodes.delete,
             endpoint=_build_default_endpoint(self),
             method="DELETE",
-#            endpoint=_build_delete_endpoint(self),
-#            method="POST",
+            #            endpoint=_build_delete_endpoint(self),
+            #            method="POST",
         )
+
 
 class Notification_ruleGetAPI(CheckmkAPI):
     def get(self):
@@ -165,33 +196,36 @@ class Notification_ruleGetAPI(CheckmkAPI):
             method="GET",
         )
 
-class Notification_rule():
+
+class Notification_rule:
     rule_config = None
     id = None
+
     def from_module(self, module):
-        self.rule_config = module.get('rule_config')
-        self.id = module.get('id')
+        self.rule_config = module.get("rule_config")
+        self.id = module.get("id")
 
     def from_current(self, current):
-        #4
-        self.rule_config = current.get('extensions').get('rule_config')
-        self.id = current.get('id')
-# [Example]
-#        self.aux_tag_id = current.get('id')
-#        self.title = current.get('title')
-#        self.topic = current.get('extensions').get('topic')
-#        self.help = current.get('extensions').get('help')
+        # 4
+        self.rule_config = current.get("extensions").get("rule_config")
+        self.id = current.get("id")
+
+    # [Example]
+    #        self.aux_tag_id = current.get('id')
+    #        self.title = current.get('title')
+    #        self.topic = current.get('extensions').get('topic')
+    #        self.help = current.get('extensions').get('help')
 
     # There is no named "id" for notification_rule. The rule gets created everytime it is called
     def post(self):
         data = self.__dict__
-        data.pop('id')
+        data.pop("id")
         data = {key: val for key, val in data.items() if val}
         return data
 
     def put(self):
         data = self.__dict__
-        data.pop('id')
+        data.pop("id")
         data = {key: val for key, val in data.items() if val}
         return data
 
@@ -214,6 +248,7 @@ class Notification_rule():
                 return True
         return False
 
+
 def run_module():
     module_args = dict(
         server_url=dict(type="str", required=True),
@@ -221,13 +256,11 @@ def run_module():
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
         validate_certs=dict(type="bool", required=False, default=True),
-
-#        [Probably needs some adjustments, parameter fields can vary in type]
-        #3
+        #        [Probably needs some adjustments, parameter fields can vary in type]
+        # 3
         rule_config=dict(type="dict", required=True),
         id=dict(type="str", required=True),
-#        [...]
-
+        #        [...]
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
@@ -251,11 +284,15 @@ def run_module():
 
     if module.params.get("state") == "present":
         if current.http_code == 200:
-            current_notification_rule.from_current(json.loads(current.content.decode("utf-8")))
-            #raise Exception(current_notification_rule.put(), module_notification_rule.put())
+            current_notification_rule.from_current(
+                json.loads(current.content.decode("utf-8"))
+            )
+            # raise Exception(current_notification_rule.put(), module_notification_rule.put())
 
             # If 'notification_rule' has changed then update it.
-            current_notification_rule.from_current(json.loads(current.content.decode("utf-8")))
+            current_notification_rule.from_current(
+                json.loads(current.content.decode("utf-8"))
+            )
             if current_notification_rule.changes_detected(module_notification_rule):
                 notification_ruleupdate = Notification_ruleUpdateAPI(module)
                 notification_ruleupdate.headers["If-Match"] = current.etag
@@ -286,8 +323,10 @@ def run_module():
 
     module.exit_json(**result_as_dict(result))
 
+
 def main():
     run_module()
+
 
 if __name__ == "__main__":
     main()
