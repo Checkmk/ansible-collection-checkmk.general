@@ -169,10 +169,6 @@ PYTHON_VERSION = 3
 HAS_PATHLIB2_LIBRARY = True
 PATHLIB2_LIBRARY_IMPORT_ERROR = None
 
-PYTHON_VERSION = 3
-HAS_PATHLIB2_LIBRARY = True
-PATHLIB2_LIBRARY_IMPORT_ERROR = None
-
 if sys.version[0] == "3":
     from pathlib import Path
 else:
@@ -469,43 +465,6 @@ def _exit_if_missing_pathlib(module):
             msg=missing_required_lib("pathlib2"),
             exception=PATHLIB2_LIBRARY_IMPORT_ERROR,
         )
-
-
-def get_version_ge_220p7(module, checkmkversion):
-    if "p" in checkmkversion[2]:
-        patchlevel = checkmkversion[2].split("p")
-        patchtype = "p"
-    elif "a" in checkmkversion[2]:
-        patchlevel = checkmkversion[2].split("a")
-        patchtype = "a"
-    elif "b" in checkmkversion[2]:
-        patchlevel = checkmkversion[2].split("b")
-        patchtype = "b"
-    else:
-        exit_failed(
-            module,
-            "Not supported patch-level schema: %s" % (checkmkversion[2]),
-        )
-
-    if (
-        int(checkmkversion[0]) > 2
-        or (int(checkmkversion[0]) == 2 and int(checkmkversion[1]) > 2)
-        or (
-            int(checkmkversion[0]) == 2
-            and int(checkmkversion[1]) == 2
-            and int(patchlevel[0]) > 0
-        )
-        or (
-            int(checkmkversion[0]) == 2
-            and int(checkmkversion[1]) == 2
-            and int(patchlevel[0]) == 0
-            and patchtype == "p"
-            and int(patchlevel[1]) >= 7
-        )
-    ):
-        return True
-    else:
-        return False
 
 
 def run_module():
