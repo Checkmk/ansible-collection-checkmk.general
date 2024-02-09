@@ -8,8 +8,13 @@ Of course you can reach out in the [Checkmk Community (using the 'ansible' tag)]
 or create [issues here](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
 
 # Compatibility Matrix
-The following is a compatibility overview between this collection and Checkmk. We always try to track the most recent Checkmk version. This table will give you an overview which collection versions were tested against which Checkmk versions.
-There is of course no guarantees, that there will be no issues at all, but we do our best in testing. On the other hand this obviously does not limit the collection versions to the Checkmk versions mentioned here. Most likely the collection will work with most current Checkmk versions.
+
+The following is a compatibility overview between this collection, Ansible and Checkmk.
+We always try to track the most recent Ansible and Checkmk versions.
+This table will give you an overview against which Ansible and Checkmk versions we tested a release.
+There is of course no guarantees, that there will be no issues at all, but we do our best in testing.
+On the other hand this obviously does not limit the collection versions to the Checkmk versions mentioned here.
+Most likely the collection will work with most current Checkmk versions.
 
 Collection Version | Checkmk Versions | Ansible Versions | Remarks
 --- | --- | --- | ---
@@ -28,10 +33,19 @@ Collection Version | Checkmk Versions | Ansible Versions | Remarks
 0.21.0 | 2.1.0p27, 2.0.0p35, 2.2.0b6 | 2.12, 2.13, 2.14 | None
 0.22.0 | 2.1.0p27, 2.0.0p35, 2.2.0b6 | 2.12, 2.13, 2.14 | None
 0.23.0 | 2.1.0p28, 2.0.0p36, 2.2.0b8 | 2.13, 2.14, 2.15 | None
-1.0.0 | 2.1.0p28, 2.0.0p36, 2.2.0b8 | 2.13, 2.14, 2.15 | None
-2.0.0 | 2.0.0p36, 2.1.0p28, 2.2.0p1 | 2.13, 2.14, 2.15 | None
+1.0.0 | 2.1.0p28, 2.0.0p36, 2.2.0b8 | 2.13, 2.14, 2.15 | Last release of `tribe29.checkmk` before renaming.
+2.0.0 | 2.0.0p36, 2.1.0p28, 2.2.0p1 | 2.13, 2.14, 2.15 | First release of `checkmk.general` after renaming.
 2.1.0 | 2.0.0p36, 2.1.0p29, 2.2.0p3 | 2.13, 2.14, 2.15 | None
 2.2.0 | 2.0.0p36, 2.1.0p29, 2.2.0p3 | 2.13, 2.14, 2.15 | None
 2.3.0 | 2.0.0p36, 2.1.0p29, 2.2.0p3 | 2.13, 2.14, 2.15 | None
 2.4.0 | 2.0.0p37, 2.1.0p31, 2.2.0p7 | 2.13, 2.14, 2.15 | None
 2.4.1 | 2.0.0p37, 2.1.0p31, 2.2.0p7 | 2.13, 2.14, 2.15 | None
+3.0.0 | 2.0.0p38, 2.1.0p32, 2.2.0p7 | 2.13, 2.14, 2.15 | Breaking changes to the following modules: `folder`, `host`, `host_group`, `rule`.
+3.1.0 | 2.0.0p38, 2.1.0p32, 2.2.0p7 | 2.13, 2.14, 2.15 | None
+3.2.0 | 2.0.0p38, 2.1.0p32, 2.2.0p8 | 2.13, 2.14, 2.15 | None
+3.3.0 | 2.0.0p39, 2.1.0p35, 2.2.0p12 | 2.13, 2.14, 2.15 | None
+3.4.0 | 2.0.0p39, 2.1.0p36, 2.2.0p14 | 2.13, 2.14, 2.15 | None
+4.0.0 | 2.0.0p39, 2.1.0p36, 2.2.0p16 | 2.14, 2.15, 2.16 | Breaking changes to the following roles: `agent`, `server`.
+4.0.1 | 2.0.0p39, 2.1.0p36, 2.2.0p16 | 2.14, 2.15, 2.16 | None
+4.1.0 | 2.0.0p39, 2.1.0p37, 2.2.0p17 | 2.14, 2.15, 2.16 | None
+4.2.0 | 2.0.0p39, 2.1.0p38, 2.2.0p19 | 2.14, 2.15, 2.16 | None

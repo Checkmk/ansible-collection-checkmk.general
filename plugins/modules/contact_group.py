@@ -30,6 +30,10 @@ options:
     title:
         description: The title (alias) of your contact group. If omitted defaults to the name.
         type: str
+    customer:
+        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        required: false
+        type: str
     groups:
         description:
             - instead of 'name', 'title' a list of dicts with elements of contact group name and title (alias) to be created/modified/deleted.
@@ -54,21 +58,23 @@ EXAMPLES = r"""
 # Create a single contact group.
 - name: "Create a single contact group."
   checkmk.general.contact_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_contact_group"
     title: "My Contact Group"
+    customer: "provider"
     state: "present"
 
 # Create several contact groups.
 - name: "Create several contact groups."
   checkmk.general.contact_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    customer: "provider"
     groups:
       - name: "my_contact_group_one"
         title: "My Contact Group One"
@@ -81,10 +87,11 @@ EXAMPLES = r"""
 # Create several contact groups.
 - name: "Create several contact groups."
   checkmk.general.contact_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    customer: "provider"
     groups:
       - name: "my_contact_group_one"
         title: "My Contact Group One"
@@ -95,20 +102,20 @@ EXAMPLES = r"""
 # Delete a single contact group.
 - name: "Create a single contact group."
   checkmk.general.contact_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_contact_group"
     state: "absent"
 
 # Delete several contact groups.
 - name: "Delete several contact groups."
   checkmk.general.contact_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     groups:
       - name: "my_contact_group_one"
       - name: "my_contact_group_two"
@@ -266,10 +273,17 @@ def create_single_contact_group(module, base_url, headers):
     name = module.params["name"]
 
     api_endpoint = "/domain-types/contact_group_config/collections/all"
-    params = {
-        "name": name,
-        "alias": module.params.get("title", name),
-    }
+    if module.params.get("customer") is not None:
+        params = {
+            "name": name,
+            "alias": module.params.get("title", name),
+            "customer": module.params.get("customer", "provider"),
+        }
+    else:
+        params = {
+            "name": name,
+            "alias": module.params.get("title", name),
+        }
     url = base_url + api_endpoint
 
     response, info = fetch_url(
@@ -286,15 +300,29 @@ def create_single_contact_group(module, base_url, headers):
 
 def create_contact_groups(module, base_url, groups, headers):
     api_endpoint = "/domain-types/contact_group_config/actions/bulk-create/invoke"
-    params = {
-        "entries": [
-            {
-                "name": el.get("name"),
-                "alias": el.get("title", el.get("name")),
-            }
-            for el in groups
-        ],
-    }
+
+    if module.params.get("customer") is not None:
+        params = {
+            "entries": [
+                {
+                    "name": el.get("name"),
+                    "alias": el.get("title", el.get("name")),
+                    "customer": el.get("customer", "provider"),
+                }
+                for el in groups
+            ],
+        }
+    else:
+        params = {
+            "entries": [
+                {
+                    "name": el.get("name"),
+                    "alias": el.get("title", el.get("name")),
+                }
+                for el in groups
+            ],
+        }
+
     url = base_url + api_endpoint
 
     response, info = fetch_url(
@@ -351,6 +379,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         name=dict(type="str", required=False),
         title=dict(type="str", required=False),
+        customer=dict(type="str", required=False),
         groups=dict(type="raw", required=False, default=[]),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )

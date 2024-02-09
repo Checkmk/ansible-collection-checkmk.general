@@ -1,60 +1,44 @@
 ---
-# In these integration tests, we do not normalize the edition naming, but stick
-# to the naming of the setup files. For example 'raw' and 'enterprise' rather
-# than 'CRE' and 'CEE'.
 test_sites:
-  - version: "2.2.0p7"
+  - version: "2.2.0p19"
+    edition: "cme"
+    site: "stable_cme"
+  - version: "2.2.0p19"
     edition: "cre"
-    site: "stable_raw"
-  - version: "2.2.0p7"
+    site: "stable_cre"
+  - version: "2.2.0p19"
     edition: "cee"
-    site: "stable_ent"
-  - version: "2.1.0p31"
+    site: "stable_cee"
+  - version: "2.1.0p38"
     edition: "cre"
-    site: "old_raw"
-  - version: "2.0.0p37"
+    site: "old_cre"
+  - version: "2.0.0p39"
     edition: "cre"
-    site: "ancient_raw"
-
-server_url: "http://127.0.0.1/"
-automation_user: "cmkadmin"
-automation_secret: "d7589df1-01db-4eda-9858-dbcff8d0c361"
-
-download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
-download_user: "d-gh-ansible-dl"
-download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret') }}"
-
-# Due to inconsitent naming of editions, we normalize them here for convenience
-checkmk_server_edition_mapping:
-  cre: raw
-  cfe: free
-  cee: enterprise
-  cce: cloud
-  cme: managed
+    site: "ancient_cre"
 
 checkmk_host_groups_create:
-  - name:  "test1"
+  - name: "test1"
     title: "Test_1"
-  - name:  "test2"
-  - name:  "test3"
-  - name:  "test4"
+  - name: "test2"
+  - name: "test3"
+  - name: "test4"
     title: "Test_4"
-  - name:  "test5"
+  - name: "test5"
     title: "Test_5"
 
 # 2 and 3 remains unchanged, good for idempotency check
 checkmk_host_groups_modify:
-  - name:  "test1"
+  - name: "test1"
     title: "Test_one"
-  - name:  "test2"
+  - name: "test2"
     title: "Test_2"
-  - name:  "test3"
+  - name: "test3"
     title: "Test_3"
-  - name:  "test4"
+  - name: "test4"
     title: "Test_four"
-  - name:  "test5"
+  - name: "test5"
     title: "Test_five"
 
 checkmk_host_groups_delete:
-  - name:  "test1"
-  - name:  "test3"
+  - name: "test1"
+  - name: "test3"

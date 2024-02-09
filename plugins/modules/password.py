@@ -11,14 +11,14 @@ DOCUMENTATION = r"""
 ---
 module: password
 
-short_description: Manage passwords in checkmk.
+short_description: Manage passwords in Checkmk.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "2.3.0"
 
 description:
-- Manage passwords in checkmk.
+- Manage passwords in Checkmk.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -30,6 +30,11 @@ options:
 
     title:
         description: A title for the password.
+        required: false
+        type: str
+
+    customer:
+        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
         required: false
         type: str
 
@@ -73,27 +78,28 @@ EXAMPLES = r"""
 # If passwords are configured, no_log should be set to true.
 - name: "Create a new password."
   checkmk.general.password:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "mypassword"
     title: "My Password"
+    customer: "provider"
     comment: "Comment on my password"
     documentation_url: "https://url.to.mypassword/"
     password: "topsecret"
     owner: "admin"
     shared: [
-        "all"
+      "all"
     ]
     state: "present"
   no_log: true
 - name: "Delete a password."
   checkmk.general.password:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "mypassword"
     state: "absent"
 """
@@ -118,6 +124,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
 )
 
 # We count 404 not as failed, because we want to know if the password exists or not.
@@ -145,7 +154,7 @@ HTTP_CODES_DELETE = {
     200: (True, False, "OK: The operation was done successfully."),
     400: (False, True, "Bad Request: Parameter or validation failure."),
     403: (False, True, "Forbidden: Configuration via Setup is disabled."),
-    404: (False, True, "Not Found: The requested object has not been found."),
+    404: (False, False, "Not Found: The requested object has not been found."),
     406: (
         False,
         True,
@@ -215,12 +224,16 @@ class PasswordsCreateAPI(CheckmkAPI):
         data = {
             "ident": self.params.get("name", ""),
             "title": self.params.get("title", ""),
+            "customer": self.params.get("customer", ""),
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
             "owner": self.params.get("owner", ""),
             "shared": self.params.get("shared", ""),
         }
+
+        # Remove all keys without value, as otherwise they would be None.
+        data = {key: val for key, val in data.items() if val}
 
         return self._fetch(
             code_mapping=HTTP_CODES_CREATE,
@@ -234,6 +247,7 @@ class PasswordsUpdateAPI(CheckmkAPI):
     def put(self):
         data = {
             "title": self.params.get("title", ""),
+            "customer": self.params.get("customer", ""),
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
@@ -285,6 +299,7 @@ def run_module():
         automation_secret=dict(type="str", required=True, no_log=True),
         name=dict(type="str", required=True),
         title=dict(type="str", required=False),
+        customer=dict(type="str", required=False),
         comment=dict(type="str", required=False),
         documentation_url=dict(type="str", required=False),
         password=dict(type="str", required=False, no_log=True),
@@ -320,6 +335,22 @@ def run_module():
 
         elif result.http_code == 404:
             passwordcreate = PasswordsCreateAPI(module)
+
+            checkmkversion = CheckmkVersion(str(passwordcreate.getversion()))
+            if (
+                checkmkversion.edition == "cme"
+                and module.params.get("customer") is None
+            ):
+                result = RESULT(
+                    http_code=0,
+                    msg="Missing required parameter 'customer' for CME",
+                    content="",
+                    etag="",
+                    failed=True,
+                    changed=False,
+                )
+                module.fail_json(**result_as_dict(result))
+
             result = passwordcreate.post()
 
             time.sleep(3)

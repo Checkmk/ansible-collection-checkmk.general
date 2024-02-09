@@ -1,6 +1,6 @@
 ---
 # Contact Groups ############################################
-checkmk_contact_groups:
+checkmk_var_contact_groups:
   - name: "contacts_linux"
     title: "Linux Admins"
   - name: "contacts_windows"
@@ -12,7 +12,7 @@ checkmk_contact_groups:
 #############################################################
 
 # Host Groups ###############################################
-checkmk_host_groups:
+checkmk_var_host_groups:
   - name: "hosts_linux"
     title: "Linux Hosts"
   - name: "hosts_windows"
@@ -24,7 +24,7 @@ checkmk_host_groups:
 #############################################################
 
 # Tag Groups ###############################################
-checkmk_tag_groups:
+checkmk_var_tag_groups:
   - id: "operating_system"
     title: "Operating System"
     topic: "Technical"
@@ -58,7 +58,7 @@ checkmk_tag_groups:
 #############################################################
 
 # Service Groups ############################################
-checkmk_service_groups:
+checkmk_var_service_groups:
   - name: "services_updates"
     title: "Operating System Updates"
   - name: "services_filesystems"

@@ -61,12 +61,6 @@ options:
                             - Mutually exclusive with I(rule_id).
                         default: "/"
                         type: str
-            folder:
-                description:
-                  - Folder of the rule.
-                  - Deprecated, use I(location) instead.
-                  - Mutually exclusive with I(location).
-                type: str
             conditions:
                 description: Conditions of the rule.
                 type: dict
@@ -100,102 +94,134 @@ EXAMPLES = r"""
 # at the top of the main folder.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
   checkmk.general.rule:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_labels": [],
-            "host_name": {
-                "match_on": [
-                    "test1.tld"
-                ],
-                "operator": "one_of"
-            },
-            "host_tags": [],
-            "service_labels": []
-        }
-        properties: {
-            "comment": "Warning at 80%\nCritical at 90%\n",
-            "description": "Allow higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-        }
+      conditions: {
+        "host_labels": [],
+        "host_name": {
+          "match_on": [
+            "test1.tld"
+          ],
+          "operator": "one_of"
+        },
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 80%\nCritical at 90%\n",
+        "description": "Allow higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (80.0, 90.0)}"
+      location:
         folder: "/"
-        value_raw: "{'levels': (80.0, 90.0)}"
-        location:
-            folder: "/"
-            position: "top"
+        position: "top"
     state: "present"
-    register: response
+  register: response
 
 - name: Show the ID of the new rule
-  debug:
+  ansible.builtin.debug:
     msg: "RULE ID : {{ response.id }}"
 
 # Create another rule in checkgroup_parameters:memory_percentage_used
 # and put it after the rule created above.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
   checkmk.general.rule:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_labels": [],
-            "host_name": {
-                "match_on": [
-                    "test2.tld"
-                ],
-                "operator": "one_of"
-            },
-            "host_tags": [],
-            "service_labels": []
-        }
-        properties: {
-            "comment": "Warning at 85%\nCritical at 99%\n",
-            "description": "Allow even higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-        }
-        value_raw: "{'levels': (85.0, 99.0)}"
-        location:
-            position: "after"
-            rule_id: "{{ response.id }}"
+      conditions: {
+        "host_labels": [],
+        "host_name": {
+          "match_on": [
+            "test2.tld"
+          ],
+          "operator": "one_of"
+        },
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 85%\nCritical at 99%\n",
+        "description": "Allow even higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (85.0, 99.0)}"
+      location:
+        position: "after"
+        rule_id: "{{ response.id }}"
     state: "present"
 
 # Delete the first rule.
 - name: "Delete a rule."
   checkmk.general.rule:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-        conditions: {
-            "host_labels": [],
-            "host_name": {
-                "match_on": [
-                    "test1.tld"
-                ],
-                "operator": "one_of"
-            },
-            "host_tags": [],
-            "service_labels": []
-        }
-        properties: {
-            "comment": "Warning at 80%\nCritical at 90%\n",
-            "description": "Allow higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-        }
-        value_raw: "{'levels': (80.0, 90.0)}"
+      conditions: {
+        "host_labels": [],
+        "host_name": {
+          "match_on": [
+            "test1.tld"
+          ],
+          "operator": "one_of"
+        },
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 80%\nCritical at 90%\n",
+        "description": "Allow higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (80.0, 90.0)}"
     state: "absent"
+
+# Create a rule rule matching a host label
+- name: "Create a rule matching a label."
+  checkmk.general.rule:
+    server_url: "http://my_server/"
+    site: "my_site"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      conditions: {
+        "host_labels": [
+          {
+            "key": "cmk/check_mk_server",
+            "operator": "is",
+            "value": "yes"
+          }
+        ],
+        "host_name": {},
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 80%\nCritical at 90%\n",
+        "description": "Allow higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (80.0, 90.0)}"
+      location:
+        folder: "/"
+        position: "top"
+    state: "present"
 """
 
 RETURN = r"""
@@ -264,6 +290,23 @@ def get_rules_in_ruleset(module, base_url, headers, ruleset):
     return json.loads(response.read().decode("utf-8"))
 
 
+def get_rule_by_id(module, base_url, headers, rule_id):
+    api_endpoint = "/objects/rule/" + rule_id
+
+    url = base_url + api_endpoint
+
+    response, info = fetch_url(module, url, headers=headers, method="GET")
+
+    if info["status"] not in [200, 204]:
+        exit_failed(
+            module,
+            "Error calling API. HTTP code %d. Details: %s, "
+            % (info["status"], info["body"]),
+        )
+
+    return json.loads(response.read().decode("utf-8"))
+
+
 def get_existing_rule(module, base_url, headers, ruleset, rule):
     # Get rules in ruleset
     rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
@@ -271,6 +314,13 @@ def get_existing_rule(module, base_url, headers, ruleset, rule):
     (value_mod, exc) = safe_eval(rule["value_raw"], include_exceptions=True)
     if exc is not None:
         exit_failed(module, "value_raw in rule has invalid format")
+
+    # Get folder from neighbour rule if relative rule_id is given in location
+    if rule["location"]["rule_id"] is not None:
+        neighbour_rule = get_rule_by_id(
+            module, base_url, headers, rule["location"]["rule_id"]
+        )
+        rule["folder"] = neighbour_rule["extensions"]["folder"]
 
     if rules is not None:
         # Loop through all rules
@@ -418,7 +468,6 @@ def run_module():
             type="dict",
             required=True,
             options=dict(
-                folder=dict(type="str"),
                 conditions=dict(type="dict"),
                 properties=dict(type="dict"),
                 value_raw=dict(type="str"),
@@ -444,16 +493,8 @@ def run_module():
                     ],
                     mutually_exclusive=[("folder", "rule_id")],
                     apply_defaults=True,
-                    deprecated_aliases=[
-                        {
-                            "name": "folder",
-                            "collection_name": "checkmk.general",
-                            "version": "3.0.0",
-                        }
-                    ],
                 ),
             ),
-            mutually_exclusive=[("folder", "location")],
         ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )

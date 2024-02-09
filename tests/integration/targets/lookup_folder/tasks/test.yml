@@ -1,0 +1,59 @@
+---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folder."
+  folder:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ checkmk_folder.name }}"
+    path: "{{ checkmk_folder.path }}"
+    attributes:
+      tag_criticality: "{{ checkmk_folder.criticality }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all folders."
+  ansible.builtin.debug:
+    var: folders
+  vars:
+    folders: "{{ lookup('checkmk.general.folders',
+                    '/',
+                    server_url=checkmk_var_server_url,
+                    site=outer_item.site,
+                    validate_certs=False,
+                    automation_user=checkmk_var_automation_user,
+                    automation_secret=checkmk_var_automation_secret)
+              }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get attributes of folder."
+  ansible.builtin.debug:
+    msg: "Criticality of {{ checkmk_folder.name }} is {{ extensions.attributes.tag_criticality }}"
+  vars:
+    extensions: "{{ lookup('checkmk.general.folder',
+                    checkmk_folder.path,
+                    server_url=checkmk_var_server_url,
+                    site=outer_item.site,
+                    validate_certs=False,
+                    automation_user=checkmk_var_automation_user,
+                    automation_secret=checkmk_var_automation_secret)
+              }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify folder criticality."
+  ansible.builtin.assert:
+    that: "extensions.attributes.tag_criticality == checkmk_folder.criticality"
+  vars:
+    extensions: "{{ lookup('checkmk.general.folder',
+                    checkmk_folder.path,
+                    server_url=checkmk_var_server_url,
+                    site=outer_item.site,
+                    validate_certs=False,
+                    automation_user=checkmk_var_automation_user,
+                    automation_secret=checkmk_var_automation_secret)
+              }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]

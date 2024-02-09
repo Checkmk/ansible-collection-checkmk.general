@@ -1,11 +1,53 @@
 ---
+
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
+
 name: Release Collection
 
 on: # yamllint disable-line rule:truthy
   workflow_dispatch:
 
 jobs:
+
+  #
+  # Run sanity checks prior to release.
+  #
+
+  sanity:
+    runs-on: ubuntu-latest
+    name: Sanity (Ⓐ${{ matrix.ansible }})
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible:
+          - stable-2.14
+          - stable-2.15
+          - stable-2.16
+          - devel
+
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - name: Run sanity tests
+        run: ansible-test sanity --docker -v --color --coverage
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
   release:
+    needs: sanity
     runs-on: ubuntu-latest
 
     steps:
@@ -15,14 +57,14 @@ jobs:
       #
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get current version
         id: current_version
         run: echo "version=$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -48,25 +90,23 @@ jobs:
         run: ansible-galaxy collection build build/src --force
 
       - name: Install Ansible Collection
-        run: ansible-galaxy collection install --no-deps ./checkmk-general-${{ steps.current_version.outputs.version }}.tar.gz
+        run: ansible-galaxy collection install --no-deps ./${{env.NAMESPACE}}-${{env.COLLECTION_NAME}}-${{ steps.current_version.outputs.version }}.tar.gz
 
       - name: Compile Collection Changelog
         run: antsibull-changelog release
 
       - name: Compile Collection Docs
-        run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ checkmk.general
+        run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
 
       - name: Create Pull Request for docs and changelog against devel branch
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: Update Docs and Changelogs
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          commit-message: Update Docs and Changelogs upon Release
           signoff: false
           branch: changelogs-docs-update-devel
           base: devel
           delete-branch: true
-          title: '[Auto] Update changelogs and docs'
+          title: '[Auto] Update changelogs and docs upon release'
           body: |
             Changelogs and docs updated during *${{ steps.current_version.outputs.version }}* release.
           assignees: robin-checkmk
@@ -99,13 +139,13 @@ jobs:
           prerelease: false
           name: v${{ steps.current_version.outputs.version }}
           tag_name: v${{ steps.current_version.outputs.version }}
-          files: checkmk-general-${{ steps.current_version.outputs.version }}.tar.gz
+          files: ${{env.NAMESPACE}}-${{env.COLLECTION_NAME}}-${{ steps.current_version.outputs.version }}.tar.gz
           body: |
-            # Ansible Collection: checkmk.general
+            # Ansible Collection: ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
 
             For information about this collection and how to install it, refer to the [README](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/README.md).
-            
+
             For a detailed changelog, refer to the [CHANGELOG](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/CHANGELOG.rst).
 
       - name: Publish Ansible Collection to the Galaxy
-        run: ansible-galaxy collection publish checkmk-general-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
+        run: ansible-galaxy collection publish ${{env.NAMESPACE}}-${{env.COLLECTION_NAME}}-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}

@@ -3,11 +3,11 @@
   become: true
   ansible.builtin.shell: |
     set -o pipefail
-    omd -V {{ item.version }}.{{ checkmk_server_edition }} create {{ item.name }}
+    omd -V {{ item.version }}.{{ checkmk_server_edition | lower }} create {{ item.name }}
   args:
     executable: /bin/bash
     creates: "/omd/sites/{{ item.name }}"
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.state != "absent"
   register: checkmk_server_sites_created
@@ -21,9 +21,9 @@
     omd version {{ item.name }} | egrep -o '[^ ]+$'
   args:
     executable: /bin/bash
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
-  changed_when: "checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition"
+  changed_when: "checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition | lower"
   when: item.state != "absent"
   register: checkmk_server_sites_versions
   tags:
@@ -36,6 +36,25 @@
   tags:
     - update-sites
 
+- name: "Enable Sites."  # noqa no-changed-when
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    if [ "$(omd config {{ item.name }} show AUTOSTART)" != "on" ]
+    then
+      omd config {{ item.name }} set AUTOSTART on
+      echo "Autostart enabled."
+    fi
+  args:
+    executable: /bin/bash
+  no_log: "{{ checkmk_server_no_log | bool }}"
+  loop: "{{ checkmk_server_sites }}"
+  when: (item.state == "enabled") or (item.state == "started")
+  register: checkmk_server_sites_stopped
+  changed_when: "'Autostart enabled.' in checkmk_server_sites_stopped.stdout"
+  tags:
+    - enable-sites
+
 - name: "Start Sites."
   become: true
   ansible.builtin.shell: |
@@ -44,7 +63,7 @@
   args:
     executable: /bin/bash
     creates: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.state == "started"
   register: checkmk_server_sites_started
@@ -59,12 +78,30 @@
   args:
     executable: /bin/bash
     removes: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
-  when: (item.state == "absent") or (item.state == "stopped")
+  when: item.state != "started"
   register: checkmk_server_sites_stopped
   tags:
     - stop-sites
+
+- name: "Disable Sites."  # noqa no-changed-when
+  become: true
+  ansible.builtin.shell: |
+    if [ "$(omd config {{ item.name }} show AUTOSTART)" != "off" ]
+    then
+      omd config {{ item.name }} set AUTOSTART off
+      echo "Autostart disabled."
+    fi
+  args:
+    executable: /bin/bash
+  no_log: "{{ checkmk_server_no_log | bool }}"
+  loop: "{{ checkmk_server_sites }}"
+  when: (item.state == "disabled") or (item.state == "present") or (item.state == "stopped")
+  register: checkmk_server_sites_stopped
+  changed_when: "'Autostart disabled.' in checkmk_server_sites_stopped.stdout"
+  tags:
+    - disable-sites
 
 - name: "Destroy Sites."
   become: true
@@ -74,12 +111,24 @@
   args:
     executable: /bin/bash
     removes: "/omd/sites/{{ item.name }}"
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.state == "absent"
   register: checkmk_server_sites_removed
   tags:
     - destroy-sites
+
+- name: "Include site configuration tasks."
+  ansible.builtin.include_tasks: configure-site.yml
+  loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    loop_var: outer_item
+  when: |
+    outer_item.omd_config is defined and
+    ((outer_item.omd_auto_restart is defined and outer_item.omd_auto_restart | bool) or
+    (outer_item.state == "stopped" or outer_item.state == "disabled" or outer_item.state == "present"))
+  tags:
+    - configure-sites
 
 - name: "Update Site Admin Password for Checkmk < 2.1."  # noqa no-changed-when
   become: true
@@ -88,9 +137,9 @@
     echo '{{ item.admin_pw }}' | htpasswd -i /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
   args:
     executable: /bin/bash
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
-  when: (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '<'))
+  when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '<'))
   tags:
     - set-site-admin-pw
 
@@ -103,8 +152,18 @@
     echo '{{ item.admin_pw }}' | htpasswd -i -B -C 12 /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
   args:
     executable: /bin/bash
-  no_log: true
+  no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
-  when: (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '>='))
+  when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '>='))
   tags:
     - set-site-admin-pw
+
+- name: "Trigger warning about missing cmkadmin password."
+  ansible.builtin.debug:
+    msg:
+      - "Just a trigger."
+  loop: "{{ checkmk_server_sites_created.results }}"
+  when: checkmk_server_sites_created.changed | bool and not item.item.admin_pw is defined
+  changed_when: true
+  notify: Warn site admin password
+  no_log: "{{ checkmk_server_no_log | bool }}"

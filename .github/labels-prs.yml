@@ -1,0 +1,135 @@
+---
+documentation:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: ['**/*.md', '**/*.rst', 'docs/*', 'changelogs/*']
+
+role:server:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'roles/server/*'
+
+role:agent:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'roles/agent/*'
+
+module:activation:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/activation.py'
+
+module:bakery:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/bakery.py'
+
+module:contact_group:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/contact_group.py'
+
+module:discovery:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/discovery.py'
+
+module:downtime:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/downtime.py'
+
+module:folder:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/folder.py'
+
+module:host:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/host.py'
+
+module:host_group:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/host_group.py'
+
+module:password:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/password.py'
+
+module:rule:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/rule.py'
+
+module:service_group:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/service_group.py'
+
+module:tag_group:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/tag_group.py'
+
+module:timeperiod:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/timeperiod.py'
+
+module:user:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/user.py'
+
+lookup:version:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/version.py'
+
+lookup:folder:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/folder.py'
+
+lookup:folders:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/folders.py'
+
+lookup:host:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/host.py'
+
+lookup:hosts:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/hosts.py'
+
+lookup:rule:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/rule.py'
+
+lookup:rules:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/rules.py'
+
+lookup:ruleset:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/ruleset.py'
+
+lookup:rulesets:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/rulesets.py'
+
+lookup:bakery:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/bakery.py'

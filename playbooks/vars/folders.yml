@@ -1,5 +1,5 @@
 ---
-checkmk_folders:
+checkmk_var_folders:
   - path: /test
     name: Test
   - path: /foo/

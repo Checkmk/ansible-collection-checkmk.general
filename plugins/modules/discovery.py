@@ -29,7 +29,9 @@ options:
         required: false
         type: str
     hosts:
-        description: The list of hosts the services of which you want to manage. Mutually exclusive with host_name. Bulk mode.
+        description:
+            - The list of hosts the services of which you want to manage.
+              Mutually exclusive with host_name. This enables bulk discovery mode.
         required: false
         type: list
         elements: str
@@ -61,35 +63,35 @@ EXAMPLES = r"""
 # Create a single host.
 - name: "Add newly discovered services on host."
   checkmk.general.discovery:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     host_name: "my_host"
     state: "new"
 - name: "Add newly discovered services, update labels and remove vanished services on host."
   checkmk.general.discovery:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     host_name: "my_host"
     state: "fix_all"
 - name: "Add newly discovered services on hosts. (Bulk)"
   checkmk.general.discovery:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
-    hosts: "[my_host_0, my_host_1]"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    hosts: ["my_host_0", "my_host_1"]
     state: "new"
 - name: "Add newly discovered services, update labels and remove vanished services on host; 3 at once (Bulk)"
   checkmk.general.discovery:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
-    hosts: "[my_host_0, my_host_1, my_host_2, my_host_3, my_host_4, my_host_5]"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    hosts: ["my_host_0", "my_host_1", "my_host_2", "my_host_3", "my_host_4", "my_host_5"]
     state: "fix_all"
     bulk_size: 3
 """
@@ -116,6 +118,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.types import RESUL
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
 
 HTTP_CODES = {
     # http_code: (changed, failed, "Message")
@@ -129,6 +134,7 @@ HTTP_CODES = {
     403: (False, True, "Forbidden: Configuration via WATO is disabled."),
     404: (False, True, "Not Found: Host could not be found."),
     406: (False, True, "Not Acceptable."),
+    409: (False, False, "Conflict: A discovery background job is already running"),
     415: (False, True, "Unsupported Media Type."),
     500: (False, True, "General Server Error."),
 }
@@ -153,7 +159,7 @@ HTTP_CODES_BULK = {
     400: (False, True, "Bad Request."),
     403: (False, True, "Forbidden: Configuration via WATO is disabled."),
     406: (False, True, "Not Acceptable."),
-    409: (False, True, "Conflict: A bulk discovery job is already active"),
+    409: (False, False, "Conflict: A bulk discovery job is already active"),
     415: (False, True, "Unsupported Media Type."),
     500: (False, True, "General Server Error."),
 }
@@ -328,19 +334,26 @@ def run_module():
         discovery = BulkDiscoveryAPI(module)
         servicecompletion = ServiceCompletionBulkAPI(module)
 
-    checkmkversion = discovery.getversion()
+    ver = discovery.getversion()
 
-    if single_mode and checkmkversion[0] == "2" and checkmkversion[1] == "0":
+    if single_mode and ver < CheckmkVersion("2.1.0"):
         discovery = oldDiscoveryAPI(module)
 
-    if (
-        checkmkversion[0] == "2"
-        and checkmkversion[1] in ["0", "1"]
-        and module.params.get("state") == "tabula_rasa"
-    ):
+    if ver < CheckmkVersion("2.2.0") and module.params.get("state") == "tabula_rasa":
         result = RESULT(
             http_code=0,
-            msg="State 'tabula_rasa' is not supported with Checkmk 2.0.0 and 2.1.0",
+            msg="State 'tabula_rasa' is not supported before 2.2.0",
+            content="",
+            etag="",
+            failed=True,
+            changed=False,
+        )
+        module.fail_json(**result_as_dict(result))
+
+    if not single_mode and module.params.get("state") == "tabula_rasa":
+        result = RESULT(
+            http_code=0,
+            msg="State 'tabula_rasa' does not exist in bulk_discovery, please use refresh!",
             content="",
             etag="",
             failed=True,
@@ -351,6 +364,18 @@ def run_module():
     result = wait_for_completion(single_mode, servicecompletion)
 
     result = discovery.post()
+
+    # In case the API returns 409 (discovery running) we wait and try again.
+    # This can happen as example in versions where the endpoint doesn't respond with the correct redirect.
+    while (single_mode and result.http_code == 409) or (
+        len(module.params.get("hosts", [])) > 0 and result.http_code == 409
+    ):
+        if single_mode:
+            time.sleep(1)
+        else:
+            time.sleep(10)
+
+        result = discovery.post()
 
     # If single_mode and the API returns 302, check the service completion endpoint
     # If not single_mode and the API returns 200, check the service completion endpoint

@@ -13,6 +13,8 @@ env:
 name: Ansible Integration Tests for Rule Module
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
   pull_request:
     branches:
       - main
@@ -29,30 +31,33 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.13
           - stable-2.14
           - stable-2.15
+          - stable-2.16
           - devel
         python:
           - '3.8'
           - '3.9'
           - '3.10'
           - '3.11'
+          - '3.12'
         exclude:
           # Exclude unsupported sets.
-          - ansible: stable-2.13
-            python: '3.11'
+          - ansible: stable-2.14
+            python: '3.12'
+          - ansible: stable-2.15
+            python: '3.12'
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'  # Ansible 2.13 does not support Python 3.11.
+          python-version: '3.11'
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check

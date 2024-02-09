@@ -1,0 +1,6 @@
+minor_changes:
+  - Agent role - Allow the role to download folder-specific agents.
+  - Agent role - Add preflight check for correct Checkmk edition.
+bugfixes:
+  - Agent role - Fix agent and update registration on remote sites.
+  - Agent role - Fix activation handler URL.

@@ -6,23 +6,8 @@
 .. |antsibull-internal-nbsp| unicode:: 0xA0
     :trim:
 
-.. role:: ansible-attribute-support-label
-.. role:: ansible-attribute-support-property
-.. role:: ansible-attribute-support-full
-.. role:: ansible-attribute-support-partial
-.. role:: ansible-attribute-support-none
-.. role:: ansible-attribute-support-na
-.. role:: ansible-option-type
-.. role:: ansible-option-elements
-.. role:: ansible-option-required
-.. role:: ansible-option-versionadded
-.. role:: ansible-option-aliases
-.. role:: ansible-option-choices
-.. role:: ansible-option-choices-default-mark
-.. role:: ansible-option-default-bold
-.. role:: ansible-option-configuration
-.. role:: ansible-option-returned-bold
-.. role:: ansible-option-sample-bold
+.. meta::
+  :antsibull-docs: 2.6.1
 
 .. Anchors
 
@@ -38,7 +23,10 @@ checkmk.general.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/checkmk/general>`_ (version 2.4.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.2.0).
+
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
     To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
 
@@ -80,12 +68,13 @@ Synopsis
 Parameters
 ----------
 
-.. rst-class:: ansible-option-table
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
 .. list-table::
   :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Parameter
     - Comments
@@ -105,9 +94,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-attributes" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`any`
+        :ansible-option-type:`any`
 
       .. raw:: html
 
@@ -117,7 +106,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The attributes of your host as described in the API documentation. \ :strong:`Attention! This option OVERWRITES all existing attributes!`\ 
+      The attributes of your host as described in the API documentation. \ :strong:`Attention! This option OVERWRITES all existing attributes!`\  If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ .
 
 
       .. rst-class:: ansible-option-line
@@ -143,9 +132,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-automation_secret" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -177,9 +166,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-automation_user" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -211,9 +200,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-folder" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -234,9 +223,7 @@ Parameters
 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
-        <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
 
-      .. _ansible_collections.checkmk.general.host_module__parameter-host_name:
       .. _ansible_collections.checkmk.general.host_module__parameter-name:
 
       .. rst-class:: ansible-option-title
@@ -247,13 +234,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-aliases:`aliases: host_name`
-
-      .. rst-class:: ansible-option-type-line
-
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -285,9 +268,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-remove_attributes" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`any`
+        :ansible-option-type:`any`
 
       .. raw:: html
 
@@ -297,7 +280,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The remove\_attributes of your host as described in the API documentation. This will only remove the given attributes.
+      The remove\_attributes of your host as described in the API documentation. This will only remove the given attributes. If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ .
 
 
       .. rst-class:: ansible-option-line
@@ -323,9 +306,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-server_url" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -357,9 +340,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-site" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -391,9 +374,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -433,9 +416,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-update_attributes" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`any`
+        :ansible-option-type:`any`
 
       .. raw:: html
 
@@ -445,7 +428,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The update\_attributes of your host as described in the API documentation. This will only update the given attributes.
+      The update\_attributes of your host as described in the API documentation. This will only update the given attributes. If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ .
 
 
       .. rst-class:: ansible-option-line
@@ -471,9 +454,9 @@ Parameters
 
         <a class="ansibleOptionLink" href="#parameter-validate_certs" title="Permalink to this option"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`boolean`
+        :ansible-option-type:`boolean`
 
       .. raw:: html
 
@@ -519,10 +502,10 @@ Examples
     # Create a host.
     - name: "Create a host."
       checkmk.general.host:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "my_host"
         folder: "/"
         state: "present"
@@ -530,10 +513,10 @@ Examples
     # Create a host with IP.
     - name: "Create a host with IP address."
       checkmk.general.host:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "my_host"
         attributes:
           alias: "My Host"
@@ -544,10 +527,10 @@ Examples
     # Create a host which is monitored on a distinct site.
     - name: "Create a host which is monitored on a distinct site."
       checkmk.general.host:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "my_host"
         attributes:
           site: "my_remote_site"
@@ -557,10 +540,10 @@ Examples
     # Create a host with update_attributes.
     - name: "Create a host which is monitored on a distinct site."
       checkmk.general.host:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "my_host"
         update_attributes:
           site: "my_remote_site"
@@ -569,10 +552,10 @@ Examples
     # Update only specified attributes
     - name: "Update only specified attributes"
       checkmk.general.host:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "my_host"
         update_attributes:
           alias: "foo"
@@ -581,13 +564,26 @@ Examples
     # Remove specified attributes
     - name: "Remove specified attributes"
       checkmk.general.host:
-        server_url: "http://localhost/"
+        server_url: "http://my_server/"
         site: "my_site"
-        automation_user: "automation"
-        automation_secret: "$SECRET"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
         name: "my_host"
         remove_attributes:
           - alias
+        state: "present"
+
+    # Add custom tags to a host (note the leading 'tag_')
+    - name: "Remove specified attributes"
+      checkmk.general.host:
+        server_url: "http://my_server/"
+        site: "my_site"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
+        name: "my_host"
+        update_attributes:
+          - tag_my_tag_1: "Bar"
+          - tag_my_tag_2: "Foo"
         state: "present"
 
 
@@ -602,12 +598,13 @@ Return Values
 -------------
 Common return values are documented :ref:`here <common_return_values>`, the following are the fields unique to this module:
 
-.. rst-class:: ansible-option-table
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
 .. list-table::
   :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Key
     - Description
@@ -627,9 +624,9 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
 
-      .. rst-class:: ansible-option-type-line
+      .. ansible-option-type-line::
 
-      :ansible-option-type:`string`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -677,12 +674,15 @@ Authors
 Collection links
 ~~~~~~~~~~~~~~~~
 
-.. raw:: html
+.. ansible-links::
 
-  <p class="ansible-links">
-    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc" aria-role="button" target="_blank" rel="noopener external">Issue Tracker</a>
-    <a href="https://github.com/Checkmk/ansible-collection-checkmk.general" aria-role="button" target="_blank" rel="noopener external">Repository (Sources)</a>
-  </p>
+  - title: "Issue Tracker"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"
+    external: true
+  - title: "Repository (Sources)"
+    url: "https://github.com/Checkmk/ansible-collection-checkmk.general"
+    external: true
+
 
 .. Parsing errors
 

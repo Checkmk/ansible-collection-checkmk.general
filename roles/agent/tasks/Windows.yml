@@ -1,0 +1,28 @@
+---
+- name: "{{ ansible_os_family }}: Install host-specific {{ checkmk_agent_edition | upper }} Agent."
+  ansible.windows.win_package:
+    path: "{{ checkmk_agent_agent.file.host }}"
+    state: present
+  when: |
+    checkmk_agent_edition | lower != "cre"
+    and checkmk_agent_host_specific | bool
+  tags:
+    - install-package
+
+- name: "{{ ansible_os_family }}: Install GENERIC or folder-specific  {{ checkmk_agent_edition | upper }} Agent."
+  ansible.windows.win_package:
+    path: "{{ checkmk_agent_agent.file.cee }}"
+    state: present
+  when: |
+    checkmk_agent_edition | lower != "cre"
+    and not checkmk_agent_host_specific | bool
+  tags:
+    - install-package
+
+- name: "{{ ansible_os_family }}: Install Vanilla agent."
+  ansible.windows.win_package:
+    path: "{{ checkmk_agent_agent.file.cre }}"
+    state: present
+  when: checkmk_agent_edition | lower == "cre"
+  tags:
+    - install-package

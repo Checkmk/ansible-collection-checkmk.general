@@ -4,19 +4,62 @@
   gather_facts: false
   tasks:
 
-    - name: "Test site URL returns 200."
+    - name: "Test that absent site is absent."
+      ansible.builtin.stat:
+        path: /omd/sites/absent
+      register: checkmk_server_site_absent_state
+
+    - name: "Verify absent site is absent."
+      ansible.builtin.assert:
+        that: not checkmk_server_site_absent_state.stat.exists | bool
+
+    - name: "Test that present site is present."
+      ansible.builtin.stat:
+        path: /omd/sites/present
+      register: checkmk_server_site_present_state
+
+    - name: "Verify present site is present."
+      ansible.builtin.assert:
+        that: checkmk_server_site_present_state.stat.exists | bool
+
+    - name: "Test stopped site is stopped."  # noqa no-changed-when
+      ansible.builtin.command: omd status stopped
+      changed_when: false
+      failed_when: (not checkmk_server_site_stopped_state.rc == 0) and (not checkmk_server_site_stopped_state.rc == 1)
+      register: checkmk_server_site_stopped_state
+
+    - name: "Verify stopped site is stopped."
+      ansible.builtin.assert:
+        that: checkmk_server_site_stopped_state.rc == 1
+
+    - name: "Test started site is running."  # noqa no-changed-when
+      ansible.builtin.command: omd status started
+      register: checkmk_server_site_started_state
+      changed_when: false
+      failed_when: (not checkmk_server_site_started_state.rc == 0) and (not checkmk_server_site_started_state.rc == 1)
+
+    - name: "Verify started site is running."
+      ansible.builtin.assert:
+        that: checkmk_server_site_started_state.rc == 0
+
+    - name: "Test started site URL returns 200."
       ansible.builtin.uri:
-        url: "{{ server_url }}/{{ checkmk_site }}/"
+        url: "{{ checkmk_var_server_url }}/started/"
       register: checkmk_server_url_state
 
-    - name: "Verify site URL returns 200."
+    - name: "Verify started site URL returns 200."
       ansible.builtin.assert:
         that: checkmk_server_url_state.status == 200
 
-    - name: "Test Server is running."  # noqa no-changed-when
-      ansible.builtin.command: omd status {{ checkmk_site }}
-      register: checkmk_server_omd_state
+    - name: "Test if we can talk to the REST API by activating changes."
+      checkmk.general.activation:
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "started"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
+        force_foreign_changes: true
+      register: checkmk_server_api_state
 
-    - name: "Verify Server is running."
+    - name: "Verify REST API call."
       ansible.builtin.assert:
-        that: checkmk_server_omd_state.rc == 0
+        that: checkmk_server_api_state.msg == "422 - There are no changes to be activated."

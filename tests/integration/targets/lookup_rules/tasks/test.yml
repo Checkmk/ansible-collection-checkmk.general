@@ -1,0 +1,96 @@
+---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ruleset: "{{ item.ruleset }}"
+    rule: "{{ item.rule }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_rules }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all rules of a ruleset."
+  ansible.builtin.debug:
+    var: rules
+  vars:
+    rules: "{{ lookup('checkmk.general.rules',
+                  ruleset='checkgroup_parameters:cpu_load',
+                  server_url=checkmk_var_server_url,
+                  site=outer_item.site,
+                  validate_certs=False,
+                  automation_user=checkmk_var_automation_user,
+                  automation_secret=checkmk_var_automation_secret)
+              }}"
+  register: cpu_load_ruleset
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - compare rules with ansible data."
+  ansible.builtin.assert:
+    # For each rule that we created, check, if the comment is identical
+    that: "'- Ansible managed' in rules[0].extensions.properties.comment"
+  vars:
+    rules: "{{ lookup('checkmk.general.rules',
+                      ruleset=item,
+                      server_url=checkmk_var_server_url,
+                      site=outer_item.site,
+                      validate_certs=False,
+                      automation_user=checkmk_var_automation_user,
+                      automation_secret=checkmk_var_automation_secret)
+                  }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_rulesets }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - filter for certain rulesets."
+  ansible.builtin.debug:
+    var: rules
+  vars:
+    rules: "{{ lookup('checkmk.general.rules',
+                      ruleset=item,
+                      server_url=checkmk_var_server_url,
+                      site=outer_item.site,
+                      validate_certs=False,
+                      automation_user=checkmk_var_automation_user,
+                      automation_secret=checkmk_var_automation_secret)
+                  }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_rulesets }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - filter for certain rulesets and check the count."
+  ansible.builtin.assert:
+    # Check the number of rules
+    that: rules|length == 1
+  vars:
+    rules: "{{ lookup('checkmk.general.rules',
+                      ruleset=item,
+                      commebt_regex='Ansible managed',
+                      server_url=checkmk_var_server_url,
+                      site=outer_item.site,
+                      validate_certs=False,
+                      automation_user=checkmk_var_automation_user,
+                      automation_secret=checkmk_var_automation_secret)
+                  }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_rulesets }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get each single rule of a ruleset."
+  ansible.builtin.debug:
+    var: "rule"
+  vars:
+    rule: "{{ lookup('checkmk.general.rule',
+                      rule_id=item.id,
+                      server_url=checkmk_var_server_url,
+                      site=outer_item.site,
+                      validate_certs=False,
+                      automation_user=checkmk_var_automation_user,
+                      automation_secret=checkmk_var_automation_secret)
+                  }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ cpu_load_ruleset.rules }}"

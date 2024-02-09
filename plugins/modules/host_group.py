@@ -27,9 +27,12 @@ options:
     name:
         description: The name of the host group to be created/modified/deleted.
         type: str
-        aliases: [host_group_name]
     title:
         description: The title (alias) of your host group. If omitted defaults to the name.
+        type: str
+    customer:
+        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        required: false
         type: str
     groups:
         description:
@@ -37,7 +40,6 @@ options:
               If title is omitted in entry, it defaults to the host group name.
         default: []
         type: raw
-        aliases: [host_groups]
     state:
         description: The state of your host group.
         type: str
@@ -52,21 +54,23 @@ EXAMPLES = r"""
 # Create a single host group.
 - name: "Create a single host group."
   checkmk.general.host_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_host_group"
     title: "My Host Group"
+    customer: "provider"
     state: "present"
 
 # Create several host groups.
 - name: "Create several host groups."
   checkmk.general.host_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    customer: "provider"
     groups:
       - name: "my_host_group_one"
         title: "My Host Group One"
@@ -79,10 +83,11 @@ EXAMPLES = r"""
 # Create several host groups.
 - name: "Create several host groups."
   checkmk.general.host_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    customer: "provider"
     groups:
       - name: "my_host_group_one"
         title: "My Host Group One"
@@ -91,22 +96,22 @@ EXAMPLES = r"""
     state: "present"
 
 # Delete a single host group.
-- name: "Create a single host group."
+- name: "Delete a single host group."
   checkmk.general.host_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     name: "my_host_group"
     state: "absent"
 
 # Delete several host groups.
 - name: "Delete several host groups."
   checkmk.general.host_group:
-    server_url: "http://localhost/"
+    server_url: "http://my_server/"
     site: "my_site"
-    automation_user: "automation"
-    automation_secret: "$SECRET"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
     groups:
       - name: "my_host_group_one"
       - name: "my_host_group_two"
@@ -264,10 +269,17 @@ def create_single_host_group(module, base_url, headers):
     name = module.params["name"]
 
     api_endpoint = "/domain-types/host_group_config/collections/all"
-    params = {
-        "name": name,
-        "alias": module.params.get("title", name),
-    }
+    if module.params.get("customer") is not None:
+        params = {
+            "name": name,
+            "alias": module.params.get("title", name),
+            "customer": module.params.get("customer", "provider"),
+        }
+    else:
+        params = {
+            "name": name,
+            "alias": module.params.get("title", name),
+        }
     url = base_url + api_endpoint
 
     response, info = fetch_url(
@@ -284,15 +296,29 @@ def create_single_host_group(module, base_url, headers):
 
 def create_host_groups(module, base_url, groups, headers):
     api_endpoint = "/domain-types/host_group_config/actions/bulk-create/invoke"
-    params = {
-        "entries": [
-            {
-                "name": el.get("name"),
-                "alias": el.get("title", el.get("name")),
-            }
-            for el in groups
-        ],
-    }
+
+    if module.params.get("customer") is not None:
+        params = {
+            "entries": [
+                {
+                    "name": el.get("name"),
+                    "alias": el.get("title", el.get("name")),
+                    "customer": el.get("customer", "provider"),
+                }
+                for el in groups
+            ],
+        }
+    else:
+        params = {
+            "entries": [
+                {
+                    "name": el.get("name"),
+                    "alias": el.get("title", el.get("name")),
+                }
+                for el in groups
+            ],
+        }
+
     url = base_url + api_endpoint
 
     response, info = fetch_url(
@@ -350,28 +376,13 @@ def run_module():
         name=dict(
             type="str",
             required=False,
-            aliases=["host_group_name"],
-            deprecated_aliases=[
-                {
-                    "name": "host_group_name",
-                    "collection_name": "checkmk.general",
-                    "version": "3.0.0",
-                }
-            ],
         ),
         title=dict(type="str", required=False),
+        customer=dict(type="str", required=False),
         groups=dict(
             type="raw",
             required=False,
             default=[],
-            aliases=["host_groups"],
-            deprecated_aliases=[
-                {
-                    "name": "host_groups",
-                    "collection_name": "checkmk.general",
-                    "version": "3.0.0",
-                }
-            ],
         ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
@@ -414,7 +425,7 @@ def run_module():
         if "title" in module.params and module.params.get("title", ""):
             exit_failed(
                 module,
-                "'title' has only effect when 'name' (deprecated alias 'host_group_name') is defined and not 'groups' (deprecated alias 'host_groups')",
+                "'title' has only effect when 'name' is defined and not 'groups'",
             )
 
         groups = module.params.get("groups")

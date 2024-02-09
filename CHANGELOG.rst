@@ -5,6 +5,241 @@ checkmk.general Release Notes
 .. contents:: Topics
 
 
+v4.2.0
+======
+
+Release Summary
+---------------
+
+Happy New Year!
+
+Major Changes
+-------------
+
+- Tag_group module - Rewrite module and migrate to new collection API.
+- User module - Rewrite module and migrate to new collection API.
+
+Minor Changes
+-------------
+
+- Server role - Improve role speed by skipping downloads.
+- Tag_group module - Enable `help` and `repair` options.
+- User module - Enable several interface options.
+
+Bugfixes
+--------
+
+- Agent role - Fix `become` in handler, which could cause errors on delegation.
+- Rule module - Fix idempotency for rule location relative to another rule_id, by getting the target folder from neighbour rule.
+
+v4.1.0
+======
+
+Release Summary
+---------------
+
+Happy holidays, everyone!
+
+Major Changes
+-------------
+
+- Rule lookup plugin - Show a particular rule.
+- Rules lookup plugin - List the rules of a ruleset.
+- Ruleset lookup plugin - Show a particular ruleset.
+- Rulesets lookup plugin - Search rulesets.
+
+Minor Changes
+-------------
+
+- Password module - Improve error handling.
+
+Bugfixes
+--------
+
+- Password module - Fix non-required module options being wrongly required.
+
+v4.0.1
+======
+
+v4.0.0
+======
+
+Release Summary
+---------------
+
+Move fast, break things.
+
+Major Changes
+-------------
+
+- Bakery lookup plugin - Get the status of the Checkmk Agent Bakery.
+
+Minor Changes
+-------------
+
+- Activation module - Implement proper support for `redirect` parameter. This means, the activation module can now optionally wait for a completed activation or just trigger it and move on.
+- Discovery module - Print error message, when using state "tabula_rasa" in bulk discovery mode, because that state is not supported by the API.
+- Lookup API - Add improved error handling.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Agent role - We restructured the agent. That entails a lot of changes, and we tried to keep everything stable. However, we cannot guarantee stability as we do not know all use-cases out there. Hence this change is also considered breaking.
+- Server role - It became necessary to make the way states are handled more consistent. The most siginificant change is, that all sites not in state "started" will be stopped. For all other states please consult the role's README.
+- Variable names - We aligned the names of variables throughout the collection. This can impact your existing configuration. Please review the variable names and apapt your configuration accordingly. For more details see `CONTRIBUTING.md`.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.bakery - Get the bakery status of a Checkmk server
+
+v3.4.0
+======
+
+Release Summary
+---------------
+
+Supporting managed service providers, admins and security. All in one release.
+
+Minor Changes
+-------------
+
+- Agent role - Avoid logging passwords by default for extra security
+- Agent role - Introduce variable to configure agent mode. Refer to the README.
+- Contact group module - Add support for the Checkmk Managed Edition (CME).
+- Host group module - Add support for the Checkmk Managed Edition (CME).
+- Password module - Add support for the Checkmk Managed Edition (CME).
+- Server role - Add new states "enabled" and "disabled" for site management.
+- Server role - Avoid logging passwords by default for extra security
+- Server role - Enable configuration of omd config values. Refer to the README for details.
+- Service group module - Add support for the Checkmk Managed Edition (CME).
+- User module - Add support for the Checkmk Managed Edition (CME).
+
+Bugfixes
+--------
+
+- Agent role - Fix agent port check for agent modes other than "pull".
+
+v3.3.0
+======
+
+Release Summary
+---------------
+
+This is the librarian release: We added some lookups.
+
+Major Changes
+-------------
+
+- Folder lookup plugin - Look up the configuration of a folder.
+- Folders lookup plugin - Look up all folders.
+- Host lookup plugin - Look up the configuration of a host.
+- Hosts lookup plugin - Look up all hosts.
+- Timeperiod module - Add timeperiod module.
+
+Minor Changes
+-------------
+
+- Agent role - Add support for firewall configuration on Debian derivates.
+- Discovery module - Use the version comparison utils.
+- Server role - Site management can now be done without specifying 'admin_pw'.
+- Utils - Provide a class CheckmkVersion to simplify version comparison.
+
+Bugfixes
+--------
+
+- Agent role - Performing the agent registration on a remote would fail, if the host was just created. This release introduces a workaround to enable this.
+- Folder module - When creating a new folder with "attributes" parameter, the attributes were ignored. This is now fixed.
+
+Known Issues
+------------
+
+- Server role - Not having to provide an admin password introduces a problem though, as users could create sites without knowing the randomly generated password. A task is introduced to mitigate this, but the solution there could be improved.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.folder - Get folder attributes
+- checkmk.general.folders - Get various information about a folder
+- checkmk.general.host - Get host attributes
+- checkmk.general.hosts - Get various information about a host
+
+New Modules
+-----------
+
+- checkmk.general.timeperiod - Manage time periods in checkmk.
+
+v3.2.0
+======
+
+Minor Changes
+-------------
+
+- Agent role - Add preflight check for correct Checkmk edition.
+- Agent role - Allow the role to download folder-specific agents.
+- Server role - Add preflight check for correct Checkmk edition.
+
+Bugfixes
+--------
+
+- Agent role - Fix activation handler URL.
+- Agent role - Fix agent and update registration on remote sites.
+
+v3.1.0
+======
+
+Release Summary
+---------------
+
+It is summer and you want to look outside, so we added Windows.
+
+Major Changes
+-------------
+
+- Agent role - Add support for Windows.
+- Version lookup plugin - Add Version lookup plugin.
+
+Minor Changes
+-------------
+
+- Discovery module - Add handling for 409 response.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.version - Get the version of a Checkmk server
+
+v3.0.0
+======
+
+Release Summary
+---------------
+
+Removing deprecated module options and more cleaning.
+
+Minor Changes
+-------------
+
+- Agent role - Allow throttling of discovery task to limit load on Checkmk server.
+- Folder module - Warn about mutually exclusive attribute options on older Checkmk versions and fail on recent Checkmk versions. See 'Breaking Changes'.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Folder module - The module options 'attributes', 'update_attributes' and 'remove_attributes' are now mutually exclusive. Using more than one on a single task will cause a warning or error.
+- Host group module - Deprecated options 'host_group_name' and 'host_groups' were removed. Use 'name' and 'groups' instead!
+- Host module - Deprecated option 'host_name' was removed. Use 'name' instead!
+- Rule module - Deprecated option 'folder' was removed. Use 'location' instead!
+
 v2.4.1
 ======
 

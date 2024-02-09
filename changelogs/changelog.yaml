@@ -618,3 +618,208 @@ releases:
     fragments:
     - agent.yml
     release_date: '2023-08-03'
+  3.0.0:
+    changes:
+      breaking_changes:
+      - Folder module - The module options 'attributes', 'update_attributes' and 'remove_attributes'
+        are now mutually exclusive. Using more than one on a single task will cause
+        a warning or error.
+      - Host group module - Deprecated options 'host_group_name' and 'host_groups'
+        were removed. Use 'name' and 'groups' instead!
+      - Host module - Deprecated option 'host_name' was removed. Use 'name' instead!
+      - Rule module - Deprecated option 'folder' was removed. Use 'location' instead!
+      minor_changes:
+      - Agent role - Allow throttling of discovery task to limit load on Checkmk server.
+      - Folder module - Warn about mutually exclusive attribute options on older Checkmk
+        versions and fail on recent Checkmk versions. See 'Breaking Changes'.
+      release_summary: Removing deprecated module options and more cleaning.
+    fragments:
+    - agent.yml
+    - breaking.yml
+    - folder.yml
+    - release_summary.yml
+    release_date: '2023-08-11'
+  3.1.0:
+    changes:
+      major_changes:
+      - Agent role - Add support for Windows.
+      - Version lookup plugin - Add Version lookup plugin.
+      minor_changes:
+      - Discovery module - Add handling for 409 response.
+      release_summary: It is summer and you want to look outside, so we added Windows.
+    fragments:
+    - discovery.yml
+    - lookup.yml
+    - release_summary.yml
+    - windows.yml
+    plugins:
+      lookup:
+      - description: Get the version of a Checkmk server
+        name: version
+        namespace: null
+    release_date: '2023-08-22'
+  3.2.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix activation handler URL.
+      - Agent role - Fix agent and update registration on remote sites.
+      minor_changes:
+      - Agent role - Add preflight check for correct Checkmk edition.
+      - Agent role - Allow the role to download folder-specific agents.
+      - Server role - Add preflight check for correct Checkmk edition.
+    fragments:
+    - agent.yml
+    - server.yml
+    release_date: '2023-08-30'
+  3.3.0:
+    changes:
+      bugfixes:
+      - Agent role - Performing the agent registration on a remote would fail, if
+        the host was just created. This release introduces a workaround to enable
+        this.
+      - Folder module - When creating a new folder with "attributes" parameter, the
+        attributes were ignored. This is now fixed.
+      known_issues:
+      - Server role - Not having to provide an admin password introduces a problem
+        though, as users could create sites without knowing the randomly generated
+        password. A task is introduced to mitigate this, but the solution there could
+        be improved.
+      major_changes:
+      - Folder lookup plugin - Look up the configuration of a folder.
+      - Folders lookup plugin - Look up all folders.
+      - Host lookup plugin - Look up the configuration of a host.
+      - Hosts lookup plugin - Look up all hosts.
+      - Timeperiod module - Add timeperiod module.
+      minor_changes:
+      - Agent role - Add support for firewall configuration on Debian derivates.
+      - Discovery module - Use the version comparison utils.
+      - Server role - Site management can now be done without specifying 'admin_pw'.
+      - Utils - Provide a class CheckmkVersion to simplify version comparison.
+      release_summary: 'This is the librarian release: We added some lookups.'
+    fragments:
+    - admin_pw.yml
+    - agent.yml
+    - fix_folder_module.yml
+    - lookup_plugins.yml
+    - release_summary.yml
+    - timeperiod.yml
+    - version_utils.yml
+    modules:
+    - description: Manage time periods in checkmk.
+      name: timeperiod
+      namespace: ''
+    plugins:
+      lookup:
+      - description: Get folder attributes
+        name: folder
+        namespace: null
+      - description: Get various information about a folder
+        name: folders
+        namespace: null
+      - description: Get host attributes
+        name: host
+        namespace: null
+      - description: Get various information about a host
+        name: hosts
+        namespace: null
+    release_date: '2023-11-02'
+  3.4.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix agent port check for agent modes other than "pull".
+      minor_changes:
+      - Agent role - Avoid logging passwords by default for extra security
+      - Agent role - Introduce variable to configure agent mode. Refer to the README.
+      - Contact group module - Add support for the Checkmk Managed Edition (CME).
+      - Host group module - Add support for the Checkmk Managed Edition (CME).
+      - Password module - Add support for the Checkmk Managed Edition (CME).
+      - Server role - Add new states "enabled" and "disabled" for site management.
+      - Server role - Avoid logging passwords by default for extra security
+      - Server role - Enable configuration of omd config values. Refer to the README
+        for details.
+      - Service group module - Add support for the Checkmk Managed Edition (CME).
+      - User module - Add support for the Checkmk Managed Edition (CME).
+      release_summary: Supporting managed service providers, admins and security.
+        All in one release.
+    fragments:
+    - agent_push.yml
+    - cme_support.yml
+    - no_log.yml
+    - release_summary.yml
+    - server-omd-config.yml
+    release_date: '2023-11-09'
+  4.0.0:
+    changes:
+      breaking_changes:
+      - Agent role - We restructured the agent. That entails a lot of changes, and
+        we tried to keep everything stable. However, we cannot guarantee stability
+        as we do not know all use-cases out there. Hence this change is also considered
+        breaking.
+      - Server role - It became necessary to make the way states are handled more
+        consistent. The most siginificant change is, that all sites not in state "started"
+        will be stopped. For all other states please consult the role's README.
+      - Variable names - We aligned the names of variables throughout the collection.
+        This can impact your existing configuration. Please review the variable names
+        and apapt your configuration accordingly. For more details see `CONTRIBUTING.md`.
+      major_changes:
+      - Bakery lookup plugin - Get the status of the Checkmk Agent Bakery.
+      minor_changes:
+      - Activation module - Implement proper support for `redirect` parameter. This
+        means, the activation module can now optionally wait for a completed activation
+        or just trigger it and move on.
+      - Discovery module - Print error message, when using state "tabula_rasa" in
+        bulk discovery mode, because that state is not supported by the API.
+      - Lookup API - Add improved error handling.
+      release_summary: Move fast, break things.
+    fragments:
+    - activation.yml
+    - breaking.yml
+    - discovery.yml
+    - lookups.yml
+    - release_summary.yml
+    plugins:
+      lookup:
+      - description: Get the bakery status of a Checkmk server
+        name: bakery
+        namespace: null
+    release_date: '2023-12-04'
+  4.0.1:
+    release_date: '2023-12-05'
+  4.1.0:
+    changes:
+      bugfixes:
+      - Password module - Fix non-required module options being wrongly required.
+      major_changes:
+      - Rule lookup plugin - Show a particular rule.
+      - Rules lookup plugin - List the rules of a ruleset.
+      - Ruleset lookup plugin - Show a particular ruleset.
+      - Rulesets lookup plugin - Search rulesets.
+      minor_changes:
+      - Password module - Improve error handling.
+      release_summary: Happy holidays, everyone!
+    fragments:
+    - password.yml
+    - release_summary.yml
+    - rule_lookup_plugins.yml
+    release_date: '2023-12-21'
+  4.2.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix `become` in handler, which could cause errors on delegation.
+      - Rule module - Fix idempotency for rule location relative to another rule_id,
+        by getting the target folder from neighbour rule.
+      major_changes:
+      - Tag_group module - Rewrite module and migrate to new collection API.
+      - User module - Rewrite module and migrate to new collection API.
+      minor_changes:
+      - Server role - Improve role speed by skipping downloads.
+      - Tag_group module - Enable `help` and `repair` options.
+      - User module - Enable several interface options.
+      release_summary: Happy New Year!
+    fragments:
+    - release_summary.yml
+    - roles.yml
+    - rule.yml
+    - tag_group.yml
+    - user.yml
+    release_date: '2024-01-23'

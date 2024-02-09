@@ -1,0 +1,5 @@
+major_changes:
+  - Tag_group module - Rewrite module and migrate to new collection API.
+
+minor_changes:
+  - Tag_group module - Enable `help` and `repair` options.

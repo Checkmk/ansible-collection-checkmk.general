@@ -6,7 +6,7 @@
 # Prepare this repository for a release.
 #
 # Usage: ./release.sh -s 0.21.0 -t 0.22.0
-# 
+#
 
 # ToDo
 # - Collection version prüfen!
@@ -15,17 +15,17 @@ script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 collection_dir="${script_dir%/*}"
 
 # Update these as necessary:
-checkmk_ancient="2.0.0p37"
-checkmk_oldstable="2.1.0p31"
-checkmk_stable="2.2.0p7"
+checkmk_ancient="2.0.0p39"
+checkmk_oldstable="2.1.0p38"
+checkmk_stable="2.2.0p19"
 
 while getopts 's:t:' OPTION; do
-  case "$OPTION" in 
-    s) 
+  case "$OPTION" in
+    s)
       source_version="$OPTARG" ;;
     t)
       target_version="$OPTARG" ;;
-    ?) 
+    ?)
       echo "Unknown option!"
       exit 1
       ;;
@@ -39,7 +39,6 @@ echo
 
 echo "# Changes:"
 sed -i "s/version: ${source_version}/version: ${target_version}/g" "${collection_dir}/galaxy.yml" && echo "Updated Collection version in 'galaxy.yml' from ${source_version} to ${target_version}."
-sed -i "s/version: ${source_version}/version: ${target_version}/g" "${collection_dir}/requirements.yml" && echo "Updated Collection version in 'requirements.yml' from ${source_version} to ${target_version}."
 # The following is quite hacky, but it works well enough. If you want to tame the sed monster, have at it. Otherwise be careful with changes here.
 ## Integration tests
 find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.2.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated Checkmk Stable version for integration tests to ${checkmk_stable}."
@@ -53,7 +52,7 @@ find "${collection_dir}/roles/" -type f -name all.yml -exec sed -i "s/2.0.0.*/${
 find "${collection_dir}/roles/" -type f -name main.yml -exec sed -i "s/2.2.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated default Checkmk version for roles to ${checkmk_stable}."
 find "${collection_dir}/roles/" -type f -name README.md -exec sed -i "s/2.2.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated default Checkmk version in roles README to ${checkmk_stable}."
 # Support Matrix
-grep "${target_version}" "${collection_dir}/SUPPORT.md" || echo "${target_version} | ${checkmk_ancient}, ${checkmk_oldstable}, ${checkmk_stable} | 2.13, 2.14, 2.15 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
+grep "${target_version}" "${collection_dir}/SUPPORT.md" || echo "${target_version} | ${checkmk_ancient}, ${checkmk_oldstable}, ${checkmk_stable} | 2.14, 2.15, 2.16 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
 
 echo "# End changes section."
 echo

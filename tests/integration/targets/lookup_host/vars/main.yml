@@ -1,0 +1,19 @@
+---
+test_sites:
+  - version: "2.2.0p19"
+    edition: "cre"
+    site: "stable_cre"
+  - version: "2.2.0p19"
+    edition: "cee"
+    site: "stable_cee"
+  - version: "2.1.0p38"
+    edition: "cre"
+    site: "old_cre"
+  - version: "2.0.0p39"
+    edition: "cre"
+    site: "ancient_cre"
+
+checkmk_host:
+  name: "host1.tld"
+  folder: "/"
+  alias: "Host 1"

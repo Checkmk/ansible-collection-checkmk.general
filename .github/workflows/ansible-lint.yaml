@@ -15,12 +15,14 @@ on:
       - devel
     paths:
       - 'roles/**'
+      - 'playbooks/**'
   pull_request:
     branches:
       - main
       - devel
     paths:
       - 'roles/**'
+      - 'playbooks/**'
 
 jobs:
 
@@ -35,15 +37,16 @@ jobs:
           - '3.9'
           - '3.10'
           - '3.11'
+          - '3.12'
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -58,12 +61,12 @@ jobs:
 
       # Run the linting
       - name: Run yamllint on roles
-        run: yamllint -c .yamllint roles/
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        run: yamllint -c ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.yamllint ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles/
+        working-directory: ./ansible_collections/
 
       - name: Run yamllint on playbooks
-        run: yamllint -c .yamllint playbooks/
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+        run: yamllint -c ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.yamllint ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/playbooks/
+        working-directory: ./ansible_collections/
 
       - name: Run ansible-lint on roles
         run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles/

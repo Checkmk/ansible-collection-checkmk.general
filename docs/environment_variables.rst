@@ -1,6 +1,9 @@
 
 :orphan:
 
+.. meta::
+  :antsibull-docs: 2.6.1
+
 .. _list_of_collection_env_vars:
 
 Index of all Collection Environment Variables

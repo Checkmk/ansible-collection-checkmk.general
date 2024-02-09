@@ -1,10 +1,10 @@
 ---
-- name: "{{ outer_item.version }} - Create contact groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create contact groups."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     title: "{{ item.title | default(item.name) }}"
     state: "present"
@@ -12,12 +12,12 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_contact_groups_create }}"
 
-- name: "{{ outer_item.version }} - Should fail because of 'groups', Create contact groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for mutually exclusive module args: 'groups|name'."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     title: "{{ item.title | default(item.name) }}"
     groups: checkmk_contact_groups_create
@@ -25,26 +25,27 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_contact_groups_create }}"
-  ignore_errors: true
+  register: checkmk_contact_group_status
+  failed_when: "'parameters are mutually exclusive: groups|name' not in checkmk_contact_group_status.msg"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Modify part of contact groups (also checks for idempotency!)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify part of contact groups (also checks for idempotency!)."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name | default(item.name) }}"
     title: "{{ item.title }}"
     state: "present"
@@ -52,142 +53,145 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_contact_groups_modify }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete contact groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete contact groups."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_contact_groups_delete }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Delete contact groups that were created at the beginning (also check for idempotency)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete contact groups that were created at the beginning (also check for idempotency)."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_contact_groups_create }}"
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Bulk create contact groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk create contact groups."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     groups: "{{ checkmk_contact_groups_create }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Should fail because of 'name', Bulk create contact groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for mutually exclusive module args: 'groups|name'."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     groups: "{{ checkmk_contact_groups_create }}"
     name: "test"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  ignore_errors: true
+  register: checkmk_contact_group_status
+  failed_when: "'parameters are mutually exclusive: groups|name' not in checkmk_contact_group_status.msg"
 
-- name: "{{ outer_item.version }} - Should fail because of 'title', Bulk create contact groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for uneffective module args: 'groups' and 'title'."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     groups: "{{ checkmk_contact_groups_create }}"
     title: "Test"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  ignore_errors: true
+  register: checkmk_contact_group_status
+  failed_when: |
+    "'title' has only effect when 'name' is defined and not 'groups'" not in checkmk_contact_group_status.msg
 
-- name: "{{ outer_item.version }} - Bulk modify part of contact groups (also checks for idempotency!)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk modify part of contact groups (also checks for idempotency!)."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     groups: "{{ checkmk_contact_groups_modify }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Bulk delete contact groups."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk delete contact groups."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     groups: "{{ checkmk_contact_groups_delete }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Bulk delete contact groups that were created at the beginning (also check for idempotency)."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk delete contact groups checking for idempotency."
   contact_group:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     groups: "{{ checkmk_contact_groups_create }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - Activate."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
-    server_url: "{{ server_url }}"
+    server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ automation_user }}"
-    automation_secret: "{{ automation_secret }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
