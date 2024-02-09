@@ -304,7 +304,9 @@ class FolderAPI(CheckmkAPI):
                     changes.append("update attributes")
                 desired_attributes["update_attributes"] = merged_attributes
 
-        if desired_attributes.get("attributes") and current_attributes != desired_attributes.get("attributes"):
+        if desired_attributes.get(
+            "attributes"
+        ) and current_attributes != desired_attributes.get("attributes"):
             changes.append("attributes")
 
         if self.current.get("title") != desired_attributes.get("title"):
