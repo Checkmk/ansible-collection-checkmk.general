@@ -67,7 +67,7 @@ options:
         default: present
         choices: [present, absent]
     extended_functionality:
-        description: The state of your folder.
+        description: Allow extended functionality instead of the expected REST API behavior.
         type: bool
         default: true
 
@@ -304,9 +304,7 @@ class FolderAPI(CheckmkAPI):
                     changes.append("update attributes")
                 desired_attributes["update_attributes"] = merged_attributes
 
-        if desired_attributes.get(
-            "attributes"
-        ) and current_attributes != desired_attributes.get("attributes"):
+        if current_attributes != desired_attributes.get("attributes", {}):
             changes.append("attributes")
 
         if self.current.get("title") != desired_attributes.get("title"):
@@ -324,7 +322,7 @@ class FolderAPI(CheckmkAPI):
             elif isinstance(tmp_remove_attributes, dict):
                 if not self.extended_functionality:
                     self.module.fail_json(
-                        msg="ERROR: The parameter remove_attributes of dict type is not supported for set paramter extended_functionality: false!",
+                        msg="ERROR: The parameter remove_attributes of dict type is not supported for the paramter extended_functionality: false!",
                     )
 
                 (tmp_remove, tmp_rest) = (current_attributes, {})
@@ -383,6 +381,8 @@ class FolderAPI(CheckmkAPI):
             for key, value in extensions.items():
                 if key == "attributes":
                     value.pop("meta_data")
+                    if "network_scan_results" in value:
+                        value.pop("network_scan_results")
                 self.current[key] = value
 
             self.etag = result.etag
@@ -405,7 +405,7 @@ class FolderAPI(CheckmkAPI):
 
     def create(self):
         data = self.desired.copy()
-        if not data.get("attributes"):
+        if data.get("attributes", {}) != {}:
             data["attributes"] = data.pop("update_attributes", {})
 
         if data.get("remove_attributes"):
