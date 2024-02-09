@@ -351,15 +351,12 @@ def run_module():
     update_attributes = module.params.get("update_attributes", {})
     state = module.params.get("state", "present")
 
-    if attributes != {}:
-        if attributes.get("parents"):
-            attributes["parents"] = check_type_list(attributes.get("parents"))
-
-    if update_attributes != {}:
-        if update_attributes.get("parents"):
-            update_attributes["parents"] = check_type_list(
-                update_attributes.get("parents")
-            )
+    for par in [attributes, update_attributes]:
+        if par != {}:
+            if par.get("parents"):
+                par["parents"] = check_type_list(
+                    par.get("parents")
+                )
 
     if module.params["folder"]:
         module.params["folder"] = normalize_folder(module.params["folder"])
