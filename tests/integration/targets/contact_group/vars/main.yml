@@ -1,9 +1,9 @@
 ---
 test_sites:
-  - version: "2.3.0-2024.01.30"
+  - version: "2.3.0-2024.02.13"
     edition: "cme"
     site: "beta_cme"
-  - version: "2.3.0-2024.01.30"
+  - version: "2.3.0-2024.02.13"
     edition: "cre"
     site: "beta_cre"
   - version: "2.2.0p21"
@@ -12,7 +12,7 @@ test_sites:
   - version: "2.2.0p21"
     edition: "cee"
     site: "stable_cee"
-  - version: "2.1.0p38"
+  - version: "2.1.0p39"
     edition: "cre"
     site: "old_cre"
   - version: "2.0.0p39"
