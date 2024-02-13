@@ -268,7 +268,7 @@ def run_module():
             # user_role is not there. Create it.
             user_rolecreate = User_roleCreateAPI(module)
             data = normalize_data(module.params)  # remove unnessecary parameters
-            result = user_rolecreate.post()
+            result = user_rolecreate.post(data)
 
     if module.params.get("state") == "absent":
         # Only delete if the user_role exists

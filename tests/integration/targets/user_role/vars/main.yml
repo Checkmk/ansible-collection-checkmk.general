@@ -1,0 +1,103 @@
+---
+test_sites:
+  - version: "2.2.0p19"
+    edition: "cme"
+    site: "stable_cme"
+  - version: "2.2.0p19"
+    edition: "cre"
+    site: "stable_raw"
+  - version: "2.2.0p19"
+    edition: "cee"
+    site: "stable_ent"
+  - version: "2.1.0p38"
+    edition: "cre"
+    site: "old_raw"
+  - version: "2.0.0p39"
+    edition: "cre"
+    site: "ancient_raw"
+
+checkmk_var_server_url: "http://127.0.0.1/"
+checkmk_var_automation_user: "cmkadmin"
+checkmk_var_automation_secret: "d7589df1"
+
+download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
+download_user: "d-gh-ansible-dl"
+download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret', errors='ignore') | default(omit) }}"  # noqa yaml[line-length]
+
+# Due to inconsistent naming of editions, we normalize them here for convenience
+checkmk_server_edition_mapping:
+  cre: raw
+  cfe: free
+  cee: enterprise
+  cce: cloud
+  cme: managed
+
+checkmk_user_roles_create:
+  - role_id: user
+    new_permissions:
+    - general.use
+    state: present
+  - new_alias: Normal monitoring user Y
+    new_basedon: user
+    new_role_id: usery
+    role_id: user
+    new_permissions:
+    - general.use
+    - general.see_all
+    - view.host_pending
+    - view.problemsofhost
+    - view.hostgroup
+    - view.hostgroup_up
+    - notification_plugin.asciimail
+    - notification_plugin.opsgenie_issues
+    - notification_plugin.sms
+    - notification_plugin.pagerduty
+    state: present
+    title: Normal monitoring user Y
+  - new_alias: Normal monitoring user Z
+    new_basedon: user
+    new_role_id: userz
+    role_id: user
+    new_permissions:
+        - general.see_sidebar
+    state: present
+    title: Normal monitoring user Z
+
+# 2 remains unchanged, good for idempotency check
+checkmk_user_roles_modify:
+  - new_basedon: admin
+    role_id: userx
+    new_permissions:
+      - general.use
+    state: present
+  - new_alias: Normal monitoring user Y
+    new_basedon: user
+    role_id: usery
+    new_permissions:
+      - general.use
+      - general.see_all
+      - view.host_pending
+      - view.problemsofhost
+      - view.hostgroup
+      - view.hostgroup_up
+      - notification_plugin.asciimail
+      - notification_plugin.opsgenie_issues
+      - notification_plugin.sms
+      - notification_plugin.pagerduty
+    state: present
+    title: Normal monitoring user Y
+  - new_alias: Normal monitoring user Z
+    new_basedon: user
+    role_id: userz
+    new_permissions:
+      - general.see_sidebar
+      - view.hostgroup
+    state: present
+    title: Normal monitoring user Z
+
+checkmk_user_roles_delete:
+  - role_id: "userx"
+  - role_id: "usery"
+  - role_id: "userz"
+
+
