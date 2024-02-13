@@ -19,6 +19,9 @@ on:
     branches:
       - main
       - devel
+  push:
+    branches:
+      - build/checkmk-2-3-support
     paths:
       - 'plugins/modules/host_group.py'
 
