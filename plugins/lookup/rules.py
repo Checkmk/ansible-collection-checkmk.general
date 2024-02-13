@@ -9,38 +9,90 @@ DOCUMENTATION = """
     name: rules
     author: Lars Getwan (@lgetwan)
     version_added: "3.5.0"
-    short_description: List rules
+
+    short_description: Get a list rules
+
     description:
       - Returns a list of Rules
+
     options:
+
+      server_url:
+        description: URL of the Checkmk server.
+        required: True
+        vars:
+          - name: ansible_lookup_checkmk_server_url
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_SERVER_URL
+        ini:
+          - section: checkmk_lookup
+            key: server_url
+
+      site:
+        description: Site name.
+        required: True
+        vars:
+          - name: ansible_lookup_checkmk_site
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_SITE
+        ini:
+          - section: checkmk_lookup
+            key: site
+
+      automation_user:
+        description: Automation user for the REST API access.
+        required: True
+        vars:
+          - name: ansible_lookup_checkmk_automation_user
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_USER
+        ini:
+          - section: checkmk_lookup
+            key: automation_user
+
+      automation_secret:
+        description: Automation secret for the REST API access.
+        required: True
+        vars:
+          - name: ansible_lookup_checkmk_automation_secret
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_SECRET
+        ini:
+          - section: checkmk_lookup
+            key: automation_secret
+
+      validate_certs:
+        description: Whether or not to validate TLS certificates.
+        type: boolean
+        required: False
+        default: True
+        vars:
+          - name: ansible_lookup_checkmk_validate_certs
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_VALIDATE_CERTS
+        ini:
+          - section: checkmk_lookup
+            key: validate_certs
+
       ruleset:
         description: The ruleset name.
         required: True
+
       description_regex:
         description: A regex to filter for certain descriptions.
         required: False
         default: ""
+
       comment_regex:
         description: A regex to filter for certain comment stings.
         required: False
         default: ""
-      server_url:
-        description: URL of the Checkmk server.
-        required: True
-      site:
-        description: Site name.
-        required: True
-      automation_user:
-        description: Automation user for the REST API access.
-        required: True
-      automation_secret:
-        description: Automation secret for the REST API access.
-        required: True
-      validate_certs:
-        description: Whether or not to validate TLS cerificates.
-        type: boolean
-        required: False
-        default: True
+
+    notes:
+      - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'.
+        If you need to use different permissions, you must change the command or run Ansible as another user.
+      - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
+      - The directory of the play is used as the current working directory.
 """
 
 EXAMPLES = """
