@@ -6,7 +6,7 @@
 
 - name: "{{ ansible_system }}: Create host on server."
   checkmk.general.host:
-    server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
+    server_url: "{{ checkmk_server_url }}/"
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"

@@ -10,6 +10,7 @@ checkmk_agent_server_validate_certs: 'true'
 checkmk_agent_server_port: "{% if checkmk_agent_server_protocol == 'https' %}443{% else %}80{% endif %}"
 checkmk_agent_user: "{{ automation_user | default('automation') }}"
 checkmk_agent_port: 6556
+checkmk_server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
 
 # Depending on which user you will be using, set the password or secret:
 # checkmk_agent_pass: "{{ checkmk_var_automation_secret }}"
