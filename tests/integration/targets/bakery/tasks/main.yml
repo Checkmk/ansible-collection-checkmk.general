@@ -1,14 +1,9 @@
 ---
-- name: "Run preparations."
-  ansible.builtin.include_tasks: prep.yml
+- name: "Include Global Variables."
+  ansible.builtin.include_vars: /root/ansible_collections/checkmk/general/tests/integration/files/includes/vars/global.yml
 
-- name: "Wait for site to be ready."
-  ansible.builtin.pause:
-    seconds: 5
-  when: |
-    ((download_pass is defined and download_pass | length) or item.item.edition == 'cre')
-    and (item.stdout_lines is defined and 'OVERALL 1' in item.stdout_lines)
-  loop: "{{ site_status.results }}"
+- name: "Run Preparations."
+  ansible.builtin.include_tasks: /root/ansible_collections/checkmk/general/tests/integration/files/includes/tasks/prep.yml
 
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml

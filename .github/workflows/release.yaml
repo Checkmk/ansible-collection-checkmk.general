@@ -99,16 +99,14 @@ jobs:
         run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
 
       - name: Create Pull Request for docs and changelog against devel branch
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: Update Docs and Changelogs
-          committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          commit-message: Update Docs and Changelogs upon Release
           signoff: false
           branch: changelogs-docs-update-devel
           base: devel
           delete-branch: true
-          title: '[Auto] Update changelogs and docs'
+          title: '[Auto] Update changelogs and docs upon release'
           body: |
             Changelogs and docs updated during *${{ steps.current_version.outputs.version }}* release.
           assignees: robin-checkmk
@@ -146,7 +144,7 @@ jobs:
             # Ansible Collection: ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
 
             For information about this collection and how to install it, refer to the [README](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/README.md).
-            
+
             For a detailed changelog, refer to the [CHANGELOG](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/CHANGELOG.rst).
 
       - name: Publish Ansible Collection to the Galaxy

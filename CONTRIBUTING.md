@@ -106,7 +106,7 @@ We urge you to run the following tests locally as applicable, so the turnaround 
 ### Sanity
 
 [Ansible Sanity Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html) enforce Ansible coding standards and requirements facilitating static code analysis. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
-We recommend using the `--docker` option, so you get the best results, as that uses a Docker image crafted and maintained by the Ansible project.  
+We recommend using the `--docker` option, so you get the best results, as that uses a Docker image crafted and maintained by the Ansible project.
 **Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
 
 To run the tests locally, use the following command in the project root:
@@ -120,7 +120,7 @@ You can also run a subset by mentioning them as follows. See `ansible-test sanit
 ### Integration
 
 [Ansible Integration Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html) run test cases created by the maintainers of this project, to ensure the collection actually does what is intended. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
-We strongly recommend using the `--docker` option, so you do not modify your local system with these tests.  
+We strongly recommend using the `--docker` option, so you do not modify your local system with these tests.
 **Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
 
 To run all tests locally, use the following command in the project root:
@@ -149,16 +149,20 @@ Releasing this collection is automated using GitHub Actions.
 Before running the action `Release Collection` against the `main` branch, the
 following needs to be done:
 
-1. Update the collection version in `galaxy.yml` and `requirements.yml`. Look for `version:`.
-2. Check the integration and molecule tests for up-to-date Checkmk versions.
+1. Create a pull request from `devel` into `main` with the following naming scheme: `Release X.Y.Z`.
+2. Choose and note which feature pull request you want to include in this release.
 3. Check the GitHub Workflows for [EOL Ansible and Python versions and add new releases](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix).
-4. Update the compatibility matrix in `SUPPORT.md` accordingly.
+4. The following tasks are automated in `scripts/release.sh`. Feel free to use the script, but double-check the result!
+    1. Update the collection version in `galaxy.yml` and `requirements.yml`. Look for the string `version:`.
+    2. Check the integration and molecule tests for up-to-date Checkmk versions and update if necessary.
+    3. Update the compatibility matrix in `SUPPORT.md` accordingly.
 5. Double check `changelogs/fragments` if all changes have a changelog.
 6. After all changes have been performed, merge them into the `main` branch.
 7. Release the collection by running the action `Release Collection` against the `main` branch.
 8. Merge the automatically created pull request into `devel` and then update the `main` branch from `devel`.
 
-Some of these steps can already be checked and done with `scripts/release.sh`. This is a work in progress and should be used carefully.
+Some of these steps can already be checked and done with `scripts/release.sh`.
+This is a work in progress and should be used carefully.
 You should definitely check the resulting changes thoroughly before committing.
 
 ## Code of Conduct
