@@ -508,7 +508,6 @@ def run_module():
         changed=False,
     )
 
-
     desired_state = current_folder.params.get("state")
     if current_folder.state == "present":
         result = result._replace(
