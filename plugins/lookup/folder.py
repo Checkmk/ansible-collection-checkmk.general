@@ -9,30 +9,80 @@ DOCUMENTATION = """
     name: folder
     author: Lars Getwan (@lgetwan)
     version_added: "3.3.0"
+
     short_description: Get folder attributes
+
     description:
       - Returns the attributes of a folder
+
     options:
+
       _terms:
         description: complete folder path using tilde as a delimiter
         required: True
+
       server_url:
         description: URL of the Checkmk server
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_server_url
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_SERVER_URL
+        ini:
+          - section: checkmk_lookup
+            key: server_url
+
       site:
-        description: site name
+        description: Site name.
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_site
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_SITE
+        ini:
+          - section: checkmk_lookup
+            key: site
+
       automation_user:
-        description: automation user for the REST API access
+        description: Automation user for the REST API access.
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_automation_user
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_USER
+        ini:
+          - section: checkmk_lookup
+            key: automation_user
+
       automation_secret:
-        description: automation secret for the REST API access
+        description: Automation secret for the REST API access.
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_automation_secret
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_SECRET
+        ini:
+          - section: checkmk_lookup
+            key: automation_secret
+
       validate_certs:
-        description: Wether or not to validate TLS certificates
+        description: Whether or not to validate TLS certificates.
         type: boolean
         required: False
         default: True
+        vars:
+          - name: ansible_lookup_checkmk_validate_certs
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_VALIDATE_CERTS
+        ini:
+          - section: checkmk_lookup
+            key: validate_certs
+
+    notes:
+      - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'.
+        If you need to use different permissions, you must change the command or run Ansible as another user.
+      - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
+      - The directory of the play is used as the current working directory.
 """
 
 EXAMPLES = """
