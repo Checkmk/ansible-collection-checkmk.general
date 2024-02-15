@@ -407,7 +407,7 @@ class FolderAPI(CheckmkAPI):
 
     def create(self):
         data = self.desired.copy()
-        if data.get("attributes", {}) != {}:
+        if data.get("attributes", {}) == {}:
             data["attributes"] = data.pop("update_attributes", {})
 
         if data.get("remove_attributes"):
