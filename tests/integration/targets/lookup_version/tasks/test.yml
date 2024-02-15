@@ -16,3 +16,10 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify Checkmk version."
   ansible.builtin.assert:
     that: "outer_item.version in looked_up_version.msg"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get Checkmk version."
+  ansible.builtin.assert:
+    that: "outer_item.version in looked_up_version.msg"
+  vars:
+    version: "{{ lookup('checkmk.general.version') }}"
+  delegate_to: localhost

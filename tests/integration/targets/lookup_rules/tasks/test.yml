@@ -94,3 +94,22 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ cpu_load_ruleset.rules }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: rule."
+  ansible.builtin.debug:
+    var: "rule"
+  vars:
+    rule: "{{ lookup('checkmk.general.rule', rule_id=item.id) }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ cpu_load_ruleset.rules }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: rules."
+  ansible.builtin.assert:
+    # Check the number of rules
+    that: rules|length == 1
+  vars:
+    rules: "{{ lookup('checkmk.general.rules', ruleset=item, commebt_regex='Ansible managed') }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_rulesets }}"
