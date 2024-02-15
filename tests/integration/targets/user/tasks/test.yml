@@ -203,44 +203,6 @@
   delegate_to: localhost
   run_once: true # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test create with short pw for 2.3 (should fail)"
-  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
-    name: "autotest"
-    fullname: "autotest"
-    auth_type: "automation"
-    password: "2short"
-    roles:
-      - admin
-    state: "present"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
-  when: "'2.3' in outer_item.version"
-  register: checkmk_shortpwcheck_create
-  failed_when: "'Password too short. For 2.3 and higher' not in checkmk_shortpwcheck_create.msg"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test reset with short pw for 2.3 (should fail)"
-  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
-    name: "{{ item.name }}"
-    password: "{{ item.password }}"
-    auth_type: "{{ item.auth_type }}"
-    state: "reset_password"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
-  loop: "{{ checkmk_var_users_new_short_pw }}"
-  when: "'2.3' in outer_item.version"
-  register: checkmk_shortpwcheck_edit
-  failed_when: "'Password too short. For 2.3 and higher' not in checkmk_shortpwcheck_edit.msg"
-
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"

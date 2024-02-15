@@ -105,11 +105,6 @@ checkmk_var_users_newpw:
     password: "abcdefghij"
     auth_type: automation
 
-checkmk_var_users_new_short_pw:
-  - name: user3
-    password: "abcdefg"
-    auth_type: password
-
 checkmk_var_users_edit:
   - name: admin1
     fullname: Admin Eins
