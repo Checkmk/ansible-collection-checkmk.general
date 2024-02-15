@@ -21,12 +21,20 @@
 # For changes that are not really scoped (for example, which affect a whole collection), use the following format:
 # - Description starting with an uppercase letter and ending with a dot at the very end. Multiple sentences are allowed.
 
+# Tipps:
+# You can write multi line changelogs like this:
+# - Module name - This is a very long and detailed
+#   changelog line, so we will split it into several
+#   lines, just like this.
+
 ## Possible keys:
 #
 # release_summary
 #     Adds a single line release summary to the changelog.
 # breaking_changes
-#     Changes that break existing playbooks or roles. This includes any change to existing behavior that forces users to update tasks. Displayed in both the changelogs and the Porting Guides.
+#     Changes that break existing playbooks or roles.
+#     This includes any change to existing behavior that forces users to update tasks.
+#     Displayed in both the changelogs and the Porting Guides.
 # major_changes
 #     Major changes to Ansible itself. Generally does not include module or plugin changes. Displayed in both the changelogs and the Porting Guides.
 # minor_changes
