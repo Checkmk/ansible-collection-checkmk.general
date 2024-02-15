@@ -146,9 +146,9 @@ EXAMPLES = """
   vars:
     ansible_lookup_checkmk_server_url: "{{ checkmk_var_server_url }}"
     ansible_lookup_checkmk_site: "{{ outer_item.site }}"
-    ansible_lookup_automation_user: "{{ checkmk_var_automation_user }}"
-    ansible_lookup_automation_secret: "{{ checkmk_var_automation_secret }}"
-    ansible_lookup_validate_certs: false
+    ansible_lookup_checkmk_automation_user: "{{ checkmk_var_automation_user }}"
+    ansible_lookup_checkmk_automation_secret: "{{ checkmk_var_automation_secret }}"
+    ansible_lookup_checkmk_validate_certs: false
   loop: "{{
     lookup('checkmk.general.rulesets', regex='', rulesets_deprecated=True, rulesets_used=True) }}"
   loop_control:
