@@ -13,13 +13,9 @@ on:
       - devel
   push:
     branches:
-      - build/checkmk-2-3-support
-    paths:
-      - 'roles/agent/**'
-  push:
-    branches:
       - main
       - devel
+      - build/checkmk-2-3-support
     paths:
       - 'roles/agent/**'
 
