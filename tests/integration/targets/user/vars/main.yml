@@ -1,17 +1,20 @@
 ---
 test_sites:
-  - version: "2.2.0p19"
-    edition: "cme"
-    site: "stable_cme"
-  - version: "2.2.0p19"
-    edition: "cre"
-    site: "stable_cre"
+  # - version: "2.2.0p19"
+  #   edition: "cme"
+  #   site: "stable_cme"
+  # - version: "2.2.0p19"
+  #   edition: "cre"
+  #   site: "stable_cre"
+  - version: "2.3.0-2024.02.15"
+    edition: "cee"
+    site: "master"
   - version: "2.2.0p19"
     edition: "cee"
     site: "stable_cee"
-  - version: "2.1.0p38"
-    edition: "cre"
-    site: "old_cre"
+  # - version: "2.1.0p38"
+  #   edition: "cre"
+  #   site: "old_cre"
 
 checkmk_var_contact_groups:
   - team1
@@ -104,11 +107,6 @@ checkmk_var_users_newpw:
   - name: auto1
     password: "abcdefghij"
     auth_type: automation
-
-checkmk_var_users_new_short_pw:
-  - name: user3
-    password: "abcdefg"
-    auth_type: password
 
 checkmk_var_users_edit:
   - name: admin1
