@@ -442,22 +442,12 @@ class UserAPI(CheckmkAPI):
         # in the Checkmk API...
         data.setdefault("fullname", data["username"])
 
-        if self.shortpassword(data):
-            result = RESULT(
-                http_code=0,
-                msg="Password too short. For 2.3 and higher, please provide at least 12 characters (automation min. 10).",
-                content="",
-                etag="",
-                failed=True,
-                changed=False,
-            )
-        else:
-            result = self._fetch(
-                code_mapping=UserHTTPCodes.create,
-                endpoint=UserEndpoints.create,
-                data=data,
-                method="POST",
-            )
+        result = self._fetch(
+            code_mapping=UserHTTPCodes.create,
+            endpoint=UserEndpoints.create,
+            data=data,
+            method="POST",
+        )
         return result
 
     def edit(self, etag):
