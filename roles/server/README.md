@@ -25,7 +25,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Role Variables
 
-    checkmk_server_version: "2.2.0p21"
+    checkmk_server_version: "2.2.0p22"
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.
