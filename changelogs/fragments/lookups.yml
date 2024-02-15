@@ -1,0 +1,4 @@
+minor_changes:
+  - Lookup modules - Enable usage of ini files, environment and inventory variables
+    to configure basic settings for the lookup plugins, like the server_url and site
+    alongside the authentication options. Refer to the module documentation for details.

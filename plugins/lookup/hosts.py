@@ -104,6 +104,20 @@ EXAMPLES = """
     }}"
   loop_control:
       label: "{{ item.id }}"
+
+- name: "Use variables outside the module call."
+  ansible.builtin.debug:
+    msg: "Host: {{ item.id }} in folder {{ item.extensions.folder }}, IP: {{ item.extensions.effective_attributes.ipaddress }}"
+  vars:
+    ansible_lookup_checkmk_server_url: "{{ checkmk_var_server_url }}"
+    ansible_lookup_checkmk_site: "{{ outer_item.site }}"
+    ansible_lookup_automation_user: "{{ checkmk_var_automation_user }}"
+    ansible_lookup_automation_secret: "{{ checkmk_var_automation_secret }}"
+    ansible_lookup_validate_certs: false
+  loop: "{{
+    lookup('checkmk.general.hosts', effective_attributes=True) }}"
+  loop_control:
+      label: "{{ item.id }}"
 """
 
 RETURN = """
