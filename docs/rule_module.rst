@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.6.1
+  :antsibull-docs: 2.7.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.2.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -468,6 +468,50 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rule/rule_id"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/rule_id:
+
+      .. rst-class:: ansible-option-title
+
+      **rule_id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rule/rule_id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      If given, it will be \ :literal:`the only condition`\  to identify the rule to work on.
+
+      When there's no rule found with this id, the task will fail.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-rule/value_raw"></div>
 
       .. raw:: latex
@@ -569,7 +613,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The base url of your Checkmk server.
+      The base url of your Checkmk server including the protocol.
 
 
       .. raw:: html

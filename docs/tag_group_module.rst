@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.6.1
+  :antsibull-docs: 2.7.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.tag_group module -- Manage tag groups in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.2.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -292,7 +292,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The base url of your Checkmk server.
+      The base url of your Checkmk server including the protocol.
 
 
       .. raw:: html
