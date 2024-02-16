@@ -44,3 +44,12 @@
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
+  ansible.builtin.assert:
+    that: "checkmk_hosts|length == hosts|length"
+  vars:
+    folders: "{{ lookup('checkmk.general.hosts') }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  when: outer_item.edition == "stable_cee"

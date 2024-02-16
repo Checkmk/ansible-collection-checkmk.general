@@ -7,7 +7,7 @@ class ModuleDocFragment(object):
     DOCUMENTATION = r"""
     options:
         server_url:
-            description: The base url of your Checkmk server.
+            description: The base url of your Checkmk server including the protocol.
             required: true
             type: str
         site:

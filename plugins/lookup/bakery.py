@@ -9,37 +9,83 @@ DOCUMENTATION = """
     name: bakery
     author: Max Sickora (@max-checkmk)
     version_added: "4.0.0"
+
     short_description: Get the bakery status of a Checkmk server
+
     description:
       - Returns the bakery status of a Checkmk server as a string, e.g. 'running'
+
     options:
+
       server_url:
         description: URL of the Checkmk server
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_server_url
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_SERVER_URL
+        ini:
+          - section: checkmk_lookup
+            key: server_url
+
       site:
-        description: site name
+        description: Site name.
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_site
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_SITE
+        ini:
+          - section: checkmk_lookup
+            key: site
+
       automation_user:
-        description: automation user for the REST API access
+        description: Automation user for the REST API access.
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_automation_user
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_USER
+        ini:
+          - section: checkmk_lookup
+            key: automation_user
+
       automation_secret:
-        description: automation secret for the REST API access
+        description: Automation secret for the REST API access.
         required: True
+        vars:
+          - name: ansible_lookup_checkmk_automation_secret
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_SECRET
+        ini:
+          - section: checkmk_lookup
+            key: automation_secret
+
       validate_certs:
-        description: Wether or not to validate TLS certificates
+        description: Whether or not to validate TLS certificates.
         type: boolean
         required: False
         default: True
+        vars:
+          - name: ansible_lookup_checkmk_validate_certs
+        env:
+          - name: ANSIBLE_LOOKUP_CHECKMK_VALIDATE_CERTS
+        ini:
+          - section: checkmk_lookup
+            key: validate_certs
+
     notes:
       - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'.
         If you need to use different permissions, you must change the command or run Ansible as another user.
       - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
       - The directory of the play is used as the current working directory.
+      - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
+        This is a limitation of Ansible itself.
 """
 
 EXAMPLES = """
 - name: "Show bakery status"
-  debug:
+  ansible.builtin.debug:
     msg: "Bakery status is {{ bakery }}"
   vars:
     bakery: "{{ lookup('checkmk.general.bakery',
@@ -49,6 +95,17 @@ EXAMPLES = """
                    automation_user=automation_user,
                    automation_secret=automation_secret
                )}}"
+
+- name: "Use variables outside the module call."
+  ansible.builtin.debug:
+    msg: "Bakery status is {{ bakery }}"
+  vars:
+    ansible_lookup_checkmk_server_url: "{{ checkmk_var_server_url }}"
+    ansible_lookup_checkmk_site: "{{ outer_item.site }}"
+    ansible_lookup_checkmk_automation_user: "{{ checkmk_var_automation_user }}"
+    ansible_lookup_checkmk_automation_secret: "{{ checkmk_var_automation_secret }}"
+    ansible_lookup_checkmk_validate_certs: false
+    bakery: "{{ lookup('checkmk.general.bakery') }}"
 """
 
 RETURN = """

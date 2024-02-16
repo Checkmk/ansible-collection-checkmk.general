@@ -232,6 +232,7 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
@@ -431,7 +432,6 @@ class UserAPI(CheckmkAPI):
             data=data,
             method="POST",
         )
-
         return result
 
     def edit(self, etag):
@@ -525,8 +525,17 @@ def run_module():
             user.required.pop("username")
             result = user.edit(etag)
     elif user.state == "absent":
-        if required_state in ("present", "reset_password"):
+        if required_state in "present":
             result = user.create()
+        if required_state in "reset_password":
+            result = RESULT(
+                http_code=0,
+                msg="Can't reset the password for an absent user.",
+                content="",
+                etag="",
+                failed=False,
+                changed=False,
+            )
 
     module.exit_json(**result_as_dict(result))
 
