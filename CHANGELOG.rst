@@ -4,6 +4,33 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v4.3.0
+======
+
+Release Summary
+---------------
+
+Reworking the CI, enhancing code quality and improving modules.
+
+Minor Changes
+-------------
+
+- Folder module - Extend attribute management. Please refer to the module documentation for more details.
+- Lookup modules - Enable usage of ini files, environment and inventory variables to configure basic settings for the lookup plugins, like e.g., the server_url or site alongside the authentication options. Refer to the module documentation for details.
+- Rule module - Introduce rule_id to uniquely identify rules. This ID can be retrieved e.g., using the lookup plugin. Refer to the module documentation for further details.
+
+Bugfixes
+--------
+
+- Folder module - Fix idempotency when using "attributes" parameter for creating a folder.
+- Folder module - Parents will be parsed properly now. This means, that parents given as a string will now be parsed as a list of one.
+- Host module - Parents will be parsed properly now. This means, that parents given as a string will now be parsed as a list of one.
+- User module - Fix bug, where an absent user was created, if 'reset_password' was used.
+
+Known Issues
+------------
+
+- Lookup modules - When using inventory variables to configure e.g., the server_url, it is not possible to assign other variables to these variables. This is a limitation of Ansble itself.
 
 v4.2.0
 ======
@@ -603,7 +630,6 @@ Major Changes
 
 Minor Changes
 -------------
-
 
 v0.12.0
 =======

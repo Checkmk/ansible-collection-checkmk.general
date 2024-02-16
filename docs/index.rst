@@ -1,7 +1,7 @@
 
 
 .. meta::
-  :antsibull-docs: 2.6.1
+  :antsibull-docs: 2.7.0
 
 
 .. _plugins_in_checkmk.general:
@@ -9,7 +9,7 @@
 Checkmk.General
 ===============
 
-Collection version 4.2.0
+Collection version 4.3.0
 
 .. contents::
    :local:
@@ -99,9 +99,9 @@ Lookup Plugins
 * :ansplugin:`folders lookup <checkmk.general.folders#lookup>` -- Get various information about a folder
 * :ansplugin:`host lookup <checkmk.general.host#lookup>` -- Get host attributes
 * :ansplugin:`hosts lookup <checkmk.general.hosts#lookup>` -- Get various information about a host
-* :ansplugin:`rule lookup <checkmk.general.rule#lookup>` -- Show rule
-* :ansplugin:`rules lookup <checkmk.general.rules#lookup>` -- List rules
-* :ansplugin:`ruleset lookup <checkmk.general.ruleset#lookup>` -- Show ruleset
+* :ansplugin:`rule lookup <checkmk.general.rule#lookup>` -- Show a rule
+* :ansplugin:`rules lookup <checkmk.general.rules#lookup>` -- Get a list rules
+* :ansplugin:`ruleset lookup <checkmk.general.ruleset#lookup>` -- Show a ruleset
 * :ansplugin:`rulesets lookup <checkmk.general.rulesets#lookup>` -- Search rulesets
 * :ansplugin:`version lookup <checkmk.general.version#lookup>` -- Get the version of a Checkmk server
 

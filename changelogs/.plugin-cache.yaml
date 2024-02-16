@@ -31,15 +31,15 @@ plugins:
       name: hosts
       version_added: 3.3.0
     rule:
-      description: Show rule
+      description: Show a rule
       name: rule
       version_added: 3.5.0
     rules:
-      description: List rules
+      description: Get a list rules
       name: rules
       version_added: 3.5.0
     ruleset:
-      description: Show ruleset
+      description: Show a ruleset
       name: ruleset
       version_added: 3.5.0
     rulesets:
@@ -126,4 +126,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 4.2.0
+version: 4.3.0
