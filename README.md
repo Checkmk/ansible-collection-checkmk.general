@@ -45,6 +45,7 @@ Name | Description
 
 ### Lookup plugins
 Click on the lookup plugin name below, to get detailed documentation about it.
+For more in-depth documentation, see [this README](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/README.md).
 
 Name | Description | Tests
 --- | --- | ---
