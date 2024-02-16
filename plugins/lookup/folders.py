@@ -96,6 +96,8 @@ DOCUMENTATION = """
         If you need to use different permissions, you must change the command or run Ansible as another user.
       - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
       - The directory of the play is used as the current working directory.
+      - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
+        This is a limitation of Ansible itself.
 """
 
 EXAMPLES = """
