@@ -17,9 +17,10 @@
   ansible.builtin.assert:
     that: "outer_item.version in looked_up_version.msg"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get Checkmk version."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
   ansible.builtin.assert:
     that: "outer_item.version in looked_up_version.msg"
   vars:
     version: "{{ lookup('checkmk.general.version') }}"
   delegate_to: localhost
+  register: looked_up_version
