@@ -22,17 +22,13 @@
           ("'exception' in looked_up_bakery.msg")
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
-  ansible.builtin.debug:
-    msg: "Bakery status is {{ bakery }}"
+  ansible.builtin.assert:
+    that: ("'finished' in bakery.msg") or
+          ("'running' in bakery.msg") or
+          ("'initialized' in bakery.msg") or
+          ("'stopped' in bakery.msg") or
+          ("'exception' in bakery.msg")
   vars:
     bakery: "{{ lookup('checkmk.general.bakery') }}"
   delegate_to: localhost
-  register: looked_up_bakery
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify bakery status."
-  ansible.builtin.assert:
-    that: ("'finished' in looked_up_bakery.msg") or
-          ("'running' in looked_up_bakery.msg") or
-          ("'initialized' in looked_up_bakery.msg") or
-          ("'stopped' in looked_up_bakery.msg") or
-          ("'exception' in looked_up_bakery.msg")
+  when: outer_item.edition == "stable_cee"

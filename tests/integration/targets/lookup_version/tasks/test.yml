@@ -24,3 +24,4 @@
     version: "{{ lookup('checkmk.general.version') }}"
   delegate_to: localhost
   register: looked_up_version
+  when: outer_item.edition == "stable_cee"

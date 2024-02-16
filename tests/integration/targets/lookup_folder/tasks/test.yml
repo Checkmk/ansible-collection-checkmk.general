@@ -65,3 +65,4 @@
     extensions: "{{ lookup('checkmk.general.folder', checkmk_folder.path) }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+  when: outer_item.edition == "stable_cee"

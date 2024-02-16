@@ -52,3 +52,4 @@
     folders: "{{ lookup('checkmk.general.hosts') }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+  when: outer_item.edition == "stable_cee"

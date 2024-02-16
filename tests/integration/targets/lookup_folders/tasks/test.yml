@@ -64,7 +64,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of folders."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
   ansible.builtin.assert:
     # The looked up list contains the main folder, as well.
     that: "( 1 + checkmk_var_folders|length ) == folders|length"
@@ -72,3 +72,4 @@
     folders: "{{ lookup('checkmk.general.folders', '/', recursive=True) }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+  when: outer_item.edition == "stable_cee"
