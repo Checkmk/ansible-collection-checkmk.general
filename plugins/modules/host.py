@@ -204,7 +204,7 @@ class HostHTTPCodes:
 
     create = {200: (True, False, "Host created")}
     edit = {200: (True, False, "Host modified")}
-    edit = {200: (True, False, "Host moved")}
+    move = {200: (True, False, "Host moved")}
     delete = {204: (True, False, "Host deleted")}
 
 
