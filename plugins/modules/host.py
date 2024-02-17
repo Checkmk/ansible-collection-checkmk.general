@@ -36,26 +36,35 @@ options:
               B(Attention! This option OVERWRITES all existing attributes!)
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
-        default: {}
+        required: false
     update_attributes:
         description:
             - The update_attributes of your host as described in the API documentation.
               This will only update the given attributes.
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
-        default: {}
+        required: false
     remove_attributes:
         description:
             - The remove_attributes of your host as described in the API documentation.
+              B(If a list of strings is supplied, the listed attributes are removed.)
+              B(If extended_functionality and a dict is supplied, the attributes that exactly match
+              the passed attributes are removed.)
               This will only remove the given attributes.
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
+              As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
+              I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
-        default: []
+        required: false
     state:
         description: The state of your host.
         type: str
         default: present
         choices: [present, absent]
+    extended_functionality:
+        description: Allow extended functionality instead of the expected REST API behavior.
+        type: bool
+        default: true
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -163,149 +172,350 @@ message:
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.common.dict_transformations import dict_merge
+from ansible.module_utils.common.dict_transformations import dict_merge, recursive_diff
 from ansible.module_utils.common.validation import check_type_list
-from ansible.module_utils.urls import fetch_url
+from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    result_as_dict,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
+
+HOST = (
+    "customer",
+    "attributes",
+    "update_attributes",
+    "remove_attributes",
+)
+
+HOST_PARENTS_PARSE = (
+    "attributes",
+    "update_attributes",
+)
 
 
-def exit_failed(module, msg):
-    result = {"msg": msg, "changed": False, "failed": True}
-    module.fail_json(**result)
-
-
-def exit_changed(module, msg):
-    result = {"msg": msg, "changed": True, "failed": False}
-    module.exit_json(**result)
-
-
-def exit_ok(module, msg):
-    result = {"msg": msg, "changed": False, "failed": False}
-    module.exit_json(**result)
-
-
-def get_current_host_state(module, base_url, headers):
-    current_state = "unknown"
-    current_explicit_attributes = {}
-    current_folder = "/"
-    etag = ""
-
-    api_endpoint = "/objects/host_config/" + module.params.get("name")
-    parameters = "?effective_attributes=true"
-    url = base_url + api_endpoint + parameters
-
-    response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
-
-    if info["status"] == 200:
-        body = json.loads(response.read())
-        current_state = "present"
-        etag = info.get("etag", "")
-        extensions = body.get("extensions", {})
-        current_explicit_attributes = extensions.get("attributes", {})
-        current_folder = "%s" % extensions.get("folder", "/")
-        if "meta_data" in current_explicit_attributes:
-            del current_explicit_attributes["meta_data"]
-
-    elif info["status"] == 404:
-        current_state = "absent"
-
-    else:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s."
-            % (info["status"], info.get("body", "N/A")),
-        )
-
-    return current_state, current_explicit_attributes, current_folder, etag
-
-
-def set_host_attributes(module, attributes, base_url, headers, update_method):
-    api_endpoint = "/objects/host_config/" + module.params.get("name")
-    params = {
-        update_method: attributes,
+class HostHTTPCodes:
+    # http_code: (changed, failed, "Message")
+    get = {
+        200: (False, False, "Host found, nothing changed"),
+        404: (False, False, "Host not found"),
     }
-    url = base_url + api_endpoint
 
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="PUT"
-    )
+    create = {200: (True, False, "Host created")}
+    edit = {200: (True, False, "Host modified")}
+    edit = {200: (True, False, "Host moved")}
+    delete = {204: (True, False, "Host deleted")}
 
-    if info["status"] == 400 and update_method == "remove_attributes":
-        return "Host attributes allready removed."
-    elif info["status"] != 200:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+
+class HostEndpoints:
+    default = "/objects/host_config"
+    create = "/domain-types/host_config/collections/all"
+
+
+class HostAPI(CheckmkAPI):
+    def __init__(self, module):
+        super().__init__(module)
+
+        self.extended_functionality = self.params.get("extended_functionality", True)
+
+        self.desired = {}
+
+        self.desired["folder"] = self.params.get("folder", "/")
+
+        self.desired["host_name"] = self.params.get("name")
+
+        for key in HOST:
+            if self.params.get(key):
+                self.desired[key] = self.params.get(key)
+
+        for key in HOST_PARENTS_PARSE:
+            if self.desired.get(key):
+                if self.desired.get(key).get("parents"):
+                    self.desired[key]["parents"] = check_type_list(
+                        self.desired.get(key).get("parents")
+                    )
+
+        # Get the current host from the API and set some parameters
+        self._get_current()
+        self._changed_items = self._detect_changes()
+
+        self._verify_compatibility()
+
+    def _verify_compatibility(self):
+        # Check if parameters are compatible with CMK version
+        if (
+            sum(
+                [
+                    1
+                    for el in ["attributes", "remove_attributes", "update_attributes"]
+                    if self.module.params.get(el)
+                ]
+            )
+            > 1
+        ):
+
+            ver = self.getversion()
+            msg = (
+                "As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of"
+                " attributes, remove_attributes, and update_attributes is no longer supported."
+            )
+
+            if ver >= CheckmkVersion("2.2.0p7"):
+                result = RESULT(
+                    http_code=0,
+                    msg=msg,
+                    content="",
+                    etag="",
+                    failed=True,
+                    changed=False,
+                )
+                self.module.exit_json(**result_as_dict(result))
+            else:
+                self.module.warn(msg)
+
+    def _normalize_folder(self, folder):
+        if folder in ["", " ", "/", "//"]:
+            return "/"
+
+        if not folder.startswith("/"):
+            folder = "/%s" % folder
+
+        if folder.endswith("/"):
+            folder = folder.rstrip("/")
+
+        return folder
+
+    def _build_default_endpoint(self):
+        return "%s/%s" % (
+            HostEndpoints.default,
+            self.desired["host_name"],
         )
 
-
-def move_host(module, base_url, headers):
-    api_endpoint = "/objects/host_config/%s/actions/move/invoke" % module.params.get(
-        "name"
-    )
-    params = {
-        "target_folder": module.params.get("folder", "/"),
-    }
-    url = base_url + api_endpoint
-
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )
-
-    if info["status"] != 200:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+    def _build_move_endpoint(self):
+        return "%s/%s/actions/move/invoke" % (
+            HostEndpoints.default,
+            self.desired["host_name"],
         )
 
+    ###
+    def _detect_changes(self):
+        current_attributes = self.current.get("attributes", {})
+        desired_attributes = self.desired.copy()
+        changes = []
 
-def create_host(module, attributes, base_url, headers):
-    api_endpoint = "/domain-types/host_config/collections/all"
-    params = {
-        "folder": module.params.get("folder", "/"),
-        "host_name": module.params.get("name"),
-        "attributes": attributes,
-    }
-    url = base_url + api_endpoint
+        if desired_attributes.get("update_attributes"):
+            merged_attributes = dict_merge(
+                current_attributes, desired_attributes.get("update_attributes")
+            )
 
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )
+            if merged_attributes != current_attributes:
+                try:
+                    (c_m, m_c) = recursive_diff(current_attributes, merged_attributes)
+                    changes.append("update attributes: %s" % json.dumps(m_c))
+                except Exception as e:
+                    changes.append("update attributes")
+                desired_attributes["update_attributes"] = merged_attributes
 
-    if info["status"] != 200:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+        if desired_attributes.get(
+            "attributes"
+        ) and current_attributes != desired_attributes.get("attributes"):
+            changes.append("attributes")
+
+        if self.current.get("folder") != desired_attributes.get("folder"):
+            changes.append("folder")
+
+        if desired_attributes.get("remove_attributes"):
+            tmp_remove_attributes = desired_attributes.get("remove_attributes")
+
+            if isinstance(tmp_remove_attributes, list):
+                removes_which = [
+                    a for a in tmp_remove_attributes if current_attributes.get(a)
+                ]
+                if len(removes_which) > 0:
+                    changes.append("remove attributes: %s" % " ".join(removes_which))
+            elif isinstance(tmp_remove_attributes, dict):
+                if not self.extended_functionality:
+                    self.module.fail_json(
+                        msg="ERROR: The parameter remove_attributes of dict type is not supported for the paramter extended_functionality: false!",
+                    )
+
+                (tmp_remove, tmp_rest) = (current_attributes, {})
+                if current_attributes != tmp_remove_attributes:
+                    try:
+                        (c_m, m_c) = recursive_diff(
+                            current_attributes, tmp_remove_attributes
+                        )
+
+                        if c_m:
+                            # if nothing to remove
+                            if current_attributes == c_m:
+                                (tmp_remove, tmp_rest) = ({}, current_attributes)
+                            else:
+                                (c_c_m, c_m_c) = recursive_diff(current_attributes, c_m)
+                                (tmp_remove, tmp_rest) = (c_c_m, c_m)
+                    except Exception as e:
+                        self.module.fail_json(
+                            msg="ERROR: incompatible parameter: remove_attributes!",
+                            exception=e,
+                        )
+
+                desired_attributes.pop("remove_attributes")
+                if tmp_remove != {}:
+                    changes.append("remove attributes: %s" % json.dumps(tmp_remove))
+                    if tmp_rest != {}:
+                        desired_attributes["update_attributes"] = tmp_rest
+            else:
+                self.module.fail_json(
+                    msg="ERROR: The parameter remove_attributes can be a list of strings or a dictionary!",
+                    exception=e,
+                )
+
+        if self.extended_functionality:
+            self.desired = desired_attributes.copy()
+
+        # self.module.fail_json(json.dumps(desired_attributes))
+
+        return changes
+
+    ###
+    def _get_current(self):
+        result = self._fetch(
+            code_mapping=HostHTTPCodes.get,
+            endpoint=self._build_default_endpoint(),
+            method="GET",
         )
 
+        if result.http_code == 200:
+            self.state = "present"
 
-def delete_host(module, base_url, headers):
-    api_endpoint = "/objects/host_config/" + module.params.get("name")
-    url = base_url + api_endpoint
+            content = json.loads(result.content)
 
-    response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
+            extensions = content["extensions"]
+            self.current["folder"] = extentions.pop("folder", "/")
+            for key, value in extensions.items():
+                if key == "attributes":
+                    value.pop("meta_data")
+                    if "network_scan_results" in value:
+                        value.pop("network_scan_results")
+                self.current[key] = value
 
-    if info["status"] != 204:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+            self.etag = result.etag
+
+        else:
+            self.state = "absent"
+
+    def _check_output(self, mode):
+        return RESULT(
+            http_code=0,
+            msg="Running in check mode. Would have done an %s" % mode,
+            content="",
+            etag="",
+            failed=False,
+            changed=False,
         )
 
+    ###
+    def needs_update(self):
+        return len(self._changed_items) > 0
 
-def normalize_folder(folder):
-    if folder in ["", " ", "/", "//"]:
-        return "/"
+    ###
+    def create(self):
+        data = self.desired.copy()
+        if data.get("attributes", {}) == {}:
+            data["attributes"] = data.pop("update_attributes", {})
 
-    if not folder.startswith("/"):
-        folder = "/%s" % folder
+        if data.get("remove_attributes"):
+            data.pop("remove_attributes")
 
-    if folder.endswith("/"):
-        folder = folder.rstrip("/")
+        if self.module.check_mode:
+            return self._check_output("create")
 
-    return folder
+        result = self._fetch(
+            code_mapping=HostHTTPCodes.create,
+            endpoint=HostEndpoints.create,
+            data=data,
+            method="POST",
+        )
+
+        return result
+
+    def edit(self):
+        data = self.desired.copy()
+        data.pop("host_name")
+
+        tmp = {}
+        tmp["target_folder"] = data.pop("folder", "/")
+        self.headers["if-Match"] = self.etag
+
+        if self.module.check_mode:
+            return self._check_output("edit")
+
+        result = self._fetch(
+            code_mapping=HostHTTPCodes.move,
+            endpoint=self._build_move_endpoint(),
+            data=tmp,
+            method="POST",
+        )
+
+        result._replace(
+            msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
+        )
+
+        if self.module.check_mode:
+            return self._check_output("edit")
+
+        if data.get("update_attributes") == {}:
+            data.pop("update_attributes")
+
+        if data.get("remove_attributes") == []:
+            data.pop("remove_attributes")
+
+        if data.get("update_attributes") and data.get("remove_attributes"):
+            tmp = data.copy()
+            tmp.pop("remove_attributes")
+            self.module.fail_json(json.dumps(tmp))
+            result = self._fetch(
+                code_mapping=HostHTTPCodes.edit,
+                endpoint=self._build_default_endpoint(),
+                data=tmp,
+                method="PUT",
+            )
+
+            tmp = data.copy()
+            tmp.pop("update_attributes")
+            result = self._fetch(
+                code_mapping=HostHTTPCodes.edit,
+                endpoint=self._build_default_endpoint(),
+                data=tmp,
+                method="PUT",
+            )
+        else:
+            data["update_method"] = data.pop("update_attributes")
+
+            result = self._fetch(
+                code_mapping=FolderHTTPCodes.edit,
+                endpoint=self._build_default_endpoint(),
+                data=data,
+                method="PUT",
+            )
+
+        return result._replace(
+            msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items)
+        )
+
+    def delete(self):
+        if self.module.check_mode:
+            return self._check_output("delete")
+
+        result = self._fetch(
+            code_mapping=HostHTTPCodes.delete,
+            endpoint=self._build_default_endpoint(),
+            method="DELETE",
+        )
+
+        return result
 
 
 def run_module():
@@ -320,106 +530,44 @@ def run_module():
             type="str",
             required=True,
         ),
-        attributes=dict(type="raw", default={}),
-        remove_attributes=dict(type="raw", default=[]),
-        update_attributes=dict(type="raw", default={}),
+        attributes=dict(type="raw", required=False),
+        remove_attributes=dict(type="raw", required=False),
+        update_attributes=dict(type="raw", required=False),
         folder=dict(type="str", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
+        extended_functionality=dict(type="bool", required=False, default=True),
     )
 
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
-    # Use the parameters to initialize some common variables
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s"
-        % (
-            module.params.get("automation_user", ""),
-            module.params.get("automation_secret", ""),
-        ),
-    }
+    # Create an API object that contains the current and desired state
+    current_host = HostAPI(module)
 
-    base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
-        module.params.get("site", ""),
+    result = RESULT(
+        http_code=0,
+        msg="No changes needed.",
+        content="",
+        etag="",
+        failed=False,
+        changed=False,
     )
 
-    # Determine desired state and attributes
-    attributes = module.params.get("attributes", {})
-    remove_attributes = module.params.get("remove_attributes", [])
-    update_attributes = module.params.get("update_attributes", {})
-    state = module.params.get("state", "present")
+    desired_state = current_host.params.get("state")
+    if current_host.state == "present":
+        result = result._replace(
+            msg="Host already exists with the desired parameters."
+        )
+        if desired_state == "absent":
+            result = current_host.delete()
+        elif current_host.needs_update():
+            move
+            result = current_host.edit()
+    elif current_host.state == "absent":
+        result = result._replace(msg="Folder already absent.")
+        if desired_state in ("present"):
+            result = current_host.create()
 
-    for par in [attributes, update_attributes]:
-        if par != {}:
-            if par.get("parents"):
-                par["parents"] = check_type_list(par.get("parents"))
-
-    if module.params["folder"]:
-        module.params["folder"] = normalize_folder(module.params["folder"])
-
-    # Determine the current state of this particular host
-    (
-        current_state,
-        current_explicit_attributes,
-        current_folder,
-        etag,
-    ) = get_current_host_state(module, base_url, headers)
-
-    # Handle the host accordingly to above findings and desired state
-    if state == "present" and current_state == "present":
-        headers["If-Match"] = etag
-        msg_tokens = []
-
-        current_folder = normalize_folder(current_folder)
-        merged_attributes = dict_merge(current_explicit_attributes, update_attributes)
-
-        if module.params["folder"] and current_folder != module.params["folder"]:
-            move_host(module, base_url, headers)
-            msg_tokens.append("Host was moved.")
-
-        if attributes != {} and current_explicit_attributes != attributes:
-            set_host_attributes(module, attributes, base_url, headers, "attributes")
-            msg_tokens.append("Host attributes replaced.")
-
-        if update_attributes != {} and current_explicit_attributes != merged_attributes:
-            set_host_attributes(
-                module, merged_attributes, base_url, headers, "attributes"
-            )
-            msg_tokens.append("Host attributes updated.")
-
-        if remove_attributes != []:
-            msg = set_host_attributes(
-                module, remove_attributes, base_url, headers, "remove_attributes"
-            )
-            if msg == "Host attributes allready removed.":
-                exit_ok(module, msg)
-            else:
-                msg_tokens.append("Host attributes removed.")
-
-        if len(msg_tokens) >= 1:
-            exit_changed(module, " ".join(msg_tokens))
-        else:
-            exit_ok(module, "Host already present. All explicit attributes as desired.")
-
-    elif state == "present" and current_state == "absent":
-        if update_attributes != {} and attributes == {}:
-            attributes = update_attributes
-        if not module.params["folder"]:
-            module.params["folder"] = "/"
-        create_host(module, attributes, base_url, headers)
-        exit_changed(module, "Host created.")
-
-    elif state == "absent" and current_state == "absent":
-        exit_ok(module, "Host already absent.")
-
-    elif state == "absent" and current_state == "present":
-        delete_host(module, base_url, headers)
-        exit_changed(module, "Host deleted.")
-
-    else:
-        exit_failed(module, "Unknown error")
+    module.exit_json(**result_as_dict(result))
 
 
 def main():
