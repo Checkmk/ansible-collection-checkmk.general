@@ -325,7 +325,9 @@ class HostAPI(CheckmkAPI):
         ) and current_attributes != desired_attributes.get("attributes"):
             changes.append("attributes")
 
-        if desired_attributes.get("folder") and self.current.get("folder") != desired_attributes.get("folder"):
+        if desired_attributes.get("folder") and self.current.get(
+            "folder"
+        ) != desired_attributes.get("folder"):
             changes.append("folder")
 
         if desired_attributes.get("remove_attributes"):
@@ -428,6 +430,9 @@ class HostAPI(CheckmkAPI):
         if data.get("remove_attributes"):
             data.pop("remove_attributes")
 
+        if data.get("folder"):
+            data["folder"] = "/"
+
         if self.module.check_mode:
             return self._check_output("create")
 
@@ -448,7 +453,6 @@ class HostAPI(CheckmkAPI):
 
         if self.module.check_mode:
             return self._check_output("edit")
-
 
         if data.get("folder"):
             tmp = {}
