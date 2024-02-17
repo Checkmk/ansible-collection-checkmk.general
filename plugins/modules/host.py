@@ -393,7 +393,7 @@ class HostAPI(CheckmkAPI):
             content = json.loads(result.content)
 
             extensions = content["extensions"]
-            self.current["folder"] = extentions.pop("folder", "/")
+            self.current["folder"] = extensions.pop("folder", "/")
             for key, value in extensions.items():
                 if key == "attributes":
                     value.pop("meta_data")
@@ -459,9 +459,7 @@ class HostAPI(CheckmkAPI):
             method="POST",
         )
 
-        result._replace(
-            msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
-        )
+        result._replace(msg=result.msg + ". Moved to: %s" % tmp.get("target_folder"))
 
         if self.module.check_mode:
             return self._check_output("edit")
@@ -495,7 +493,7 @@ class HostAPI(CheckmkAPI):
             data["update_method"] = data.pop("update_attributes")
 
             result = self._fetch(
-                code_mapping=FolderHTTPCodes.edit,
+                code_mapping=HostHTTPCodes.edit,
                 endpoint=self._build_default_endpoint(),
                 data=data,
                 method="PUT",
@@ -554,13 +552,10 @@ def run_module():
 
     desired_state = current_host.params.get("state")
     if current_host.state == "present":
-        result = result._replace(
-            msg="Host already exists with the desired parameters."
-        )
+        result = result._replace(msg="Host already exists with the desired parameters.")
         if desired_state == "absent":
             result = current_host.delete()
         elif current_host.needs_update():
-            move
             result = current_host.edit()
     elif current_host.state == "absent":
         result = result._replace(msg="Folder already absent.")
