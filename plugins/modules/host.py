@@ -247,14 +247,11 @@ class HostAPI(CheckmkAPI):
                     self.desired["folder"] = "/"
         else:
             if self.params.get("folder"):
-                self.desired["folder"] = self._normalize_folder(self.params.get("folder"))
+                self.desired["folder"] = self._normalize_folder(
+                    self.params.get("folder")
+            )
             else:
                 self.desired["folder"] = "/"
-
-        if not self.current.get("folder") or (
-            self.params.get("folder") and tmp_folder != self.current.get("folder")
-        ):
-            self.desired["folder"] = tmp_folder
 
         self._changed_items = self._detect_changes()
 
