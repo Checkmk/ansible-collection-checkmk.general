@@ -300,7 +300,6 @@ class HostAPI(CheckmkAPI):
             self.desired["host_name"],
         )
 
-    ###
     def _detect_changes(self):
         current_attributes = self.current.get("attributes", {})
         desired_attributes = self.desired.copy()
@@ -380,7 +379,6 @@ class HostAPI(CheckmkAPI):
 
         return changes
 
-    ###
     def _get_current(self):
         result = self._fetch(
             code_mapping=HostHTTPCodes.get,
@@ -417,11 +415,9 @@ class HostAPI(CheckmkAPI):
             changed=False,
         )
 
-    ###
     def needs_update(self):
         return len(self._changed_items) > 0
 
-    ###
     def create(self):
         data = self.desired.copy()
         if data.get("attributes", {}) == {}:
@@ -446,21 +442,23 @@ class HostAPI(CheckmkAPI):
         data = self.desired.copy()
         data.pop("host_name")
 
-        tmp = {}
-        tmp["target_folder"] = data.get("folder", "/")
         self.headers["if-Match"] = self.etag
 
         if self.module.check_mode:
             return self._check_output("edit")
 
-        result = self._fetch(
-            code_mapping=HostHTTPCodes.move,
-            endpoint=self._build_move_endpoint(),
-            data=tmp,
-            method="POST",
-        )
+        if self.current.get("folder") != data.get("folder", "/"):
+            tmp = {}
+            tmp["target_folder"] = data.get("folder", "/")
 
-        result._replace(msg=result.msg + ". Moved to: %s" % tmp.get("target_folder"))
+            result = self._fetch(
+                code_mapping=HostHTTPCodes.move,
+                endpoint=self._build_move_endpoint(),
+                data=tmp,
+                method="POST",
+            )
+
+            result._replace(msg=result.msg + ". Moved to: %s" % tmp.get("target_folder"))
 
         if self.module.check_mode:
             return self._check_output("edit")
