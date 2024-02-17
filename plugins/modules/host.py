@@ -462,16 +462,17 @@ class HostAPI(CheckmkAPI):
         if data.get("folder"):
             tmp = {}
             tmp["target_folder"] = data.pop("folder")
-            result = self._fetch(
-                code_mapping=HostHTTPCodes.move,
-                endpoint=self._build_move_endpoint(),
-                data=tmp,
-                method="POST",
-            )
+            if self.current.get(folder) != tmp.get("target_folder"):
+                result = self._fetch(
+                    code_mapping=HostHTTPCodes.move,
+                    endpoint=self._build_move_endpoint(),
+                    data=tmp,
+                    method="POST",
+                )
 
-            result._replace(
-                msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
-            )
+                result._replace(
+                    msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
+                )
 
         if self.module.check_mode:
             return self._check_output("edit")
