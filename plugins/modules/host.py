@@ -461,6 +461,8 @@ class HostAPI(CheckmkAPI):
             result._replace(
                 msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
             )
+        else:
+            data.pop("folder")
 
         if self.module.check_mode:
             return self._check_output("edit")
