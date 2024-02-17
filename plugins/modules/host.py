@@ -240,7 +240,6 @@ class HostAPI(CheckmkAPI):
         if not tmp_folder:
             tmp_folder = self.current.get("folder", "/")
         self.desired["folder"] = tmp_folder
-        module.fail_json(json.dumps(self.desired))
         self._changed_items = self._detect_changes()
 
         self._verify_compatibility()
