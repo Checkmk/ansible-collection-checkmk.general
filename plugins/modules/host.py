@@ -204,7 +204,10 @@ class HostHTTPCodes:
 
     create = {200: (True, False, "Host created")}
     edit = {200: (True, False, "Host modified")}
-    move = {200: (True, False, "Host moved")}
+    move = {
+        200: (True, False, "Host moved"),
+        400: (False, False, "The host is already part of the specified target folder"),
+    }
     delete = {204: (True, False, "Host deleted")}
 
 
