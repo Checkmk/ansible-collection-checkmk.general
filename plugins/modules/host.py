@@ -237,12 +237,23 @@ class HostAPI(CheckmkAPI):
         # Get the current host from the API and set some parameters
         self._get_current()
 
-        if self.params.get("folder"):
-            tmp_folder = self._normalize_folder(self.params.get("folder"))
+        if self.current.get("folder"):
+            if self.params.get("folder"):
+                tmp_folder = self._normalize_folder(self.params.get("folder"))
+                if tmp_folder != self.current.get("folder"):
+                    self.desired["folder"] = tmp_folder
+            else:
+                if self.current.get("folder") != "/":
+                    self.desired["folder"] = "/"
         else:
-            tmp_folder = "/"
+            if self.params.get("folder"):
+                self.desired["folder"] = self._normalize_folder(self.params.get("folder"))
+            else:
+                self.desired["folder"] = "/"
 
-        if not self.current.get("folder") or (self.params.get("folder") and tmp_folder != self.current.get("folder")):
+        if not self.current.get("folder") or (
+            self.params.get("folder") and tmp_folder != self.current.get("folder")
+        ):
             self.desired["folder"] = tmp_folder
 
         self._changed_items = self._detect_changes()
@@ -328,9 +339,11 @@ class HostAPI(CheckmkAPI):
         ) and current_attributes != desired_attributes.get("attributes"):
             changes.append("attributes")
 
-        if desired_attributes.get("folder") and self.current.get("folder") and self.current.get(
-            "folder"
-        ) != desired_attributes.get("folder"):
+        if (
+            desired_attributes.get("folder")
+            and self.current.get("folder")
+            and self.current.get("folder") != desired_attributes.get("folder")
+        ):
             changes.append("folder")
 
         if desired_attributes.get("remove_attributes"):
@@ -460,17 +473,17 @@ class HostAPI(CheckmkAPI):
         if data.get("folder"):
             tmp = {}
             tmp["target_folder"] = data.pop("folder")
-            if self.current.get("folder") != tmp.get("target_folder"):
-                result = self._fetch(
-                    code_mapping=HostHTTPCodes.move,
-                    endpoint=self._build_move_endpoint(),
-                    data=tmp,
-                    method="POST",
-                )
 
-                result._replace(
-                    msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
-                )
+            result = self._fetch(
+                code_mapping=HostHTTPCodes.move,
+                endpoint=self._build_move_endpoint(),
+                data=tmp,
+                method="POST",
+            )
+
+            result._replace(
+                msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
+            )
 
         if self.module.check_mode:
             return self._check_output("edit")
