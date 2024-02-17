@@ -458,7 +458,9 @@ class HostAPI(CheckmkAPI):
                 method="POST",
             )
 
-            result._replace(msg=result.msg + ". Moved to: %s" % tmp.get("target_folder"))
+            result._replace(
+                msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
+            )
 
         if self.module.check_mode:
             return self._check_output("edit")
@@ -489,8 +491,6 @@ class HostAPI(CheckmkAPI):
                 method="PUT",
             )
         else:
-            data["update_method"] = data.pop("update_attributes")
-
             result = self._fetch(
                 code_mapping=HostHTTPCodes.edit,
                 endpoint=self._build_default_endpoint(),
