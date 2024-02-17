@@ -237,15 +237,15 @@ class HostAPI(CheckmkAPI):
         # Get the current host from the API and set some parameters
         self._get_current()
 
+        if self.params.get("folder"):
+            tmp_folder = self._normalize_folder(self.params.get("folder"))
+        else:
+            tmp_folder = "/"
+
         if not self.current.get("folder"):
-            if self.params.get("folder"):
-                self.desired["folder"] = self.params.get("folder")
-            else:
-                self.desired["folder"] = "/"
-        elif self.params.get("folder") and self.params.get(
-            "folder"
-        ) != self.current.get("folder"):
-            self.desired["folder"] = self.params.get("folder")
+            self.desired["folder"] = tmp_folder
+        elif self.params.get("folder") and tmp_folder != self.current.get("folder"):
+            self.desired["folder"] = tmp_folder
 
         self._changed_items = self._detect_changes()
 
@@ -284,7 +284,7 @@ class HostAPI(CheckmkAPI):
                 self.module.warn(msg)
 
     def _normalize_folder(self, folder):
-        if folder in ["", " ", "/", "//"]:
+        if folder and folder in ["", " ", "/", "//"]:
             return "/"
 
         if not folder.startswith("/"):
