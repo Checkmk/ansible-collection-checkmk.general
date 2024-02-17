@@ -184,7 +184,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.version import (
 )
 
 HOST = (
-    "customer",
     "attributes",
     "update_attributes",
     "remove_attributes",
@@ -237,9 +236,11 @@ class HostAPI(CheckmkAPI):
 
         # Get the current host from the API and set some parameters
         self._get_current()
-        self.desired["folder"] = self.params.get(
-            "folder", self.current.get("folder", "/")
-        )
+        tmp_folder = self.params.get("folder")
+        if not tmp_folder:
+            tmp_folder = self.current.get("folder", "/")
+        self.desired["folder"] = tmp_folder
+        module.fail_json(json.dumps(self.desired))
         self._changed_items = self._detect_changes()
 
         self._verify_compatibility()
