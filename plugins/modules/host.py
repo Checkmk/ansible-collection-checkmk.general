@@ -237,7 +237,9 @@ class HostAPI(CheckmkAPI):
 
         # Get the current host from the API and set some parameters
         self._get_current()
-        self.desired["folder"] = self.params.get("folder", self.desired.get("folder", "/"))
+        self.desired["folder"] = self.params.get(
+            "folder", self.desired.get("folder", "/")
+        )
         self._changed_items = self._detect_changes()
 
         self._verify_compatibility()
