@@ -462,7 +462,7 @@ class HostAPI(CheckmkAPI):
         if data.get("folder"):
             tmp = {}
             tmp["target_folder"] = data.pop("folder")
-            if self.current.get(folder) != tmp.get("target_folder"):
+            if self.current.get("folder") != tmp.get("target_folder"):
                 result = self._fetch(
                     code_mapping=HostHTTPCodes.move,
                     endpoint=self._build_move_endpoint(),
