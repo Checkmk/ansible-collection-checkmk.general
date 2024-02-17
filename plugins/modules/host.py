@@ -393,7 +393,7 @@ class HostAPI(CheckmkAPI):
             content = json.loads(result.content)
 
             extensions = content["extensions"]
-            self.current["folder"] = extensions.pop("folder", "/")
+            self.current["folder"] = extensions.get("folder", "/")
             for key, value in extensions.items():
                 if key == "attributes":
                     value.pop("meta_data")
@@ -446,7 +446,7 @@ class HostAPI(CheckmkAPI):
         data.pop("host_name")
 
         tmp = {}
-        tmp["target_folder"] = data.pop("folder", "/")
+        tmp["target_folder"] = data.get("folder", "/")
         self.headers["if-Match"] = self.etag
 
         if self.module.check_mode:
