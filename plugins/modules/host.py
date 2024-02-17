@@ -223,6 +223,8 @@ class HostAPI(CheckmkAPI):
 
         self.desired["host_name"] = self.params.get("name")
 
+        tmp_folder = self.params.get("folder", "/")
+
         for key in HOST:
             if self.params.get(key):
                 self.desired[key] = self.params.get(key)
@@ -236,10 +238,10 @@ class HostAPI(CheckmkAPI):
 
         # Get the current host from the API and set some parameters
         self._get_current()
-        tmp_folder = self.params.get("folder")
-        if not tmp_folder:
-            tmp_folder = self.current.get("folder", "/")
-        self.desired["folder"] = tmp_folder
+
+        if tmp_folder != self.current.get("folder", "/")
+            self.desired["folder"] = tmp_folder
+
         self._changed_items = self._detect_changes()
 
         self._verify_compatibility()
@@ -323,7 +325,7 @@ class HostAPI(CheckmkAPI):
         ) and current_attributes != desired_attributes.get("attributes"):
             changes.append("attributes")
 
-        if self.current.get("folder") != desired_attributes.get("folder"):
+        if desired_attributes.get("folder") and self.current.get("folder") != desired_attributes.get("folder"):
             changes.append("folder")
 
         if desired_attributes.get("remove_attributes"):
@@ -447,10 +449,10 @@ class HostAPI(CheckmkAPI):
         if self.module.check_mode:
             return self._check_output("edit")
 
-        if self.current.get("folder") != data.get("folder", "/"):
-            tmp = {}
-            tmp["target_folder"] = data.pop("folder", "/")
 
+        if data.get("folder"):
+            tmp = {}
+            tmp["target_folder"] = data.pop("folder")
             result = self._fetch(
                 code_mapping=HostHTTPCodes.move,
                 endpoint=self._build_move_endpoint(),
@@ -461,8 +463,6 @@ class HostAPI(CheckmkAPI):
             result._replace(
                 msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
             )
-        else:
-            data.pop("folder")
 
         if self.module.check_mode:
             return self._check_output("edit")
