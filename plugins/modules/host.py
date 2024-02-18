@@ -412,7 +412,6 @@ class HostAPI(CheckmkAPI):
             content = json.loads(result.content)
 
             extensions = content["extensions"]
-            self.current["folder"] = extensions.pop("folder", "/")
             for key, value in extensions.items():
                 if key == "attributes":
                     value.pop("meta_data")
