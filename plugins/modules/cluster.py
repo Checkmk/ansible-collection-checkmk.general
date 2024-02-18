@@ -463,7 +463,7 @@ def run_module():
             type="str",
             required=True,
         ),
-        nodes=dict(type=list, required=True, elements=str)
+        nodes=dict(type=list, required=True, elements="str")
         attributes=dict(type="raw", required=False),
         folder=dict(type="str", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
