@@ -204,10 +204,7 @@ class HostHTTPCodes:
 
     create = {200: (True, False, "Host created")}
     edit = {200: (True, False, "Host modified")}
-    move = {
-        200: (True, False, "Host moved"),
-        400: (False, False, "The host is already part of the specified target folder"),
-    }
+    move = {200: (True, False, "Host moved")}
     delete = {204: (True, False, "Host deleted")}
 
 
@@ -246,7 +243,7 @@ class HostAPI(CheckmkAPI):
                 if tmp_folder != self._normalize_folder(self.current.get("folder")):
                     self.desired["folder"] = tmp_folder
             else:
-                if self.current.get("folder") != "/":
+                if self._normalize_folder(self.current.get("folder")) != "/":
                     self.desired["folder"] = "/"
         else:
             if self.params.get("folder"):
