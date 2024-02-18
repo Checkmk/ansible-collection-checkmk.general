@@ -464,19 +464,20 @@ class HostAPI(CheckmkAPI):
         if self.module.check_mode:
             return self._check_output("edit")
 
+        result_move = {}
         if data.get("folder"):
             tmp = {}
             tmp["target_folder"] = data.pop("folder")
 
-            result = self._fetch(
+            result_move = self._fetch(
                 code_mapping=HostHTTPCodes.move,
                 endpoint=self._build_move_endpoint(),
                 data=tmp,
                 method="POST",
             )
 
-            result._replace(
-                msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
+            result_move._replace(
+                msg=result_move.msg + ". Moved to: %s" % tmp.get("target_folder")
             )
 
         result = self._fetch(
@@ -487,7 +488,7 @@ class HostAPI(CheckmkAPI):
         )
 
         return result._replace(
-            msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items)
+            msg=result_move.get("msg", "") + result.msg + ". Changed: %s" % ", ".join(self._changed_items)
         )
 
     def delete(self):
