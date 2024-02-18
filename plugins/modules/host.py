@@ -70,6 +70,7 @@ author:
     - Robin Gierse (@robin-checkmk)
     - Lars Getwan (@lgetwan)
     - Oliver Gaida (@ogaida)
+    - Michael Sekania (@msekania)
 """
 
 EXAMPLES = r"""
