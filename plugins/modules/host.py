@@ -240,10 +240,10 @@ class HostAPI(CheckmkAPI):
         if self.current.get("folder"):
             if self.params.get("folder"):
                 tmp_folder = self._normalize_folder(self.params.get("folder"))
-                if tmp_folder != self._normalize_folder(self.current.get("folder")):
+                if tmp_folder != self.current.get("folder"):
                     self.desired["folder"] = tmp_folder
             else:
-                if self._normalize_folder(self.current.get("folder")) != "/":
+                if self.current.get("folder") != "/":
                     self.desired["folder"] = "/"
         else:
             if self.params.get("folder"):
@@ -415,6 +415,7 @@ class HostAPI(CheckmkAPI):
                     if "network_scan_results" in value:
                         value.pop("network_scan_results")
                 self.current[key] = value
+            self.current["folder"] = self._normalize_folder(self.current.get("folder", "/"))
 
             self.etag = result.etag
 
