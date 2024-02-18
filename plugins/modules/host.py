@@ -476,7 +476,7 @@ class HostAPI(CheckmkAPI):
                 method="POST",
             )
 
-            result_move._replace(
+            result_move = result_move._replace(
                 msg=result_move.msg + ". Moved to: %s" % tmp.get("target_folder")
             )
 
@@ -488,7 +488,7 @@ class HostAPI(CheckmkAPI):
         )
 
         return result._replace(
-            msg=(result_move.msg if result_move != {} else "")
+            msg=((result_move.msg + ". ") if result_move != {} else "")
             + result.msg
             + ". Changed: %s" % ", ".join(self._changed_items)
         )
