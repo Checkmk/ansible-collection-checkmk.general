@@ -310,6 +310,7 @@ class HostAPI(CheckmkAPI):
 
     def _detect_changes(self):
         current_attributes = self.current.get("attributes", {})
+        current_folder = self.current.get("folder")
         desired_attributes = self.desired.copy()
         changes = []
 
@@ -335,8 +336,8 @@ class HostAPI(CheckmkAPI):
 
         if (
             desired_attributes.get("folder")
-            and self.current.get("folder")
-            and self.current.get("folder") != desired_attributes.get("folder")
+            and current_folder
+            and current_folder != desired_attributes.get("folder")
         ):
             changes.append("folder")
 
