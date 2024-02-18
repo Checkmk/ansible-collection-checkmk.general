@@ -439,7 +439,7 @@ class HostAPI(CheckmkAPI):
         if data.get("remove_attributes"):
             data.pop("remove_attributes")
 
-        if not data["folder"]:
+        if not data.get("folder"):
             data["folder"] = self._normalize_folder("/")
 
         if self.module.check_mode:
