@@ -477,7 +477,7 @@ class HostAPI(CheckmkAPI):
             )
 
             result_move = result_move._replace(
-                msg=result_move.msg + ". Moved to: %s" % tmp.get("target_folder")
+                msg=result_move.msg + ". Moved from % to: %s" % (self.current.get("folder"), tmp.get("target_folder"))
             )
 
         result = self._fetch(
