@@ -424,7 +424,9 @@ class HostAPI(CheckmkAPI):
     def _check_output(self, mode):
         return RESULT(
             http_code=0,
-            msg="Running in check mode. Would have done an %s" % mode,
+            msg="Running in check mode. Would have done an %s. Changed: %s" % (
+                mode, ", ".join(self._changed_items)
+            ),
             content="",
             etag="",
             failed=False,
@@ -441,9 +443,6 @@ class HostAPI(CheckmkAPI):
 
         if data.get("remove_attributes"):
             data.pop("remove_attributes")
-
-        if data.get("folder"):
-            data["folder"] = "/"
 
         if self.module.check_mode:
             return self._check_output("create")
@@ -463,6 +462,12 @@ class HostAPI(CheckmkAPI):
 
         self.headers["if-Match"] = self.etag
 
+        if data.get("update_attributes") == {}:
+            data.pop("update_attributes")
+
+        if data.get("remove_attributes") == []:
+            data.pop("remove_attributes")
+
         if self.module.check_mode:
             return self._check_output("edit")
 
@@ -480,15 +485,6 @@ class HostAPI(CheckmkAPI):
             result._replace(
                 msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
             )
-
-        if self.module.check_mode:
-            return self._check_output("edit")
-
-        if data.get("update_attributes") == {}:
-            data.pop("update_attributes")
-
-        if data.get("remove_attributes") == []:
-            data.pop("remove_attributes")
 
         if data.get("update_attributes") and data.get("remove_attributes"):
             tmp = data.copy()
