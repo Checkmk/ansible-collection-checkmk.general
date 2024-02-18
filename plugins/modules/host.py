@@ -424,9 +424,8 @@ class HostAPI(CheckmkAPI):
     def _check_output(self, mode):
         return RESULT(
             http_code=0,
-            msg="Running in check mode. Would have done an %s. Changed: %s" % (
-                mode, ", ".join(self._changed_items)
-            ),
+            msg="Running in check mode. Would have done an %s. Changed: %s"
+            % (mode, ", ".join(self._changed_items)),
             content="",
             etag="",
             failed=False,
@@ -462,12 +461,6 @@ class HostAPI(CheckmkAPI):
 
         self.headers["if-Match"] = self.etag
 
-        if data.get("update_attributes") == {}:
-            data.pop("update_attributes")
-
-        if data.get("remove_attributes") == []:
-            data.pop("remove_attributes")
-
         if self.module.check_mode:
             return self._check_output("edit")
 
@@ -486,32 +479,12 @@ class HostAPI(CheckmkAPI):
                 msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
             )
 
-        if data.get("update_attributes") and data.get("remove_attributes"):
-            tmp = data.copy()
-            tmp.pop("remove_attributes")
-            self.module.fail_json(json.dumps(tmp))
-            result = self._fetch(
-                code_mapping=HostHTTPCodes.edit,
-                endpoint=self._build_default_endpoint(),
-                data=tmp,
-                method="PUT",
-            )
-
-            tmp = data.copy()
-            tmp.pop("update_attributes")
-            result = self._fetch(
-                code_mapping=HostHTTPCodes.edit,
-                endpoint=self._build_default_endpoint(),
-                data=tmp,
-                method="PUT",
-            )
-        else:
-            result = self._fetch(
-                code_mapping=HostHTTPCodes.edit,
-                endpoint=self._build_default_endpoint(),
-                data=data,
-                method="PUT",
-            )
+        result = self._fetch(
+            code_mapping=HostHTTPCodes.edit,
+            endpoint=self._build_default_endpoint(),
+            data=data,
+            method="PUT",
+        )
 
         return result._replace(
             msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items)
