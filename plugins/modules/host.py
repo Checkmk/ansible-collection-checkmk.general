@@ -290,7 +290,7 @@ class HostAPI(CheckmkAPI):
                 self.module.warn(msg)
 
     def _normalize_folder(self, folder):
-        if folder and folder in ["", " ", "/", "//"]:
+        if folder and folder in ["", " ", "/", "//", "~"]:
             return "/"
 
         if not folder.startswith("/"):
