@@ -399,7 +399,7 @@ class HostAPI(CheckmkAPI):
     def _get_current(self):
         result = self._fetch(
             code_mapping=HostHTTPCodes.get,
-            endpoint=self._build_default_endpoint(),
+            endpoint=self._build_default_endpoint() + "?effective_attributes=true",
             method="GET",
         )
 
