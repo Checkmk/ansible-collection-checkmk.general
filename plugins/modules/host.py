@@ -488,7 +488,9 @@ class HostAPI(CheckmkAPI):
         )
 
         return result._replace(
-            msg=result_move.get("msg", "") + result.msg + ". Changed: %s" % ", ".join(self._changed_items)
+            msg=(result_move.msg if result_move != {} else "")
+            + result.msg
+            + ". Changed: %s" % ", ".join(self._changed_items)
         )
 
     def delete(self):
