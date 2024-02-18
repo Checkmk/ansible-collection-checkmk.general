@@ -334,7 +334,9 @@ class HostAPI(CheckmkAPI):
         if desired_attributes.get(
             "attributes"
         ) and current_attributes != desired_attributes.get("attributes"):
-            changes.append("attributes: %s" % json.dumps(desired_attributes.get("attributes")))
+            changes.append(
+                "attributes: %s" % json.dumps(desired_attributes.get("attributes"))
+            )
 
         if (
             desired_attributes.get("folder")
