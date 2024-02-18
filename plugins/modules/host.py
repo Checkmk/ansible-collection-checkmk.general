@@ -551,7 +551,7 @@ def run_module():
         elif current_host.needs_update():
             result = current_host.edit()
     elif current_host.state == "absent":
-        result = result._replace(msg="Folder already absent.")
+        result = result._replace(msg="Host already absent.")
         if desired_state in ("present"):
             result = current_host.create()
 
