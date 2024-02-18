@@ -173,13 +173,10 @@ from ansible_collections.checkmk.general.plugins.module_utils.version import (
 
 CLUSTER = (
     "attributes",
-#    "update_attributes",
-#    "remove_attributes",
 )
 
 CLUSTER_PARENTS_PARSE = (
     "attributes",
-#    "update_attributes",
 )
 
 
@@ -297,9 +294,9 @@ class ClusterHostAPI(CheckmkAPI):
         desired_attributes = self.desired.copy()
         changes = []
 
-        if desired_attributes.get(
-            "attributes"
-        ) and current_attributes.get("attributes", {}) != desired_attributes.get("attributes"):
+        if desired_attributes.get("attributes") and current_attributes.get(
+            "attributes", {}
+        ) != desired_attributes.get("attributes"):
             changes.append(
                 "attributes: %s" % json.dumps(desired_attributes.get("attributes"))
             )
@@ -310,7 +307,6 @@ class ClusterHostAPI(CheckmkAPI):
             and current_attributes.get("folder") != desired_attributes.get("folder")
         ):
             changes.append("folder")
-
 
         if desired_attributes.get("nodes") != current_attributes.get("nodes"):
             changes.append("nodes")
@@ -421,7 +417,8 @@ class ClusterHostAPI(CheckmkAPI):
             )
 
             result_nodes = result_nodes._replace(
-                msg=result_nodes.msg + ". Nodes modified to: %s" % tmp.get("target_folder")
+                msg=result_nodes.msg
+                + ". Nodes modified to: %s" % tmp.get("target_folder")
             )
 
         result = self._fetch(
@@ -485,7 +482,9 @@ def run_module():
 
     desired_state = current_cluster.params.get("state")
     if current_cluster.state == "present":
-        result = result._replace(msg="Cluster host already exists with the desired parameters.")
+        result = result._replace(
+            msg="Cluster host already exists with the desired parameters."
+        )
         if desired_state == "absent":
             result = current_cluster.delete()
         elif current_cluster.needs_update():
