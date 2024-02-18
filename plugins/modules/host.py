@@ -219,10 +219,8 @@ class HostAPI(CheckmkAPI):
 
         self.extended_functionality = self.params.get("extended_functionality", True)
 
-        if self.params.get("folder"):
-            tmp_folder = self._normalize_folder(self.params.get("folder"))
-        else:
-            tmp_folder = self._normalize_folder("/")
+        if self.params["folder"]:
+            self.params["folder"] = self._normalize_folder(self.params.get("folder"))
 
         self.desired = {}
 
@@ -243,10 +241,8 @@ class HostAPI(CheckmkAPI):
         self._get_current()
 
         if self.state == "present":
-            if tmp_folder != self.current.get("folder"):
+            if self.params["folder"] and self.current["folder"] != self.params["folder"]
                 self.desired["folder"] = tmp_folder
-        else:
-            self.desired["folder"] = tmp_folder
 
         self._changed_items = self._detect_changes()
 
@@ -442,6 +438,9 @@ class HostAPI(CheckmkAPI):
 
         if data.get("remove_attributes"):
             data.pop("remove_attributes")
+
+        if not data["folder"]:
+            data["folder"] = self._normalize_folder("/")
 
         if self.module.check_mode:
             return self._check_output("create")
