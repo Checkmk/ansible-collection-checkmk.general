@@ -334,7 +334,7 @@ class HostAPI(CheckmkAPI):
         if desired_attributes.get(
             "attributes"
         ) and current_attributes != desired_attributes.get("attributes"):
-            changes.append("attributes")
+            changes.append("attributes: %s" % json.dumps(desired_attributes.get("attributes")))
 
         if (
             desired_attributes.get("folder")
@@ -415,7 +415,9 @@ class HostAPI(CheckmkAPI):
                     if "network_scan_results" in value:
                         value.pop("network_scan_results")
                 self.current[key] = value
-            self.current["folder"] = self._normalize_folder(self.current.get("folder", "/"))
+            self.current["folder"] = self._normalize_folder(
+                self.current.get("folder", "/")
+            )
 
             self.etag = result.etag
 
