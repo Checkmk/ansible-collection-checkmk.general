@@ -219,7 +219,7 @@ class HostAPI(CheckmkAPI):
 
         self.extended_functionality = self.params.get("extended_functionality", True)
 
-        if self.params["folder"]:
+        if self.params.get("folder"):
             self.params["folder"] = self._normalize_folder(self.params.get("folder"))
 
         self.desired = {}
@@ -241,7 +241,7 @@ class HostAPI(CheckmkAPI):
         self._get_current()
 
         if self.state == "present":
-            if self.params["folder"] and self.current["folder"] != self.params["folder"]:
+            if self.params.get("folder") and self.current["folder"] != self.params["folder"]:
                 self.desired["folder"] = self.params["folder"]
 
         self._changed_items = self._detect_changes()
@@ -281,7 +281,7 @@ class HostAPI(CheckmkAPI):
                 self.module.warn(msg)
 
     def _normalize_folder(self, folder):
-        if folder and folder in ["", " ", "/", "//", "~"]:
+        if folder in ["", " ", "/", "//", "~"]:
             return "/"
 
         if not folder.startswith("/"):
@@ -476,8 +476,7 @@ class HostAPI(CheckmkAPI):
             )
 
             result_move = result_move._replace(
-                msg=result_move.msg
-                + ". Moved from %s to: %s" % (self.current.get("folder"), tmp.get("target_folder"))
+                msg=result_move.msg + ". Moved from to: %s" % tmp.get("target_folder")
             )
 
         result = self._fetch(
