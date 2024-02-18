@@ -241,7 +241,7 @@ class HostAPI(CheckmkAPI):
         self._get_current()
 
         if self.state == "present":
-            if self.params["folder"] and self.current["folder"] != self.params["folder"]
+            if self.params["folder"] and self.current["folder"] != self.params["folder"]:
                 self.desired["folder"] = tmp_folder
 
         self._changed_items = self._detect_changes()
