@@ -242,7 +242,7 @@ class HostAPI(CheckmkAPI):
         # Get the current host from the API and set some parameters
         self._get_current()
 
-        if self.current.state == "present":
+        if self.state == "present":
             if tmp_folder != self.current.get("folder"):
                 self.desired["folder"] = tmp_folder
         else:
