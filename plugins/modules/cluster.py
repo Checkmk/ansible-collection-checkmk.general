@@ -312,7 +312,7 @@ class ClusterHostAPI(CheckmkAPI):
             changes.append("folder")
 
 
-        if desired_attributes.get("nodes") != current_attributes.get("nodes")
+        if desired_attributes.get("nodes") != current_attributes.get("nodes"):
             changes.append("nodes")
 
         return changes
