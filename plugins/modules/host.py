@@ -219,6 +219,11 @@ class HostAPI(CheckmkAPI):
 
         self.extended_functionality = self.params.get("extended_functionality", True)
 
+        if self.params.get("folder"):
+            tmp_folder = self._normalize_folder(self.params.get("folder"))
+        else:
+            tmp_folder = self._normalize_folder("/")
+
         self.desired = {}
 
         self.desired["host_name"] = self.params.get("name")
@@ -237,12 +242,7 @@ class HostAPI(CheckmkAPI):
         # Get the current host from the API and set some parameters
         self._get_current()
 
-        if self.params.get("folder"):
-            tmp_folder = self._normalize_folder(self.params.get("folder"))
-        else:
-            tmp_folder = self._normalize_folder("/")
-
-        if current_host.state == "present":
+        if self.current.state == "present":
             if tmp_folder != self.current.get("folder"):
                 self.desired["folder"] = tmp_folder
         else:
