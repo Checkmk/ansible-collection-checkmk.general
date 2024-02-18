@@ -171,13 +171,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )
 
-CLUSTER = (
-    "attributes",
-)
+CLUSTER = ("attributes",)
 
-CLUSTER_PARENTS_PARSE = (
-    "attributes",
-)
+CLUSTER_PARENTS_PARSE = ("attributes",)
 
 
 class ClusterHostHTTPCodes:
