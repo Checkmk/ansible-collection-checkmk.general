@@ -217,6 +217,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
+    nodes: "{{ item.nodes }}"
     remove_attributes:
       - alias
     state: "present"
@@ -231,6 +232,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
+    nodes: "{{ item.nodes }}"
     remove_attributes:
       - alias
     state: "present"
@@ -245,6 +247,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
+    nodes: "{{ item.nodes }}"
     folder: "{{ item.folder }}"
     state: "absent"
   delegate_to: localhost
