@@ -354,8 +354,8 @@ class ClusterHostAPI(CheckmkAPI):
         desired_nodes = desired_attributes.get("nodes")
 
         if (
-            len([el for el in current_nodes if el not in desired_nodes]) > 0
-            or len([el for el in desired_nodes if el not in current_nodes]) > 0
+            current_nodes and len([el for el in current_nodes if el not in desired_nodes]) > 0
+            or desired_nodes and len([el for el in desired_nodes if el not in current_nodes]) > 0
         ):
             changes.append("nodes")
         else:
