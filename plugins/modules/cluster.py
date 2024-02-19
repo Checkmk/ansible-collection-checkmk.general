@@ -318,7 +318,7 @@ class ClusterHostAPI(CheckmkAPI):
         return ClusterHostEndpoints.modify % self.desired["host_name"]
 
     def _detect_changes(self):
-        current_attributes = self.current.get("attributes")
+        current_attributes = self.current.get("attributes", {})
         current_folder = self.current.get("folder")
         current_nodes = self.current.get("cluster_nodes", [])
         desired_attributes = self.desired.copy()
