@@ -42,11 +42,29 @@ options:
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
         required: false
+    update_attributes:
+        description:
+            - The update_attributes of your host as described in the API documentation.
+              This will only update the given attributes.
+              If you are using custom tags, make sure to prepend the attribute with C(tag_).
+        type: raw
+        default: {}
+    remove_attributes:
+        description:
+            - The remove_attributes of your host as described in the API documentation.
+              This will only remove the given attributes.
+              If you are using custom tags, make sure to prepend the attribute with C(tag_).
+        type: raw
+        default: []
     state:
         description: The state of your host.
         type: str
         default: present
         choices: [present, absent]
+    extended_functionality:
+        description: Allow extended functionality instead of the expected REST API behavior.
+        type: bool
+        default: true
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -55,8 +73,8 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a host.
-- name: "Create a cluste host."
+# Create a cluster host.
+- name: "Create a cluster host."
   checkmk.general.cluster:
     server_url: "http://my_server/"
     site: "my_site"
@@ -112,8 +130,8 @@ EXAMPLES = r"""
     state: "present"
 
 # Update only specified attributes
-- name: "Update only specified attributes, Use host module instead!"
-  checkmk.general.host:
+- name: "Update only specified attributes."
+  checkmk.general.cluster:
     server_url: "http://my_server/"
     site: "my_site"
     automation_user: "my_user"
@@ -124,8 +142,8 @@ EXAMPLES = r"""
     state: "present"
 
 # Remove specified attributes
-- name: "Remove specified attributes, Use host module instead!"
-  checkmk.general.host:
+- name: "Remove specified attributes."
+  checkmk.general.cluster:
     server_url: "http://my_server/"
     site: "my_site"
     automation_user: "my_user"
@@ -136,8 +154,8 @@ EXAMPLES = r"""
     state: "present"
 
 # Add custom tags to a host (note the leading 'tag_')
-- name: "Remove specified attributes, Use host module instead!"
-  checkmk.general.host:
+- name: "Remove specified attributes."
+  checkmk.general.cluster:
     server_url: "http://my_server/"
     site: "my_site"
     automation_user: "my_user"
@@ -171,9 +189,16 @@ from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )
 
-CLUSTER = ("attributes",)
+CLUSTER = (
+    "attributes",
+    "update_attributes",
+    "remove_attributes",
+)
 
-CLUSTER_PARENTS_PARSE = ("attributes",)
+CLUSTER_PARENTS_PARSE = (
+    "attributes",
+    "update_attributes",
+)
 
 
 class ClusterHostHTTPCodes:
@@ -188,9 +213,7 @@ class ClusterHostHTTPCodes:
         200: (True, False, "Cluster host edited"),
         412: (True, False, "eTag changed, because cluster host nodes were modified"),
     }
-    modify = {
-        200: (True, False, "Cluster host nodes modified"),
-    }
+    modify = {200: (True, False, "Cluster host nodes modified"),}
     delete = {204: (True, False, "Cluster host deleted")}
 
 
@@ -203,6 +226,8 @@ class ClusterHostEndpoints:
 class ClusterHostAPI(CheckmkAPI):
     def __init__(self, module):
         super().__init__(module)
+
+        self.extended_functionality = self.params.get("extended_functionality", True)
 
         if self.params.get("folder"):
             self.params["folder"] = self._normalize_folder(self.params.get("folder"))
@@ -291,26 +316,96 @@ class ClusterHostAPI(CheckmkAPI):
         return ClusterHostEndpoints.modify % self.desired["host_name"]
 
     def _detect_changes(self):
-        current_attributes = self.current.copy()
+        current_attributes = self.current.get("attributes")
+        current_folder = self.current.get("folder")
+        current_nodes = self.current.get("cluster_nodes")
         desired_attributes = self.desired.copy()
         changes = []
 
-        if desired_attributes.get("attributes") and current_attributes.get(
-            "attributes", {}
-        ) != desired_attributes.get("attributes"):
+        if desired_attributes.get("update_attributes"):
+            merged_attributes = dict_merge(
+                current_attributes, desired_attributes.get("update_attributes")
+            )
+
+            if merged_attributes != current_attributes:
+                try:
+                    (c_m, m_c) = recursive_diff(current_attributes, merged_attributes)
+                    changes.append("update attributes: %s" % json.dumps(m_c))
+                except Exception as e:
+                    changes.append("update attributes")
+                desired_attributes["update_attributes"] = merged_attributes
+
+        if desired_attributes.get(
+            "attributes"
+        ) and current_attributes != desired_attributes.get("attributes"):
             changes.append(
                 "attributes: %s" % json.dumps(desired_attributes.get("attributes"))
             )
 
         if (
             desired_attributes.get("folder")
-            and current_attributes.get("folder")
-            and current_attributes.get("folder") != desired_attributes.get("folder")
+            and current_folder
+            and current_folder != desired_attributes.get("folder")
         ):
             changes.append("folder")
 
-        if desired_attributes.get("nodes") != current_attributes.get("cluster_nodes"):
+        desired_nodes = desired_attributes.get("nodes")
+
+        if len([el for el in current_nodes if el not in desired_nodes]) > 0 or len([el for el in desired_nodes if el not in current_nodes]) > 0:
             changes.append("nodes")
+        else:
+            desired_attributes.pop("nodes")
+
+        if desired_attributes.get("remove_attributes"):
+            tmp_remove_attributes = desired_attributes.get("remove_attributes")
+
+            if isinstance(tmp_remove_attributes, list):
+                removes_which = [
+                    a for a in tmp_remove_attributes if current_attributes.get(a)
+                ]
+                if len(removes_which) > 0:
+                    changes.append("remove attributes: %s" % " ".join(removes_which))
+            elif isinstance(tmp_remove_attributes, dict):
+                if not self.extended_functionality:
+                    self.module.fail_json(
+                        msg="ERROR: The parameter remove_attributes of dict type is not supported for the paramter extended_functionality: false!",
+                    )
+
+                (tmp_remove, tmp_rest) = (current_attributes, {})
+                if current_attributes != tmp_remove_attributes:
+                    try:
+                        (c_m, m_c) = recursive_diff(
+                            current_attributes, tmp_remove_attributes
+                        )
+
+                        if c_m:
+                            # if nothing to remove
+                            if current_attributes == c_m:
+                                (tmp_remove, tmp_rest) = ({}, current_attributes)
+                            else:
+                                (c_c_m, c_m_c) = recursive_diff(current_attributes, c_m)
+                                (tmp_remove, tmp_rest) = (c_c_m, c_m)
+                    except Exception as e:
+                        self.module.fail_json(
+                            msg="ERROR: incompatible parameter: remove_attributes!",
+                            exception=e,
+                        )
+
+                desired_attributes.pop("remove_attributes")
+                if tmp_remove != {}:
+                    changes.append("remove attributes: %s" % json.dumps(tmp_remove))
+                    if tmp_rest != {}:
+                        desired_attributes["update_attributes"] = tmp_rest
+            else:
+                self.module.fail_json(
+                    msg="ERROR: The parameter remove_attributes can be a list of strings or a dictionary!",
+                    exception=e,
+                )
+
+        if self.extended_functionality:
+            self.desired = desired_attributes.copy()
+
+        # self.module.fail_json(json.dumps(desired_attributes))
 
         return changes
 
@@ -417,8 +512,13 @@ class ClusterHostAPI(CheckmkAPI):
             )
 
             result_nodes = result_nodes._replace(
-                msg=result_nodes.msg + ". Nodes modified to: %s" % tmp.get("nodes")
+                msg=result_nodes.msg
+                + ". Nodes modified to: %s" % tmp.get("nodes")
             )
+
+        if not data.get("update_attributes"):
+            data["update_attributes"] = data.pop("attributes")
+
 
         result = self._fetch(
             code_mapping=ClusterHostHTTPCodes.edit,
@@ -461,8 +561,11 @@ def run_module():
         ),
         nodes=dict(type="list", required=True, elements="str"),
         attributes=dict(type="raw", required=False),
+        remove_attributes=dict(type="raw", required=False),
+        update_attributes=dict(type="raw", required=False),
         folder=dict(type="str", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
+        extended_functionality=dict(type="bool", required=False, default=True),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
