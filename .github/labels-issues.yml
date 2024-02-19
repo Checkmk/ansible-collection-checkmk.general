@@ -17,6 +17,9 @@ module:activation:
 module:bakery:
   - 'Component Name: bakery'
 
+module:cluster:
+  - 'Component Name: cluster'
+
 module:contact_group:
   - 'Component Name: contact_group'
 

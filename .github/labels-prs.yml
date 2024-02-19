@@ -24,6 +24,11 @@ module:bakery:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/bakery.py'
 
+module:cluster:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/cluster.py'
+
 module:contact_group:
   - any:
       - changed-files:
