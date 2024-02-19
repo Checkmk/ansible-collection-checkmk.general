@@ -184,8 +184,11 @@ class ClusterHostHTTPCodes:
     }
 
     create = {200: (True, False, "Cluster host created")}
-    edit = {200: (True, False, "Cluster host edited")}
-    modify = {200: (True, False, "Cluster host nodes modified")}
+    edit = {
+        200: (True, False, "Cluster host edited"),
+        412: (True, False, "eTag changed, because cluster host nodes were modified"),
+    }
+    modify = {200: (True, False, "Cluster host nodes modified"),}
     delete = {204: (True, False, "Cluster host deleted")}
 
 
@@ -304,7 +307,7 @@ class ClusterHostAPI(CheckmkAPI):
         ):
             changes.append("folder")
 
-        if desired_attributes.get("nodes") != current_attributes.get("nodes"):
+        if desired_attributes.get("nodes") != current_attributes.get("cluster_nodes"):
             changes.append("nodes")
 
         return changes
@@ -378,7 +381,7 @@ class ClusterHostAPI(CheckmkAPI):
         data = self.desired.copy()
         data.pop("host_name")
 
-        self.headers["if-Match"] = self.etag
+        self.headers["If-Match"] = self.etag
 
         if self.module.check_mode:
             return self._check_output("edit")
@@ -400,9 +403,8 @@ class ClusterHostAPI(CheckmkAPI):
             )
 
         result_nodes = {}
-        if data.get("folder"):
+        if data.get("nodes"):
             tmp = {}
-            tmp["host_name"] = data.get("host_name")
             tmp["nodes"] = data.pop("nodes")
 
             result_nodes = self._fetch(
@@ -414,7 +416,7 @@ class ClusterHostAPI(CheckmkAPI):
 
             result_nodes = result_nodes._replace(
                 msg=result_nodes.msg
-                + ". Nodes modified to: %s" % tmp.get("target_folder")
+                + ". Nodes modified to: %s" % tmp.get("nodes")
             )
 
         result = self._fetch(
@@ -456,7 +458,7 @@ def run_module():
             type="str",
             required=True,
         ),
-        nodes=dict(type=list, required=True, elements="str"),
+        nodes=dict(type="list", required=True, elements="str"),
         attributes=dict(type="raw", required=False),
         folder=dict(type="str", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
