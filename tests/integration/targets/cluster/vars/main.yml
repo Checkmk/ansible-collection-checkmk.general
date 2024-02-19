@@ -36,15 +36,15 @@ checkmk_hosts:
     folder: "/foo/bar1"
 
 checkmk_cluster_hosts:
-  - name: cluster_test1/tld
+  - name: cluster_test1.tld
     folder: "/"
     nodes:
       - "test1.tld"
       - "test2.tld"
-  - name: cluster_test2/tld
+  - name: cluster_test2.tld
     folder: "/"
     nodes:
       - "test3.tld"
-  - name: cluster_test3/tld
+  - name: cluster_test3.tld
     folder: "/"
     nodes: "test4.tld"
