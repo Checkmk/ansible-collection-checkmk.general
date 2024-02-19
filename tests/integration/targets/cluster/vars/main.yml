@@ -1,0 +1,50 @@
+---
+test_sites:
+  - version: "2.2.0p22"
+    edition: "cre"
+    site: "stable_cre"
+  - version: "2.2.0p22"
+    edition: "cee"
+    site: "stable_cee"
+  - version: "2.1.0p39"
+    edition: "cre"
+    site: "old_cre"
+  - version: "2.0.0p39"
+    edition: "cre"
+    site: "ancient_cre"
+
+checkmk_var_folders:
+  - path: /foo
+    name: Foo
+  - path: /bar
+    name: Bar
+  - path: /foo/bar
+    name: Bar
+  - path: /foo/bar1
+    name: Digital
+
+checkmk_hosts:
+  - name: test1.tld
+    folder: "/"
+  - name: test2.tld
+    folder: "/foo"
+  - name: test3.tld
+    folder: "/bar"
+  - name: test4.tld
+    folder: "/foo/bar"
+  - name: test5.tld
+    folder: "/foo/bar1"
+
+checkmk_cluster_hosts:
+  - name: cluster_test1/tld
+    folder: "/"
+    nodes:
+      - "test1.tld"
+      - "test2.tld"
+  - name: cluster_test2/tld
+    folder: "/"
+    nodes:
+      - "test3.tld"
+  - name: cluster_test3/tld
+    folder: "/"
+    nodes: "test4.tld"
