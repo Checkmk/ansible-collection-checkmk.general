@@ -320,7 +320,7 @@ class ClusterHostAPI(CheckmkAPI):
     def _detect_changes(self):
         current_attributes = self.current.get("attributes")
         current_folder = self.current.get("folder")
-        current_nodes = self.current.get("cluster_nodes")
+        current_nodes = self.current.get("cluster_nodes", [])
         desired_attributes = self.desired.copy()
         changes = []
 
@@ -351,11 +351,11 @@ class ClusterHostAPI(CheckmkAPI):
         ):
             changes.append("folder")
 
-        desired_nodes = desired_attributes.get("nodes")
+        desired_nodes = desired_attributes.get("nodes", [])
 
         if (
-            current_nodes and len([el for el in current_nodes if el not in desired_nodes]) > 0
-            or desired_nodes and len([el for el in desired_nodes if el not in current_nodes]) > 0
+            len([el for el in current_nodes if el not in desired_nodes]) > 0
+            or len([el for el in desired_nodes if el not in current_nodes]) > 0
         ):
             changes.append("nodes")
         else:
