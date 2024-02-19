@@ -5,6 +5,7 @@ action_groups:
     - activation
     - bakery
     - contact_group
+    - cluster
     - discovery
     - downtime
     - folder
