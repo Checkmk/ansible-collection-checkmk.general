@@ -213,7 +213,9 @@ class ClusterHostHTTPCodes:
         200: (True, False, "Cluster host edited"),
         412: (True, False, "eTag changed, because cluster host nodes were modified"),
     }
-    modify = {200: (True, False, "Cluster host nodes modified"),}
+    modify = {
+        200: (True, False, "Cluster host nodes modified"),
+    }
     delete = {204: (True, False, "Cluster host deleted")}
 
 
@@ -351,7 +353,10 @@ class ClusterHostAPI(CheckmkAPI):
 
         desired_nodes = desired_attributes.get("nodes")
 
-        if len([el for el in current_nodes if el not in desired_nodes]) > 0 or len([el for el in desired_nodes if el not in current_nodes]) > 0:
+        if (
+            len([el for el in current_nodes if el not in desired_nodes]) > 0
+            or len([el for el in desired_nodes if el not in current_nodes]) > 0
+        ):
             changes.append("nodes")
         else:
             desired_attributes.pop("nodes")
@@ -512,13 +517,8 @@ class ClusterHostAPI(CheckmkAPI):
             )
 
             result_nodes = result_nodes._replace(
-                msg=result_nodes.msg
-                + ". Nodes modified to: %s" % tmp.get("nodes")
+                msg=result_nodes.msg + ". Nodes modified to: %s" % tmp.get("nodes")
             )
-
-        if not data.get("update_attributes"):
-            data["update_attributes"] = data.pop("attributes")
-
 
         result = self._fetch(
             code_mapping=ClusterHostHTTPCodes.edit,
