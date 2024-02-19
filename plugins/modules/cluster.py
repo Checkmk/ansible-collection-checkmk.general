@@ -188,7 +188,9 @@ class ClusterHostHTTPCodes:
         200: (True, False, "Cluster host edited"),
         412: (True, False, "eTag changed, because cluster host nodes were modified"),
     }
-    modify = {200: (True, False, "Cluster host nodes modified"),}
+    modify = {
+        200: (True, False, "Cluster host nodes modified"),
+    }
     delete = {204: (True, False, "Cluster host deleted")}
 
 
@@ -415,8 +417,7 @@ class ClusterHostAPI(CheckmkAPI):
             )
 
             result_nodes = result_nodes._replace(
-                msg=result_nodes.msg
-                + ". Nodes modified to: %s" % tmp.get("nodes")
+                msg=result_nodes.msg + ". Nodes modified to: %s" % tmp.get("nodes")
             )
 
         result = self._fetch(
