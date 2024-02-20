@@ -399,7 +399,7 @@ class HostAPI(CheckmkAPI):
             and current_folder != desired_folder
         ):
             self.changes.append("folder")
-        else
+        else:
             self.desired.pop("folder")
 
 
