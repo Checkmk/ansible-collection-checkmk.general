@@ -472,7 +472,9 @@ class HostAPI(CheckmkAPI):
                     a for a in tmp_remove_attributes if current_attributes.get(a)
                 ]
                 if len(removes_which) > 0:
-                    self.changes.append("remove attributes: %s" % " ".join(removes_which))
+                    self.changes.append(
+                        "remove attributes: %s" % " ".join(removes_which)
+                    )
             elif isinstance(tmp_remove_attributes, dict):
                 if not self.extended_functionality:
                     self.module.fail_json(
@@ -501,7 +503,9 @@ class HostAPI(CheckmkAPI):
 
                 desired_attributes.pop("remove_attributes")
                 if tmp_remove != {}:
-                    self.changes.append("remove attributes: %s" % json.dumps(tmp_remove))
+                    self.changes.append(
+                        "remove attributes: %s" % json.dumps(tmp_remove)
+                    )
                     if tmp_rest != {}:
                         desired_attributes["update_attributes"] = tmp_rest
             else:
