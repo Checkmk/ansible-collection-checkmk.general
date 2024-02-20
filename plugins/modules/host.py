@@ -402,7 +402,6 @@ class HostAPI(CheckmkAPI):
         else:
             self.desired.pop("folder")
 
-
     def _detect_changes_rename(self):
         current_name = self.desired.get("name")
         desired_name = self.desired.get("new_name")
@@ -414,7 +413,6 @@ class HostAPI(CheckmkAPI):
             self.changes.append("rename")
         else:
             self.desired.pop("new_name")
-
 
     def _detect_changes_nodes(self):
         current_nodes = self.current.get("cluster_nodes", [])
@@ -744,8 +742,8 @@ class HostAPI(CheckmkAPI):
             result_loc = fun()
 
             result = result._replace(
-                msg=result.msg + (". " if result_loc.msg != "" else "") + result_loc.msg
-                change =result.change or result_loc.change
+                msg=result.msg + (". " if result_loc.msg != "" else "") + result_loc.msg,
+                change=result.change | result_loc.change,
             )
 
         return result
