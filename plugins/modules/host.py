@@ -83,7 +83,7 @@ options:
         required: false
         type: list
         elements: str
-    nodes:
+    remove_nodes:
         description:
             - List of nodes to be removes from the cluster-container host provided in name.
               B(Mutualy exclusive with nodes.)
@@ -393,11 +393,7 @@ class HostAPI(CheckmkAPI):
         current_folder = self.current.get("folder")
         desired_folder = self.desired.get("folder")
 
-        if (
-            desired_folder
-            and current_folder
-            and current_folder != desired_folder
-        ):
+        if desired_folder and current_folder and current_folder != desired_folder:
             self.changes.append("folder")
         else:
             self.desired.pop("folder")
@@ -406,10 +402,7 @@ class HostAPI(CheckmkAPI):
         current_name = self.desired.get("name")
         desired_name = self.desired.get("new_name")
 
-        if (
-            desired_name
-            and current_name != desired_name
-        ):
+        if desired_name and current_name != desired_name:
             self.changes.append("rename")
         else:
             self.desired.pop("new_name")
@@ -426,7 +419,11 @@ class HostAPI(CheckmkAPI):
 
             desired_nodes = desired_nodes + self.desired.get("add_nodes", [])
 
-            desired_nodes = [el for el in desired_nodes if el not in self.desired.get("remove_nodes", [])]
+            desired_nodes = [
+                el
+                for el in desired_nodes
+                if el not in self.desired.get("remove_nodes", [])
+            ]
 
             if (
                 len([el for el in current_nodes if el not in desired_nodes]) > 0
@@ -450,7 +447,7 @@ class HostAPI(CheckmkAPI):
         if desired_attributes.get(
             "attributes"
         ) and current_attributes != desired_attributes.get("attributes"):
-            changes.append(
+            self.changes.append(
                 "attributes: %s" % json.dumps(desired_attributes.get("attributes"))
             )
 
@@ -462,9 +459,9 @@ class HostAPI(CheckmkAPI):
             if merged_attributes != current_attributes:
                 try:
                     (c_m, m_c) = recursive_diff(current_attributes, merged_attributes)
-                    changes.append("update attributes: %s" % json.dumps(m_c))
+                    self.changes.append("update attributes: %s" % json.dumps(m_c))
                 except Exception as e:
-                    changes.append("update attributes")
+                    self.changes.append("update attributes")
                 desired_attributes["update_attributes"] = merged_attributes
 
         if desired_attributes.get("remove_attributes"):
@@ -475,7 +472,7 @@ class HostAPI(CheckmkAPI):
                     a for a in tmp_remove_attributes if current_attributes.get(a)
                 ]
                 if len(removes_which) > 0:
-                    changes.append("remove attributes: %s" % " ".join(removes_which))
+                    self.changes.append("remove attributes: %s" % " ".join(removes_which))
             elif isinstance(tmp_remove_attributes, dict):
                 if not self.extended_functionality:
                     self.module.fail_json(
@@ -504,7 +501,7 @@ class HostAPI(CheckmkAPI):
 
                 desired_attributes.pop("remove_attributes")
                 if tmp_remove != {}:
-                    changes.append("remove attributes: %s" % json.dumps(tmp_remove))
+                    self.changes.append("remove attributes: %s" % json.dumps(tmp_remove))
                     if tmp_rest != {}:
                         desired_attributes["update_attributes"] = tmp_rest
             else:
@@ -742,7 +739,9 @@ class HostAPI(CheckmkAPI):
             result_loc = fun()
 
             result = result._replace(
-                msg=result.msg + (". " if result_loc.msg != "" else "") + result_loc.msg,
+                msg=result.msg
+                + (". " if result_loc.msg != "" else "")
+                + result_loc.msg,
                 change=result.change | result_loc.change,
             )
 
@@ -791,7 +790,7 @@ def run_module():
             ("nodes", "add_nodes"),
             ("nodes", "remove_nodes"),
         ],
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
     # Create an API object that contains the current and desired state
