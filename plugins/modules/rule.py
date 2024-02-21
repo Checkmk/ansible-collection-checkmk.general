@@ -366,6 +366,7 @@ def create_rule(module, base_url, headers, ruleset, rule):
     if module.check_mode:
         return (None, changed)
 
+    module.warn("create_rule: rule: %s" % str(rule))
     params = {
         "ruleset": ruleset,
         "folder": rule["folder"],
@@ -552,6 +553,8 @@ def run_module():
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
+    module.warn("parameters: %s" % str(module.params))
+    module.warn("parameter rule: %s" % str(module.params.get("rule")))
 
     # Use the parameters to initialize some common variables
     headers = {
@@ -572,6 +575,7 @@ def run_module():
     # Get the variables
     ruleset = module.params.get("ruleset", "")
     rule = module.params.get("rule", {})
+    module.warn("rule: %s" % str(rule))
     location = rule.get("location")
 
     # Check if required params to create a rule are given
@@ -583,7 +587,7 @@ def run_module():
         if not rule.get("value_raw"):
             exit_failed(module, "Rule value_raw is required")
         # Default to all hosts if conditions arent given
-        if rule.get("conditions"):
+        if not rule.get("conditions"):
             rule["conditions"] = {
                 "host_tags": [],
                 "host_labels": [],
@@ -610,6 +614,7 @@ def run_module():
                 action = "changed"
         else:
             # If no rule_id is mentioned, we check if our rule exists. If not, then create it.
+            module.warn("rule: %s" % str(rule))
             (rule_id, changed) = create_rule(module, base_url, headers, ruleset, rule)
             if changed:
                 action = "created"
