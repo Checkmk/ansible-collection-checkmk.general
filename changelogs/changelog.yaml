@@ -858,3 +858,12 @@ releases:
     - rule.yml
     - user.yml
     release_date: '2024-02-16'
+  4.3.1:
+    changes:
+      bugfixes:
+      - Rule module - Fix empty rule conditions.
+      release_summary: Bugfix Release.
+    fragments:
+    - fix_rule_conditions_missing.yml
+    - release_summary.yml
+    release_date: '2024-02-21'
