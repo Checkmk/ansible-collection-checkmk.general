@@ -583,7 +583,7 @@ def run_module():
         if not rule.get("value_raw"):
             exit_failed(module, "Rule value_raw is required")
         # Default to all hosts if conditions arent given
-        if rule.get("conditions"):
+        if not rule.get("conditions"):
             rule["conditions"] = {
                 "host_tags": [],
                 "host_labels": [],
