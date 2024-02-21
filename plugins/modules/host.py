@@ -652,7 +652,7 @@ class HostAPI(CheckmkAPI):
             )
 
             result = result._replace(
-                msg=result.msg + ". Moved from to: %s" % tmp.get("target_folder")
+                msg=result.msg + ". Moved to: %s" % tmp.get("target_folder")
             )
 
         return result
