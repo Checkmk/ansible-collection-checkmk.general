@@ -466,7 +466,11 @@ class HostAPI(CheckmkAPI):
             "attributes"
         ) and current_attributes != desired_attributes.get("attributes"):
             changes.append(
-                "attributes: %s  %s" % (json.dumps(current_attributes), json.dumps(desired_attributes.get("attributes")))
+                "attributes: %s  %s"
+                % (
+                    json.dumps(current_attributes),
+                    json.dumps(desired_attributes.get("attributes"))
+                )
             )
 
         if desired_attributes.get("update_attributes"):
@@ -490,9 +494,7 @@ class HostAPI(CheckmkAPI):
                     a for a in tmp_remove_attributes if current_attributes.get(a)
                 ]
                 if len(removes_which) > 0:
-                    changes.append(
-                        "remove attributes: %s" % " ".join(removes_which)
-                    )
+                    changes.append("remove attributes: %s" % " ".join(removes_which))
             elif isinstance(tmp_remove_attributes, dict):
                 if not self.extended_functionality:
                     self.module.fail_json(
@@ -521,9 +523,7 @@ class HostAPI(CheckmkAPI):
 
                 desired_attributes.pop("remove_attributes", {})
                 if tmp_remove != {}:
-                    changes.append(
-                        "remove attributes: %s" % json.dumps(tmp_remove)
-                    )
+                    changes.append("remove attributes: %s" % json.dumps(tmp_remove))
                     if tmp_rest != {}:
                         desired_attributes["update_attributes"] = tmp_rest
             else:
@@ -730,7 +730,9 @@ class HostAPI(CheckmkAPI):
             data.pop(key, "")
 
         result = self._fetch(
-            code_mapping=(HostHTTPCodes.edit_cluster if self.is_cluster else HostHTTPCodes.edit),
+            code_mapping=(
+                HostHTTPCodes.edit_cluster if self.is_cluster else HostHTTPCodes.edit
+            ),
             endpoint=self._build_default_endpoint(),
             data=data,
             method="PUT",
