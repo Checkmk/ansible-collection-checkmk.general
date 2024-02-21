@@ -469,7 +469,7 @@ class HostAPI(CheckmkAPI):
                 "attributes: %s  %s"
                 % (
                     json.dumps(current_attributes),
-                    json.dumps(desired_attributes.get("attributes"))
+                    json.dumps(desired_attributes.get("attributes")),
                 )
             )
 
