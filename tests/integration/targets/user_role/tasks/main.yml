@@ -1,0 +1,18 @@
+---
+- name: "Run preparations."
+  ansible.builtin.include_tasks: prep.yml
+
+- name: "Wait for site to be ready."
+  ansible.builtin.pause:
+    seconds: 5
+  when: |
+    ((download_pass is defined and download_pass | length) or item.item.edition == 'cre')
+    and (item.stdout_lines is defined and 'OVERALL 1' in item.stdout_lines)
+  loop: "{{ site_status.results }}"
+
+- name: "Testing."
+  ansible.builtin.include_tasks: test.yml
+  loop: "{{ test_sites }}"
+  loop_control:
+    loop_var: outer_item
+  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
