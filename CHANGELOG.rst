@@ -4,6 +4,19 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v4.3.1
+======
+
+Release Summary
+---------------
+
+Bugfix Release.
+
+Bugfixes
+--------
+
+- Rule module - Fix empty rule conditions.
+
 v4.3.0
 ======
 
