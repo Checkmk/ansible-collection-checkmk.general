@@ -65,10 +65,10 @@ options:
         description: Allow extended functionality instead of the expected REST API behavior.
         type: bool
         default: true
-    new_name:
-        description: The new name of the managed host.
-        required: false
-        type: str
+    # new_name:
+    #     description: The new name of the managed host.
+    #     required: false
+    #     type: str
     nodes:
         description:
             - Nodes, members of the cluster-container host provided in name.
@@ -261,6 +261,10 @@ class HostHTTPCodes:
     create = {200: (True, False, "Host created")}
     create_cluster = {200: (True, False, "Cluster host created")}
     edit = {200: (True, False, "Host modified")}
+    edit_cluster = {
+        200: (True, False, "Host modified"),
+        412: (True, False, "eTag changed, because cluster host nodes were modified"),
+    }
     move = {200: (True, False, "Host moved")}
     rename = {200: (True, False, "Host renamed")}
     modify_cluster = {
@@ -392,23 +396,33 @@ class HostAPI(CheckmkAPI):
     def _detect_changes_folder(self):
         current_folder = self.current.get("folder")
         desired_folder = self.desired.get("folder")
+        changes = []
 
         if desired_folder and current_folder and current_folder != desired_folder:
-            self.changes.append("folder")
+            changes.append("folder")
         else:
-            self.desired.pop("folder")
+            self.desired.pop("folder", "")
+
+        return changes
 
     def _detect_changes_rename(self):
         current_name = self.desired.get("name")
         desired_name = self.desired.get("new_name")
+        changes = []
 
         if desired_name and current_name != desired_name:
-            self.changes.append("rename")
+            changes.append("rename")
         else:
-            self.desired.pop("new_name")
+            self.desired.pop("new_name", "")
+
+        return changes
 
     def _detect_changes_nodes(self):
-        current_nodes = self.current.get("cluster_nodes", [])
+        changes = []
+
+        current_nodes = []
+        if self.current.get("cluster_nodes"):
+            current_nodes = self.current.get("cluster_nodes")
 
         if (
             self.desired.get("nodes")
@@ -429,26 +443,30 @@ class HostAPI(CheckmkAPI):
                 len([el for el in current_nodes if el not in desired_nodes]) > 0
                 or len([el for el in desired_nodes if el not in current_nodes]) > 0
             ):
-                self.changes.append("nodes")
+                changes.append("nodes")
             else:
-                self.desired.pop("nodes")
-                self.desired.pop("add_nodes")
-                self.desired.pop("remove_nodes")
+                self.desired.pop("nodes", [])
+                self.desired.pop("add_nodes", [])
+                self.desired.pop("remove_nodes", [])
+
+        return changes
 
     def _detect_changes_attributes(self):
-        current_attributes = self.current.get("attributes", {})
-        desired_attributes = self.desired.copy()
         ATTRIBUTE_FILEDS = [
             "attributes",
             "update_attributes",
             "remove_attributes",
         ]
 
+        current_attributes = self.current.get("attributes", {})
+        desired_attributes = self.desired.copy()
+        changes = []
+
         if desired_attributes.get(
             "attributes"
         ) and current_attributes != desired_attributes.get("attributes"):
-            self.changes.append(
-                "attributes: %s" % json.dumps(desired_attributes.get("attributes"))
+            changes.append(
+                "attributes: %s  %s" % (json.dumps(current_attributes), json.dumps(desired_attributes.get("attributes")))
             )
 
         if desired_attributes.get("update_attributes"):
@@ -459,9 +477,9 @@ class HostAPI(CheckmkAPI):
             if merged_attributes != current_attributes:
                 try:
                     (c_m, m_c) = recursive_diff(current_attributes, merged_attributes)
-                    self.changes.append("update attributes: %s" % json.dumps(m_c))
+                    changes.append("update attributes: %s" % json.dumps(m_c))
                 except Exception as e:
-                    self.changes.append("update attributes")
+                    changes.append("update attributes")
                 desired_attributes["update_attributes"] = merged_attributes
 
         if desired_attributes.get("remove_attributes"):
@@ -472,7 +490,7 @@ class HostAPI(CheckmkAPI):
                     a for a in tmp_remove_attributes if current_attributes.get(a)
                 ]
                 if len(removes_which) > 0:
-                    self.changes.append(
+                    changes.append(
                         "remove attributes: %s" % " ".join(removes_which)
                     )
             elif isinstance(tmp_remove_attributes, dict):
@@ -501,9 +519,9 @@ class HostAPI(CheckmkAPI):
                             exception=e,
                         )
 
-                desired_attributes.pop("remove_attributes")
+                desired_attributes.pop("remove_attributes", {})
                 if tmp_remove != {}:
-                    self.changes.append(
+                    changes.append(
                         "remove attributes: %s" % json.dumps(tmp_remove)
                     )
                     if tmp_rest != {}:
@@ -519,13 +537,12 @@ class HostAPI(CheckmkAPI):
                 if desired_attributes.get(key):
                     self.desired[key] = desired_attributes.get(key)
                 else:
-                    self.desired.pop(key)
+                    self.desired.pop(key, "")
 
-        # self.module.fail_json(json.dumps(desired_attributes))
+        return changes
 
     def _detect_changes(self):
-        self.changes = []
-        self.desired = {}
+        changes = []
 
         loc_functions = [
             self._detect_changes_folder,
@@ -535,9 +552,9 @@ class HostAPI(CheckmkAPI):
         ]
 
         for fun in loc_functions:
-            fun()
+            changes += fun()
 
-        return self.changes
+        return changes
 
     def _get_current(self):
         result = self._fetch(
@@ -564,6 +581,10 @@ class HostAPI(CheckmkAPI):
 
             self.etag = result.etag
 
+            if self.current.get("cluster_nodes"):
+                self.is_cluster = True
+            else:
+                self.is_cluster = False
         else:
             self.state = "absent"
 
@@ -649,9 +670,11 @@ class HostAPI(CheckmkAPI):
             changed=False,
         )
 
-        if self.desired.get("folder"):
+        if self.desired.get("new_name"):
             tmp = {}
             tmp["new_name"] = self.desired.get("new_name")
+
+            # self.module.fail_json(", ".join(self._changed_items))
 
             result = self._fetch(
                 code_mapping=HostHTTPCodes.rename,
@@ -695,18 +718,19 @@ class HostAPI(CheckmkAPI):
 
     def _edit_attributes(self):
         data = self.desired.copy()
-        data.pop("host_name")
+        # data.pop("host_name")
         CLEAN_FIELDS = [
+            "host_name",
             "folder",
             "nodes",
             "new_name",
         ]
 
         for key in CLEAN_FIELDS:
-            data.pop(key)
+            data.pop(key, "")
 
         result = self._fetch(
-            code_mapping=HostHTTPCodes.edit,
+            code_mapping=(HostHTTPCodes.edit_cluster if self.is_cluster else HostHTTPCodes.edit),
             endpoint=self._build_default_endpoint(),
             data=data,
             method="PUT",
@@ -717,7 +741,6 @@ class HostAPI(CheckmkAPI):
         )
 
     def edit(self):
-        self.desired.pop("host_name")
         self.headers["if-Match"] = self.etag
 
         if self.module.check_mode:
@@ -733,10 +756,11 @@ class HostAPI(CheckmkAPI):
         )
 
         loc_functions = [
+            # _edit_nodes should be always before _edit_attributes
+            self._edit_nodes,
             self._edit_attributes,
             self._edit_folder,
-            self._edit_hostname,
-            self._edit_nodes,
+            # self._edit_hostname,
         ]
 
         for fun in loc_functions:
@@ -746,7 +770,7 @@ class HostAPI(CheckmkAPI):
                 msg=result.msg
                 + (". " if result_loc.msg != "" else "")
                 + result_loc.msg,
-                change=result.change | result_loc.change,
+                changed=result.changed | result_loc.changed,
             )
 
         return result
@@ -782,7 +806,7 @@ def run_module():
         folder=dict(type="str", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
         extended_functionality=dict(type="bool", required=False, default=True),
-        new_name=dict(type="str", required=False),
+        # new_name=dict(type="str", required=False),
         nodes=dict(type="list", required=False, elements="str"),
         add_nodes=dict(type="list", required=False, elements="str"),
         remove_nodes=dict(type="list", required=False, elements="str"),
