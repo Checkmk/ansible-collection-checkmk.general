@@ -581,7 +581,7 @@ class HostAPI(CheckmkAPI):
 
             self.etag = result.etag
 
-            self.is_cluster = self.current.get("is_cluster"):
+            self.is_cluster = self.current.get("is_cluster")
         else:
             self.state = "absent"
 
