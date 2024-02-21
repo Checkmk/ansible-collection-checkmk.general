@@ -29,11 +29,15 @@ options:
         required: true
         type: dict
         suboptions:
+            rule_id:
+                description:
+                    - If provided, update/delete an existing rule
+                    - If omitted, create a new rule
+                type: str
             location:
                 description:
                   - Location of the rule within a folder.
                   - By default rules are created at the bottom of the "/" folder.
-                  - Mutually exclusive with I(folder).
                 type: dict
                 suboptions:
                     position:
@@ -47,18 +51,19 @@ options:
                             - "before"
                             - "after"
                         default: "bottom"
-                    rule_id:
+                    neighbour:
                         description:
                             - Put the rule C(before) or C(after) this rule_id.
                             - Required when I(position) is C(before) or C(after).
                             - Mutually exclusive with I(folder).
+                        aliasses: rule_id
                         type: str
                     folder:
                         description:
                             - Folder of the rule.
                             - Required when I(position) is C(top) or C(bottom).
                             - Required when I(state=absent).
-                            - Mutually exclusive with I(rule_id).
+                            - Mutually exclusive with I(neighbour).
                         default: "/"
                         type: str
             conditions:
@@ -81,12 +86,7 @@ options:
         type: str
 
 author:
-    - diademiemi (@diademiemi)
-    - Geoffroy Stévenne (@geof77)
-
-notes:
-    - "To achieve idempotency, this module is comparing the specified rule with the already existing
-      rules based on conditions, folder, value_raw and enabled/disabled."
+    - Lars Getwan (@lgetwan)
 """
 
 EXAMPLES = r"""
@@ -243,216 +243,376 @@ import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.validation import safe_eval
 from ansible.module_utils.urls import fetch_url
+from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    result_as_dict,
+)
 
 try:
     from urllib import urlencode
 except ImportError:  # For Python 3
     from urllib.parse import urlencode
 
+DESIRED_RULE_KEYS = (
+    "location",
+    "conditions",
+    "properties",
+    "value_raw",
+)
 
-def exit_failed(module, msg, id=""):
-    result = {"msg": msg, "id": id, "changed": False, "failed": True}
-    module.fail_json(**result)
+CURRENT_RULE_KEYS = (
+    "folder",
+    "ruleset",
+    "conditions",
+    "properties",
+    "value_raw",
+)
 
+POSITION_MAPPING = {
+    "top": "top_of_folder",
+    "bottom": "bottom_of_folder",
+    "after": "after_specific_rule",
+    "before": "before_specific_rule",
+}
 
-def exit_changed(module, msg, id=""):
-    if module.check_mode:
-        msg = msg + " (check_mode: no changes made)"
-    result = {"msg": msg, "id": id, "changed": True, "failed": False}
-    module.exit_json(**result)
-
-
-def exit_ok(module, msg, id=""):
-    result = {"msg": msg, "id": id, "changed": False, "failed": False}
-    module.exit_json(**result)
-
-
-def get_rules_in_ruleset(module, base_url, headers, ruleset):
-    api_endpoint = "/domain-types/rule/collections/all"
-
-    params = {
-        "ruleset_name": ruleset,
+class RuleHTTPCodes:
+    # http_code: (changed, failed, "Message")
+    get = {
+        200: (False, False, "Rule found, nothing changed"),
+        404: (False, False, "Rule not found"),
     }
 
-    url = "%s%s?%s" % (base_url, api_endpoint, urlencode(params))
+    list_rules = {
+        200: (False, False, "Ruleset found, nothing changed"),
+        404: (False, False, "Ruleset not found"),
+    }
 
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="GET"
-    )
+    create = {200: (True, False, "Rule created")}
+    move = {200: (True, False, "Rule moved")}
+    edit = {200: (True, False, "Rule modified")}
+    delete = {204: (True, False, "Rule deleted")}
 
-    if info["status"] != 200:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+
+class RuleEndpoints:
+    default = "/objects/rule"
+    create = "/domain-types/rule/collections/all"
+
+
+class RuleLocation:
+    def __init__(self, module, current):
+        # Get complete ruleset of current rule
+        self.module = module
+        self.current = current
+
+        self.ruleset = self.current.get("rule", {}).get("ruleset")
+        self.rule_id = self.params.get("rule_id")
+        self.folder = self.current.get("rule", {}).get("folder")
+
+        self.rule_list = _get_ruleset(self.module.params.get("ruleset"))
+        self.folder_index = self.rule_list[self.folder].index(self.rule_id)
+        self.folder_rule_list = [
+            k for k, v in self.rule_list.items() if v == self.folder
+        ]
+        self.folder_size = len(self.folder_rule_list)
+
+    def _get_ruleset(self, ruleset):
+        result = self._fetch(
+            code_mapping=RuleHTTPCodes.list_rules,
+            endpoint=RuleEndpoints.create,
+            method="GET",
         )
 
-    return json.loads(response.read().decode("utf-8"))
+        if result.http_code == 200:
+            content = json.loads(result.content)
+            return {
+                r.get("id"): r.get("extensions", {}).get("folder")
+                for r in content.get("value")
+            }
 
+        return []
 
-def get_rule_by_id(module, base_url, headers, rule_id):
-    api_endpoint = "/objects/rule/" + rule_id
+    def is_equal(self, desired_location):
+        desired_folder = desired_location.get("folder")
+        desired_position = desired_location.get("position")
+        desired_neighbour = desired_location.get("neighbour")
 
-    url = base_url + api_endpoint
-
-    response, info = fetch_url(module, url, headers=headers, method="GET")
-
-    if info["status"] not in [200, 204]:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
-        )
-
-    return json.loads(response.read().decode("utf-8"))
-
-
-def get_existing_rule(module, base_url, headers, ruleset, rule):
-    # Get rules in ruleset
-    rules = get_rules_in_ruleset(module, base_url, headers, ruleset)
-
-    (value_mod, exc) = safe_eval(rule["value_raw"], include_exceptions=True)
-    if exc is not None:
-        exit_failed(module, "value_raw in rule has invalid format")
-
-    # Get folder from neighbour rule if relative rule_id is given in location
-    if rule["location"]["rule_id"] is not None:
-        neighbour_rule = get_rule_by_id(
-            module, base_url, headers, rule["location"]["rule_id"]
-        )
-        rule["folder"] = neighbour_rule["extensions"]["folder"]
-
-    if rules is not None:
-        # Loop through all rules
-        for r in rules.get("value"):
-            (value_api, exc) = safe_eval(
-                r["extensions"]["value_raw"], include_exceptions=True
-            )
-            if exc is not None:
-                exit_failed(module, "Error deserializing value_raw from API")
-            if (
-                r["extensions"]["folder"] == rule["folder"]
-                and r["extensions"]["conditions"] == rule["conditions"]
-                and r["extensions"]["properties"].get("disabled", "")
-                == rule["properties"].get("disabled", "")
-                and value_api == value_mod
+        if desired_position in ["bottom", "top"]:
+            if desired_folder != self.folder:
+                return False
+            elif desired_position == "top" and self.folder_index == 0:
+                return True
+            elif (
+                desired_position == "bottom"
+                and self.folder_index == self.folder_size - 1
             ):
-                # If they are the same, return the ID
-                return r
+                return True
+            return False
 
-    return None
+        if desired_position in ["before", "after"]:
+            if desired_folder != self.folder:
+                return False
+            elif (
+                desired_position == "before"
+                and self.folder_index < self.folder_size - 1
+                and self.folder_rule_list[self.folder_index + 1] == desired_neighbour
+            ):
+                return True
+            elif (
+                desired_position == "after"
+                and self.folder_index > 0
+                and self.folder_rule_list[self.folder_index - 1] == desired_neighbour
+            ):
+                return True
+            else:
+                return False
+
+        # This should never happen
+        return False
 
 
-def create_rule(module, base_url, headers, ruleset, rule):
-    api_endpoint = "/domain-types/rule/collections/all"
+class RuleAPI(CheckmkAPI):
+    def __init__(self, module):
+        super().__init__(module)
 
-    changed = True
-    e = get_existing_rule(module, base_url, headers, ruleset, rule)
-    if e:
-        return (e["id"], not changed)
+        self.rule_id = self.params.get("rule_id")
+        self.is_new_rule = self.rule_id is None
 
-    if module.check_mode:
-        return (None, changed)
+        self.desired = {}
+        self.desired["ruleset"] = self.params.get("ruleset")
+        self.desired["rule"] = {}
 
-    params = {
-        "ruleset": ruleset,
-        "folder": rule["folder"],
-        "properties": rule["properties"],
-        "value_raw": rule["value_raw"],
-        "conditions": rule["conditions"],
-    }
+        for key in DESIRED_RULE_KEYS:
+            tmp_params_rule = self.params.get("rule", {})
+            if tmp_params_rule.get(key):
+                self.desired["rule"][key] = self.params.get("rule", {}).get(key)
 
-    url = base_url + api_endpoint
+        self._changed_items = []
+        self.current = None
+        self.etag = ""
 
-    response, info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )
+        if self.rule_id:
+            # Get the current rule from the API and set some parameters
+            self.current = self._get_current()
+            self._changed_items = self._detect_changes()
 
-    if info["status"] != 200:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+    def rule_id_found(self):
+        return self.current is not None
+
+    def _raw_value_eval(state, data):
+        (safe_value_raw, exc) = safe_eval(
+            data.get("value_raw", "''"), include_exceptions=True
+        )
+        if exc is not None:
+            self.module.fail_json(
+                msg="ERROR: The %s value_raw has invalid format" % state
+            )
+
+        return safe_value_raw
+
+    def _detect_changes(self):
+
+        current = self.current["rule"].copy()
+        desired = self.desired.copy()
+        changes = []
+
+        if current.get("conditions", {}) != desired.get("conditions", {}):
+            changes.append("conditions")
+
+        if current.get("properties", {}) != desired.get("properties", {}):
+            changes.append("properties")
+
+        if _raw_value_eval("current", current) != _raw_value_eval("desired", desired):
+            changes.append("raw_value")
+
+        desired_location = desired.get("rule", {}).get("location")
+        if desired_location:
+            current_location = RuleLocation(self.module, self.current)
+
+            if not current_location.is_equal(desired_location):
+                changes.append("location")
+
+        return changes
+
+    def _build_default_endpoint(self):
+        return "%s/%s" % (
+            RuleEndpoints.default,
+            self.rule_id,
         )
 
-    r = json.loads(response.read().decode("utf-8"))
+    def _get_current(self):
+        current = {}
 
-    return (r["id"], changed)
-
-
-def delete_rule(module, base_url, headers, ruleset, rule):
-    changed = True
-    e = get_existing_rule(module, base_url, headers, ruleset, rule)
-    if e:
-        if not module.check_mode:
-            delete_rule_by_id(module, base_url, headers, e["id"])
-        return changed
-    return not changed
-
-
-def delete_rule_by_id(module, base_url, headers, rule_id):
-    api_endpoint = "/objects/rule/"
-
-    url = "%s%s%s" % (base_url, api_endpoint, rule_id)
-
-    info = fetch_url(module, url, headers=headers, method="DELETE")[1]
-
-    if info["status"] != 204:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+        result = self._fetch(
+            code_mapping=RuleHTTPCodes.get,
+            endpoint=self._build_default_endpoint(),
+            method="GET",
         )
 
+        if result.http_code == 200:
+            current["rule"] = {}
+            current["state"] = "present"
+            current["etag"] = result.etag
 
-def get_rule_etag(module, base_url, headers, rule_id):
-    api_endpoint = "/objects/rule/" + rule_id
+            content = json.loads(result.content)
+            extensions = content["extensions"]
 
-    url = base_url + api_endpoint
+            for key, value in extensions.items():
+                if key in CURRENT_RULE_KEYS:
+                    current["rule"][key] = value
 
-    info = fetch_url(module, url, headers=headers, method="GET")[1]
+        else:
+            current["state"] = "absent"
+        return current
 
-    if info["status"] not in [200, 204]:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+    def _check_output(self, mode):
+        return RESULT(
+            http_code=0,
+            msg="Running in check mode. Would have done an %s" % mode,
+            content="",
+            etag="",
+            failed=False,
+            changed=False,
         )
-    return info["etag"]
 
+    def needs_update(self):
+        return len(self._changed_items) > 0
 
-def move_rule(module, base_url, headers, rule_id, location):
-    api_endpoint = "/objects/rule/" + rule_id + "/actions/move/invoke"
+    def _moving_needed(self):
+        self.module.warn("a")
+        if "location" in self._changed_items:
+            self.module.warn("b")
+            return True
 
-    api_keywords = {
-        "top": "top_of_folder",
-        "bottom": "bottom_of_folder",
-        "before": "before_specific_rule",
-        "after": "after_specific_rule",
-    }
+        if self.is_new_rule:
+            self.module.warn("c")
+            location = self.desired.get("rule").get("location")
+            self.module.warn("#### %s" % str(location))
+            if location and not (
+                location.get("folder", "") == "/"
+                and location.get("position", "") == "bottom"
+            ):
+                self.module.warn("d")
+                return True
 
-    params = {
-        "position": api_keywords[location["position"]],
-    }
-    if location["position"] in ["after", "before"]:
-        params["rule_id"] = location["rule_id"]
-    else:
-        params["folder"] = location["folder"]
+        return False
 
-    headers["If-Match"] = get_rule_etag(module, base_url, headers, rule_id)
+    def _move_if_needed(self):
+        self.module.warn("1")
+        if not self._moving_needed():
+            return
 
-    url = base_url + api_endpoint
+        self.module.warn("2")
+        location = self.desired.get("rule", {}).get("location")
+        data = {"position": POSITION_MAPPING[location.get("position")]}
 
-    info = fetch_url(
-        module, url, module.jsonify(params), headers=headers, method="POST"
-    )[1]
+        pos = location.get("position", "")
+        self.module.warn("3")
+        if pos in ["top", "bottom"]:
+            self.module.warn("4")
+            data["folder"] = location.get("folder", "/")
+        elif pos in ["before", "after"]:
+            self.module.warn("5")
+            data["rule_id"] = location.get("neighbour")
 
-    if info["status"] not in [200, 204]:
-        exit_failed(
-            module,
-            "Error calling API. HTTP code %d. Details: %s, "
-            % (info["status"], info["body"]),
+        if self.module.check_mode:
+            return self._check_output("move")
+
+        self.module.warn("#### %s" % self._build_default_endpoint() + "/actions/move/invoke")
+        self.module.warn("#### %s" % str(data))
+        return self._fetch(
+            code_mapping=RuleHTTPCodes.move,
+            endpoint=self._build_default_endpoint() + "/actions/move/invoke",
+            data=data,
+            method="POST",
         )
+
+    def _merge_results(self, results):
+        return RESULT(
+            http_code=list(results.values())[-1].http_code,
+            msg=", ".join(
+                [
+                    "%s (%d)" % (results[k].msg, results[k].http_code)
+                    for k in results.keys()
+                ]
+            ),
+            content=list(results.values())[-1].content,
+            etag=list(results.values())[-1].etag,
+            failed=any([r.failed for r in list(results.values())]),
+            changed=any([r.changed for r in list(results.values())]),
+        )
+
+    def create(self):
+        data = self.desired.get("rule", {}).copy()
+        location = data.pop("location", {})
+        data["ruleset"] = self.desired.get("ruleset")
+        data["folder"] = location.get("folder", "/")
+
+        if self.module.check_mode:
+            return self._check_output("create")
+
+        create_result = self._fetch(
+            code_mapping=RuleHTTPCodes.create,
+            endpoint=RuleEndpoints.create,
+            data=data,
+            method="POST",
+        )
+
+        if create_result.failed:
+            return create_result
+
+        self.module.warn("#### create_result.content %s" % str(create_result.content))
+        content = json.loads(create_result.content)
+        self.rule_id = content.get("id")
+        self.module.warn("#### %s" % self.rule_id)
+
+        move_result = self._move_if_needed()
+        if move_result:
+            self.module.warn("#### move_result.content %s" % str(move_result.content))
+            m = self._merge_results({"created": create_result, "moved": move_result})
+            self.module.warn("#### m.content %s" % str(m.content))
+            return self._merge_results({"created": create_result, "moved": move_result})
+        else:
+            return create_result
+
+    def edit(self):
+        data = self.desired.get("rule", {}).copy()
+        self.headers["if-Match"] = self.etag
+
+        if self.module.check_mode:
+            return self._check_output("edit")
+
+        edit_result = self._fetch(
+            code_mapping=RuleHTTPCodes.edit,
+            endpoint=self._build_default_endpoint(),
+            data=data,
+            method="PUT",
+        )
+
+        edit_result = result._replace(
+            msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items)
+        )
+
+        if edit_result.failed:
+            return edit_result
+
+        move_result = self._move_if_needed()
+        if move_result:
+            return self._merge_results({"editd": edit_result, "moved": move_result})
+        else:
+            return edit_result
+
+    def delete(self):
+        if self.module.check_mode:
+            return self._check_output("delete")
+
+        result = self._fetch(
+            code_mapping=RuleHTTPCodes.delete,
+            endpoint=self._build_default_endpoint(),
+            method="DELETE",
+        )
+
+        return result
 
 
 def run_module():
@@ -468,6 +628,7 @@ def run_module():
             type="dict",
             required=True,
             options=dict(
+                rule_id=dict(type="str", default=None),
                 conditions=dict(type="dict"),
                 properties=dict(type="dict"),
                 value_raw=dict(type="str"),
@@ -483,15 +644,15 @@ def run_module():
                             type="str",
                             default="/",
                         ),
-                        rule_id=dict(type="str"),
+                        neighbour=dict(type="str", aliasses=["rule_id"]),
                     ),
-                    required_if=[
-                        ("position", "top", ("folder",)),
-                        ("position", "bottom", ("folder",)),
-                        ("position", "before", ("rule_id",)),
-                        ("position", "after", ("rule_id",)),
-                    ],
-                    mutually_exclusive=[("folder", "rule_id")],
+                    #required_if=[
+                    #    ("position", "top", ("folder",)),
+                    #    ("position", "bottom", ("folder",)),
+                    #    ("position", "before", ("neighbour",)),
+                    #    ("position", "after", ("neighbour",)),
+                    #],
+                    mutually_exclusive=[("folder", "neighbour")],
                     apply_defaults=True,
                 ),
             ),
@@ -501,64 +662,48 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
-    # Use the parameters to initialize some common variables
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s"
-        % (
-            module.params.get("automation_user", ""),
-            module.params.get("automation_secret", ""),
-        ),
-    }
+    # Create an API object that contains the current and desired state
+    current_rule = RuleAPI(module)
 
-    base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
-        module.params.get("site", ""),
+    result = RESULT(
+        http_code=0,
+        msg="Invalid parameters provided.",
+        content="{}",
+        etag="",
+        failed=False,
+        changed=False,
     )
 
-    # Get the variables
-    ruleset = module.params.get("ruleset", "")
-    rule = module.params.get("rule", "")
-    location = rule.get("location")
+    desired_state = module.params.get("state")
+    rule_id = module.params.get("rule_id")
 
-    # Check if required params to create a rule are given
-    if rule.get("folder") is None or rule.get("folder") == "":
-        rule["folder"] = location["folder"]
-    if rule.get("properties") is None or rule.get("properties") == "":
-        exit_failed(module, "Rule properties are required")
-    if rule.get("value_raw") is None or rule.get("value_raw") == "":
-        exit_failed(module, "Rule value_raw is required")
-    # Default to all hosts if conditions arent given
-    if rule.get("conditions") is None or rule.get("conditions") == "":
-        rule["conditions"] = {
-            "host_tags": [],
-            "host_labels": [],
-            "service_labels": [],
-        }
-    if module.params.get("state") == "absent":
-        if location.get("rule_id") is not None:
-            exit_failed(module, "rule_id in location is invalid with state=absent")
-
-    # If state is absent, delete the rule
-    if module.params.get("state") == "absent":
-        deleted = delete_rule(module, base_url, headers, ruleset, rule)
-        if deleted:
-            exit_changed(module, "Rule deleted")
+    if desired_state == "present":
+        if current_rule.rule_id_found():
+            # Update if needed
+            if current_rule.needs_update():
+                result = current_rule.edit()
+            else:
+                result = result._replace(
+                    msg="Rule already exists with the desired parameters."
+                )
+        elif rule_id:
+            # rule_id provided but not found. Fail
+            result = result._replace(
+                msg="The provided rule_id was not found.",
+                failed=True,
+            )
         else:
-            exit_ok(module, "Rule does not exist")
-    # If state is present, create the rule
-    elif module.params.get("state") == "present":
-        (rule_id, created) = create_rule(module, base_url, headers, ruleset, rule)
-        if created:
-            # Move rule to specified location, if it's not default
-            if location["position"] != "bottom" and not module.check_mode:
-                move_rule(module, base_url, headers, rule_id, location)
-            exit_changed(module, "Rule created", rule_id)
-        exit_ok(module, "Rule already exists", rule_id)
-
-    # Fallback
-    exit_failed(module, "Unknown error")
+            # Create new rule
+            result = current_rule.create()
+    elif desired_state == "absent":
+        if current_rule.state == "present":
+            result = current_rule.delete()
+        elif current_rule.state == "absent":
+            result = result._replace(msg="Rule already absent.")
+    
+    result_as_dict = result._replace(content=json.loads(result.content))._asdict()
+    module.warn("############ %s" % str(result_as_dict))
+    module.exit_json(**result_as_dict)
 
 
 def main():
