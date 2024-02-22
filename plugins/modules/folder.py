@@ -221,7 +221,7 @@ class FolderAPI(CheckmkAPI):
             self.params.get("path")
         )
 
-        if self.params.get("title"):
+        if self.params.get("name"):
             self.desired["title"] = self.params.get("name")
         else:
             self.desired["title"] = self.desired.get("name")
