@@ -186,7 +186,7 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify created folders."
   ansible.builtin.assert:
-    that: "results.title == item.verify_name"
+    that: "results.name == item.verify_name"
   vars:
     results: "{{ lookup('checkmk.general.folder',
                     item.path,
