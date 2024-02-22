@@ -186,7 +186,7 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify created folders."
   ansible.builtin.assert:
-    that: "folder_title['~' + (item.path | regex_replace('/', '~') | split('~') | last)] == item.verify_name"
+    that: "folder_title[item.path] == item.verify_name"
   vars:
     results: "{{ lookup('checkmk.general.folders',
                     '~',
@@ -196,7 +196,7 @@
                     automation_user=checkmk_var_automation_user,
                     automation_secret=checkmk_var_automation_secret)
               }}"
-    folder_title: "{{ dict((results | map(attribute='id')) | zip(results | map(attribute='title'))) }}"
+    folder_title: "{{ dict((results | map(attribute='id') | map('regex_replace', '/', '~')) | zip(results | map(attribute='title'))) }}"
   loop: "{{ checkmk_var_folders_defaults_test }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
