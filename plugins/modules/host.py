@@ -401,7 +401,7 @@ class HostAPI(CheckmkAPI):
         if desired_folder and current_folder and current_folder != desired_folder:
             changes.append("folder")
         else:
-            self.desired.pop("folder", "")
+            self.desired.pop("folder", None)
 
         return changes
 
@@ -419,24 +419,25 @@ class HostAPI(CheckmkAPI):
 
     def _detect_changes_nodes(self):
         changes = []
+        desired_parameters = self.desired.copy()
 
         current_nodes = []
         if self.current.get("cluster_nodes"):
             current_nodes = self.current.get("cluster_nodes")
 
         if (
-            self.desired.get("nodes")
-            or self.desired.get("add_nodes")
-            or self.desired.get("remove_nodes")
+            desired_parameters.get("nodes")
+            or desired_parameters.get("add_nodes")
+            or desired_parameters.get("remove_nodes")
         ):
-            desired_nodes = self.desired.get("nodes", [])
+            desired_nodes = desired_parameters.get("nodes", [])
 
-            desired_nodes = desired_nodes + self.desired.get("add_nodes", [])
+            desired_nodes = desired_nodes + desired_parameters.get("add_nodes", [])
 
             desired_nodes = [
                 el
                 for el in desired_nodes
-                if el not in self.desired.get("remove_nodes", [])
+                if el not in desired_parameters.get("remove_nodes", [])
             ]
 
             if (
@@ -445,9 +446,9 @@ class HostAPI(CheckmkAPI):
             ):
                 changes.append("nodes")
             else:
-                self.desired.pop("nodes", [])
-                self.desired.pop("add_nodes", [])
-                self.desired.pop("remove_nodes", [])
+                self.desired.pop("nodes", None)
+                self.desired.pop("add_nodes", None)
+                self.desired.pop("remove_nodes", None)
 
         return changes
 
@@ -521,7 +522,7 @@ class HostAPI(CheckmkAPI):
                             exception=e,
                         )
 
-                desired_attributes.pop("remove_attributes", {})
+                desired_attributes.pop("remove_attributes", None)
                 if tmp_remove != {}:
                     changes.append("remove attributes: %s" % json.dumps(tmp_remove))
                     if tmp_rest != {}:
@@ -537,7 +538,7 @@ class HostAPI(CheckmkAPI):
                 if desired_attributes.get(key):
                     self.desired[key] = desired_attributes.get(key)
                 else:
-                    self.desired.pop(key, "")
+                    self.desired.pop(key, None)
 
         return changes
 
@@ -724,7 +725,7 @@ class HostAPI(CheckmkAPI):
         ]
 
         for key in CLEAN_FIELDS:
-            data.pop(key, "")
+            data.pop(key, None)
 
         result = self._fetch(
             code_mapping=(
