@@ -242,17 +242,8 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.validation import safe_eval
-from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
-from ansible_collections.checkmk.general.plugins.module_utils.utils import (
-    result_as_dict,
-)
-
-try:
-    from urllib import urlencode
-except ImportError:  # For Python 3
-    from urllib.parse import urlencode
 
 DESIRED_RULE_KEYS = (
     "location",
@@ -260,6 +251,19 @@ DESIRED_RULE_KEYS = (
     "properties",
     "value_raw",
 )
+
+DESIRED_DEFAULTS = {
+    "properties": {
+        "description": "",
+        "comment": "",
+        "disabled": False,
+    },
+    "conditions": {
+        "host_tags": [],
+        "host_labels": [],
+        "service_labels": [],
+    },
+}
 
 CURRENT_RULE_KEYS = (
     "folder",
@@ -275,6 +279,7 @@ POSITION_MAPPING = {
     "after": "after_specific_rule",
     "before": "before_specific_rule",
 }
+
 
 class RuleHTTPCodes:
     # http_code: (changed, failed, "Message")
@@ -299,32 +304,43 @@ class RuleEndpoints:
     create = "/domain-types/rule/collections/all"
 
 
-class RuleLocation:
-    def __init__(self, module, current):
-        # Get complete ruleset of current rule
+# Get complete ruleset of current rule
+class RuleLocation(CheckmkAPI):
+    def __init__(self, module, folder, rule_id):
+        super().__init__(module)
         self.module = module
-        self.current = current
+        self.params = module.params
 
-        self.ruleset = self.current.get("rule", {}).get("ruleset")
-        self.rule_id = self.params.get("rule_id")
-        self.folder = self.current.get("rule", {}).get("folder")
+        self.folder = folder
+        self.rule_id = rule_id
 
-        self.rule_list = _get_ruleset(self.module.params.get("ruleset"))
-        self.folder_index = self.rule_list[self.folder].index(self.rule_id)
+        self.ruleset = self.params.get("ruleset")
+
+        self.rule_list = self._get_ruleset(self.module.params.get("ruleset"))
+        # self.module.warn("self.rule_list: %s" % str(self.rule_list))
         self.folder_rule_list = [
             k for k, v in self.rule_list.items() if v == self.folder
         ]
+        # self.module.fail_json(msg="self.folder_rule_list: %s, self.rule_id: %s" % (str(self.folder_rule_list), self.rule_id))
+        self.folder_index = self.folder_rule_list.index(self.rule_id)
         self.folder_size = len(self.folder_rule_list)
+
+    def _build_default_endpoint(self):
+        return "%s/%s" % (
+            RuleEndpoints.default,
+            self.ruleset,
+        )
 
     def _get_ruleset(self, ruleset):
         result = self._fetch(
             code_mapping=RuleHTTPCodes.list_rules,
-            endpoint=RuleEndpoints.create,
+            endpoint=RuleEndpoints.create + "?ruleset_name=" + self.ruleset,
             method="GET",
         )
 
         if result.http_code == 200:
             content = json.loads(result.content)
+            # self.module.fail_json("content: %s" % str(content))
             return {
                 r.get("id"): r.get("extensions", {}).get("folder")
                 for r in content.get("value")
@@ -375,34 +391,59 @@ class RuleAPI(CheckmkAPI):
     def __init__(self, module):
         super().__init__(module)
 
-        self.rule_id = self.params.get("rule_id")
+        self.module = module
+        self.params = self.module.params
+        self.rule_id = self.params.get("rule", {}).get("rule_id")
         self.is_new_rule = self.rule_id is None
 
-        self.desired = {}
-        self.desired["ruleset"] = self.params.get("ruleset")
-        self.desired["rule"] = {}
-
-        for key in DESIRED_RULE_KEYS:
-            tmp_params_rule = self.params.get("rule", {})
-            if tmp_params_rule.get(key):
-                self.desired["rule"][key] = self.params.get("rule", {}).get(key)
+        self.desired = self._clean_desired(self.params)
 
         self._changed_items = []
         self.current = None
         self.etag = ""
 
+        # self.module.warn("self.rule_id: %s" % str(self.rule_id))
         if self.rule_id:
             # Get the current rule from the API and set some parameters
             self.current = self._get_current()
             self._changed_items = self._detect_changes()
+        # self.module.warn("current: %s" % str(self.current))
+        # self.module.warn("desired: %s" % str(self.desired))
 
     def rule_id_found(self):
         return self.current is not None
 
-    def _raw_value_eval(state, data):
-        (safe_value_raw, exc) = safe_eval(
-            data.get("value_raw", "''"), include_exceptions=True
-        )
+    def _clean_desired(self, params):
+        desired = {}
+        desired["ruleset"] = params.get("ruleset")
+        desired["rule"] = {}
+        tmp_params_rule = params.get("rule", {})
+
+        for key in DESIRED_RULE_KEYS:
+            if tmp_params_rule.get(key):
+                desired["rule"][key] = tmp_params_rule.get(key)
+
+        # Set defaults
+        for what, defaults in DESIRED_DEFAULTS.items():
+            for key, default in defaults.items():
+                if not desired["rule"].get(what):
+                    desired["rule"][what] = {}
+
+                tmp_prop = desired["rule"].get(what, {})
+                if not desired["rule"].get(what, {}).get(key):
+                    desired["rule"][what][key] = default
+
+        return desired
+
+    def _raw_value_eval(self, state, data):
+        value_raw = data.get("value_raw", "''")
+
+        # This is an ugly hack that translates tuples into lists to have a better hit rate with
+        # idempotency.
+        # Once the internal handling of value_raw has improved, we will no loinger need this.
+        value_raw = value_raw.translate(str.maketrans("()", "[]"))
+
+        (safe_value_raw, exc) = safe_eval(value_raw, include_exceptions=True)
         if exc is not None:
             self.module.fail_json(
                 msg="ERROR: The %s value_raw has invalid format" % state
@@ -413,7 +454,7 @@ class RuleAPI(CheckmkAPI):
     def _detect_changes(self):
 
         current = self.current["rule"].copy()
-        desired = self.desired.copy()
+        desired = self.desired.get("rule").copy()
         changes = []
 
         if current.get("conditions", {}) != desired.get("conditions", {}):
@@ -422,12 +463,16 @@ class RuleAPI(CheckmkAPI):
         if current.get("properties", {}) != desired.get("properties", {}):
             changes.append("properties")
 
-        if _raw_value_eval("current", current) != _raw_value_eval("desired", desired):
+        if self._raw_value_eval("current", current) != self._raw_value_eval(
+            "desired", desired
+        ):
             changes.append("raw_value")
 
         desired_location = desired.get("rule", {}).get("location")
         if desired_location:
-            current_location = RuleLocation(self.module, self.current)
+            current_location = RuleLocation(
+                self.module, current.get("folder", "/"), self.rule_id
+            )
 
             if not current_location.is_equal(desired_location):
                 changes.append("location")
@@ -451,7 +496,7 @@ class RuleAPI(CheckmkAPI):
 
         if result.http_code == 200:
             current["rule"] = {}
-            current["state"] = "present"
+            self.state = "present"
             current["etag"] = result.etag
 
             content = json.loads(result.content)
@@ -462,7 +507,7 @@ class RuleAPI(CheckmkAPI):
                     current["rule"][key] = value
 
         else:
-            current["state"] = "absent"
+            self.state = "absent"
         return current
 
     def _check_output(self, mode):
@@ -479,47 +524,47 @@ class RuleAPI(CheckmkAPI):
         return len(self._changed_items) > 0
 
     def _moving_needed(self):
-        self.module.warn("a")
+        # self.module.warn("a")
         if "location" in self._changed_items:
-            self.module.warn("b")
+            # self.module.warn("b")
             return True
 
         if self.is_new_rule:
-            self.module.warn("c")
+            # self.module.warn("c")
             location = self.desired.get("rule").get("location")
-            self.module.warn("#### %s" % str(location))
+            # self.module.warn("#### %s" % str(location))
             if location and not (
                 location.get("folder", "") == "/"
                 and location.get("position", "") == "bottom"
             ):
-                self.module.warn("d")
+                # self.module.warn("d")
                 return True
 
         return False
 
     def _move_if_needed(self):
-        self.module.warn("1")
+        # self.module.warn("1")
         if not self._moving_needed():
             return
 
-        self.module.warn("2")
+        # self.module.warn("2")
         location = self.desired.get("rule", {}).get("location")
         data = {"position": POSITION_MAPPING[location.get("position")]}
 
         pos = location.get("position", "")
-        self.module.warn("3")
+        # self.module.warn("3")
         if pos in ["top", "bottom"]:
-            self.module.warn("4")
+            # self.module.warn("4")
             data["folder"] = location.get("folder", "/")
         elif pos in ["before", "after"]:
-            self.module.warn("5")
+            # self.module.warn("5")
             data["rule_id"] = location.get("neighbour")
 
         if self.module.check_mode:
             return self._check_output("move")
 
-        self.module.warn("#### %s" % self._build_default_endpoint() + "/actions/move/invoke")
-        self.module.warn("#### %s" % str(data))
+        # self.module.warn("#### %s" % self._build_default_endpoint() + "/actions/move/invoke")
+        # self.module.warn("#### %s" % str(data))
         return self._fetch(
             code_mapping=RuleHTTPCodes.move,
             endpoint=self._build_default_endpoint() + "/actions/move/invoke",
@@ -538,8 +583,8 @@ class RuleAPI(CheckmkAPI):
             ),
             content=list(results.values())[-1].content,
             etag=list(results.values())[-1].etag,
-            failed=any([r.failed for r in list(results.values())]),
-            changed=any([r.changed for r in list(results.values())]),
+            failed=any(r.failed for r in list(results.values())),
+            changed=any(r.changed for r in list(results.values())),
         )
 
     def create(self):
@@ -547,6 +592,9 @@ class RuleAPI(CheckmkAPI):
         location = data.pop("location", {})
         data["ruleset"] = self.desired.get("ruleset")
         data["folder"] = location.get("folder", "/")
+
+        if not data.get("value_raw"):
+            self.module.fail_json(msg="ERROR: The parameter value_raw is mandatory.")
 
         if self.module.check_mode:
             return self._check_output("create")
@@ -561,23 +609,27 @@ class RuleAPI(CheckmkAPI):
         if create_result.failed:
             return create_result
 
-        self.module.warn("#### create_result.content %s" % str(create_result.content))
+        # self.module.warn("#### create_result.content %s" % str(create_result.content))
         content = json.loads(create_result.content)
         self.rule_id = content.get("id")
-        self.module.warn("#### %s" % self.rule_id)
+        # self.module.warn("#### %s" % self.rule_id)
 
         move_result = self._move_if_needed()
         if move_result:
-            self.module.warn("#### move_result.content %s" % str(move_result.content))
+            # self.module.warn("#### move_result.content %s" % str(move_result.content))
             m = self._merge_results({"created": create_result, "moved": move_result})
-            self.module.warn("#### m.content %s" % str(m.content))
+            # self.module.warn("#### m.content %s" % str(m.content))
             return self._merge_results({"created": create_result, "moved": move_result})
         else:
             return create_result
 
     def edit(self):
         data = self.desired.get("rule", {}).copy()
+        data.pop("location")
         self.headers["if-Match"] = self.etag
+
+        if not data.get("value_raw"):
+            self.module.fail_json(msg="ERROR: The parameter value_raw is mandatory.")
 
         if self.module.check_mode:
             return self._check_output("edit")
@@ -589,8 +641,8 @@ class RuleAPI(CheckmkAPI):
             method="PUT",
         )
 
-        edit_result = result._replace(
-            msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items)
+        edit_result = edit_result._replace(
+            msg=edit_result.msg + ". Changed: %s" % ", ".join(self._changed_items)
         )
 
         if edit_result.failed:
@@ -603,6 +655,7 @@ class RuleAPI(CheckmkAPI):
             return edit_result
 
     def delete(self):
+        # self.module.warn("deleting: %s" % self._build_default_endpoint())
         if self.module.check_mode:
             return self._check_output("delete")
 
@@ -612,6 +665,7 @@ class RuleAPI(CheckmkAPI):
             method="DELETE",
         )
 
+        # self.module.warn("http: %s" % str(result.http_code))
         return result
 
 
@@ -646,12 +700,12 @@ def run_module():
                         ),
                         neighbour=dict(type="str", aliasses=["rule_id"]),
                     ),
-                    #required_if=[
+                    # required_if=[
                     #    ("position", "top", ("folder",)),
                     #    ("position", "bottom", ("folder",)),
                     #    ("position", "before", ("neighbour",)),
                     #    ("position", "after", ("neighbour",)),
-                    #],
+                    # ],
                     mutually_exclusive=[("folder", "neighbour")],
                     apply_defaults=True,
                 ),
@@ -681,8 +735,10 @@ def run_module():
         if current_rule.rule_id_found():
             # Update if needed
             if current_rule.needs_update():
+                # module.warn("NEEDS UPDATE")
                 result = current_rule.edit()
             else:
+                # module.warn("ALREADY AS DESIRED")
                 result = result._replace(
                     msg="Rule already exists with the desired parameters."
                 )
@@ -696,13 +752,17 @@ def run_module():
             # Create new rule
             result = current_rule.create()
     elif desired_state == "absent":
+        # module.warn("desired_state == absent")
+        # module.warn("current_state: %s" % str(current_rule.state))
         if current_rule.state == "present":
             result = current_rule.delete()
         elif current_rule.state == "absent":
             result = result._replace(msg="Rule already absent.")
-    
-    result_as_dict = result._replace(content=json.loads(result.content))._asdict()
-    module.warn("############ %s" % str(result_as_dict))
+
+    if result.content:
+        result = result._replace(content=json.loads(result.content))
+    result_as_dict = result._asdict()
+    # module.warn("############ %s" % str(result_as_dict))
     module.exit_json(**result_as_dict)
 
 

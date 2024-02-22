@@ -84,7 +84,12 @@ DOCUMENTATION = """
         default: ""
 
       comment_regex:
-        description: A regex to filter for certain comment stings.
+        description: A regex to filter for certain comment strings.
+        required: False
+        default: ""
+
+      folder_regex:
+        description: A regex to filter for certain folders.
         required: False
         default: ""
 
@@ -102,6 +107,23 @@ EXAMPLES = """
   loop: "{{
     lookup('checkmk.general.rules',
         ruleset='host_groups',
+        server_url=server_url,
+        site=site,
+        automation_user=automation_user,
+        automation_secret=automation_secret,
+        validate_certs=False
+        )
+    }}"
+  loop_control:
+      label: "{{ item.id }}"
+
+- name: Get all rules of the ruleset host_groups in folder /test
+  ansible.builtin.debug:
+    msg: "Rule: {{ item.extensions }}"
+  loop: "{{
+    lookup('checkmk.general.rules',
+        ruleset='host_groups',
+        regex_folder='^/test$',
         server_url=server_url,
         site=site,
         automation_user=automation_user,
@@ -156,6 +178,7 @@ class LookupModule(LookupBase):
         ruleset = self.get_option("ruleset")
         regex_params["description"] = self.get_option("description_regex")
         regex_params["comment"] = self.get_option("comment_regex")
+        regex_params["folder"] = self.get_option("folder_regex")
         server_url = self.get_option("server_url")
         site = self.get_option("site")
         user = self.get_option("automation_user")
@@ -189,21 +212,41 @@ class LookupModule(LookupBase):
 
         rule_list = response.get("value")
 
+        log = []
+
+        log.append("PARAMS: %s" % str(regex_params))
         for what, regex in regex_params.items():
             try:
                 if regex:
+                    log.append("ITEMS: %s" % str((what, regex)))
+
+                    def _rule_attribute(rule, what, regex):
+                        if what == "folder":
+                            log.append(
+                                "Folder: %s regex: %s"
+                                % (rule.get("extensions", {}).get("folder", ""), regex)
+                            )
+                            return rule.get("extensions", {}).get("folder", "")
+                        return (
+                            rule.get("extensions", {})
+                            .get("properties", {})
+                            .get(what, "")
+                        )
+
                     rule_list = [
                         r
                         for r in rule_list
                         if re.search(
                             regex,
-                            r.get("extensions", {}).get("properties", {}).get(what, ""),
+                            _rule_attribute(r, what, regex),
                         )
                     ]
+
             except re.error as e:
                 raise AnsibleError(
                     "Invalid regex for %s, pattern: %s, position: %s error: %s"
                     % (what, e.pattern, e.pos, e.msg)
                 )
 
+        # return [log]
         return [rule_list]

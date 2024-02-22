@@ -11,32 +11,51 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rules }}"
+  register: created_rules
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
-  activation:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Debug registered variable."
+  debug:
+    var: created_rules
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify rules."
   rule:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    ruleset: "{{ item.ruleset }}"
-    rule: "{{ item.rule }}"
+    ruleset: "{{ item.content.extensions.ruleset }}"
+    rule:
+      rule_id: "{{ item.content.id }}"
+      conditions: "{{ item.content.extensions.conditions }}"
+      properties: 
+          comment: "{{ item.content.extensions.properties.comment }}"
+          description: "New description"
+      value_raw: "{{ item.content.extensions.value_raw }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  register: rule_result
-  loop: "{{ checkmk_var_rules }}"
+  loop: "{{ created_rules.results }}"
+  loop_control:
+      label: "{{ item.content.id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify rules. Again."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ruleset: "{{ item.content.extensions.ruleset }}"
+    rule:
+      rule_id: "{{ item.content.id }}"
+      properties: 
+          description: "New description"
+      value_raw: "{{ item.content.extensions.value_raw }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ created_rules.results }}"
+  loop_control:
+      label: "{{ item.content.id }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
   ansible.builtin.fail:
@@ -51,12 +70,15 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    ruleset: "{{ item.ruleset }}"
-    rule: "{{ item.rule }}"
+    ruleset: "{{ item.content.extensions.ruleset }}"
+    rule:
+      rule_id: "{{ item.content.id }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_var_rules }}"
+  loop: "{{ created_rules.results }}"
+  loop_control:
+      label: "{{ item.content.id }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -76,13 +98,15 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    ruleset: "{{ item.ruleset }}"
-    rule: "{{ item.rule }}"
+    ruleset: "{{ item.content.extensions.ruleset }}"
+    rule:
+      rule_id: "{{ item.content.id }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  register: rule_result
-  loop: "{{ checkmk_var_rules }}"
+  loop: "{{ created_rules.results }}"
+  loop_control:
+      label: "{{ item.content.id }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
   ansible.builtin.fail:
