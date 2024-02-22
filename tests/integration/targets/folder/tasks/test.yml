@@ -197,7 +197,6 @@
                     automation_secret=checkmk_var_automation_secret)
               }}"
   loop: "{{ checkmk_var_folders_defaults_test }}"
-  fail_msg: "Creted folders title does not match to the expected one!"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
