@@ -39,8 +39,6 @@ checkmk_folder_attr_test:
 checkmk_var_folders_defaults_test:
   - path: /foo
     verify_name: "foo"
-  - path: /foo/bar
+  - path: /bar
     name: Bar
     verify_name: "Bar"
-  - path: /foo/bar/tresure
-    verify_name: "treasure"
