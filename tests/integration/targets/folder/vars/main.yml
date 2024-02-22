@@ -44,4 +44,3 @@ checkmk_var_folders_defaults_test:
     verify_name: "Bar"
   - path: /foo/bar/tresure
     verify_name: "treasure"
-

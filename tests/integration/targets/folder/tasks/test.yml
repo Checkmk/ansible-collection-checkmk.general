@@ -213,7 +213,6 @@
   loop: "{{ checkmk_var_folders_defaults_test }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_var_folders }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
