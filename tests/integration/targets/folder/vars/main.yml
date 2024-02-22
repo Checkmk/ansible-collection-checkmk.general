@@ -35,3 +35,13 @@ checkmk_folder_attr_test:
   attributes:
     tag_criticality: "test"
     tag_networking: "dmz"
+
+checkmk_var_folders_defaults_test:
+  - path: /foo
+    verify_name: "foo"
+  - path: /foo/bar
+    name: Bar
+    verify_name: "Bar"
+  - path: /foo/bar/tresure
+    verify_name: "treasure"
+

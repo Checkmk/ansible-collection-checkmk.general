@@ -158,3 +158,71 @@
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folders for defaults test."
+  folder:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    path: "{{ item.path }}"
+    name: "{{ item.name | default(omit) }}"
+    state: "present"
+  loop: "{{ checkmk_var_folders_defaults_test }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify created folders."
+  ansible.builtin.assert:
+    that: "results.title == item.verify_name"
+  vars:
+    results: "{{ lookup('checkmk.general.folder',
+                    item.path,
+                    server_url=checkmk_var_server_url,
+                    site=outer_item.site,
+                    validate_certs=False,
+                    automation_user=checkmk_var_automation_user,
+                    automation_secret=checkmk_var_automation_secret)
+              }}"
+  loop: "{{ checkmk_var_folders_defaults_test }}"
+  fail_msg: "Creted folders title does not match to the expected one!"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete folders."
+  folder:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    path: "{{ item.path }}"
+    name: "{{ item.name | default(omit) }}"
+    state: "absent"
+  loop: "{{ checkmk_var_folders_defaults_test }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_var_folders }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
