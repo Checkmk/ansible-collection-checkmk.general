@@ -48,14 +48,12 @@ options:
               This will only update the given attributes.
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
-        default: {}
     remove_attributes:
         description:
             - The remove_attributes of your host as described in the API documentation.
               This will only remove the given attributes.
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
-        default: []
     state:
         description: The state of your host.
         type: str
