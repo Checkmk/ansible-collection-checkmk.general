@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: host
+module: cluster
 
 short_description: Manage hosts in Checkmk.
 
@@ -28,7 +28,7 @@ options:
         required: true
         type: str
     folder:
-        description: The folder your host is located in. On create it defaults to C(/).
+        description: The folder your cluster host is located in. On create it defaults to C(/).
         type: str
     nodes:
         description: Nodes, members of the cluster-container host provided in name.
@@ -37,25 +37,25 @@ options:
         elements: str
     attributes:
         description:
-            - The attributes of your host as described in the API documentation.
+            - The attributes of your cluster host as described in the API documentation.
               B(Attention! This option OVERWRITES all existing attributes!)
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
         required: false
     update_attributes:
         description:
-            - The update_attributes of your host as described in the API documentation.
+            - The update_attributes of your cluster host as described in the API documentation.
               This will only update the given attributes.
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
     remove_attributes:
         description:
-            - The remove_attributes of your host as described in the API documentation.
+            - The remove_attributes of your cluster host as described in the API documentation.
               This will only remove the given attributes.
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
     state:
-        description: The state of your host.
+        description: The state of your cluster host.
         type: str
         default: present
         choices: [present, absent]
