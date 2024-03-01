@@ -594,7 +594,7 @@ class HostAPI(CheckmkAPI):
             content="",
             etag="",
             failed=False,
-            changed=False,
+            changed=True,
         )
 
     def needs_update(self):
