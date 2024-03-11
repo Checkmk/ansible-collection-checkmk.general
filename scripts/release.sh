@@ -18,7 +18,7 @@ collection_dir="${script_dir%/*}"
 checkmk_ancient="2.0.0p39"
 checkmk_oldstable="2.1.0p39"
 checkmk_stable="2.2.0p22"
-checkmk_beta="2.3.0-$(date +%Y.%m.%d)"
+checkmk_beta="2.3.0b1"
 
 while getopts 's:t:' OPTION; do
   case "$OPTION" in

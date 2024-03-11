@@ -1,9 +1,9 @@
 ---
 test_sites:
-  - version: "2.3.0-2024.02.15"
+  - version: "2.3.0b1"
     edition: "cme"
     site: "beta_cme"
-  - version: "2.3.0-2024.02.15"
+  - version: "2.3.0b1"
     edition: "cre"
     site: "beta_cre"
   - version: "2.2.0p22"
