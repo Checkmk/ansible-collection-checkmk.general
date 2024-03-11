@@ -80,3 +80,23 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_ruleset_regexes }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: ruleset."
+  ansible.builtin.assert:
+    # For each rule that we created, check, if the number of rules in its ruleset is 1.
+    that: "ruleset.number_of_rules == 1"
+  vars:
+    ruleset: "{{ lookup('checkmk.general.ruleset', ruleset=item) }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_ruleset_regexes }}"
+  when: outer_item.edition == "stable_cee"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: rulesets."
+  ansible.builtin.debug:
+    var: rulesets
+  vars:
+    rulesets: "{{ lookup('checkmk.general.rulesets', regex='file', rulesets_used=False, rulesets_deprecated=False) }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  when: outer_item.edition == "stable_cee"

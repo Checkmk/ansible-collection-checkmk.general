@@ -20,3 +20,15 @@
           ("'initialized' in looked_up_bakery.msg") or
           ("'stopped' in looked_up_bakery.msg") or
           ("'exception' in looked_up_bakery.msg")
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
+  ansible.builtin.assert:
+    that: ("'finished' in bakery.msg") or
+          ("'running' in bakery.msg") or
+          ("'initialized' in bakery.msg") or
+          ("'stopped' in bakery.msg") or
+          ("'exception' in bakery.msg")
+  vars:
+    bakery: "{{ lookup('checkmk.general.bakery') }}"
+  delegate_to: localhost
+  when: outer_item.edition == "stable_cee"

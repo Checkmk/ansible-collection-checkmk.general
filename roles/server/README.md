@@ -25,7 +25,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Role Variables
 
-    checkmk_server_version: "2.2.0p22"
+    checkmk_server_version: "2.2.0p23"
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.
@@ -42,7 +42,7 @@ The edition you want to use. Valid values are `cre`, `cfe`, `cee`, `cce` and `cm
 
 For details about the editions see: https://checkmk.com/product/editions
 
-Note, that you need credentials, to download the following editions: `cee` and `cme`.  
+Note, that you need credentials, to download the following editions: `cee` and `cme`.
 See below variables, to set those.
 
     checkmk_server_download_user: []
@@ -99,7 +99,7 @@ Valid choices include `install`, `keepold` and `abort`.
 
 Site configuration can be passed with the `omd_config` keyword.
 The format can be seen above, for a list of variables run `omd show`
-on an existing site.  
+on an existing site.
 **Pay special attention to the `omd_auto_restart` variable!** As site configuration needs the site to be stopped, this needs to be handled. By default the variable is set to `false` to avoid unexpected restarting. However, no configuration will be performed if the site is started.
 
     checkmk_server_backup_on_update: 'true'

@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.6.1
+  :antsibull-docs: 2.7.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.folder module -- Manage folders in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.2.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -184,6 +184,48 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-extended_functionality"></div>
+
+      .. _ansible_collections.checkmk.general.folder_module__parameter-extended_functionality:
+
+      .. rst-class:: ansible-option-title
+
+      **extended_functionality**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-extended_functionality" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Allow extended functionality instead of the expected REST API behavior.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
         <div class="ansibleOptionAnchor" id="parameter-title"></div>
 
@@ -280,7 +322,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The remove\_attributes of your host as described in the API documentation. This will only remove the given attributes. As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of \ :emphasis:`attributes`\ , \ :emphasis:`remove\_attributes`\ , and \ :emphasis:`update\_attributes`\  is no longer supported.
+      The remove\_attributes of your host as described in the API documentation. \ :strong:`If a list of strings is supplied, the listed attributes are removed.`\  \ :strong:`If extended\_functionality and a dict is supplied, the attributes that exactly match the passed attributes are removed.`\  This will only remove the given attributes. As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of \ :emphasis:`attributes`\ , \ :emphasis:`remove\_attributes`\ , and \ :emphasis:`update\_attributes`\  is no longer supported.
 
 
       .. raw:: html
@@ -314,7 +356,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The base url of your Checkmk server.
+      The base url of your Checkmk server including the protocol.
 
 
       .. raw:: html

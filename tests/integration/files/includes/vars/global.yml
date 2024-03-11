@@ -15,3 +15,13 @@ checkmk_server_edition_mapping:
   cee: enterprise
   cce: cloud
   cme: managed
+
+
+# This is a very hacky workaround, as it is not possible to assign variables
+# to other variables when using them in lookup modules.
+ansible_lookup_checkmk_server_url: "http://127.0.0.1"
+ansible_lookup_checkmk_site: "stable_cee"  # This is especially hacky.
+                                           # All integration tests were adapted to run the specific task only on this site.
+ansible_lookup_checkmk_automation_user: "cmkadmin"
+ansible_lookup_checkmk_automation_secret: "Sup3rSec4et!"
+ansible_lookup_checkmk_validate_certs: false

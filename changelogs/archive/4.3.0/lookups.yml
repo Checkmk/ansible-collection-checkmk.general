@@ -1,0 +1,9 @@
+minor_changes:
+  - Lookup modules - Enable usage of ini files, environment and inventory variables
+    to configure basic settings for the lookup plugins, like e.g., the server_url or site
+    alongside the authentication options. Refer to the module documentation for details.
+
+known_issues:
+  - Lookup modules - When using inventory variables to configure e.g., the server_url,
+    it is not possible to assign other variables to these variables.
+    This is a limitation of Ansble itself.

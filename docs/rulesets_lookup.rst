@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.6.1
+  :antsibull-docs: 2.7.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.rulesets lookup -- Search rulesets
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.2.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -115,6 +115,23 @@ examples: ``lookup('checkmk.general.rulesets', key1=value1, key2=value2, ...)`` 
       Automation secret for the REST API access.
 
 
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block::
+
+          [checkmk_lookup]
+          automation_secret = VALUE
+
+
+      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_AUTOMATION\_SECRET`
+
+      - Variable: ansible\_lookup\_checkmk\_automation\_secret
+
+
       .. raw:: html
 
         </div>
@@ -150,6 +167,23 @@ examples: ``lookup('checkmk.general.rulesets', key1=value1, key2=value2, ...)`` 
         <div class="ansible-option-cell">
 
       Automation user for the REST API access.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block::
+
+          [checkmk_lookup]
+          automation_user = VALUE
+
+
+      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_AUTOMATION\_USER`
+
+      - Variable: ansible\_lookup\_checkmk\_automation\_user
 
 
       .. raw:: html
@@ -359,6 +393,23 @@ examples: ``lookup('checkmk.general.rulesets', key1=value1, key2=value2, ...)`` 
       URL of the Checkmk server.
 
 
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block::
+
+          [checkmk_lookup]
+          server_url = VALUE
+
+
+      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_SERVER\_URL`
+
+      - Variable: ansible\_lookup\_checkmk\_server\_url
+
+
       .. raw:: html
 
         </div>
@@ -393,7 +444,24 @@ examples: ``lookup('checkmk.general.rulesets', key1=value1, key2=value2, ...)`` 
 
         <div class="ansible-option-cell">
 
-      Site name
+      Site name.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block::
+
+          [checkmk_lookup]
+          site = VALUE
+
+
+      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_SITE`
+
+      - Variable: ansible\_lookup\_checkmk\_site
 
 
       .. raw:: html
@@ -430,7 +498,7 @@ examples: ``lookup('checkmk.general.rulesets', key1=value1, key2=value2, ...)`` 
 
         <div class="ansible-option-cell">
 
-      Whether or not to validate TLS cerificates.
+      Whether or not to validate TLS certificates.
 
 
       .. rst-class:: ansible-option-line
@@ -439,6 +507,23 @@ examples: ``lookup('checkmk.general.rulesets', key1=value1, key2=value2, ...)`` 
 
       - :ansible-option-choices-entry:`false`
       - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block::
+
+          [checkmk_lookup]
+          validate_certs = true
+
+
+      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_VALIDATE\_CERTS`
+
+      - Variable: ansible\_lookup\_checkmk\_validate\_certs
 
 
       .. raw:: html
@@ -451,6 +536,14 @@ examples: ``lookup('checkmk.general.rulesets', key1=value1, key2=value2, ...)`` 
 
 .. Notes
 
+Notes
+-----
+
+.. note::
+   - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'. If you need to use different permissions, you must change the command or run Ansible as another user.
+   - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
+   - The directory of the play is used as the current working directory.
+   - It is \ :strong:`NOT`\  possible to assign other variables to the variables mentioned in the \ :literal:`vars`\  section! This is a limitation of Ansible itself.
 
 .. Seealso
 
@@ -495,6 +588,20 @@ Examples
           validate_certs=False
           )
         }}"
+      loop_control:
+          label: "{{ item.0.id }}"
+
+    - name: "Use variables outside the module call."
+      ansible.builtin.debug:
+        msg: "Ruleset {{ item.extension.name }} is deprecated."
+      vars:
+        ansible_lookup_checkmk_server_url: "{{ checkmk_var_server_url }}"
+        ansible_lookup_checkmk_site: "{{ outer_item.site }}"
+        ansible_lookup_checkmk_automation_user: "{{ checkmk_var_automation_user }}"
+        ansible_lookup_checkmk_automation_secret: "{{ checkmk_var_automation_secret }}"
+        ansible_lookup_checkmk_validate_certs: false
+      loop: "{{
+        lookup('checkmk.general.rulesets', regex='', rulesets_deprecated=True, rulesets_used=True) }}"
       loop_control:
           label: "{{ item.0.id }}"
 
