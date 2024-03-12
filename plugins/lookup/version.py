@@ -89,7 +89,8 @@ EXAMPLES = """
     msg: "Server version is {{ version }}"
   vars:
     version: "{{ lookup('checkmk.general.version',
-                   server_url + '/' + site,
+                   server_url=my_url,
+                   site=my_site,
                    validate_certs=False,
                    automation_user=my_user,
                    automation_secret=my_secret
