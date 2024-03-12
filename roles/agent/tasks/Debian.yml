@@ -41,6 +41,7 @@
     force: "{{ checkmk_agent_force_install | bool }}"
     state: present
   when: checkmk_agent_edition | lower == "cre"
+  register: checkmk_install_agent_result
   tags:
     - install-package
 
