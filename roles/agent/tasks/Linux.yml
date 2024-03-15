@@ -72,7 +72,7 @@
   notify: "activate changes"
 
 - name: "Ensure registration readyness."  # noqa no-handler
-  when: checkmk_agent_create_result.changed or checkmk_install_agent_result.changed
+  when: (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed) or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
   block:
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers
@@ -81,13 +81,13 @@
   ansible.builtin.stat:
     path: /usr/bin/cmk-update-agent
   register: checkmk_agent_updater_binary
-  when: checkmk_agent_create_result.changed or checkmk_install_agent_result.changed
+  when: (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed) or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
 
 - name: "{{ ansible_system }}: Check for Agent Controller Binary."
   ansible.builtin.stat:
     path: /usr/bin/cmk-agent-ctl
   register: checkmk_agent_controller_binary
-  when: checkmk_agent_create_result.changed or checkmk_install_agent_result.changed
+  when: (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed) or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."  # noqa no-changed-when
   become: true
@@ -103,8 +103,8 @@
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
     and (checkmk_agent_secret is not defined)
-    or checkmk_agent_create_result.changed
-    or checkmk_install_agent_result.changed
+    or (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed)
+    or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using Automation Secret."  # noqa no-changed-when
   become: true
@@ -119,8 +119,8 @@
     and checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
-    or checkmk_agent_create_result.changed
-    or checkmk_install_agent_result.changed
+    or (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed)
+    or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
 
 - name: "{{ ansible_system }}: Register Agent for TLS."  # noqa no-changed-when
   become: true
@@ -134,8 +134,8 @@
     checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
-    or checkmk_agent_create_result.changed
-    or checkmk_install_agent_result.changed
+    or (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed)
+    or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
 
 - name: "{{ ansible_system }}: Verify Checkmk Agent Port is open."
   ansible.builtin.wait_for:
@@ -143,13 +143,13 @@
     timeout: 60
   when: |
     checkmk_agent_mode == 'pull'
-    or checkmk_agent_create_result.changed
-    or checkmk_install_agent_result.changed
+    or (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed)
+    or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
 
 - name: "{{ ansible_system }}: Initial push of data for push agent"  # noqa no-changed-when
   become: true
   ansible.builtin.command: cmk-agent-ctl push
   when: |
     checkmk_agent_mode == 'push'
-    or checkmk_agent_create_result.changed
-    or checkmk_install_agent_result.changed
+    or (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed)
+    or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
