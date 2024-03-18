@@ -72,8 +72,8 @@
   notify: "activate changes"
 
 - name: "Ensure registration readyness."  # noqa no-handler
-  when: (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed) or
-        (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
+  when: (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed)
+        or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
   block:
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers
@@ -82,15 +82,15 @@
   ansible.builtin.stat:
     path: /usr/bin/cmk-update-agent
   register: checkmk_agent_updater_binary
-  when: (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed) or
-        (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
+  when: (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed)
+        or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
 
 - name: "{{ ansible_system }}: Check for Agent Controller Binary."
   ansible.builtin.stat:
     path: /usr/bin/cmk-agent-ctl
   register: checkmk_agent_controller_binary
-  when: (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed) or
-        (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
+  when: (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed)
+        or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."  # noqa no-changed-when
   become: true
