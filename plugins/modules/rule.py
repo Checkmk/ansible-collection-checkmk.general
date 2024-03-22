@@ -56,7 +56,6 @@ options:
                             - Put the rule C(before) or C(after) this rule_id.
                             - Required when I(position) is C(before) or C(after).
                             - Mutually exclusive with I(folder).
-                        aliasses: rule_id
                         type: str
                     folder:
                         description:
@@ -170,7 +169,7 @@ EXAMPLES = r"""
     automation_secret: "my_secret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-      rule_id: {{ response.content.id }}",
+      rule_id: "{{ response.content.id }}"
     state: "absent"
 
 # Create a rule rule matching a host label
@@ -725,7 +724,7 @@ def run_module():
                             type="str",
                             default="/",
                         ),
-                        neighbour=dict(type="str", aliasses=["rule_id"]),
+                        neighbour=dict(type="str"),
                     ),
                     # required_if=[
                     #    ("position", "top", ("folder",)),
