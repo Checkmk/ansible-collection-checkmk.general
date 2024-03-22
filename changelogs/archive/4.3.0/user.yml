@@ -1,0 +1,2 @@
+bugfixes:
+  - User module - Fix bug, where an absent user was created, if 'reset_password' was used.

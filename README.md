@@ -8,7 +8,9 @@ Checkmk and keep your daily operations smooth and efficient.
 ## Here be dragons!
 
 This collection is provided AS IS and we cannot guarantee proper functionality.
+
 Additionally, there is no commercial support whatsoever!
+
 This is an open source endeavour, on which we want to collaborate with the community.
 
 [![Ansible Sanity Tests](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml)
@@ -42,6 +44,8 @@ Name | Description
 -->
 
 ### Lookup plugins
+Click on the lookup plugin name below, to get detailed documentation about it.
+For more in-depth documentation, see [this README](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/README.md).
 
 Name | Description | Tests
 --- | --- | ---
@@ -57,6 +61,7 @@ Name | Description | Tests
 [checkmk.general.version](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/version.py)|Look up version and edition information.|[![Integration Tests for Version Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-version.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-version.yaml)
 
 ### Modules
+Click on the module name below, to get detailed documentation about it.
 
 Name | Description | Tests
 --- | --- | ---
@@ -74,6 +79,7 @@ Name | Description | Tests
 [checkmk.general.user](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/user.py)|Manage users.|[![Integration Tests for User Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-user.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-user.yaml)
 
 ### Roles
+Click on the role name below, to get documentation about the role.
 
 Name | Description | Tests
 --- | --- | ---

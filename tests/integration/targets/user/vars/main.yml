@@ -1,15 +1,15 @@
 ---
 test_sites:
-  - version: "2.2.0p19"
+  - version: "2.2.0p23"
     edition: "cme"
     site: "stable_cme"
-  - version: "2.2.0p19"
+  - version: "2.2.0p23"
     edition: "cre"
     site: "stable_cre"
-  - version: "2.2.0p19"
+  - version: "2.2.0p23"
     edition: "cee"
     site: "stable_cee"
-  - version: "2.1.0p38"
+  - version: "2.1.0p40"
     edition: "cre"
     site: "old_cre"
 
@@ -104,11 +104,6 @@ checkmk_var_users_newpw:
   - name: auto1
     password: "abcdefghij"
     auth_type: automation
-
-checkmk_var_users_new_short_pw:
-  - name: user3
-    password: "abcdefg"
-    auth_type: password
 
 checkmk_var_users_edit:
   - name: admin1

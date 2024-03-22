@@ -102,6 +102,8 @@ DOCUMENTATION = """
         If you need to use different permissions, you must change the command or run Ansible as another user.
       - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
       - The directory of the play is used as the current working directory.
+      - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
+        This is a limitation of Ansible itself.
 """
 
 EXAMPLES = """
@@ -137,6 +139,20 @@ EXAMPLES = """
       validate_certs=False
       )
     }}"
+  loop_control:
+      label: "{{ item.0.id }}"
+
+- name: "Use variables outside the module call."
+  ansible.builtin.debug:
+    msg: "Ruleset {{ item.extension.name }} is deprecated."
+  vars:
+    ansible_lookup_checkmk_server_url: "{{ checkmk_var_server_url }}"
+    ansible_lookup_checkmk_site: "{{ outer_item.site }}"
+    ansible_lookup_checkmk_automation_user: "{{ checkmk_var_automation_user }}"
+    ansible_lookup_checkmk_automation_secret: "{{ checkmk_var_automation_secret }}"
+    ansible_lookup_checkmk_validate_certs: false
+  loop: "{{
+    lookup('checkmk.general.rulesets', regex='', rulesets_deprecated=True, rulesets_used=True) }}"
   loop_control:
       label: "{{ item.0.id }}"
 """

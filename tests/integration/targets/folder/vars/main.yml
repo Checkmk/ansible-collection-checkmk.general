@@ -1,12 +1,12 @@
 ---
 test_sites:
-  - version: "2.2.0p19"
+  - version: "2.2.0p23"
     edition: "cre"
     site: "stable_cre"
-  - version: "2.2.0p19"
+  - version: "2.2.0p23"
     edition: "cee"
     site: "stable_cee"
-  - version: "2.1.0p38"
+  - version: "2.1.0p40"
     edition: "cre"
     site: "old_cre"
   - version: "2.0.0p39"
@@ -35,3 +35,10 @@ checkmk_folder_attr_test:
   attributes:
     tag_criticality: "test"
     tag_networking: "dmz"
+
+checkmk_var_folders_defaults_test:
+  - path: /foo
+    verify_name: "foo"
+  - path: /bar
+    name: Bar
+    verify_name: "Bar"
