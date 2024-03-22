@@ -71,11 +71,6 @@ options:
             properties:
                 description: Properties of the rule.
                 type: dict
-            rule_id:
-                description:
-                  - If given, it will be C(the only condition) to identify the rule to work on.
-                  - When there's no rule found with this id, the task will fail.
-                type: str
             value_raw:
                 description: Rule values as exported from the web interface.
                 type: str
@@ -717,7 +712,6 @@ def run_module():
                 conditions=dict(type="dict"),
                 properties=dict(type="dict"),
                 value_raw=dict(type="str"),
-                rule_id=dict(type="str"),
                 location=dict(
                     type="dict",
                     options=dict(
