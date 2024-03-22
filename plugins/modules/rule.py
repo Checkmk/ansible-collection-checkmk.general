@@ -31,13 +31,13 @@ options:
         suboptions:
             rule_id:
                 description:
-                    - If provided, update/delete an existing rule
-                    - If omitted, create a new rule
+                    - If provided, update/delete an existing rule.
+                    - If omitted, I(always) creates a new rule.
                 type: str
             location:
                 description:
-                  - Location of the rule within a folder.
-                  - By default rules are created at the bottom of the "/" folder.
+                    - Location of the rule within a folder.
+                    - By default rules are created at the bottom of the "/" folder.
                 type: dict
                 suboptions:
                     position:
@@ -112,10 +112,10 @@ EXAMPLES = r"""
         "service_labels": []
       }
       properties: {
-        "comment": "Warning at 80%\nCritical at 90%\n",
+        "comment": "Ansible managed",
         "description": "Allow higher memory usage",
         "disabled": false,
-        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rule.py"
       }
       value_raw: "{'levels': (80.0, 90.0)}"
       location:
@@ -126,7 +126,7 @@ EXAMPLES = r"""
 
 - name: Show the ID of the new rule
   ansible.builtin.debug:
-    msg: "RULE ID : {{ response.id }}"
+    msg: "RULE ID : {{ response.content.id }}"
 
 # Create another rule in checkgroup_parameters:memory_percentage_used
 # and put it after the rule created above.
@@ -150,15 +150,15 @@ EXAMPLES = r"""
         "service_labels": []
       }
       properties: {
-        "comment": "Warning at 85%\nCritical at 99%\n",
+        "comment": "Ansible managed",
         "description": "Allow even higher memory usage",
         "disabled": false,
-        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rule.py"
       }
       value_raw: "{'levels': (85.0, 99.0)}"
       location:
         position: "after"
-        rule_id: "{{ response.id }}"
+        rule_id: "{{ response.content.id }}"
     state: "present"
 
 # Delete the first rule.
@@ -170,24 +170,7 @@ EXAMPLES = r"""
     automation_secret: "my_secret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-      conditions: {
-        "host_labels": [],
-        "host_name": {
-          "match_on": [
-            "test1.tld"
-          ],
-          "operator": "one_of"
-        },
-        "host_tags": [],
-        "service_labels": []
-      }
-      properties: {
-        "comment": "Warning at 80%\nCritical at 90%\n",
-        "description": "Allow higher memory usage",
-        "disabled": false,
-        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-      }
-      value_raw: "{'levels': (80.0, 90.0)}"
+      rule_id: {{ response.content.id }}",
     state: "absent"
 
 # Create a rule rule matching a host label
@@ -212,16 +195,40 @@ EXAMPLES = r"""
         "service_labels": []
       }
       properties: {
-        "comment": "Warning at 80%\nCritical at 90%\n",
+        "comment": "Ansible managed",
         "description": "Allow higher memory usage",
         "disabled": false,
-        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rule.py"
       }
       value_raw: "{'levels': (80.0, 90.0)}"
       location:
         folder: "/"
         position: "top"
     state: "present"
+
+# Delete all rules in a ruleset that match a certain comment.
+- name: "Delete all rules in a ruleset that match a certain comment."
+  checkmk.general.rule:
+    server_url: "http://my_server/"
+    site: "my_site"
+    automation_user: "my_user"
+    automation_secret: "my_secret"
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      rule_id: "{{ item.id }}"
+    loop: "{{
+             lookup('checkmk.general.rules',
+               ruleset=outer_item.ruleset,
+               comment_regex='Ansible managed',
+               server_url=server_url,
+               site=site,
+               automation_user=automation_user,
+               automation_secret=automation_secret,
+               validate_certs=False
+               )
+           }}"
+    loop_control:
+      label: "{{ item.id }}"
 """
 
 RETURN = r"""
@@ -230,12 +237,55 @@ msg:
     type: str
     returned: always
     sample: 'Rule created.'
-
-id:
-    description: The ID of the rule.
+http_code:
+    description: The HTTP code the Checkmk API returns.
+    type: int
+    returned: always
+    sample: '200'
+etag:
+    description: The etag of the rule.
     type: str
     returned: when the rule is created or when it already exists
-    sample: '1f97bc43-52dc-4f1a-ab7b-c2e9553958ab'
+    sample: '"ad55730d5488e55e07c58a3da9759fba8cd0b009"'
+content:
+    description: The complete created/changed rule
+    returned: when the rule is created or when it already exists
+    type: dict
+    contains:
+        id:
+            description: The ID of the rule.
+            type: str
+            returned: when the rule is created or when it already exists
+            sample: '1f97bc43-52dc-4f1a-ab7b-c2e9553958ab'
+        extensions:
+            description: The attributes of the rule
+            type: dict
+            returned: when the rule is created or when it already exists
+            contains:
+                conditions:
+                    description: The contitions of the rule.
+                    type: str
+                    returned: when the rule is created or when it already exists
+                folder:
+                    description: The folder of the rule.
+                    type: str
+                    returned: when the rule is created or when it already exists
+                folder_index:
+                    description: The index of the rule inside the folder.
+                    type: str
+                    returned: when the rule is created or when it already exists
+                properties:
+                    description: The properties of the rule.
+                    type: str
+                    returned: when the rule is created or when it already exists
+                ruleset:
+                    description: The ruleset of the rule.
+                    type: str
+                    returned: when the rule is created or when it already exists
+                value_raw:
+                    description: The actual value of the rule
+                    type: str
+                    returned: when the rule is created or when it already exists
 """
 
 import json
@@ -317,11 +367,9 @@ class RuleLocation(CheckmkAPI):
         self.ruleset = self.params.get("ruleset")
 
         self.rule_list = self._get_ruleset(self.module.params.get("ruleset"))
-        # self.module.warn("self.rule_list: %s" % str(self.rule_list))
         self.folder_rule_list = [
             k for k, v in self.rule_list.items() if v == self.folder
         ]
-        # self.module.fail_json(msg="self.folder_rule_list: %s, self.rule_id: %s" % (str(self.folder_rule_list), self.rule_id))
         self.folder_index = self.folder_rule_list.index(self.rule_id)
         self.folder_size = len(self.folder_rule_list)
 
@@ -340,7 +388,6 @@ class RuleLocation(CheckmkAPI):
 
         if result.http_code == 200:
             content = json.loads(result.content)
-            # self.module.fail_json("content: %s" % str(content))
             return {
                 r.get("id"): r.get("extensions", {}).get("folder")
                 for r in content.get("value")
@@ -383,7 +430,7 @@ class RuleLocation(CheckmkAPI):
             else:
                 return False
 
-        # This should never happen
+        # This should never happen ;-)
         return False
 
 
@@ -402,13 +449,11 @@ class RuleAPI(CheckmkAPI):
         self.current = None
         self.etag = ""
 
-        # self.module.warn("self.rule_id: %s" % str(self.rule_id))
         if self.rule_id:
             # Get the current rule from the API and set some parameters
             self.current = self._get_current()
-            self._changed_items = self._detect_changes()
-        # self.module.warn("current: %s" % str(self.current))
-        # self.module.warn("desired: %s" % str(self.desired))
+            if self.state == "present":
+                self._changed_items = self._detect_changes()
 
     def rule_id_found(self):
         return self.current is not None
@@ -440,7 +485,7 @@ class RuleAPI(CheckmkAPI):
 
         # This is an ugly hack that translates tuples into lists to have a better hit rate with
         # idempotency.
-        # Once the internal handling of value_raw has improved, we will no loinger need this.
+        # Once the internal handling of value_raw has improved, we will no longer need this.
         value_raw = value_raw.translate(str.maketrans("()", "[]"))
 
         (safe_value_raw, exc) = safe_eval(value_raw, include_exceptions=True)
@@ -524,47 +569,35 @@ class RuleAPI(CheckmkAPI):
         return len(self._changed_items) > 0
 
     def _moving_needed(self):
-        # self.module.warn("a")
         if "location" in self._changed_items:
-            # self.module.warn("b")
             return True
 
         if self.is_new_rule:
-            # self.module.warn("c")
             location = self.desired.get("rule").get("location")
-            # self.module.warn("#### %s" % str(location))
             if location and not (
                 location.get("folder", "") == "/"
                 and location.get("position", "") == "bottom"
             ):
-                # self.module.warn("d")
                 return True
 
         return False
 
     def _move_if_needed(self):
-        # self.module.warn("1")
         if not self._moving_needed():
             return
 
-        # self.module.warn("2")
         location = self.desired.get("rule", {}).get("location")
         data = {"position": POSITION_MAPPING[location.get("position")]}
 
         pos = location.get("position", "")
-        # self.module.warn("3")
         if pos in ["top", "bottom"]:
-            # self.module.warn("4")
             data["folder"] = location.get("folder", "/")
         elif pos in ["before", "after"]:
-            # self.module.warn("5")
             data["rule_id"] = location.get("neighbour")
 
         if self.module.check_mode:
             return self._check_output("move")
 
-        # self.module.warn("#### %s" % self._build_default_endpoint() + "/actions/move/invoke")
-        # self.module.warn("#### %s" % str(data))
         return self._fetch(
             code_mapping=RuleHTTPCodes.move,
             endpoint=self._build_default_endpoint() + "/actions/move/invoke",
@@ -609,16 +642,12 @@ class RuleAPI(CheckmkAPI):
         if create_result.failed:
             return create_result
 
-        # self.module.warn("#### create_result.content %s" % str(create_result.content))
         content = json.loads(create_result.content)
         self.rule_id = content.get("id")
-        # self.module.warn("#### %s" % self.rule_id)
 
         move_result = self._move_if_needed()
         if move_result:
-            # self.module.warn("#### move_result.content %s" % str(move_result.content))
             m = self._merge_results({"created": create_result, "moved": move_result})
-            # self.module.warn("#### m.content %s" % str(m.content))
             return self._merge_results({"created": create_result, "moved": move_result})
         else:
             return create_result
@@ -655,7 +684,6 @@ class RuleAPI(CheckmkAPI):
             return edit_result
 
     def delete(self):
-        # self.module.warn("deleting: %s" % self._build_default_endpoint())
         if self.module.check_mode:
             return self._check_output("delete")
 
@@ -665,7 +693,6 @@ class RuleAPI(CheckmkAPI):
             method="DELETE",
         )
 
-        # self.module.warn("http: %s" % str(result.http_code))
         return result
 
 
@@ -735,15 +762,13 @@ def run_module():
         if current_rule.rule_id_found():
             # Update if needed
             if current_rule.needs_update():
-                # module.warn("NEEDS UPDATE")
                 result = current_rule.edit()
             else:
-                # module.warn("ALREADY AS DESIRED")
                 result = result._replace(
                     msg="Rule already exists with the desired parameters."
                 )
         elif rule_id:
-            # rule_id provided but not found. Fail
+            # There is no rule with the given rule_id
             result = result._replace(
                 msg="The provided rule_id was not found.",
                 failed=True,
@@ -752,17 +777,16 @@ def run_module():
             # Create new rule
             result = current_rule.create()
     elif desired_state == "absent":
-        # module.warn("desired_state == absent")
-        # module.warn("current_state: %s" % str(current_rule.state))
         if current_rule.state == "present":
+            # Delete existing rule
             result = current_rule.delete()
         elif current_rule.state == "absent":
+            # Rule is already absent
             result = result._replace(msg="Rule already absent.")
 
     if result.content:
         result = result._replace(content=json.loads(result.content))
     result_as_dict = result._asdict()
-    # module.warn("############ %s" % str(result_as_dict))
     module.exit_json(**result_as_dict)
 
 
