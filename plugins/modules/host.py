@@ -397,7 +397,7 @@ class HostAPI(CheckmkAPI):
                 self.module.fail_json(
                     msg="ERROR: The folder parameter is different from the folder in which the host is located, while other parameters are also specified!\n \
                         If you want to move the host to a specific folder, please omit the other parameters: \
-                        'attributes', 'update_attributes' and 'remove_attributes'".
+                        'attributes', 'update_attributes' and 'remove_attributes'.",
                     exception=e,
                 )
             else:
