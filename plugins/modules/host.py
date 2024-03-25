@@ -28,18 +28,25 @@ options:
         required: true
         type: str
     folder:
-        description: The folder your host is located in. On create it defaults to C(/).
+        description:
+            - The folder your host is located in.
+              On create it defaults to C(/).
+              B(For existing host, host is moved to the specified folder if different
+              and this procedue is mutualy exclusive with specified
+              I(attributes), I(update_attributes), and I(remove_attributes)).
         type: str
     attributes:
         description:
             - The attributes of your host as described in the API documentation.
               B(Attention! This option OVERWRITES all existing attributes!)
+              B(Attention! I(folder) should match the folder where host is residing)
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
         required: false
     update_attributes:
         description:
             - The update_attributes of your host as described in the API documentation.
+              B(Attention! I(folder) should match the folder where host is residing)
               This will only update the given attributes.
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
@@ -47,6 +54,7 @@ options:
     remove_attributes:
         description:
             - The remove_attributes of your host as described in the API documentation.
+              B(Attention! I(folder) should match the folder where host is residing)
               B(If a list of strings is supplied, the listed attributes are removed.)
               B(If extended_functionality and a dict is supplied, the attributes that exactly match
               the passed attributes are removed.)
@@ -334,13 +342,6 @@ class HostAPI(CheckmkAPI):
                 "attributes: %s" % json.dumps(desired_attributes.get("attributes"))
             )
 
-        if (
-            desired_attributes.get("folder")
-            and current_folder
-            and current_folder != desired_attributes.get("folder")
-        ):
-            changes.append("folder")
-
         if desired_attributes.get("remove_attributes"):
             tmp_remove_attributes = desired_attributes.get("remove_attributes")
 
@@ -386,6 +387,21 @@ class HostAPI(CheckmkAPI):
                     msg="ERROR: The parameter remove_attributes can be a list of strings or a dictionary!",
                     exception=e,
                 )
+
+        if (
+            desired_attributes.get("folder")
+            and current_folder
+            and current_folder != desired_attributes.get("folder")
+        ):
+            if self.state == "present" and len(changes) > 0:
+                self.module.fail_json(
+                    msg="ERROR: The folder parameter is different from the folder in which the host is located, while other parameters are also specified!\n \
+                        If you want to move the host to a specific folder, please omit the other parameters: \
+                        'attributes', 'update_attributes' and 'remove_attributes'".
+                    exception=e,
+                )
+            else:
+                changes.append("folder")
 
         if self.extended_functionality:
             self.desired = desired_attributes.copy()
@@ -468,34 +484,31 @@ class HostAPI(CheckmkAPI):
         if self.module.check_mode:
             return self._check_output("edit")
 
-        result_move = {}
         if data.get("folder"):
             tmp = {}
             tmp["target_folder"] = data.pop("folder")
 
-            result_move = self._fetch(
+            result = self._fetch(
                 code_mapping=HostHTTPCodes.move,
                 endpoint=self._build_move_endpoint(),
                 data=tmp,
                 method="POST",
             )
 
-            result_move = result_move._replace(
-                msg=result_move.msg + ". Moved from to: %s" % tmp.get("target_folder")
+            return result._replace(
+                msg=result.msg + ". Moved from to: %s" % tmp.get("target_folder")
+            )
+        else:
+            result = self._fetch(
+                code_mapping=HostHTTPCodes.edit,
+                endpoint=self._build_default_endpoint(),
+                data=data,
+                method="PUT",
             )
 
-        result = self._fetch(
-            code_mapping=HostHTTPCodes.edit,
-            endpoint=self._build_default_endpoint(),
-            data=data,
-            method="PUT",
-        )
-
-        return result._replace(
-            msg=((result_move.msg + ". ") if result_move != {} else "")
-            + result.msg
-            + ". Changed: %s" % ", ".join(self._changed_items)
-        )
+            return result._replace(
+                msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items)
+            )
 
     def delete(self):
         if self.module.check_mode:
