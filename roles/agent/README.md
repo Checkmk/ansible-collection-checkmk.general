@@ -46,7 +46,7 @@ Whether to validate the SSL certificate of the Checkmk server.
 
 The port of the web interface of your Checkmk server. Defaults to port 80 for http and port 443 for https.
 
-    checkmk_agent_site: my_site
+    checkmk_agent_site: mysite
 
 The name of your Checkmk site.
 
@@ -58,16 +58,16 @@ The server you want to use for registration tasks (Agent updates and TLS encrypt
 
 The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_site }}`.
 
-    checkmk_agent_user: my_user
+    checkmk_agent_user: myuser
 
 The user used to authenticate against your Checkmk site.
 
-    checkmk_agent_pass: my_secret
+    checkmk_agent_pass: mysecret
 
 The password for the normal user used to authenticate against your Checkmk site, both for API calls and agent updates.
 This is mutually exclusive with `checkmk_agent_secret`.
 
-    checkmk_agent_secret: my_secret
+    checkmk_agent_secret: mysecret
 
 The secret for the automation user used to authenticate against your Checkmk site, both for API calls and agent updates.
 This is mutually exclusive with `checkmk_agent_pass`.

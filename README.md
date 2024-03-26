@@ -114,13 +114,13 @@ if you list the `checkmk.general` collection in the playbook's [`collections`](h
   tasks:
     - name: "Run activation."
       activation:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         force_foreign_changes: 'true'
         sites:
-          - "my_site"
+          - "mysite"
 ```
 ### More information about Checkmk
 

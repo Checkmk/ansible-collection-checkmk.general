@@ -2,9 +2,9 @@
 # General
 checkmk_var_version: "2.3.0b3"
 checkmk_var_edition: "cre"
-checkmk_var_checkmk_site: "my_site"
+checkmk_var_checkmk_site: "mysite"
 checkmk_var_automation_user: "cmkadmin"
-checkmk_var_automation_secret: "d7589df1"
+checkmk_var_automation_secret: "mysecret"
 
 # Agent Role
 checkmk_agent_version: "{{ checkmk_var_version }}"

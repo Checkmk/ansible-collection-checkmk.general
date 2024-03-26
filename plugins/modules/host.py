@@ -67,10 +67,10 @@ EXAMPLES = r"""
 # Create a host.
 - name: "Create a host."
   checkmk.general.host:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "my_host"
     folder: "/"
     state: "present"
@@ -78,10 +78,10 @@ EXAMPLES = r"""
 # Create a host with IP.
 - name: "Create a host with IP address."
   checkmk.general.host:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "my_host"
     attributes:
       alias: "My Host"
@@ -92,10 +92,10 @@ EXAMPLES = r"""
 # Create a host which is monitored on a distinct site.
 - name: "Create a host which is monitored on a distinct site."
   checkmk.general.host:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "my_host"
     attributes:
       site: "my_remote_site"
@@ -105,10 +105,10 @@ EXAMPLES = r"""
 # Create a host with update_attributes.
 - name: "Create a host which is monitored on a distinct site."
   checkmk.general.host:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "my_host"
     update_attributes:
       site: "my_remote_site"
@@ -117,10 +117,10 @@ EXAMPLES = r"""
 # Update only specified attributes
 - name: "Update only specified attributes"
   checkmk.general.host:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "my_host"
     update_attributes:
       alias: "foo"
@@ -129,10 +129,10 @@ EXAMPLES = r"""
 # Remove specified attributes
 - name: "Remove specified attributes"
   checkmk.general.host:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "my_host"
     remove_attributes:
       - alias
@@ -141,10 +141,10 @@ EXAMPLES = r"""
 # Add custom tags to a host (note the leading 'tag_')
 - name: "Remove specified attributes"
   checkmk.general.host:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "my_host"
     update_attributes:
       - tag_my_tag_1: "Bar"
