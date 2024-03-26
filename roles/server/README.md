@@ -73,7 +73,7 @@ Whether to allow downgrading a site's version.
 Note: this is not a recommended procedure, and will not be supported for enterprise customers.
 
     checkmk_server_sites:
-      - name: mysite
+      - name: my_site
         version: "{{ checkmk_server_version }}"
         update_conflict_resolution: abort
         state: started
