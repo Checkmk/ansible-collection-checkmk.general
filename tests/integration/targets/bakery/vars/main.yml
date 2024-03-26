@@ -1,14 +1,14 @@
 ---
 test_sites:
-  - version: "2.3.0b2"
-    edition: "cme"
-    site: "beta_cme"
-  - version: "2.2.0p23"
+  - version: "2.3.0b3"
     edition: "cee"
     site: "stable_cee"
-  - version: "2.1.0p40"
+  - version: "2.2.0p24"
     edition: "cee"
     site: "old_cee"
+  - version: "2.2.0p24"
+    edition: "cee"
+    site: "ancient_cee"
 
 signature_key_id: 1
 signature_key_passphrase: "{{ checkmk_var_automation_secret }}"
