@@ -31,7 +31,7 @@ options:
         required: true
         type: str
     name:
-        description: The name of your folder. If omitted defaults to the folder name.
+        description: The name (title) of your folder. If omitted defaults to the folder-name from path.
         type: str
         aliases: [title]
     attributes:
@@ -220,7 +220,11 @@ class FolderAPI(CheckmkAPI):
         (self.desired["parent"], self.desired["name"]) = self._normalize_path(
             self.params.get("path")
         )
-        self.desired["title"] = self.params.get("title", self.desired["name"])
+
+        if self.params.get("name"):
+            self.desired["title"] = self.params.get("name")
+        else:
+            self.desired["title"] = self.desired.get("name")
 
         for key in FOLDER:
             if self.params.get(key):
@@ -399,7 +403,7 @@ class FolderAPI(CheckmkAPI):
             content="",
             etag="",
             failed=False,
-            changed=False,
+            changed=True,
         )
 
     def needs_update(self):

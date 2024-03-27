@@ -837,7 +837,7 @@ releases:
       known_issues:
       - Lookup modules - When using inventory variables to configure e.g., the server_url,
         it is not possible to assign other variables to these variables. This is a
-        limitation of Ansble itself.
+        limitation of Ansible itself.
       minor_changes:
       - Folder module - Extend attribute management. Please refer to the module documentation
         for more details.

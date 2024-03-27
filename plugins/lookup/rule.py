@@ -107,10 +107,10 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "Rule: {{ extensions }}"
   vars:
-    ansible_lookup_checkmk_server_url: "{{ checkmk_var_server_url }}"
-    ansible_lookup_checkmk_site: "{{ outer_item.site }}"
-    ansible_lookup_checkmk_automation_user: "{{ checkmk_var_automation_user }}"
-    ansible_lookup_checkmk_automation_secret: "{{ checkmk_var_automation_secret }}"
+    ansible_lookup_checkmk_server_url: "http://my_server/"
+    ansible_lookup_checkmk_site: "my_site"
+    ansible_lookup_checkmk_automation_user: "my_user"
+    ansible_lookup_checkmk_automation_secret: "my_secret"
     ansible_lookup_checkmk_validate_certs: false
     attributes: "{{ lookup('checkmk.general.rule', rule_id='a9285bc1-dcaf-45e0-a3ba-ad398ef06a49') }}"
 """
