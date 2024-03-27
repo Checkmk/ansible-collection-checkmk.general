@@ -96,9 +96,9 @@ EXAMPLES = """
                     lookup('checkmk.general.folder',
                         '~tests',
                         server_url=my_server_url,
-                        site=my_site,
-                        automation_user=my_user,
-                        automation_secret=my_secret,
+                        site=mysite,
+                        automation_user=myuser,
+                        automation_secret=mysecret,
                         validate_certs=False
                         )
                  }}"

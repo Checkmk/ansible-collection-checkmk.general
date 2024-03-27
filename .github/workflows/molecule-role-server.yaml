@@ -11,12 +11,11 @@ on:
     branches:
       - main
       - devel
-    paths:
-      - 'roles/server/**'
   push:
     branches:
       - main
       - devel
+      - build/checkmk-2-3-support
     paths:
       - 'roles/server/**'
 
@@ -28,9 +27,9 @@ jobs:
       fail-fast: false
       matrix:
         checkmk:
-          - '2.0.0'
           - '2.1.0'
           - '2.2.0'
+          - '2.3.0'
 
     steps:
 

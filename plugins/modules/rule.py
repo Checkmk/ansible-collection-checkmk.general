@@ -99,10 +99,10 @@ EXAMPLES = r"""
 # at the top of the main folder.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
   checkmk.general.rule:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -137,10 +137,10 @@ EXAMPLES = r"""
 # and put it after the rule created above.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
   checkmk.general.rule:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -169,10 +169,10 @@ EXAMPLES = r"""
 # Delete the first rule.
 - name: "Delete a rule."
   checkmk.general.rule:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -198,10 +198,10 @@ EXAMPLES = r"""
 # Create a rule rule matching a host label
 - name: "Create a rule matching a label."
   checkmk.general.rule:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {

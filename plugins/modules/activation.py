@@ -46,35 +46,35 @@ author:
 EXAMPLES = r"""
 - name: "Start activation on all sites."
   checkmk.general.activation:
-      server_url: "http://my_server/"
-      site: "my_site"
-      automation_user: "my_user"
-      automation_secret: "my_secret"
+      server_url: "http://myserver/"
+      site: "mysite"
+      automation_user: "myuser"
+      automation_secret: "mysecret"
   run_once: 'true'
 
 - name: "Start activation on a specific site."
   checkmk.general.activation:
-      server_url: "http://my_server/"
-      site: "my_site"
-      automation_user: "my_user"
-      automation_secret: "my_secret"
+      server_url: "http://myserver/"
+      site: "mysite"
+      automation_user: "myuser"
+      automation_secret: "mysecret"
       sites:
-          - "my_site"
+          - "mysite"
   run_once: 'true'
 
 - name: "Start activation including foreign changes."
   checkmk.general.activation:
-      server_url: "http://my_server/"
-      site: "my_site"
-      automation_user: "my_user"
-      automation_secret: "my_secret"
+      server_url: "http://myserver/"
+      site: "mysite"
+      automation_user: "myuser"
+      automation_secret: "mysecret"
       force_foreign_changes: 'true'
   run_once: 'true'
 
 - name: "Activate changes including foreign changes and wait for completion."
   checkmk.general.activation:
       server_url: "http://localhost/"
-      site: "my_site"
+      site: "mysite"
       automation_user: "automation"
       automation_secret: "$SECRET"
       redirect: 'true'

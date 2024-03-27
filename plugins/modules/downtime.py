@@ -94,7 +94,7 @@ EXAMPLES = r"""
 - name: "Schedule host downtime."
   checkmk.general.downtime:
     server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ my_site }}"
+    site: "{{ mysite }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: my_host
@@ -107,7 +107,7 @@ EXAMPLES = r"""
 - name: "Schedule service downtimes for two given services."
   checkmk.general.downtime:
     server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ my_site }}"
+    site: "{{ mysite }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: my_host
@@ -122,7 +122,7 @@ EXAMPLES = r"""
 - name: "Delete all service downtimes for two given services."
   checkmk.general.downtime:
     server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ my_site }}"
+    site: "{{ mysite }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: my_host

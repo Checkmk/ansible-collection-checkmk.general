@@ -112,15 +112,15 @@ RUN apt-get update && \
 
 # Pre-create Sites
 RUN \
-  omd -V ${stable}.cre create -A --no-tmpfs --admin-password "d7589df1" "stable_cre" ; \
-  omd -V ${stable}.cee create -A --no-tmpfs --admin-password "d7589df1" "stable_cee" ; \
-  omd -V ${stable}.cme create -A --no-tmpfs --admin-password "d7589df1" "stable_cme" ; \
-  omd -V ${stable}.cce create -A --no-tmpfs --admin-password "d7589df1" "stable_cce" ; \
-  omd -V ${old}.cre create -A --no-tmpfs --admin-password "d7589df1" "old_cre" ; \
-  omd -V ${old}.cee create -A --no-tmpfs --admin-password "d7589df1" "old_cee" ; \
-  omd -V ${old}.cme create -A --no-tmpfs --admin-password "d7589df1" "old_cme" ; \
-  omd -V ${ancient}.cre create -A --no-tmpfs --admin-password "d7589df1" "ancient_cre" ; \
-  omd -V ${ancient}.cee create -A --no-tmpfs --admin-password "d7589df1" "ancient_cee" ; \
-  omd -V ${ancient}.cme create -A --no-tmpfs --admin-password "d7589df1" "ancient_cme"
+  omd -V ${stable}.cre create -A --no-tmpfs --admin-password "mysecret" "stable_cre" ; \
+  omd -V ${stable}.cee create -A --no-tmpfs --admin-password "mysecret" "stable_cee" ; \
+  omd -V ${stable}.cme create -A --no-tmpfs --admin-password "mysecret" "stable_cme" ; \
+  omd -V ${stable}.cce create -A --no-tmpfs --admin-password "mysecret" "stable_cce" ; \
+  omd -V ${old}.cre create -A --no-tmpfs --admin-password "mysecret" "old_cre" ; \
+  omd -V ${old}.cee create -A --no-tmpfs --admin-password "mysecret" "old_cee" ; \
+  omd -V ${old}.cme create -A --no-tmpfs --admin-password "mysecret" "old_cme" ; \
+  omd -V ${ancient}.cre create -A --no-tmpfs --admin-password "mysecret" "ancient_cre" ; \
+  omd -V ${ancient}.cee create -A --no-tmpfs --admin-password "mysecret" "ancient_cee" ; \
+  omd -V ${ancient}.cme create -A --no-tmpfs --admin-password "mysecret" "ancient_cme"
 
 CMD ["/usr/bin/systemctl"]
