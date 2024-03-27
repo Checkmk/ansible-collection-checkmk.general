@@ -221,7 +221,7 @@
   run_once: true # noqa run-once[task]
   when: "'2.3' in outer_item.version"
   register: checkmk_shortpwcheck_create
-  failed_when: "'Password too short. For 2.3 and higher' not in checkmk_shortpwcheck_create.msg"
+  failed_when: "'Please enter an automation secret of at least 10 characters.' not in checkmk_shortpwcheck_create.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test reset with short pw for 2.3 (should fail)"
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
