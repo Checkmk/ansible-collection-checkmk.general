@@ -109,7 +109,7 @@ EXAMPLES = """
   vars:
     ansible_lookup_checkmk_server_url: "http://my_server/"
     ansible_lookup_checkmk_site: "my_site"
-    ansible_lookup_checkmk_automation_user: "my_user
+    ansible_lookup_checkmk_automation_user: "my_user"
     ansible_lookup_checkmk_automation_secret: "my_secret"
     ansible_lookup_checkmk_validate_certs: false
     extensions: "{{ lookup('checkmk.general.ruleset', ruleset='host_groups') }}"
