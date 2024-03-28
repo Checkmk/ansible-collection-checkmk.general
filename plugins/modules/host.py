@@ -461,14 +461,16 @@ class HostAPI(CheckmkAPI):
         if desired_parameters.get("nodes"):
             if (
                 len(
-                    [el
+                    [
+                     el
                      for el in current_nodes
                      if el not in desired_parameters.get("nodes")
                     ]
                 )
                 > 0
                 or len(
-                    [el
+                    [
+                     el
                      for el in desired_parameters.get("nodes")
                      if el not in current_nodes
                     ]
