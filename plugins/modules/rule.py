@@ -44,23 +44,26 @@ options:
                         description:
                             - Position of the rule in the folder.
                             - Has no effect when I(state=absent).
+                            - For new rule C(any) wil be equivalent to C(bottom)
                         type: str
                         choices:
                             - "top"
                             - "bottom"
+                            - "any"
                             - "before"
                             - "after"
-                        default: "bottom"
+                        default: "any"
                     neighbour:
                         description:
                             - Put the rule C(before) or C(after) this rule_id.
                             - Required when I(position) is C(before) or C(after).
                             - Mutually exclusive with I(folder).
                         type: str
+                        aliases: [rule_id]
                     folder:
                         description:
                             - Folder of the rule.
-                            - Required when I(position) is C(top) or C(bottom).
+                            - Required when I(position) is C(top), C(bottom), or (any).
                             - Required when I(state=absent).
                             - Mutually exclusive with I(neighbour).
                         default: "/"
@@ -72,7 +75,9 @@ options:
                 description: Properties of the rule.
                 type: dict
             value_raw:
-                description: Rule values as exported from the web interface.
+                description:
+                    - Rule values as exported from the web interface.
+                    - Required when I(state) is C(present).
                 type: str
     ruleset:
         description: Name of the ruleset to manage.
@@ -86,6 +91,8 @@ options:
 
 author:
     - Lars Getwan (@lgetwan)
+    - diademiemi (@diademiemi)
+    - Geoffroy Stévenne (@geof77)
 """
 
 EXAMPLES = r"""
@@ -157,7 +164,7 @@ EXAMPLES = r"""
       value_raw: "{'levels': (85.0, 99.0)}"
       location:
         position: "after"
-        rule_id: "{{ response.content.id }}"
+        neighbour: "{{ response.content.id }}"
     state: "present"
 
 # Delete the first rule.
@@ -304,7 +311,7 @@ DESIRED_RULE_KEYS = (
 DESIRED_DEFAULTS = {
     "properties": {
         "description": "",
-        "comment": "",
+        # "comment": "",
         "disabled": False,
     },
     "conditions": {
@@ -325,6 +332,7 @@ CURRENT_RULE_KEYS = (
 POSITION_MAPPING = {
     "top": "top_of_folder",
     "bottom": "bottom_of_folder",
+    "any": "bottom_of_folder",
     "after": "after_specific_rule",
     "before": "before_specific_rule",
 }
@@ -365,9 +373,9 @@ class RuleLocation(CheckmkAPI):
 
         self.ruleset = self.params.get("ruleset")
 
-        self.rule_list = self._get_ruleset(self.module.params.get("ruleset"))
+        self.rule_dict = self._get_ruleset(self.ruleset)
         self.folder_rule_list = [
-            k for k, v in self.rule_list.items() if v == self.folder
+            k for k, v in self.rule_dict.items() if v == self.folder
         ]
         self.folder_index = self.folder_rule_list.index(self.rule_id)
         self.folder_size = len(self.folder_rule_list)
@@ -392,16 +400,18 @@ class RuleLocation(CheckmkAPI):
                 for r in content.get("value")
             }
 
-        return []
+        return {}
 
     def is_equal(self, desired_location):
         desired_folder = desired_location.get("folder")
         desired_position = desired_location.get("position")
         desired_neighbour = desired_location.get("neighbour")
 
-        if desired_position in ["bottom", "top"]:
+        if desired_position in ["bottom", "top", "any"]:
             if desired_folder != self.folder:
                 return False
+            elif desired_position == "any":
+                return True
             elif desired_position == "top" and self.folder_index == 0:
                 return True
             elif (
@@ -409,7 +419,8 @@ class RuleLocation(CheckmkAPI):
                 and self.folder_index == self.folder_size - 1
             ):
                 return True
-            return False
+            else:
+                return False
 
         if desired_position in ["before", "after"]:
             if desired_folder != self.folder:
@@ -439,7 +450,7 @@ class RuleAPI(CheckmkAPI):
 
         self.module = module
         self.params = self.module.params
-        self.rule_id = self.params.get("rule", {}).get("rule_id")
+        self.rule_id = self.params.get("rule").get("rule_id")
         self.is_new_rule = self.rule_id is None
 
         self.desired = self._clean_desired(self.params)
@@ -448,9 +459,26 @@ class RuleAPI(CheckmkAPI):
         self.current = None
         self.etag = ""
 
+        # when neighbour is specified, verify that it exists otherwise give warning
+        neighbour_id = self.params.get("rule").get("location").get("neighbour")
+        # if neighbour_id and neighbour_id != "":
+        if neighbour_id and neighbour_id != "":
+            (neighbour, state) = self._get_rule_by_id(neighbour_id)
+
+            if state == "absent":
+                self.module.warn(
+                    "Specified neighbour: '%s' does not exist" % neighbour_id
+                )
+            else:
+                self.desired["location"]["folder"] = neighbour.get("rule").get("folder")
+
+        if not self.rule_id:
+            # If no rule_id is provided, we still check if rule exists.
+            self.rule_id = self._get_rule_id(self.desired)
+
         if self.rule_id:
             # Get the current rule from the API and set some parameters
-            self.current = self._get_current()
+            (self.current, self.state) = self._get_current()
             if self.state == "present":
                 self._changed_items = self._detect_changes()
 
@@ -473,8 +501,7 @@ class RuleAPI(CheckmkAPI):
                 if not desired["rule"].get(what):
                     desired["rule"][what] = {}
 
-                tmp_prop = desired["rule"].get(what, {})
-                if not desired["rule"].get(what, {}).get(key):
+                if not desired["rule"].get(what).get(key):
                     desired["rule"][what][key] = default
 
         return desired
@@ -495,8 +522,33 @@ class RuleAPI(CheckmkAPI):
 
         return safe_value_raw
 
-    def _detect_changes(self):
+    def _get_rules_in_ruleset(self, ruleset):
+        result = self._fetch(
+            code_mapping=RuleHTTPCodes.list_rules,
+            endpoint=RuleEndpoints.create + "?ruleset_name=" + ruleset,
+            method="GET",
+        )
 
+        if result.http_code == 200:
+            content = json.loads(result.content)
+            return content.get("value")
+
+        return []
+
+    def _get_rule_id(self, desired):
+        for r in self._get_rules_in_ruleset(desired.get("ruleset")):
+            if (
+                r["extensions"]["folder"] == desired["rule"]["location"]["folder"]
+                and r["extensions"]["conditions"] == desired["rule"]["conditions"]
+                and r["extensions"]["properties"] == desired["rule"]["properties"]
+                and self._raw_value_eval("search", r["extensions"])
+                == self._raw_value_eval("desired", desired["rule"])
+            ):
+                return r["id"]
+
+        return None
+
+    def _detect_changes(self):
         current = self.current["rule"].copy()
         desired = self.desired.get("rule").copy()
         changes = []
@@ -512,7 +564,8 @@ class RuleAPI(CheckmkAPI):
         ):
             changes.append("raw_value")
 
-        desired_location = desired.get("rule", {}).get("location")
+        # desired_location = desired.get("rule").get("location")
+        desired_location = desired.get("location")
         if desired_location:
             current_location = RuleLocation(
                 self.module, current.get("folder", "/"), self.rule_id
@@ -523,45 +576,53 @@ class RuleAPI(CheckmkAPI):
 
         return changes
 
-    def _build_default_endpoint(self):
+    def _build_default_endpoint(self, rule_id=None):
         return "%s/%s" % (
             RuleEndpoints.default,
-            self.rule_id,
+            # self.rule_id,
+            self.rule_id if not rule_id else rule_id,
         )
 
-    def _get_current(self):
+    def _get_rule_by_id(self, rule_id):
         current = {}
+        state = "absent"
 
         result = self._fetch(
             code_mapping=RuleHTTPCodes.get,
-            endpoint=self._build_default_endpoint(),
+            endpoint=self._build_default_endpoint(rule_id),
             method="GET",
         )
 
         if result.http_code == 200:
             current["rule"] = {}
-            self.state = "present"
+            state = "present"
             current["etag"] = result.etag
 
             content = json.loads(result.content)
             extensions = content["extensions"]
 
-            for key, value in extensions.items():
-                if key in CURRENT_RULE_KEYS:
-                    current["rule"][key] = value
+            # for key, value in extensions.items():
+            #     if key in CURRENT_RULE_KEYS:
+            #         current["rule"][key] = value
+            current["rule"] = {
+                key: value
+                for key, value in extensions.items()
+                if key in CURRENT_RULE_KEYS
+            }
 
-        else:
-            self.state = "absent"
-        return current
+        return (current, state)
+
+    def _get_current(self):
+        return self._get_rule_by_id(self.rule_id)
 
     def _check_output(self, mode):
         return RESULT(
             http_code=0,
-            msg="Running in check mode. Would have done an %s" % mode,
+            msg="Running in check mode. Would have %s" % mode,
             content="",
             etag="",
             failed=False,
-            changed=False,
+            changed=True,
         )
 
     def needs_update(self):
@@ -574,8 +635,10 @@ class RuleAPI(CheckmkAPI):
         if self.is_new_rule:
             location = self.desired.get("rule").get("location")
             if location and not (
-                location.get("folder", "") == "/"
-                and location.get("position", "") == "bottom"
+                # folder should be there
+                location.get("folder", "/") == "/"
+                # position should be there
+                and location.get("position", "bottom") == "bottom"
             ):
                 return True
 
@@ -585,14 +648,20 @@ class RuleAPI(CheckmkAPI):
         if not self._moving_needed():
             return
 
-        location = self.desired.get("rule", {}).get("location")
+        location = self.desired.get("rule").get("location")
         data = {"position": POSITION_MAPPING[location.get("position")]}
+        #                                    what if fails!? better error message will be better
 
-        pos = location.get("position", "")
-        if pos in ["top", "bottom"]:
+        # what if location nowhere?
+        # position should be there
+        pos = location.get("position", "bottom")
+        if pos in ["top", "bottom", "any"]:
+            # folder should be there
             data["folder"] = location.get("folder", "/")
         elif pos in ["before", "after"]:
             data["rule_id"] = location.get("neighbour")
+        # else:
+        #     # cannot happen
 
         if self.module.check_mode:
             return self._check_output("move")
@@ -620,13 +689,16 @@ class RuleAPI(CheckmkAPI):
         )
 
     def create(self):
-        data = self.desired.get("rule", {}).copy()
+        # rule is there always (required true)
+        data = self.desired.get("rule").copy()
         location = data.pop("location", {})
         data["ruleset"] = self.desired.get("ruleset")
         data["folder"] = location.get("folder", "/")
 
         if not data.get("value_raw"):
-            self.module.fail_json(msg="ERROR: The parameter value_raw is mandatory.")
+            self.module.fail_json(
+                msg="ERROR: The parameter value_raw is mandatory when 'state is present'."
+            )
 
         if self.module.check_mode:
             return self._check_output("create")
@@ -646,18 +718,20 @@ class RuleAPI(CheckmkAPI):
 
         move_result = self._move_if_needed()
         if move_result:
-            m = self._merge_results({"created": create_result, "moved": move_result})
             return self._merge_results({"created": create_result, "moved": move_result})
         else:
             return create_result
 
     def edit(self):
-        data = self.desired.get("rule", {}).copy()
+        # rule is there always (required true)
+        data = self.desired.get("rule").copy()
         data.pop("location")
         self.headers["if-Match"] = self.etag
 
         if not data.get("value_raw"):
-            self.module.fail_json(msg="ERROR: The parameter value_raw is mandatory.")
+            self.module.fail_json(
+                msg="ERROR: The parameter value_raw is mandatory when 'state is present'."
+            )
 
         if self.module.check_mode:
             return self._check_output("edit")
@@ -678,7 +752,7 @@ class RuleAPI(CheckmkAPI):
 
         move_result = self._move_if_needed()
         if move_result:
-            return self._merge_results({"editd": edit_result, "moved": move_result})
+            return self._merge_results({"edited": edit_result, "moved": move_result})
         else:
             return edit_result
 
@@ -717,21 +791,22 @@ def run_module():
                     options=dict(
                         position=dict(
                             type="str",
-                            choices=["top", "bottom", "before", "after"],
-                            default="bottom",
+                            choices=["top", "bottom", "any", "before", "after"],
+                            default="any",
                         ),
                         folder=dict(
                             type="str",
                             default="/",
                         ),
-                        neighbour=dict(type="str"),
+                        neighbour=dict(type="str", aliases=["rule_id"]),
                     ),
-                    # required_if=[
-                    #    ("position", "top", ("folder",)),
-                    #    ("position", "bottom", ("folder",)),
-                    #    ("position", "before", ("neighbour",)),
-                    #    ("position", "after", ("neighbour",)),
-                    # ],
+                    required_if=[
+                        ("position", "top", ("folder",)),
+                        ("position", "bottom", ("folder",)),
+                        ("position", "any", ("folder",)),
+                        ("position", "before", ("neighbour",)),
+                        ("position", "after", ("neighbour",)),
+                    ],
                     mutually_exclusive=[("folder", "neighbour")],
                     apply_defaults=True,
                 ),
@@ -747,7 +822,7 @@ def run_module():
 
     result = RESULT(
         http_code=0,
-        msg="Invalid parameters provided.",
+        msg="",
         content="{}",
         etag="",
         failed=False,
