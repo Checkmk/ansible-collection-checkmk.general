@@ -561,7 +561,7 @@ class HostAPI(CheckmkAPI):
                 exception=e,
             )
 
-        return list(sum(changes_dict.values(), [])
+        return list(sum(changes_dict.values(), []))
 
     def _get_current(self):
         result = self._fetch(
