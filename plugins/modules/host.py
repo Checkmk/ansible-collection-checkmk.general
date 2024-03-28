@@ -28,18 +28,25 @@ options:
         required: true
         type: str
     folder:
-        description: The folder your host is located in. On create it defaults to C(/).
+        description:
+            - The folder your host is located in.
+              On create it defaults to C(/).
+              B(For existing host, host is moved to the specified folder if different
+              and this procedue is mutualy exclusive with specified
+              I(attributes), I(update_attributes), and I(remove_attributes)).
         type: str
     attributes:
         description:
             - The attributes of your host as described in the API documentation.
               B(Attention! This option OVERWRITES all existing attributes!)
+              B(Attention! I(folder) should match the folder where host is residing)
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
         required: false
     update_attributes:
         description:
             - The update_attributes of your host as described in the API documentation.
+              B(Attention! I(folder) should match the folder where host is residing)
               This will only update the given attributes.
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
         type: raw
@@ -47,12 +54,13 @@ options:
     remove_attributes:
         description:
             - The remove_attributes of your host as described in the API documentation.
+              B(Attention! I(folder) should match the folder where host is residing)
               B(If a list of strings is supplied, the listed attributes are removed.)
-              B(If extended_functionality and a dict is supplied, the attributes that exactly match
+              B(If) I(extended_functionality) B(and a dict is supplied, the attributes that exactly match
               the passed attributes are removed.)
               This will only remove the given attributes.
               If you are using custom tags, make sure to prepend the attribute with C(tag_).
-              As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of I(attributes),
+              As of Checkmk 2.2.0p7 and 2.3.0b1, simultaneous use of I(attributes),
               I(remove_attributes), and I(update_attributes) is no longer supported.
         type: raw
         required: false
@@ -413,7 +421,7 @@ class HostAPI(CheckmkAPI):
         if desired_name and current_name != desired_name:
             changes.append("rename")
         else:
-            self.desired.pop("new_name", "")
+            self.desired.pop("new_name", None)
 
         return changes
 
@@ -453,12 +461,6 @@ class HostAPI(CheckmkAPI):
         return changes
 
     def _detect_changes_attributes(self):
-        ATTRIBUTE_FILEDS = [
-            "attributes",
-            "update_attributes",
-            "remove_attributes",
-        ]
-
         current_attributes = self.current.get("attributes", {})
         desired_attributes = self.desired.copy()
         changes = []
@@ -467,11 +469,7 @@ class HostAPI(CheckmkAPI):
             "attributes"
         ) and current_attributes != desired_attributes.get("attributes"):
             changes.append(
-                "attributes: %s  %s"
-                % (
-                    json.dumps(current_attributes),
-                    json.dumps(desired_attributes.get("attributes")),
-                )
+                "attributes: %s" % json.dumps(desired_attributes.get("attributes"))
             )
 
         if desired_attributes.get("update_attributes"):
@@ -534,7 +532,7 @@ class HostAPI(CheckmkAPI):
                 )
 
         if self.extended_functionality:
-            for key in ATTRIBUTE_FILEDS:
+            for key in HOST:
                 if desired_attributes.get(key):
                     self.desired[key] = desired_attributes.get(key)
                 else:
@@ -543,19 +541,27 @@ class HostAPI(CheckmkAPI):
         return changes
 
     def _detect_changes(self):
-        changes = []
+        loc_functions = {
+            "folder": self._detect_changes_folder,
+            "attributes": self._detect_changes_attributes,
+            "nodes": self._detect_changes_nodes,
+            "name": self._detect_changes_rename,
+        }
 
-        loc_functions = [
-            self._detect_changes_folder,
-            self._detect_changes_attributes,
-            self._detect_changes_nodes,
-            self._detect_changes_rename,
-        ]
+        changes_dict = {key: fun() for key, fun in loc_functions.items()}
 
-        for fun in loc_functions:
-            changes += fun()
+        if (self.state == "present"
+            and len(changes_dict.get("folder")) > 0
+            and len(changes_dict.get("attributes")) > 0
+        ):
+            self.module.fail_json(
+                msg="ERROR: The folder parameter is different from the folder in which the host is located, while other parameters are also specified!\n \
+                    If you want to move the host to a specific folder, please omit the other parameters: \
+                    'attributes', 'update_attributes' and 'remove_attributes'.",
+                exception=e,
+            )
 
-        return changes
+        return list(sum(changes_dict.values(), [])
 
     def _get_current(self):
         result = self._fetch(
@@ -599,6 +605,19 @@ class HostAPI(CheckmkAPI):
 
     def needs_update(self):
         return len(self._changed_items) > 0
+
+    # adapted from Lars Getwan's rule module
+    def _merge_results(self, results):
+        return RESULT(
+            http_code=results[-1].http_code,
+            msg=", ".join(
+                ["%s (%d)" % (r.msg, r.http_code) for r in results]
+            ),
+            content=results[-1].content,
+            etag=results[-1].etag,
+            failed=any(r.failed for r in results),
+            changed=any(r.changed for r in results),
+        )
 
     def create(self):
         data = self.desired.copy()
@@ -715,37 +734,6 @@ class HostAPI(CheckmkAPI):
         return result
 
     def _edit_attributes(self):
-        data = self.desired.copy()
-        # data.pop("host_name")
-        CLEAN_FIELDS = [
-            "host_name",
-            "folder",
-            "nodes",
-            "new_name",
-        ]
-
-        for key in CLEAN_FIELDS:
-            data.pop(key, None)
-
-        result = self._fetch(
-            code_mapping=(
-                HostHTTPCodes.edit_cluster if self.is_cluster else HostHTTPCodes.edit
-            ),
-            endpoint=self._build_default_endpoint(),
-            data=data,
-            method="PUT",
-        )
-
-        return result._replace(
-            msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items)
-        )
-
-    def edit(self):
-        self.headers["if-Match"] = self.etag
-
-        if self.module.check_mode:
-            return self._check_output("edit")
-
         result = RESULT(
             http_code=0,
             msg="",
@@ -753,6 +741,54 @@ class HostAPI(CheckmkAPI):
             etag="",
             failed=False,
             changed=False,
+        )
+
+        if (self.desired.get("attributes")
+            or self.desired.get("update_attributes")
+            or self.desired.get("remove_attributes")
+        ):
+            data = self.desired.copy()
+            CLEAN_FIELDS = [
+                "host_name",
+                "folder",
+                "nodes",
+                "new_name",
+            ]
+
+            for key in CLEAN_FIELDS:
+                data.pop(key, None)
+
+            result = self._fetch(
+                code_mapping=(
+                    HostHTTPCodes.edit_cluster if self.is_cluster else HostHTTPCodes.edit
+                ),
+                endpoint=self._build_default_endpoint(),
+                data=data,
+                method="PUT",
+            )
+
+            result = result._replace(
+                msg=result.msg + ". Changed: %s" % ", ".join(self._changed_items)
+            )
+
+        return result
+
+    def edit(self):
+        self.headers["if-Match"] = self.etag
+
+        if self.module.check_mode:
+            return self._check_output("edit")
+
+        results = []
+        results.append(
+            RESULT(
+                http_code=0,
+                msg="",
+                content="",
+                etag="",
+                failed=False,
+                changed=False,
+            )
         )
 
         loc_functions = [
@@ -766,14 +802,10 @@ class HostAPI(CheckmkAPI):
         for fun in loc_functions:
             result_loc = fun()
 
-            result = result._replace(
-                msg=result.msg
-                + (". " if result_loc.msg != "" else "")
-                + result_loc.msg,
-                changed=result.changed | result_loc.changed,
-            )
+            if result_loc.msg != "":
+                results.append(result_loc.copy())
 
-        return result
+        return self._merge_results(results)
 
     def delete(self):
         if self.module.check_mode:
