@@ -559,7 +559,6 @@ class HostAPI(CheckmkAPI):
                 msg="ERROR: The folder parameter is different from the folder in which the host is located, while other parameters are also specified!\n \
                     If you want to move the host to a specific folder, please omit the other parameters: \
                     'attributes', 'update_attributes' and 'remove_attributes'.",
-                exception=e,
             )
 
         return list(sum(changes_dict.values(), []))
@@ -761,8 +760,8 @@ class HostAPI(CheckmkAPI):
             result = self._fetch(
                 code_mapping=(
                     HostHTTPCodes.edit_cluster
-                    if self.is_cluster else
-                    HostHTTPCodes.edit
+                    if self.is_cluster
+                    else HostHTTPCodes.edit
                 ),
                 endpoint=self._build_default_endpoint(),
                 data=data,
