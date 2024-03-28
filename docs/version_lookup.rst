@@ -23,7 +23,7 @@ checkmk.general.version lookup -- Get the version of a Checkmk server
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.3.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -385,13 +385,14 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    
+
     - name: "Show Checkmk version"
       debug:
         msg: "Server version is {{ version }}"
       vars:
         version: "{{ lookup('checkmk.general.version',
-                       server_url + '/' + site,
+                       server_url=my_url,
+                       site=my_site,
                        validate_certs=False,
                        automation_user=my_user,
                        automation_secret=my_secret
