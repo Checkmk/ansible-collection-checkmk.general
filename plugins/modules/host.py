@@ -80,6 +80,7 @@ options:
     nodes:
         description:
             - Nodes, members of the cluster-container host provided in name.
+              B(Mutualy exclusive with I(add_nodes) and I(remove_nodes).)
         required: false
         type: list
         elements: str
@@ -87,14 +88,14 @@ options:
         description:
             - List of nodes to be added as members of the cluster-container host provided in name.
               Works only if the existing host was already a cluster host, or entirely new is created.
-              B(Mutualy exclusive with nodes.)
+              B(Mutualy exclusive with I(nodes) and I(remove_nodes).)
         required: false
         type: list
         elements: str
     remove_nodes:
         description:
             - List of nodes to be removes from the cluster-container host provided in name.
-              B(Mutualy exclusive with nodes.)
+              B(Mutualy exclusive with I(nodes) and I(add_nodes).)
         required: false
         type: list
         elements: str
@@ -305,15 +306,6 @@ class HostAPI(CheckmkAPI):
         if self.params.get("new_name"):
             self.desired["new_name"] = self.params.get("new_name")
 
-        if self.params.get("nodes"):
-            self.desired["nodes"] = self.params.get("nodes")
-
-        if self.params.get("add_nodes"):
-            self.desired["add_nodes"] = self.params.get("add_nodes")
-
-        if self.params.get("remove_nodes"):
-            self.desired["remove_nodes"] = self.params.get("remove_nodes")
-
         for key in HOST:
             if self.params.get(key):
                 self.desired[key] = self.params.get(key)
@@ -334,6 +326,23 @@ class HostAPI(CheckmkAPI):
                 and self.current["folder"] != self.params["folder"]
             ):
                 self.desired["folder"] = self.params["folder"]
+
+        if self.params.get("nodes"):
+            self.desired["nodes"] = self.params.get("nodes")
+
+        if self.params.get("add_nodes"):
+            if self.desired.get("nodes"):
+                self.desired["nodes"] += [el for el in self.params.get("add_nodes") if el not in self.desired["nodes"]]
+            elif self.current.get("cluster_nodes"):
+                self.desired["nodes"] += self.current.get("cluster_nodes") + [el for el in self.params.get("add_nodes") if el not in self.current.get("cluster_nodes")]
+            else:
+                self.desired["nodes"] = self.desired.get("add_nodes")
+
+        if self.params.get("remove_nodes"):
+            if self.desired.get("nodes"):
+                self.desired["nodes"] = [el for el in self.desired["nodes"] if el not in self.params.get("remove_nodes")]
+            elif self.current.get("cluster_nodes"):
+                self.desired["nodes"] = [el for el in self.current.get("cluster_nodes") if el not in self.params.get("remove_nodes")]
 
         self._changed_items = self._detect_changes()
 
@@ -433,30 +442,14 @@ class HostAPI(CheckmkAPI):
         if self.current.get("cluster_nodes"):
             current_nodes = self.current.get("cluster_nodes")
 
-        if (
-            desired_parameters.get("nodes")
-            or desired_parameters.get("add_nodes")
-            or desired_parameters.get("remove_nodes")
-        ):
-            desired_nodes = desired_parameters.get("nodes", [])
-
-            desired_nodes = desired_nodes + desired_parameters.get("add_nodes", [])
-
-            desired_nodes = [
-                el
-                for el in desired_nodes
-                if el not in desired_parameters.get("remove_nodes", [])
-            ]
-
+        if desired_parameters.get("nodes"):
             if (
-                len([el for el in current_nodes if el not in desired_nodes]) > 0
-                or len([el for el in desired_nodes if el not in current_nodes]) > 0
+                len([el for el in current_nodes if el not in desired_parameters.get("nodes")]) > 0
+                or len([el for el in desired_parameters.get("nodes") if el not in current_nodes]) > 0
             ):
                 changes.append("nodes")
             else:
                 self.desired.pop("nodes", None)
-                self.desired.pop("add_nodes", None)
-                self.desired.pop("remove_nodes", None)
 
         return changes
 
@@ -850,6 +843,7 @@ def run_module():
         mutually_exclusive=[
             ("nodes", "add_nodes"),
             ("nodes", "remove_nodes"),
+            ("add_nodes", "remove_nodes"),
         ],
         supports_check_mode=True,
     )
