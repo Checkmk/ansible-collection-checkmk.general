@@ -550,7 +550,8 @@ class HostAPI(CheckmkAPI):
 
         changes_dict = {key: fun() for key, fun in loc_functions.items()}
 
-        if (self.state == "present"
+        if (
+            self.state == "present"
             and len(changes_dict.get("folder")) > 0
             and len(changes_dict.get("attributes")) > 0
         ):
@@ -610,9 +611,7 @@ class HostAPI(CheckmkAPI):
     def _merge_results(self, results):
         return RESULT(
             http_code=results[-1].http_code,
-            msg=", ".join(
-                ["%s (%d)" % (r.msg, r.http_code) for r in results]
-            ),
+            msg=", ".join(["%s (%d)" % (r.msg, r.http_code) for r in results]),
             content=results[-1].content,
             etag=results[-1].etag,
             failed=any(r.failed for r in results),
@@ -743,7 +742,8 @@ class HostAPI(CheckmkAPI):
             changed=False,
         )
 
-        if (self.desired.get("attributes")
+        if (
+            self.desired.get("attributes")
             or self.desired.get("update_attributes")
             or self.desired.get("remove_attributes")
         ):
@@ -760,7 +760,9 @@ class HostAPI(CheckmkAPI):
 
             result = self._fetch(
                 code_mapping=(
-                    HostHTTPCodes.edit_cluster if self.is_cluster else HostHTTPCodes.edit
+                    HostHTTPCodes.edit_cluster
+                    if self.is_cluster else
+                    HostHTTPCodes.edit
                 ),
                 endpoint=self._build_default_endpoint(),
                 data=data,
