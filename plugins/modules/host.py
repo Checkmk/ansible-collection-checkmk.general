@@ -804,7 +804,7 @@ class HostAPI(CheckmkAPI):
             result_loc = fun()
 
             if result_loc.msg != "":
-                results.append(result_loc.copy())
+                results.append(result_loc)
 
         return self._merge_results(results)
 
