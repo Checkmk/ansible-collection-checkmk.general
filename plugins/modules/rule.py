@@ -466,7 +466,9 @@ class RuleAPI(CheckmkAPI):
             (neighbour, state) = self._get_rule_by_id(neighbour_id)
 
             if state == "absent":
-                self.module.warn("Specified neighbour: '%s' does not exist" % neighbour_id)
+                self.module.warn(
+                    "Specified neighbour: '%s' does not exist" % neighbour_id
+                )
             else:
                 self.desired["location"]["folder"] = neighbour.get("rule").get("folder")
 
@@ -539,7 +541,8 @@ class RuleAPI(CheckmkAPI):
                 r["extensions"]["folder"] == desired["rule"]["location"]["folder"]
                 and r["extensions"]["conditions"] == desired["rule"]["conditions"]
                 and r["extensions"]["properties"] == desired["rule"]["properties"]
-                and self._raw_value_eval("search", r["extensions"]) == self._raw_value_eval("desired", desired["rule"])
+                and self._raw_value_eval("search", r["extensions"])
+                == self._raw_value_eval("desired", desired["rule"])
             ):
                 return r["id"]
 
@@ -601,7 +604,11 @@ class RuleAPI(CheckmkAPI):
             # for key, value in extensions.items():
             #     if key in CURRENT_RULE_KEYS:
             #         current["rule"][key] = value
-            current["rule"] = {key: value for key, value in extensions.items() if key in CURRENT_RULE_KEYS}
+            current["rule"] = {
+                key: value
+                for key, value in extensions.items()
+                if key in CURRENT_RULE_KEYS
+            }
 
         return (current, state)
 
@@ -689,7 +696,9 @@ class RuleAPI(CheckmkAPI):
         data["folder"] = location.get("folder", "/")
 
         if not data.get("value_raw"):
-            self.module.fail_json(msg="ERROR: The parameter value_raw is mandatory when 'state is present'.")
+            self.module.fail_json(
+                msg="ERROR: The parameter value_raw is mandatory when 'state is present'."
+            )
 
         if self.module.check_mode:
             return self._check_output("create")
@@ -720,7 +729,9 @@ class RuleAPI(CheckmkAPI):
         self.headers["if-Match"] = self.etag
 
         if not data.get("value_raw"):
-            self.module.fail_json(msg="ERROR: The parameter value_raw is mandatory when 'state is present'.")
+            self.module.fail_json(
+                msg="ERROR: The parameter value_raw is mandatory when 'state is present'."
+            )
 
         if self.module.check_mode:
             return self._check_output("edit")
@@ -790,11 +801,11 @@ def run_module():
                         neighbour=dict(type="str", aliases=["rule_id"]),
                     ),
                     required_if=[
-                       ("position", "top", ("folder",)),
-                       ("position", "bottom", ("folder",)),
-                       ("position", "any", ("folder",)),
-                       ("position", "before", ("neighbour",)),
-                       ("position", "after", ("neighbour",)),
+                        ("position", "top", ("folder",)),
+                        ("position", "bottom", ("folder",)),
+                        ("position", "any", ("folder",)),
+                        ("position", "before", ("neighbour",)),
+                        ("position", "after", ("neighbour",)),
                     ],
                     mutually_exclusive=[("folder", "neighbour")],
                     apply_defaults=True,
