@@ -72,8 +72,7 @@
   notify: "activate changes"
 
 - name: "Ensure registration readyness."  # noqa no-handler
-  when: (checkmk_agent_create_result is defined and checkmk_agent_create_result.changed)
-        or (checkmk_install_agent_result is defined and checkmk_install_agent_result.changed)
+  when: checkmk_agent_create_result.changed
   block:
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers
