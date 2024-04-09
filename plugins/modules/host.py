@@ -332,33 +332,17 @@ class HostAPI(CheckmkAPI):
 
         if self.params.get("add_nodes"):
             if self.desired.get("nodes"):
-                self.desired["nodes"] += [
-                    el
-                    for el in self.params.get("add_nodes")
-                    if el not in self.desired["nodes"]
-                ]
+                self.desired["nodes"] = list(set(self.desired["nodes"] + self.params.get("add_nodes")))
             elif self.current.get("cluster_nodes"):
-                self.desired["nodes"] = self.current.get("cluster_nodes") + [
-                    el
-                    for el in self.params.get("add_nodes")
-                    if el not in self.current.get("cluster_nodes")
-                ]
+                self.desired["nodes"] = list(set(self.current.get("cluster_nodes") + self.params.get("add_nodes"))
             else:
                 self.desired["nodes"] = self.desired.get("add_nodes")
 
         if self.params.get("remove_nodes"):
             if self.desired.get("nodes"):
-                self.desired["nodes"] = [
-                    el
-                    for el in self.desired["nodes"]
-                    if el not in self.params.get("remove_nodes")
-                ]
+                self.desired["nodes"] = list(set(self.desired.get("nodes")) - set(self.params.get("remove_nodes")))
             elif self.current.get("cluster_nodes"):
-                self.desired["nodes"] = [
-                    el
-                    for el in self.current.get("cluster_nodes")
-                    if el not in self.params.get("remove_nodes")
-                ]
+                self.desired["nodes"] = list(set(self.current.get("cluster_nodes")) - set(self.params.get("remove_nodes")))
 
         self._changed_items = self._detect_changes()
 
@@ -459,24 +443,7 @@ class HostAPI(CheckmkAPI):
             current_nodes = self.current.get("cluster_nodes")
 
         if desired_parameters.get("nodes"):
-            if (
-                len(
-                    [
-                        el
-                        for el in current_nodes
-                        if el not in desired_parameters.get("nodes")
-                    ]
-                )
-                > 0
-                or len(
-                    [
-                        el
-                        for el in desired_parameters.get("nodes")
-                        if el not in current_nodes
-                    ]
-                )
-                > 0
-            ):
+            if set(current_nodes).symetric_difference(desired_parameters.get("nodes")):
                 changes.append("nodes")
             else:
                 self.desired.pop("nodes", None)
