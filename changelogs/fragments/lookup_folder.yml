@@ -1,0 +1,2 @@
+bugfixes:
+  - Folder lookup module - Return the complete folder information, not only the extensions.

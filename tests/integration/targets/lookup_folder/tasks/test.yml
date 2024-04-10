@@ -30,9 +30,9 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get attributes of folder."
   ansible.builtin.debug:
-    msg: "Criticality of {{ checkmk_folder.name }} is {{ extensions.attributes.tag_criticality }}"
+    msg: "Criticality of {{ checkmk_folder.name }} is {{ folder.extensions.attributes.tag_criticality }}"
   vars:
-    extensions: "{{ lookup('checkmk.general.folder',
+    folder: "{{ lookup('checkmk.general.folder',
                     checkmk_folder.path,
                     server_url=checkmk_var_server_url,
                     site=outer_item.site,
@@ -45,9 +45,9 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify folder criticality."
   ansible.builtin.assert:
-    that: "extensions.attributes.tag_criticality == checkmk_folder.criticality"
+    that: "folder.extensions.attributes.tag_criticality == checkmk_folder.criticality"
   vars:
-    extensions: "{{ lookup('checkmk.general.folder',
+    folder: "{{ lookup('checkmk.general.folder',
                     checkmk_folder.path,
                     server_url=checkmk_var_server_url,
                     site=outer_item.site,
@@ -60,9 +60,9 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
   ansible.builtin.assert:
-    that: "extensions.attributes.tag_criticality == checkmk_folder.criticality"
+    that: "folder.extensions.attributes.tag_criticality == checkmk_folder.criticality"
   vars:
-    extensions: "{{ lookup('checkmk.general.folder', checkmk_folder.path) }}"
+    folder: "{{ lookup('checkmk.general.folder', checkmk_folder.path) }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   when: outer_item.edition == "stable_cee"
