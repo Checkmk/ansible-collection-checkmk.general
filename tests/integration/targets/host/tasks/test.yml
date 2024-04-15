@@ -140,6 +140,392 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_hosts }}"
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+### Cluster Host Tests
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create cluster hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    nodes: "{{ item.nodes }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of create cluster hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    nodes: "{{ item.nodes }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify nodes in cluster host."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ first.name }}"
+    folder: "{{ first.folder }}"
+    nodes: "{{ second.nodes }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  vars:
+    first: "{{ checkmk_cluster_hosts[0] }}"
+    second: "{{ checkmk_cluster_hosts[1] }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency, Modify nodes in cluster host."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ first.name }}"
+    folder: "{{ first.folder }}"
+    nodes: "{{ second.nodes }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  vars:
+    first: "{{ checkmk_cluster_hosts[0] }}"
+    second: "{{ checkmk_cluster_hosts[1] }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Add nodes to cluster hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    add_nodes: "{{ item.add_nodes }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts_add_nodes }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of Add nodes to cluster hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    add_nodes: "{{ item.add_nodes }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts_add_nodes }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove nodes to cluster hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    remove_nodes: "{{ item.remove_nodes }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts_remove_nodes }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Cehck idempotency of Remove nodes to cluster hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    remove_nodes: "{{ item.remove_nodes }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts_remove_nodes }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+###
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete cluster hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of delete cluster hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create cluster host with update_attributes without folder."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    nodes: "{{ item.nodes }}"
+    update_attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+      labels:
+        foo: bar
+      alias: test
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency on update_attributes for only a subset of attributes."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    nodes: "{{ item.nodes }}"
+    update_attributes:
+      labels:
+        foo: bar
+      alias: test
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove Attributes of cluster host."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    nodes: "{{ item.nodes }}"
+    remove_attributes:
+      - alias
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency on remove_attributes."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    nodes: "{{ item.nodes }}"
+    remove_attributes:
+      - alias
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete cluster hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    nodes: "{{ item.nodes }}"
+    folder: "{{ item.folder }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_cluster_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
+###
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete folders."
   folder:
     server_url: "{{ checkmk_var_server_url }}"

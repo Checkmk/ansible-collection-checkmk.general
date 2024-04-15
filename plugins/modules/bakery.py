@@ -60,7 +60,7 @@ EXAMPLES = r"""
     automation_user: "myuser"
     automation_secret: "mysecret"
     signature_key_id: 1
-    signature_key_passphrase: "secretkey"
+    signature_key_passphrase: "my_key"
     state: "signed"
 # Bake and sign all agents.
 - name: "Bake and sign all agents."
@@ -70,7 +70,7 @@ EXAMPLES = r"""
     automation_user: "myuser"
     automation_secret: "mysecret"
     signature_key_id: 1
-    signature_key_passphrase: "secretkey"
+    signature_key_passphrase: "my_key"
     state: "baked_signed"
 """
 
