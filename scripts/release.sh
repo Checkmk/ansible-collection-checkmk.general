@@ -52,7 +52,7 @@ find "${collection_dir}/roles/" -type f -name all.yml -exec sed -i "s/2.0.0.*/${
 find "${collection_dir}/roles/" -type f -name main.yml -exec sed -i "s/2.2.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated default Checkmk version for roles to ${checkmk_stable}."
 find "${collection_dir}/roles/" -type f -name README.md -exec sed -i "s/2.2.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated default Checkmk version in roles README to ${checkmk_stable}."
 # Support Matrix
-grep "${target_version}" "${collection_dir}/SUPPORT.md" || echo "${target_version} | ${checkmk_ancient}, ${checkmk_oldstable}, ${checkmk_stable} | 2.14, 2.15, 2.16 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
+grep "${target_version}" "${collection_dir}/SUPPORT.md" || echo "${target_version} | ${checkmk_ancient}, ${checkmk_oldstable}, ${checkmk_stable} | 2.15, 2.16, 2.17 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
 
 echo "# End changes section."
 echo
