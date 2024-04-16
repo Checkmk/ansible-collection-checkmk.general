@@ -17,7 +17,7 @@ collection_dir="${script_dir%/*}"
 # Update these as necessary:
 checkmk_ancient="2.1.0p41"
 checkmk_oldstable="2.2.0p24"
-checkmk_stable="2.3.0b3"
+checkmk_stable="2.3.0b4"
 
 while getopts 's:t:' OPTION; do
   case "$OPTION" in
