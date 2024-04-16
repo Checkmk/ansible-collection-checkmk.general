@@ -31,7 +31,7 @@ options:
         required: true
         type: str
     name:
-        description: The name (title) of your folder. If omitted defaults to the folder-name from path.
+        description: The name (title) of your folder. If omitted defaults to the string after the last C(/) in I(path).
         type: str
         aliases: [title]
     attributes:
