@@ -1,12 +1,12 @@
 ---
 test_sites:
-  - version: "2.2.0p22"
+  - version: "2.2.0p24"
     edition: "cre"
     site: "stable_cre"
-  - version: "2.2.0p22"
+  - version: "2.2.0p24"
     edition: "cee"
     site: "stable_cee"
-  - version: "2.1.0p39"
+  - version: "2.1.0p41"
     edition: "cre"
     site: "old_cre"
   - version: "2.0.0p39"
@@ -34,3 +34,50 @@ checkmk_hosts:
     folder: "/foo/bar"
   - name: test5.tld
     folder: "/foo/bar1"
+
+checkmk_cluster_hosts:
+  - name: cluster_test1.tld
+    folder: "/"
+    nodes:
+      - "test1.tld"
+      - "test2.tld"
+  - name: cluster_test2.tld
+    folder: "/"
+    nodes:
+      - "test3.tld"
+  - name: cluster_test3.tld
+    folder: "/"
+    nodes: "test4.tld"
+
+checkmk_cluster_hosts_add_nodes:
+  - name: cluster_test1.tld
+    folder: "/"
+    add_nodes:
+      - "test1.tld"
+      - "test2.tld"
+      - "test3.tld"
+      - "test4.tld"
+  - name: cluster_test2.tld
+    folder: "/"
+    add_nodes:
+      - "test2.tld"
+      - "test3.tld"
+  - name: cluster_test3.tld
+    folder: "/"
+    add_nodes:
+      - "test3.tld"
+      - "test4.tld"
+
+checkmk_cluster_hosts_remove_nodes:
+  - name: cluster_test1.tld
+    folder: "/"
+    remove_nodes:
+      - "test3.tld"
+      - "test4.tld"
+  - name: cluster_test2.tld
+    folder: "/"
+    remove_nodes:
+      - "test2.tld"
+  - name: cluster_test3.tld
+    folder: "/"
+    remove_nodes: "test3.tld"

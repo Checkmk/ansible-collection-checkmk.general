@@ -89,8 +89,8 @@ EXAMPLES = """
     msg: "Bakery status is {{ bakery }}"
   vars:
     bakery: "{{ lookup('checkmk.general.bakery',
-                   server_url=http://myserver,
-                   site=mysite,
+                   server_url=http://my_server,
+                   site=my_site,
                    validate_certs=False,
                    automation_user=automation_user,
                    automation_secret=automation_secret
@@ -100,10 +100,10 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "Bakery status is {{ bakery }}"
   vars:
-    ansible_lookup_checkmk_server_url: "{{ checkmk_var_server_url }}"
-    ansible_lookup_checkmk_site: "{{ outer_item.site }}"
-    ansible_lookup_checkmk_automation_user: "{{ checkmk_var_automation_user }}"
-    ansible_lookup_checkmk_automation_secret: "{{ checkmk_var_automation_secret }}"
+    ansible_lookup_checkmk_server_url: "http://my_server/"
+    ansible_lookup_checkmk_site: "my_site"
+    ansible_lookup_checkmk_automation_user: "my_user"
+    ansible_lookup_checkmk_automation_secret: "my_secret"
     ansible_lookup_checkmk_validate_certs: false
     bakery: "{{ lookup('checkmk.general.bakery') }}"
 """

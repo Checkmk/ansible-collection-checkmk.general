@@ -6,4 +6,4 @@ minor_changes:
 known_issues:
   - Lookup modules - When using inventory variables to configure e.g., the server_url,
     it is not possible to assign other variables to these variables.
-    This is a limitation of Ansble itself.
+    This is a limitation of Ansible itself.
