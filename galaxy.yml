@@ -47,6 +47,7 @@ tags: [checkmk, monitoring, check_mk, check, discovery, ubuntu, debian, sles, rh
 dependencies:
   "community.general": ">=5.0.0"
   "ansible.posix": ">=1.4.0"
+  "ansible.utils": ">=1.0.1"
 
 # The URL of the originating SCM repository
 repository: https://github.com/Checkmk/ansible-collection-checkmk.general

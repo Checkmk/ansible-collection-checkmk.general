@@ -1,0 +1,3 @@
+minor_changes:
+  - Add 'ansible.utils' collection as an explicitely dependency.
+    We already had this dependency, but are now declaring it explicitely.
