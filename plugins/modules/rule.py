@@ -588,8 +588,8 @@ class RuleAPI(CheckmkAPI):
         ):
             changes.append("raw_value")
 
-        # desired_location = desired.get("rule").get("location")
-        desired_location = desired.get("location")
+        desired_location = desired.get("rule", {}).get("location")
+        # desired_location = desired.get("location")
         if desired_location:
             current_location = RuleLocation(
                 self.module, current.get("folder", "/"), self.rule_id

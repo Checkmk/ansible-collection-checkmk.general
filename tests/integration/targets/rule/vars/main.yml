@@ -1,5 +1,8 @@
 ---
 test_sites:
+  - version: "2.3.0b5"
+    edition: "cre"
+    site: "beta"
   - version: "2.2.0p23"
     edition: "cre"
     site: "stable_cre"
