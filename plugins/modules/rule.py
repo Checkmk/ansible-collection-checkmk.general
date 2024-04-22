@@ -532,7 +532,9 @@ class RuleAPI(CheckmkAPI):
                         desired["rule"][what][key] = default
 
         else:
-            self.module.warn("############ modify existing rule. Desired: %s" % str(desired))
+            self.module.warn(
+                "############ modify existing rule. Desired: %s" % str(desired)
+            )
         return desired
 
     def _raw_value_eval(self, state, data):
