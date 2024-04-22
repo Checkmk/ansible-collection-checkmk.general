@@ -136,6 +136,16 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 
 See [CHANGELOG.rst](CHANGELOG.rst).
 
+## Versioning
+
+This collection uses [Semantic Versioning](https://semver.org/) for releases. From the official homepage:
+
+    Given a version number MAJOR.MINOR.PATCH, increment the:
+
+      MAJOR version when you make incompatible API changes
+      MINOR version when you add functionality in a backward compatible manner
+      PATCH version when you make backward compatible bug fixes
+
 ## Roadmap
 <!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
 This is merely a collection of possible additions to the collection.
