@@ -1,6 +1,6 @@
 ---
 # General
-checkmk_var_version: "2.2.0p23"
+checkmk_var_version: "2.2.0p24"
 checkmk_var_edition: "cre"
 checkmk_server_verify_setup: 'true'
 checkmk_var_server_url: "http://127.0.0.1/"
