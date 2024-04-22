@@ -509,25 +509,30 @@ class RuleAPI(CheckmkAPI):
         desired["ruleset"] = params.get("ruleset")
         desired["rule"] = {}
         tmp_params_rule = params.get("rule", {})
+        self.module.warn("########### parameters: %s" % str(tmp_params_rule))
 
         for key in DESIRED_RULE_KEYS:
             if tmp_params_rule.get(key):
                 desired["rule"][key] = tmp_params_rule.get(key)
 
-        if self.getversion() < CheckmkVersion("2.3.0"):
-            defaults = DESIRED_DEFAULTS["pre_230"]
+        if not self.rule_id:
+            self.module.warn("############ Create a new rule")
+            # Set defaults unless we're editing an existing rule
+            if self.getversion() < CheckmkVersion("2.3.0"):
+                defaults = DESIRED_DEFAULTS["pre_230"]
+            else:
+                defaults = DESIRED_DEFAULTS["230_or_newer"]
+
+            for what, defaults in defaults.items():
+                for key, default in defaults.items():
+                    if not desired["rule"].get(what):
+                        desired["rule"][what] = {}
+
+                    if not desired["rule"].get(what).get(key):
+                        desired["rule"][what][key] = default
+
         else:
-            defaults = DESIRED_DEFAULTS["230_or_newer"]
-
-        # Set defaults
-        for what, defaults in defaults.items():
-            for key, default in defaults.items():
-                if not desired["rule"].get(what):
-                    desired["rule"][what] = {}
-
-                if not desired["rule"].get(what).get(key):
-                    desired["rule"][what][key] = default
-
+            self.module.warn("############ modify existing rule. Desired: %s" % str(desired))
         return desired
 
     def _raw_value_eval(self, state, data):
@@ -841,6 +846,7 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
+    module.warn("####### Calling with %s" % str(module.params))
     # Create an API object that contains the current and desired state
     current_rule = RuleAPI(module)
 
