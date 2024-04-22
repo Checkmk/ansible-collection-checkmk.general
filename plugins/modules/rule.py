@@ -300,6 +300,9 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.validation import safe_eval
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
 
 DESIRED_RULE_KEYS = (
     "location",
@@ -309,15 +312,29 @@ DESIRED_RULE_KEYS = (
 )
 
 DESIRED_DEFAULTS = {
-    "properties": {
-        "description": "",
-        # "comment": "",
-        "disabled": False,
+    "pre_230": {
+        "properties": {
+            "description": "",
+            # "comment": "",
+            "disabled": False,
+        },
+        "conditions": {
+            "host_tags": [],
+            "host_labels": [],
+            "service_labels": [],
+        },
     },
-    "conditions": {
-        "host_tags": [],
-        "host_labels": [],
-        "service_labels": [],
+    "230_or_newer": {
+        "properties": {
+            "description": "",
+            # "comment": "",
+            "disabled": False,
+        },
+        "conditions": {
+            "host_tags": [],
+            "host_label_groups": [],
+            "service_label_groups": [],
+        },
     },
 }
 
@@ -470,7 +487,9 @@ class RuleAPI(CheckmkAPI):
                     "Specified neighbour: '%s' does not exist" % neighbour_id
                 )
             else:
-                self.desired["location"]["folder"] = neighbour.get("rule").get("folder")
+                self.desired["rule"]["location"]["folder"] = neighbour.get("rule").get(
+                    "folder"
+                )
 
         if not self.rule_id:
             # If no rule_id is provided, we still check if rule exists.
@@ -495,8 +514,13 @@ class RuleAPI(CheckmkAPI):
             if tmp_params_rule.get(key):
                 desired["rule"][key] = tmp_params_rule.get(key)
 
+        if self.getversion() < CheckmkVersion("2.3.0"):
+            defaults = DESIRED_DEFAULTS["pre_230"]
+        else:
+            defaults = DESIRED_DEFAULTS["230_or_newer"]
+
         # Set defaults
-        for what, defaults in DESIRED_DEFAULTS.items():
+        for what, defaults in defaults.items():
             for key, default in defaults.items():
                 if not desired["rule"].get(what):
                     desired["rule"][what] = {}
