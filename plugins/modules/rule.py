@@ -509,34 +509,25 @@ class RuleAPI(CheckmkAPI):
         desired["ruleset"] = params.get("ruleset")
         desired["rule"] = {}
         tmp_params_rule = params.get("rule", {})
-        self.module.warn("########### parameters: %s" % str(tmp_params_rule))
 
         for key in DESIRED_RULE_KEYS:
             if tmp_params_rule.get(key):
                 desired["rule"][key] = tmp_params_rule.get(key)
 
-        # if not self.rule_id:
-
-        if True:
-            self.module.warn("############ Create a new rule")
-            # Set defaults unless we're editing an existing rule
-            if self.getversion() < CheckmkVersion("2.3.0"):
-                defaults = DESIRED_DEFAULTS["pre_230"]
-            else:
-                defaults = DESIRED_DEFAULTS["230_or_newer"]
-
-            for what, defaults in defaults.items():
-                for key, default in defaults.items():
-                    if not desired["rule"].get(what):
-                        desired["rule"][what] = {}
-
-                    if not desired["rule"].get(what).get(key):
-                        desired["rule"][what][key] = default
-
+        # Set defaults unless we're editing an existing rule
+        if self.getversion() < CheckmkVersion("2.3.0"):
+            defaults = DESIRED_DEFAULTS["pre_230"]
         else:
-            self.module.warn(
-                "############ modify existing rule. Desired: %s" % str(desired)
-            )
+            defaults = DESIRED_DEFAULTS["230_or_newer"]
+
+        for what, defaults in defaults.items():
+            for key, default in defaults.items():
+                if not desired["rule"].get(what):
+                    desired["rule"][what] = {}
+
+                if not desired["rule"].get(what).get(key):
+                    desired["rule"][what][key] = default
+
         return desired
 
     def _raw_value_eval(self, state, data):
@@ -634,9 +625,6 @@ class RuleAPI(CheckmkAPI):
             content = json.loads(result.content)
             extensions = content["extensions"]
 
-            # for key, value in extensions.items():
-            #     if key in CURRENT_RULE_KEYS:
-            #         current["rule"][key] = value
             current["rule"] = {
                 key: value
                 for key, value in extensions.items()
@@ -850,7 +838,6 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
-    module.warn("####### Calling with %s" % str(module.params))
     # Create an API object that contains the current and desired state
     current_rule = RuleAPI(module)
 
