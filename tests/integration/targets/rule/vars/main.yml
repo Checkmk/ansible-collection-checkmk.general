@@ -11,7 +11,6 @@ test_sites:
     site: "old_cre"
 
 checkmk_var_rules:
-
   - name: "Filesystem - Magic Factor."
     ruleset: "checkgroup_parameters:filesystem"
     rule:
@@ -102,6 +101,7 @@ checkmk_var_rules:
         "disabled": false,
       }
       value_raw: 'True'
+
   - ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -116,3 +116,46 @@ checkmk_var_rules:
         "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
       }
       value_raw: "{'levels': (80.0, 90.0)}"
+
+checkmk_var_rules_230:
+  - ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      conditions: {
+        "host_label_groups": [
+            {
+                operator: "and",
+                label_group: [
+                    {
+                        operator: "and",
+                        label: "cmk/site:beta"
+                    },
+                    {
+                        operator: "or",
+                        label: "cmk/os_family:linux"
+                    }
+                ],
+            },
+            {
+                operator: "or",
+                label_group: [
+                    {
+                        operator: "and",
+                        label: "cmk/site:alpha"
+                    },
+                    {
+                        operator: "or",
+                        label: "cmk/os_family:windows"
+                    }
+                ],
+            },
+        ],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 70%\nCritical at 80%\n",
+        "description": "Allow higher memory usage for certain host label conditions",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (70.0, 80.0)}"

@@ -171,3 +171,18 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rules }}"
   register: created_rules
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - New label conditions."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ruleset: "{{ item.ruleset }}"
+    rule: "{{ item.rule }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_var_rules_230 }}"
+  register: created_rules
+  when: "'2.3' in outer_item.version"
