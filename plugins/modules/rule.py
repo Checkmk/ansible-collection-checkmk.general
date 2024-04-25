@@ -515,56 +515,26 @@ class RuleAPI(CheckmkAPI):
             if tmp_params_rule.get(key):
                 desired["rule"][key] = tmp_params_rule.get(key)
 
-        # if not self.rule_id:
-        #     self.module.warn("############ Create a new rule")
-        #     # Set defaults unless we're editing an existing rule
-        #     if self.getversion() < CheckmkVersion("2.3.0"):
-        #         defaults = DESIRED_DEFAULTS["pre_230"]
-        #     else:
-        #         defaults = DESIRED_DEFAULTS["230_or_newer"]
+        if not self.rule_id:
+            self.module.warn("############ Create a new rule")
+            # Set defaults unless we're editing an existing rule
+            if self.getversion() < CheckmkVersion("2.3.0"):
+                defaults = DESIRED_DEFAULTS["pre_230"]
+            else:
+                defaults = DESIRED_DEFAULTS["230_or_newer"]
 
-        #     self.module.warn("######## Setting defaults...")
-        #     for what, defaults in defaults.items():
-        #         for key, default in defaults.items():
-        #             self.module.warn("         what: %s, key: %s, default: %s" %
-        #                              (what, key, str(defaults)))
+            for what, defaults in defaults.items():
+                for key, default in defaults.items():
+                    if not desired["rule"].get(what):
+                        desired["rule"][what] = {}
 
-        #             if not desired["rule"].get(what):
-        #                 self.module.warn("         %s not set" % what)
-        #                 desired["rule"][what] = {}
+                    if not desired["rule"].get(what).get(key):
+                        desired["rule"][what][key] = default
 
-        #             if not desired["rule"].get(what).get(key):
-        #                 self.module.warn("         %s not set. using default %s" % 
-        #                                  (key, str(default)))
-        #                 desired["rule"][what][key] = default
-
-        # else:
-        #     self.module.warn(
-        #         "############ modify existing rule. Desired: %s" % str(desired)
-        #     )
-
-        self.module.warn("############ Create a new rule")
-        # Set defaults unless we're editing an existing rule
-        if self.getversion() < CheckmkVersion("2.3.0"):
-            defaults = DESIRED_DEFAULTS["pre_230"]
         else:
-            defaults = DESIRED_DEFAULTS["230_or_newer"]
-
-        self.module.warn("######## Setting defaults...")
-        for what, defaults in defaults.items():
-            for key, default in defaults.items():
-                self.module.warn("         what: %s, key: %s, default: %s" %
-                                 (what, key, str(defaults)))
-
-                if not desired["rule"].get(what):
-                    self.module.warn("         %s not set" % what)
-                    desired["rule"][what] = {}
-
-                if not desired["rule"].get(what).get(key):
-                    self.module.warn("         %s not set. using default %s" % 
-                                     (key, str(default)))
-                    desired["rule"][what][key] = default
-
+            self.module.warn(
+                "############ modify existing rule. Desired: %s" % str(desired)
+            )
         return desired
 
     def _raw_value_eval(self, state, data):
@@ -618,7 +588,6 @@ class RuleAPI(CheckmkAPI):
             changes.append("conditions")
 
         if current.get("properties", {}) != desired.get("properties", {}):
-            self.module.warn("Before: %s, after: %s" % (str(current.get("properties", {})), str(desired.get("properties", {}))))
             changes.append("properties")
 
         if self._raw_value_eval("current", current) != self._raw_value_eval(
