@@ -32,7 +32,9 @@ options:
             rule_id:
                 description:
                     - If provided, update/delete an existing rule.
-                    - If omitted, I(always) creates a new rule.
+                    - If omitted, we try to find an equal rule based on C(properties),
+                      C(conditions), C(folder) and C(value_raw).
+                    - Please mind the additional notes below.
                 type: str
             location:
                 description:
@@ -88,11 +90,18 @@ options:
         choices: [present, absent]
         default: present
         type: str
+notes:
+    - If rule_id is omitted, due to the internal processing of the C(value_raw), finding the
+      matching rule is not reliable, when C(rule_id) is omitted. This sometimes leads to the
+      module not being idempotent or to rules being created over and over again.
+    - If rule_id is provided, for the same reason, it might happen, that tasks changing a rule
+      again and again, even if it already meets the expectations.
 
 author:
     - Lars Getwan (@lgetwan)
     - diademiemi (@diademiemi)
     - Geoffroy Stévenne (@geof77)
+    - Michael Sekana (@msekania)
 """
 
 EXAMPLES = r"""
@@ -134,8 +143,8 @@ EXAMPLES = r"""
   ansible.builtin.debug:
     msg: "RULE ID : {{ response.content.id }}"
 
-# Create another rule in checkgroup_parameters:memory_percentage_used
-# and put it after the rule created above.
+# Create another rule with the new label conditions (> 2.3.0)
+# in checkgroup_parameters:memory_percentage_used and put it after the rule created above.
 - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
   checkmk.general.rule:
     server_url: "http://my_server/"
@@ -145,7 +154,34 @@ EXAMPLES = r"""
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
-        "host_labels": [],
+        "host_label_groups": [
+            {
+                operator: "and",
+                label_group: [
+                    {
+                        operator: "and",
+                        label: "cmk/site:beta"
+                    },
+                    {
+                        operator: "or",
+                        label: "cmk/os_family:linux"
+                    }
+                ],
+            },
+            {
+                operator: "or",
+                label_group: [
+                    {
+                        operator: "and",
+                        label: "cmk/site:alpha"
+                    },
+                    {
+                        operator: "or",
+                        label: "cmk/os_family:windows"
+                    }
+                ],
+            },
+        ],
         "host_name": {
           "match_on": [
             "test2.tld"
@@ -476,20 +512,7 @@ class RuleAPI(CheckmkAPI):
         self.current = None
         self.etag = ""
 
-        # when neighbour is specified, verify that it exists otherwise give warning
-        neighbour_id = self.params.get("rule").get("location").get("neighbour")
-        # if neighbour_id and neighbour_id != "":
-        if neighbour_id and neighbour_id != "":
-            (neighbour, state) = self._get_rule_by_id(neighbour_id)
-
-            if state == "absent":
-                self.module.warn(
-                    "Specified neighbour: '%s' does not exist" % neighbour_id
-                )
-            else:
-                self.desired["rule"]["location"]["folder"] = neighbour.get("rule").get(
-                    "folder"
-                )
+        self._verify_parameters()
 
         if not self.rule_id:
             # If no rule_id is provided, we still check if rule exists.
@@ -500,6 +523,36 @@ class RuleAPI(CheckmkAPI):
             (self.current, self.state) = self._get_current()
             if self.state == "present":
                 self._changed_items = self._detect_changes()
+
+    def _verify_parameters(self):
+        self._verify_location()
+        self._verify_conditions()
+
+    def _verify_location(self):
+        # when neighbour is specified, verify that it exists otherwise give warning
+        neighbour_id = self.params.get("rule", {}).get("location", {}).get("neighbour")
+
+        if neighbour_id:
+            (neighbour, state) = self._get_rule_by_id(neighbour_id)
+
+            if state == "absent":
+                self.module.warn(
+                    "Specified neighbour: '%s' does not exist" % neighbour_id
+                )
+            else:
+                self.desired["rule"]["location"]["folder"] = neighbour.get("rule", {}).get(
+                    "folder"
+                )
+
+    def _verify_conditions(self):
+        # The combined host/service labels are only available in > 2.3.0
+        conditions = self.params.get("rule", {}).get("conditions")
+        if conditions and (
+            "host_label_groups" in conditions or "service_label_groups" in conditions
+        ) and self.getversion() < CheckmkVersion("2.3.0"):
+            self.module.fail_json(
+                msg="ERROR: label groups are only available from Checkmk 2.3.0 on."
+            )
 
     def rule_id_found(self):
         return self.current is not None
