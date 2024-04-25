@@ -515,7 +515,9 @@ class RuleAPI(CheckmkAPI):
             if tmp_params_rule.get(key):
                 desired["rule"][key] = tmp_params_rule.get(key)
 
-        if not self.rule_id:
+        # if not self.rule_id:
+
+        if True:
             self.module.warn("############ Create a new rule")
             # Set defaults unless we're editing an existing rule
             if self.getversion() < CheckmkVersion("2.3.0"):
