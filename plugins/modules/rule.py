@@ -540,16 +540,21 @@ class RuleAPI(CheckmkAPI):
                     "Specified neighbour: '%s' does not exist" % neighbour_id
                 )
             else:
-                self.desired["rule"]["location"]["folder"] = neighbour.get("rule", {}).get(
-                    "folder"
-                )
+                self.desired["rule"]["location"]["folder"] = neighbour.get(
+                    "rule", {}
+                ).get("folder")
 
     def _verify_conditions(self):
         # The combined host/service labels are only available in > 2.3.0
         conditions = self.params.get("rule", {}).get("conditions")
-        if conditions and (
-            "host_label_groups" in conditions or "service_label_groups" in conditions
-        ) and self.getversion() < CheckmkVersion("2.3.0"):
+        if (
+            conditions
+            and (
+                "host_label_groups" in conditions
+                or "service_label_groups" in conditions
+            )
+            and self.getversion() < CheckmkVersion("2.3.0")
+        ):
             self.module.fail_json(
                 msg="ERROR: label groups are only available from Checkmk 2.3.0 on."
             )
