@@ -1,7 +1,7 @@
 
 
 .. meta::
-  :antsibull-docs: 2.7.0
+  :antsibull-docs: 2.10.0
 
 
 .. _plugins_in_checkmk.general:
@@ -9,7 +9,7 @@
 Checkmk.General
 ===============
 
-Collection version 4.3.1
+Collection version 4.4.0
 
 .. contents::
    :local:
@@ -45,7 +45,6 @@ The official Checkmk Ansible collection - brought to you by the Checkmk company.
 
 .. toctree::
     :maxdepth: 1
-
 
 Plugin Index
 ------------

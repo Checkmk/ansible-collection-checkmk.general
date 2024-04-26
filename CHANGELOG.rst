@@ -4,6 +4,33 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v4.4.0
+======
+
+Release Summary
+---------------
+
+Spring is here! With a rewritten host module including check mode and cluster support.
+
+Major Changes
+-------------
+
+- Host module - Add support for cluster hosts.
+- Host module - Enable check mode.
+- Host module - Update attribute management behavior. Refer to the documentation for details.
+
+Minor Changes
+-------------
+
+- Host module - Migrate module to the new collection API.
+
+Bugfixes
+--------
+
+- Bakery module - Fix failing integration test due to wrong key passphrase.
+- Folder module - Fix issue where the `name` (alias `title`) was entirely ignored.
+- Folder module - Fix issues with uppercase and lowercase names.
+
 v4.3.1
 ======
 
@@ -43,7 +70,7 @@ Bugfixes
 Known Issues
 ------------
 
-- Lookup modules - When using inventory variables to configure e.g., the server_url, it is not possible to assign other variables to these variables. This is a limitation of Ansble itself.
+- Lookup modules - When using inventory variables to configure e.g., the server_url, it is not possible to assign other variables to these variables. This is a limitation of Ansible itself.
 
 v4.2.0
 ======
