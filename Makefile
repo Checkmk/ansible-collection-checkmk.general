@@ -7,42 +7,41 @@ CONTAINER_BUILD_ROOT="$(COLLECTION_ROOT)/tests/container"
 CONTAINER_NAME="ansible-checkmk-test"
 
 help:
-	@echo "setup           				- Run all setup target at once."
+	@echo "setup           			- Run all setup target at once."
 	@echo ""
-	@echo "setup-python    				- Prepare the system for development with Python."
+	@echo "setup-python    			- Prepare the system for development with Python."
 	@echo ""
-	@echo "setup-kvm       				- Install and enable KVM and prepare Vagrant."
+	@echo "setup-kvm       			- Install and enable KVM and prepare Vagrant."
 	@echo ""
-	@echo "kvm             				- Only copy the correct Vagrantfile for use with KVM."
+	@echo "kvm             			- Only copy the correct Vagrantfile for use with KVM."
 	@echo ""
-	@echo "setup-vbox 	     			- Copy the correct Vagrantfile for use with VirtualBox."
+	@echo "setup-vbox 	     		- Copy the correct Vagrantfile for use with VirtualBox."
 	@echo ""
-	@echo "vbox 	           			- Copy the correct Vagrantfile for use with VirtualBox."
+	@echo "vbox 	           		- Copy the correct Vagrantfile for use with VirtualBox."
 	@echo ""
-	@echo "vm              - Create a virtual development environment."
-	@echo "molecule        - Create a virtual environment for molecule tests."
-	@echo "vms        	   - Create a virtual environment with all boxes (exept for the development ones and ansidows)."
-	@echo "vms-debian 	   - Create a virtual environment with all Debian family OSes."
-	@echo "vms-redhat 	   - Create a virtual environment with all RedHat family OSes."
-	@echo "vms-suse 	   - Create a virtual environment with all Suse family OSes."
+	@echo "vm              			- Create a virtual development environment."
+	@echo "vms        	   			- Create a virtual environment with all boxes (exept for the development ones and ansidows)."
+	@echo "vms-debian 	   			- Create a virtual environment with all Debian family OSes."
+@echo "vms-redhat 	   				- Create a virtual environment with all RedHat family OSes."
+	@echo "vms-suse 	   			- Create a virtual environment with all Suse family OSes."
 	@echo ""
-	@echo "container       				- Create a customized container image for testing."
+	@echo "container       			- Create a customized container image for testing."
 	@echo ""
-	@echo "tests	       				- Run all available tests."
-	@echo "tests-sanity    				- Run sanity tests."
-	@echo "tests-integration    		- Run all integration tests."
-	@echo "tests-integration-custom		- Run all integration tests using a custom built image."
+	@echo "tests	       			- Run all available tests."
+	@echo "tests-sanity    			- Run sanity tests."
+	@echo "tests-integration    	- Run all integration tests."
+	@echo "tests-integration-custom	- Run all integration tests using a custom built image."
 	@echo ""
-	@echo "clean           				- Clean up several things"
-	@echo "clean-vm        				- Clean up virtual development environment."
+	@echo "clean           			- Clean up several things"
+	@echo "clean-vm        			- Clean up virtual development environment."
 	@echo ""
-	@echo "version         				- Update collection version"
+	@echo "version         			- Update collection version"
 	@echo ""
 	@echo "Publishing:"
 	@echo ""
-	@echo "  release       				- Build, upload, publish, announce and tag a release"
-	@echo "  announce      				- Announce the release"
-	@echo "  publish       				- Make files available, update git and announce"
+	@echo "  release       			- Build, upload, publish, announce and tag a release"
+	@echo "  announce      			- Announce the release"
+	@echo "  publish       			- Make files available, update git and announce"
 	@echo ""
 
 release: version
@@ -103,9 +102,6 @@ clean: clean-vm
 clean-vm:
 	@vagrant destroy --force
 
-molecule:
-	@vagrant up molecule
-
 vm:
 	@vagrant up collection
 
@@ -124,8 +120,8 @@ vms-suse:
 vms-windows:
 	@vagrant up ansidows
 
-container: molecule
-	vagrant ssh molecule -c "\
+container:
+	vagrant ssh collection -c "\
 	docker build -t $(CONTAINER_NAME) $(CONTAINER_BUILD_ROOT) --build-arg DL_PW=$$(cat .secret) && \
 	docker save $(CONTAINER_NAME):latest > $(COLLECTION_ROOT)/$(CONTAINER_NAME)-latest-image.tar.gz"
 
