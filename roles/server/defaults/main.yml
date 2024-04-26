@@ -23,6 +23,7 @@ checkmk_server_server_stable_os:
   - Ubuntu-18
   - Ubuntu-20
   - Ubuntu-22
+  - Ubuntu-24
 
 checkmk_server_version: "2.3.0b3"
 checkmk_server_edition: cre
