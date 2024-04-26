@@ -9,6 +9,7 @@
         update_cache: true
         cache_valid_time: 600
       when: ansible_os_family == 'Debian'
+
     - name: Install prerequisites.
       ansible.builtin.apt:
         name: "{{ item }}"
@@ -16,7 +17,17 @@
       loop:
         - apt-utils
         - man
+        - ufw
       when: ansible_os_family == 'Debian'
+
+    - name: Install prerequisites.
+      ansible.builtin.yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - firewalld
+      when: ansible_os_family == 'RedHat'
+
     - name: Create '/usr/share/man/man8/' on Ubuntu.
       ansible.builtin.file:
         path: /usr/share/man/man8/
