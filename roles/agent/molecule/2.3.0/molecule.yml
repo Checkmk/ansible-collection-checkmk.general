@@ -28,10 +28,11 @@ platforms:
   - name: ubuntu2404
     image: geerlingguy/docker-ubuntu2404-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
+    cgroupns_mode: host
     tmpfs:
       - /run
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
   - name: debian11
