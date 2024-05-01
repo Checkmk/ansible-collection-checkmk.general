@@ -888,3 +888,16 @@ releases:
     - host.yml
     - release_summary.yml
     release_date: '2024-04-17'
+  4.4.1:
+    changes:
+      bugfixes:
+      - Host module - Fix hosts always being created in the main directory.
+      minor_changes:
+      - Add 'ansible.utils' collection as an explicitely dependency. We already had
+        this dependency, but are now declaring it explicitely.
+      release_summary: Bugfix Release.
+    fragments:
+    - fix_host_initial_folder.yml
+    - meta.yml
+    - release_summary.yml
+    release_date: '2024-05-01'
