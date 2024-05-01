@@ -350,7 +350,7 @@ DESIRED_RULE_KEYS = (
 DESIRED_DEFAULTS = {
     "pre_230": {
         "properties": {
-            "description": "",
+            # "description": "",
             # "comment": "",
             "disabled": False,
         },
@@ -362,7 +362,7 @@ DESIRED_DEFAULTS = {
     },
     "230_or_newer": {
         "properties": {
-            "description": "",
+            # "description": "",
             # "comment": "",
             "disabled": False,
         },
