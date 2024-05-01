@@ -9,9 +9,10 @@ test_sites:
   - version: "2.1.0p41"
     edition: "cre"
     site: "old_cre"
-  - version: "2.0.0p39"
-    edition: "cre"
-    site: "ancient_cre"
+  # Temporarily disable due to #596 until the permanent change to remove it lands.
+  # - version: "2.0.0p39"
+  #   edition: "cre"
+  #   site: "ancient_cre"
 
 checkmk_var_folders:
   - path: /foo
