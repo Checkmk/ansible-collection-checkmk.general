@@ -19,7 +19,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     attributes:
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
@@ -40,6 +40,22 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify host folder."
+  ansible.builtin.assert:
+    that: "(item.folder | default('/')) == extensions.folder"
+  vars:
+    extensions: "{{ lookup('checkmk.general.host',
+                    item.name,
+                    server_url=checkmk_var_server_url,
+                    site=outer_item.site,
+                    validate_certs=False,
+                    automation_user=checkmk_var_automation_user,
+                    automation_secret=checkmk_var_automation_secret)
+              }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_hosts }}"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
@@ -47,7 +63,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -134,7 +150,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -160,7 +176,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     attributes:
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
@@ -188,7 +204,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     nodes: "{{ item.nodes }}"
     attributes:
       site: "{{ outer_item.site }}"
@@ -217,7 +233,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     nodes: "{{ item.nodes }}"
     attributes:
       site: "{{ outer_item.site }}"
@@ -234,7 +250,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ first.name }}"
-    folder: "{{ first.folder }}"
+    folder: "{{ first.folder | default(omit) }}"
     nodes: "{{ second.nodes }}"
     attributes:
       site: "{{ outer_item.site }}"
@@ -265,7 +281,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ first.name }}"
-    folder: "{{ first.folder }}"
+    folder: "{{ first.folder | default(omit) }}"
     nodes: "{{ second.nodes }}"
     attributes:
       site: "{{ outer_item.site }}"
@@ -284,7 +300,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     add_nodes: "{{ item.add_nodes }}"
     attributes:
       site: "{{ outer_item.site }}"
@@ -313,7 +329,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     add_nodes: "{{ item.add_nodes }}"
     attributes:
       site: "{{ outer_item.site }}"
@@ -342,7 +358,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     remove_nodes: "{{ item.remove_nodes }}"
     attributes:
       site: "{{ outer_item.site }}"
@@ -371,7 +387,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     remove_nodes: "{{ item.remove_nodes }}"
     attributes:
       site: "{{ outer_item.site }}"
@@ -401,7 +417,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -426,7 +442,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -506,7 +522,7 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
     nodes: "{{ item.nodes }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -519,7 +535,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     name: "{{ item.name }}"
-    folder: "{{ item.folder }}"
+    folder: "{{ item.folder | default(omit) }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]

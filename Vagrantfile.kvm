@@ -23,7 +23,6 @@ Vagrant.configure("2") do |config|
       libvirt.memory = 8096
       libvirt.cpus = 4
       libvirt.title = 'collection'
-      libvirt.keymap = "de"
       libvirt.memorybacking :access, :mode => 'shared'
       libvirt.memorybacking :source, :type => 'memfd'
     end
