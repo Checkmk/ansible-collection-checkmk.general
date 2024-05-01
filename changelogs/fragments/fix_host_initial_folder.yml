@@ -1,0 +1,2 @@
+bugfixes:
+ - Host module - Fix hosts being always created in the main directory.
