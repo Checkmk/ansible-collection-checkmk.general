@@ -1,12 +1,12 @@
 ---
 test_sites:
-  - version: "2.3.0b6"
+  - version: "2.3.0"
     edition: "cme"
     site: "stable_cme"
-  - version: "2.3.0b6"
+  - version: "2.3.0"
     edition: "cee"
     site: "stable_cee"
-  - version: "2.3.0b6"
+  - version: "2.3.0"
     edition: "cre"
     site: "stable_cre"
   - version: "2.2.0p25"
