@@ -1,5 +1,5 @@
 minor_changes:
   - Testing - All tests now cover Checkmk 2.3.0.
-  - Testing - Checkmk 2.0.0 was removed from all tests, as it is EOL.
+  - Testing - Remove Checkmk 2.0.0 from all tests, as it is EOL.
   - Testing - The Molecule tests now run on Ubuntu 22.04.
   - Testing - Ubuntu 24.04 is added to the Molecule tests.
