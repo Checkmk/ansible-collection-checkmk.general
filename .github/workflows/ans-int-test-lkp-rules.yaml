@@ -18,8 +18,6 @@ on:
       - main
       - devel
   push:
-    branches:
-      - build/checkmk-2-3-support
     paths:
       - 'plugins/lookup/rule.py'
       - 'plugins/lookup/rules.py'

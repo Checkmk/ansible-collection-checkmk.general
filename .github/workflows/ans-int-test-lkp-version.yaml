@@ -20,8 +20,6 @@ on:
       - main
       - devel
   push:
-    branches:
-      - build/checkmk-2-3-support
     paths:
       - 'plugins/lookup/version.py'
 
