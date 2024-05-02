@@ -24,6 +24,7 @@ checkmk_var_folders:
     name: Digital
 
 checkmk_hosts:
+  - name: test0.tld
   - name: test1.tld
     folder: "/"
   - name: test2.tld
@@ -36,6 +37,10 @@ checkmk_hosts:
     folder: "/foo/bar1"
 
 checkmk_cluster_hosts:
+  - name: cluster_test0.tld
+    nodes:
+      - "test0.tld"
+      - "test4.tld"
   - name: cluster_test1.tld
     folder: "/"
     nodes:

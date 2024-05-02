@@ -4,6 +4,24 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v4.4.1
+======
+
+Release Summary
+---------------
+
+Bugfix Release.
+
+Minor Changes
+-------------
+
+- Add 'ansible.utils' collection as an explicitely dependency. We already had this dependency, but are now declaring it explicitely.
+
+Bugfixes
+--------
+
+- Host module - Fix hosts always being created in the main directory.
+
 v4.4.0
 ======
 
