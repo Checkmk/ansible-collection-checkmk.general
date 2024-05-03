@@ -13,7 +13,7 @@ It can be installed as easy as running:
 
 ## Role Variables
 
-    checkmk_agent_version: "2.3.0b6"
+    checkmk_agent_version: "2.3.0"
 
 The Checkmk version of the site your agents will talk to.
 

@@ -6,7 +6,7 @@ test_sites:
   - version: "2.3.0"
     edition: "cre"
     site: "stable_cre"
-  - version: "2.2.0p25"
+  - version: "2.2.0p26"
     edition: "cre"
     site: "old_cre"
   - version: "2.1.0p42"
