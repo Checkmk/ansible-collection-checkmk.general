@@ -350,8 +350,6 @@ DESIRED_RULE_KEYS = (
 DESIRED_DEFAULTS = {
     "pre_230": {
         "properties": {
-            # "description": "",
-            # "comment": "",
             "disabled": False,
         },
         "conditions": {
@@ -362,8 +360,6 @@ DESIRED_DEFAULTS = {
     },
     "230_or_newer": {
         "properties": {
-            # "description": "",
-            # "comment": "",
             "disabled": False,
         },
         "conditions": {
@@ -373,6 +369,11 @@ DESIRED_DEFAULTS = {
         },
     },
 }
+
+IGNORE_PROPERTIES_DEFAULTS = [
+    "description",
+    "comment",
+]
 
 CURRENT_RULE_KEYS = (
     "folder",
@@ -645,6 +646,16 @@ class RuleAPI(CheckmkAPI):
 
         if current.get("conditions", {}) != desired.get("conditions", {}):
             changes.append("conditions")
+
+        if desired.get("properties"):
+            if current.get("properties", {}) != desired.get("properties"):
+                for elem in IGNORE_PROPERTIES_DEFAULTS:
+                    if (
+                        current.get("properties", {}).get(elem, "")
+                        == desired.get("properties").get(elem, "")
+                        and desired.get("properties").get(elem, "") == ""
+                    ):
+                        desired["properties"].pop(elem, None)
 
         if current.get("properties", {}) != desired.get("properties", {}):
             changes.append("properties")
