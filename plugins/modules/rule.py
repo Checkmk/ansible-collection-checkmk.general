@@ -578,13 +578,13 @@ class RuleAPI(CheckmkAPI):
         else:
             defaults = DESIRED_DEFAULTS["230_or_newer"]
 
-        for what, defaults in defaults.items():
-            for key, default in defaults.items():
+        for what, def_vals in defaults.items():
+            for key, value in def_vals.items():
                 if not desired["rule"].get(what):
                     desired["rule"][what] = {}
 
                 if not desired["rule"].get(what).get(key):
-                    desired["rule"][what][key] = default
+                    desired["rule"][what][key] = value
 
         return desired
 
@@ -618,11 +618,19 @@ class RuleAPI(CheckmkAPI):
         return []
 
     def _get_rule_id(self, desired):
+        desired_properties = desired["rule"].get("properties")
+
+        if desired_properties.get("description", "") == "":
+            desired_properties.pop("description", None)
+
+        if desired_properties.get("comment", "") == "":
+            desired_properties.pop("comment", None)
+
         for r in self._get_rules_in_ruleset(desired.get("ruleset")):
             if (
                 r["extensions"]["folder"] == desired["rule"]["location"]["folder"]
                 and r["extensions"]["conditions"] == desired["rule"]["conditions"]
-                and r["extensions"]["properties"] == desired["rule"]["properties"]
+                and r["extensions"]["properties"] == desired_properties
                 and self._raw_value_eval("search", r["extensions"])
                 == self._raw_value_eval("desired", desired["rule"])
             ):
