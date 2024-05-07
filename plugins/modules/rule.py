@@ -621,11 +621,9 @@ class RuleAPI(CheckmkAPI):
     def _get_rule_id(self, desired):
         desired_properties = desired["rule"].get("properties")
 
-        if desired_properties.get("description", "") == "":
-            desired_properties.pop("description", None)
-
-        if desired_properties.get("comment", "") == "":
-            desired_properties.pop("comment", None)
+        for elem in IGNORE_PROPERTIES_DEFAULTS:
+            if desired_properties.get(elem, "") == "":
+                desired_properties.pop(elem, None)
 
         for r in self._get_rules_in_ruleset(desired.get("ruleset")):
             if (
