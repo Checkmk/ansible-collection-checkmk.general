@@ -375,6 +375,27 @@ IGNORE_PROPERTIES_DEFAULTS = [
     "comment",
 ]
 
+IGNORE_DEFAULTS = {
+    "pre_230": {
+        "properties": {
+            "description", ""
+            "comment", ""
+        },
+        "conditions": {},
+    },
+    "230_or_newer": {
+        "properties": {
+            "description", ""
+            "comment", ""
+        },
+        "conditions": {
+            # "host_tags": [],
+            "host_label_groups": [],
+            "service_label_groups": [],
+        },
+    },
+}
+
 CURRENT_RULE_KEYS = (
     "folder",
     "ruleset",
@@ -507,6 +528,11 @@ class RuleAPI(CheckmkAPI):
         self.rule_id = self.params.get("rule").get("rule_id")
         self.is_new_rule = self.rule_id is None
 
+        if self.getversion() < CheckmkVersion("2.3.0"):
+            self.version_select_str = "pre_230"
+        else:
+            self.version_select_str = "230_or_newer"
+
         self.desired = self._clean_desired(self.params)
 
         self._changed_items = []
@@ -573,13 +599,7 @@ class RuleAPI(CheckmkAPI):
             if tmp_params_rule.get(key):
                 desired["rule"][key] = tmp_params_rule.get(key)
 
-        # Set defaults unless we're editing an existing rule
-        if self.getversion() < CheckmkVersion("2.3.0"):
-            defaults = DESIRED_DEFAULTS["pre_230"]
-        else:
-            defaults = DESIRED_DEFAULTS["230_or_newer"]
-
-        for what, def_vals in defaults.items():
+        for what, def_vals in DESIRED_DEFAULTS[self.version_select_str].items():
             for key, value in def_vals.items():
                 if not desired["rule"].get(what):
                     desired["rule"][what] = {}
@@ -621,9 +641,14 @@ class RuleAPI(CheckmkAPI):
     def _get_rule_id(self, desired):
         desired_properties = desired["rule"].get("properties")
 
-        for elem in IGNORE_PROPERTIES_DEFAULTS:
-            if desired_properties.get(elem, "") == "":
-                desired_properties.pop(elem, None)
+        # for elem in IGNORE_PROPERTIES_DEFAULTS:
+        #     if desired_properties.get(elem, "") == "":
+        #         desired_properties.pop(elem, None)
+
+        for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items:
+            for key, value in what.items:
+                if desired_properties.get(key, value) == value:
+                    desired_properties.pop(key, None)
 
         for r in self._get_rules_in_ruleset(desired.get("ruleset")):
             if (
@@ -647,13 +672,21 @@ class RuleAPI(CheckmkAPI):
 
         if desired.get("properties"):
             if current.get("properties", {}) != desired.get("properties"):
-                for elem in IGNORE_PROPERTIES_DEFAULTS:
-                    if (
-                        current.get("properties", {}).get(elem, "")
-                        == desired.get("properties").get(elem, "")
-                        and desired.get("properties").get(elem, "") == ""
-                    ):
-                        desired["properties"].pop(elem, None)
+                # for elem in IGNORE_PROPERTIES_DEFAULTS:
+                #     if (
+                #         current.get("properties", {}).get(elem, "")
+                #         == desired.get("properties").get(elem, "")
+                #         and desired.get("properties").get(elem, "") == ""
+                #     ):
+                #         desired["properties"].pop(elem, None)
+                for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items:
+                    for key, value in what.items:
+                        if (
+                            current.get(what, {}).get(key, value)
+                            == desired.get(what).get(key, value)
+                            and desired.get(what).get(key, value) == value
+                        ):
+                            desired[what].pop(key, None)
 
         if current.get("properties", {}) != desired.get("properties", {}):
             changes.append("properties")
