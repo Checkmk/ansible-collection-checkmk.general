@@ -381,7 +381,7 @@ IGNORE_DEFAULTS = {
             "description": "",
             "comment": "",
         },
-        "conditions": {},
+        # "conditions": {},
     },
     "230_or_newer": {
         "properties": {
