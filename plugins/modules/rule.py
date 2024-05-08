@@ -667,26 +667,18 @@ class RuleAPI(CheckmkAPI):
         desired = self.desired.get("rule").copy()
         changes = []
 
+        for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
+            if desired.get(what):
+                for key, value in def_vals.items():
+                    if (
+                        current.get(what, {}).get(key, value)
+                        == desired.get(what).get(key, value)
+                        and desired.get(what).get(key, value) == value
+                    ):
+                        desired[what].pop(key, None)
+
         if current.get("conditions", {}) != desired.get("conditions", {}):
             changes.append("conditions")
-
-        if desired.get("properties"):
-            if current.get("properties", {}) != desired.get("properties"):
-                # for elem in IGNORE_PROPERTIES_DEFAULTS:
-                #     if (
-                #         current.get("properties", {}).get(elem, "")
-                #         == desired.get("properties").get(elem, "")
-                #         and desired.get("properties").get(elem, "") == ""
-                #     ):
-                #         desired["properties"].pop(elem, None)
-                for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
-                    for key, value in def_vals.items():
-                        if (
-                            current.get(what, {}).get(key, value)
-                            == desired.get(what).get(key, value)
-                            and desired.get(what).get(key, value) == value
-                        ):
-                            desired[what].pop(key, None)
 
         if current.get("properties", {}) != desired.get("properties", {}):
             changes.append("properties")
