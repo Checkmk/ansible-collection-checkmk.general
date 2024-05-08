@@ -639,22 +639,19 @@ class RuleAPI(CheckmkAPI):
         return []
 
     def _get_rule_id(self, desired):
-        desired_properties = desired["rule"].get("properties")
-
-        # for elem in IGNORE_PROPERTIES_DEFAULTS:
-        #     if desired_properties.get(elem, "") == "":
-        #         desired_properties.pop(elem, None)
+        desired_loc = desired.get("rule")
 
         for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
-            for key, value in def_vals.items():
-                if desired_properties.get(key, value) == value:
-                    desired_properties.pop(key, None)
+            if desired_loc.get(what):
+                for key, value in def_vals.items():
+                    if desired_loc.get(what).get(key, value) == value:
+                        desired_loc[what].pop(key, None)
 
         for r in self._get_rules_in_ruleset(desired.get("ruleset")):
             if (
                 r["extensions"]["folder"] == desired["rule"]["location"]["folder"]
-                and r["extensions"]["conditions"] == desired["rule"]["conditions"]
-                and r["extensions"]["properties"] == desired_properties
+                and r["extensions"]["conditions"] == desired_loc.get("conditions")
+                and r["extensions"]["properties"] == desired_loc.get("properties")
                 and self._raw_value_eval("search", r["extensions"])
                 == self._raw_value_eval("desired", desired["rule"])
             ):
