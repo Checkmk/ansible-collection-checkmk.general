@@ -645,8 +645,8 @@ class RuleAPI(CheckmkAPI):
         #     if desired_properties.get(elem, "") == "":
         #         desired_properties.pop(elem, None)
 
-        for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items:
-            for key, value in def_vals.items:
+        for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
+            for key, value in def_vals.items():
                 if desired_properties.get(key, value) == value:
                     desired_properties.pop(key, None)
 
@@ -679,8 +679,8 @@ class RuleAPI(CheckmkAPI):
                 #         and desired.get("properties").get(elem, "") == ""
                 #     ):
                 #         desired["properties"].pop(elem, None)
-                for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items:
-                    for key, value in def_vals.items:
+                for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
+                    for key, value in def_vals.items():
                         if (
                             current.get(what, {}).get(key, value)
                             == desired.get(what).get(key, value)
