@@ -350,8 +350,6 @@ DESIRED_RULE_KEYS = (
 DESIRED_DEFAULTS = {
     "pre_230": {
         "properties": {
-            # "description": "",
-            # "comment": "",
             "disabled": False,
         },
         "conditions": {
@@ -362,8 +360,6 @@ DESIRED_DEFAULTS = {
     },
     "230_or_newer": {
         "properties": {
-            # "description": "",
-            # "comment": "",
             "disabled": False,
         },
         "conditions": {
@@ -572,11 +568,14 @@ class RuleAPI(CheckmkAPI):
             if tmp_params_rule.get(key):
                 desired["rule"][key] = tmp_params_rule.get(key)
 
-        # Set defaults unless we're editing an existing rule
         if self.getversion() < CheckmkVersion("2.3.0"):
             defaults = DESIRED_DEFAULTS["pre_230"]
         else:
             defaults = DESIRED_DEFAULTS["230_or_newer"]
+            # remove pre-2.3.0 label conditions if they are empty
+            for what in ["host_labels", "service_labels"]:
+                if desired["rule"].get("conditions", {}).get(what) == []:
+                    desired["rule"]["conditions"].pop(what)
 
         for what, defaults in defaults.items():
             for key, default in defaults.items():
