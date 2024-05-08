@@ -370,23 +370,23 @@ DESIRED_DEFAULTS = {
     },
 }
 
-IGNORE_PROPERTIES_DEFAULTS = [
-    "description",
-    "comment",
-]
+# IGNORE_PROPERTIES_DEFAULTS = [
+#     "description",
+#     "comment",
+# ]
 
 IGNORE_DEFAULTS = {
     "pre_230": {
         "properties": {
-            "description", ""
-            "comment", ""
+            "description": "",
+            "comment": "",
         },
         "conditions": {},
     },
     "230_or_newer": {
         "properties": {
-            "description", ""
-            "comment", ""
+            "description": "",
+            "comment": "",
         },
         "conditions": {
             # "host_tags": [],
