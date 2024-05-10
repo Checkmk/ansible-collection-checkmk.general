@@ -648,8 +648,8 @@ class RuleAPI(CheckmkAPI):
             c = self._normalize_rule(c)
             if (
                 c["extensions"]["folder"] == d["rule"]["location"]["folder"]
-                and c["extensions"]["conditions"] == d.get("conditions")
-                and c["extensions"]["properties"] == d.get("properties")
+                and c["extensions"]["conditions"] == d["rule"].get("conditions")
+                and c["extensions"]["properties"] == d["rule"].get("properties")
                 and self._raw_value_eval("search", c["extensions"])
                 == self._raw_value_eval("desired", d["rule"])
             ):
