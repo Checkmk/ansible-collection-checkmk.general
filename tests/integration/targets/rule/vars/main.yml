@@ -77,7 +77,7 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "comment": "",
         "description": "",
         "disabled": false
       }

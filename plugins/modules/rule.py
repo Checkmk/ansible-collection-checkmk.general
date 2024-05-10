@@ -370,6 +370,32 @@ DESIRED_DEFAULTS = {
     },
 }
 
+# IGNORE_PROPERTIES_DEFAULTS = [
+#     "description",
+#     "comment",
+# ]
+
+IGNORE_DEFAULTS = {
+    "pre_230": {
+        "properties": {
+            "description": "",
+            "comment": "",
+        },
+        # "conditions": {},
+    },
+    "230_or_newer": {
+        "properties": {
+            "description": "",
+            "comment": "",
+        },
+        "conditions": {
+            # "host_tags": [],
+            "host_label_groups": [],
+            "service_label_groups": [],
+        },
+    },
+}
+
 CURRENT_RULE_KEYS = (
     "folder",
     "ruleset",
@@ -502,6 +528,11 @@ class RuleAPI(CheckmkAPI):
         self.rule_id = self.params.get("rule").get("rule_id")
         self.is_new_rule = self.rule_id is None
 
+        if self.getversion() < CheckmkVersion("2.3.0"):
+            self.version_select_str = "pre_230"
+        else:
+            self.version_select_str = "230_or_newer"
+
         self.desired = self._clean_desired(self.params)
 
         self._changed_items = []
@@ -568,22 +599,13 @@ class RuleAPI(CheckmkAPI):
             if tmp_params_rule.get(key):
                 desired["rule"][key] = tmp_params_rule.get(key)
 
-        if self.getversion() < CheckmkVersion("2.3.0"):
-            defaults = DESIRED_DEFAULTS["pre_230"]
-        else:
-            defaults = DESIRED_DEFAULTS["230_or_newer"]
-            # remove pre-2.3.0 label conditions if they are empty
-            for what in ["host_labels", "service_labels"]:
-                if desired["rule"].get("conditions", {}).get(what) == []:
-                    desired["rule"]["conditions"].pop(what)
-
-        for what, defaults in defaults.items():
-            for key, default in defaults.items():
+        for what, def_vals in DESIRED_DEFAULTS[self.version_select_str].items():
+            for key, value in def_vals.items():
                 if not desired["rule"].get(what):
                     desired["rule"][what] = {}
 
                 if not desired["rule"].get(what).get(key):
-                    desired["rule"][what][key] = default
+                    desired["rule"][what][key] = value
 
         return desired
 
@@ -617,11 +639,19 @@ class RuleAPI(CheckmkAPI):
         return []
 
     def _get_rule_id(self, desired):
+        desired_loc = desired.get("rule")
+
+        for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
+            if desired_loc.get(what):
+                for key, value in def_vals.items():
+                    if desired_loc.get(what).get(key, value) == value:
+                        desired_loc[what].pop(key, None)
+
         for r in self._get_rules_in_ruleset(desired.get("ruleset")):
             if (
                 r["extensions"]["folder"] == desired["rule"]["location"]["folder"]
-                and r["extensions"]["conditions"] == desired["rule"]["conditions"]
-                and r["extensions"]["properties"] == desired["rule"]["properties"]
+                and r["extensions"]["conditions"] == desired_loc.get("conditions")
+                and r["extensions"]["properties"] == desired_loc.get("properties")
                 and self._raw_value_eval("search", r["extensions"])
                 == self._raw_value_eval("desired", desired["rule"])
             ):
@@ -633,6 +663,16 @@ class RuleAPI(CheckmkAPI):
         current = self.current["rule"].copy()
         desired = self.desired.get("rule").copy()
         changes = []
+
+        for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
+            if desired.get(what):
+                for key, value in def_vals.items():
+                    if (
+                        current.get(what, {}).get(key, value)
+                        == desired.get(what).get(key, value)
+                        and desired.get(what).get(key, value) == value
+                    ):
+                        desired[what].pop(key, None)
 
         if current.get("conditions", {}) != desired.get("conditions", {}):
             changes.append("conditions")
