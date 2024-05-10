@@ -390,6 +390,8 @@ IGNORE_DEFAULTS = {
         },
         "conditions": {
             # "host_tags": [],
+            "host_labels": [],
+            "service_labels": [],
             "host_label_groups": [],
             "service_label_groups": [],
         },
@@ -639,60 +641,55 @@ class RuleAPI(CheckmkAPI):
         return []
 
     def _get_rule_id(self, desired):
-        desired_loc = desired.get("rule")
+        d = desired.copy()
+        d["rule"] = self._normalize_rule(desired.get("rule"))
 
-        for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
-            if desired_loc.get(what):
-                for key, value in def_vals.items():
-                    if desired_loc.get(what).get(key, value) == value:
-                        desired_loc[what].pop(key, None)
-
-        for r in self._get_rules_in_ruleset(desired.get("ruleset")):
+        for c in self._get_rules_in_ruleset(d.get("ruleset")):
+            c = self._normalize_rule(c)
             if (
-                r["extensions"]["folder"] == desired["rule"]["location"]["folder"]
-                and r["extensions"]["conditions"] == desired_loc.get("conditions")
-                and r["extensions"]["properties"] == desired_loc.get("properties")
-                and self._raw_value_eval("search", r["extensions"])
-                == self._raw_value_eval("desired", desired["rule"])
+                c["extensions"]["folder"] == d["rule"]["location"]["folder"]
+                and c["extensions"]["conditions"] == d.get("conditions")
+                and c["extensions"]["properties"] == d.get("properties")
+                and self._raw_value_eval("search", c["extensions"])
+                == self._raw_value_eval("desired", d["rule"])
             ):
-                return r["id"]
+                return c["id"]
 
         return None
 
+    def _normalize_rule(self, r):
+        loc = r.copy()
+        for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
+            if loc.get(what):
+                for key, value in def_vals.items():
+                    if loc.get(what).get(key, value) == value:
+                        loc[what].pop(key, None)
+            if loc.get("extensions", {}).get(what):
+                ext = loc.get("extensions", {})
+                for key, value in def_vals.items():
+                    if ext.get(what).get(key, value) == value:
+                        ext[what].pop(key, None)
+        return loc
+
     def _detect_changes(self):
-        current = self.current["rule"].copy()
-        desired = self.desired.get("rule").copy()
+        c = self._normalize_rule(self.current["rule"])
+        d = self._normalize_rule(self.desired.get("rule"))
         changes = []
 
-        for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
-            if desired.get(what):
-                for key, value in def_vals.items():
-                    if (
-                        current.get(what, {}).get(key, value)
-                        == desired.get(what).get(key, value)
-                        and desired.get(what).get(key, value) == value
-                    ):
-                        desired[what].pop(key, None)
-
-        if current.get("conditions", {}) != desired.get("conditions", {}):
+        if c.get("conditions", {}) != d.get("conditions", {}):
             changes.append("conditions")
 
-        if current.get("properties", {}) != desired.get("properties", {}):
+        if c.get("properties", {}) != d.get("properties", {}):
             changes.append("properties")
 
-        if self._raw_value_eval("current", current) != self._raw_value_eval(
-            "desired", desired
-        ):
+        if self._raw_value_eval("current", c) != self._raw_value_eval("desired", d):
             changes.append("raw_value")
 
-        desired_location = desired.get("rule", {}).get("location")
-        # desired_location = desired.get("location")
+        desired_location = d.get("rule", {}).get("location")
         if desired_location:
-            current_location = RuleLocation(
-                self.module, current.get("folder", "/"), self.rule_id
-            )
+            c = RuleLocation(self.module, c.get("folder", "/"), self.rule_id)
 
-            if not current_location.is_equal(desired_location):
+            if not c.is_equal(desired_location):
                 changes.append("location")
 
         return changes
