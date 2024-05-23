@@ -399,19 +399,30 @@ def run_module():
     if not single_mode and module.params.get("state") == "tabula_rasa":
         module.params["state"] = "refresh"
 
-    if ver < CheckmkVersion("2.3.0") and module.params.get("state") in [
+    if module.params.get("state") in [
         "update_service_labels",
         "monitor_undecided_services",
     ]:
-        result = RESULT(
-            http_code=0,
-            msg="State is not supported before 2.3.0",
-            content="",
-            etag="",
-            failed=True,
-            changed=False,
-        )
-        module.fail_json(**result_as_dict(result))
+        if ver < CheckmkVersion("2.3.0"):
+            result = RESULT(
+                http_code=0,
+                msg="State is not supported before 2.3.0",
+                content="",
+                etag="",
+                failed=True,
+                changed=False,
+            )
+            module.fail_json(**result_as_dict(result))
+        if single_mode:
+            result = RESULT(
+                http_code=0,
+                msg="State can only be used in bulk mode",
+                content="",
+                etag="",
+                failed=True,
+                changed=False,
+            )
+            module.fail_json(**result_as_dict(result))
 
     if not single_mode and ver >= CheckmkVersion("2.3.0"):
         discovery = newBulkDiscoveryAPI(module)
