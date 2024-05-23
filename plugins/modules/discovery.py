@@ -414,15 +414,26 @@ def run_module():
             )
             module.fail_json(**result_as_dict(result))
         if single_mode:
-            result = RESULT(
-                http_code=0,
-                msg="State can only be used in bulk mode",
-                content="",
-                etag="",
-                failed=True,
-                changed=False,
-            )
-            module.fail_json(**result_as_dict(result))
+            if module.params.get("state") == "monitor_undecided_services":
+                result = RESULT(
+                    http_code=0,
+                    msg="State can only be used in bulk mode",
+                    content="",
+                    etag="",
+                    failed=True,
+                    changed=False,
+                )
+                module.fail_json(**result_as_dict(result))
+            if module.params.get("state") == "update_service_labels" and ver < CheckmkVersion("2.3.0p3"):
+                result = RESULT(
+                    http_code=0,
+                    msg="State can only be used in bulk mode",
+                    content="",
+                    etag="",
+                    failed=True,
+                    changed=False,
+                )
+                module.fail_json(**result_as_dict(result))
 
     if not single_mode and ver >= CheckmkVersion("2.3.0"):
         discovery = newBulkDiscoveryAPI(module)
