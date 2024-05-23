@@ -424,7 +424,9 @@ def run_module():
                     changed=False,
                 )
                 module.fail_json(**result_as_dict(result))
-            if module.params.get("state") == "update_service_labels" and ver < CheckmkVersion("2.3.0p3"):
+            if module.params.get(
+                "state"
+            ) == "update_service_labels" and ver < CheckmkVersion("2.3.0p3"):
                 result = RESULT(
                     http_code=0,
                     msg="State can only be used in bulk mode",
