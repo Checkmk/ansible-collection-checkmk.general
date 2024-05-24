@@ -1,2 +1,3 @@
-bugfixes:
+breaking_changes:
   - Folder lookup module - Return the complete folder information, not only the extensions.
+    Refer to the module documentation for more details.
