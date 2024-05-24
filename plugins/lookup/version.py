@@ -92,8 +92,8 @@ EXAMPLES = """
                    server_url=my_url,
                    site=my_site,
                    validate_certs=False,
-                   automation_user=my_user,
-                   automation_secret=my_secret
+                   automation_user=myuser,
+                   automation_secret=mysecret
                )}}"
 
 - name: "Use variables outside the module call."

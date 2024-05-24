@@ -114,20 +114,14 @@ if you list the `checkmk.general` collection in the playbook's [`collections`](h
   tasks:
     - name: "Run activation."
       activation:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         force_foreign_changes: 'true'
         sites:
-          - "my_site"
+          - "mysite"
 ```
-### More information about Checkmk
-
-* [Checkmk Website](https://checkmk.com)
-* [Checkmk Documentation](https://docs.checkmk.com/)
-* [Checkmk Community](https://forum.checkmk.com/)
-
 ## Getting Involved
 
 See [CONTRIBUTING](CONTRIBUTING.md).
@@ -168,6 +162,12 @@ Please do **not** consider it a concrete planning document!
 - [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
 - [Ansible Developer guide](https://docs.ansible.com/ansible/latest/dev_guide/index.html)
 - [Ansible Community code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
+
+## More information about Checkmk
+
+* [Checkmk Website](https://checkmk.com)
+* [Checkmk Documentation](https://docs.checkmk.com/)
+* [Checkmk Community](https://forum.checkmk.com/)
 
 ## Licensing
 

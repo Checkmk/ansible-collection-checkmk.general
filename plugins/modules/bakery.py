@@ -47,28 +47,28 @@ EXAMPLES = r"""
 # Bake all agents without signing, as example in a fresh installation without a signature key.
 - name: "Bake all agents without signing."
   checkmk.general.bakery:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     state: "baked"
 # Sign all agents.
 - name: "Sign all agents."
   checkmk.general.bakery:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     signature_key_id: 1
     signature_key_passphrase: "my_key"
     state: "signed"
 # Bake and sign all agents.
 - name: "Bake and sign all agents."
   checkmk.general.bakery:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     signature_key_id: 1
     signature_key_passphrase: "my_key"
     state: "baked_signed"

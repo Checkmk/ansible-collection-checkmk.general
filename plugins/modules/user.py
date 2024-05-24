@@ -136,10 +136,10 @@ EXAMPLES = r"""
 # Create a user.
 - name: "Create a user."
   checkmk.general.user:
-    server_url: "http://my_server/"
+    server_url: "http://myserver/"
     site: "local"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "krichards"
     fullname: "Keith Richards"
     email: "keith.richards@rollingstones.com"
@@ -153,10 +153,10 @@ EXAMPLES = r"""
 # Create an automation user.
 - name: "Create an automation user."
   checkmk.general.user:
-    server_url: "http://my_server/"
+    server_url: "http://myserver/"
     site: "local"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "registration"
     fullname: "Registration User"
     auth_type: "automation"
@@ -168,10 +168,10 @@ EXAMPLES = r"""
 # Create a user with the Checkmk Managed Edition (CME), using the `customer` parameter.
 - name: "Create a user."
   checkmk.general.user:
-    server_url: "http://my_server/"
+    server_url: "http://myserver/"
     site: "local"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "krichards"
     fullname: "Keith Richards"
     email: "keith.richards@rollingstones.com"
@@ -186,10 +186,10 @@ EXAMPLES = r"""
 # Create a detailed user.
 - name: "Create a more complex user."
   checkmk.general.user:
-    server_url: "http://my_server/"
+    server_url: "http://myserver/"
     site: "local"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "horst"
     fullname: "Horst Schlämmer"
     customer: "provider"
@@ -209,7 +209,7 @@ EXAMPLES = r"""
     roles:
       - "user"
     authorized_sites:
-      - "{{ my_site }}"
+      - "{{ mysite }}"
     interface_theme: "dark"
     sidebar_position: "right"
     navigation_bar_icons: "show"
@@ -235,6 +235,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
 )
 
 USER = (
@@ -406,6 +409,19 @@ class UserAPI(CheckmkAPI):
                 return True
         return False
 
+    def shortpassword(self, data):
+        ver = self.getversion()
+        if ver >= CheckmkVersion("2.3.0") and "auth_option" in data:
+            if (
+                "password" in data["auth_option"]
+                and len(data["auth_option"]["password"]) < 12
+            ) or (
+                "secret" in data["auth_option"]
+                and len(data["auth_option"]["secret"]) < 10
+            ):
+                return True
+        return False
+
     def get(self):
         result = self._fetch(
             code_mapping=UserHTTPCodes.get,
@@ -438,12 +454,22 @@ class UserAPI(CheckmkAPI):
         data = self._build_user_data()
         self.headers["if-Match"] = etag
 
-        result = self._fetch(
-            code_mapping=UserHTTPCodes.edit,
-            endpoint=self._build_default_endpoint(),
-            data=data,
-            method="PUT",
-        )
+        if self.shortpassword(data):
+            result = RESULT(
+                http_code=0,
+                msg="Password too short. For 2.3 and higher, please provide at least 12 characters (automation min. 10).",
+                content="",
+                etag="",
+                failed=True,
+                changed=False,
+            )
+        else:
+            result = self._fetch(
+                code_mapping=UserHTTPCodes.edit,
+                endpoint=self._build_default_endpoint(),
+                data=data,
+                method="PUT",
+            )
 
         return result
 

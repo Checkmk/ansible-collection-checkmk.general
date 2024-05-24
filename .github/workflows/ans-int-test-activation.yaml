@@ -19,6 +19,7 @@ on:
     branches:
       - main
       - devel
+  push:
     paths:
       - 'plugins/modules/activation.py'
 
@@ -31,9 +32,9 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.14
           - stable-2.15
           - stable-2.16
+          - stable-2.17
           - devel
         python:
           - '3.8'

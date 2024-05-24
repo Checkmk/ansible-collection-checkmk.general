@@ -9,6 +9,7 @@
         update_cache: true
         cache_valid_time: 600
       when: ansible_os_family == 'Debian'
+
     - name: Install prerequisites.
       ansible.builtin.apt:
         name: "{{ item }}"
@@ -17,6 +18,7 @@
         - apt-utils
         - man
       when: ansible_os_family == 'Debian'
+
     - name: Create '/usr/share/man/man8/' on Ubuntu.
       ansible.builtin.file:
         path: /usr/share/man/man8/
@@ -31,3 +33,7 @@
     - name: "Run server role."
       ansible.builtin.include_role:
         name: server
+
+    - name: "Run agent role."
+      ansible.builtin.include_role:
+        name: agent
