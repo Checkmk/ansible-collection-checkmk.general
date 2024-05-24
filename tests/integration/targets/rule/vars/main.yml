@@ -11,7 +11,6 @@ test_sites:
     site: "old_cre"
 
 checkmk_var_rules:
-
   - name: "Filesystem - Magic Factor."
     ruleset: "checkgroup_parameters:filesystem"
     rule:
@@ -78,7 +77,7 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "comment": "",
         "description": "",
         "disabled": false
       }
@@ -102,6 +101,7 @@ checkmk_var_rules:
         "disabled": false,
       }
       value_raw: 'True'
+
   - ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -117,34 +117,45 @@ checkmk_var_rules:
       }
       value_raw: "{'levels': (80.0, 90.0)}"
 
-  - ruleset: "periodic_discovery"
+checkmk_var_rules_230:
+  - ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-      location:
-        position: "top"
-        folder: "/"
-      properties:
-        comment: "{{ ansible_date_time.iso8601 }} - Ansible managed"
-        description: "Perform Service Discovery every 5 minutes"
-        disabled: false
-      conditions:
-        host_tags: []
-        service_labels: []
-        host_labels:
-          - key: "robotmk"
-            operator: "is"
-            value: "yes"
-      value_raw: "{
-          'check_interval': 5.0,
-          'inventory_rediscovery': {
-            'activation': True,
-            'excluded_time': [],
-            'group_time': 900,
-            'mode': 2,
-            'service_filters':(
-              'combined', {'service_whitelist': ['^E2E.*']}
-            )
-          },
-          'severity_new_host_label': 0,
-          'severity_unmonitored': 0,
-          'severity_vanished': 0
-        }"
+      conditions: {
+        "host_label_groups": [
+            {
+                operator: "and",
+                label_group: [
+                    {
+                        operator: "and",
+                        label: "cmk/site:beta"
+                    },
+                    {
+                        operator: "or",
+                        label: "cmk/os_family:linux"
+                    }
+                ],
+            },
+            {
+                operator: "or",
+                label_group: [
+                    {
+                        operator: "and",
+                        label: "cmk/site:alpha"
+                    },
+                    {
+                        operator: "or",
+                        label: "cmk/os_family:windows"
+                    }
+                ],
+            },
+        ],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 70%\nCritical at 80%\n",
+        "description": "Allow higher memory usage for certain host label conditions",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (70.0, 80.0)}"
