@@ -19,6 +19,7 @@ on:
     branches:
       - main
       - devel
+  push:
     paths:
       - 'plugins/modules/discovery.py'
 

@@ -90,7 +90,7 @@ EXAMPLES = """
   vars:
     version: "{{ lookup('checkmk.general.version',
                    server_url=my_url,
-                   site=my_site,
+                   site=mysite,
                    validate_certs=False,
                    automation_user=myuser,
                    automation_secret=mysecret
@@ -100,10 +100,10 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "Server version is {{ version }}"
   vars:
-    ansible_lookup_checkmk_server_url: "http://my_server/"
-    ansible_lookup_checkmk_site: "my_site"
-    ansible_lookup_checkmk_automation_user: "my_user"
-    ansible_lookup_checkmk_automation_secret: "my_secret"
+    ansible_lookup_checkmk_server_url: "http://myserver/"
+    ansible_lookup_checkmk_site: "mysite"
+    ansible_lookup_checkmk_automation_user: "myuser"
+    ansible_lookup_checkmk_automation_secret: "mysecret"
     ansible_lookup_checkmk_validate_certs: false
     attributes: "{{ lookup('checkmk.general.version') }}"
 """

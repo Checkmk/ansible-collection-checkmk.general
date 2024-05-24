@@ -248,10 +248,10 @@ EXAMPLES = r"""
 # Delete all rules in a ruleset that match a certain comment.
 - name: "Delete all rules in a ruleset that match a certain comment."
   checkmk.general.rule:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       rule_id: "{{ item.id }}"

@@ -32,7 +32,7 @@ checkmk_server_download_user: []
 checkmk_server_download_pass: []
 
 checkmk_server_sites: []
-# - name: my_site
+# - name: mysite
 #   version: "{{ checkmk_server_version }}"
 #   state: started
 #   admin_pw: "{{ automation_secret | default(omit) }}"

@@ -149,10 +149,10 @@ EXAMPLES = r"""
 # Create a cluster host.
 - name: "Create a cluster host."
   checkmk.general.cluster:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "my_cluster_host"
     folder: "/"
     nodes: ["cluster_node_1", "cluster_node_2", "cluster_node_3"]
@@ -161,10 +161,10 @@ EXAMPLES = r"""
 # Create a cluster host with IP.
 - name: "Create a cluster host with IP address."
   checkmk.general.cluster:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "my_cluster_host"
     nodes:
       - "cluster_node_1"
