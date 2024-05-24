@@ -165,6 +165,6 @@ class LookupModule(LookupBase):
                         response.get("msg", ""),
                     )
                 )
-            ret.append(response.get("extensions"))
+            ret.append(response)
 
         return ret
