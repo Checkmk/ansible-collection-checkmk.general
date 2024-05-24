@@ -95,29 +95,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
 
-HTTP_CODES = {
-    # http_code: (changed, failed, "Message")
-    200: (True, False, "The operation was done successfully."),
-    204: (
-        True,
-        False,
-        "No Content: Operation done successfully. No further output.",
-    ),
-    400: (False, True, "Bad Request: Parameter or validation failure."),
-    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
-    406: (
-        False,
-        True,
-        "Not Acceptable: The requests accept headers can not be satisfied.",
-    ),
-    415: (
-        False,
-        True,
-        "Unsupported Media Type: The submitted content-type is not supported.",
-    ),
-    500: (False, True, "General Server Error."),
-}
-
 
 class BakeryAPI(CheckmkAPI):
     def post(self):
@@ -137,7 +114,6 @@ class BakeryAPI(CheckmkAPI):
             action = "bake_and_sign"
 
         return self._fetch(
-            code_mapping=HTTP_CODES,
             endpoint="/domain-types/agent/actions/%s/invoke" % action,
             data=data,
             method="POST",
