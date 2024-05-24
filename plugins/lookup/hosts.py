@@ -111,10 +111,10 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "Host: {{ item.id }} in folder {{ item.extensions.folder }}, IP: {{ item.extensions.effective_attributes.ipaddress }}"
   vars:
-    ansible_lookup_checkmk_server_url: "http://my_server/"
-    ansible_lookup_checkmk_site: "my_site"
-    ansible_lookup_checkmk_automation_user: "my_user"
-    ansible_lookup_checkmk_automation_secret: "my_secret"
+    ansible_lookup_checkmk_server_url: "http://myserver/"
+    ansible_lookup_checkmk_site: "mysite"
+    ansible_lookup_checkmk_automation_user: "myuser"
+    ansible_lookup_checkmk_automation_secret: "mysecret"
     ansible_lookup_checkmk_validate_certs: false
   loop: "{{
     lookup('checkmk.general.hosts', effective_attributes=True) }}"

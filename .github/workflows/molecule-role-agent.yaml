@@ -8,14 +8,17 @@ name: Molecule Tests for Agent Role
 on:
   workflow_dispatch:
   pull_request:
+    types:
+      - opened
     branches:
       - main
       - devel
+    paths:
+      - 'roles/agent/**'
   push:
     branches:
       - main
       - devel
-      - build/checkmk-2-3-support
     paths:
       - 'roles/agent/**'
 

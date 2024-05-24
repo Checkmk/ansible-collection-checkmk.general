@@ -8,14 +8,17 @@ name: Molecule Tests for Server Role
 on:
   workflow_dispatch:
   pull_request:
+    types:
+      - opened
     branches:
       - main
       - devel
+    paths:
+      - 'roles/server/**'
   push:
     branches:
       - main
       - devel
-      - build/checkmk-2-3-support
     paths:
       - 'roles/server/**'
 

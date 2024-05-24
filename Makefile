@@ -155,7 +155,16 @@ container:
 	docker build -t $(CONTAINER_NAME) $(CONTAINER_BUILD_ROOT) --build-arg DL_PW=$$(cat .secret) && \
 	docker save $(CONTAINER_NAME):latest > $(COLLECTION_ROOT)/$(CONTAINER_NAME)-latest-image.tar.gz"
 
-tests: tests-sanity tests-integration
+tests: tests-linting tests-sanity tests-integration
+
+tests-linting: vm
+	@vagrant ssh collection -c "\
+	cd $(COLLECTION_ROOT) && \
+	ansible-galaxy collection install ./ && \
+	yamllint -c .yamllint ./roles/ && \
+	yamllint -c .yamllint ./playbooks/ && \
+	ansible-lint -c .ansible-lint ./roles/ && \
+	ansible-lint -c .ansible-lint ./playbooks/"
 
 tests-sanity: vm
 	@vagrant ssh collection -c "\

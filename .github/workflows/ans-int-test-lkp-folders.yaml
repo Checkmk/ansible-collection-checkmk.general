@@ -14,9 +14,13 @@ name: Ansible Integration Tests for Folders Lookup Module
 on:
   workflow_dispatch:
   pull_request:
+    types:
+      - opened
     branches:
       - main
       - devel
+    paths:
+      - 'plugins/lookup/folders.py'
   push:
     paths:
       - 'plugins/lookup/folders.py'

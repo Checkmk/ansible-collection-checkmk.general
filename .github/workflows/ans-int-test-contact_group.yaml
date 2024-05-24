@@ -16,9 +16,13 @@ on:
   schedule:
     - cron: '0 0 * * 0'
   pull_request:
+    types:
+      - opened
     branches:
       - main
       - devel
+    paths:
+      - 'plugins/modules/contact_group.py'
   push:
     paths:
       - 'plugins/modules/contact_group.py'
