@@ -14,9 +14,14 @@ name: Ansible Integration Tests for Rule Lookup Modules
 on:
   workflow_dispatch:
   pull_request:
+    types:
+      - opened
     branches:
       - main
       - devel
+    paths:
+      - 'plugins/lookup/rule.py'
+      - 'plugins/lookup/rules.py'
   push:
     paths:
       - 'plugins/lookup/rule.py'

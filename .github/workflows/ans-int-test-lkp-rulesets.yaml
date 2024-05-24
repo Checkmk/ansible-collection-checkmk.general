@@ -14,9 +14,14 @@ name: Ansible Integration Tests for Ruleset Lookup Modules
 on:
   workflow_dispatch:
   pull_request:
+    types:
+      - opened
     branches:
       - main
       - devel
+    paths:
+      - 'plugins/lookup/ruleset.py'
+      - 'plugins/lookup/rulesets.py'
   push:
     paths:
       - 'plugins/lookup/ruleset.py'
