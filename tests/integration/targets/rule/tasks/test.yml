@@ -11,20 +11,28 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rules }}"
+  register: created_rules
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
-  activation:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+# - name: Extract all rules from employed rulesets
+#   ansible.builtin.uri:
+#     url: '{{ checkmk_var_server_url }}/{{ outer_item.site }}/check_mk/api/1.0/domain-types/rule/collections/all?ruleset_name={{ item.ruleset }}'
+#     method: get
+#     status_code: [200]
+#     headers:
+#       Authorization: "Bearer {{ checkmk_var_automation_user }} {{ checkmk_var_automation_secret }}"
+#       Accept: "application/json"
+#       Content-Type: "application/json"
+#   changed_when: false
+#   delegate_to: localhost
+#   run_once: true  # noqa run-once[task]
+#   register: output
+#   loop: "{{ checkmk_var_rules }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules."
+# - name: Print extracted info
+#   ansible.builtin.debug:
+#     var: output.results
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules. Again"
   rule:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -35,13 +43,13 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  register: rule_result
   loop: "{{ checkmk_var_rules }}"
+  register: created_rules_again_result
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
   ansible.builtin.fail:
     msg: "Rule changed!"
-  when: "rule_result.changed"
+  when: "created_rules_again_result.changed"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
@@ -51,82 +59,42 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    ruleset: "{{ item.ruleset }}"
-    rule: 
-      rule_id: "{{ existing_rule[0].id }}"
-      properties: {
-        "comment": "{{ existing_rule[0].extensions.properties.comment }}",
-        "description": "Modified this intentionally.",
-        "disabled": "{{ existing_rule[0].extensions.properties.disabled }}"
-        }
-      conditions: "{{ existing_rule[0].extensions.conditions }}"
-      value_raw: "{{ existing_rule[0].extensions.value_raw | string }}"
+    ruleset: "{{ item.content.extensions.ruleset }}"
+    rule:
+      rule_id: "{{ item.content.id }}"
+      conditions: "{{ item.content.extensions.conditions }}"
+      properties: 
+          comment: "{{ item.content.extensions.properties.comment | default('') }}"
+          description: "New description"
+      value_raw: "{{ item.content.extensions.value_raw }}"
     state: "present"
-  when: "existing_rule|length>0"
-  vars:
-    existing_rule: "{{ lookup('checkmk.general.rules',
-                      ruleset=item.ruleset,
-                      comment_regex='Ansible managed',
-                      server_url=checkmk_var_server_url,
-                      site=outer_item.site,
-                      validate_certs=False,
-                      automation_user=checkmk_var_automation_user,
-                      automation_secret=checkmk_var_automation_secret)
-                  }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_var_rules }}"
+  loop: "{{ created_rules.results }}"
+  loop_control:
+      label: "{{ item.content.id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
-  activation:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete rules."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify rules. Again."
   rule:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    ruleset: "{{ item.ruleset }}"
-    rule: "{{ item.rule }}"
-    state: "absent"
+    ruleset: "{{ item.content.extensions.ruleset }}"
+    rule:
+      rule_id: "{{ item.content.id }}"
+      conditions: "{{ item.content.extensions.conditions }}"
+      properties: 
+          comment: "{{ item.content.extensions.properties.comment | default('') }}"
+          description: "New description"
+      value_raw: "{{ item.content.extensions.value_raw }}"
+    state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_var_rules }}"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
-  activation:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
-    force_foreign_changes: true
-    sites:
-      - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete rules."
-  rule:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
-    ruleset: "{{ item.ruleset }}"
-    rule: "{{ item.rule }}"
-    state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  loop: "{{ created_rules.results }}"
+  loop_control:
+      label: "{{ item.content.id }}"
   register: rule_result
-  loop: "{{ checkmk_var_rules }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
   ansible.builtin.fail:
@@ -134,3 +102,127 @@
   when: "rule_result.changed"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify rules found by a lookup."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ruleset: "{{ item.extensions.ruleset }}"
+    rule:
+      rule_id: "{{ item.id }}"
+      conditions: "{{ item.extensions.conditions }}"
+      properties: 
+          comment: "{{ item.extensions.properties.comment }}"
+          description: "Even newer description"
+      value_raw: "{{ item.extensions.value_raw }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ lookup('checkmk.general.rules', 
+      ruleset='checkgroup_parameters:filesystem',
+      comment_regex='Ansible managed',
+      server_url=checkmk_var_server_url,
+      site=outer_item.site,
+      automation_user=checkmk_var_automation_user,
+      automation_secret=checkmk_var_automation_secret,
+      validate_certs=False
+      )
+    }}"
+  loop_control:
+      label: "{{ item.id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete rules."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ruleset: "{{ item.content.extensions.ruleset }}"
+    rule:
+      rule_id: "{{ item.content.id }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ created_rules.results }}"
+  loop_control:
+      label: "{{ item.content.id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete rules."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ruleset: "{{ item.content.extensions.ruleset }}"
+    rule:
+      rule_id: "{{ item.content.id }}"
+    state: "absent"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ created_rules.results }}"
+  loop_control:
+      label: "{{ item.content.id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
+  ansible.builtin.fail:
+    msg: "Rule changed!"
+  when: "rule_result.changed"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules. Oldschool."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ruleset: "{{ item.ruleset }}"
+    rule: "{{ item.rule }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_var_rules }}"
+  register: created_rules
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules again. Oldschool."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ruleset: "{{ item.ruleset }}"
+    rule: "{{ item.rule }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_var_rules }}"
+  register: created_rules
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - New label conditions."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ruleset: "{{ item.ruleset }}"
+    rule: "{{ item.rule }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_var_rules_230 }}"
+  register: created_rules
+  when: "'2.3' in outer_item.version"
