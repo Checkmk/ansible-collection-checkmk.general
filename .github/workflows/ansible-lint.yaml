@@ -27,7 +27,7 @@ on:
 jobs:
 
   integration:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: I py${{ matrix.python }})
     strategy:
       fail-fast: false
