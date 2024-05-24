@@ -40,7 +40,7 @@ options:
         description: The action to perform during discovery.
         type: str
         default: new
-        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels]
+        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels, update_service_labels, monitor_undecided_services]
     do_full_scan:
         description: The option whether to perform a full scan or not. (Bulk mode only).
         type: bool
@@ -57,6 +57,7 @@ options:
 author:
     - Robin Gierse (@robin-checkmk)
     - Michael Sekania (@msekania)
+    - Max Sickora (@max-checkmk)
 """
 
 EXAMPLES = r"""
@@ -241,6 +242,49 @@ class BulkDiscoveryAPI(CheckmkAPI):
         )
 
 
+class newBulkDiscoveryAPI(CheckmkAPI):
+    def post(self):
+        options = {
+            "monitor_undecided_services": False,
+            "remove_vanished_services": False,
+            "update_service_labels": False,
+            "update_host_labels": False,
+        }
+
+        if self.params.get("state") in ["new", "fix_all", "monitor_undecided_services"]:
+            options["monitor_undecided_services"] = True
+        if self.params.get("state") in ["remove", "fix_all"]:
+            options["remove_vanished_services"] = True
+        if self.params.get("state") in ["update_service_labels"]:
+            options["update_service_labels"] = True
+        if self.params.get("state") in ["new", "fix_all", "only_host_labels"]:
+            options["update_host_labels"] = True
+
+        if self.params.get("state") == "refresh":
+            data = {
+                "hostnames": self.params.get("hosts", []),
+                "mode": self.params.get("state"),
+                "do_full_scan": self.params.get("do_full_scan", True),
+                "bulk_size": self.params.get("bulk_size", 1),
+                "ignore_errors": self.params.get("ignore_errors", True),
+            }
+        else:
+            data = {
+                "hostnames": self.params.get("hosts", []),
+                "options": options,
+                "do_full_scan": self.params.get("do_full_scan", True),
+                "bulk_size": self.params.get("bulk_size", 1),
+                "ignore_errors": self.params.get("ignore_errors", True),
+            }
+
+        return self._fetch(
+            code_mapping=HTTP_CODES_BULK,
+            endpoint="domain-types/discovery_run/actions/bulk-discovery-start/invoke",
+            data=data,
+            method="POST",
+        )
+
+
 class ServiceCompletionBulkAPI(CheckmkAPI):
     def get(self):
         data = {}
@@ -292,6 +336,8 @@ def run_module():
                 "refresh",
                 "tabula_rasa",
                 "only_host_labels",
+                "update_service_labels",
+                "monitor_undecided_services",
             ],
         ),
         do_full_scan=dict(type="bool", default=True),
@@ -351,15 +397,48 @@ def run_module():
         module.fail_json(**result_as_dict(result))
 
     if not single_mode and module.params.get("state") == "tabula_rasa":
-        result = RESULT(
-            http_code=0,
-            msg="State 'tabula_rasa' does not exist in bulk_discovery, please use refresh!",
-            content="",
-            etag="",
-            failed=True,
-            changed=False,
-        )
-        module.fail_json(**result_as_dict(result))
+        module.params["state"] = "refresh"
+
+    if module.params.get("state") in [
+        "update_service_labels",
+        "monitor_undecided_services",
+    ]:
+        if ver < CheckmkVersion("2.3.0"):
+            result = RESULT(
+                http_code=0,
+                msg="State is not supported before 2.3.0",
+                content="",
+                etag="",
+                failed=True,
+                changed=False,
+            )
+            module.fail_json(**result_as_dict(result))
+        if single_mode:
+            if module.params.get("state") == "monitor_undecided_services":
+                result = RESULT(
+                    http_code=0,
+                    msg="State can only be used in bulk mode",
+                    content="",
+                    etag="",
+                    failed=True,
+                    changed=False,
+                )
+                module.fail_json(**result_as_dict(result))
+            if module.params.get(
+                "state"
+            ) == "update_service_labels" and ver < CheckmkVersion("2.3.0p3"):
+                result = RESULT(
+                    http_code=0,
+                    msg="State can only be used in bulk mode",
+                    content="",
+                    etag="",
+                    failed=True,
+                    changed=False,
+                )
+                module.fail_json(**result_as_dict(result))
+
+    if not single_mode and ver >= CheckmkVersion("2.3.0"):
+        discovery = newBulkDiscoveryAPI(module)
 
     result = wait_for_completion(single_mode, servicecompletion)
 

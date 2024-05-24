@@ -320,12 +320,7 @@ class HostAPI(CheckmkAPI):
         # Get the current host from the API and set some parameters
         self._get_current()
 
-        if self.state == "present":
-            if (
-                self.params.get("folder")
-                and self.current["folder"] != self.params["folder"]
-            ):
-                self.desired["folder"] = self.params["folder"]
+        self.desired["folder"] = self.params["folder"]
 
         if self.params.get("nodes"):
             self.desired["nodes"] = self.params.get("nodes")
@@ -423,7 +418,7 @@ class HostAPI(CheckmkAPI):
         return HostEndpoints.modify_cluster % self.desired["host_name"]
 
     def _detect_changes_folder(self):
-        current_folder = self.current.get("folder")
+        current_folder = self.current.get("folder", "/")
         desired_folder = self.desired.get("folder")
         changes = []
 

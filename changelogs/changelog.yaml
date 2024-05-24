@@ -867,3 +867,37 @@ releases:
     - fix_rule_conditions_missing.yml
     - release_summary.yml
     release_date: '2024-02-21'
+  4.4.0:
+    changes:
+      bugfixes:
+      - Bakery module - Fix failing integration test due to wrong key passphrase.
+      - Folder module - Fix issue where the `name` (alias `title`) was entirely ignored.
+      - Folder module - Fix issues with uppercase and lowercase names.
+      major_changes:
+      - Host module - Add support for cluster hosts.
+      - Host module - Enable check mode.
+      - Host module - Update attribute management behavior. Refer to the documentation
+        for details.
+      minor_changes:
+      - Host module - Migrate module to the new collection API.
+      release_summary: Spring is here! With a rewritten host module including check
+        mode and cluster support.
+    fragments:
+    - bakery.yml
+    - folder.yml
+    - host.yml
+    - release_summary.yml
+    release_date: '2024-04-17'
+  4.4.1:
+    changes:
+      bugfixes:
+      - Host module - Fix hosts always being created in the main directory.
+      minor_changes:
+      - Add 'ansible.utils' collection as an explicitely dependency. We already had
+        this dependency, but are now declaring it explicitely.
+      release_summary: Bugfix Release.
+    fragments:
+    - fix_host_initial_folder.yml
+    - meta.yml
+    - release_summary.yml
+    release_date: '2024-05-01'

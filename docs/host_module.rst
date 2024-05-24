@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.7.0
+  :antsibull-docs: 2.10.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.3.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.4.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -82,6 +82,40 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-add_nodes"></div>
+
+      .. _ansible_collections.checkmk.general.host_module__parameter-add_nodes:
+
+      .. rst-class:: ansible-option-title
+
+      **add_nodes**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-add_nodes" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      List of nodes to be added as members of the cluster-container host provided in name. Works only if the existing host was already a cluster host, or entirely new is created. \ :strong:`Mutualy exclusive with I(nodes`\  and \ :emphasis:`remove\_nodes`\ .)
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-attributes"></div>
 
       .. _ansible_collections.checkmk.general.host_module__parameter-attributes:
@@ -106,12 +140,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The attributes of your host as described in the API documentation. \ :strong:`Attention! This option OVERWRITES all existing attributes!`\  If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ .
+      The attributes of your host as described in the API documentation. \ :strong:`Attention! This option OVERWRITES all existing attributes!`\  \ :strong:`Attention! I(folder`\  should match the folder where host is residing) If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ .
 
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`{}`
 
       .. raw:: html
 
@@ -188,6 +218,48 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-extended_functionality"></div>
+
+      .. _ansible_collections.checkmk.general.host_module__parameter-extended_functionality:
+
+      .. rst-class:: ansible-option-title
+
+      **extended_functionality**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-extended_functionality" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Allow extended functionality instead of the expected REST API behavior.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-folder"></div>
 
       .. _ansible_collections.checkmk.general.host_module__parameter-folder:
@@ -212,7 +284,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The folder your host is located in. On create it defaults to \ :literal:`/`\ .
+      The folder your host is located in. On create it defaults to \ :literal:`/`\ . \ :strong:`For existing host, host is moved to the specified folder if different and this procedue is mutualy exclusive with specified I(attributes`\ , \ :emphasis:`update\_attributes`\ , and \ :emphasis:`remove\_attributes`\ ).
 
 
       .. raw:: html
@@ -256,6 +328,40 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-nodes"></div>
+
+      .. _ansible_collections.checkmk.general.host_module__parameter-nodes:
+
+      .. rst-class:: ansible-option-title
+
+      **nodes**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-nodes" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Nodes, members of the cluster-container host provided in name. \ :strong:`Mutualy exclusive with I(add\_nodes`\  and \ :emphasis:`remove\_nodes`\ .)
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-remove_attributes"></div>
 
       .. _ansible_collections.checkmk.general.host_module__parameter-remove_attributes:
@@ -280,12 +386,42 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The remove\_attributes of your host as described in the API documentation. This will only remove the given attributes. If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ .
+      The remove\_attributes of your host as described in the API documentation. \ :strong:`Attention! I(folder`\  should match the folder where host is residing) \ :strong:`If a list of strings is supplied, the listed attributes are removed.`\  \ :strong:`If`\  \ :emphasis:`extended\_functionality`\  \ :strong:`and a dict is supplied, the attributes that exactly match the passed attributes are removed.`\  This will only remove the given attributes. If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ . As of Checkmk 2.2.0p7 and 2.3.0b1, simultaneous use of \ :emphasis:`attributes`\ , \ :emphasis:`remove\_attributes`\ , and \ :emphasis:`update\_attributes`\  is no longer supported.
 
 
-      .. rst-class:: ansible-option-line
+      .. raw:: html
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-remove_nodes"></div>
+
+      .. _ansible_collections.checkmk.general.host_module__parameter-remove_nodes:
+
+      .. rst-class:: ansible-option-title
+
+      **remove_nodes**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-remove_nodes" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      List of nodes to be removes from the cluster-container host provided in name. \ :strong:`Mutualy exclusive with I(nodes`\  and \ :emphasis:`add\_nodes`\ .)
+
 
       .. raw:: html
 
@@ -428,12 +564,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The update\_attributes of your host as described in the API documentation. This will only update the given attributes. If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ .
+      The update\_attributes of your host as described in the API documentation. \ :strong:`Attention! I(folder`\  should match the folder where host is residing) This will only update the given attributes. If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ .
 
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`{}`
 
       .. raw:: html
 
@@ -534,6 +666,36 @@ Examples
         name: "my_host"
         attributes:
           site: "my_remote_site"
+        folder: "/"
+        state: "present"
+
+    # Create a cluster host.
+    - name: "Create a cluster host."
+      checkmk.general.cluster:
+        server_url: "http://my_server/"
+        site: "my_site"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
+        name: "my_cluster_host"
+        folder: "/"
+        nodes: ["cluster_node_1", "cluster_node_2", "cluster_node_3"]
+        state: "present"
+
+    # Create a cluster host with IP.
+    - name: "Create a cluster host with IP address."
+      checkmk.general.cluster:
+        server_url: "http://my_server/"
+        site: "my_site"
+        automation_user: "my_user"
+        automation_secret: "my_secret"
+        name: "my_cluster_host"
+        nodes:
+          - "cluster_node_1"
+          - "cluster_node_2"
+          - "cluster_node_3"
+        attributes:
+          alias: "My Cluster Host"
+          ipaddress: "127.0.0.1"
         folder: "/"
         state: "present"
 
@@ -666,6 +828,7 @@ Authors
 - Robin Gierse (@robin-checkmk)
 - Lars Getwan (@lgetwan)
 - Oliver Gaida (@ogaida)
+- Michael Sekania (@msekania)
 
 
 

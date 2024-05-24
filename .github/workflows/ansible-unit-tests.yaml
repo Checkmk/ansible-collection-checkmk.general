@@ -36,7 +36,7 @@ jobs:
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_units.html
 
   units:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: Units (Ⓐ${{ matrix.ansible }})
     strategy:
       fail-fast: true
