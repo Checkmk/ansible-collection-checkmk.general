@@ -232,9 +232,6 @@ EXAMPLES = r"""
             "value": "yes"
           }
         ],
-        "host_name": {},
-        "host_tags": [],
-        "service_labels": []
       }
       properties: {
         "comment": "Ansible managed",
@@ -258,19 +255,20 @@ EXAMPLES = r"""
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       rule_id: "{{ item.id }}"
-    loop: "{{
-             lookup('checkmk.general.rules',
-               ruleset=outer_item.ruleset,
-               comment_regex='Ansible managed',
-               server_url=server_url,
-               site=site,
-               automation_user=automation_user,
-               automation_secret=automation_secret,
-               validate_certs=False
-               )
-           }}"
-    loop_control:
-      label: "{{ item.id }}"
+    state: "absent"
+  loop: "{{
+           lookup('checkmk.general.rules',
+             ruleset='checkgroup_parameters:memory_percentage_used',
+             comment_regex='Ansible managed',
+             server_url=server_url,
+             site=site,
+             automation_user=automation_user,
+             automation_secret=automation_secret,
+             validate_certs=False
+             )
+         }}"
+  loop_control:
+    label: "{{ item.id }}"
 """
 
 RETURN = r"""
