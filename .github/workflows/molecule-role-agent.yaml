@@ -66,6 +66,10 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
+          # The following works around a incompatibility between Python requests and Docker.
+          # https://github.com/ansible-collections/community.docker/issues/860
+          # Remove at a later point, when the updated community.docker is shipped.
+          ansible-galaxy collection install community.docker --force
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: "Provide secrets file."
