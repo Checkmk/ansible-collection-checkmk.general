@@ -30,9 +30,9 @@ rules:
   key-duplicates: enable
   # 160 chars was the default used by old E204 rule, but
   # you can easily change it or disable in your .yamllint file.
-  # line-length: disable
-  line-length:
-    max: 170
+  line-length: disable
+  # line-length:
+  #   max: 160
   new-line-at-end-of-file: enable
   new-lines:
     type: unix
