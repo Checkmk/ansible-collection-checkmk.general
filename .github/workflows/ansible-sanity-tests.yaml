@@ -19,8 +19,6 @@ on:
       - '**.rst'
       - 'roles/**'
   pull_request:
-    types:
-      - opened
     paths-ignore:
       - '.github/ISSUE_TEMPLATE/*'
       - 'docs/**'

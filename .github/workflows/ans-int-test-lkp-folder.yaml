@@ -14,8 +14,6 @@ name: Ansible Integration Tests for Folder Lookup Module
 on:
   workflow_dispatch:
   pull_request:
-    types:
-      - opened
     branches:
       - main
       - devel
