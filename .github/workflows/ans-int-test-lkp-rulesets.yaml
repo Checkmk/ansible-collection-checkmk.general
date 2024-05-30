@@ -10,6 +10,10 @@ env:
   COLLECTION_NAME: general
   MODULE_NAME: lookup_rulesets
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 name: Ansible Integration Tests for Ruleset Lookup Modules
 on:
   workflow_dispatch:

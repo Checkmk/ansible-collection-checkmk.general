@@ -10,6 +10,10 @@ env:
   COLLECTION_NAME: general
   MODULE_NAME: contact_group
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 name: Ansible Integration Tests for Contact Group Module
 on:
   workflow_dispatch:

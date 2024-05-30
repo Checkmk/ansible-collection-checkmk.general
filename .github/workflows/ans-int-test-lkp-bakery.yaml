@@ -10,6 +10,10 @@ env:
   COLLECTION_NAME: general
   MODULE_NAME: lookup_bakery
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 name: Ansible Integration Tests for Bakery Lookup Module
 on:
   workflow_dispatch:
