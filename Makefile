@@ -127,9 +127,9 @@ venv:
 	@echo
 	@(. venv/bin/activate && python3 -m pip install pip --upgrade && python3 -m pip install -r requirements.txt)
 
-clean: clean-vm
-
-clean-vm:
+clean:
+	@rm -rf .tox/
+	@rm -rf venv/
 	@vagrant destroy --force
 
 vm:
