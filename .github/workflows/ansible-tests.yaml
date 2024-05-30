@@ -17,24 +17,32 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  # changelog:
-  #   uses: ansible/ansible-content-actions/.github/workflows/changelog.yaml@main
-  #   if: github.event_name == 'pull_request'
+  changelog:
+    uses: ansible/ansible-content-actions/.github/workflows/changelog.yaml@main
+    if: github.event_name == 'pull_request'
+
   ansible-lint:
     uses: ansible/ansible-content-actions/.github/workflows/ansible_lint.yaml@main
+    with:
+      args: "-c .ansible-lint"
+
   sanity:
     uses: ansible/ansible-content-actions/.github/workflows/sanity.yaml@main
-  unit-galaxy:
-    uses: ansible/ansible-content-actions/.github/workflows/unit.yaml@main
+
+  ## We do not have unit tests (yet)
+  # unit-galaxy:
+  #   uses: ansible/ansible-content-actions/.github/workflows/unit.yaml@main
+
   integration:
     uses: ansible/ansible-content-actions/.github/workflows/integration.yaml@main
+
   all_green:
     if: ${{ always() }}
     needs:
-      # - changelog
+      - changelog
       - sanity
       - integration
-      - unit-galaxy
+      # - unit-galaxy
       - ansible-lint
     runs-on: ubuntu-latest
     steps:
@@ -50,8 +58,8 @@ jobs:
       - run: >-
           python -c "assert 'failure' not in
           set([
+          '${{ needs.changelog.result }}',
           '${{ needs.integration.result }}',
           '${{ needs.sanity.result }}',
-          '${{ needs.unit-galaxy.result }}'
           '${{ needs.ansible-lint.result }}'
           ])"
