@@ -44,7 +44,7 @@ class CheckmkAPI:
         # may be "present", "abesent" or an individual one
         self.state = ""
 
-    def _fetch(self, code_mapping="", endpoint="", data=None, method="GET"):
+    def _fetch(self, code_mapping={}, endpoint="", data=None, method="GET"):
         http_mapping = GENERIC_HTTP_CODES.copy()
         http_mapping.update(code_mapping)
 
