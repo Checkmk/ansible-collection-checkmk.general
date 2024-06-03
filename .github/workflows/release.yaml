@@ -97,7 +97,13 @@ jobs:
         run: antsibull-changelog release
 
       - name: "Record Changes for Release"
-        run: echo "changelog=$(git diff CHANGELOG.rst | egrep "^(\+)" | tail -n+2 | tr -d "+")" >> $GITHUB_OUTPUT
+        run: |
+          ls
+          git diff CHANGELOG.rst
+          git diff CHANGELOG.rst | egrep "^(\+)"
+          git diff CHANGELOG.rst | egrep "^(\+)" | tail -n+2
+          git diff CHANGELOG.rst | egrep "^(\+)" | tail -n+2 | tr -d "+"
+          echo "changelog=$(git diff CHANGELOG.rst | egrep "^(\+)" | tail -n+2 | tr -d "+")" >> $GITHUB_OUTPUT
 
       - name: "Compile Collection Docs"
         run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
