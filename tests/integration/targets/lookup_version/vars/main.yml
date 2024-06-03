@@ -9,6 +9,6 @@ test_sites:
   - version: "2.2.0p27"
     edition: "cre"
     site: "old_cre"
-  - version: "2.1.0p44"
+  - version: "2.1.0p43"
     edition: "cre"
     site: "ancient_cre"
