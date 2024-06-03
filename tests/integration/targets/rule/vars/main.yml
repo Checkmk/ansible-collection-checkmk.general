@@ -32,23 +32,25 @@ checkmk_var_rules:
       }
       value_raw: "{'magic': 0.8}"
 
-  - name: "CPU - Load."
-    ruleset: "checkgroup_parameters:cpu_load"
-    rule:
-      location:
-        folder: "/"
-        position: "bottom"
-      conditions: {
-        "host_labels": [],
-        "host_tags": [],
-        "service_labels": []
-      }
-      properties: {
-        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
-        "description": "",
-        "disabled": false
-      }
-      value_raw: "{'levels': (1.0, 2.0)}"
+  ## With 2.3.0, the value_raw should contain "levels15", but with previous versions, it's
+  ## only "levels". Let's reactivate this, once 2.2.0 is out of support.
+  # - name: "CPU - Load."
+  #   ruleset: "checkgroup_parameters:cpu_load"
+  #   rule:
+  #     location:
+  #       folder: "/"
+  #       position: "bottom"
+  #     conditions: {
+  #       "host_labels": [],
+  #       "host_tags": [],
+  #       "service_labels": []
+  #     }
+  #     properties: {
+  #       "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+  #       "description": "",
+  #       "disabled": false
+  #     }
+  #     value_raw: "{'levels15': (1.0, 2.0)}"
 
   - name: "CPU - Utilization."
     ruleset: "checkgroup_parameters:cpu_iowait"
