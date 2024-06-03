@@ -30,20 +30,20 @@ jobs:
 
     steps:
 
-      - name: Check out code
+      - name: "Checkout Code"
         uses: actions/checkout@v4
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: Set up Python
+      - name: "Set up Python"
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install ansible-base (${{ matrix.ansible }})
+      - name: "Install ansible-base (${{ matrix.ansible }})"
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      - name: Run sanity tests
+      - name: "Run Sanity Tests"
         run: ansible-test sanity --docker -v --color --coverage
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
@@ -57,19 +57,19 @@ jobs:
       # Prepare the environment.
       #
 
-      - name: Checkout code
+      - name: "Checkout Code"
         uses: actions/checkout@v4
 
-      - name: Get current version
+      - name: "Get current Version"
         id: current_version
         run: echo "version=$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
 
-      - name: Set up Python
+      - name: "Set up Python"
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install Dependencies
+      - name: "Install Dependencies"
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
@@ -78,7 +78,7 @@ jobs:
       # First stage: Build and install collection to generate docs and changelogs.
       #
 
-      - name: Copy Files and Directories to Source
+      - name: "Copy Files and Directories to Source"
         run: |
           mkdir -p build/src
           cp $files build/src
@@ -87,23 +87,23 @@ jobs:
           files: ${{env.FILES}}
           directories: ${{env.DIRS}}
 
-      - name: Build Ansible Collection
+      - name: "Build Ansible Collection"
         run: ansible-galaxy collection build build/src --force
 
-      - name: Install Ansible Collection
+      - name: "Install Ansible Collection"
         run: ansible-galaxy collection install --no-deps ./${{env.NAMESPACE}}-${{env.COLLECTION_NAME}}-${{ steps.current_version.outputs.version }}.tar.gz
 
-      - name: Compile Collection Changelog
+      - name: "Compile Collection Changelog"
         run: antsibull-changelog release
 
-      - name: Record changes for release.
+      - name: "Record Changes for Release"
         run: echo "changelog=$(git diff CHANGELOG.rst | egrep "^(\+)" | tail -n+2 | tr -d "+")" >> $GITHUB_OUTPUT
 
-      - name: Compile Collection Docs
+      - name: "Compile Collection Docs"
         run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
 
       ## ToDo - Re-enable after testing!
-      # - name: Create Pull Request for docs and changelog against devel branch
+      # - name: "Create Pull Request for Docs and Changelog against devel branch"
       #   uses: peter-evans/create-pull-request@v6
       #   with:
       #     commit-message: Update Docs and Changelogs upon Release
@@ -122,7 +122,7 @@ jobs:
       # Second stage: Build the final version of the collection and release it.
       #
 
-      - name: Copy Files and Directories to Source
+      - name: "Copy Files and Directories to Source"
         run: |
           mkdir -p build/src
           cp $files build/src
@@ -132,10 +132,10 @@ jobs:
           files: ${{env.FILES}}
           directories: ${{env.DIRS}}
 
-      - name: Build Ansible Collection
+      - name: "Build Ansible Collection"
         run: ansible-galaxy collection build build/src --force
 
-      - name: Create Release and upload Assets
+      - name: "Create Release and upload Assets"
         id: create-release
         uses: softprops/action-gh-release@v2
         with:
@@ -157,5 +157,5 @@ jobs:
             For a detailed changelog, refer to the [CHANGELOG](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/CHANGELOG.rst).
 
       ## ToDo - Re-enable after testing!
-      # - name: Publish Ansible Collection to the Galaxy
+      # - name: "Publish Ansible Collection to the Galaxy"
       #   run: ansible-galaxy collection publish ${{env.NAMESPACE}}-${{env.COLLECTION_NAME}}-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
