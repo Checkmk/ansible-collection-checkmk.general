@@ -88,24 +88,23 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get the attributes of folder /tests
+- name: Get the attributes of folders /tests and /snmp
   ansible.builtin.debug:
-    msg: "Attributes of folder /network: {{ attributes }}"
-  vars:
-    attributes: "{{
-                    lookup('checkmk.general.folder',
-                        '~tests',
-                        server_url=my_server_url,
-                        site=mysite,
-                        automation_user=myuser,
-                        automation_secret=mysecret,
-                        validate_certs=False
-                        )
-                 }}"
+    msg: "Extended attributes of folder /network: {{ attributes.extensions }}"
+  loop: "{{
+           lookup('checkmk.general.folder',
+                  '~tests', '~snmp',
+                  server_url=my_server_url,
+                  site=mysite,
+                  automation_user=myuser,
+                  automation_secret=mysecret,
+                  validate_certs=False
+                  )
+         }}"
 
 - name: "Use variables outside the module call."
   ansible.builtin.debug:
-    msg: "Attributes of folder /network: {{ attributes }}"
+    msg: "Extended attributes of folder /network: {{ attributes.extensions }}"
   vars:
     ansible_lookup_checkmk_server_url: "http://myserver/"
     ansible_lookup_checkmk_site: "mysite"
@@ -118,7 +117,8 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of dicts of attributes of the folder(s)
+      - A dict of attributes of the folder if you query a single folder
+      - A list of dicts of attributes of the folders if you query multiple folders
     type: list
     elements: str
 """
