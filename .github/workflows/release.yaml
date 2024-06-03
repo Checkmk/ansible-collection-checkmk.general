@@ -98,7 +98,11 @@ jobs:
 
       - name: "Record Changes for Release"
         run: |
-          echo "changelog=$(git diff CHANGELOG.rst | grep '^+' | tail -n+2 | tr -d '+')" >> $GITHUB_OUTPUT
+          {
+            echo 'changelog<<EOF'
+            echo "$(git diff CHANGELOG.rst | grep '^+' | tail -n+2 | tr -d '+')"
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
 
       - name: "Compile Collection Docs"
         run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
