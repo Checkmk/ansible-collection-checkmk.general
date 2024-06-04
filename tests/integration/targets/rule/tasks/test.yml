@@ -66,16 +66,16 @@
     rule:
       rule_id: "{{ item.content.id }}"
       conditions: "{{ item.content.extensions.conditions }}"
-      properties: 
-          comment: "{{ item.content.extensions.properties.comment | default('') }}"
-          description: "New description"
+      properties:
+        comment: "{{ item.content.extensions.properties.comment | default('') }}"
+        description: "New description"
       value_raw: "{{ item.content.extensions.value_raw | string }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ created_rules.results }}"
   loop_control:
-      label: "{{ item.content.id }}"
+    label: "{{ item.content.id }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify rules. Again."
   rule:
@@ -87,16 +87,16 @@
     rule:
       rule_id: "{{ item.content.id }}"
       conditions: "{{ item.content.extensions.conditions }}"
-      properties: 
-          comment: "{{ item.content.extensions.properties.comment | default('') }}"
-          description: "New description"
+      properties:
+        comment: "{{ item.content.extensions.properties.comment | default('') }}"
+        description: "New description"
       value_raw: "{{ item.content.extensions.value_raw | string }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ created_rules.results }}"
   loop_control:
-      label: "{{ item.content.id }}"
+    label: "{{ item.content.id }}"
   register: rule_result
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
@@ -116,25 +116,23 @@
     rule:
       rule_id: "{{ item.id }}"
       conditions: "{{ item.extensions.conditions }}"
-      properties: 
-          comment: "{{ item.extensions.properties.comment }}"
-          description: "Even newer description"
+      properties:
+        comment: "{{ item.extensions.properties.comment }}"
+        description: "Even newer description"
       value_raw: "{{ item.extensions.value_raw | string }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ lookup('checkmk.general.rules', 
+  loop: "{{ lookup('checkmk.general.rules',
       ruleset='checkgroup_parameters:filesystem',
       comment_regex='Ansible managed',
       server_url=checkmk_var_server_url,
       site=outer_item.site,
       automation_user=checkmk_var_automation_user,
       automation_secret=checkmk_var_automation_secret,
-      validate_certs=False
-      )
-    }}"
+      validate_certs=False) }}"
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete rules."
   rule:
@@ -150,7 +148,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ created_rules.results }}"
   loop_control:
-      label: "{{ item.content.id }}"
+    label: "{{ item.content.id }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -178,7 +176,7 @@
   run_once: true  # noqa run-once[task]
   loop: "{{ created_rules.results }}"
   loop_control:
-      label: "{{ item.content.id }}"
+    label: "{{ item.content.id }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
   ansible.builtin.fail:
