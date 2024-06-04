@@ -101,7 +101,7 @@ author:
     - Lars Getwan (@lgetwan)
     - diademiemi (@diademiemi)
     - Geoffroy Stévenne (@geof77)
-    - Michael Sekana (@msekania)
+    - Michael Sekania (@msekania)
 """
 
 EXAMPLES = r"""
