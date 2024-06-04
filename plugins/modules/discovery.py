@@ -40,7 +40,7 @@ options:
         description: The action to perform during discovery.
         type: str
         default: new
-        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels, update_service_labels, monitor_undecided_services]
+        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels, only_service_labels, monitor_undecided_services]
     do_full_scan:
         description: The option whether to perform a full scan or not. (Bulk mode only).
         type: bool
@@ -255,7 +255,7 @@ class newBulkDiscoveryAPI(CheckmkAPI):
             options["monitor_undecided_services"] = True
         if self.params.get("state") in ["remove", "fix_all"]:
             options["remove_vanished_services"] = True
-        if self.params.get("state") in ["update_service_labels"]:
+        if self.params.get("state") in ["only_service_labels"]:
             options["update_service_labels"] = True
         if self.params.get("state") in ["new", "fix_all", "only_host_labels"]:
             options["update_host_labels"] = True
@@ -336,7 +336,7 @@ def run_module():
                 "refresh",
                 "tabula_rasa",
                 "only_host_labels",
-                "update_service_labels",
+                "only_service_labels",
                 "monitor_undecided_services",
             ],
         ),
@@ -400,7 +400,7 @@ def run_module():
         module.params["state"] = "refresh"
 
     if module.params.get("state") in [
-        "update_service_labels",
+        "only_service_labels",
         "monitor_undecided_services",
     ]:
         if ver < CheckmkVersion("2.3.0"):
@@ -426,7 +426,7 @@ def run_module():
                 module.fail_json(**result_as_dict(result))
             if module.params.get(
                 "state"
-            ) == "update_service_labels" and ver < CheckmkVersion("2.3.0p3"):
+            ) == "only_service_labels" and ver < CheckmkVersion("2.3.0p3"):
                 result = RESULT(
                     http_code=0,
                     msg="State can only be used in bulk mode",
