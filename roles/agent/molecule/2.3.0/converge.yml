@@ -21,7 +21,7 @@
       when: ansible_os_family == 'Debian'
 
     - name: Install prerequisites.
-      ansible.builtin.yum:
+      ansible.builtin.dnf:
         name: "{{ item }}"
         state: present
       loop:
