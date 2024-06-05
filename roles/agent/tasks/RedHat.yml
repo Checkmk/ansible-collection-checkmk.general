@@ -1,7 +1,7 @@
 ---
 - name: "{{ ansible_os_family }} Derivatives: Install host-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ checkmk_agent_agent.file.host }}"
     state: present
     disable_gpg_check: true
@@ -13,7 +13,7 @@
 
 - name: "{{ ansible_os_family }} Derivatives: Install GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ checkmk_agent_agent.file.cee }}"
     state: present
     disable_gpg_check: true
@@ -36,7 +36,7 @@
 
 - name: "{{ ansible_os_family }} Derivatives: Install Vanilla agent."
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ checkmk_agent_agent.file.cre }}"
     state: present
     disable_gpg_check: true
