@@ -1,4 +1,4 @@
-minor_changes:
+major_changes:
   - Rule module - The complete module was rewritten to use the new module API.
     Additionally, a parameter "rule_id" was introduced to modify existing rules.
     Refer to the module documentation for further details.
