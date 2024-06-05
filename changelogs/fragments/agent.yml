@@ -1,0 +1,2 @@
+minor_changes:
+  - Agent role - Add support to open firewall for a list of IPs.
