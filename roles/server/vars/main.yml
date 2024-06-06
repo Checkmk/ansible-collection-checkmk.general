@@ -1,9 +1,9 @@
 ---
-checkmk_server_base_url: "https://download.checkmk.com/checkmk"
-checkmk_server_download_url: "{{ checkmk_server_base_url }}/{{ checkmk_server_version }}/{{ checkmk_server_setup_file }}"
+__checkmk_server_base_url: "https://download.checkmk.com/checkmk"
+checkmk_server_download_url: "{{ __checkmk_server_base_url }}/{{ checkmk_server_version }}/{{ __checkmk_server_setup_file }}"
 
 # Due to inconsistent naming of editions, we normalize them here for convenience
-checkmk_server_edition_mapping:
+__checkmk_server_edition_mapping:
   cre: raw
   cfe: free
   cee: enterprise

@@ -17,7 +17,7 @@
   loop: "{{ test_sites }}"
   when: |
     ((download_pass is defined and download_pass | length) or item.edition == "cre")
-    and not 'check-mk-' + checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
+    and not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
 
 - name: "Install Checkmk Versions."
   ansible.builtin.apt:
@@ -26,7 +26,7 @@
   loop: "{{ test_sites }}"
   when: |
     ((download_pass is defined and download_pass | length) or item.edition == "cre")
-    and not 'check-mk-' + checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
+    and not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
 
 - name: "Create Sites."
   ansible.builtin.command: "omd -V {{ item.version }}.{{ item.edition }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site }}"
