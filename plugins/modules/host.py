@@ -149,10 +149,10 @@ EXAMPLES = r"""
 # Create a cluster host.
 - name: "Create a cluster host."
   checkmk.general.cluster:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "my_cluster_host"
     folder: "/"
     nodes: ["cluster_node_1", "cluster_node_2", "cluster_node_3"]
@@ -161,10 +161,10 @@ EXAMPLES = r"""
 # Create a cluster host with IP.
 - name: "Create a cluster host with IP address."
   checkmk.general.cluster:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "my_cluster_host"
     nodes:
       - "cluster_node_1"
@@ -320,12 +320,7 @@ class HostAPI(CheckmkAPI):
         # Get the current host from the API and set some parameters
         self._get_current()
 
-        if self.state == "present":
-            if (
-                self.params.get("folder")
-                and self.current["folder"] != self.params["folder"]
-            ):
-                self.desired["folder"] = self.params["folder"]
+        self.desired["folder"] = self.params["folder"]
 
         if self.params.get("nodes"):
             self.desired["nodes"] = self.params.get("nodes")
@@ -423,7 +418,7 @@ class HostAPI(CheckmkAPI):
         return HostEndpoints.modify_cluster % self.desired["host_name"]
 
     def _detect_changes_folder(self):
-        current_folder = self.current.get("folder")
+        current_folder = self.current.get("folder", "/")
         desired_folder = self.desired.get("folder")
         changes = []
 

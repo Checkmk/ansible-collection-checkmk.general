@@ -21,11 +21,14 @@ on:
       - devel
     paths:
       - 'plugins/modules/discovery.py'
+  push:
+    paths:
+      - 'plugins/modules/discovery.py'
 
 jobs:
 
   integration:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
     strategy:
       fail-fast: false

@@ -1,4 +1,4 @@
-requires_ansible: '>=2.12.0'
+requires_ansible: '>=2.14.0'
 
 action_groups:
   checkmk:

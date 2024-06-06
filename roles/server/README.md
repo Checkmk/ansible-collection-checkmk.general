@@ -25,7 +25,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Role Variables
 
-    checkmk_server_version: "2.3.0b6"
+    checkmk_server_version: "2.3.0p4"
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.
@@ -73,7 +73,7 @@ Whether to allow downgrading a site's version.
 Note: this is not a recommended procedure, and will not be supported for enterprise customers.
 
     checkmk_server_sites:
-      - name: my_site
+      - name: mysite
         version: "{{ checkmk_server_version }}"
         update_conflict_resolution: abort
         state: started

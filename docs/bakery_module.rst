@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.7.0
+  :antsibull-docs: 2.10.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.bakery module -- Trigger baking and signing in the agent bakery.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.3.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.4.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -402,7 +402,7 @@ Examples
         automation_user: "my_user"
         automation_secret: "my_secret"
         signature_key_id: 1
-        signature_key_passphrase: "secretkey"
+        signature_key_passphrase: "my_key"
         state: "signed"
     # Bake and sign all agents.
     - name: "Bake and sign all agents."
@@ -412,7 +412,7 @@ Examples
         automation_user: "my_user"
         automation_secret: "my_secret"
         signature_key_id: 1
-        signature_key_passphrase: "secretkey"
+        signature_key_passphrase: "my_key"
         state: "baked_signed"
 
 

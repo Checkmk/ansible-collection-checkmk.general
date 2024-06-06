@@ -19,7 +19,6 @@ on:
       - '**.rst'
       - 'roles/**'
   pull_request:
-    types: [opened]
     paths-ignore:
       - '.github/ISSUE_TEMPLATE/*'
       - 'docs/**'
@@ -31,7 +30,7 @@ on:
 jobs:
 
   sanity:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: Sanity (Ⓐ${{ matrix.ansible }})
     strategy:
       fail-fast: false

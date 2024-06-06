@@ -5,6 +5,7 @@
 tribe29-checkmk-*.tar.gz
 checkmk-general-*.tar.gz
 .vagrant/
+.tox/
 build/
 tests/output
 playbooks/vars/config.yml
@@ -13,3 +14,4 @@ playbooks/hosts
 playbooks/hosts.bak
 Vagrantfile
 Vagrantfile.bak
+venv

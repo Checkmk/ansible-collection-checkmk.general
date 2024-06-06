@@ -15,9 +15,9 @@ script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 collection_dir="${script_dir%/*}"
 
 # Update these as necessary:
-checkmk_ancient="2.1.0p42"
-checkmk_oldstable="2.2.0p25"
-checkmk_stable="2.3.0b6"
+checkmk_ancient="2.1.0p44"
+checkmk_oldstable="2.2.0p27"
+checkmk_stable="2.3.0p4"
 
 while getopts 's:t:' OPTION; do
   case "$OPTION" in
@@ -52,7 +52,7 @@ find "${collection_dir}/roles/" -type f -name all.yml -exec sed -i "s/2.1.0.*/${
 find "${collection_dir}/roles/" -type f -name main.yml -exec sed -i "s/2.3.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated default Checkmk version for roles to ${checkmk_stable}."
 find "${collection_dir}/roles/" -type f -name README.md -exec sed -i "s/2.3.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated default Checkmk version in roles README to ${checkmk_stable}."
 # Support Matrix
-grep "${target_version}" "${collection_dir}/SUPPORT.md" || echo "${target_version} | ${checkmk_ancient}, ${checkmk_oldstable}, ${checkmk_stable} | 2.15, 2.16, 2.17 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
+grep "${target_version}" "${collection_dir}/SUPPORT.md" > /dev/null || echo "${target_version} | ${checkmk_ancient}, ${checkmk_oldstable}, ${checkmk_stable} | 2.15, 2.16, 2.17 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
 
 echo "# End changes section."
 echo
@@ -61,4 +61,5 @@ echo "# Test findings:"
 if [[ $(find "${collection_dir}/changelogs/fragments" | wc -l) -lt 1 ]] ; then echo "Make sure to provide all relevant changelogs!" ; fi
 grep -R release_summary "${collection_dir}/changelogs/fragments/" > /dev/null || echo "Please provide a 'release_summary' in the changelogs!"
 grep "${target_version}" "${collection_dir}/SUPPORT.md" > /dev/null || echo "Please provide a line about the version support in 'SUPPORT.md'!"
+grep -R breaking_changes "${collection_dir}/changelogs/fragments/" > /dev/null && echo "Breaking changes found! Make sure to reflect this in the release version!"
 echo "# End tests section."

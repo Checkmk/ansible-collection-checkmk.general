@@ -19,16 +19,16 @@ on:
     branches:
       - main
       - devel
+    paths:
+      - 'plugins/lookup/version.py'
   push:
-    branches:
-      - build/checkmk-2-3-support
     paths:
       - 'plugins/lookup/version.py'
 
 jobs:
 
   integration:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
     strategy:
       fail-fast: false

@@ -43,6 +43,7 @@ skip_list:
   - experimental
   - name[template]  # https://ansible-lint.readthedocs.io/rules/name/
   - var-naming[no-role-prefix]  # We do believe, that our naming which exceeds this rules requirements is sound
+  - yaml[line-length]
 
 # # Any rule that has the 'opt-in' tag will not be loaded unless its 'id' is
 # # mentioned in the enable_list:

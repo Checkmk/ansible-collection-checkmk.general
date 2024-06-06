@@ -1,6 +1,5 @@
 ---
-- name: "Activate Changes."
-  listen: activate changes
+- name: "Activate changes"
   checkmk.general.activation:
     server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
     site: "{{ checkmk_agent_site }}"
