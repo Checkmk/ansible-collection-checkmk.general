@@ -1,4 +1,4 @@
 breaking_changes:
   - Folder lookup module - Return the complete folder information, not only the extensions.
-    To adjust your playbooks, you have to use "{{ my_lookup_result.extensions }}" instead of
-    "{{ my_lookup_result }}".
+    To keep the current behavior in your playbooks, you want to use `{{ my_lookup_result.extensions }}`
+    instead of `{{ my_lookup_result }}`.
