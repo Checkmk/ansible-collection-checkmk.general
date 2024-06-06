@@ -11,7 +11,7 @@ It can be installed as easy as running:
 
     ansible-galaxy collection install checkmk.general
 
-Additionally, this role needs the Python module `netaddr`.
+Additionally, this role requires the Python module `netaddr` on the controller.
 Please make sure it is installed on your system and available for Ansible.
 
 ## Role Variables
