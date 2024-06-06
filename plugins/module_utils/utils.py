@@ -20,12 +20,20 @@ def result_as_dict(result):
 
 
 GENERIC_HTTP_CODES = {
-    204: (True, False, "Successfully executed"),
+    200: (True, False, "OK: The operation was done successfully"),
+    204: (True, False, "Operation done successfully. No further output."),
     400: (False, True, "Bad request: Parameter or validation failure"),
+    401: (False, True, "The user is not authorized to do this request"),
     403: (False, True, "Forbidden: Configuration via Setup is disabled"),
-    404: (False, True, "Not found"),
-    406: (False, True, "Required headers are not satisfied"),
-    412: (False, True, "If-Match does not match ETag"),
-    415: (False, True, "Wrong content-type in header"),
-    428: (False, True, "If-Match header is missing"),
+    404: (False, True, "Not Found: The requested object has not been found"),
+    405: (
+        False,
+        True,
+        "This request is only allowed with other HTTP methods",
+    ),
+    406: (False, True, "The requests accept headers can not be satisfied"),
+    412: (False, True, "If-Match header doesn't match the object's ETag"),
+    415: (False, True, "The submitted content-type is not supported"),
+    428: (False, True, "The required If-Match header is missing"),
+    500: (False, True, "General Server Error"),
 }
