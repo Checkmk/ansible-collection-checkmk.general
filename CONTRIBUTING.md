@@ -10,7 +10,7 @@ See [Contributing to Ansible-maintained collections](https://docs.ansible.com/an
 ## A word of warning
 
 While we want the community to engage in developing this collection, please be
-aware, that we have to ensure a certain level of quality and scope.
+aware, that we want to ensure a certain level of quality and scope.
 Additionally, this is purely a side project of a few people, which means
 the time available is limited. We will try to be as transparent as possible
 about what we will include but please do not feel discouraged, if an idea
@@ -49,7 +49,7 @@ After submitting a PR, follow the instructions to sign the [CLA](https://github.
 ### Changelog
 
 When changing this collection, please make sure to write a log of what you did.
-To do so, create a `.yml` file in the folder `changelogs/fragments`.
+To do so, create a `.yml` file in the folder `changelogs/fragments/`.
 The name does not matter, as the changelog is compiled of all fragments
 during build-time. For reference regarding the file format, take a look
 at the file `changelogs/template.yml`.
@@ -94,7 +94,7 @@ The following are guidelines to keep in mind, when creating or changing roles an
         - `checkmk_server_foo` for a server role variable
         - `checkmk_agent_bar` for a agent role variable
         - `checkmk_var_bat` for general variables
-    - Do not prefix the variable with an underscore ( `_` )
+    - Internal variables, not intended to be changed by a user should be prefixes with a double underscore (`__`).
 - Tags
     - When tagging roles or playbooks, separate single words with dashes (`my-custom-tag`)
 
@@ -133,11 +133,11 @@ You can also run a subset by mentioning them as follows. See `tests/integration/
 
 ### Molecule
 
-To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/testing-your-ansible-roles-molecule). It can be installed using the `requirements.txt`in this project or manually. The tests are crafted by the maintainers of this project to reflect real world scenarios a role would be used in. To run the tests, you need to navigate to the role directory and choose a scenario. At the time of writing those are named after the supported Checkmk versions: `2.1.0`and `2.2.0`.
+To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/testing-your-ansible-roles-molecule). It can be installed using the `requirements.txt`in this project or manually. The tests are crafted by the maintainers of this project to reflect real world scenarios a role would be used in. To run the tests, you need to navigate to the role directory and choose a scenario. At the time of writing those are named after the supported Checkmk versions: `2.2.0`and `2.3.0`.
 
     cd roles/server/
-    molecule test -s 2.1.0
     molecule test -s 2.2.0
+    molecule test -s 2.3.0
 
 ### Unit
 
