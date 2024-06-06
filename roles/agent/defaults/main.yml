@@ -1,5 +1,5 @@
 ---
-checkmk_agent_version: "2.3.0p4"
+checkmk_agent_version: "2.3.0p5"
 checkmk_agent_edition: cre
 checkmk_agent_server_protocol: http
 checkmk_agent_server: localhost
