@@ -1,9 +1,9 @@
 ---
 # Provice the URL and credentials to your Checkmk site here #
-checkmk_var_server_url: "http://localhost/"
-checkmk_var_site: "my_site"
-checkmk_var_automation_user: "cmkadmin"
-checkmk_var_automation_secret: "cmk"
+checkmk_var_server_url: "http://myserver/"
+checkmk_var_site: "mysite"
+checkmk_var_automation_user: "myuser"
+checkmk_var_automation_secret: "mysecret"
 checkmk_agent_user: "{{ checkmk_var_automation_user }}"
 checkmk_agent_pass: "{{ checkmk_var_automation_secret }}"
 

@@ -17,15 +17,15 @@ jobs:
   #
 
   sanity:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: Sanity (Ⓐ${{ matrix.ansible }})
     strategy:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.14
           - stable-2.15
           - stable-2.16
+          - stable-2.17
           - devel
 
     steps:
@@ -49,7 +49,7 @@ jobs:
 
   release:
     needs: sanity
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
 

@@ -47,28 +47,28 @@ EXAMPLES = r"""
 # Bake all agents without signing, as example in a fresh installation without a signature key.
 - name: "Bake all agents without signing."
   checkmk.general.bakery:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     state: "baked"
 # Sign all agents.
 - name: "Sign all agents."
   checkmk.general.bakery:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     signature_key_id: 1
     signature_key_passphrase: "my_key"
     state: "signed"
 # Bake and sign all agents.
 - name: "Bake and sign all agents."
   checkmk.general.bakery:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     signature_key_id: 1
     signature_key_passphrase: "my_key"
     state: "baked_signed"
@@ -95,29 +95,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
 
-HTTP_CODES = {
-    # http_code: (changed, failed, "Message")
-    200: (True, False, "The operation was done successfully."),
-    204: (
-        True,
-        False,
-        "No Content: Operation done successfully. No further output.",
-    ),
-    400: (False, True, "Bad Request: Parameter or validation failure."),
-    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
-    406: (
-        False,
-        True,
-        "Not Acceptable: The requests accept headers can not be satisfied.",
-    ),
-    415: (
-        False,
-        True,
-        "Unsupported Media Type: The submitted content-type is not supported.",
-    ),
-    500: (False, True, "General Server Error."),
-}
-
 
 class BakeryAPI(CheckmkAPI):
     def post(self):
@@ -137,7 +114,6 @@ class BakeryAPI(CheckmkAPI):
             action = "bake_and_sign"
 
         return self._fetch(
-            code_mapping=HTTP_CODES,
             endpoint="/domain-types/agent/actions/%s/invoke" % action,
             data=data,
             method="POST",

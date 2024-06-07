@@ -11,9 +11,12 @@ It can be installed as easy as running:
 
     ansible-galaxy collection install checkmk.general
 
+Additionally, this role requires the Python module `netaddr` on the controller.
+Please make sure it is installed on your system and available for Ansible.
+
 ## Role Variables
 
-    checkmk_agent_version: "2.2.0p24"
+    checkmk_agent_version: "2.3.0p5"
 
 The Checkmk version of the site your agents will talk to.
 
@@ -46,7 +49,7 @@ Whether to validate the SSL certificate of the Checkmk server.
 
 The port of the web interface of your Checkmk server. Defaults to port 80 for http and port 443 for https.
 
-    checkmk_agent_site: my_site
+    checkmk_agent_site: mysite
 
 The name of your Checkmk site.
 
@@ -58,18 +61,18 @@ The server you want to use for registration tasks (Agent updates and TLS encrypt
 
 The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_site }}`.
 
-    checkmk_agent_user: my_user
+    checkmk_agent_user: myuser
 
 The user used to authenticate against your Checkmk site.
 
-    checkmk_agent_pass: my_secret
+    checkmk_agent_pass: mysecret
 
-The password for the normal user used to authenticate against your Checkmk site, both for API calls and agent updates.  
+The password for the normal user used to authenticate against your Checkmk site, both for API calls and agent updates.
 This is mutually exclusive with `checkmk_agent_secret`.
 
-    checkmk_agent_secret: my_secret
+    checkmk_agent_secret: mysecret
 
-The secret for the automation user used to authenticate against your Checkmk site, both for API calls and agent updates.  
+The secret for the automation user used to authenticate against your Checkmk site, both for API calls and agent updates.
 This is mutually exclusive with `checkmk_agent_pass`.
 
     checkmk_agent_port: 6556
@@ -134,6 +137,12 @@ Automatically configure the firewall (*currently only on RedHat and Debian deriv
 
 When checkmk_agent_configure_firewall is set to `true` then configure the firewall zone on RedHat derivatives. Defaults to 'public'.
 
+    checkmk_agent_server_ips: []
+
+A list of IP addresses, that will be whitelisted in the firewall for agent access on `checkmk_agent_port`.
+The `checkmk_agent_server` will automatically be added, but only if it is an IP address.
+This parameter also does **not** take care of any agent-side whitelisting!
+
     checkmk_agent_force_install: 'false'
 
 Force the installation of the agent package, no matter the constraints.
@@ -145,7 +154,7 @@ Enable this to automatically install `xinetd` on hosts with systemd prior to ver
 
     checkmk_agent_delegate_api_calls: localhost
 
-Configure the host to which Checkmk API calls are delegated to.  
+Configure the host to which Checkmk API calls are delegated to.
 Typically this would be your Ansible host, hence the default `localhost`.
 
     checkmk_agent_delegate_download: "{{ inventory_hostname }}"
@@ -155,8 +164,8 @@ Configure the host to which Checkmk API downloads are delegated to. After downlo
     checkmk_agent_mode: pull
 
 The mode the agent operates in. For most deployments, this will be the `pull` mode.
-If you are uncertain, what you are using, this is most likely your mode.  
-If you are using an alternative way to call the agent, e.g. SSH, you can set the variable to `ssh`, so the agent port check is skipped.  
+If you are uncertain, what you are using, this is most likely your mode.
+If you are using an alternative way to call the agent, e.g. SSH, you can set the variable to `ssh`, so the agent port check is skipped.
 If you are using the Checkmk Cloud Edition (CCE) with an agent in `push` mode, you want to set this to `push` to avoid the agent port check, as well as triggering an initial push of data.
 
     checkmk_agent_no_log: 'true'

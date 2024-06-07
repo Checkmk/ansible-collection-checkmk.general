@@ -21,19 +21,22 @@ on:
       - devel
     paths:
       - 'plugins/modules/downtime.py'
+  push:
+    paths:
+      - 'plugins/modules/downtime.py'
 
 jobs:
 
   integration:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
     strategy:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.14
           - stable-2.15
           - stable-2.16
+          - stable-2.17
           - devel
         python:
           - '3.8'

@@ -103,9 +103,9 @@ EXAMPLES = """
                         'example.com',
                         effective_attributes=True,
                         server_url=my_server_url,
-                        site=my_site,
-                        automation_user=my_user,
-                        automation_secret=my_secret,
+                        site=mysite,
+                        automation_user=myuser,
+                        automation_secret=mysecret,
                         validate_certs=False
                         )
                  }}"
@@ -114,10 +114,10 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "Attributes of host example: {{ attributes }}"
   vars:
-    ansible_lookup_checkmk_server_url: "http://my_server/"
-    ansible_lookup_checkmk_site: "my_site"
-    ansible_lookup_checkmk_automation_user: "my_user"
-    ansible_lookup_checkmk_automation_secret: "my_secret"
+    ansible_lookup_checkmk_server_url: "http://myserver/"
+    ansible_lookup_checkmk_site: "mysite"
+    ansible_lookup_checkmk_automation_user: "myuser"
+    ansible_lookup_checkmk_automation_secret: "mysecret"
     ansible_lookup_checkmk_validate_certs: false
     attributes: "{{ lookup('checkmk.general.host', 'example.com', effective_attributes=True) }}"
 """

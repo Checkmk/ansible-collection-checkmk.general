@@ -3,7 +3,8 @@ extends: default
 
 rules:
   braces:
-    max-spaces-inside: 1
+    min-spaces-inside: 0 # yamllint defaults to 0
+    max-spaces-inside: 1 # yamllint defaults to 0
     level: error
   brackets:
     max-spaces-inside: 1
@@ -14,6 +15,12 @@ rules:
   commas:
     max-spaces-after: -1
     level: error
+  comments:
+    # https://github.com/prettier/prettier/issues/6780
+    min-spaces-from-content: 1
+  # https://github.com/adrienverge/yamllint/issues/384
+  comments-indentation: false
+  document-start: disable
   empty-lines:
     max: 3
     level: error
@@ -21,9 +28,16 @@ rules:
     level: error
   indentation: enable
   key-duplicates: enable
+  # 160 chars was the default used by old E204 rule, but
+  # you can easily change it or disable in your .yamllint file.
   line-length: disable
+  # line-length:
+  #   max: 160
   new-line-at-end-of-file: enable
   new-lines:
     type: unix
   trailing-spaces: enable
   truthy: enable
+  octal-values:
+    forbid-implicit-octal: true # yamllint defaults to false
+    forbid-explicit-octal: true # yamllint defaults to false

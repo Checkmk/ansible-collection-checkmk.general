@@ -78,10 +78,10 @@ EXAMPLES = r"""
 # Create a tag group
 - name: "Create tag group"
   checkmk.general.tag_group:
-    server_url: "https://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "https://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: datacenter
     title: Datacenter
     topic: Tags
@@ -100,10 +100,10 @@ EXAMPLES = r"""
 # Delete a tag group
 - name: "Delete tag group."
   checkmk.general.tag_group:
-    server_url: "https://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "https://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: datacenter
     state: "absent"
 """
@@ -138,37 +138,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
 # We count 404 not as failed, because we want to know if the taggroup exists or not.
 HTTP_CODES_GET = {
     # http_code: (changed, failed, "Message")
-    200: (True, False, "OK: The operation was done successfully."),
     404: (False, False, "Not Found: The requested object has not been found."),
-    500: (False, True, "General Server Error."),
-}
-
-HTTP_CODES_DELETE = {
-    # http_code: (changed, failed, "Message")
-    405: (
-        False,
-        True,
-        "Method Not Allowed: This request is only allowed with other HTTP methods",
-    ),
-    500: (False, True, "General Server Error."),
-}
-
-HTTP_CODES_CREATE = {
-    # http_code: (changed, failed, "Message")
-    200: (True, False, "OK: The operation was done successfully."),
-    500: (False, True, "General Server Error."),
-}
-
-HTTP_CODES_UPDATE = {
-    # http_code: (changed, failed, "Message")
-    200: (True, False, "OK: The operation was done successfully."),
-    401: (False, True, "Unauthorized: The user is not authorized to do this request"),
-    405: (
-        False,
-        True,
-        "Method Not Allowed: This request is only allowed with other HTTP methods",
-    ),
-    500: (False, True, "General Server Error."),
 }
 
 
@@ -211,7 +181,6 @@ class TaggroupCreateAPI(CheckmkAPI):
             data["ident"] = self.params.get("name")
 
             return self._fetch(
-                code_mapping=HTTP_CODES_CREATE,
                 endpoint="/domain-types/host_tag_group/collections/all",
                 data=data,
                 method="POST",
@@ -223,7 +192,6 @@ class TaggroupUpdateAPI(CheckmkAPI):
         data = normalize_data(self.params)
 
         return self._fetch(
-            code_mapping=HTTP_CODES_UPDATE,
             endpoint="/objects/host_tag_group/%s" % self.params.get("name"),
             data=data,
             method="PUT",
@@ -235,7 +203,6 @@ class TaggroupDeleteAPI(CheckmkAPI):
         data = {}
 
         return self._fetch(
-            code_mapping=HTTP_CODES_DELETE,
             endpoint="/objects/host_tag_group/%s?repair=%s"
             % (self.params.get("name"), self.params.get("repair")),
             # data=data,

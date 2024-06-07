@@ -62,10 +62,10 @@ EXAMPLES = r"""
 # Creating and Updating is the same.
 - name: "Create a new time period. (Attributes in one line)"
   checkmk.general.timeperiod:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "worktime"
     alias: "Worktime"
     active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]'
@@ -75,10 +75,10 @@ EXAMPLES = r"""
 
 - name: "Create a new time period. (Attributes in multiple lines)"
   checkmk.general.timeperiod:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "worktime"
     alias: "Worktime"
     active_time_ranges: [
@@ -110,10 +110,10 @@ EXAMPLES = r"""
 
 - name: "Delete a time period."
   checkmk.general.timeperiod:
-    server_url: "http://my_server/"
-    site: "my_site"
-    automation_user: "my_user"
-    automation_secret: "my_secret"
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
     name: "worktime"
     state: "absent"
 """
@@ -148,110 +148,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.version import (
 # We count 404 not as failed, because we want to know if the time period exists or not.
 HTTP_CODES_GET = {
     # http_code: (changed, failed, "Message")
-    200: (True, False, "OK: The operation was done successfully."),
-    400: (False, True, "Bad Request: Parameter or validation failure."),
-    403: (False, True, "Forbidden: Configuration via Setup is disabled."),
     404: (False, False, "Not Found: The requested object has not been found."),
-    406: (
-        False,
-        True,
-        "Not Acceptable: The requests accept headers can not be satisfied.",
-    ),
-    415: (
-        False,
-        True,
-        "Unsupported Media Type: The submitted content-type is not supported.",
-    ),
-    500: (False, True, "General Server Error."),
-}
-
-HTTP_CODES_DELETE = {
-    # http_code: (changed, failed, "Message")
-    204: (True, False, "No Content: Operation done successfully. No further output."),
-    400: (False, True, "Bad Request: Parameter or validation failure."),
-    403: (False, True, "Forbidden: Configuration via Setup is disabled."),
-    404: (False, True, "Not Found: The requested object has not been found."),
-    405: (
-        False,
-        True,
-        "Method Not Allowed: This request is only allowed with other HTTP methods",
-    ),
-    406: (
-        False,
-        True,
-        "Not Acceptable: The requests accept headers can not be satisfied.",
-    ),
-    412: (
-        False,
-        True,
-        "Precondition Failed: The value of the If-Match header doesn't match the object's ETag.",
-    ),
-    415: (
-        False,
-        True,
-        "Unsupported Media Type: The submitted content-type is not supported.",
-    ),
-    428: (
-        False,
-        True,
-        "Precondition Required: The required If-Match header is missing",
-    ),
-    500: (False, True, "General Server Error."),
-}
-
-HTTP_CODES_CREATE = {
-    # http_code: (changed, failed, "Message")
-    200: (True, False, "OK: The operation was done successfully."),
-    400: (False, True, "Bad Request: Parameter or validation failure."),
-    403: (False, True, "Forbidden: Configuration via Setup is disabled."),
-    406: (
-        False,
-        True,
-        "Not Acceptable: The requests accept headers can not be satisfied.",
-    ),
-    415: (
-        False,
-        True,
-        "Unsupported Media Type: The submitted content-type is not supported.",
-    ),
-    500: (False, True, "General Server Error."),
-}
-
-HTTP_CODES_UPDATE = {
-    # http_code: (changed, failed, "Message")
-    200: (
-        True,
-        False,
-        "No Content: Operation was done successfully. No further output",
-    ),
-    403: (False, True, "Forbidden: Configuration via Setup is disabled."),
-    404: (False, True, "Not Found: The requested object has not been found."),
-    405: (
-        False,
-        True,
-        "Method Not Allowed: This request is only allowed with other HTTP methods",
-    ),
-    406: (
-        False,
-        True,
-        "Not Acceptable: The requests accept headers can not be satisfied.",
-    ),
-    412: (
-        False,
-        True,
-        "Precondition Failed: The value of the If-Match header doesn't match the object's ETag.",
-    ),
-    415: (
-        False,
-        True,
-        "Unsupported Media Type: The submitted content-type is not supported.",
-    ),
-    428: (
-        False,
-        True,
-        "Precondition Required: The required If-Match header is missing",
-    ),
-    500: (False, True, "General Server Error."),
 }
 
 updatevalues = ("alias", "active_time_ranges", "exceptions", "exclude")
@@ -272,7 +169,6 @@ class TimeperiodCreateAPI(CheckmkAPI):
             data["exclude"] = self.params.get("exclude")
 
         return self._fetch(
-            code_mapping=HTTP_CODES_CREATE,
             endpoint="/domain-types/time_period/collections/all",
             data=data,
             method="POST",
@@ -299,7 +195,6 @@ class TimeperiodUpdateAPI(CheckmkAPI):
             data["exclude"] = self.params.get("exclude")
 
         return self._fetch(
-            code_mapping=HTTP_CODES_UPDATE,
             endpoint="/objects/time_period/%s" % self.params.get("name"),
             data=data,
             method="PUT",
@@ -311,7 +206,6 @@ class TimeperiodDeleteAPI(CheckmkAPI):
         data = {}
 
         return self._fetch(
-            code_mapping=HTTP_CODES_DELETE,
             endpoint="/objects/time_period/%s" % self.params.get("name"),
             data=data,
             method="DELETE",

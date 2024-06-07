@@ -1,11 +1,11 @@
 ---
 # General
-checkmk_var_version: "2.0.0p39"
+checkmk_var_version: "2.3.0p5"
 checkmk_var_edition: "cre"
 checkmk_server_verify_setup: 'true'
 checkmk_var_server_url: "http://127.0.0.1/"
 checkmk_var_automation_user: "cmkadmin"
-checkmk_var_automation_secret: "d7589df1"
+checkmk_var_automation_secret: "mysecret"
 
 # Server Role
 checkmk_server_edition: "{{ checkmk_var_edition }}"

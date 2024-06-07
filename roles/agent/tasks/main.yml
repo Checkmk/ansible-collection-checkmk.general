@@ -55,4 +55,4 @@
   retries: 3
   delay: 10
   until: "checkmk_agent_discovery_state.changed | bool"
-  notify: "activate changes"
+  notify: "Activate changes"

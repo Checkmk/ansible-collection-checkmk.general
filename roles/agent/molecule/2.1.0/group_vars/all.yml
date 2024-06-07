@@ -1,10 +1,10 @@
 ---
 # General
-checkmk_var_version: "2.1.0p41"
+checkmk_var_version: "2.1.0p44"
 checkmk_var_edition: "cre"
-checkmk_var_checkmk_site: "my_site"
+checkmk_var_checkmk_site: "mysite"
 checkmk_var_automation_user: "cmkadmin"
-checkmk_var_automation_secret: "d7589df1"
+checkmk_var_automation_secret: "mysecret"
 
 # Agent Role
 checkmk_agent_version: "{{ checkmk_var_version }}"
@@ -28,8 +28,13 @@ checkmk_agent_add_host: 'true'
 checkmk_agent_discover: 'true'
 checkmk_agent_discover_max_parallel_tasks: 2
 checkmk_agent_update: 'false'
-checkmk_agent_tls: 'false'
-checkmk_agent_configure_firewall: 'false'
+checkmk_agent_tls: 'true'
+checkmk_agent_configure_firewall: 'true'
+checkmk_agent_configure_firewall_zone: 'public'
+checkmk_agent_server_ips:
+  - 10.10.10.10
+  - 172.16.16.16
+  - 192.168.1.1
 checkmk_agent_force_install: 'false'
 checkmk_agent_prep_legacy: 'false'
 checkmk_agent_delegate_api_calls: "{{ inventory_hostname }}"
@@ -39,6 +44,8 @@ checkmk_agent_folder: "{{ checkmk_var_folder_path | default('/') }}"
 checkmk_agent_force_foreign_changes: 'false'
 checkmk_agent_host_attributes:
   ipaddress: 127.0.0.1
+checkmk_agent_mode: pull
+checkmk_agent_no_log: 'false'
 
 # If you trust your local hostnames, you could also use the following
 # to use the local hostname instead of the inventory hostname:
