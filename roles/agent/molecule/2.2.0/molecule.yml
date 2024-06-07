@@ -5,16 +5,17 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: ubuntu2004
-    image: geerlingguy/docker-ubuntu2004-ansible
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
-    cgroupns_mode: host
-    tmpfs:
-      - /run
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    privileged: true
-    pre_build_image: true
+  ## Disable for now, as something between Docker, Ubuntu and the UFW Ansible module does not seem to get along.
+  # - name: ubuntu2004
+  #   image: geerlingguy/docker-ubuntu2004-ansible
+  #   command: ${MOLECULE_DOCKER_COMMAND:-""}
+  #   cgroupns_mode: host
+  #   tmpfs:
+  #     - /run
+  #   volumes:
+  #     - /sys/fs/cgroup:/sys/fs/cgroup:rw
+  #   privileged: true
+  #   pre_build_image: true
   - name: ubuntu2204
     image: geerlingguy/docker-ubuntu2204-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
@@ -47,16 +48,6 @@ platforms:
     pre_build_image: true
   - name: debian12
     image: geerlingguy/docker-debian12-ansible
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
-    cgroupns_mode: host
-    tmpfs:
-      - /run
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    privileged: true
-    pre_build_image: true
-  - name: centos8
-    image: geerlingguy/docker-centos8-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     cgroupns_mode: host
     tmpfs:

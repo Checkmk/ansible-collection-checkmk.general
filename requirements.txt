@@ -1,4 +1,4 @@
-ansible  < 10.0.0  # Pin Ansible for now to avoid issues with CentOS 8
+ansible
 antsibull-changelog
 antsibull-docs
 ansible-lint

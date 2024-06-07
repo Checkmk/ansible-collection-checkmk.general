@@ -28,7 +28,7 @@ checkmk_agent_add_host: 'true'
 checkmk_agent_discover: 'true'
 checkmk_agent_discover_max_parallel_tasks: 2
 checkmk_agent_update: 'false'
-checkmk_agent_tls: 'false'
+checkmk_agent_tls: 'true'
 checkmk_agent_configure_firewall: 'true'
 checkmk_agent_configure_firewall_zone: 'public'
 checkmk_agent_server_ips:

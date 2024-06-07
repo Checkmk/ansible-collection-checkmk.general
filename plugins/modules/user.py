@@ -236,9 +236,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.types import RESUL
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
-from ansible_collections.checkmk.general.plugins.module_utils.version import (
-    CheckmkVersion,
-)
 
 USER = (
     "username",
@@ -409,19 +406,6 @@ class UserAPI(CheckmkAPI):
                 return True
         return False
 
-    def shortpassword(self, data):
-        ver = self.getversion()
-        if ver >= CheckmkVersion("2.3.0") and "auth_option" in data:
-            if (
-                "password" in data["auth_option"]
-                and len(data["auth_option"]["password"]) < 12
-            ) or (
-                "secret" in data["auth_option"]
-                and len(data["auth_option"]["secret"]) < 10
-            ):
-                return True
-        return False
-
     def get(self):
         result = self._fetch(
             code_mapping=UserHTTPCodes.get,
@@ -454,22 +438,12 @@ class UserAPI(CheckmkAPI):
         data = self._build_user_data()
         self.headers["if-Match"] = etag
 
-        if self.shortpassword(data):
-            result = RESULT(
-                http_code=0,
-                msg="Password too short. For 2.3 and higher, please provide at least 12 characters (automation min. 10).",
-                content="",
-                etag="",
-                failed=True,
-                changed=False,
-            )
-        else:
-            result = self._fetch(
-                code_mapping=UserHTTPCodes.edit,
-                endpoint=self._build_default_endpoint(),
-                data=data,
-                method="PUT",
-            )
+        result = self._fetch(
+            code_mapping=UserHTTPCodes.edit,
+            endpoint=self._build_default_endpoint(),
+            data=data,
+            method="PUT",
+        )
 
         return result
 
