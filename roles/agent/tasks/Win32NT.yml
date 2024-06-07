@@ -40,6 +40,12 @@
     path: "{{ __checkmk_agent_binary_path }}"
   register: __checkmk_agent_binary
 
+- name: "{{ ansible_system }}: Read Agent Controller State."  # noqa no-changed-when
+  ansible.windows.win_command: powershell.exe -
+  args:
+    stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\registered_connections.json ; Exit 0
+  register: __checkmk_agent_registered_connections
+
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."  # noqa no-changed-when
   ansible.windows.win_command: |
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
@@ -88,6 +94,7 @@
     __checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
 
 - name: "{{ ansible_system }}: Verify Checkmk Agent Port is open."
   ansible.windows.win_wait_for:
