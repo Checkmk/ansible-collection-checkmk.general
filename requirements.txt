@@ -7,4 +7,5 @@ molecule >= 5.0.1
 molecule-plugins[docker]
 yamllint
 pywinrm
+netaddr
 tox-ansible

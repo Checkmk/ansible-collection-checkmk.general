@@ -25,6 +25,16 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     privileged: true
     pre_build_image: true
+  - name: ubuntu2404
+    image: geerlingguy/docker-ubuntu2404-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    cgroupns_mode: host
+    tmpfs:
+      - /run
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    pre_build_image: true
   - name: debian11
     image: geerlingguy/docker-debian11-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
@@ -37,16 +47,6 @@ platforms:
     pre_build_image: true
   - name: debian12
     image: geerlingguy/docker-debian12-ansible
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
-    cgroupns_mode: host
-    tmpfs:
-      - /run
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    privileged: true
-    pre_build_image: true
-  - name: centos8
-    image: geerlingguy/docker-centos8-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     cgroupns_mode: host
     tmpfs:

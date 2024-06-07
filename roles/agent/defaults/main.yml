@@ -1,5 +1,5 @@
 ---
-checkmk_agent_version: "2.3.0p3"
+checkmk_agent_version: "2.3.0p5"
 checkmk_agent_edition: cre
 checkmk_agent_server_protocol: http
 checkmk_agent_server: localhost
@@ -23,6 +23,7 @@ checkmk_agent_update: 'false'
 checkmk_agent_tls: 'false'
 checkmk_agent_configure_firewall: 'true'
 checkmk_agent_configure_firewall_zone: 'public'
+checkmk_agent_server_ips: []
 checkmk_agent_force_install: 'false'
 checkmk_agent_prep_legacy: 'false'
 checkmk_agent_delegate_api_calls: localhost

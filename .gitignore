@@ -15,3 +15,4 @@ playbooks/hosts.bak
 venv/
 Vagrantfile
 Vagrantfile.bak
+venv

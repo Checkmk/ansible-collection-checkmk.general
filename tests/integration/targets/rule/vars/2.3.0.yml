@@ -1,29 +1,6 @@
 ---
-test_sites:
-  - version: "2.3.0p5"
-    edition: "cee"
-    site: "stable_cee"
-  - version: "2.3.0p5"
-    edition: "cre"
-    site: "stable_cre"
-  - version: "2.2.0p27"
-    edition: "cre"
-    site: "old_cre"
-  - version: "2.1.0p44"
-    edition: "cre"
-    site: "ancient_cre"
-
-checkmk_ruleset_regexes:
-  - "checkgroup_parameters:filesystem"
-  - "checkgroup_parameters:cpu_load"
-  - "checkgroup_parameters:cpu_iowait"
-  - "checkgroup_parameters:logwatch_ec"
-  - "usewalk_hosts"
-  - "checkgroup_parameters:memory_percentage_used"
-
-checkmk_rules:
-
-  - name: "Filesystem - Magic Factor."
+checkmk_var_rules:
+  - name: "Filesystems (used space and growth) - Magic Factor."
     ruleset: "checkgroup_parameters:filesystem"
     rule:
       location:
@@ -41,7 +18,7 @@ checkmk_rules:
       }
       value_raw: "{'magic': 0.8}"
 
-  - name: "CPU - Load."
+  - name: "CPU load (not utilization!) - 15 minute load."
     ruleset: "checkgroup_parameters:cpu_load"
     rule:
       location:
@@ -57,9 +34,9 @@ checkmk_rules:
         "description": "",
         "disabled": false
       }
-      value_raw: "{'levels': (1.0, 2.0)}"
+      value_raw: "{'levels15': (1.0, 2.0)}"
 
-  - name: "CPU - Utilization."
+  - name: "CPU utilization on Linux/UNIX - Multiple thresholds."
     ruleset: "checkgroup_parameters:cpu_iowait"
     rule:
       location:
@@ -77,7 +54,7 @@ checkmk_rules:
       }
       value_raw: "{'core_util_time': (100.0, 300, 900), 'core_util_time_total': (100.0, 300, 900)}"
 
-  - name: "Logwatch - Event Console Forwarding."
+  - name: "Logwatch Event Console Forwarding - Multiple values."
     ruleset: "checkgroup_parameters:logwatch_ec"
     rule:
       location:
@@ -89,13 +66,14 @@ checkmk_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "comment": "",
         "description": "",
         "disabled": false
       }
       value_raw: "{'facility': 17, 'method': '', 'monitor_logfilelist': False}"
 
-  - ruleset: "usewalk_hosts"
+  - name: "Simulating SNMP by using a stored SNMP walk - Enable."
+    ruleset: "usewalk_hosts"
     rule:
       conditions: {
         "host_labels": [],
@@ -113,7 +91,9 @@ checkmk_rules:
         "disabled": false,
       }
       value_raw: 'True'
-  - ruleset: "checkgroup_parameters:memory_percentage_used"
+
+  - name: "Memory percentage used - Levels."
+    ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
         "host_labels": [],
@@ -127,3 +107,46 @@ checkmk_rules:
         "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
       }
       value_raw: "{'levels': (80.0, 90.0)}"
+
+  - name: "Memory percentage used - Combined host label conditions."
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      conditions: {
+        "host_label_groups": [
+            {
+                operator: "and",
+                label_group: [
+                    {
+                        operator: "and",
+                        label: "cmk/site:beta"
+                    },
+                    {
+                        operator: "or",
+                        label: "cmk/os_family:linux"
+                    }
+                ],
+            },
+            {
+                operator: "or",
+                label_group: [
+                    {
+                        operator: "and",
+                        label: "cmk/site:alpha"
+                    },
+                    {
+                        operator: "or",
+                        label: "cmk/os_family:windows"
+                    }
+                ],
+            },
+        ],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 70%\nCritical at 80%\n",
+        "description": "Allow higher memory usage for certain host label conditions",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (70.0, 80.0)}"
