@@ -1,7 +1,7 @@
 ---
 - name: "{{ ansible_os_family }} Derivatives: Install host-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ checkmk_agent_agent.file.host }}"
     state: present
     disable_gpg_check: true
@@ -13,7 +13,7 @@
 
 - name: "{{ ansible_os_family }} Derivatives: Install GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ checkmk_agent_agent.file.cee }}"
     state: present
     disable_gpg_check: true
@@ -36,7 +36,7 @@
 
 - name: "{{ ansible_os_family }} Derivatives: Install Vanilla agent."
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ checkmk_agent_agent.file.cre }}"
     state: present
     disable_gpg_check: true
@@ -47,17 +47,18 @@
 - name: "{{ ansible_os_family }} Derivatives: Configure Firewall for Agent."
   when: checkmk_agent_configure_firewall | bool and "firewalld.service" in ansible_facts.services
   block:
-    - name: "{{ ansible_os_family }} Derivatives: Check if checkmk_agent_server is an IP address."
+    - name: "{{ ansible_os_family }} Derivatives: Add Checkmk Server to Firewall Whitelist if it is an IP address."
+      when: checkmk_agent_server | ansible.utils.ipaddr()
       ansible.builtin.set_fact:
-        checkmk_agent_server_ip: "{{ checkmk_agent_server }}"
-      when: checkmk_agent_server_ip is not defined and checkmk_agent_server | ansible.utils.ipaddr()
+        checkmk_agent_server_ips: "{{ checkmk_agent_server_ips + [checkmk_agent_server] }}"
 
     - name: "{{ ansible_os_family }} Derivatives: Allow Checkmk services access to the agent."
+      when: checkmk_agent_server_ips is defined
       ansible.posix.firewalld:
         permanent: 'yes'
         immediate: 'yes'
         state: enabled
-        rich_rule: 'rule family="ipv4" source address={{ checkmk_agent_server_ip }} port port="{{ checkmk_agent_port }}" protocol="tcp" accept'
+        rich_rule: 'rule family="ipv4" source address={{ item }} port port="{{ checkmk_agent_port }}" protocol="tcp" accept'
         zone: "{{ checkmk_agent_configure_firewall_zone | default('public') }}"
-      when: checkmk_agent_server_ip is defined
+      loop: "{{ checkmk_agent_server_ips }}"
       become: true

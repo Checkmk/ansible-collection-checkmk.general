@@ -1,0 +1,6 @@
+minor_changes:
+  - Agent role - Add support to open firewall for a list of IPs.
+
+breaking_changes:
+  - Agent role - Not really a breaking change, but we removed the internal variable `checkmk_agent_server_ip`.
+    If you set this variable in your inventory, please make sure to update your configuration accordingly!

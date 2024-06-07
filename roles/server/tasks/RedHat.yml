@@ -26,7 +26,7 @@
 
     - name: "Install epel-release from URL on CentOS & RHEL 8."
       become: true
-      ansible.builtin.yum:
+      ansible.builtin.dnf:
         name: "{{ checkmk_server_epel_url }}"
         state: present
         disable_gpg_check: "{{ not checkmk_server_epel_gpg_check | bool }}"
@@ -79,7 +79,7 @@
 - name: "Install Checkmk Server."
   when: not 'check-mk-' + checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
   become: true
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "/tmp/{{ checkmk_server_setup_file }}"
     state: present
     disable_gpg_check: '{{ not checkmk_server_verify_setup | bool }}'

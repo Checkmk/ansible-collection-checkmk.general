@@ -1,6 +1,6 @@
 ---
 # General
-checkmk_var_version: "2.3.0p3"
+checkmk_var_version: "2.3.0p5"
 checkmk_var_edition: "cre"
 checkmk_var_checkmk_site: "mysite"
 checkmk_var_automation_user: "cmkadmin"
@@ -28,8 +28,13 @@ checkmk_agent_add_host: 'true'
 checkmk_agent_discover: 'true'
 checkmk_agent_discover_max_parallel_tasks: 2
 checkmk_agent_update: 'false'
-checkmk_agent_tls: 'false'
-checkmk_agent_configure_firewall: 'false'
+checkmk_agent_tls: 'true'
+checkmk_agent_configure_firewall: 'true'
+checkmk_agent_configure_firewall_zone: 'public'
+checkmk_agent_server_ips:
+  - 10.10.10.10
+  - 172.16.16.16
+  - 192.168.1.1
 checkmk_agent_force_install: 'false'
 checkmk_agent_prep_legacy: 'false'
 checkmk_agent_delegate_api_calls: "{{ inventory_hostname }}"
