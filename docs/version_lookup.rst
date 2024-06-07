@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.10.0
+  :antsibull-docs: 2.11.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.version lookup -- Get the version of a Checkmk server
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.4.1).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -392,20 +392,20 @@ Examples
       vars:
         version: "{{ lookup('checkmk.general.version',
                        server_url=my_url,
-                       site=my_site,
+                       site=mysite,
                        validate_certs=False,
-                       automation_user=my_user,
-                       automation_secret=my_secret
+                       automation_user=myuser,
+                       automation_secret=mysecret
                    )}}"
 
     - name: "Use variables outside the module call."
       ansible.builtin.debug:
         msg: "Server version is {{ version }}"
       vars:
-        ansible_lookup_checkmk_server_url: "http://my_server/"
-        ansible_lookup_checkmk_site: "my_site"
-        ansible_lookup_checkmk_automation_user: "my_user"
-        ansible_lookup_checkmk_automation_secret: "my_secret"
+        ansible_lookup_checkmk_server_url: "http://myserver/"
+        ansible_lookup_checkmk_site: "mysite"
+        ansible_lookup_checkmk_automation_user: "myuser"
+        ansible_lookup_checkmk_automation_secret: "mysecret"
         ansible_lookup_checkmk_validate_certs: false
         attributes: "{{ lookup('checkmk.general.version') }}"
 
