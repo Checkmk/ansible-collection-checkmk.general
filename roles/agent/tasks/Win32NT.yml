@@ -46,6 +46,12 @@
     stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\registered_connections.json ; Exit 0
   register: __checkmk_agent_registered_connections
 
+- name: "{{ ansible_system }}: Read Updater State."  # noqa no-changed-when
+  ansible.windows.win_command: powershell.exe -
+  args:
+    stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\config\cmk-update-agent.state ; Exit 0
+  register: __checkmk_agent_updater_state
+
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."  # noqa no-changed-when
   ansible.windows.win_command: |
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
@@ -61,6 +67,7 @@
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
     and (checkmk_agent_secret is not defined)
+    and not '\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using Automation Secret."  # noqa no-changed-when
   ansible.windows.win_command: |
@@ -76,6 +83,7 @@
     and __checkmk_agent_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
+    and not '\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout
 
 - name: "Trigger Activate Changes to enable TLS registration."
   ansible.builtin.meta:
