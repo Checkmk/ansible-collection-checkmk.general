@@ -4,6 +4,40 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.0.0
+======
+
+Release Summary
+---------------
+
+(Re)writing history with overhauled modules and updated Checkmk, Ansible, Distribution and Python support.
+
+Major Changes
+-------------
+
+- Discovery module - The module now fully supports Checkmk 2.3.0. Additionally, two new parameters were introduced, `update_service_labels` and `monitor_undecided_services`. Refer to the module documentation for further details.
+- Rule module - The complete module was rewritten to use the new module API. Additionally, a parameter "rule_id" was introduced to modify existing rules. Refer to the module documentation for further details.
+
+Minor Changes
+-------------
+
+- Agent role - Add support to open firewall for a list of IPs.
+- Agent role - Replace `ansible.builtin.yum` with the succeeding `ansible.builtin.dnf`.
+- Server role - Replace `ansible.builtin.yum` with the succeeding `ansible.builtin.dnf`.
+- Several modules - Remove unnecessary HTTP codes which get already imported via utils.py.
+- Testing - Add Ansible 2.17 to all tests. Be advised, that this Ansible release drops support for Python 2.7 and 3.6.
+- Testing - Add Ubuntu 24.04 to the Molecule tests.
+- Testing - All tests now cover Checkmk 2.3.0.
+- Testing - Remove Ansible 2.14 from all tests, as it is EOL.
+- Testing - Remove Checkmk 2.0.0 from all tests, as it is EOL.
+- Testing - The Molecule tests now run on Ubuntu 22.04.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Agent role - Not really a breaking change, but we removed the internal variable `checkmk_agent_server_ip`. If you set this variable in your inventory, please make sure to update your configuration accordingly!
+- Folder lookup module - Return the complete folder information, not only the extensions. To keep the current behavior in your playbooks, you want to use `{{ my_lookup_result.extensions }}` instead of `{{ my_lookup_result }}`.
+
 v4.4.1
 ======
 

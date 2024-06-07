@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.10.0
+  :antsibull-docs: 2.11.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.rules lookup -- Get a list rules
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.4.1).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -220,7 +220,7 @@ examples: ``lookup('checkmk.general.rules', key1=value1, key2=value2, ...)`` and
 
         <div class="ansible-option-cell">
 
-      A regex to filter for certain comment stings.
+      A regex to filter for certain comment strings.
 
 
       .. rst-class:: ansible-option-line
@@ -262,6 +262,47 @@ examples: ``lookup('checkmk.general.rules', key1=value1, key2=value2, ...)`` and
         <div class="ansible-option-cell">
 
       A regex to filter for certain descriptions.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`""`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-folder_regex"></div>
+
+      .. _ansible_collections.checkmk.general.rules_lookup__parameter-folder_regex:
+
+      .. rst-class:: ansible-option-title
+
+      **folder_regex**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-folder_regex" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      A regex to filter for certain folders.
 
 
       .. rst-class:: ansible-option-line
@@ -521,6 +562,23 @@ Examples
       loop_control:
           label: "{{ item.id }}"
 
+    - name: Get all rules of the ruleset host_groups in folder /test
+      ansible.builtin.debug:
+        msg: "Rule: {{ item.extensions }}"
+      loop: "{{
+        lookup('checkmk.general.rules',
+            ruleset='host_groups',
+            regex_folder='^/test$',
+            server_url=server_url,
+            site=site,
+            automation_user=automation_user,
+            automation_secret=automation_secret,
+            validate_certs=False
+            )
+        }}"
+      loop_control:
+          label: "{{ item.id }}"
+
     - name: actice_checks:http rules that match a certain description AND comment
       ansible.builtin.debug:
         msg: "Rule: {{ item.extensions }}"
@@ -543,10 +601,10 @@ Examples
       ansible.builtin.debug:
         msg: "Rule: {{ item.extensions }}"
       vars:
-        ansible_lookup_checkmk_server_url: "http://my_server/"
-        ansible_lookup_checkmk_site: "my_site"
-        ansible_lookup_checkmk_automation_user: "my_user"
-        ansible_lookup_checkmk_automation_secret: "my_secret"
+        ansible_lookup_checkmk_server_url: "http://myserver/"
+        ansible_lookup_checkmk_site: "mysite"
+        ansible_lookup_checkmk_automation_user: "myuser"
+        ansible_lookup_checkmk_automation_secret: "mysecret"
         ansible_lookup_checkmk_validate_certs: false
       loop: "{{
         lookup('checkmk.general.rules', ruleset='host_groups') }}"
