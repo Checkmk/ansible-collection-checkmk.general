@@ -1,7 +1,7 @@
 
 
 .. meta::
-  :antsibull-docs: 2.10.0
+  :antsibull-docs: 2.11.0
 
 
 .. _plugins_in_checkmk.general:
@@ -9,7 +9,7 @@
 Checkmk.General
 ===============
 
-Collection version 4.4.1
+Collection version 5.0.0
 
 .. contents::
    :local:
@@ -29,7 +29,7 @@ The official Checkmk Ansible collection - brought to you by the Checkmk company.
 
 **Supported ansible-core versions:**
 
-* 2.12.0 or newer
+* 2.14.0 or newer
 
 .. ansible-links::
 

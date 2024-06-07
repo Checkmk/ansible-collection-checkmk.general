@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.10.0
+  :antsibull-docs: 2.11.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.discovery module -- Discover services in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.4.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -449,6 +449,8 @@ Parameters
       - :ansible-option-choices-entry:`"refresh"`
       - :ansible-option-choices-entry:`"tabula\_rasa"`
       - :ansible-option-choices-entry:`"only\_host\_labels"`
+      - :ansible-option-choices-entry:`"only\_service\_labels"`
+      - :ansible-option-choices-entry:`"monitor\_undecided\_services"`
 
 
       .. raw:: html
@@ -518,34 +520,34 @@ Examples
     # Create a single host.
     - name: "Add newly discovered services on host."
       checkmk.general.discovery:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         host_name: "my_host"
         state: "new"
     - name: "Add newly discovered services, update labels and remove vanished services on host."
       checkmk.general.discovery:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         host_name: "my_host"
         state: "fix_all"
     - name: "Add newly discovered services on hosts. (Bulk)"
       checkmk.general.discovery:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         hosts: ["my_host_0", "my_host_1"]
         state: "new"
     - name: "Add newly discovered services, update labels and remove vanished services on host; 3 at once (Bulk)"
       checkmk.general.discovery:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         hosts: ["my_host_0", "my_host_1", "my_host_2", "my_host_3", "my_host_4", "my_host_5"]
         state: "fix_all"
         bulk_size: 3
@@ -674,6 +676,7 @@ Authors
 
 - Robin Gierse (@robin-checkmk)
 - Michael Sekania (@msekania)
+- Max Sickora (@max-checkmk)
 
 
 
