@@ -97,6 +97,7 @@
   ansible.builtin.command: cat /var/lib/check_mk_agent/cache/plugins_cmk-update-agent.cache
   register: __checkmk_agent_updater_state
   changed_when: checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_updater_state.stdout
+  failed_when: __checkmk_agent_updater_state.rc == "255"
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."  # noqa no-changed-when
   become: true
