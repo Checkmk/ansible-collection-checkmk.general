@@ -9,6 +9,8 @@ exclude_paths:
   - .vagrant/
   - changelogs/
   - docs/
+  - tests/integration/
+
 # parseable: true
 # quiet: true
 # verbosity: 1
