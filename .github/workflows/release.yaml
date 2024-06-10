@@ -99,10 +99,10 @@ jobs:
       - name: "Record Changes for Release"
         run: |
           {
-            echo 'changelog=<<EOF'
+            echo 'CHANGELOG<<EOF'
             echo "$(git diff CHANGELOG.rst | grep '^+' | tail -n+2 | tr -d '+')"
             echo 'EOF'
-          } >> $GITHUB_OUTPUT
+          } >> $GITHUB_ENV
 
       - name: "Compile Collection Docs"
         run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
@@ -157,7 +157,7 @@ jobs:
 
             Changelog:
 
-            ${{ steps.current_version.outputs.changelog }}
+            $CHANGELOG
 
             For a detailed changelog, refer to the [CHANGELOG](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/CHANGELOG.rst).
 
