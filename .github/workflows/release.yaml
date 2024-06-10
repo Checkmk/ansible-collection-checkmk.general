@@ -99,7 +99,7 @@ jobs:
       - name: "Record Changes for Release"
         run: |
           {
-            echo 'changelog<<EOF'
+            echo 'changelog=<<EOF'
             echo "$(git diff CHANGELOG.rst | grep '^+' | tail -n+2 | tr -d '+')"
             echo 'EOF'
           } >> $GITHUB_OUTPUT
