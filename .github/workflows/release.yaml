@@ -99,14 +99,14 @@ jobs:
       - name: "Record Changes for Release"
         run: |
           {
-            echo 'CHANGELOG<<EOF'
-            echo "$(git diff CHANGELOG.rst | grep '^+' | tail -n+2 | tr -d '+')"
+            echo 'CHANGELOG_FRAGMENT<<EOF'
+            echo "$(git diff CHANGELOG.rst | grep '^+' | tail -n+4 | tr -d '+')"
             echo 'EOF'
           } >> $GITHUB_ENV
 
       - name: "Debug Changes for Release"
         run: |
-          echo "$CHANGELOG"
+          echo "$CHANGELOG_FRAGMENT"
 
       - name: "Compile Collection Docs"
         run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
@@ -159,6 +159,8 @@ jobs:
             # Ansible Collection: ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
 
             For information about this collection and how to install it, refer to the [README](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/README.md).
+
+            ${{env.CHANGELOG_FRAGMENT}}
 
             For a detailed changelog, refer to the [CHANGELOG](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/CHANGELOG.rst).
 
