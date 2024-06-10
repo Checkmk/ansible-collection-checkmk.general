@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.10.0
+  :antsibull-docs: 2.11.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.4.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -263,8 +263,6 @@ Parameters
 
       By default rules are created at the bottom of the "/" folder.
 
-      Mutually exclusive with \ :emphasis:`folder`\ .
-
 
       .. raw:: html
 
@@ -307,16 +305,66 @@ Parameters
 
       Folder of the rule.
 
-      Required when \ :emphasis:`position`\  is \ :literal:`top`\  or \ :literal:`bottom`\ .
+      Required when \ :emphasis:`position`\  is \ :literal:`top`\ , \ :literal:`bottom`\ , or (any).
 
       Required when \ :emphasis:`state=absent`\ .
 
-      Mutually exclusive with \ :emphasis:`rule\_id`\ .
+      Mutually exclusive with \ :emphasis:`neighbour`\ .
 
 
       .. rst-class:: ansible-option-line
 
       :ansible-option-default-bold:`Default:` :ansible-option-default:`"/"`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-rule/location/neighbour"></div>
+        <div class="ansibleOptionAnchor" id="parameter-rule/location/rule_id"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/location/neighbour:
+      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/location/rule_id:
+
+      .. rst-class:: ansible-option-title
+
+      **neighbour**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-rule/location/neighbour" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: rule_id`
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Put the rule \ :literal:`before`\  or \ :literal:`after`\  this rule\_id.
+
+      Required when \ :emphasis:`position`\  is \ :literal:`before`\  or \ :literal:`after`\ .
+
+      Mutually exclusive with \ :emphasis:`folder`\ .
+
 
       .. raw:: html
 
@@ -361,61 +409,18 @@ Parameters
 
       Has no effect when \ :emphasis:`state=absent`\ .
 
+      For new rule \ :literal:`any`\  wil be equivalent to \ :literal:`bottom`\ 
+
 
       .. rst-class:: ansible-option-line
 
       :ansible-option-choices:`Choices:`
 
       - :ansible-option-choices-entry:`"top"`
-      - :ansible-option-choices-entry-default:`"bottom"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"bottom"`
+      - :ansible-option-choices-entry-default:`"any"` :ansible-option-choices-default-mark:`← (default)`
       - :ansible-option-choices-entry:`"before"`
       - :ansible-option-choices-entry:`"after"`
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-rule/location/rule_id"></div>
-
-      .. raw:: latex
-
-        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
-
-      .. _ansible_collections.checkmk.general.rule_module__parameter-rule/location/rule_id:
-
-      .. rst-class:: ansible-option-title
-
-      **rule_id**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-rule/location/rule_id" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-      .. raw:: latex
-
-        \end{minipage}
-
-    - .. raw:: html
-
-        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
-
-      Put the rule \ :literal:`before`\  or \ :literal:`after`\  this rule\_id.
-
-      Required when \ :emphasis:`position`\  is \ :literal:`before`\  or \ :literal:`after`\ .
-
-      Mutually exclusive with \ :emphasis:`folder`\ .
 
 
       .. raw:: html
@@ -500,9 +505,11 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      If given, it will be \ :literal:`the only condition`\  to identify the rule to work on.
+      If provided, update/delete an existing rule.
 
-      When there's no rule found with this id, the task will fail.
+      If omitted, we try to find an equal rule based on \ :literal:`properties`\ , \ :literal:`conditions`\ , \ :literal:`folder`\  and \ :literal:`value\_raw`\ .
+
+      Please mind the additional notes below.
 
 
       .. raw:: html
@@ -545,6 +552,8 @@ Parameters
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
       Rule values as exported from the web interface.
+
+      Required when \ :emphasis:`state`\  is \ :literal:`present`\ .
 
 
       .. raw:: html
@@ -748,7 +757,8 @@ Notes
 -----
 
 .. note::
-   - To achieve idempotency, this module is comparing the specified rule with the already existing rules based on conditions, folder, value\_raw and enabled/disabled.
+   - If rule\_id is omitted, due to the internal processing of the \ :literal:`value\_raw`\ , finding the matching rule is not reliable, when \ :literal:`rule\_id`\  is omitted. This sometimes leads to the module not being idempotent or to rules being created over and over again.
+   - If rule\_id is provided, for the same reason, it might happen, that tasks changing a rule again and again, even if it already meets the expectations.
 
 .. Seealso
 
@@ -765,10 +775,10 @@ Examples
     # at the top of the main folder.
     - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
       checkmk.general.rule:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           conditions: {
@@ -783,10 +793,10 @@ Examples
             "service_labels": []
           }
           properties: {
-            "comment": "Warning at 80%\nCritical at 90%\n",
+            "comment": "Ansible managed",
             "description": "Allow higher memory usage",
             "disabled": false,
-            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rule.py"
           }
           value_raw: "{'levels': (80.0, 90.0)}"
           location:
@@ -797,20 +807,47 @@ Examples
 
     - name: Show the ID of the new rule
       ansible.builtin.debug:
-        msg: "RULE ID : {{ response.id }}"
+        msg: "RULE ID : {{ response.content.id }}"
 
-    # Create another rule in checkgroup_parameters:memory_percentage_used
-    # and put it after the rule created above.
+    # Create another rule with the new label conditions (> 2.3.0)
+    # in checkgroup_parameters:memory_percentage_used and put it after the rule created above.
     - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
       checkmk.general.rule:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           conditions: {
-            "host_labels": [],
+            "host_label_groups": [
+                {
+                    operator: "and",
+                    label_group: [
+                        {
+                            operator: "and",
+                            label: "cmk/site:beta"
+                        },
+                        {
+                            operator: "or",
+                            label: "cmk/os_family:linux"
+                        }
+                    ],
+                },
+                {
+                    operator: "or",
+                    label_group: [
+                        {
+                            operator: "and",
+                            label: "cmk/site:alpha"
+                        },
+                        {
+                            operator: "or",
+                            label: "cmk/os_family:windows"
+                        }
+                    ],
+                },
+            ],
             "host_name": {
               "match_on": [
                 "test2.tld"
@@ -821,53 +858,36 @@ Examples
             "service_labels": []
           }
           properties: {
-            "comment": "Warning at 85%\nCritical at 99%\n",
+            "comment": "Ansible managed",
             "description": "Allow even higher memory usage",
             "disabled": false,
-            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rule.py"
           }
           value_raw: "{'levels': (85.0, 99.0)}"
           location:
             position: "after"
-            rule_id: "{{ response.id }}"
+            neighbour: "{{ response.content.id }}"
         state: "present"
 
     # Delete the first rule.
     - name: "Delete a rule."
       checkmk.general.rule:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
-          conditions: {
-            "host_labels": [],
-            "host_name": {
-              "match_on": [
-                "test1.tld"
-              ],
-              "operator": "one_of"
-            },
-            "host_tags": [],
-            "service_labels": []
-          }
-          properties: {
-            "comment": "Warning at 80%\nCritical at 90%\n",
-            "description": "Allow higher memory usage",
-            "disabled": false,
-            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-          }
-          value_raw: "{'levels': (80.0, 90.0)}"
+          rule_id: "{{ response.content.id }}"
         state: "absent"
 
     # Create a rule rule matching a host label
     - name: "Create a rule matching a label."
       checkmk.general.rule:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           conditions: {
@@ -878,21 +898,43 @@ Examples
                 "value": "yes"
               }
             ],
-            "host_name": {},
-            "host_tags": [],
-            "service_labels": []
           }
           properties: {
-            "comment": "Warning at 80%\nCritical at 90%\n",
+            "comment": "Ansible managed",
             "description": "Allow higher memory usage",
             "disabled": false,
-            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+            "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rule.py"
           }
           value_raw: "{'levels': (80.0, 90.0)}"
           location:
             folder: "/"
             position: "top"
         state: "present"
+
+    # Delete all rules in a ruleset that match a certain comment.
+    - name: "Delete all rules in a ruleset that match a certain comment."
+      checkmk.general.rule:
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
+        ruleset: "checkgroup_parameters:memory_percentage_used"
+        rule:
+          rule_id: "{{ item.id }}"
+        state: "absent"
+      loop: "{{
+               lookup('checkmk.general.rules',
+                 ruleset='checkgroup_parameters:memory_percentage_used',
+                 comment_regex='Ansible managed',
+                 server_url=server_url,
+                 site=site,
+                 automation_user=automation_user,
+                 automation_secret=automation_secret,
+                 validate_certs=False
+                 )
+             }}"
+      loop_control:
+        label: "{{ item.id }}"
 
 
 
@@ -920,9 +962,390 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-id"></div>
+        <div class="ansibleOptionAnchor" id="return-content"></div>
 
-      .. _ansible_collections.checkmk.general.rule_module__return-id:
+      .. _ansible_collections.checkmk.general.rule_module__return-content:
+
+      .. rst-class:: ansible-option-title
+
+      **content**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-content" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`dictionary`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The complete created/changed rule
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+
+      .. raw:: html
+
+        </div>
+
+    
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-content/extensions"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.checkmk.general.rule_module__return-content/extensions:
+
+      .. rst-class:: ansible-option-title
+
+      **extensions**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-content/extensions" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`dictionary`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The attributes of the rule
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+
+      .. raw:: html
+
+        </div>
+
+    
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-content/extensions/conditions"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.checkmk.general.rule_module__return-content/extensions/conditions:
+
+      .. rst-class:: ansible-option-title
+
+      **conditions**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-content/extensions/conditions" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The contitions of the rule.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-content/extensions/folder"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.checkmk.general.rule_module__return-content/extensions/folder:
+
+      .. rst-class:: ansible-option-title
+
+      **folder**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-content/extensions/folder" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The folder of the rule.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-content/extensions/folder_index"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.checkmk.general.rule_module__return-content/extensions/folder_index:
+
+      .. rst-class:: ansible-option-title
+
+      **folder_index**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-content/extensions/folder_index" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The index of the rule inside the folder.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-content/extensions/properties"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.checkmk.general.rule_module__return-content/extensions/properties:
+
+      .. rst-class:: ansible-option-title
+
+      **properties**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-content/extensions/properties" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The properties of the rule.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-content/extensions/ruleset"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.checkmk.general.rule_module__return-content/extensions/ruleset:
+
+      .. rst-class:: ansible-option-title
+
+      **ruleset**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-content/extensions/ruleset" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The ruleset of the rule.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-content/extensions/value_raw"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.checkmk.general.rule_module__return-content/extensions/value_raw:
+
+      .. rst-class:: ansible-option-title
+
+      **value_raw**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-content/extensions/value_raw" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The actual value of the rule
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+
+      .. raw:: html
+
+        </div>
+
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-content/id"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.checkmk.general.rule_module__return-content/id:
 
       .. rst-class:: ansible-option-title
 
@@ -930,7 +1353,57 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#return-id" title="Permalink to this return value"></a>
+        <a class="ansibleOptionLink" href="#return-content/id" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The ID of the rule.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"1f97bc43-52dc-4f1a-ab7b-c2e9553958ab"`
+
+
+      .. raw:: html
+
+        </div>
+
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-etag"></div>
+
+      .. _ansible_collections.checkmk.general.rule_module__return-etag:
+
+      .. rst-class:: ansible-option-title
+
+      **etag**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-etag" title="Permalink to this return value"></a>
 
       .. ansible-option-type-line::
 
@@ -944,7 +1417,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-cell">
 
-      The ID of the rule.
+      The etag of the rule.
 
 
       .. rst-class:: ansible-option-line
@@ -954,7 +1427,52 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"1f97bc43-52dc-4f1a-ab7b-c2e9553958ab"`
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"\\"ad55730d5488e55e07c58a3da9759fba8cd0b009\\""`
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-http_code"></div>
+
+      .. _ansible_collections.checkmk.general.rule_module__return-http_code:
+
+      .. rst-class:: ansible-option-title
+
+      **http_code**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-http_code" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The HTTP code the Checkmk API returns.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`200`
 
 
       .. raw:: html
@@ -1016,8 +1534,10 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
+- Lars Getwan (@lgetwan)
 - diademiemi (@diademiemi)
 - Geoffroy Stévenne (@geof77)
+- Michael Sekania (@msekania)
 
 
 

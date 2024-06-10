@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.10.0
+  :antsibull-docs: 2.11.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.activation module -- Activate changes in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.4.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -400,35 +400,35 @@ Examples
     
     - name: "Start activation on all sites."
       checkmk.general.activation:
-          server_url: "http://my_server/"
-          site: "my_site"
-          automation_user: "my_user"
-          automation_secret: "my_secret"
+          server_url: "http://myserver/"
+          site: "mysite"
+          automation_user: "myuser"
+          automation_secret: "mysecret"
       run_once: 'true'
 
     - name: "Start activation on a specific site."
       checkmk.general.activation:
-          server_url: "http://my_server/"
-          site: "my_site"
-          automation_user: "my_user"
-          automation_secret: "my_secret"
+          server_url: "http://myserver/"
+          site: "mysite"
+          automation_user: "myuser"
+          automation_secret: "mysecret"
           sites:
-              - "my_site"
+              - "mysite"
       run_once: 'true'
 
     - name: "Start activation including foreign changes."
       checkmk.general.activation:
-          server_url: "http://my_server/"
-          site: "my_site"
-          automation_user: "my_user"
-          automation_secret: "my_secret"
+          server_url: "http://myserver/"
+          site: "mysite"
+          automation_user: "myuser"
+          automation_secret: "mysecret"
           force_foreign_changes: 'true'
       run_once: 'true'
 
     - name: "Activate changes including foreign changes and wait for completion."
       checkmk.general.activation:
           server_url: "http://localhost/"
-          site: "my_site"
+          site: "mysite"
           automation_user: "automation"
           automation_secret: "$SECRET"
           redirect: 'true'

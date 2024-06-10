@@ -40,7 +40,7 @@ options:
         description: The action to perform during discovery.
         type: str
         default: new
-        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels, update_service_labels, monitor_undecided_services]
+        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels, only_service_labels, monitor_undecided_services]
     do_full_scan:
         description: The option whether to perform a full scan or not. (Bulk mode only).
         type: bool
@@ -131,13 +131,8 @@ HTTP_CODES = {
         False,
         "The service discovery background job has been initialized. Redirecting to the 'Wait for service discovery completion' endpoint.",
     ),
-    400: (False, True, "Bad Request."),
-    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
     404: (False, True, "Not Found: Host could not be found."),
-    406: (False, True, "Not Acceptable."),
     409: (False, False, "Conflict: A discovery background job is already running"),
-    415: (False, True, "Unsupported Media Type."),
-    500: (False, True, "General Server Error."),
 }
 
 HTTP_CODES_SC = {
@@ -148,30 +143,19 @@ HTTP_CODES_SC = {
         False,
         "The service discovery is still running. Redirecting to the 'Wait for completion' endpoint.",
     ),
-    403: (False, True, "Forbidden: Configuration via Setup is disabled."),
     404: (False, False, "Not Found: There is no running service discovery"),
-    406: (False, True, "Not Acceptable."),
-    500: (False, True, "General Server Error."),
 }
 
 HTTP_CODES_BULK = {
     # http_code: (changed, failed, "Message")
     200: (True, False, "Discovery successful."),
-    400: (False, True, "Bad Request."),
-    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
-    406: (False, True, "Not Acceptable."),
     409: (False, False, "Conflict: A bulk discovery job is already active"),
-    415: (False, True, "Unsupported Media Type."),
-    500: (False, True, "General Server Error."),
 }
 
 HTTP_CODES_BULK_SC = {
     # http_code: (changed, failed, "Message")
     200: (True, False, "The service discovery has been completed."),
-    403: (False, True, "Forbidden: Configuration via WATO is disabled."),
     404: (False, False, "Not Found: There is no running bulk_discovery job"),
-    406: (False, True, "Not Acceptable."),
-    500: (False, True, "General Server Error."),
 }
 
 
@@ -255,7 +239,7 @@ class newBulkDiscoveryAPI(CheckmkAPI):
             options["monitor_undecided_services"] = True
         if self.params.get("state") in ["remove", "fix_all"]:
             options["remove_vanished_services"] = True
-        if self.params.get("state") in ["update_service_labels"]:
+        if self.params.get("state") in ["only_service_labels"]:
             options["update_service_labels"] = True
         if self.params.get("state") in ["new", "fix_all", "only_host_labels"]:
             options["update_host_labels"] = True
@@ -336,7 +320,7 @@ def run_module():
                 "refresh",
                 "tabula_rasa",
                 "only_host_labels",
-                "update_service_labels",
+                "only_service_labels",
                 "monitor_undecided_services",
             ],
         ),
@@ -400,7 +384,7 @@ def run_module():
         module.params["state"] = "refresh"
 
     if module.params.get("state") in [
-        "update_service_labels",
+        "only_service_labels",
         "monitor_undecided_services",
     ]:
         if ver < CheckmkVersion("2.3.0"):
@@ -426,7 +410,7 @@ def run_module():
                 module.fail_json(**result_as_dict(result))
             if module.params.get(
                 "state"
-            ) == "update_service_labels" and ver < CheckmkVersion("2.3.0p3"):
+            ) == "only_service_labels" and ver < CheckmkVersion("2.3.0p3"):
                 result = RESULT(
                     http_code=0,
                     msg="State can only be used in bulk mode",

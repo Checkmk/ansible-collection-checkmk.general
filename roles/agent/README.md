@@ -11,9 +11,12 @@ It can be installed as easy as running:
 
     ansible-galaxy collection install checkmk.general
 
+Additionally, this role requires the Python module `netaddr` on the controller.
+Please make sure it is installed on your system and available for Ansible.
+
 ## Role Variables
 
-    checkmk_agent_version: "2.3.0p4"
+    checkmk_agent_version: "2.3.0p5"
 
 The Checkmk version of the site your agents will talk to.
 
@@ -133,6 +136,12 @@ Automatically configure the firewall (*currently only on RedHat and Debian deriv
     checkmk_agent_configure_firewall_zone: 'public'
 
 When checkmk_agent_configure_firewall is set to `true` then configure the firewall zone on RedHat derivatives. Defaults to 'public'.
+
+    checkmk_agent_server_ips: []
+
+A list of IP addresses, that will be whitelisted in the firewall for agent access on `checkmk_agent_port`.
+The `checkmk_agent_server` will automatically be added, but only if it is an IP address.
+This parameter also does **not** take care of any agent-side whitelisting!
 
     checkmk_agent_force_install: 'false'
 
