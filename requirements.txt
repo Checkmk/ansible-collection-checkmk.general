@@ -8,4 +8,3 @@ molecule-plugins[docker]
 yamllint
 pywinrm
 netaddr
-tox-ansible
