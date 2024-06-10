@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.10.0
+  :antsibull-docs: 2.11.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.downtime module -- Manage downtimes in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.4.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -667,7 +667,7 @@ Examples
     - name: "Schedule host downtime."
       checkmk.general.downtime:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ my_site }}"
+        site: "{{ mysite }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: my_host
@@ -680,7 +680,7 @@ Examples
     - name: "Schedule service downtimes for two given services."
       checkmk.general.downtime:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ my_site }}"
+        site: "{{ mysite }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: my_host
@@ -695,7 +695,7 @@ Examples
     - name: "Delete all service downtimes for two given services."
       checkmk.general.downtime:
         server_url: "{{ checkmk_var_server_url }}"
-        site: "{{ my_site }}"
+        site: "{{ mysite }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: my_host

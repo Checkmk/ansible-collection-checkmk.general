@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.10.0
+  :antsibull-docs: 2.11.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.user module -- Manage users in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.4.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -1208,10 +1208,10 @@ Examples
     # Create a user.
     - name: "Create a user."
       checkmk.general.user:
-        server_url: "http://my_server/"
+        server_url: "http://myserver/"
         site: "local"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "krichards"
         fullname: "Keith Richards"
         email: "keith.richards@rollingstones.com"
@@ -1225,10 +1225,10 @@ Examples
     # Create an automation user.
     - name: "Create an automation user."
       checkmk.general.user:
-        server_url: "http://my_server/"
+        server_url: "http://myserver/"
         site: "local"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "registration"
         fullname: "Registration User"
         auth_type: "automation"
@@ -1240,10 +1240,10 @@ Examples
     # Create a user with the Checkmk Managed Edition (CME), using the `customer` parameter.
     - name: "Create a user."
       checkmk.general.user:
-        server_url: "http://my_server/"
+        server_url: "http://myserver/"
         site: "local"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "krichards"
         fullname: "Keith Richards"
         email: "keith.richards@rollingstones.com"
@@ -1258,10 +1258,10 @@ Examples
     # Create a detailed user.
     - name: "Create a more complex user."
       checkmk.general.user:
-        server_url: "http://my_server/"
+        server_url: "http://myserver/"
         site: "local"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "horst"
         fullname: "Horst Schlämmer"
         customer: "provider"
@@ -1281,7 +1281,7 @@ Examples
         roles:
           - "user"
         authorized_sites:
-          - "{{ my_site }}"
+          - "{{ mysite }}"
         interface_theme: "dark"
         sidebar_position: "right"
         navigation_bar_icons: "show"

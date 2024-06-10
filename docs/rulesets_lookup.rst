@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.10.0
+  :antsibull-docs: 2.11.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.rulesets lookup -- Search rulesets
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.4.1).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -595,10 +595,10 @@ Examples
       ansible.builtin.debug:
         msg: "Ruleset {{ item.extension.name }} is deprecated."
       vars:
-        ansible_lookup_checkmk_server_url: "http://my_server/"
-        ansible_lookup_checkmk_site: "my_site"
-        ansible_lookup_checkmk_automation_user: "my_user"
-        ansible_lookup_checkmk_automation_secret: "my_secret"
+        ansible_lookup_checkmk_server_url: "http://myserver/"
+        ansible_lookup_checkmk_site: "mysite"
+        ansible_lookup_checkmk_automation_user: "myuser"
+        ansible_lookup_checkmk_automation_secret: "mysecret"
         ansible_lookup_checkmk_validate_certs: false
       loop: "{{
         lookup('checkmk.general.rulesets', regex='', rulesets_deprecated=True, rulesets_used=True) }}"
