@@ -10,6 +10,10 @@ env:
   COLLECTION_NAME: general
   MODULE_NAME: user
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 name: Ansible Integration Tests for User Module
 on:
   workflow_dispatch:
