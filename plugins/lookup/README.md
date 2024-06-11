@@ -8,9 +8,9 @@ This way, they do not need to be provided at task level.
 ```bash
 export ANSIBLE_LOOKUP_CHECKMK_SERVER_URL="https://myserver"
 export ANSIBLE_LOOKUP_CHECKMK_SITE=mysite
-export ANSIBLE_LOOKUP_AUTOMATION_USER=automation
-export ANSIBLE_LOOKUP_AUTOMATION_SECRET=mysecret
-export ANSIBLE_LOOKUP_VALIDATE_CERTS=False
+export ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_USER=automation
+export ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_SECRET=mysecret
+export ANSIBLE_LOOKUP_CHECKMK_VALIDATE_CERTS=False
 ```
 
 ### Method 2: In `ansible.cfg`
@@ -31,10 +31,10 @@ validate_certs = False
   gather_facts: false
   vars:
     ansible_lookup_checkmk_server_url: "https://myserver"
-        ansible_lookup_checkmk_site: "mysite"
-    ansible_lookup_automation_user: "automation"
-    ansible_lookup_automation_secret: "mysecret"
-    ansible_lookup_validate_certs: false
+    ansible_lookup_checkmk_site: "mysite"
+    ansible_lookup_checkmk_automation_user: "automation"
+    ansible_lookup_checkmk_automation_secret: "mysecret"
+    ansible_lookup_checkmk_validate_certs: false
 
   tasks:
     - name: Get the attributes of myhost
