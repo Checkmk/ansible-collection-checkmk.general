@@ -1,4 +1,8 @@
 ---
+- name: "Print OS Information."
+  ansible.builtin.debug:
+    var: ansible_lsb
+
 - name: "Install dependencies."
   ansible.builtin.package:
     name: python3-apt
