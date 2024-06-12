@@ -49,6 +49,8 @@ jobs:
           - '3.12'
         exclude:
           # Exclude unsupported sets.
+          - ansible: devel
+            python: '3.9'
           - ansible: stable-2.15
             python: '3.12'
 
@@ -73,6 +75,5 @@ jobs:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
       - name: Run integration test
-        # Pin ansible-test container for now to work around Checkmk and OS incompatibility. This can be removed, when Checkmk 2.1.0 goes EOL.
-        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker quay.io/ansible/default-test-container:9.6.0
+        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker default
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
