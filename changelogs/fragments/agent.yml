@@ -1,0 +1,5 @@
+bugfixes:
+  - Agent role - For Windows hosts the download of correct setup files was broken
+    due to a mixup in the modules used to fetch the files. The role would always
+    fall back to the GENERIC agent, even if a specific agent was available.
+    This is fixed now.
