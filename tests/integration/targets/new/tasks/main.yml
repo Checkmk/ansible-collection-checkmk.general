@@ -3,6 +3,13 @@
 #   ansible.builtin.include_vars: /root/ansible_collections/checkmk/general/tests/integration/files/includes/vars/global.yml
 #   ansible.builtin.include_vars: ./tests/integration/files/includes/vars/global.yml
 
+- name: Debug
+  ansible.builtin.shell: |
+    pwd ;
+    ls -lah ;
+    ls -lah /root/ ;
+    ls -lah ./tests/integration/files/includes/vars/global.yml
+
 # - name: "Run Preparations."
 #   ansible.builtin.include_tasks: /root/ansible_collections/checkmk/general/tests/integration/files/includes/tasks/prep.yml
 
