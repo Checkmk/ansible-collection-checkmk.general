@@ -1,5 +1,5 @@
 ---
-checkmk_var_server_url: "http://{{ outer_item.site }}:{{ outer_item.port }}/"
+checkmk_var_server_url: "http://127.0.0.1:{{ outer_item.port }}/"
 
 test_sites:
   - version: "2.3.0p6"
