@@ -155,32 +155,32 @@ EXAMPLES = r"""
     rule:
       conditions: {
         "host_label_groups": [
-            {
+          {
+            operator: "and",
+            label_group: [
+              {
                 operator: "and",
-                label_group: [
-                    {
-                        operator: "and",
-                        label: "cmk/site:beta"
-                    },
-                    {
-                        operator: "or",
-                        label: "cmk/os_family:linux"
-                    }
-                ],
-            },
-            {
+                label: "cmk/site:beta"
+              },
+              {
                 operator: "or",
-                label_group: [
-                    {
-                        operator: "and",
-                        label: "cmk/site:alpha"
-                    },
-                    {
-                        operator: "or",
-                        label: "cmk/os_family:windows"
-                    }
-                ],
-            },
+                label: "cmk/os_family:linux"
+              }
+            ],
+          },
+          {
+            operator: "or",
+            label_group: [
+              {
+                operator: "and",
+                label: "cmk/site:alpha"
+              },
+              {
+                operator: "or",
+                label: "cmk/os_family:windows"
+              }
+            ],
+          },
         ],
         "host_name": {
           "match_on": [

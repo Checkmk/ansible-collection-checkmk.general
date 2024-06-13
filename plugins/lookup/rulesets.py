@@ -122,7 +122,7 @@ EXAMPLES = """
       )
     }}"
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 
 - name: Get all used deprecated rulesets
   ansible.builtin.debug:
@@ -140,7 +140,7 @@ EXAMPLES = """
       )
     }}"
   loop_control:
-      label: "{{ item.0.id }}"
+    label: "{{ item.0.id }}"
 
 - name: "Use variables outside the module call."
   ansible.builtin.debug:
@@ -154,7 +154,7 @@ EXAMPLES = """
   loop: "{{
     lookup('checkmk.general.rulesets', regex='', rulesets_deprecated=True, rulesets_used=True) }}"
   loop_control:
-      label: "{{ item.0.id }}"
+    label: "{{ item.0.id }}"
 """
 
 RETURN = """
