@@ -47,8 +47,6 @@ jobs:
           - '3.12'
         exclude:
           # Exclude unsupported sets.
-          - ansible: devel
-            python: '3.9'
           - ansible: stable-2.15
             python: '3.12'
 
