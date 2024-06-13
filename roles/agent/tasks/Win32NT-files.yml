@@ -144,7 +144,7 @@
           Accept: "application/octet-stream"
       register: __checkmk_agent_folder_download_state
       when: |
-        checkmk_agent_edition | lower != "cre__checkmk_agent_folder_download_state"
+        checkmk_agent_edition | lower != "cre"
         and checkmk_agent_folder is defined
         and not checkmk_agent_host_specific | bool
       retries: 3
