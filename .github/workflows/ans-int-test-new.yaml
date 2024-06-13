@@ -51,12 +51,12 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          # - stable-2.15
+          - stable-2.15
           # - stable-2.16
           - stable-2.17
           # - devel
         python:
-          # - '3.9'
+          - '3.9'
           # - '3.10'
           # - '3.11'
           - '3.12'
@@ -66,20 +66,20 @@ jobs:
             python: '3.12'
 
     services:
-      # ancient_cre:
-      #   image: checkmk/check-mk-raw:2.1.0p44
-      #   ports:
-      #     - 5021:5000
-      #   env:
-      #     CMK_SITE_ID: "ancient_cre"
-      #     CMK_PASSWORD: "Sup3rSec4et!"
-      # old_cre:
-      #   image: checkmk/check-mk-raw:2.2.0p27
-      #   ports:
-      #     - 5022:5000
-      #   env:
-      #     CMK_SITE_ID: "old_cre"
-      #     CMK_PASSWORD: "Sup3rSec4et!"
+      ancient_cre:
+        image: checkmk/check-mk-raw:2.1.0p44
+        ports:
+          - 5021:5000
+        env:
+          CMK_SITE_ID: "ancient_cre"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      old_cre:
+        image: checkmk/check-mk-raw:2.2.0p27
+        ports:
+          - 5022:5000
+        env:
+          CMK_SITE_ID: "old_cre"
+          CMK_PASSWORD: "Sup3rSec4et!"
       stable_cre:
         image: checkmk/check-mk-raw:2.3.0p6
         ports:
@@ -87,13 +87,13 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
-      stable_cce:
-        image: checkmk/check-mk-cloud:2.3.0p6
-        ports:
-          - 5123:5000
-        env:
-          CMK_SITE_ID: "stable_cce"
-          CMK_PASSWORD: "Sup3rSec4et!"
+      # stable_cce:
+      #   image: checkmk/check-mk-cloud:2.3.0p6
+      #   ports:
+      #     - 5123:5000
+      #   env:
+      #     CMK_SITE_ID: "stable_cce"
+      #     CMK_PASSWORD: "Sup3rSec4et!"
 
     steps:
       - name: Check out code
