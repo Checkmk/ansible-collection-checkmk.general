@@ -117,7 +117,7 @@ EXAMPLES = """
         )
     }}"
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 
 - name: Get all hosts of the folder /test recursively
   ansible.builtin.debug:
@@ -137,7 +137,7 @@ EXAMPLES = """
               }}"
   loop: "{{ looping|subelements('members.hosts.value') }}"
   loop_control:
-      label: "{{ item.0.id }}"
+    label: "{{ item.0.id }}"
 
 - name: "Use variables outside the module call."
   ansible.builtin.debug:
@@ -155,7 +155,7 @@ EXAMPLES = """
         recursive=True,
         ) }}"
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 """
 
 RETURN = """

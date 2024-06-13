@@ -10,6 +10,10 @@ env:
   COLLECTION_NAME: general
   MODULE_NAME: downtime
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 name: Ansible Integration Tests for Downtime Module
 on:
   workflow_dispatch:
@@ -39,15 +43,14 @@ jobs:
           - stable-2.17
           - devel
         python:
-          - '3.8'
           - '3.9'
           - '3.10'
           - '3.11'
           - '3.12'
         exclude:
           # Exclude unsupported sets.
-          - ansible: stable-2.14
-            python: '3.12'
+          - ansible: devel
+            python: '3.9'
           - ansible: stable-2.15
             python: '3.12'
 
@@ -72,5 +75,5 @@ jobs:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
       - name: Run integration test
-        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker
+        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker default
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}

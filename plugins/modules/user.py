@@ -197,13 +197,13 @@ EXAMPLES = r"""
     password: "uschi"
     enforce_password_change: true
     email: "checker@grevenbroich.de"
-    fallback_contact: True
+    fallback_contact: true
     pager: 089-123456789
     contactgroups:
       - "sport"
       - "vereinsgeschehen"
       - "lokalpolitik"
-    disable_notifications: True
+    disable_notifications: true
     disable_notifications_timerange: { "start_time": "2023-02-23T15:06:48+00:00", "end_time": "2023-02-23T16:06:48+00:00"}
     language: "de"
     roles:

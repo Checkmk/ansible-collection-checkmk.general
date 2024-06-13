@@ -1,6 +1,6 @@
 ---
 test_sites:
-  - version: "2.3.0p5"
+  - version: "2.3.0p6"
     edition: "cee"
     site: "stable_cee"
   - version: "2.2.0p27"

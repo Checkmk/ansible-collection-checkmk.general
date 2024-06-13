@@ -7,7 +7,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.10.0
+  :antsibull-docs: 2.11.0
 
 .. Anchors
 
@@ -23,7 +23,7 @@ checkmk.general.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 4.4.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -634,10 +634,10 @@ Examples
     # Create a host.
     - name: "Create a host."
       checkmk.general.host:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "my_host"
         folder: "/"
         state: "present"
@@ -645,10 +645,10 @@ Examples
     # Create a host with IP.
     - name: "Create a host with IP address."
       checkmk.general.host:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "my_host"
         attributes:
           alias: "My Host"
@@ -659,10 +659,10 @@ Examples
     # Create a host which is monitored on a distinct site.
     - name: "Create a host which is monitored on a distinct site."
       checkmk.general.host:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "my_host"
         attributes:
           site: "my_remote_site"
@@ -672,10 +672,10 @@ Examples
     # Create a cluster host.
     - name: "Create a cluster host."
       checkmk.general.cluster:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "my_cluster_host"
         folder: "/"
         nodes: ["cluster_node_1", "cluster_node_2", "cluster_node_3"]
@@ -684,10 +684,10 @@ Examples
     # Create a cluster host with IP.
     - name: "Create a cluster host with IP address."
       checkmk.general.cluster:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "my_cluster_host"
         nodes:
           - "cluster_node_1"
@@ -702,10 +702,10 @@ Examples
     # Create a host with update_attributes.
     - name: "Create a host which is monitored on a distinct site."
       checkmk.general.host:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "my_host"
         update_attributes:
           site: "my_remote_site"
@@ -714,10 +714,10 @@ Examples
     # Update only specified attributes
     - name: "Update only specified attributes"
       checkmk.general.host:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "my_host"
         update_attributes:
           alias: "foo"
@@ -726,10 +726,10 @@ Examples
     # Remove specified attributes
     - name: "Remove specified attributes"
       checkmk.general.host:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "my_host"
         remove_attributes:
           - alias
@@ -738,10 +738,10 @@ Examples
     # Add custom tags to a host (note the leading 'tag_')
     - name: "Remove specified attributes"
       checkmk.general.host:
-        server_url: "http://my_server/"
-        site: "my_site"
-        automation_user: "my_user"
-        automation_secret: "my_secret"
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
         name: "my_host"
         update_attributes:
           - tag_my_tag_1: "Bar"
