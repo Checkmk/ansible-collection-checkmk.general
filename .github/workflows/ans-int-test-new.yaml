@@ -34,6 +34,16 @@ on:
 
 jobs:
 
+  # docker-login:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Login to GitHub Container Registry
+  #       uses: docker/login-action@v3
+  #       with:
+  #         registry: registry.checkmk.com
+  #         username: d-gh-ansible-dl
+  #         password: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
+
   integration:
     runs-on: ubuntu-22.04
     name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
@@ -60,7 +70,6 @@ jobs:
         image: checkmk/check-mk-raw:2.1.0p44
         ports:
           - 5021:5000
-          - 8021:8000
         env:
           CMK_SITE_ID: "ancient_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
@@ -68,7 +77,6 @@ jobs:
         image: checkmk/check-mk-raw:2.2.0p27
         ports:
           - 5022:5000
-          - 8022:8000
         env:
           CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
@@ -76,9 +84,16 @@ jobs:
         image: checkmk/check-mk-raw:2.3.0p6
         ports:
           - 5023:5000
-          - 8023:8000
         env:
           CMK_SITE_ID: "stable_cre"
+          CMK_PASSWORD: "Sup3rSec4et!"
+
+      stable_cce:
+        image: checkmk/check-mk-cloud:2.3.0p6
+        ports:
+          - 5123:5000
+        env:
+          CMK_SITE_ID: "stable_cce"
           CMK_PASSWORD: "Sup3rSec4et!"
 
     steps:
