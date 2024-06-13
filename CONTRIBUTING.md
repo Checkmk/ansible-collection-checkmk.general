@@ -94,7 +94,7 @@ The following are guidelines to keep in mind, when creating or changing roles an
         - `checkmk_server_foo` for a server role variable
         - `checkmk_agent_bar` for a agent role variable
         - `checkmk_var_bat` for general variables
-    - Internal variables, not intended to be changed by a user should be prefixes with a double underscore (`__`).
+    - Internal variables, not intended to be changed by a user should be prefixed with a double underscore (`__`).
 - Tags
     - When tagging roles or playbooks, separate single words with dashes (`my-custom-tag`)
 
