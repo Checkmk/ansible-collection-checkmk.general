@@ -2,7 +2,7 @@
 - name: "{{ ansible_os_family }} Derivatives: Install host-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.dnf:
-    name: "{{ checkmk_agent_agent.file.host }}"
+    name: "{{ __checkmk_agent_agent.file.host }}"
     state: present
     disable_gpg_check: true
   when: |
@@ -14,7 +14,7 @@
 - name: "{{ ansible_os_family }} Derivatives: Install GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.dnf:
-    name: "{{ checkmk_agent_agent.file.cee }}"
+    name: "{{ __checkmk_agent_agent.file.cee }}"
     state: present
     disable_gpg_check: true
   when: |
@@ -25,8 +25,8 @@
 
 - name: "{{ ansible_os_family }} Derivatives: Transfer Vanilla agent."
   ansible.builtin.copy:
-    src: "{{ checkmk_agent_agent.file.cre }}"
-    dest: "{{ checkmk_agent_agent.file.cre }}"
+    src: "{{ __checkmk_agent_agent.file.cre }}"
+    dest: "{{ __checkmk_agent_agent.file.cre }}"
     mode: "0644"
   when: |
     checkmk_agent_edition | lower == "cre"
@@ -37,7 +37,7 @@
 - name: "{{ ansible_os_family }} Derivatives: Install Vanilla agent."
   become: true
   ansible.builtin.dnf:
-    name: "{{ checkmk_agent_agent.file.cre }}"
+    name: "{{ __checkmk_agent_agent.file.cre }}"
     state: present
     disable_gpg_check: true
   when: checkmk_agent_edition | lower == "cre"

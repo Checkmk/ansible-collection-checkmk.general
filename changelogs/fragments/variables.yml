@@ -1,0 +1,7 @@
+minor_changes:
+  - Agent role - All internal variables are now prefixed with a double underscore (`__`).
+    If you hooked into any variable, which is not in `defaults/main.yml` you need to check your inventory.
+    Be advised, that it is bad practice, to use internal variables directly.
+  - Server role - All internal variables are now prefixed with a double underscore (`__`).
+    If you hooked into any variable, which is not in `defaults/main.yml` you need to check your inventory.
+    Be advised, that it is bad practice, to use internal variables directly.
