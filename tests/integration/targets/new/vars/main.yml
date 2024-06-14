@@ -1,14 +1,13 @@
 ---
-checkmk_var_server_url: "http://127.0.0.1:{{ outer_item.port }}/"
-
 test_sites:
   - version: "2.3.0p6"
     edition: "cre"
     site: "stable_cre"
     port: "5023"
   - version: "2.3.0p6"
-    edition: "cee"
-    site: "stable_cee"
+    edition: "cce"
+    site: "stable_cce"
+    port: "5223"
     port: "5123"
   - version: "2.2.0p27"
     edition: "cre"

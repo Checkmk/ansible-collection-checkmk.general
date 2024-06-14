@@ -93,7 +93,7 @@
       loop: "{{ checkmk_hosts }}"
       register: monitorundecidedservices_output
       failed_when: "'State is not supported before 2.3.0' not in monitorundecidedservices_output.msg"
-      when: "not '2.3.0' in outer_item.version"      
+      when: "not '2.3.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update service labels."
       discovery:

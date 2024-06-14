@@ -1,6 +1,6 @@
 ---
 # Configure location and credentials for the Checkmk REST API
-# checkmk_var_server_url: "http://127.0.0.1/"
+checkmk_var_server_url: "http://127.0.0.1:{{ outer_item.port }}/"
 checkmk_var_automation_user: "cmkadmin"
 checkmk_var_automation_secret: "Sup3rSec4et!"
 
@@ -19,7 +19,7 @@ __checkmk_server_edition_mapping:
 
 # This is a very hacky workaround, as it is not possible to assign variables
 # to other variables when using them in lookup modules.
-ansible_lookup_checkmk_server_url: "http://127.0.0.1"
+ansible_lookup_checkmk_server_url: "http://127.0.0.1:{{ outer_item.port }}/"
 ansible_lookup_checkmk_site: "stable_cee"  # This is especially hacky.
                                            # All integration tests were adapted to run the specific task only on this site.
 ansible_lookup_checkmk_automation_user: "cmkadmin"
