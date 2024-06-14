@@ -34,16 +34,6 @@ on:
 
 jobs:
 
-  docker-login:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: registry.checkmk.com
-          username: d-gh-ansible-dl
-          password: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
-
   integration:
     runs-on: ubuntu-22.04
     name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
@@ -109,6 +99,14 @@ jobs:
       #     CMK_PASSWORD: "Sup3rSec4et!"
 
     steps:
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.checkmk.com
+          username: d-gh-ansible-dl
+          password: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
+
       - name: Check out code
         uses: actions/checkout@v4
         with:
