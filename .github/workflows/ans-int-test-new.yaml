@@ -83,6 +83,13 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
+      stable_cce:
+        image: checkmk/check-mk-cloud:2.3.0p6
+        ports:
+          - 5223:5000
+        env:
+          CMK_SITE_ID: "stable_cce"
+          CMK_PASSWORD: "Sup3rSec4et!"
       stable_cee:
         image: registry.checkmk.com/enterprise/check-mk-enterprise:2.3.0p6
         ports:
@@ -93,13 +100,6 @@ jobs:
         credentials:
           username: d-gh-ansible-dl
           password: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
-      stable_cce:
-        image: checkmk/check-mk-cloud:2.3.0p6
-        ports:
-          - 5223:5000
-        env:
-          CMK_SITE_ID: "stable_cce"
-          CMK_PASSWORD: "Sup3rSec4et!"
       stable_cme:
         image: registry.checkmk.com/managed/check-mk-managed:2.3.0p6
         ports:
@@ -112,7 +112,6 @@ jobs:
           password: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
     steps:
-
       - name: Check out code
         uses: actions/checkout@v4
         with:
