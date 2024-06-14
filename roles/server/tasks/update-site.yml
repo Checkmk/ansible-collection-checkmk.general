@@ -11,7 +11,7 @@
     omd versions | egrep -o '{{ item.item.version }}.{{ checkmk_server_edition | lower }}'
   args:
     executable: /bin/bash
-  register: checkmk_server_sites_versions
+  register: __checkmk_server_sites_versions
   changed_when: false
 
 - name: "Fail if this is a downgrade."
@@ -64,5 +64,5 @@
     omd -f -V {{ item.item.version }}.{{ checkmk_server_edition | lower }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
   args:
     executable: /bin/bash
-  register: checkmk_server_sites_updated
-  changed_when: ("Finished update" in checkmk_server_sites_updated.stdout)
+  register: __checkmk_server_sites_updated
+  changed_when: ("Finished update" in __checkmk_server_sites_updated.stdout)

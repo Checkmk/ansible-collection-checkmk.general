@@ -1,13 +1,13 @@
 ---
-checkmk_agent_host_tmp_dir: "C:\\Windows\\Temp"
-checkmk_agent_controller_binary_path: "C:\\Program Files (x86)\\checkmk\\service\\cmk-agent-ctl.exe"
-checkmk_agent_binary_path: "C:\\Program Files (x86)\\checkmk\\service\\check_mk_agent.exe"
+__checkmk_agent_host_tmp_dir: "C:\\Windows\\Temp"
+__checkmk_agent_controller_binary_path: "C:\\Program Files (x86)\\checkmk\\service\\cmk-agent-ctl.exe"
+__checkmk_agent_binary_path: "C:\\Program Files (x86)\\checkmk\\service\\check_mk_agent.exe"
 
-checkmk_agent_agent:
+__checkmk_agent_agent:
   url:
-    cre: "{{ checkmk_agent_site_url }}/check_mk/agents/windows/check_mk_agent.msi"
-    cee: "{{ checkmk_agent_site_url }}/check_mk/api/1.0/domain-types/agent/actions/download_by_host/invoke"
+    cre: "{{ __checkmk_agent_site_url }}/check_mk/agents/windows/check_mk_agent.msi"
+    cee: "{{ __checkmk_agent_site_url }}/check_mk/api/1.0/domain-types/agent/actions/download_by_host/invoke"
   file:
-    cre: "{{ checkmk_agent_host_tmp_dir }}\\check-mk-agent_{{ checkmk_agent_version }}.msi"
-    cee: "{{ checkmk_agent_host_tmp_dir }}\\check-mk-agent_{{ checkmk_agent_version }}.msi"
-    host: "{{ checkmk_agent_host_tmp_dir }}\\check-mk-agent_{{ checkmk_agent_version }}-{{ inventory_hostname }}.msi"
+    cre: "{{ __checkmk_agent_host_tmp_dir }}\\check-mk-agent_{{ checkmk_agent_version }}.msi"
+    cee: "{{ __checkmk_agent_host_tmp_dir }}\\check-mk-agent_{{ checkmk_agent_version }}.msi"
+    host: "{{ __checkmk_agent_host_tmp_dir }}\\check-mk-agent_{{ checkmk_agent_version }}-{{ inventory_hostname }}.msi"

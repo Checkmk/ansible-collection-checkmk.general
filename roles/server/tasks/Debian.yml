@@ -1,9 +1,9 @@
 ---
 - name: "Install Checkmk Server."
-  when: not 'check-mk-' + checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
+  when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
   become: true
   ansible.builtin.apt:
-    deb: "/tmp/{{ checkmk_server_setup_file }}"
+    deb: "/tmp/{{ __checkmk_server_setup_file }}"
     update_cache: 'yes'
     state: present
   notify: Start Apache
