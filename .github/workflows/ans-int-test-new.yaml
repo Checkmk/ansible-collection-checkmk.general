@@ -84,7 +84,7 @@ jobs:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cee:
-        image: checkmk/check-mk-enterprise:2.3.0p6
+        image: registry.checkmk.com/checkmk/check-mk-enterprise:2.3.0p6
         ports:
           - 5123:5000
         env:
@@ -99,6 +99,13 @@ jobs:
       #     - 5223:5000
       #   env:
       #     CMK_SITE_ID: "stable_cce"
+      #     CMK_PASSWORD: "Sup3rSec4et!"
+      # stable_cme:
+      #   image: checkmk/check-mk-managed:2.3.0p6
+      #   ports:
+      #     - 5323:5000
+      #   env:
+      #     CMK_SITE_ID: "stable_cme"
       #     CMK_PASSWORD: "Sup3rSec4et!"
 
     steps:
