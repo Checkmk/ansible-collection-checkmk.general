@@ -8,9 +8,11 @@ action_groups:
     - discovery
     - downtime
     - folder
-    - host
     - host_group
+    - host
+    - password
     - rule
     - service_group
     - tag_group
+    - timeperiod
     - user
