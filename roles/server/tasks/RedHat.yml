@@ -6,7 +6,7 @@
   block:
     - name: "Download EPEL GPG Key on CentOS & RHEL 8."
       ansible.builtin.get_url:
-        url: "{{ checkmk_server_epel_gpg_key }}"
+        url: "{{ __checkmk_server_epel_gpg_key }}"
         dest: "/tmp/EPEL-pubkey.gpg"
         mode: "0640"
       when: checkmk_server_verify_setup | bool
@@ -27,7 +27,7 @@
     - name: "Install epel-release from URL on CentOS & RHEL 8."
       become: true
       ansible.builtin.dnf:
-        name: "{{ checkmk_server_epel_url }}"
+        name: "{{ __checkmk_server_epel_url }}"
         state: present
         disable_gpg_check: "{{ not checkmk_server_epel_gpg_check | bool }}"
       tags:
@@ -77,10 +77,10 @@
     - enable-repos
 
 - name: "Install Checkmk Server."
-  when: not 'check-mk-' + checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
+  when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
   become: true
   ansible.builtin.dnf:
-    name: "/tmp/{{ checkmk_server_setup_file }}"
+    name: "/tmp/{{ __checkmk_server_setup_file }}"
     state: present
     disable_gpg_check: '{{ not checkmk_server_verify_setup | bool }}'
   notify: Start httpd
@@ -112,5 +112,5 @@
     permanent: true
     immediate: true
     state: enabled
-  loop: "{{ checkmk_server_ports }}"
+  loop: "{{ __checkmk_server_ports }}"
   when: checkmk_server_configure_firewall | bool
