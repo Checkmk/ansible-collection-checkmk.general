@@ -63,33 +63,36 @@ jobs:
 
     services:
       ancient_cre:
-        image: checkmk/check-mk-raw:2.1.0p44
+        image: registry.checkmk.com/checkmk/check-mk-raw:2.1.0p44
         ports:
           - 5021:5000
         env:
           CMK_SITE_ID: "ancient_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cre:
-        image: checkmk/check-mk-raw:2.2.0p27
+        image: registry.checkmk.com/checkmk/check-mk-raw:2.2.0p27
         ports:
           - 5022:5000
         env:
           CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cre:
-        image: checkmk/check-mk-raw:2.3.0p6
+        image: registry.checkmk.com/checkmk/check-mk-raw:2.3.0p6
         ports:
           - 5023:5000
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cee:
-        image: checkmk/check-mk-enterprise:2.3.0p6
+        image: registry.checkmk.com/checkmk/check-mk-enterprise:2.3.0p6
         ports:
           - 5123:5000
         env:
           CMK_SITE_ID: "stable_cee"
           CMK_PASSWORD: "Sup3rSec4et!"
+        credentials:
+          username: d-gh-ansible-dl
+          password: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
       # stable_cce:
       #   image: checkmk/check-mk-cloud:2.3.0p6
       #   ports:
@@ -99,13 +102,6 @@ jobs:
       #     CMK_PASSWORD: "Sup3rSec4et!"
 
     steps:
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: registry.checkmk.com
-          username: d-gh-ansible-dl
-          password: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
       - name: Check out code
         uses: actions/checkout@v4
