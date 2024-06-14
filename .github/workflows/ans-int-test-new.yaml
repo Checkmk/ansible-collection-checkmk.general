@@ -107,6 +107,9 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
+        credentials:
+          username: d-gh-ansible-dl
+          password: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
     steps:
 
