@@ -87,6 +87,21 @@
     path: /usr/bin/cmk-agent-ctl
   register: __checkmk_agent_controller_binary
 
+- name: "{{ ansible_system }}: Read Agent Controller State."
+  become: true
+  ansible.builtin.command: cat /var/lib/cmk-agent/registered_connections.json
+  register: __checkmk_agent_registered_connections
+  changed_when: false
+
+- name: "{{ ansible_system }}: Read Updater State."
+  become: true
+  ansible.builtin.command: cat /var/lib/check_mk_agent/cache/plugins_cmk-update-agent.cache
+  register: __checkmk_agent_updater_state
+  changed_when: false
+  failed_when: |
+    not __checkmk_agent_updater_state.rc == 0
+    and not __checkmk_agent_updater_state.rc == 1
+
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: |
@@ -101,6 +116,7 @@
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
     and (checkmk_agent_secret is not defined)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_updater_state.stdout
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using Automation Secret."  # noqa no-changed-when
   become: true
@@ -115,6 +131,7 @@
     and __checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_updater_state.stdout
 
 - name: "{{ ansible_system }}: Register Agent for TLS."  # noqa no-changed-when
   become: true
@@ -128,6 +145,7 @@
     __checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
 
 - name: "{{ ansible_system }}: Verify Checkmk Agent Port is open."
   ansible.builtin.wait_for:
