@@ -159,7 +159,7 @@ Typically this would be your Ansible host, hence the default `localhost`.
 
     checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 
-Configure the host to which Checkmk API downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download.
+Configure the host to which downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download itself.
 
     checkmk_agent_mode: pull
 

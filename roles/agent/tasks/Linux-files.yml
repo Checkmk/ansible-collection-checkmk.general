@@ -42,6 +42,8 @@
   ansible.builtin.set_fact:
     checkmk_agent_host_specific: >-
       {{ (__checkmk_agent_host_download_state.status is defined and __checkmk_agent_host_download_state.status == 200) | bool }}
+  tags:
+    - download-package
 
 - name: "{{ ansible_system }}: Download folder-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
@@ -73,6 +75,8 @@
   ansible.builtin.set_fact:
     checkmk_agent_folder_specific: >-
       {{ (__checkmk_agent_folder_download_state.status is defined and __checkmk_agent_folder_download_state.status == 200) | bool }}
+  tags:
+    - download-package
 
 - name: "{{ ansible_system }}: Download GENERIC {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
