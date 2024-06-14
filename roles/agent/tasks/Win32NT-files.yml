@@ -121,13 +121,13 @@
       register: __checkmk_agent_host_download_state
       # This task may fail, as we fall back to the generic agent in that case
       failed_when: 'false'
-      changed_when: __checkmk_agent_host_download_state.status_code is defined and __checkmk_agent_host_download_state.status_code == 200
+      changed_when: __checkmk_agent_host_download_state.status is defined and __checkmk_agent_host_download_state.status == 200
       delegate_to: "{{ checkmk_agent_delegate_download }}"
 
     - name: "{{ ansible_system }}: Set Fact: Agent State: host-specific."
       ansible.builtin.set_fact:
         checkmk_agent_host_specific: >-
-          {{ (__checkmk_agent_host_download_state.status_code is defined and __checkmk_agent_host_download_state.status_code == 200) | bool }}
+          {{ (__checkmk_agent_host_download_state.status is defined and __checkmk_agent_host_download_state.status == 200) | bool }}
 
     - name: "{{ ansible_system }}: Download folder-specific {{ checkmk_agent_edition | upper }} Agent (delegated)."
       ansible.builtin.uri:
@@ -149,13 +149,13 @@
         and not checkmk_agent_host_specific | bool
       retries: 3
       failed_when: 'false'
-      changed_when: __checkmk_agent_folder_download_state.status_code is defined and __checkmk_agent_folder_download_state.status_code == 200
+      changed_when: __checkmk_agent_folder_download_state.status is defined and __checkmk_agent_folder_download_state.status == 200
       delegate_to: "{{ checkmk_agent_delegate_download }}"
 
     - name: "{{ ansible_system }}: Set Fact: Agent State: folder-specific."
       ansible.builtin.set_fact:
         checkmk_agent_folder_specific: >-
-          {{ (__checkmk_agent_folder_download_state.status_code is defined and __checkmk_agent_folder_download_state.status_code == 200) | bool }}
+          {{ (__checkmk_agent_folder_download_state.status is defined and __checkmk_agent_folder_download_state.status == 200) | bool }}
 
     - name: "{{ ansible_system }}: Download GENERIC {{ checkmk_agent_edition | upper }} Agent (delegated)."
       ansible.builtin.uri:
