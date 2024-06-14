@@ -99,8 +99,8 @@
   register: __checkmk_agent_updater_state
   changed_when: false
   failed_when: |
-    not __checkmk_agent_updater_state = 0
-    or not __checkmk_agent_updater_state = 1
+    not __checkmk_agent_updater_state == 0
+    or not __checkmk_agent_updater_state == 1
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."  # noqa no-changed-when
   become: true
