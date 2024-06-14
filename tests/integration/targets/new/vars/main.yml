@@ -1,17 +1,23 @@
 ---
+checkmk_var_server_url: "http://127.0.0.1:{{ outer_item.port }}/"
+
 test_sites:
+  - version: "2.3.0p6"
+    edition: "cre"
+    site: "stable_cre"
+    port: "5023"
   - version: "2.3.0p6"
     edition: "cee"
     site: "stable_cee"
+    port: "5123"
   - version: "2.2.0p27"
-    edition: "cee"
-    site: "old_cee"
+    edition: "cre"
+    site: "old_cre"
+    port: "5022"
   # - version: "2.1.0p44"
-  #   edition: "cee"
-  #   site: "ancient_cee"
-
-signature_key_id: 1
-signature_key_passphrase: "{{ checkmk_var_automation_secret }}"
+  #   edition: "cre"
+  #   site: "ancient_cre"
+    port: "5021"
 
 checkmk_hosts:
   - name: test1.tld
