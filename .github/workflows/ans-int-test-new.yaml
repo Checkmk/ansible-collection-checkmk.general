@@ -63,28 +63,28 @@ jobs:
 
     services:
       ancient_cre:
-        image: registry.checkmk.com/checkmk/check-mk-raw:2.1.0p44
+        image: check-mk-raw:2.1.0p44
         ports:
           - 5021:5000
         env:
           CMK_SITE_ID: "ancient_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cre:
-        image: registry.checkmk.com/checkmk/check-mk-raw:2.2.0p27
+        image: check-mk-raw:2.2.0p27
         ports:
           - 5022:5000
         env:
           CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cre:
-        image: registry.checkmk.com/checkmk/check-mk-raw:2.3.0p6
+        image: check-mk-raw:2.3.0p6
         ports:
           - 5023:5000
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cee:
-        image: registry.checkmk.com/checkmk/check-mk-enterprise:2.3.0p6
+        image: check-mk-enterprise:2.3.0p6
         ports:
           - 5123:5000
         env:
