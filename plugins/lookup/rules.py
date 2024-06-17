@@ -117,7 +117,7 @@ EXAMPLES = """
         )
     }}"
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 
 - name: Get all rules of the ruleset host_groups in folder /test
   ansible.builtin.debug:
@@ -134,7 +134,7 @@ EXAMPLES = """
         )
     }}"
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 
 - name: actice_checks:http rules that match a certain description AND comment
   ansible.builtin.debug:
@@ -152,7 +152,7 @@ EXAMPLES = """
         )
     }}"
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 
 - name: "Use variables outside the module call."
   ansible.builtin.debug:
@@ -166,7 +166,7 @@ EXAMPLES = """
   loop: "{{
     lookup('checkmk.general.rules', ruleset='host_groups') }}"
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 """
 
 RETURN = """

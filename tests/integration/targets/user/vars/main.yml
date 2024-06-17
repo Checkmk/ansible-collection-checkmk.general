@@ -1,20 +1,20 @@
 ---
 test_sites:
-  - version: "2.3.0p5"
+  - version: "2.3.0p6"
     edition: "cme"
     site: "stable_cme"
-  - version: "2.3.0p5"
+  - version: "2.3.0p6"
     edition: "cee"
     site: "stable_cee"
-  - version: "2.3.0p5"
+  - version: "2.3.0p6"
     edition: "cre"
     site: "stable_cre"
   - version: "2.2.0p27"
     edition: "cre"
     site: "old_cre"
-  - version: "2.1.0p44"
-    edition: "cre"
-    site: "ancient_cre"
+  # - version: "2.1.0p44"
+  #   edition: "cre"
+  #   site: "ancient_cre"
 
 checkmk_var_contact_groups:
   - team1

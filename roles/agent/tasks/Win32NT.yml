@@ -10,66 +10,82 @@
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
-    automation_secret: "{{ checkmk_agent_auth }}"
+    automation_secret: "{{ __checkmk_agent_auth }}"
     folder: "{{ checkmk_agent_folder | default(omit) }}"
     name: "{{ checkmk_agent_host_name }}"
     attributes: "{{ checkmk_agent_host_attributes }}"
     state: "present"
   become: false
-  register: checkmk_agent_create_result
+  register: __checkmk_agent_create_result
   failed_when: |
-    (checkmk_agent_create_result.failed == true) and
-    ("The host is already part of the specified target folder" not in checkmk_agent_create_result.msg)
+    (__checkmk_agent_create_result.failed == true) and
+    ("The host is already part of the specified target folder" not in __checkmk_agent_create_result.msg)
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_add_host | bool
   notify: "Activate changes"
 
 - name: "Ensure registration readyness."  # noqa no-handler
-  when: checkmk_agent_create_result.changed | bool
+  when: __checkmk_agent_create_result.changed | bool
   block:
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers
 
 - name: "Check for Agent Controller Binary."
   ansible.windows.win_stat:
-    path: "{{ checkmk_agent_controller_binary_path }}"
-  register: checkmk_agent_controller_binary
+    path: "{{ __checkmk_agent_controller_binary_path }}"
+  register: __checkmk_agent_controller_binary
 
 - name: "{{ ansible_system }}: Check for Agent Binary."
   ansible.windows.win_stat:
-    path: "{{ checkmk_agent_binary_path }}"
-  register: checkmk_agent_binary
+    path: "{{ __checkmk_agent_binary_path }}"
+  register: __checkmk_agent_binary
+
+- name: "{{ ansible_system }}: Read Agent Controller State."
+  ansible.windows.win_command: powershell.exe -
+  args:
+    stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\registered_connections.json ; Exit 0
+  register: __checkmk_agent_registered_connections
+  changed_when: false
+
+- name: "{{ ansible_system }}: Read Updater State."
+  ansible.windows.win_command: powershell.exe -
+  args:
+    stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\config\cmk-update-agent.state ; Exit 0
+  register: __checkmk_agent_updater_state
+  changed_when: false
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."  # noqa no-changed-when
   ansible.windows.win_command: |
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_server_protocol }} \
-    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }}
+    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth }}
   no_log: "{{ checkmk_agent_no_log | bool }}"
-  register: checkmk_agent_update_state
+  register: __checkmk_agent_update_state
   args:
     chdir: "C:\\Program Files (x86)\\checkmk\\service\\"
   when: |
     checkmk_agent_edition | lower != "cre"
-    and checkmk_agent_binary.stat.exists | bool
+    and __checkmk_agent_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
     and (checkmk_agent_secret is not defined)
+    and not '\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using Automation Secret."  # noqa no-changed-when
   ansible.windows.win_command: |
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_server_protocol }} \
-    -U {{ checkmk_agent_user }} -S {{ checkmk_agent_auth }}
+    -U {{ checkmk_agent_user }} -S {{ __checkmk_agent_auth }}
   no_log: "{{ checkmk_agent_no_log | bool }}"
-  register: checkmk_agent_update_state
+  register: __checkmk_agent_update_state
   args:
     chdir: "C:\\Program Files (x86)\\checkmk\\service\\"
   when: |
     checkmk_agent_edition | lower != "cre"
-    and checkmk_agent_binary.stat.exists | bool
+    and __checkmk_agent_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
+    and not '\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout
 
 - name: "Trigger Activate Changes to enable TLS registration."
   ansible.builtin.meta:
@@ -79,15 +95,16 @@
   ansible.windows.win_command: |
     cmk-agent-ctl.exe register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
-    -U {{ checkmk_agent_user }} -P {{ checkmk_agent_auth }} --trust-cert
+    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth }} --trust-cert
   no_log: "{{ checkmk_agent_no_log | bool }}"
-  register: checkmk_agent_tls_state
+  register: __checkmk_agent_tls_state
   args:
     chdir: "C:\\Program Files (x86)\\checkmk\\service\\"
   when: |
-    checkmk_agent_controller_binary.stat.exists | bool
+    __checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
-    and (checkmk_agent_auth is defined and checkmk_agent_auth | length)
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
 
 - name: "{{ ansible_system }}: Verify Checkmk Agent Port is open."
   ansible.windows.win_wait_for:

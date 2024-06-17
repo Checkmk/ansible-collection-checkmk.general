@@ -1,4 +1,4 @@
-requires_ansible: '>=2.14.0'
+requires_ansible: '>=2.15.0'
 
 action_groups:
   checkmk:
@@ -8,9 +8,11 @@ action_groups:
     - discovery
     - downtime
     - folder
-    - host
     - host_group
+    - host
+    - password
     - rule
     - service_group
     - tag_group
+    - timeperiod
     - user

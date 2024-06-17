@@ -2,7 +2,7 @@
 - name: "Preflight - Fail if Checkmk Edition is incorrect."
   ansible.builtin.fail:
     msg: "The provided Checkmk Edition '{{ checkmk_agent_edition }}' does  not exist or is not supported by this role."
-  when: checkmk_agent_edition | lower not in checkmk_agent_edition_mapping
+  when: checkmk_agent_edition | lower not in __checkmk_agent_edition_mapping
 
 - name: "Include OS family specific variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
@@ -27,16 +27,16 @@
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
-    automation_secret: "{{ checkmk_agent_auth }}"
+    automation_secret: "{{ __checkmk_agent_auth }}"
     host_name: "{{ checkmk_agent_host_name }}"
     state: "refresh"
   throttle: "{{ checkmk_agent_discover_max_parallel_tasks }}"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_discover | bool
-  register: checkmk_agent_refresh_state
+  register: __checkmk_agent_refresh_state
   retries: 3
   delay: 10
-  until: "checkmk_agent_refresh_state.changed | bool"
+  until: "__checkmk_agent_refresh_state.changed | bool"
 
 - name: "Update monitored services and labels on host."
   become: false
@@ -45,14 +45,14 @@
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
-    automation_secret: "{{ checkmk_agent_auth }}"
+    automation_secret: "{{ __checkmk_agent_auth }}"
     host_name: "{{ checkmk_agent_host_name }}"
     state: "fix_all"
   throttle: "{{ checkmk_agent_discover_max_parallel_tasks }}"
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_discover | bool
-  register: checkmk_agent_discovery_state
+  register: __checkmk_agent_discovery_state
   retries: 3
   delay: 10
-  until: "checkmk_agent_discovery_state.changed | bool"
+  until: "__checkmk_agent_discovery_state.changed | bool"
   notify: "Activate changes"

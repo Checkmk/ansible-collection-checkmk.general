@@ -9,7 +9,7 @@
 - name: "Preflight - Fail if Checkmk Edition is incorrect."
   ansible.builtin.fail:
     msg: "The provided Checkmk Edition '{{ checkmk_server_edition | lower }}' does  not exist or is not supported by this role."
-  when: checkmk_server_edition | lower not in checkmk_server_edition_mapping
+  when: checkmk_server_edition | lower not in __checkmk_server_edition_mapping
 
 - name: "Include OS Family specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
@@ -32,19 +32,19 @@
     name: "{{ item }}"
     state: present
   loop:
-    - "{{ checkmk_server_prerequisites }}"
+    - "{{ __checkmk_server_prerequisites }}"
   tags:
     - install-package
     - install-prerequisites
 
 - name: "Downloads Management."
-  when: not 'check-mk-' + checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
+  when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
   block:
 
     - name: "Download Checkmk Server Setup."
       ansible.builtin.get_url:
         url: "{{ checkmk_server_download_url }}"
-        dest: "/tmp/{{ checkmk_server_setup_file }}"
+        dest: "/tmp/{{ __checkmk_server_setup_file }}"
         mode: "0640"
         url_username: "{{ checkmk_server_download_user | default(omit) }}"
         url_password: "{{ checkmk_server_download_pass | default(omit) }}"
@@ -67,17 +67,17 @@
       block:
         - name: "Import Checkmk GPG Key."
           ansible.builtin.command: "gpg --import /tmp/Check_MK-pubkey.gpg"
-          register: checkmk_server_gpg_import
+          register: __checkmk_server_gpg_import
           when: checkmk_server_verify_setup | bool
-          changed_when: "'imported: 1' in checkmk_server_gpg_import"
+          changed_when: "'imported: 1' in __checkmk_server_gpg_import"
           tags:
             - import-gpg-key
 
         - name: "Verify Checkmk Setup."
-          ansible.builtin.command: gpg --verify "/tmp/{{ checkmk_server_setup_file }}"
-          register: checkmk_server_verify_state
+          ansible.builtin.command: gpg --verify "/tmp/{{ __checkmk_server_setup_file }}"
+          register: __checkmk_server_verify_state
           changed_when: false
-          failed_when: "'Bad signature' in checkmk_server_verify_state.stderr"
+          failed_when: "'Bad signature' in __checkmk_server_verify_state.stderr"
 
     - name: "Import Checkmk GPG Key."
       become: true
@@ -102,8 +102,8 @@
     omd cleanup
   args:
     executable: /bin/bash
-  changed_when: "'Uninstalling' in checkmk_server_cleanup_state.stdout"
-  register: checkmk_server_cleanup_state
+  changed_when: "'Uninstalling' in __checkmk_server_cleanup_state.stdout"
+  register: __checkmk_server_cleanup_state
   when: checkmk_server_cleanup | bool
   tags:
     - cleanup

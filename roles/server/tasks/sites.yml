@@ -10,7 +10,7 @@
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.state != "absent"
-  register: checkmk_server_sites_created
+  register: __checkmk_server_sites_created
   tags:
     - create-sites
 
@@ -23,15 +23,15 @@
     executable: /bin/bash
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
-  changed_when: "checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition | lower"
+  changed_when: "__checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition | lower"
   when: item.state != "absent"
-  register: checkmk_server_sites_versions
+  register: __checkmk_server_sites_versions
   tags:
     - update-sites
 
 - name: "Include update site tasks."  # noqa no-handler
   ansible.builtin.include_tasks: update-site.yml
-  loop: "{{ checkmk_server_sites_versions.results }}"
+  loop: "{{ __checkmk_server_sites_versions.results }}"
   when: "item.changed"
   tags:
     - update-sites
@@ -50,8 +50,8 @@
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: (item.state == "enabled") or (item.state == "started")
-  register: checkmk_server_sites_stopped
-  changed_when: "'Autostart enabled.' in checkmk_server_sites_stopped.stdout"
+  register: __checkmk_server_sites_stopped
+  changed_when: "'Autostart enabled.' in __checkmk_server_sites_stopped.stdout"
   tags:
     - enable-sites
 
@@ -66,7 +66,7 @@
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.state == "started"
-  register: checkmk_server_sites_started
+  register: __checkmk_server_sites_started
   tags:
     - start-sites
 
@@ -81,7 +81,7 @@
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.state != "started"
-  register: checkmk_server_sites_stopped
+  register: __checkmk_server_sites_stopped
   tags:
     - stop-sites
 
@@ -98,8 +98,8 @@
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: (item.state == "disabled") or (item.state == "present") or (item.state == "stopped")
-  register: checkmk_server_sites_stopped
-  changed_when: "'Autostart disabled.' in checkmk_server_sites_stopped.stdout"
+  register: __checkmk_server_sites_stopped
+  changed_when: "'Autostart disabled.' in __checkmk_server_sites_stopped.stdout"
   tags:
     - disable-sites
 
@@ -114,7 +114,7 @@
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   when: item.state == "absent"
-  register: checkmk_server_sites_removed
+  register: __checkmk_server_sites_removed
   tags:
     - destroy-sites
 
@@ -162,8 +162,8 @@
   ansible.builtin.debug:
     msg:
       - "Just a trigger."
-  loop: "{{ checkmk_server_sites_created.results }}"
-  when: checkmk_server_sites_created.changed | bool and not item.item.admin_pw is defined
+  loop: "{{ __checkmk_server_sites_created.results }}"
+  when: __checkmk_server_sites_created.changed | bool and not item.item.admin_pw is defined
   changed_when: true
   notify: Warn site admin password
   no_log: "{{ checkmk_server_no_log | bool }}"
