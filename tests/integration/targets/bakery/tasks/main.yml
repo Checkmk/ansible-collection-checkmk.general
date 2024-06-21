@@ -5,16 +5,26 @@
 - name: "Inject a Key into the Sites."  # This is a hack and should never be done in production!
   ansible.builtin.copy:
     src: agent_signature_keys.mk
-    dest: "/omd/sites/{{ item.site }}/etc/check_mk/multisite.d/wato/agent_signature_keys.mk"
+    dest: "/tmp/agent_signature_keys.mk"
+    owner: root
+    group: root
+    mode: "0660"
+  loop: "{{ test_sites }}"
+  # when: (download_pass is defined and download_pass | length) or item.edition == "cre"
+
+- name: Copy a file into the container with owner, group, and mode set
+  community.docker.docker_container_copy_into:
+    container: "{{ item.site }}"
+    path: /tmp
+    container_path: "/omd/sites/{{ item.site }}/etc/check_mk/multisite.d/wato/agent_signature_keys.mk"
     owner: "{{ item.site }}"
     group: "{{ item.site }}"
     mode: "0660"
   loop: "{{ test_sites }}"
-  when: (download_pass is defined and download_pass | length) or item.edition == "cre"
 
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml
   loop: "{{ test_sites }}"
   loop_control:
     loop_var: outer_item
-  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  # when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
