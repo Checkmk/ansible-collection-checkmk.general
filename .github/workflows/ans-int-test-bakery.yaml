@@ -61,26 +61,19 @@ jobs:
             python: '3.10'
 
     services:
-      ancient_cre:
-        image: checkmk/check-mk-raw:2.1.0p44
+      ancient_cce:
+        image: checkmk/check-mk-cloud:2.1.0p44
         ports:
-          - 5021:5000
+          - 5221:5000
         env:
-          CMK_SITE_ID: "ancient_cre"
+          CMK_SITE_ID: "ancient_cce"
           CMK_PASSWORD: "Sup3rSec4et!"
-      old_cre:
-        image: checkmk/check-mk-raw:2.2.0p27
+      old_cce:
+        image: checkmk/check-mk-cloud:2.2.0p27
         ports:
-          - 5022:5000
+          - 5222:5000
         env:
-          CMK_SITE_ID: "old_cre"
-          CMK_PASSWORD: "Sup3rSec4et!"
-      stable_cre:
-        image: checkmk/check-mk-raw:2.3.0p6
-        ports:
-          - 5023:5000
-        env:
-          CMK_SITE_ID: "stable_cre"
+          CMK_SITE_ID: "old_cce"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cce:
         image: checkmk/check-mk-cloud:2.3.0p6
@@ -109,9 +102,6 @@ jobs:
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
         env:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
-
-      - name: "Install Docker Collection."
-        run: ansible-galaxy collection install community.docker
 
       - name: Run integration test
         run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }}
