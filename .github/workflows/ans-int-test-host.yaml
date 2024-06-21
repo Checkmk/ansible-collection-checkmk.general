@@ -57,6 +57,8 @@ jobs:
             python: '3.9'
           - ansible: devel
             python: '3.9'
+          - ansible: devel
+            python: '3.10'
 
     services:
       ancient_cre:
