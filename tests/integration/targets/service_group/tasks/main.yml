@@ -7,4 +7,4 @@
   loop: "{{ test_sites }}"
   loop_control:
     loop_var: outer_item
-  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  # when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
