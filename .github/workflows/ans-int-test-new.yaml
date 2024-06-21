@@ -101,7 +101,7 @@ jobs:
     #       username: d-gh-ansible-dl
     #       password: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
     #   stable_cme:
-    #     image: registry.checkmk.com/managed/check-mk-managed:2.3.0p6
+    #     image: registry.checkmk.com/managed/check-mk-managed:2.3.0p6 && sleep 10
     #     ports:
     #       - 5323:5000
     #     env:
