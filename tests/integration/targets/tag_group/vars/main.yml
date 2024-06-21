@@ -1,10 +1,6 @@
 ---
 test_sites:
   - version: "2.3.0p6"
-    edition: "cme"
-    site: "stable_cme"
-    port: "5323"
-  - version: "2.3.0p6"
     edition: "cce"
     site: "stable_cce"
     port: "5223"
