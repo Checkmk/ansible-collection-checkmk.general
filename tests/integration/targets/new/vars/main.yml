@@ -8,7 +8,6 @@ test_sites:
     edition: "cce"
     site: "stable_cce"
     port: "5223"
-    port: "5123"
   - version: "2.2.0p27"
     edition: "cre"
     site: "old_cre"
