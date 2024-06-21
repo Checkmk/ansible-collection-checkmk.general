@@ -102,7 +102,10 @@ jobs:
         run: |
           docker run -d -p 5323:5000 \
           -e CMK_SITE_ID="stable_cme" -e CMK_PASSWORD='Sup3rSec4et!' \
-          registry.checkmk.com/managed/check-mk-managed:2.3.0p6 && sleep 10
+          registry.checkmk.com/managed/check-mk-managed:2.3.0p6 && sleep 10 && \
+          docker ps -a && \
+          ss -tulpen | grep 5323 && \
+          curl http://127.0.0.1:5323
 
       - name: Check out code
         uses: actions/checkout@v4
