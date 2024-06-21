@@ -23,7 +23,7 @@ checkmk.general.rules lookup -- Get a list rules
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.1.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -560,7 +560,7 @@ Examples
             )
         }}"
       loop_control:
-          label: "{{ item.id }}"
+        label: "{{ item.id }}"
 
     - name: Get all rules of the ruleset host_groups in folder /test
       ansible.builtin.debug:
@@ -577,7 +577,7 @@ Examples
             )
         }}"
       loop_control:
-          label: "{{ item.id }}"
+        label: "{{ item.id }}"
 
     - name: actice_checks:http rules that match a certain description AND comment
       ansible.builtin.debug:
@@ -595,7 +595,7 @@ Examples
             )
         }}"
       loop_control:
-          label: "{{ item.id }}"
+        label: "{{ item.id }}"
 
     - name: "Use variables outside the module call."
       ansible.builtin.debug:
@@ -609,7 +609,7 @@ Examples
       loop: "{{
         lookup('checkmk.general.rules', ruleset='host_groups') }}"
       loop_control:
-          label: "{{ item.id }}"
+        label: "{{ item.id }}"
 
 
 

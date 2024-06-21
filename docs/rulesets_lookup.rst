@@ -23,7 +23,7 @@ checkmk.general.rulesets lookup -- Search rulesets
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.1.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -571,7 +571,7 @@ Examples
           )
         }}"
       loop_control:
-          label: "{{ item.id }}"
+        label: "{{ item.id }}"
 
     - name: Get all used deprecated rulesets
       ansible.builtin.debug:
@@ -589,7 +589,7 @@ Examples
           )
         }}"
       loop_control:
-          label: "{{ item.0.id }}"
+        label: "{{ item.0.id }}"
 
     - name: "Use variables outside the module call."
       ansible.builtin.debug:
@@ -603,7 +603,7 @@ Examples
       loop: "{{
         lookup('checkmk.general.rulesets', regex='', rulesets_deprecated=True, rulesets_used=True) }}"
       loop_control:
-          label: "{{ item.0.id }}"
+        label: "{{ item.0.id }}"
 
 
 

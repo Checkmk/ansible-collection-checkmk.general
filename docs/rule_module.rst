@@ -23,7 +23,7 @@ checkmk.general.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.0.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.1.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -821,32 +821,32 @@ Examples
         rule:
           conditions: {
             "host_label_groups": [
-                {
+              {
+                operator: "and",
+                label_group: [
+                  {
                     operator: "and",
-                    label_group: [
-                        {
-                            operator: "and",
-                            label: "cmk/site:beta"
-                        },
-                        {
-                            operator: "or",
-                            label: "cmk/os_family:linux"
-                        }
-                    ],
-                },
-                {
+                    label: "cmk/site:beta"
+                  },
+                  {
                     operator: "or",
-                    label_group: [
-                        {
-                            operator: "and",
-                            label: "cmk/site:alpha"
-                        },
-                        {
-                            operator: "or",
-                            label: "cmk/os_family:windows"
-                        }
-                    ],
-                },
+                    label: "cmk/os_family:linux"
+                  }
+                ],
+              },
+              {
+                operator: "or",
+                label_group: [
+                  {
+                    operator: "and",
+                    label: "cmk/site:alpha"
+                  },
+                  {
+                    operator: "or",
+                    label: "cmk/os_family:windows"
+                  }
+                ],
+              },
             ],
             "host_name": {
               "match_on": [

@@ -4,6 +4,27 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.1.0
+======
+
+Release Summary
+---------------
+
+Some love for the agent role.
+
+Minor Changes
+-------------
+
+- Agent role - All internal variables are now prefixed with a double underscore (`__`). If you hooked into any variable, which is not in `defaults/main.yml` you need to check your inventory. Be advised, that it is bad practice, to use internal variables directly.
+- Agent role - Improve idempotency by reading the registration states both for Agent registration and Updater registration and skipping the registration if it is not necessary.
+- Server role - All internal variables are now prefixed with a double underscore (`__`). If you hooked into any variable, which is not in `defaults/main.yml` you need to check your inventory. Be advised, that it is bad practice, to use internal variables directly.
+- Testing - Testing against Python 3.8 was removed for all modules.
+
+Bugfixes
+--------
+
+- Agent role - For Windows hosts the download of correct setup files was broken due to a mixup in the modules used to fetch the files. The role would always fall back to the GENERIC agent, even if a specific agent was available. This is fixed now.
+
 v5.0.0
 ======
 

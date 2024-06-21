@@ -16,6 +16,9 @@ test_sites:
     edition: "cre"
     site: "ancient_cre"
     port: "5021"
+  - version: "2.1.0p44"
+    edition: "cre"
+    site: "ancient_cre"
 
 checkmk_hosts:
   - name: test1.tld
