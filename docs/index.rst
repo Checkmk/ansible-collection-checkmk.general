@@ -9,7 +9,7 @@
 Checkmk.General
 ===============
 
-Collection version 5.0.0
+Collection version 5.1.0
 
 .. contents::
    :local:
@@ -29,7 +29,7 @@ The official Checkmk Ansible collection - brought to you by the Checkmk company.
 
 **Supported ansible-core versions:**
 
-* 2.14.0 or newer
+* 2.15.0 or newer
 
 .. ansible-links::
 

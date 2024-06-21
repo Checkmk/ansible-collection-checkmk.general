@@ -13,6 +13,8 @@
       retries: 3
       delay: 10
       until: "not __checkmk_agent_vanilla_download_state.failed | bool"
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Download host-specific {{ checkmk_agent_edition | upper }} Agent."
       ansible.windows.win_get_url:
@@ -33,12 +35,15 @@
       # This task may fail, as we fall back to the generic agent in that case
       failed_when: 'false'
       changed_when: __checkmk_agent_host_download_state.status_code is defined and __checkmk_agent_host_download_state.status_code == 200
-      delegate_to: "{{ checkmk_agent_delegate_download }}"
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Set Fact: Agent State: host-specific."
       ansible.builtin.set_fact:
         checkmk_agent_host_specific: >-
           {{ (__checkmk_agent_host_download_state.status_code is defined and __checkmk_agent_host_download_state.status_code == 200) | bool }}
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Download folder-specific {{ checkmk_agent_edition | upper }} Agent."
       ansible.windows.win_get_url:
@@ -61,12 +66,15 @@
       retries: 3
       failed_when: 'false'
       changed_when: __checkmk_agent_folder_download_state.status_code is defined and __checkmk_agent_folder_download_state.status_code == 200
-      delegate_to: "{{ checkmk_agent_delegate_download }}"
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Set Fact: Agent State: folder-specific."
       ansible.builtin.set_fact:
         checkmk_agent_folder_specific: >-
           {{ (__checkmk_agent_folder_download_state.status_code is defined and __checkmk_agent_folder_download_state.status_code == 200) | bool }}
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Download GENERIC {{ checkmk_agent_edition | upper }} Agent."
       ansible.windows.win_get_url:
@@ -84,8 +92,8 @@
         checkmk_agent_edition | lower != "cre"
         and not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
       retries: 3
-      delegate_to: "{{ checkmk_agent_delegate_download }}"
-
+      tags:
+        - download-package
 
 - name: "{{ ansible_system }}: Download to delegated Host."
   when: checkmk_agent_delegate_download != inventory_hostname
@@ -102,6 +110,8 @@
       delay: 10
       until: "not __checkmk_agent_vanilla_download_state.failed | bool"
       delegate_to: "{{ checkmk_agent_delegate_download }}"
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Download host-specific {{ checkmk_agent_edition | upper }} Agent (delegated)."
       ansible.builtin.uri:
@@ -123,11 +133,15 @@
       failed_when: 'false'
       changed_when: __checkmk_agent_host_download_state.status is defined and __checkmk_agent_host_download_state.status == 200
       delegate_to: "{{ checkmk_agent_delegate_download }}"
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Set Fact: Agent State: host-specific."
       ansible.builtin.set_fact:
         checkmk_agent_host_specific: >-
           {{ (__checkmk_agent_host_download_state.status is defined and __checkmk_agent_host_download_state.status == 200) | bool }}
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Download folder-specific {{ checkmk_agent_edition | upper }} Agent (delegated)."
       ansible.builtin.uri:
@@ -151,11 +165,15 @@
       failed_when: 'false'
       changed_when: __checkmk_agent_folder_download_state.status is defined and __checkmk_agent_folder_download_state.status == 200
       delegate_to: "{{ checkmk_agent_delegate_download }}"
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Set Fact: Agent State: folder-specific."
       ansible.builtin.set_fact:
         checkmk_agent_folder_specific: >-
           {{ (__checkmk_agent_folder_download_state.status is defined and __checkmk_agent_folder_download_state.status == 200) | bool }}
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Download GENERIC {{ checkmk_agent_edition | upper }} Agent (delegated)."
       ansible.builtin.uri:
@@ -174,6 +192,8 @@
         and not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
       retries: 3
       delegate_to: "{{ checkmk_agent_delegate_download }}"
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Transfer host-specific {{ checkmk_agent_edition | upper }} Agent."
       ansible.windows.win_copy:
@@ -182,6 +202,8 @@
       when: |
         checkmk_agent_edition | lower != "cre"
         and checkmk_agent_host_specific | bool
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Transfer GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
       ansible.windows.win_copy:
@@ -190,6 +212,8 @@
       when: |
         checkmk_agent_edition | lower != "cre"
         and not checkmk_agent_host_specific | bool
+      tags:
+        - download-package
 
     - name: "{{ ansible_system }}: Transfer Vanilla {{ checkmk_agent_edition | upper }} Agent."
       ansible.windows.win_copy:
@@ -197,3 +221,5 @@
         dest: "{{ __checkmk_agent_agent.file.cre }}"
       when: |
         checkmk_agent_edition | lower == "cre"
+      tags:
+        - download-package
