@@ -73,6 +73,10 @@ options:
         description: Allow extended functionality instead of the expected REST API behavior.
         type: bool
         default: true
+    create_only:
+        description: Create a host only, without updating existing hosts.
+        type: bool
+        default: false
     # new_name:
     #     description: The new name of the managed host.
     #     required: false
@@ -538,6 +542,8 @@ class HostAPI(CheckmkAPI):
         return changes
 
     def _detect_changes(self):
+        if self.params.get("create_only"):
+            return []
         loc_functions = {
             "folder": self._detect_changes_folder,
             "attributes": self._detect_changes_attributes,
@@ -836,6 +842,7 @@ def run_module():
         folder=dict(type="str", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
         extended_functionality=dict(type="bool", required=False, default=True),
+        create_only=dict(type="bool", required=False, default=False),
         # new_name=dict(type="str", required=False),
         nodes=dict(type="list", required=False, elements="str"),
         add_nodes=dict(type="list", required=False, elements="str"),
