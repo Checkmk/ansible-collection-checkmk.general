@@ -2,12 +2,12 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
   ansible.builtin.set_fact:
     customer: "provider"
-  when: (outer_item.edition == "cme")
+  when: outer_item.edition == "cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
   ansible.builtin.set_fact:
     customer: null
-  when: not (outer_item.edition == "cme")
+  when: not outer_item.edition == "cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create new passwords."
   password:
@@ -46,7 +46,7 @@
   delegate_to: localhost
   loop: "{{ checkmk_passwords_create_cme }}"
   no_log: true
-  when: (outer_item.edition == "cme")
+  when: outer_item.edition == "cme"
   register: checkmk_password_status
   failed_when: "'Missing required parameter' not in checkmk_password_status.msg"
 
