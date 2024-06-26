@@ -111,7 +111,7 @@ Whether to back up sites when updating between versions. Only disable this if yo
 Directory to backup sites to when updating between versions.
 Of course `/tmp/` is not a sane backup location, so change it!
 
-    checkmk_agent_no_log: 'true'
+    checkmk_server_no_log: 'true'
 
 Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default.
 Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
