@@ -106,7 +106,7 @@
   become: true
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_server_protocol }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_registration_server_protocol }} \
     -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth }}
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_update_state
@@ -122,7 +122,7 @@
   become: true
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
-    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_server_protocol }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_registration_server_protocol }} \
     -U {{ checkmk_agent_user }} -S {{ __checkmk_agent_auth }}
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_update_state
