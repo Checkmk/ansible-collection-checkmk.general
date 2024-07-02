@@ -1,0 +1,2 @@
+bugfixes:
+  - Downtime module - Downtimes are now correctly removed when only specifying a single service
