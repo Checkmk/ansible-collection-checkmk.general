@@ -1,12 +1,12 @@
 ---
 test_sites:
-  - version: "2.3.0p6"
+  - version: "2.3.0p9"
     edition: "cee"
     site: "stable_cee"
-  - version: "2.2.0p27"
+  - version: "2.2.0p30"
     edition: "cee"
     site: "old_cee"
-  # - version: "2.1.0p44"
+  # - version: "2.1.0p45"
   #   edition: "cee"
   #   site: "ancient_cee"
 
