@@ -40,18 +40,18 @@
     path: "{{ __checkmk_agent_binary_path }}"
   register: __checkmk_agent_binary
 
-- name: "{{ ansible_system }}: Read Agent Controller State."
-  ansible.windows.win_command: powershell.exe -
-  args:
-    stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\registered_connections.json ; Exit 0
-  register: __checkmk_agent_registered_connections
-  changed_when: false
-
 - name: "{{ ansible_system }}: Read Updater State."
   ansible.windows.win_command: powershell.exe -
   args:
     stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\config\cmk-update-agent.state ; Exit 0
   register: __checkmk_agent_updater_state
+  changed_when: false
+
+- name: "{{ ansible_system }}: Read Agent Controller State."
+  ansible.windows.win_command: powershell.exe -
+  args:
+    stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\registered_connections.json ; Exit 0
+  register: __checkmk_agent_registered_connections
   changed_when: false
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."
