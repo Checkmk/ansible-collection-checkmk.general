@@ -91,10 +91,6 @@
     and ('\'last_error\': None' in __checkmk_agent_updater_state.stdout))
   changed_when: "'Successfully registered agent of host' in __checkmk_agent_update_state.stderr"
 
-- name: "Trigger Activate Changes to enable TLS Registration."
-  ansible.builtin.meta:
-    flush_handlers
-
 - name: "{{ ansible_system }}: Register Agent for TLS."
   ansible.windows.win_command: |
     cmk-agent-ctl.exe register -H {{ checkmk_agent_host_name }} \
