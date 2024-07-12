@@ -116,7 +116,8 @@
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
     and (checkmk_agent_secret is not defined)
-    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_updater_state.stdout
+    and not ((checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_updater_state.stdout)
+    and ('"error": null' in __checkmk_agent_updater_state.stdout) )
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using Automation Secret."  # noqa no-changed-when
   become: true
@@ -131,7 +132,8 @@
     and __checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
-    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_updater_state.stdout
+    and not ((checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_updater_state.stdout)
+    and ('"error": null' in __checkmk_agent_updater_state.stdout) )
 
 - name: "{{ ansible_system }}: Register Agent for TLS."  # noqa no-changed-when
   become: true
