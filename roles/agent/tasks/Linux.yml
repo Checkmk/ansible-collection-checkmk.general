@@ -141,7 +141,7 @@
   ansible.builtin.meta:
     flush_handlers
 
-- name: "{{ ansible_system }}: Register Agent for TLS."  # noqa no-changed-when
+- name: "{{ ansible_system }}: Register Agent for TLS."
   become: true
   ansible.builtin.shell: |
     cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
@@ -154,6 +154,7 @@
     and checkmk_agent_tls | bool
     and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
+  changed_when: "'Registration complete' in __checkmk_agent_tls_state.stdout"
 
 - name: "{{ ansible_system }}: Verify Checkmk Agent Port is open."
   ansible.builtin.wait_for:
