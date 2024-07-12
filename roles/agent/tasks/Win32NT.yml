@@ -91,7 +91,7 @@
     and ('\'last_error\': None' in __checkmk_agent_updater_state.stdout))
   changed_when: "'Successfully registered agent of host' in __checkmk_agent_update_state.stderr"
 
-- name: "Trigger Activate Changes to enable TLS registration."
+- name: "Trigger Activate Changes to enable TLS Registration."
   ansible.builtin.meta:
     flush_handlers
 
