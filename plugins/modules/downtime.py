@@ -221,7 +221,10 @@ def _get_current_downtimes(module, base_url, headers):
                 )
             ]
         else:
-            filters = ['{"op": "~", "left": "service_description", "right": "%s"}']
+            filters = [
+                '{"op": "~", "left": "service_description", "right": "%s"}'
+                % service_descriptions[0]
+            ]
         filters.append('{"op": "=", "left": "is_service", "right": "1"}')
     else:
         filters.append('{"op": "=", "left": "is_service", "right": "0"}')
@@ -356,6 +359,7 @@ def remove_downtime(module, base_url, headers):
         else:
             query_filters.append(
                 '{"op": "~", "left": "service_description", "right": "%s"}'
+                % service_descriptions[0]
             )
 
     if len(current_downtimes) == 0:  # and comment is not None:
