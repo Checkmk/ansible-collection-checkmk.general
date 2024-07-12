@@ -19,6 +19,7 @@ checkmk_agent_auto_activate: 'false'
 checkmk_agent_add_host: 'false'
 checkmk_agent_discover: 'false'
 checkmk_agent_discover_max_parallel_tasks: 0
+checkmk_agent_force_foreign_changes: 'false'
 checkmk_agent_update: 'false'
 checkmk_agent_tls: 'false'
 checkmk_agent_configure_firewall: 'true'
@@ -30,7 +31,6 @@ checkmk_agent_delegate_api_calls: localhost
 checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 checkmk_agent_host_name: "{{ inventory_hostname }}"
 checkmk_agent_folder: "{{ checkmk_var_folder_path | default('/') }}"
-checkmk_agent_force_foreign_changes: 'false'
 checkmk_agent_host_attributes:
   ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
 checkmk_agent_mode: pull
