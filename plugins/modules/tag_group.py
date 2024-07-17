@@ -178,7 +178,7 @@ class TaggroupAPI(CheckmkAPI):
         # Get Checkmk-version
         self.ver = self.getversion()
 
-    def post(self): # Create taggroup
+    def post(self):  # Create taggroup
         if not self.params.get("title") or not self.params.get("tags"):
             result = RESULT(
                 http_code=0,
@@ -203,7 +203,7 @@ class TaggroupAPI(CheckmkAPI):
                 method="POST",
             )
 
-    def put(self): # Update taggroup
+    def put(self):  # Update taggroup
         data = normalize_data(self.params, self.ver)
 
         return self._fetch(
@@ -212,7 +212,7 @@ class TaggroupAPI(CheckmkAPI):
             method="PUT",
         )
 
-    def delete(self): # Remove taggroup
+    def delete(self):  # Remove taggroup
         data = {}
 
         return self._fetch(
