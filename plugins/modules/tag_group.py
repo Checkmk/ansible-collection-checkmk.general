@@ -292,7 +292,9 @@ def run_module():
     if module.params.get("state") == "present":
         if taggroup.current.http_code == 200:
             # If tag group has changed then update it.
-            if changes_detected(module, json.loads(taggroup.current.content.decode("utf-8"))):
+            if changes_detected(
+                module, json.loads(taggroup.current.content.decode("utf-8"))
+            ):
                 taggroup.headers["If-Match"] = taggroup.current.etag
                 result = taggroup.put()
 
