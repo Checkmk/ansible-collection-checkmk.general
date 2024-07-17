@@ -40,13 +40,6 @@
     path: "{{ __checkmk_agent_binary_path }}"
   register: __checkmk_agent_binary
 
-- name: "{{ ansible_system }}: Read Agent Controller State."
-  ansible.windows.win_command: powershell.exe -
-  args:
-    stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\registered_connections.json ; Exit 0
-  register: __checkmk_agent_registered_connections
-  changed_when: false
-
 - name: "{{ ansible_system }}: Read Updater State."
   ansible.windows.win_command: powershell.exe -
   args:
@@ -54,7 +47,14 @@
   register: __checkmk_agent_updater_state
   changed_when: false
 
-- name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."  # noqa no-changed-when
+- name: "{{ ansible_system }}: Read Agent Controller State."
+  ansible.windows.win_command: powershell.exe -
+  args:
+    stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\registered_connections.json ; Exit 0
+  register: __checkmk_agent_registered_connections
+  changed_when: false
+
+- name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."
   ansible.windows.win_command: |
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_server_protocol }} \
@@ -69,9 +69,11 @@
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length)
     and (checkmk_agent_secret is not defined)
-    and not '\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout
+    and not (('\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout)
+    and ('\'last_error\': None' in __checkmk_agent_updater_state.stdout))
+  changed_when: "'Successfully registered agent of host' in __checkmk_agent_update_state.stderr"
 
-- name: "{{ ansible_system }}: Register Agent for automatic Updates using Automation Secret."  # noqa no-changed-when
+- name: "{{ ansible_system }}: Register Agent for automatic Updates using Automation Secret."
   ansible.windows.win_command: |
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_registration_server_protocol }} \
@@ -85,13 +87,11 @@
     and __checkmk_agent_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length)
-    and not '\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout
+    and not (('\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout)
+    and ('\'last_error\': None' in __checkmk_agent_updater_state.stdout))
+  changed_when: "'Successfully registered agent of host' in __checkmk_agent_update_state.stderr"
 
-- name: "Trigger Activate Changes to enable TLS registration."
-  ansible.builtin.meta:
-    flush_handlers
-
-- name: "{{ ansible_system }}: Register Agent for TLS."  # noqa no-changed-when
+- name: "{{ ansible_system }}: Register Agent for TLS."
   ansible.windows.win_command: |
     cmk-agent-ctl.exe register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
@@ -105,6 +105,7 @@
     and checkmk_agent_tls | bool
     and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
+  changed_when: "'Registration complete' in __checkmk_agent_tls_state.stdout"
 
 - name: "{{ ansible_system }}: Verify Checkmk Agent Port is open."
   ansible.windows.win_wait_for:
