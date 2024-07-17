@@ -1,14 +1,14 @@
 ---
 test_sites:
-  - version: "2.3.0p9"
+  - version: "2.3.0p10"
     edition: "cee"
     site: "stable_cee"
-  - version: "2.3.0p9"
+  - version: "2.3.0p10"
     edition: "cre"
     site: "stable_cre"
-  - version: "2.2.0p30"
+  - version: "2.2.0p31"
     edition: "cre"
     site: "old_cre"
-  # - version: "2.1.0p45"
+  # - version: "2.1.0p46"
   #   edition: "cre"
   #   site: "ancient_cre"
