@@ -130,10 +130,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.types import RESUL
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
-
-# from ansible_collections.checkmk.general.plugins.module_utils.version import (
-#     CheckmkVersion,
-# )
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
 
 # We count 404 not as failed, because we want to know if the taggroup exists or not.
 HTTP_CODES_GET = {
@@ -142,7 +141,7 @@ HTTP_CODES_GET = {
 }
 
 
-def normalize_data(raw_data):
+def normalize_data(raw_data, ver):
     data = {
         "title": raw_data.get("title", ""),
         "topic": raw_data.get("topic", ""),
@@ -157,14 +156,29 @@ def normalize_data(raw_data):
     # The API uses "ident" instead of "id" for the put & post endpoints
     if "tags" in data:
         for d in data["tags"]:
-            if "id" in d:
+            if "id" in d and ver < CheckmkVersion("2.4.0"):
                 d["ident"] = d.pop("id")
 
     return data
 
 
-class TaggroupCreateAPI(CheckmkAPI):
-    def post(self):
+class TaggroupAPI(CheckmkAPI):
+    def __init__(self, module):
+        super().__init__(module)
+
+        data = {}
+        # Get current taggroup
+        self.current = self._fetch(
+            code_mapping=HTTP_CODES_GET,
+            endpoint="/objects/host_tag_group/%s" % self.params.get("name"),
+            data=data,
+            method="GET",
+        )
+
+        # Get Checkmk-version
+        self.ver = self.getversion()
+
+    def post(self): # Create taggroup
         if not self.params.get("title") or not self.params.get("tags"):
             result = RESULT(
                 http_code=0,
@@ -177,8 +191,11 @@ class TaggroupCreateAPI(CheckmkAPI):
             return result
 
         else:
-            data = normalize_data(self.params)
-            data["ident"] = self.params.get("name")
+            data = normalize_data(self.params, self.ver)
+            if self.ver < CheckmkVersion("2.4.0"):
+                data["ident"] = self.params.get("name")
+            else:
+                data["id"] = self.params.get("name")
 
             return self._fetch(
                 endpoint="/domain-types/host_tag_group/collections/all",
@@ -186,10 +203,8 @@ class TaggroupCreateAPI(CheckmkAPI):
                 method="POST",
             )
 
-
-class TaggroupUpdateAPI(CheckmkAPI):
-    def put(self):
-        data = normalize_data(self.params)
+    def put(self): # Update taggroup
+        data = normalize_data(self.params, self.ver)
 
         return self._fetch(
             endpoint="/objects/host_tag_group/%s" % self.params.get("name"),
@@ -197,9 +212,7 @@ class TaggroupUpdateAPI(CheckmkAPI):
             method="PUT",
         )
 
-
-class TaggroupDeleteAPI(CheckmkAPI):
-    def delete(self):
+    def delete(self): # Remove taggroup
         data = {}
 
         return self._fetch(
@@ -207,18 +220,6 @@ class TaggroupDeleteAPI(CheckmkAPI):
             % (self.params.get("name"), self.params.get("repair")),
             # data=data,
             method="DELETE",
-        )
-
-
-class TaggroupGetAPI(CheckmkAPI):
-    def get(self):
-        data = {}
-
-        return self._fetch(
-            code_mapping=HTTP_CODES_GET,
-            endpoint="/objects/host_tag_group/%s" % self.params.get("name"),
-            data=data,
-            method="GET",
         )
 
 
@@ -286,35 +287,31 @@ def run_module():
         changed=False,
     )
 
-    taggroupget = TaggroupGetAPI(module)
-    current = taggroupget.get()
+    taggroup = TaggroupAPI(module)
 
     if module.params.get("state") == "present":
-        if current.http_code == 200:
+        if taggroup.current.http_code == 200:
             # If tag group has changed then update it.
-            if changes_detected(module, json.loads(current.content.decode("utf-8"))):
-                taggroupupdate = TaggroupUpdateAPI(module)
-                taggroupupdate.headers["If-Match"] = current.etag
-                result = taggroupupdate.put()
+            if changes_detected(module, json.loads(taggroup.current.content.decode("utf-8"))):
+                taggroup.headers["If-Match"] = taggroup.current.etag
+                result = taggroup.put()
 
                 time.sleep(3)
 
-        elif current.http_code == 404:
+        elif taggroup.current.http_code == 404:
             # Tag group is not there. Create it.
-            taggroupcreate = TaggroupCreateAPI(module)
 
-            result = taggroupcreate.post()
+            result = taggroup.post()
 
             time.sleep(3)
 
     if module.params.get("state") == "absent":
         # Only delete if the Taggroup exists
-        if current.http_code == 200:
-            taggroupdelete = TaggroupDeleteAPI(module)
-            result = taggroupdelete.delete()
+        if taggroup.current.http_code == 200:
+            result = taggroup.delete()
 
             time.sleep(3)
-        elif current.http_code == 404:
+        elif taggroup.current.http_code == 404:
             result = RESULT(
                 http_code=0,
                 msg="Taggroup doesn't exist.",
