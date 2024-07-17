@@ -101,6 +101,9 @@
   ansible.builtin.command: cat /var/lib/cmk-agent/registered_connections.json
   register: __checkmk_agent_registered_connections
   changed_when: false
+  failed_when: |
+    not __checkmk_agent_registered_connections.rc == 0
+    and not __checkmk_agent_registered_connections.rc == 1
 
 - name: "{{ ansible_system }}: Register Agent for automatic Updates using User Password."
   become: true
