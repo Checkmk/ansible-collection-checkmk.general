@@ -1,0 +1,5 @@
+minor_changes:
+  - Tag_group module - Enable module for Checkmk 2.4.0 by using
+    `id` instead of `ident` to identify tag groups and their tags.
+    See https://checkmk.com/werk/16364 for background information.
+  - Tag_group module - Migrate module to new collection API.
