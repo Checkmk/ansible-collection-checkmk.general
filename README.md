@@ -19,6 +19,7 @@ This is an open source endeavour, on which we want to collaborate with the commu
 ## Dependencies
 
  - [ansible.posix](https://github.com/ansible-collections/ansible.posix)
+ - [ansible.utils](https://github.com/ansible-collections/ansible.utils)
  - [community.general](https://github.com/ansible-collections/community.general)
 
 Although the Ansible project notes, that collections should have no or very little dependencies, we want to make sure the  collection works for you out-of-the-box. Currently we only depend on very basic collections, which are most likely already installed in your environment. For version constraints, see [galaxy.yml](galaxy.yml).
