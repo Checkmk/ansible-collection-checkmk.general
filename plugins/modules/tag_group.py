@@ -141,27 +141,6 @@ HTTP_CODES_GET = {
 }
 
 
-def normalize_data(raw_data, ver):
-    data = {
-        "title": raw_data.get("title", ""),
-        "topic": raw_data.get("topic", ""),
-        "help": raw_data.get("help", ""),
-        "tags": raw_data.get("tags", ""),
-        "repair": raw_data.get("repair"),
-    }
-
-    # Remove all keys without value, as they would be emptied.
-    data = {key: val for key, val in data.items() if val}
-
-    # The API uses "ident" instead of "id" for the put & post endpoints
-    if "tags" in data:
-        for d in data["tags"]:
-            if "id" in d and ver < CheckmkVersion("2.4.0"):
-                d["ident"] = d.pop("id")
-
-    return data
-
-
 class TaggroupAPI(CheckmkAPI):
     def __init__(self, module):
         super().__init__(module)
@@ -178,6 +157,26 @@ class TaggroupAPI(CheckmkAPI):
         # Get Checkmk-version
         self.ver = self.getversion()
 
+    def normalize_data(self):
+        data = {
+            "title": self.params.get("title", ""),
+            "topic": self.params.get("topic", ""),
+            "help": self.params.get("help", ""),
+            "tags": self.params.get("tags", ""),
+            "repair": self.params.get("repair"),
+        }
+
+        # Remove all keys without value, as they would be emptied.
+        data = {key: val for key, val in data.items() if val}
+
+        # The API uses "ident" instead of "id" for the put & post endpoints
+        if "tags" in data:
+            for d in data["tags"]:
+                if "id" in d and self.ver < CheckmkVersion("2.4.0"):
+                    d["ident"] = d.pop("id")
+
+        return data
+
     def post(self):  # Create taggroup
         if not self.params.get("title") or not self.params.get("tags"):
             result = RESULT(
@@ -191,7 +190,7 @@ class TaggroupAPI(CheckmkAPI):
             return result
 
         else:
-            data = normalize_data(self.params, self.ver)
+            data = self.normalize_data()
             if self.ver < CheckmkVersion("2.4.0"):
                 data["ident"] = self.params.get("name")
             else:
@@ -204,7 +203,7 @@ class TaggroupAPI(CheckmkAPI):
             )
 
     def put(self):  # Update taggroup
-        data = normalize_data(self.params, self.ver)
+        data = self.normalize_data()
 
         return self._fetch(
             endpoint="/objects/host_tag_group/%s" % self.params.get("name"),
@@ -213,12 +212,10 @@ class TaggroupAPI(CheckmkAPI):
         )
 
     def delete(self):  # Remove taggroup
-        data = {}
 
         return self._fetch(
             endpoint="/objects/host_tag_group/%s?repair=%s"
             % (self.params.get("name"), self.params.get("repair")),
-            # data=data,
             method="DELETE",
         )
 
@@ -316,7 +313,7 @@ def run_module():
         elif taggroup.current.http_code == 404:
             result = RESULT(
                 http_code=0,
-                msg="Taggroup doesn't exist.",
+                msg="Taggroup already absent.",
                 content="",
                 etag="",
                 failed=False,
