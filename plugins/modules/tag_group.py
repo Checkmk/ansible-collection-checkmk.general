@@ -203,6 +203,7 @@ class TaggroupAPI(CheckmkAPI):
             )
 
     def put(self):  # Update taggroup
+        self.headers["If-Match"] = self.current.etag
         data = self.normalize_data()
 
         return self._fetch(
@@ -212,7 +213,6 @@ class TaggroupAPI(CheckmkAPI):
         )
 
     def delete(self):  # Remove taggroup
-
         return self._fetch(
             endpoint="/objects/host_tag_group/%s?repair=%s"
             % (self.params.get("name"), self.params.get("repair")),
@@ -292,7 +292,6 @@ def run_module():
             if changes_detected(
                 module, json.loads(taggroup.current.content.decode("utf-8"))
             ):
-                taggroup.headers["If-Match"] = taggroup.current.etag
                 result = taggroup.put()
 
                 time.sleep(3)
