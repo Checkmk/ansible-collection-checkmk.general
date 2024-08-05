@@ -4,6 +4,28 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.2.0
+======
+
+Release Summary
+---------------
+
+Some bug fixing and a module update.
+
+Minor Changes
+-------------
+
+- Agent role - Allow registration on mixed protocol environments. This means the central and remote site do not both have to use either HTTP or HTTPS.
+- Tag_group module - Enable module for Checkmk 2.4.0 by using `id` instead of `ident` to identify tag groups and their tags. See https://checkmk.com/werk/16364 for background information.
+- Tag_group module - Migrate module to new collection API.
+- The local development environment was cleaned up. We removed all traces of VirtualBox and now exclusively use KVM/QEMU virtualization. This has no effect on using the collection. It only affects you, if you develop for this collection and used the `Vagrantfile` or `Makefile`.
+
+Bugfixes
+--------
+
+- Agent role - Fix registration in cases where a prior registration failed.
+- Downtime module - Downtimes are now correctly removed when only specifying a single service.
+
 v5.1.0
 ======
 
