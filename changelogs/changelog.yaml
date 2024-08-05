@@ -969,3 +969,28 @@ releases:
     - release_summary.yml
     - variables.yml
     release_date: '2024-06-17'
+  5.2.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix registration in cases where a prior registration failed.
+      - Downtime module - Downtimes are now correctly removed when only specifying
+        a single service.
+      minor_changes:
+      - Agent role - Allow registration on mixed protocol environments. This means
+        the central and remote site do not both have to use either HTTP or HTTPS.
+      - Tag_group module - Enable module for Checkmk 2.4.0 by using `id` instead of
+        `ident` to identify tag groups and their tags. See https://checkmk.com/werk/16364
+        for background information.
+      - Tag_group module - Migrate module to new collection API.
+      - The local development environment was cleaned up. We removed all traces of
+        VirtualBox and now exclusively use KVM/QEMU virtualization. This has no effect
+        on using the collection. It only affects you, if you develop for this collection
+        and used the `Vagrantfile` or `Makefile`.
+      release_summary: Some bug fixing and a module update.
+    fragments:
+    - agent.yaml
+    - build.yaml
+    - downtime.yaml
+    - release_summary.yaml
+    - tag_group.yaml
+    release_date: '2024-08-05'
