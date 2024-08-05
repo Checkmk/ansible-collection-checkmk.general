@@ -8,6 +8,11 @@
 
   tasks:
 
+    - name: "Run server role."
+      tags: [server]
+      ansible.builtin.import_role:
+        name: server
+
     - name: "Create folders."
       tags: [agent]
       checkmk.general.folder:
@@ -22,11 +27,6 @@
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_var_folders }}"
-
-    - name: "Run server role."
-      tags: [server]
-      ansible.builtin.import_role:
-        name: server
 
     - name: "Run agent role."
       tags: [agent]

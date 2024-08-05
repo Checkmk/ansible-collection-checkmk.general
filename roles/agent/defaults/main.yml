@@ -1,9 +1,10 @@
 ---
-checkmk_agent_version: "2.3.0p6"
+checkmk_agent_version: "2.3.0p11"
 checkmk_agent_edition: cre
 checkmk_agent_server_protocol: http
 checkmk_agent_server: localhost
 checkmk_agent_site: mysite
+checkmk_agent_registration_server_protocol: "{{ checkmk_agent_server_protocol }}"
 checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
 checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
 checkmk_agent_server_validate_certs: 'true'
@@ -19,6 +20,7 @@ checkmk_agent_auto_activate: 'false'
 checkmk_agent_add_host: 'false'
 checkmk_agent_discover: 'false'
 checkmk_agent_discover_max_parallel_tasks: 0
+checkmk_agent_force_foreign_changes: 'false'
 checkmk_agent_update: 'false'
 checkmk_agent_tls: 'false'
 checkmk_agent_configure_firewall: 'true'
@@ -30,7 +32,6 @@ checkmk_agent_delegate_api_calls: localhost
 checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 checkmk_agent_host_name: "{{ inventory_hostname }}"
 checkmk_agent_folder: "{{ checkmk_var_folder_path | default('/') }}"
-checkmk_agent_force_foreign_changes: 'false'
 checkmk_agent_host_attributes:
   ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
 checkmk_agent_mode: pull

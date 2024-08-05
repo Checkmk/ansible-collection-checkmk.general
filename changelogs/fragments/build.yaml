@@ -1,0 +1,5 @@
+minor_changes:
+  - The local development environment was cleaned up. We removed all traces of
+    VirtualBox and now exclusively use KVM/QEMU virtualization. This has no
+    effect on using the collection. It only affects you, if you develop for this
+    collection and used the `Vagrantfile` or `Makefile`.

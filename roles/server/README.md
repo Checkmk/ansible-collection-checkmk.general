@@ -25,7 +25,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Role Variables
 
-    checkmk_server_version: "2.3.0p6"
+    checkmk_server_version: "2.3.0p11"
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.
@@ -111,7 +111,7 @@ Whether to back up sites when updating between versions. Only disable this if yo
 Directory to backup sites to when updating between versions.
 Of course `/tmp/` is not a sane backup location, so change it!
 
-    checkmk_agent_no_log: 'true'
+    checkmk_server_no_log: 'true'
 
 Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default.
 Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.

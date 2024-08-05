@@ -1,6 +1,6 @@
 ---
 # General
-checkmk_var_version: "2.3.0p6"
+checkmk_var_version: "2.3.0p11"
 checkmk_var_edition: "cre"
 checkmk_var_checkmk_site: "mysite"
 checkmk_var_automation_user: "cmkadmin"
@@ -12,6 +12,7 @@ checkmk_agent_edition: "{{ checkmk_var_edition }}"
 checkmk_agent_server_protocol: http
 checkmk_agent_server: 127.0.0.1
 checkmk_agent_site: "{{ checkmk_var_checkmk_site }}"
+checkmk_agent_registration_server_protocol: "{{ checkmk_agent_server_protocol }}"
 checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
 checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
 checkmk_agent_server_validate_certs: 'false'

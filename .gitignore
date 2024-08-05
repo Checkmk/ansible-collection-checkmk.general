@@ -10,9 +10,4 @@ build/
 tests/output
 playbooks/vars/config.yml
 playbooks/test*.yml
-playbooks/hosts
-playbooks/hosts.bak
 venv/
-Vagrantfile
-Vagrantfile.bak
-venv

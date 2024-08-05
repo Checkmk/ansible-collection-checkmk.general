@@ -12,17 +12,11 @@ CONTAINER_NAME="ansible-checkmk-test"
 help:
 	@echo "setup           			- Run all setup target at once."
 	@echo ""
-	@echo "setup-python    			- Prepare the system for development with Python."
+	@echo "python	    			- Prepare the system for development with Python."
 	@echo ""
-	@echo "setup-kvm       			- Install and enable KVM and prepare Vagrant."
+	@echo "kvm			       		- Install and enable KVM."
 	@echo ""
-	@echo "kvm             			- Only copy the correct Vagrantfile for use with KVM."
-	@echo ""
-	@echo "setup-vbox 	     		- Copy the correct Vagrantfile for use with VirtualBox."
-	@echo ""
-	@echo "vbox 	           		- Copy the correct Vagrantfile for use with VirtualBox."
-	@echo ""
-	@echo "setup-vagrant   			- Install and enable Vagrant."
+	@echo "vagrant   				- Install and enable Vagrant."
 	@echo ""
 	@echo "venv		       			- Install Python Virtual Environment. You need to activate it yourself though!"
 	@echo ""
@@ -61,9 +55,9 @@ version:
 	@newversion=$$(dialog --stdout --inputbox "New Version:" 0 0 "$(VERSION)") ; \
 	if [ -n "$$newversion" ] ; then ./scripts/release.sh -s "$(VERSION)" -t $$newversion ; fi
 
-setup: setup-python setup-kvm
+setup: setup-python kvm vagrant
 
-setup-python:
+python:
 	@sudo apt-get -y update --quiet
 	@sudo apt-get -y install -y \
 		python3-pip \
@@ -76,36 +70,21 @@ setup-python:
 	@python3 -m pip install -r requirements.txt
 
 kvm:
-	if [ -f Vagrantfile ] ; then cp Vagrantfile Vagrantfile.bak ; fi
-	cp Vagrantfile.kvm Vagrantfile
-	if [ -f playbooks/hosts ] ; then cp playbooks/hosts playbooks/hosts.bak ; fi
-	cp playbooks/hosts.kvm playbooks/hosts
-
-setup-kvm: kvm
 	@sudo apt update -y
 	@sudo apt install -y \
 		virt-manager \
 		qemu-kvm \
 		libvirt-clients \
 		libvirt-daemon-system \
-		bridge-utils \--build-arg DL_PW=$$(cat .secret)
+		bridge-utils \
 		libvirt-daemon\
 		libvirt-dev \
 		libxslt-dev \
 		libxml2-dev \
 		zlib1g-dev
 	@sudo systemctl enable --now libvirtd
-	@vagrant plugin install vagrant-libvirt
 
-vbox:
-	if [ -f Vagrantfile ] ; then cp Vagrantfile Vagrantfile.bak ; fi
-	cp Vagrantfile.vbox Vagrantfile
-	if [ -f playbooks/hosts ] ; then cp playbooks/hosts playbooks/hosts.bak ; fi
-	cp playbooks/hosts.vbox playbooks/hosts
-
-setup-vbox: vbox
-
-setup-vagrant:
+vagrant:
 	@sudo apt update -y
 	@sudo apt install -y \
 		apt-transport-https \
@@ -121,15 +100,16 @@ setup-vagrant:
 
 venv:
 	@python3 -m venv venv
+	@(. venv/bin/activate && python3 -m pip install pip --upgrade && python3 -m pip install -r requirements.txt)
 	@echo
 	@echo "Run the following command to actually activate the venv!"
 	@echo ". venv/bin/activate"
 	@echo
-	@(. venv/bin/activate && python3 -m pip install pip --upgrade && python3 -m pip install -r requirements.txt)
 
 clean:
 	@rm -rf .tox/
-	@rm -rf venv/
+	@rm -rf ./venv/
+	@rm -rf ./tests/output/*
 	@vagrant destroy --force
 
 vm:

@@ -4,7 +4,7 @@
     msg: "The provided Checkmk Edition '{{ checkmk_agent_edition }}' does  not exist or is not supported by this role."
   when: checkmk_agent_edition | lower not in __checkmk_agent_edition_mapping
 
-- name: "Include OS family specific variables."
+- name: "{{ ansible_os_family }}: Include OS family specific variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-vars
