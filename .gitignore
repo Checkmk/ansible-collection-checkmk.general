@@ -11,3 +11,4 @@ tests/output
 playbooks/vars/config.yml
 playbooks/test*.yml
 venv/
+.direnv/

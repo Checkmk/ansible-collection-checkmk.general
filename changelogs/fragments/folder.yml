@@ -1,0 +1,3 @@
+bugfixes:
+  - Folder module - Fix bug, where `update_attributes` failed on a folder with
+    the Network Scan enabled.

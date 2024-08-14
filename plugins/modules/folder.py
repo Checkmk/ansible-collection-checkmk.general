@@ -387,8 +387,8 @@ class FolderAPI(CheckmkAPI):
             for key, value in extensions.items():
                 if key == "attributes":
                     value.pop("meta_data")
-                    if "network_scan_results" in value:
-                        value.pop("network_scan_results")
+                    if "network_scan_result" in value:
+                        value.pop("network_scan_result")
                 self.current[key] = value
 
             self.etag = result.etag
