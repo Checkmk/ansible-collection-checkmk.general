@@ -384,13 +384,15 @@ class FolderAPI(CheckmkAPI):
             self.current["title"] = content["title"]
 
             extensions = content["extensions"]
+            self.module.warn("current: %s" % str(extensions))
             for key, value in extensions.items():
                 if key == "attributes":
                     value.pop("meta_data")
-                    if "network_scan_results" in value:
-                        value.pop("network_scan_results")
+                    if "network_scan_result" in value:
+                        value.pop("network_scan_result")
                 self.current[key] = value
 
+            self.module.warn("current after pop: %s" % str(self.current))
             self.etag = result.etag
 
         else:
