@@ -56,3 +56,4 @@ Collection Version | Checkmk Versions | Ansible Versions | Remarks
 5.0.0 | 2.1.0p44, 2.2.0p27, 2.3.0p5 | 2.15, 2.16, 2.17 | Breaking changes to the following modules: `lookup_folder`, `rule` and role: `agent`.
 5.1.0 | 2.1.0p44, 2.2.0p27, 2.3.0p6 | 2.15, 2.16, 2.17 | None
 5.2.0 | 2.1.0p46, 2.2.0p31, 2.3.0p11 | 2.15, 2.16, 2.17 | None
+5.2.1 | 2.1.0p46, 2.2.0p32, 2.3.0p12 | 2.15, 2.16, 2.17 | None
