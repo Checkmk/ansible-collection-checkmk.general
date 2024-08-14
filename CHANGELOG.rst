@@ -4,6 +4,19 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.2.1
+======
+
+Release Summary
+---------------
+
+Bugfix Release.
+
+Bugfixes
+--------
+
+- Folder module - Fix bug, where `update_attributes` failed on a folder with the Network Scan enabled.
+
 v5.2.0
 ======
 
