@@ -994,3 +994,13 @@ releases:
     - release_summary.yaml
     - tag_group.yaml
     release_date: '2024-08-05'
+  5.2.1:
+    changes:
+      bugfixes:
+      - Folder module - Fix bug, where `update_attributes` failed on a folder with
+        the Network Scan enabled.
+      release_summary: Bugfix Release.
+    fragments:
+    - folder.yml
+    - release_summary.yml
+    release_date: '2024-08-14'
