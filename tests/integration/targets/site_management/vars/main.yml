@@ -1,0 +1,118 @@
+---
+test_sites:
+  - version: "2.3.0p12"
+    edition: "cme"
+    site: "stable_cme"
+    remote:
+      site_id: "stable_cme_r"
+      site_config:
+        status_connection:
+          connection:
+            socket_type: "tcp"
+            port: 6559
+            encrypted: True
+            host: "localhost"
+            verify: "true"
+          proxy:
+            use_livestatus_daemon: "direct"
+          connect_timeout: 2
+          status_host:
+            status_host_set: "disabled"
+          url_prefix: "/stable_cme_r/"
+        configuration_connection:
+          enable_replication: True
+          url_of_remote_site: "http://localhost/stable_cme_r/check_mk/"
+        basic_settings:
+          site_id: "stable_cme_r"
+          customer: "provider"
+          alias: "stable_cme remote site"
+      login_data:
+        remote_username: "cmkadmin"
+        remote_password: "{{ checkmk_var_automation_secret }}"
+  - version: "2.3.0p12"
+    edition: "cee"
+    site: "stable_cee"
+    remote:
+      site_id: "stable_cee_r"
+      site_config:
+        status_connection:
+          connection:
+            socket_type: "tcp"
+            port: 6559
+            encrypted: True
+            host: "localhost"
+            verify: "true"
+          proxy:
+            use_livestatus_daemon: "direct"
+          connect_timeout: 2
+          status_host:
+            status_host_set: "disabled"
+          url_prefix: "/stable_cee_r/"
+        configuration_connection:
+          enable_replication: True
+          url_of_remote_site: "http://localhost/stable_cee_r/check_mk/"
+        basic_settings:
+          site_id: "stable_cee_r"
+          alias: "stable_cee remote site"
+      login_data:
+        remote_username: "cmkadmin"
+        remote_password: "{{ checkmk_var_automation_secret }}"
+  - version: "2.3.0p12"
+    edition: "cre"
+    site: "stable_cre"
+    remote:
+      site_id: "stable_cre_r"
+      site_config:
+        status_connection:
+          connection:
+            socket_type: "tcp"
+            port: 6559
+            encrypted: True
+            host: "localhost"
+            verify: "true"
+          proxy:
+            use_livestatus_daemon: "direct"
+          connect_timeout: 2
+          status_host:
+            status_host_set: "disabled"
+          url_prefix: "/stable_cre_r/"
+        configuration_connection:
+          enable_replication: True
+          url_of_remote_site: "http://localhost/stable_cre_r/check_mk/"
+        basic_settings:
+          site_id: "stable_cre_r"
+          alias: "stable_cre remote site"
+      login_data:
+        remote_username: "cmkadmin"
+        remote_password: "{{ checkmk_var_automation_secret }}"
+  - version: "2.2.0p32"
+    edition: "cre"
+    site: "old_cre"
+    remote:
+      site_id: "old_cre_r"
+      site_config:
+        status_connection:
+          connection:
+            socket_type: "tcp"
+            port: 6559
+            encrypted: True
+            host: "localhost"
+            verify: "true"
+          proxy:
+            use_livestatus_daemon: "direct"
+          connect_timeout: 2
+          status_host:
+            status_host_set: "disabled"
+          url_prefix: "/old_cre_r/"
+        configuration_connection:
+          enable_replication: True
+          url_of_remote_site: "http://localhost/old_cre_r/check_mk/"
+        basic_settings:
+          site_id: "old_cre_r"
+          alias: "old_cre remote site"
+      login_data:
+        remote_username: "cmkadmin"
+        remote_password: "{{ checkmk_var_automation_secret }}"
+  # - version: "2.1.0p46"
+  #   edition: "cre"
+  #   site: "ancient_cre"
