@@ -8,7 +8,7 @@
 env:
   NAMESPACE: checkmk
   COLLECTION_NAME: general
-  MODULE_NAME: site_management
+  MODULE_NAME: distmon
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,10 +24,10 @@ on:
       - main
       - devel
     paths:
-      - 'plugins/modules/site_management.py'
+      - 'plugins/modules/distmon.py'
   push:
     paths:
-      - 'plugins/modules/site_management.py'
+      - 'plugins/modules/distmon.py'
 
 jobs:
 

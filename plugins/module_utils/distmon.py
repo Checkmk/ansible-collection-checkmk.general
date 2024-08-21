@@ -18,7 +18,7 @@ class TargetAPI:
     DELETE = "delete"
 
 
-class SiteManagementHTTPCodes:
+class DistMonHTTPCodes:
     # http_code: (changed, failed, "Message")
     get = {
         200: (False, False, "Site connection found, nothing changed"),
@@ -32,7 +32,7 @@ class SiteManagementHTTPCodes:
     logout = {204: (True, False, "Logged out from site")}
 
 
-class SiteManagementEndpoints:
+class DistMonEndpoints:
     default = "/objects/site_connection"
     create = "/domain-types/site_connection/collections/all"
 
