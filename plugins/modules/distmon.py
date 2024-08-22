@@ -29,7 +29,7 @@ author:
 """
 
 EXAMPLES = r"""
-- name: "Add a remotesite with config replication."
+- name: "Add a remote site with configuration replication."
   checkmk.general.distmon:
     server_url: "http://myserver/"
     site: "mysite"
@@ -41,7 +41,7 @@ EXAMPLES = r"""
         status_connection:
           connection:
             socket_type: tcp
-            port: 6559
+            port: 6557
             encrypted: true
             host: localhost
             verify: true
@@ -60,7 +60,7 @@ EXAMPLES = r"""
           alias: "My Remote Site"
     state: "present"
 
-- name: "Log in to a remotesite."
+- name: "Log into a remote site."
   checkmk.general.distmon:
     server_url: "http://myserver/"
     site: "mysite"
@@ -73,7 +73,7 @@ EXAMPLES = r"""
         remote_password: "highly_secret"
     state: "login"
 
-- name: "Log out from a remotesite."
+- name: "Log out from a remote site."
   checkmk.general.distmon:
     server_url: "http://myserver/"
     site: "mysite"
@@ -82,7 +82,7 @@ EXAMPLES = r"""
     site_id: "myremotesite"
     state: "logout"
 
-- name: "Delete a remotesite."
+- name: "Delete a remote site."
   checkmk.general.distmon:
     server_url: "http://myserver/"
     site: "mysite"

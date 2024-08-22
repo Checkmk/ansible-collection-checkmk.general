@@ -14,7 +14,7 @@ class ModuleDocFragment(object):
             default: present
         site_id:
             description:
-                - The site ID.
+                - The site ID to manage.
             required: true
             type: str
         site_connection:
@@ -25,21 +25,21 @@ class ModuleDocFragment(object):
                 login_data:
                     description:
                         - The authentication data for a configuration connection.
-                        - Only required when the state is "login".
+                        - Only required when the O(state) is V(login).
                     type: dict
                     suboptions:
                         remote_username:
                             description:
-                                - An administrative user's username.
+                                - A user with administrative permissions.
                             type: str
                         remote_password:
                             description:
-                                - The password for the username given.
+                                - The password for the username provided.
                             type: str
                 site_config:
                     description:
                         - A site's connection.
-                        - Only required when that state is "present".
+                        - Only required when that O(state) is V(present).
                     type: dict
                     suboptions:
                         status_connection:
@@ -49,33 +49,33 @@ class ModuleDocFragment(object):
                             suboptions:
                                 connection:
                                     description:
-                                        - When connecting to remote site please make sure that
-                                        - Livestatus over TCP is activated there.
+                                        - When connecting to sites on remote servers, please
+                                        - make sure that Livestatus over TCP is activated there.
                                         - You can use UNIX sockets to connect to foreign sites on
                                         - localhost.
                                     type: dict
                                     suboptions:
                                         socket_type:
                                             description:
-                                                - The connection name. This can be
-                                                - tcp, tcp6, unix or local.
+                                                - The connection type.
                                             type: str
                                             choices: ['tcp', 'tcp6', 'unix', 'local']
                                         port:
                                             description:
-                                                - The TCP port to connect to.
+                                                - The Livestatus TCP port to connect to.
                                             type: int
                                         encrypted:
                                             description:
-                                                - To enable an encrypted connection.
+                                                - Enable encryption for the connection.
                                             type: bool
                                         verify:
                                             description:
-                                                - Verify server certificate.
+                                                - Verify remote site's certificate.
                                             type: bool
                                         host:
                                             description:
-                                                - The IP or domain name of the host.
+                                                - The IP or domain name of the host
+                                                - running the remote site.
                                             type: str
                                         path:
                                             description:
@@ -84,29 +84,29 @@ class ModuleDocFragment(object):
                                             type: str
                                 proxy:
                                     description:
-                                        - The Livestatus proxy daemon configuration attributes.
+                                        - The Livestatus Proxy Daemon configuration attributes.
                                     type: dict
                                     suboptions:
                                         use_livestatus_daemon:
                                             description:
-                                                - Use livestatus daemon with direct connection
-                                                - or with livestatus proxy.
+                                                - Use Livestatus daemon with direct connection
+                                                - or with Livestatus proxy.
                                             type: str
                                             choices: [with_proxy, direct]
                                         global_settings:
                                             description:
-                                                - When use_livestatus_daemon is set to 'with_proxy',
-                                                - you can set this to True to use global setting or
-                                                - False to use custom parameters.
+                                                - When O(use_livestatus_daemon) is set to V(with_proxy),
+                                                - you can set this to V(true) to use global setting or
+                                                - V(false) to use custom parameters.
                                             type: bool
                                         tcp:
                                             description:
-                                                - Allow access via TCP configuration.
+                                                - Allow access to Livestatus via TCP.
                                             type: dict
                                             suboptions:
                                                 port:
                                                     description:
-                                                        - The TCP port to connect to.
+                                                        - The TCP port to open.
                                                     type: int
                                                 only_from:
                                                     description:
@@ -120,7 +120,7 @@ class ModuleDocFragment(object):
                                                     default: false
                                         params:
                                             description:
-                                                - The live status proxy daemon parameters.
+                                                - The Livestatus Proxy Daemon parameters.
                                             type: dict
                                             suboptions:
                                                 channels:
@@ -159,12 +159,12 @@ class ModuleDocFragment(object):
                                                 connect_retry:
                                                     description:
                                                         - The cooling period after failed
-                                                        - connect/heartbeat.
+                                                        - connect or heartbeat.
                                                     type: int
                                                     default: 4
                                                 cache:
                                                     description:
-                                                        - Enable caching.
+                                                        - Enable caching of several non-status queries.
                                                     type: bool
                                                     default: true
                                 connect_timeout:
@@ -177,7 +177,8 @@ class ModuleDocFragment(object):
                                 persistent_connection:
                                     description:
                                         - If you enable persistent connections then Multisite
-                                        - will try to keep open the connection to the remote sites.
+                                        - will try to keep open a number of connections
+                                        - to the remote sites.
                                     type: bool
                                     default: false
                                 url_prefix:
@@ -191,6 +192,7 @@ class ModuleDocFragment(object):
                                         - By specifying a status host for each non-local connection
                                         - you prevent Multisite from running into timeouts when
                                         - remote sites do not respond.
+                                        - I(This setting can be omitted, when) O(use_livestatus_daemon) I(is set to) V(with_proxy)!
                                     type: dict
                                     suboptions:
                                         status_host_set:
@@ -217,7 +219,7 @@ class ModuleDocFragment(object):
                                     default: false
                         configuration_connection:
                             description:
-                                - A site's configurationstatus connection.
+                                - A site's configuration connection.
                             type: dict
                             suboptions:
                                 enable_replication:
@@ -230,14 +232,14 @@ class ModuleDocFragment(object):
                                     default: false
                                 url_of_remote_site:
                                     description:
-                                        - URL of the remote Checkmk including /check_mk/.
-                                        - This URL is in many cases the same as the URL-Prefix
-                                        - but with check_mk/ appended, but it must always be
-                                        - an absolute URL.
+                                        - URL of the remote site including C(/check_mk/).
+                                        - This URL can be the same as the URL prefix of the status
+                                        - connection, but with C(/check_mk/) appended.
+                                        - Here it must always be an absolute URL, though.
                                         - Unfortunately, this field is required by the REST API,
                                         - even if there is no configuration connection enabled.
                                     type: str
-                                    default: http://localhost/nonexistant/check_mk/
+                                    default: http://localhost/cmk/check_mk/
                                 disable_remote_configuration:
                                     description:
                                         - It is a good idea to disable access to Setup completely on
@@ -250,12 +252,13 @@ class ModuleDocFragment(object):
                                     description:
                                         - This might be needed to make the synchronization accept
                                         - problems with SSL certificates when using an SSL secured
-                                        - connection.
+                                        - connection. We encourage you to always understand TLS issues
+                                        - and fix them, though!
                                     type: bool
                                     default: false
                                 direct_login_to_web_gui_allowed:
                                     description:
-                                        - When enabled, this site is marked for synchronisation every
+                                        - When enabled, this site is marked for synchronization every
                                         - time a web GUI related option is changed and users are
                                         - allowed to login to the web GUI of this site.
                                     type: bool
@@ -273,32 +276,31 @@ class ModuleDocFragment(object):
                                     suboptions:
                                         sync_with_ldap_connections:
                                             description:
-                                                - Sync with ldap connections. The options are
-                                                - ldap, all, disabled.
+                                                - Sync with ldap connections.
                                             type: str
                                             choices: ['ldap', 'all', 'disabled']
                                             default: all
                                         ldap_connections:
                                             description:
-                                                - A list of ldap connections.
+                                                - A list of ldap connections to synchronize.
                                             type: list
                                             elements: str
                                 replicate_event_console:
                                     description:
                                         - This option enables the distribution of global settings and
                                         - rules of the Event Console to the remote site. Any change in
-                                        - the local Event Console settings will mark the site as need
-                                        - sync. A synchronization will automatically reload
+                                        - the local Event Console settings will mark the site as needing
+                                        - to sync. A synchronization will automatically reload
                                         - the Event Console of the remote site.
                                     type: bool
                                     default: true
                                 replicate_extensions:
                                     description:
                                         - If you enable the replication of MKPs then during each
-                                        - Activate Changes MKPs that are installed on your central site
-                                        - and all other files below the ~/local/ directory will be also
+                                        - activation of changes MKPs that are installed on your central site
+                                        - and all other files below the C($OMD_ROOT/local/) directory will be
                                         - transferred to the remote site. All other MKPs and
-                                        - files below ~/local/ on the remote site will be removed.
+                                        - files below C($OMD_ROOT/local/) on the remote site will be removed.
                                     type: bool
                                     default: true
                         secret:
@@ -318,7 +320,7 @@ class ModuleDocFragment(object):
                                     type: str
                                 customer:
                                     description:
-                                        - The customer of the site (Checkmk Managed Edition - CME only).
+                                        - The customer of the site (Managed Edition - CME only).
                                     type: str
                                 site_id:
                                     description:
