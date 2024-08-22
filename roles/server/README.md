@@ -25,12 +25,12 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Role Variables
 
-    checkmk_server_version: "2.3.0p12"
+    checkmk_server_version: '2.3.0p12'
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.
 
-    checkmk_server_edition: cre
+    checkmk_server_edition: 'cre'
 
 The edition you want to use. Valid values are `cre`, `cfe`, `cee`, `cce` and `cme`.
 
@@ -73,15 +73,15 @@ Whether to allow downgrading a site's version.
 Note: this is not a recommended procedure, and will not be supported for enterprise customers.
 
     checkmk_server_sites:
-      - name: mysite
+      - name: 'mysite'
         version: "{{ checkmk_server_version }}"
-        update_conflict_resolution: abort
-        state: started
-        admin_pw: mypw
+        update_conflict_resolution: 'abort'
+        state: 'started'
+        admin_pw: 'mypass'
         omd_auto_restart: 'false'
         omd_config:
           - var: AUTOSTART
-            value: on
+            value: 'on'
 
 A dictionary of sites, containing the desired version, admin password and state.
 There are also advanced settings, which will be outlined below.
@@ -106,7 +106,7 @@ on an existing site.
 
 Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups.
 
-    checkmk_server_backup_dir: /tmp
+    checkmk_server_backup_dir: '/tmp'
 
 Directory to backup sites to when updating between versions.
 Of course `/tmp/` is not a sane backup location, so change it!

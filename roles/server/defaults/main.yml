@@ -25,8 +25,8 @@ checkmk_server_server_stable_os:
   - Ubuntu-22
   - Ubuntu-24
 
-checkmk_server_version: "2.3.0p12"
-checkmk_server_edition: cre
+checkmk_server_version: '2.3.0p12'
+checkmk_server_edition: 'cre'
 checkmk_server_verify_setup: 'true'
 
 checkmk_server_download_user: []
@@ -41,14 +41,14 @@ checkmk_server_sites: []
 #   omd_auto_restart: 'false'
 #   omd_config:
 #     - var: LIVESTATUS_TCP
-#       value: "on"
+#       value: 'on'
 #     - var: LIVESTATUS_TCP_PORT
-#       value: "6557"
+#       value: '6557'
 
 checkmk_server_configure_firewall: 'true'
 
 checkmk_server_backup_on_update: 'true'  # Not recommended to disable this option
-checkmk_server_backup_dir: /tmp
+checkmk_server_backup_dir: '/tmp'
 checkmk_server_backup_opts: '--no-past'
 checkmk_server_allow_downgrades: 'false'
 
