@@ -95,7 +95,8 @@ class ModuleDocFragment(object):
                                             choices: [with_proxy, direct]
                                         global_settings:
                                             description:
-                                                - When O(use_livestatus_daemon) is set to V(with_proxy),
+                                                - When O(site_connection.site_config.status_connection.proxy.use_livestatus_daemon)
+                                                - is set to V(with_proxy),
                                                 - you can set this to V(true) to use global setting or
                                                 - V(false) to use custom parameters.
                                             type: bool
@@ -192,7 +193,9 @@ class ModuleDocFragment(object):
                                         - By specifying a status host for each non-local connection
                                         - you prevent Multisite from running into timeouts when
                                         - remote sites do not respond.
-                                        - I(This setting can be omitted, when) O(use_livestatus_daemon) I(is set to) V(with_proxy)!
+                                        - I(This setting can be omitted, when)
+                                        - O(site_connection.site_config.status_connection.proxy.use_livestatus_daemon)
+                                        - I(is set to) V(with_proxy)!
                                     type: dict
                                     suboptions:
                                         status_host_set:
@@ -239,7 +242,7 @@ class ModuleDocFragment(object):
                                         - Unfortunately, this field is required by the REST API,
                                         - even if there is no configuration connection enabled.
                                     type: str
-                                    default: http://localhost/cmk/check_mk/
+                                    default: http://localhost/nonexistant/check_mk/
                                 disable_remote_configuration:
                                     description:
                                         - It is a good idea to disable access to Setup completely on
