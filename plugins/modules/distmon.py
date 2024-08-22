@@ -37,27 +37,27 @@ EXAMPLES = r"""
     automation_secret: "mysecret"
     site_id: "myremotesite"
     site_connection:
-        site_config:
-            status_connection:
-                connection:
-                   socket_type: tcp
-                   port: 6559
-                   encrypted: True
-                   host: localhost
-                   verify: True
-                proxy:
-                   use_livestatus_daemon: "direct"
-                connect_timeout: 2
-                status_host:
-                    status_host_set: "disabled"
-                url_prefix: "/myremotesite/"
-            configuration_connection:
-                enable_replication: True
-                url_of_remote_site: "http://localhost/myremotesite/check_mk/"
-            basic_settings:
-                site_id: "myremotesite"
-                customer: "provider"
-                alias: "My Remote Site"
+      site_config:
+        status_connection:
+          connection:
+            socket_type: tcp
+            port: 6559
+            encrypted: true
+            host: localhost
+            verify: true
+          proxy:
+            use_livestatus_daemon: "direct"
+          connect_timeout: 2
+          status_host:
+            status_host_set: "disabled"
+          url_prefix: "/myremotesite/"
+        configuration_connection:
+          enable_replication: true
+          url_of_remote_site: "http://localhost/myremotesite/check_mk/"
+        basic_settings:
+          site_id: "myremotesite"
+          customer: "provider"
+          alias: "My Remote Site"
     state: "present"
 
 - name: "Log in to a remotesite."
@@ -70,7 +70,7 @@ EXAMPLES = r"""
     site_connection:
       login_data:
         remote_username: "myremote_admin"
-        aremote_password: "highly#secret"
+        remote_password: "highly_secret"
     state: "login"
 
 - name: "Log out from a remotesite."
