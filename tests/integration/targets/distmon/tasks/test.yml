@@ -100,8 +100,8 @@
     site_id: "{{ outer_item.remote.site_id }}"
     site_connection:
       site_config:
-          basic_settings:
-              alias: "{{ outer_item.remote.site_id }} with new alias"
+        basic_settings:
+          alias: "{{ outer_item.remote.site_id }} with new alias"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -115,8 +115,8 @@
     site_id: "{{ outer_item.remote.site_id }}"
     site_connection:
       site_config:
-          basic_settings:
-              alias: "{{ outer_item.remote.site_id }} with new alias"
+        basic_settings:
+          alias: "{{ outer_item.remote.site_id }} with new alias"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
