@@ -34,8 +34,8 @@
 
 - name: "Configure Livestatus TLS of remote sites."
   ansible.builtin.command: "omd config {{ item.site_id }} set LIVESTATUS_TCP_TLS off"
-  when: ((download_pass is defined and download_pass | length) or outer_item.edition == "cre" and
-      item.site_config.status_connection.connection.encrypted == False)
+  when: ((download_pass is defined and download_pass | length) or outer_item.edition == "cre" ) and
+      item.site_config.status_connection.connection.encrypted == true
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
@@ -103,9 +103,12 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     site_id: "{{ item.site_id }}"
     site_connection:
-      login_data: "{{ item.login_data }}"
+      authentication: "{{ item.authentication }}"
     state: "login"
   delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log in to remote site. 2nd."
@@ -116,9 +119,12 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     site_id: "{{ item.site_id }}"
     site_connection:
-      login_data: "{{ item.login_data }}"
+      authentication: "{{ item.authentication }}"
     state: "login"
   delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
   register: result
   failed_when: result.changed | bool
@@ -136,6 +142,9 @@
           alias: "{{ item.site_id }} with new alias"
     state: "present"
   delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update remote site. 2nd"
@@ -151,6 +160,9 @@
           alias: "{{ item.site_id }} with new alias"
     state: "present"
   delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
   register: result
   failed_when: result.changed | bool
@@ -164,6 +176,9 @@
     site_id: "{{ item.site_id }}"
     state: "logout"
   delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log out from remote site. 2nd."
@@ -175,6 +190,9 @@
     site_id: "{{ item.site_id }}"
     state: "logout"
   delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
   register: result
   failed_when: result.changed | bool
@@ -188,6 +206,9 @@
     site_id: "{{ item.site_id }}"
     state: "absent"
   delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete remote site. 2nd."
@@ -199,6 +220,9 @@
     site_id: "{{ item.site_id }}"
     state: "absent"
   delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
   register: result
   failed_when: result.changed | bool

@@ -26,9 +26,9 @@ test_sites:
             site_id: "stable_cme_r1"
             customer: "provider"
             alias: "stable_cme remote site 1"
-        login_data:
-          remote_username: "cmkadmin"
-          remote_password: "{{ checkmk_var_automation_secret }}"
+        authentication:
+          username: "cmkadmin"
+          password: "{{ checkmk_var_automation_secret }}"
       - site_id: "stable_cme_r2"
         site_config:
           status_connection:
@@ -51,9 +51,9 @@ test_sites:
             site_id: "stable_cme_r2"
             customer: "provider"
             alias: "stable_cme remote site 2"
-        login_data:
-          remote_username: "cmkadmin"
-          remote_password: "{{ checkmk_var_automation_secret }}"
+        authentication:
+          username: "cmkadmin"
+          password: "{{ checkmk_var_automation_secret }}"
       - site_id: "stable_cme_r3"
         site_config:
           status_connection:
@@ -77,9 +77,9 @@ test_sites:
             site_id: "stable_cme_r3"
             customer: "provider"
             alias: "stable_cme remote site 3"
-        login_data:
-          remote_username: "cmkadmin"
-          remote_password: "{{ checkmk_var_automation_secret }}"
+        authentication:
+          username: "cmkadmin"
+          password: "{{ checkmk_var_automation_secret }}"
       - site_id: "stable_cme_r4"
         site_config:
           status_connection:
@@ -107,9 +107,7 @@ test_sites:
                 cache: true
             connect_timeout: 2
             status_host:
-              status_host_set: "enabled"
-              site: "stable_cme"
-              host: "test1.tld"
+              status_host_set: "disabled"
             url_prefix: "/stable_cme_r4/"
           configuration_connection:
             enable_replication: true
@@ -117,19 +115,15 @@ test_sites:
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false
-            user_sync:
-              sync_with_ldap_connections: "ldap"
-              ldap_connections: 
-                - "myldap"
             replicate_event_console: true
             replicate_extensions: false
           basic_settings:
             site_id: "stable_cme_r4"
             customer: "provider"
             alias: "stable_cme remote site 4"
-        login_data:
-          remote_username: "cmkadmin"
-          remote_password: "{{ checkmk_var_automation_secret }}"
+        authentication:
+          username: "cmkadmin"
+          password: "{{ checkmk_var_automation_secret }}"
   - version: "2.3.0p12"
     edition: "cee"
     site: "stable_cee"
@@ -155,14 +149,14 @@ test_sites:
           basic_settings:
             site_id: "stable_cee_r"
             alias: "stable_cee remote site"
-        login_data:
-          remote_username: "cmkadmin"
-          remote_password: "{{ checkmk_var_automation_secret }}"
+        authentication:
+          username: "cmkadmin"
+          password: "{{ checkmk_var_automation_secret }}"
   - version: "2.3.0p12"
     edition: "cre"
     site: "stable_cre"
     remote_sites:
-      - site_id: "stable_cme_r1"
+      - site_id: "stable_cre_r1"
         site_config:
           status_connection:
             connection:
@@ -176,18 +170,17 @@ test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/stable_cme_r1/"
+            url_prefix: "/stable_cre_r1/"
           configuration_connection:
             enable_replication: false
-            url_of_remote_site: "http://localhost/stable_cme_r1/check_mk/"
+            url_of_remote_site: "http://localhost/stable_cre_r1/check_mk/"
           basic_settings:
-            site_id: "stable_cme_r1"
-            customer: "provider"
-            alias: "stable_cme remote site 1"
-        login_data:
-          remote_username: "cmkadmin"
-          remote_password: "{{ checkmk_var_automation_secret }}"
-      - site_id: "stable_cme_r2"
+            site_id: "stable_cre_r1"
+            alias: "stable_cre remote site 1"
+        authentication:
+          username: "cmkadmin"
+          password: "{{ checkmk_var_automation_secret }}"
+      - site_id: "stable_cre_r2"
         site_config:
           status_connection:
             connection:
@@ -201,18 +194,17 @@ test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/stable_cme_r2/"
+            url_prefix: "/stable_cre_r2/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost/stable_cme_r2/check_mk/"
+            url_of_remote_site: "http://localhost/stable_cre_r2/check_mk/"
           basic_settings:
-            site_id: "stable_cme_r2"
-            customer: "provider"
-            alias: "stable_cme remote site 2"
-        login_data:
-          remote_username: "cmkadmin"
-          remote_password: "{{ checkmk_var_automation_secret }}"
-      - site_id: "stable_cme_r3"
+            site_id: "stable_cre_r2"
+            alias: "stable_cre remote site 2"
+        authentication:
+          username: "cmkadmin"
+          password: "{{ checkmk_var_automation_secret }}"
+      - site_id: "stable_cre_r3"
         site_config:
           status_connection:
             connection:
@@ -227,18 +219,17 @@ test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/stable_cme_r3/"
+            url_prefix: "/stable_cre_r3/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost/stable_cme_r3/check_mk/"
+            url_of_remote_site: "http://localhost/stable_cre_r3/check_mk/"
           basic_settings:
-            site_id: "stable_cme_r3"
-            customer: "provider"
-            alias: "stable_cme remote site 3"
-        login_data:
-          remote_username: "cmkadmin"
-          remote_password: "{{ checkmk_var_automation_secret }}"
-      - site_id: "stable_cme_r4"
+            site_id: "stable_cre_r3"
+            alias: "stable_cre remote site 3"
+        authentication:
+          username: "cmkadmin"
+          password: "{{ checkmk_var_automation_secret }}"
+      - site_id: "stable_cre_r4"
         site_config:
           status_connection:
             connection:
@@ -265,29 +256,22 @@ test_sites:
                 cache: true
             connect_timeout: 2
             status_host:
-              status_host_set: "enabled"
-              site: "stable_cme"
-              host: "test1.tld"
-            url_prefix: "/stable_cme_r4/"
+              status_host_set: "disabled"
+            url_prefix: "/stable_cre_r4/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost/stable_cme_r4/check_mk/"
+            url_of_remote_site: "http://localhost/stable_cre_r4/check_mk/"
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false
-            user_sync:
-              sync_with_ldap_connections: "ldap"
-              ldap_connections: 
-                - "myldap"
             replicate_event_console: true
             replicate_extensions: false
           basic_settings:
-            site_id: "stable_cme_r4"
-            customer: "provider"
-            alias: "stable_cme remote site 4"
-        login_data:
-          remote_username: "cmkadmin"
-          remote_password: "{{ checkmk_var_automation_secret }}"
+            site_id: "stable_cre_r4"
+            alias: "stable_cre remote site 4"
+        authentication:
+          username: "cmkadmin"
+          password: "{{ checkmk_var_automation_secret }}"
               #- site_id: "stable_cre_r"
               #  site_config:
               #    status_connection:
@@ -309,9 +293,9 @@ test_sites:
               #    basic_settings:
               #      site_id: "stable_cre_r"
               #      alias: "stable_cre remote site"
-              #  login_data:
-              #    remote_username: "cmkadmin"
-              #    remote_password: "{{ checkmk_var_automation_secret }}"
+              #  authentication:
+              #    username: "cmkadmin"
+              #    password: "{{ checkmk_var_automation_secret }}"
   - version: "2.2.0p32"
     edition: "cre"
     site: "old_cre"
@@ -337,9 +321,9 @@ test_sites:
           basic_settings:
             site_id: "old_cre_r"
             alias: "old_cre remote site"
-        login_data:
-          remote_username: "cmkadmin"
-          remote_password: "{{ checkmk_var_automation_secret }}"
+        authentication:
+          username: "cmkadmin"
+          password: "{{ checkmk_var_automation_secret }}"
   # - version: "2.1.0p46"
   #   edition: "cre"
   #   site: "ancient_cre"
