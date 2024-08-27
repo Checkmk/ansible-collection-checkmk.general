@@ -22,17 +22,17 @@ class ModuleDocFragment(object):
                 - The settings of the site.
             type: dict
             suboptions:
-                login_data:
+                authentication:
                     description:
                         - The authentication data for a configuration connection.
                         - Only required when the O(state) is V(login).
                     type: dict
                     suboptions:
-                        remote_username:
+                        username:
                             description:
                                 - A user with administrative permissions.
                             type: str
-                        remote_password:
+                        password:
                             description:
                                 - The password for the username provided.
                             type: str

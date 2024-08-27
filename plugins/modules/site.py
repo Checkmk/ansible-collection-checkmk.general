@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: distmon
+module: Site
 
 short_description: Manage distributed monitoring in Checkmk.
 
@@ -22,7 +22,7 @@ description:
 
 extends_documentation_fragment:
     - checkmk.general.common
-    - checkmk.general.distmon_options
+    - checkmk.general.Site_options
 
 author:
     - Lars Getwan (@lgetwan)
@@ -30,7 +30,7 @@ author:
 
 EXAMPLES = r"""
 - name: "Add a remote site with configuration replication."
-  checkmk.general.distmon:
+  checkmk.general.Site:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -61,7 +61,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: "Log into a remote site."
-  checkmk.general.distmon:
+  checkmk.general.Site:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -74,7 +74,7 @@ EXAMPLES = r"""
     state: "login"
 
 - name: "Log out from a remote site."
-  checkmk.general.distmon:
+  checkmk.general.Site:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -83,7 +83,7 @@ EXAMPLES = r"""
     state: "logout"
 
 - name: "Delete a remote site."
-  checkmk.general.distmon:
+  checkmk.general.Site:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -105,9 +105,9 @@ import json
 # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
-from ansible_collections.checkmk.general.plugins.module_utils.distmon import (
-    DistMonEndpoints,
-    DistMonHTTPCodes,
+from ansible_collections.checkmk.general.plugins.module_utils.Site import (
+    SiteEndpoints,
+    SiteHTTPCodes,
     SiteConnection,
     TargetAPI,
     module_args,
@@ -123,7 +123,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.version import (
 )
 
 
-class DistMonAPI(CheckmkAPI):
+class SiteAPI(CheckmkAPI):
     def __init__(self, module):
         super().__init__(module)
 
@@ -135,26 +135,26 @@ class DistMonAPI(CheckmkAPI):
 
     def _get_endpoint(self, target_api, site_id=""):
         if target_api == TargetAPI.CREATE:
-            return DistMonEndpoints.create
+            return SiteEndpoints.create
 
         if target_api in [TargetAPI.GET, TargetAPI.UPDATE]:
-            return "%s/%s" % (DistMonEndpoints.default, site_id)
+            return "%s/%s" % (SiteEndpoints.default, site_id)
 
         if target_api in [TargetAPI.LOGIN]:
             return "%s/%s/actions/login/invoke" % (
-                DistMonEndpoints.default,
+                SiteEndpoints.default,
                 site_id,
             )
 
         if target_api in [TargetAPI.LOGOUT]:
             return "%s/%s/actions/logout/invoke" % (
-                DistMonEndpoints.default,
+                SiteEndpoints.default,
                 site_id,
             )
 
         if target_api in [TargetAPI.DELETE]:
             return "%s/%s/actions/delete/invoke" % (
-                DistMonEndpoints.default,
+                SiteEndpoints.default,
                 site_id,
             )
 
@@ -163,7 +163,7 @@ class DistMonAPI(CheckmkAPI):
             "get endpoint: %s" % self._get_endpoint(TargetAPI.GET, site_id=site_id)
         )
         result = self._fetch(
-            code_mapping=DistMonHTTPCodes.get,
+            code_mapping=SiteHTTPCodes.get,
             endpoint=self._get_endpoint(TargetAPI.GET, site_id=site_id),
         )
 
@@ -179,7 +179,7 @@ class DistMonAPI(CheckmkAPI):
         logger.debug("create endpoint: %s" % self._get_endpoint(TargetAPI.CREATE))
         logger.debug("create data: %s" % site_connection.get_api_data(TargetAPI.CREATE))
         return self._fetch(
-            code_mapping=DistMonHTTPCodes.create,
+            code_mapping=SiteHTTPCodes.create,
             endpoint=self._get_endpoint(TargetAPI.CREATE),
             data=site_connection.get_api_data(TargetAPI.CREATE),
             method="POST",
@@ -192,7 +192,7 @@ class DistMonAPI(CheckmkAPI):
         logger.debug("update endpoint: %s" % self._get_endpoint(TargetAPI.UPDATE))
         logger.debug("update data: %s" % site_connection.get_api_data(TargetAPI.UPDATE))
         return self._fetch(
-            code_mapping=DistMonHTTPCodes.update,
+            code_mapping=SiteHTTPCodes.update,
             endpoint=self._get_endpoint(
                 TargetAPI.UPDATE, site_id=site_connection.site_id
             ),
@@ -207,7 +207,7 @@ class DistMonAPI(CheckmkAPI):
         )
         logger.debug("login data: %s" % site_connection.get_api_data(TargetAPI.LOGIN))
         return self._fetch(
-            code_mapping=DistMonHTTPCodes.login,
+            code_mapping=SiteHTTPCodes.login,
             endpoint=self._get_endpoint(
                 TargetAPI.LOGIN, site_id=site_connection.site_id
             ),
@@ -222,7 +222,7 @@ class DistMonAPI(CheckmkAPI):
         )
         logger.debug("logout data: %s" % site_connection.get_api_data(TargetAPI.LOGOUT))
         return self._fetch(
-            code_mapping=DistMonHTTPCodes.logout,
+            code_mapping=SiteHTTPCodes.logout,
             endpoint=self._get_endpoint(
                 TargetAPI.LOGOUT, site_id=site_connection.site_id
             ),
@@ -236,7 +236,7 @@ class DistMonAPI(CheckmkAPI):
         )
         logger.debug("delete data: %s" % site_connection.get_api_data(TargetAPI.DELETE))
         return self._fetch(
-            code_mapping=DistMonHTTPCodes.delete,
+            code_mapping=SiteHTTPCodes.delete,
             endpoint=self._get_endpoint(
                 TargetAPI.DELETE, site_id=site_connection.site_id
             ),
@@ -262,15 +262,15 @@ def run_module():
     remove_null_value_keys(module.params)
     site_id = module.params.get("site_id")
 
-    distmon_api = DistMonAPI(module)
+    Site_api = SiteAPI(module)
     desired_site_connection = SiteConnection.from_module_params(module.params)
-    existing_site_connection = SiteConnection.from_api(distmon_api.get(site_id))
+    existing_site_connection = SiteConnection.from_api(Site_api.get(site_id))
 
     if desired_site_connection.state == "present":
         if existing_site_connection and existing_site_connection.state == "present":
             differences = existing_site_connection.diff(desired_site_connection)
             if differences:
-                result = distmon_api.update(
+                result = Site_api.update(
                     existing_site_connection, desired_site_connection
                 )
 
@@ -288,13 +288,13 @@ def run_module():
                 )
 
         else:
-            result = distmon_api.create(desired_site_connection)
+            result = Site_api.create(desired_site_connection)
 
         exit_module(module, result=result)
 
     elif desired_site_connection.state == "absent":
         if existing_site_connection and existing_site_connection.state == "present":
-            result = distmon_api.delete(existing_site_connection)
+            result = Site_api.delete(existing_site_connection)
             exit_module(module, result=result)
         else:
             exit_module(module, msg="Site connection already absent.")
@@ -304,7 +304,7 @@ def run_module():
             exit_module(module, msg="Site does not exist", failed=True)
 
         if not existing_site_connection.logged_in():
-            result = distmon_api.login(desired_site_connection)
+            result = Site_api.login(desired_site_connection)
             exit_module(module, result=result)
         else:
             exit_module(module, msg="Already logged in to site.")
@@ -314,7 +314,7 @@ def run_module():
             exit_module(module, msg="Site does not exist", failed=True)
 
         if existing_site_connection.logged_in():
-            result = distmon_api.logout(desired_site_connection)
+            result = Site_api.logout(desired_site_connection)
             exit_module(module, result=result)
         else:
             exit_module(module, msg="Already logged out from site.")

@@ -18,7 +18,7 @@ class TargetAPI:
     DELETE = "delete"
 
 
-class DistMonHTTPCodes:
+class SiteHTTPCodes:
     # http_code: (changed, failed, "Message")
     get = {
         200: (False, False, "Site connection found, nothing changed"),
@@ -32,7 +32,7 @@ class DistMonHTTPCodes:
     logout = {204: (True, False, "Logged out from site")}
 
 
-class DistMonEndpoints:
+class SiteEndpoints:
     default = "/objects/site_connection"
     create = "/domain-types/site_connection/collections/all"
 
@@ -42,7 +42,7 @@ class SiteConnection:
 
     def __init__(
         self,
-        login_data=None,
+        authentication=None,
         site_config=None,
         state="absent",
         site_id=None,
@@ -50,7 +50,7 @@ class SiteConnection:
         self.site_id = site_id
         self.state = state
         self.site_config = site_config
-        self.login_data = login_data
+        self.authentication = authentication
 
     @classmethod
     def from_module_params(cls, params):
@@ -58,15 +58,15 @@ class SiteConnection:
         state = params.get("state")
         site_id = params.get("site_id")
         if site_connection:
-            login_data = site_connection.get("login_data")
+            authentication = site_connection.get("authentication")
             site_config = site_connection.get("site_config")
         else:
-            login_data = None
+            authentication = None
             site_config = None
 
         return cls(
             site_config=site_config,
-            login_data=login_data,
+            authentication=authentication,
             state=state,
             site_id=site_id,
         )
@@ -121,13 +121,7 @@ class SiteConnection:
             return {"site_config": self.site_config}
 
         if target_api in [t.LOGIN]:
-            if not self.login_data:
-                return
-
-            return {
-                "username": self.login_data.get("remote_username"),
-                "password": self.login_data.get("remote_password"),
-            }
+            return self.authentication
 
 
 # Define available arguments/parameters a user can pass to the module
@@ -146,14 +140,14 @@ module_args = dict(
     site_connection=dict(
         type="dict",
         mutually_exclusive=[
-            ("login_data", "site_config"),
+            ("authentication", "site_config"),
         ],
         options=dict(
-            login_data=dict(
+            authentication=dict(
                 type="dict",
                 options=dict(
-                    remote_username=dict(type="str"),
-                    remote_password=dict(type="str", no_log=True),
+                    username=dict(type="str"),
+                    password=dict(type="str", no_log=True),
                 ),
             ),
             site_config=dict(
