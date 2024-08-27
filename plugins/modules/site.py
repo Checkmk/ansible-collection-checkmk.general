@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: Site
+module: site
 
 short_description: Manage distributed monitoring in Checkmk.
 
@@ -22,7 +22,7 @@ description:
 
 extends_documentation_fragment:
     - checkmk.general.common
-    - checkmk.general.Site_options
+    - checkmk.general.site_options
 
 author:
     - Lars Getwan (@lgetwan)
@@ -30,7 +30,7 @@ author:
 
 EXAMPLES = r"""
 - name: "Add a remote site with configuration replication."
-  checkmk.general.Site:
+  checkmk.general.site:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -61,7 +61,7 @@ EXAMPLES = r"""
     state: "present"
 
 - name: "Log into a remote site."
-  checkmk.general.Site:
+  checkmk.general.site:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -74,7 +74,7 @@ EXAMPLES = r"""
     state: "login"
 
 - name: "Log out from a remote site."
-  checkmk.general.Site:
+  checkmk.general.site:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -83,7 +83,7 @@ EXAMPLES = r"""
     state: "logout"
 
 - name: "Delete a remote site."
-  checkmk.general.Site:
+  checkmk.general.site:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -105,14 +105,14 @@ import json
 # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
-from ansible_collections.checkmk.general.plugins.module_utils.Site import (
+from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
+from ansible_collections.checkmk.general.plugins.module_utils.site import (
+    SiteConnection,
     SiteEndpoints,
     SiteHTTPCodes,
-    SiteConnection,
     TargetAPI,
     module_args,
 )
-from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     exit_module,
@@ -262,15 +262,15 @@ def run_module():
     remove_null_value_keys(module.params)
     site_id = module.params.get("site_id")
 
-    Site_api = SiteAPI(module)
+    site_api = SiteAPI(module)
     desired_site_connection = SiteConnection.from_module_params(module.params)
-    existing_site_connection = SiteConnection.from_api(Site_api.get(site_id))
+    existing_site_connection = SiteConnection.from_api(site_api.get(site_id))
 
     if desired_site_connection.state == "present":
         if existing_site_connection and existing_site_connection.state == "present":
             differences = existing_site_connection.diff(desired_site_connection)
             if differences:
-                result = Site_api.update(
+                result = site_api.update(
                     existing_site_connection, desired_site_connection
                 )
 
@@ -288,13 +288,13 @@ def run_module():
                 )
 
         else:
-            result = Site_api.create(desired_site_connection)
+            result = site_api.create(desired_site_connection)
 
         exit_module(module, result=result)
 
     elif desired_site_connection.state == "absent":
         if existing_site_connection and existing_site_connection.state == "present":
-            result = Site_api.delete(existing_site_connection)
+            result = site_api.delete(existing_site_connection)
             exit_module(module, result=result)
         else:
             exit_module(module, msg="Site connection already absent.")
@@ -304,7 +304,7 @@ def run_module():
             exit_module(module, msg="Site does not exist", failed=True)
 
         if not existing_site_connection.logged_in():
-            result = Site_api.login(desired_site_connection)
+            result = site_api.login(desired_site_connection)
             exit_module(module, result=result)
         else:
             exit_module(module, msg="Already logged in to site.")
@@ -314,7 +314,7 @@ def run_module():
             exit_module(module, msg="Site does not exist", failed=True)
 
         if existing_site_connection.logged_in():
-            result = Site_api.logout(desired_site_connection)
+            result = site_api.logout(desired_site_connection)
             exit_module(module, result=result)
         else:
             exit_module(module, msg="Already logged out from site.")
