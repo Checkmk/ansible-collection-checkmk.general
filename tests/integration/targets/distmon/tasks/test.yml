@@ -10,11 +10,35 @@
   when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
 
 - name: "Create remote sites."
-  ansible.builtin.command: "omd -V {{ outer_item.version }}.{{ outer_item.edition }} create
-      --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ outer_item.remote.site_id }}"
+  ansible.builtin.command: "omd -V {{ outer_item.version }}.{{ outer_item.edition }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site_id }}"
   args:
-    creates: "/omd/sites/{{ outer_item.remote.site_id }}"
+    creates: "/omd/sites/{{ item.site_id }}"
   when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  
+- name: "Enable Livestatus of remote sites."
+  ansible.builtin.command: "omd config {{ item.site_id }} set LIVEPROXYD on"
+  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+
+- name: "Configure Livestatus port of remote sites."
+  ansible.builtin.command: "omd config {{ item.site_id }} set LIVESTATUS_TCP_PORT {{ item.site_config.status_connection.connection.port }}"
+  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+
+- name: "Configure Livestatus TLS of remote sites."
+  ansible.builtin.command: "omd config {{ item.site_id }} set LIVESTATUS_TCP_TLS off"
+  when: ((download_pass is defined and download_pass | length) or outer_item.edition == "cre" and
+      item.site_config.status_connection.connection.encrypted == False)
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
 
 - name: "Start Apache2."
   ansible.builtin.service:
@@ -22,11 +46,13 @@
     state: started
 
 - name: "Start Sites."
-  ansible.builtin.shell: "omd status -b {{ outer_item.remote.site_id }} || omd start {{
-      outer_item.remote.site_id }}"
+  ansible.builtin.shell: "omd status -b {{ item.site_id }} || omd start {{ item.site_id }}"
   register: site_status
   changed_when: site_status.rc == "0"
   when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
 
 - name: "Wait for site to be ready."
   ansible.builtin.pause:
@@ -41,11 +67,14 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    site_id: "{{ outer_item.remote.site_id }}"
+    site_id: "{{ item.site_id }}"
     site_connection:
-      site_config: "{{ outer_item.remote.site_config }}"
+      site_config: "{{ item.site_config }}"
     state: "present"
   delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create site connection. 2nd."
@@ -54,14 +83,17 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    site_id: "{{ outer_item.remote.site_id }}"
+    site_id: "{{ item.site_id }}"
     site_connection:
-      site_config: "{{ outer_item.remote.site_config }}"
+      site_config: "{{ item.site_config }}"
     state: "present"
   delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
-  register: result
-  failed_when: result.changed | bool
+      #register: result
+      #failed_when: result.changed | bool
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log in to remote site."
   distmon:
@@ -69,9 +101,9 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    site_id: "{{ outer_item.remote.site_id }}"
+    site_id: "{{ item.site_id }}"
     site_connection:
-      login_data: "{{ outer_item.remote.login_data }}"
+      login_data: "{{ item.login_data }}"
     state: "login"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -82,9 +114,9 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    site_id: "{{ outer_item.remote.site_id }}"
+    site_id: "{{ item.site_id }}"
     site_connection:
-      login_data: "{{ outer_item.remote.login_data }}"
+      login_data: "{{ item.login_data }}"
     state: "login"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -97,11 +129,11 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    site_id: "{{ outer_item.remote.site_id }}"
+    site_id: "{{ item.site_id }}"
     site_connection:
       site_config:
         basic_settings:
-          alias: "{{ outer_item.remote.site_id }} with new alias"
+          alias: "{{ item.site_id }} with new alias"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -112,11 +144,11 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    site_id: "{{ outer_item.remote.site_id }}"
+    site_id: "{{ item.site_id }}"
     site_connection:
       site_config:
         basic_settings:
-          alias: "{{ outer_item.remote.site_id }} with new alias"
+          alias: "{{ item.site_id }} with new alias"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -129,7 +161,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    site_id: "{{ outer_item.remote.site_id }}"
+    site_id: "{{ item.site_id }}"
     state: "logout"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -140,7 +172,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    site_id: "{{ outer_item.remote.site_id }}"
+    site_id: "{{ item.site_id }}"
     state: "logout"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -153,7 +185,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    site_id: "{{ outer_item.remote.site_id }}"
+    site_id: "{{ item.site_id }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -164,7 +196,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    site_id: "{{ outer_item.remote.site_id }}"
+    site_id: "{{ item.site_id }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
