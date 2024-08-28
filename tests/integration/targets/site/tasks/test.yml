@@ -9,7 +9,7 @@
     customer: null
   when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
 
-- name: "Create remote sites."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create remote sites."
   ansible.builtin.command: "omd -V {{ outer_item.version }}.{{ outer_item.edition }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site_id }}"
   args:
     creates: "/omd/sites/{{ item.site_id }}"
@@ -18,21 +18,21 @@
   loop_control:
     label: "{{ item.site_id }}"
   
-- name: "Enable Livestatus of remote sites."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Enable Livestatus of remote sites."
   ansible.builtin.command: "omd config {{ item.site_id }} set LIVEPROXYD on"
   when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
 
-- name: "Configure Livestatus port of remote sites."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Configure Livestatus port of remote sites."
   ansible.builtin.command: "omd config {{ item.site_id }} set LIVESTATUS_TCP_PORT {{ item.site_config.status_connection.connection.port }}"
   when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
 
-- name: "Configure Livestatus TLS of remote sites."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Configure Livestatus TLS of remote sites."
   ansible.builtin.command: "omd config {{ item.site_id }} set LIVESTATUS_TCP_TLS off"
   when: ((download_pass is defined and download_pass | length) or outer_item.edition == "cre" ) and
       item.site_config.status_connection.connection.encrypted == true
@@ -40,12 +40,12 @@
   loop_control:
     label: "{{ item.site_id }}"
 
-- name: "Start Apache2."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Start Apache2."
   ansible.builtin.service:
     name: apache2
     state: started
 
-- name: "Start Sites."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Start Sites."
   ansible.builtin.shell: "omd status -b {{ item.site_id }} || omd start {{ item.site_id }}"
   register: site_status
   changed_when: site_status.rc == "0"
@@ -54,7 +54,7 @@
   loop_control:
     label: "{{ item.site_id }}"
 
-- name: "Wait for site to be ready."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for site to be ready."
   ansible.builtin.pause:
     seconds: 5
   when: |

@@ -363,10 +363,6 @@ module_args = dict(
                             ),
                         ),
                     ),
-                    secret=dict(
-                        type="str",
-                        no_log=True,
-                    ),
                     basic_settings=dict(
                         type="dict",
                         options=dict(

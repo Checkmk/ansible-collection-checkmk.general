@@ -306,12 +306,6 @@ class ModuleDocFragment(object):
                                         - files below C($OMD_ROOT/local/) on the remote site will be removed.
                                     type: bool
                                     default: true
-                        secret:
-                            description:
-                                - The shared secret used by the central site to authenticate with the
-                                - remote site for configuring Checkmk.
-                            type: str
-                            default:
                         basic_settings:
                             description:
                                 - A site's basic settings.
