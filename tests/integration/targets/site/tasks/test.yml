@@ -17,33 +17,20 @@
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Enable Livestatus of remote sites."
-  ansible.builtin.command: "omd config {{ item.site_id }} set LIVEPROXYD on"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Configure Sites."  # noqa no-changed-when
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd config {{ item.site_id }} set LIVEPROXYD on
+    omd config {{ item.site_id }} set LIVESTATUS_TCP_PORT {{ item.site_config.status_connection.connection.port }}
+    omd config {{ item.site_id }} set LIVESTATUS_TCP_TLS off
+  args:
+    executable: /bin/bash
   when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Configure Livestatus port of remote sites."
-  ansible.builtin.command: "omd config {{ item.site_id }} set LIVESTATUS_TCP_PORT {{ item.site_config.status_connection.connection.port }}"
-  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
-  loop: "{{ outer_item.remote_sites }}"
-  loop_control:
-    label: "{{ item.site_id }}"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Configure Livestatus TLS of remote sites."
-  ansible.builtin.command: "omd config {{ item.site_id }} set LIVESTATUS_TCP_TLS off"
-  when: ((download_pass is defined and download_pass | length) or outer_item.edition == "cre" ) and
-      item.site_config.status_connection.connection.encrypted == true
-  loop: "{{ outer_item.remote_sites }}"
-  loop_control:
-    label: "{{ item.site_id }}"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Start Apache2."
-  ansible.builtin.service:
-    name: apache2
-    state: started
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Start Sites."
   ansible.builtin.shell: "omd status -b {{ item.site_id }} || omd start {{ item.site_id }}"
@@ -77,7 +64,7 @@
     label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create site connection. 2nd."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create site connection again."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -92,8 +79,6 @@
   loop_control:
     label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
-      #register: result
-      #failed_when: result.changed | bool
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log in to remote site."
   site:
@@ -111,7 +96,7 @@
     label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log in to remote site. 2nd."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log in to remote site again."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -147,7 +132,7 @@
     label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update remote site. 2nd"
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update remote site again. "
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -181,7 +166,7 @@
     label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log out from remote site. 2nd."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log out from remote site again."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -211,7 +196,7 @@
     label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete remote site. 2nd."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete remote site again."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
