@@ -68,9 +68,9 @@ EXAMPLES = r"""
     automation_secret: "mysecret"
     site_id: "myremotesite"
     site_connection:
-      login_data:
-        remote_username: "myremote_admin"
-        remote_password: "highly_secret"
+      authentication:
+        username: "myremote_admin"
+        password: "highly_secret"
     state: "login"
 
 - name: "Log out from a remote site."
