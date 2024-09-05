@@ -45,6 +45,13 @@ help:
 	@echo "  publish       			- Make files available, update git and announce"
 	@echo ""
 
+build:
+	@echo "Building Collection from current working directory. This can take a while."
+	@ansible-galaxy collection build --force ./
+
+install:
+	@ansible-galaxy collection install -f ./checkmk-general-$(VERSION).tar.gz
+
 release: version
 	# gh workflow run release.yaml --ref main  # https://cli.github.com/manual/gh_workflow_run
 
