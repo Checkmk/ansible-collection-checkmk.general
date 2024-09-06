@@ -58,5 +58,5 @@ jobs:
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
       - name: Run unit test
-        run: ansible-test units ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker default
+        run: ansible-test units ${{env.MODULE_NAME}} -v --color --python ${{ matrix.python }} --docker default
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
