@@ -1,0 +1,62 @@
+# https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
+  MODULE_NAME: checkmk
+
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: true
+
+name: Ansible Unit Test for Inventory Module
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+  pull_request:
+    branches:
+      - main
+      - devel
+    paths:
+      - 'plugins/inventory/checkmk.py'
+  push:
+    paths:
+      - 'plugins/inventory/checkmk.py'
+
+jobs:
+
+  units:
+    runs-on: ubuntu-22.04
+    name: Units (Ⓐ${{ matrix.ansible }})
+    strategy:
+      fail-fast: true # false?
+      matrix:
+        ansible:
+          - stable-2.15
+          - stable-2.16
+          - stable-2.17
+          - devel
+        python:
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+
+      - name: Run unit test
+        run: ansible-test units ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker default
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
