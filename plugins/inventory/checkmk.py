@@ -69,12 +69,12 @@ groupsources: ["hosttags", "sites"]
 import json
 import re
 
-from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
-    CheckMKLookupAPI,
-)
 from ansible.errors import AnsibleError, AnsibleParserError
 from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.utils.display import Display
+from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
+    CheckMKLookupAPI,
+)
 
 display = Display()
 
