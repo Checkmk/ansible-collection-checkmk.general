@@ -39,7 +39,6 @@ jobs:
           - stable-2.17
           - devel
         python:
-          - '3.9'
           - '3.10'
           - '3.11'
 
