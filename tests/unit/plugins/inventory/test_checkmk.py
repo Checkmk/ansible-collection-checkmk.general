@@ -105,6 +105,11 @@ def test_populate_allgroups(inventory, mocker):
         host_testhost5,
     ]
 
+    # Test if testhost3 is in group tag_testtaggroup (id = NoneType)
+    tag_testtaggroup_group = inventory.inventory.groups["tag_testtaggroup"]
+    host_testhost3 = inventory.inventory.get_host("testhost3")
+    assert tag_testtaggroup_group.hosts == [host_testhost3]
+
     # Test if testhost1 is in folder /main
     assert host_testhost1.get_vars()["folder"] == "/main"
 

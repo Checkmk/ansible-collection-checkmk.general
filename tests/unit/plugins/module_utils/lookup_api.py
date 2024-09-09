@@ -184,6 +184,72 @@ class CheckMKLookupAPI:
                         "extensions": {
                             "tags": [
                                 {
+                                    "aux_tags": [],
+                                    "id": "None",
+                                    "title": "WannabeNone"
+                                },
+                                {
+                                    "aux_tags": [],
+                                    "id": null,
+                                    "title": "TherealNone"
+                                },
+                                {
+                                    "aux_tags": [],
+                                    "id": "None2",
+                                    "title": "Justanothertag"
+                                }
+                            ],
+                            "topic": "Tags"
+                        },
+                        "id": "testtaggroup",
+                        "links": [
+                            {
+                                "domainType": "link",
+                                "href": "http://192.168.11.11/maintestsite/check_mk/api/1.0/objects/host_tag_group/testtaggroup",
+                                "method": "GET",
+                                "rel": "self",
+                                "type": "application/json"
+                            },
+                            {
+                                "domainType": "link",
+                                "href": "http://192.168.11.11/maintestsite/check_mk/api/1.0/objects/host_tag_group/testtaggroup",
+                                "method": "PUT",
+                                "rel": "urn:org.restfulobjects:rels/update",
+                                "type": "application/json"
+                            },
+                            {
+                                "domainType": "link",
+                                "href": "http://192.168.11.11/maintestsite/check_mk/api/1.0/objects/host_tag_group/testtaggroup",
+                                "method": "DELETE",
+                                "rel": "urn:org.restfulobjects:rels/delete",
+                                "type": "application/json"
+                            }
+                        ],
+                        "members": {
+                            "title": {
+                                "format": "string",
+                                "id": "title",
+                                "links": [
+                                    {
+                                        "domainType": "link",
+                                        "href": "http://192.168.11.11/maintestsite/check_mk/api/1.0/objects/host_tag_group/testtaggroup/properties/title",
+                                        "method": "GET",
+                                        "rel": "self",
+                                        "type": "application/json"
+                                    }
+                                ],
+                                "memberType": "property",
+                                "title": null,
+                                "value": "testtaggroup"
+                            }
+                        },
+                        "title": "testtaggroup"
+                    },
+                    {
+                        "domainType": "host_tag_group",
+                        "extensions": {
+                            "tags": [
+                                {
                                     "aux_tags": [
                                         "tcp",
                                         "checkmk-agent"
@@ -717,7 +783,8 @@ class CheckMKLookupAPI:
                                 "tag_criticality": "prod",
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
-                                "tag_snmp_ds": "no-snmp"
+                                "tag_snmp_ds": "no-snmp",
+                                "tag_testtaggroup": "None"
                             },
                             "folder": "/main",
                             "is_cluster": false,
@@ -801,7 +868,8 @@ class CheckMKLookupAPI:
                                 "tag_criticality": "test",
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
-                                "tag_snmp_ds": "no-snmp"
+                                "tag_snmp_ds": "no-snmp",
+                                "tag_testtaggroup": "None"
                             },
                             "folder": "/main",
                             "is_cluster": false,
@@ -886,7 +954,8 @@ class CheckMKLookupAPI:
                                 "tag_criticality": "prod",
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
-                                "tag_snmp_ds": "snmp-v2"
+                                "tag_snmp_ds": "snmp-v2",
+                                "tag_testtaggroup": "None"
                             },
                             "folder": "/main",
                             "is_cluster": false,
@@ -970,7 +1039,8 @@ class CheckMKLookupAPI:
                                 "tag_criticality": "critical",
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
-                                "tag_snmp_ds": "no-snmp"
+                                "tag_snmp_ds": "no-snmp",
+                                "tag_testtaggroup": null
                             },
                             "folder": "/main",
                             "is_cluster": false,
@@ -1055,7 +1125,8 @@ class CheckMKLookupAPI:
                                 "tag_criticality": "prod",
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
-                                "tag_snmp_ds": "no-snmp"
+                                "tag_snmp_ds": "no-snmp",
+                                "tag_testtaggroup": "None"
                             },
                             "folder": "/remote",
                             "is_cluster": false,
@@ -1140,7 +1211,8 @@ class CheckMKLookupAPI:
                                 "tag_criticality": "test",
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
-                                "tag_snmp_ds": "no-snmp"
+                                "tag_snmp_ds": "no-snmp",
+                                "tag_testtaggroup": "None"
                             },
                             "folder": "/remote",
                             "is_cluster": false,
@@ -1229,7 +1301,8 @@ class CheckMKLookupAPI:
                                 "tag_criticality": "test",
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
-                                "tag_snmp_ds": "no-snmp"
+                                "tag_snmp_ds": "no-snmp",
+                                "tag_testtaggroup": "None"
                             },
                             "folder": "/remote",
                             "is_cluster": false,
@@ -1313,7 +1386,8 @@ class CheckMKLookupAPI:
                                 "tag_criticality": "critical",
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
-                                "tag_snmp_ds": "no-snmp"
+                                "tag_snmp_ds": "no-snmp",
+                                "tag_testtaggroup": "None"
                             },
                             "folder": "/remote",
                             "is_cluster": false,

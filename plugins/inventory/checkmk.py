@@ -121,9 +121,17 @@ class InventoryModule(BaseInventoryPlugin):
 
     def _generate_groups(self):
         if "hosttags" in self.groupsources:
+            self.display.vvvv("HOSTTAGS_GEN:")
+            for hosttaggroups in self.hosttaggroups:
+                self.display.vvvv(str(hosttaggroups.get("id")))
+                for tag in hosttaggroups.get("tags"):
+                    self.display.vvvv(str(tag.get("id")))
+
             hosttags = [
                 [
                     "tag_" + hosttaggroups.get("id") + "_" + tag.get("id")
+                    if tag.get("id")
+                    else "tag_" + hosttaggroups.get("id")
                     for tag in (hosttaggroups.get("tags"))
                 ]
                 for hosttaggroups in self.hosttaggroups
@@ -183,10 +191,13 @@ class InventoryModule(BaseInventoryPlugin):
         if "hosttags" in self.groupsources:
             for host in self.hosts:
                 for tag in self.tags:
-                    self.inventory.add_child(
-                        tag + "_" + self.convertname(host.get("tags").get(tag)),
-                        host.get("id"),
-                    )
+                    if host.get("tags").get(tag):
+                        self.inventory.add_child(
+                            tag + "_" + self.convertname(host.get("tags").get(tag)),
+                            host.get("id"),
+                        )
+                    else:
+                        self.inventory.add_child(tag, host.get("id"))
         if "sites" in self.groupsources:
             for host in self.hosts:
                 self.inventory.add_child(
