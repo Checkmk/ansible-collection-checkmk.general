@@ -185,18 +185,18 @@ class CheckMKLookupAPI:
                             "tags": [
                                 {
                                     "aux_tags": [],
-                                    "id": "None",
-                                    "title": "WannabeNone"
+                                    "id": "tag1",
+                                    "title": "First tag"
                                 },
                                 {
                                     "aux_tags": [],
                                     "id": null,
-                                    "title": "TherealNone"
+                                    "title": "None tag"
                                 },
                                 {
                                     "aux_tags": [],
-                                    "id": "None2",
-                                    "title": "Justanothertag"
+                                    "id": "tag3",
+                                    "title": "Just another tag"
                                 }
                             ],
                             "topic": "Tags"
@@ -244,6 +244,62 @@ class CheckMKLookupAPI:
                             }
                         },
                         "title": "testtaggroup"
+                    },
+                    {
+                        "domainType": "host_tag_group",
+                        "extensions": {
+                            "tags": [
+                                {
+                                    "aux_tags": [],
+                                    "id": "lonelytag",
+                                    "title": "yes"
+                                }
+                            ],
+                            "topic": "Tags"
+                        },
+                        "id": "lonelytag",
+                        "links": [
+                            {
+                                "domainType": "link",
+                                "href": "http://192.168.11.11/maintestsite/check_mk/api/1.0/objects/host_tag_group/lonelytag",
+                                "method": "GET",
+                                "rel": "self",
+                                "type": "application/json"
+                            },
+                            {
+                                "domainType": "link",
+                                "href": "http://192.168.11.11/maintestsite/check_mk/api/1.0/objects/host_tag_group/lonelytag",
+                                "method": "PUT",
+                                "rel": "urn:org.restfulobjects:rels/update",
+                                "type": "application/json"
+                            },
+                            {
+                                "domainType": "link",
+                                "href": "http://192.168.11.11/maintestsite/check_mk/api/1.0/objects/host_tag_group/lonelytag",
+                                "method": "DELETE",
+                                "rel": "urn:org.restfulobjects:rels/delete",
+                                "type": "application/json"
+                            }
+                        ],
+                        "members": {
+                            "title": {
+                                "format": "string",
+                                "id": "title",
+                                "links": [
+                                    {
+                                        "domainType": "link",
+                                        "href": "http://192.168.125.61/maintestsite/check_mk/api/1.0/objects/host_tag_group/lonelytag/properties/title",
+                                        "method": "GET",
+                                        "rel": "self",
+                                        "type": "application/json"
+                                    }
+                                ],
+                                "memberType": "property",
+                                "title": null,
+                                "value": "lonelytag"
+                            }
+                        },
+                        "title": "lonelytag"
                     },
                     {
                         "domainType": "host_tag_group",
@@ -781,10 +837,11 @@ class CheckMKLookupAPI:
                                 "tag_address_family": "ip-v4-only",
                                 "tag_agent": "cmk-agent",
                                 "tag_criticality": "prod",
+                                "tag_lonelytag": null,
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
                                 "tag_snmp_ds": "no-snmp",
-                                "tag_testtaggroup": "None"
+                                "tag_testtaggroup": "tag1"
                             },
                             "folder": "/main",
                             "is_cluster": false,
@@ -866,10 +923,11 @@ class CheckMKLookupAPI:
                                 "tag_address_family": "ip-v4-only",
                                 "tag_agent": "cmk-agent",
                                 "tag_criticality": "test",
+                                "tag_lonelytag": null,
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
                                 "tag_snmp_ds": "no-snmp",
-                                "tag_testtaggroup": "None"
+                                "tag_testtaggroup": "tag1"
                             },
                             "folder": "/main",
                             "is_cluster": false,
@@ -952,10 +1010,11 @@ class CheckMKLookupAPI:
                                 "tag_address_family": "ip-v4-only",
                                 "tag_agent": "cmk-agent",
                                 "tag_criticality": "prod",
+                                "tag_lonelytag": null,
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
                                 "tag_snmp_ds": "snmp-v2",
-                                "tag_testtaggroup": "None"
+                                "tag_testtaggroup": "tag1"
                             },
                             "folder": "/main",
                             "is_cluster": false,
@@ -1037,6 +1096,7 @@ class CheckMKLookupAPI:
                                 "tag_address_family": "ip-v4-only",
                                 "tag_agent": "special-agents",
                                 "tag_criticality": "critical",
+                                "tag_lonelytag": null,
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
                                 "tag_snmp_ds": "no-snmp",
@@ -1123,10 +1183,11 @@ class CheckMKLookupAPI:
                                 "tag_address_family": "ip-v4-only",
                                 "tag_agent": "cmk-agent",
                                 "tag_criticality": "prod",
+                                "tag_lonelytag": null,
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
                                 "tag_snmp_ds": "no-snmp",
-                                "tag_testtaggroup": "None"
+                                "tag_testtaggroup": "tag1"
                             },
                             "folder": "/remote",
                             "is_cluster": false,
@@ -1209,10 +1270,11 @@ class CheckMKLookupAPI:
                                 "tag_address_family": "ip-v4-only",
                                 "tag_agent": "cmk-agent",
                                 "tag_criticality": "test",
+                                "tag_lonelytag": null,
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
                                 "tag_snmp_ds": "no-snmp",
-                                "tag_testtaggroup": "None"
+                                "tag_testtaggroup": "tag1"
                             },
                             "folder": "/remote",
                             "is_cluster": false,
@@ -1299,10 +1361,11 @@ class CheckMKLookupAPI:
                                 "tag_address_family": "ip-v4-only",
                                 "tag_agent": "cmk-agent",
                                 "tag_criticality": "test",
+                                "tag_lonelytag": null,
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
                                 "tag_snmp_ds": "no-snmp",
-                                "tag_testtaggroup": "None"
+                                "tag_testtaggroup": "tag1"
                             },
                             "folder": "/remote",
                             "is_cluster": false,
@@ -1384,10 +1447,11 @@ class CheckMKLookupAPI:
                                 "tag_address_family": "ip-v4-only",
                                 "tag_agent": "cmk-agent",
                                 "tag_criticality": "critical",
+                                "tag_lonelytag": "lonelytag",
                                 "tag_networking": "lan",
                                 "tag_piggyback": "auto-piggyback",
                                 "tag_snmp_ds": "no-snmp",
-                                "tag_testtaggroup": "None"
+                                "tag_testtaggroup": "tag1"
                             },
                             "folder": "/remote",
                             "is_cluster": false,

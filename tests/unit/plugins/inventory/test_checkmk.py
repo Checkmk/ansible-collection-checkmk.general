@@ -105,18 +105,28 @@ def test_populate_allgroups(inventory, mocker):
         host_testhost5,
     ]
 
-    # Test if testhost3 is in group tag_testtaggroup (id = NoneType)
-    tag_testtaggroup_group = inventory.inventory.groups["tag_testtaggroup"]
+    # Test if testhost3 is in group tag_testtaggroup_None (id = NoneType)
+    tag_testtaggroup_none_group = inventory.inventory.groups["tag_testtaggroup_None"]
     host_testhost3 = inventory.inventory.get_host("testhost3")
-    assert tag_testtaggroup_group.hosts == [host_testhost3]
+    assert tag_testtaggroup_none_group.hosts == [host_testhost3]
 
     # Test if testhost1 is in folder /main
     assert host_testhost1.get_vars()["folder"] == "/main"
 
-    # Test if testhost4 and 5 are not in group site_maintestsite or ungrouped
+    # Test if testhost4 and 5 are not in group site_maintestsite, tag_lonelytag_lonelytag or ungrouped
     for node in ["testhost4", "testhost5"]:
         assert node not in inventory.inventory.get_groups_dict()["site_maintestsite"]
         assert node not in inventory.inventory.get_groups_dict()["ungrouped"]
+        assert (
+            node not in inventory.inventory.get_groups_dict()["tag_lonelytag_lonelytag"]
+        )
+
+    # Test if testhost6 is in group tag_lonelytag_lonelytag
+    tag_lonelytag_lonelytag_group = inventory.inventory.groups[
+        "tag_lonelytag_lonelytag"
+    ]
+    host_testhost6 = inventory.inventory.get_host("testhost6")
+    assert tag_lonelytag_lonelytag_group.hosts == [host_testhost6]
 
 
 def test_populate_nogroups(inventory, mocker):
