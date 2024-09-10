@@ -125,9 +125,11 @@ class InventoryModule(BaseInventoryPlugin):
             for hosttaggroups in self.hosttaggroups:
                 if len(hosttaggroups.get("tags")) > 1:
                     hosttags += [
-                        "tag_" + hosttaggroups.get("id") + "_" + tag.get("id")
-                        if tag.get("id")
-                        else "tag_" + hosttaggroups.get("id") + "_None"
+                        (
+                            "tag_" + hosttaggroups.get("id") + "_" + tag.get("id")
+                            if tag.get("id")
+                            else "tag_" + hosttaggroups.get("id") + "_None"
+                        )
                         for tag in (hosttaggroups.get("tags"))
                     ]
                 else:
