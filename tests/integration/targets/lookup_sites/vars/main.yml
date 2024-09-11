@@ -1,0 +1,11 @@
+---
+test_sites:
+  - version: "2.3.0p13"
+    edition: "cee"
+    site: "stable_cee"
+  - version: "2.3.0p13"
+    edition: "cre"
+    site: "stable_cre"
+  - version: "2.2.0p32"
+    edition: "cre"
+    site: "old_cre"
