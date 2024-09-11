@@ -1,15 +1,16 @@
 ---
 - name: " {{ outer_item.version }} - {{ outer_item.edition | upper }} - Get config of the site."
   ansible.builtin.debug:
-      msg: "Config of site {{ extensions.basic_settings.site_id }} is {{ extensions }}"
-  vars:
-    extensions: "{{ lookup('checkmk.general.sites',
+      msg: "Config of site {{ item.id }} is {{ item.extensions }}"
+  loop: "{{ lookup('checkmk.general.sites',
                     server_url=checkmk_var_server_url,
                     site=outer_item.site,
                     validate_certs=False,
                     automation_user=checkmk_var_automation_user,
                     automation_secret=checkmk_var_automation_secret)
-              }}[0]"
+              }}"
+  loop_control:
+      label: "{{ item.id }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 

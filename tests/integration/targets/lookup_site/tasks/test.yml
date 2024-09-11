@@ -2,7 +2,7 @@
 - name: " {{ outer_item.version }} - {{ outer_item.edition | upper }} - Get config of the site."
   ansible.builtin.debug:
       #msg: "Config of site {{ extensions.basic_settings.site_id }} is {{ extensions }}"
-    msg: "Config of site is {{ extensions }}"
+    msg: "Config of site {{ extensions.basic_settings.site_id }} is {{ extensions }}"
   vars:
     extensions: "{{ lookup('checkmk.general.site',
                     outer_item.site,
