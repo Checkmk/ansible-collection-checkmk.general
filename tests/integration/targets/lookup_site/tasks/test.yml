@@ -26,6 +26,6 @@
                     validate_certs=False,
                     automation_user=checkmk_var_automation_user,
                     automation_secret=checkmk_var_automation_secret)
-              }}"
+              }}[0]"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
