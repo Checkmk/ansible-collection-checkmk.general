@@ -2,6 +2,7 @@
 /tests/ @robin-checkmk
 /roles/ @robin-checkmk
 /playbooks/ @robin-checkmk
+/plugins/inventory/ @Max-checkmk
 /plugins/lookup/version.py @lgetwan
 /plugins/modules/ @lgetwan
 /plugins/module_utils/ @godspeed-you

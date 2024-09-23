@@ -9,43 +9,19 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: checkmk
     author: Max Sickora (@max-checkmk)
-    short_description: checkmk inventory source
+    short_description: Dynamic Inventory Source or Checkmk
     description:
         - Get hosts from any checkmk site.
-        - Get groups from hosttags and sites from checkmk.
+        - Generate groups based on tag groups or sites in Checkmk.
+
+    extends_documentation_fragment: [checkmk.general.common]
+
     options:
-        server_url:
-            description: URL of the Checkmk server
-            required: true
-            type: string
-
-        site:
-            description: Site name.
-            required: true
-            type: string
-
-        automation_user:
-            description: Automation user for the REST API access.
-            required: true
-            type: string
-
-        automation_secret:
-            description: Automation secret for the REST API access.
-            required: true
-            type: string
-
-        validate_certs:
-            description: Whether or not to validate TLS certificates.
-            type: boolean
-            required: false
-            default: True
-
         plugin:
-            description: Name of the plugin. Should always be C(checkmk.general.checkmk)
+            description: Name of the plugin. Should always be C(checkmk.general.checkmk).
             type: string
             required: true
             choices: ['checkmk.general.checkmk']
-
         groupsources:
             description:
               - List of sources for grouping
@@ -56,12 +32,16 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-# Getting all hosts incl. hosttags and sites as groups
+# To get started, you need to create a file called `checkmk.yml`, which contains
+# one of the example blocks below and use it as your inventory source.
+# E.g., with `ansible-inventory -i checkmk.yml --graph`.
+
+# Group all hosts based on both tag groups and sites:
 plugin: checkmk.general.checkmk
 server_url: "http://hostname/"
 site: "sitename"
-user: "cmkadmin"
-secret: "******"
+automation_user: "cmkadmin"
+automation_secret: "******"
 validate_certs: False
 groupsources: ["hosttags", "sites"]
 """
