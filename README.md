@@ -154,7 +154,6 @@ Please do **not** consider it a concrete planning document!
     - BI
     - Distributed Monitoring
     - Notification Rules
-- Dynamic Inventory
 - OMD Module
 
 ## More information about Ansible
