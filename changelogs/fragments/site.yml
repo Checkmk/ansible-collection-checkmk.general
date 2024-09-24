@@ -1,3 +1,9 @@
 major_changes:
   - Site module - Added a module for distributed monitoring.
     Refer to the module documentation for further details.
+
+known_issues:
+  - Site module - To completely enable a site, the livestatus certificate
+    needs to be trusted. This cannot be done with the site module.
+    As of now, there is no automatic way to do this, so you need to log into
+    the site and add the certificate to the trusted certificates manually.
