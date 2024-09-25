@@ -78,39 +78,39 @@
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
 
-## TODO: @lgetwan: Please take a look at these tasks and beautify/fix them. Bonus: Add the new lookup modules. :)
+    ## TODO: @lgetwan: Please take a look at these tasks and beautify/fix them. Bonus: Add the new lookup modules. :)
 
-    - name: "Get all Checkmk Sites."
-      ansible.builtin.debug:
-        msg: "Sites found: {{ checkmk_var_sites }}"
-      vars:
-        checkmk_var_sites: "{{ lookup('checkmk.general.sites',
-                       server_url=checkmk_var_server_url,
-                       site=checkmk_var_site,
-                       automation_user=checkmk_var_automation_user,
-                       automation_secret=checkmk_var_automation_secret,
-                       validate_certs=False)
-                   }}"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
+    # - name: "Get all Checkmk Sites."
+    #   ansible.builtin.debug:
+    #     msg: "Sites found: {{ checkmk_var_sites }}"
+    #   vars:
+    #     checkmk_var_sites: "{{ lookup('checkmk.general.sites',
+    #                    server_url=checkmk_var_server_url,
+    #                    site=checkmk_var_site,
+    #                    automation_user=checkmk_var_automation_user,
+    #                    automation_secret=checkmk_var_automation_secret,
+    #                    validate_certs=False)
+    #                }}"
+    #   delegate_to: localhost
+    #   run_once: true  # noqa run-once[task]
 
-    - name: "Get a single site."
-      ansible.builtin.debug:
-        msg: "Site: {{ checkmk_var_looping }}"
-      vars:
-        checkmk_var_looping: "{{
-                    lookup('checkmk.general.site',
-                        'mysite',
-                        show_hosts=True,
-                        recursive=True,
-                        server_url=checkmk_var_server_url,
-                        site=checkmk_var_site,
-                        automation_user=checkmk_var_automation_user,
-                        automation_secret=checkmk_var_automation_secret,
-                        validate_certs=False)
-                  }}"
-      delegate_to: localhost
-      run_once: true  # noqa run-once[task]
+    # - name: "Get a single site."
+    #   ansible.builtin.debug:
+    #     msg: "Site: {{ checkmk_var_looping }}"
+    #   vars:
+    #     checkmk_var_looping: "{{
+    #                 lookup('checkmk.general.site',
+    #                     'mysite',
+    #                     show_hosts=True,
+    #                     recursive=True,
+    #                     server_url=checkmk_var_server_url,
+    #                     site=checkmk_var_site,
+    #                     automation_user=checkmk_var_automation_user,
+    #                     automation_secret=checkmk_var_automation_secret,
+    #                     validate_certs=False)
+    #               }}"
+    #   delegate_to: localhost
+    #   run_once: true  # noqa run-once[task]
 
     # - name: "Get all sites recursively."
     #   ansible.builtin.debug:
