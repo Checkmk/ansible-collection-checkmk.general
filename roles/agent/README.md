@@ -16,7 +16,7 @@ Please make sure it is installed on your system and available for Ansible.
 
 ## Role Variables
 
-    checkmk_agent_version: "2.3.0p12"
+    checkmk_agent_version: "2.3.0p16"
 
 The Checkmk version of the site your agents will talk to.
 
@@ -49,7 +49,7 @@ Whether to validate the SSL certificate of the Checkmk server.
 
 The port of the web interface of your Checkmk server. Defaults to port 80 for http and port 443 for https.
 
-    checkmk_agent_site: mysite
+    checkmk_agent_site: 'mysite'
 
 The name of your Checkmk site.
 
@@ -61,21 +61,21 @@ The server you want to use for registration tasks (Agent updates and TLS encrypt
 
 The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_site }}`.
 
-    checkmk_agent_user: myuser
+    checkmk_agent_user: 'myuser'
 
 The user used to authenticate against your Checkmk site.
 
-    checkmk_agent_pass: mysecret
+    checkmk_agent_pass: 'mypass'
 
 The password for the normal user used to authenticate against your Checkmk site, both for API calls and agent updates.
 This is mutually exclusive with `checkmk_agent_secret`.
 
-    checkmk_agent_secret: mysecret
+    checkmk_agent_secret: 'mysecret'
 
 The secret for the automation user used to authenticate against your Checkmk site, both for API calls and agent updates.
 This is mutually exclusive with `checkmk_agent_pass`.
 
-    checkmk_agent_port: 6556
+    checkmk_agent_port: '6556'
 
 Configure the port the agent listens on. We recommend to stick to the default.
 **This does not change the agent configuration! It merely tells Ansible which port to talk to.**
@@ -97,7 +97,7 @@ Automatically add the host where the agent was installed on to Checkmk.
 
 Define the hostname which will be used to add the host to Checkmk.
 
-    checkmk_agent_folder: "/"
+    checkmk_agent_folder: '/'
 
 The folder into which the automatically created host will be placed.
 
@@ -152,7 +152,7 @@ This means, downgrades become possible and unverified packages would be installe
 
 Enable this to automatically install `xinetd` on hosts with systemd prior to version 220.
 
-    checkmk_agent_delegate_api_calls: localhost
+    checkmk_agent_delegate_api_calls: 'localhost'
 
 Configure the host to which Checkmk API calls are delegated to.
 Typically this would be your Ansible host, hence the default `localhost`.
@@ -161,7 +161,7 @@ Typically this would be your Ansible host, hence the default `localhost`.
 
 Configure the host to which downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download itself.
 
-    checkmk_agent_mode: pull
+    checkmk_agent_mode: 'pull'
 
 The mode the agent operates in. For most deployments, this will be the `pull` mode.
 If you are uncertain, what you are using, this is most likely your mode.
