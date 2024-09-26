@@ -547,7 +547,7 @@ class RuleAPI(CheckmkAPI):
 
         if self.rule_id:
             # Get the current rule from the API and set some parameters
-            (self.current, self.state) = self._get_current()
+            (self.current, self.state, self.result) = self._get_current()
             if self.state == "present":
                 self._changed_items = self._detect_changes()
 
@@ -560,7 +560,7 @@ class RuleAPI(CheckmkAPI):
         neighbour_id = self.params.get("rule", {}).get("location", {}).get("neighbour")
 
         if neighbour_id:
-            (neighbour, state) = self._get_rule_by_id(neighbour_id)
+            (neighbour, state, _) = self._get_rule_by_id(neighbour_id)
 
             if state == "absent":
                 self.module.warn(
@@ -723,7 +723,7 @@ class RuleAPI(CheckmkAPI):
                 if key in CURRENT_RULE_KEYS
             }
 
-        return (current, state)
+        return (current, state, result)
 
     def _get_current(self):
         return self._get_rule_by_id(self.rule_id)
@@ -737,6 +737,9 @@ class RuleAPI(CheckmkAPI):
             failed=False,
             changed=True,
         )
+
+    def get_retrieve_result(self):
+        return self.result
 
     def needs_update(self):
         return len(self._changed_items) > 0
@@ -951,9 +954,11 @@ def run_module():
             if current_rule.needs_update():
                 result = current_rule.edit()
             else:
+                result = current_rule.get_retrieve_result()
                 result = result._replace(
                     msg="Rule already exists with the desired parameters."
                 )
+
         elif rule_id:
             # There is no rule with the given rule_id
             result = result._replace(
