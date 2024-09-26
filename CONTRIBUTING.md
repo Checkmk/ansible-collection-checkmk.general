@@ -141,7 +141,16 @@ To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/test
 
 ### Unit
 
-There are currently no unit tests.
+Currently we're only unit testing the inventory plugin.
+Like with integration tests, we recommend testing inside docker, so modification of your local system isn't necessary.
+
+To run all tests locally, you can use following command:
+
+    ansible-test units --docker
+
+For a single unit test, this can be started with this command:
+
+    ansible-test units --docker tests/unit/plugins/inventory/test_checkmk.py
 
 ## Releasing this collection
 
