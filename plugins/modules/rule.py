@@ -560,7 +560,7 @@ class RuleAPI(CheckmkAPI):
         neighbour_id = self.params.get("rule", {}).get("location", {}).get("neighbour")
 
         if neighbour_id:
-            (neighbour, state, _) = self._get_rule_by_id(neighbour_id)
+            (neighbour, state, result) = self._get_rule_by_id(neighbour_id)
 
             if state == "absent":
                 self.module.warn(
