@@ -80,12 +80,12 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
-      stable_cce:
+      stable_cme:
         image: checkmk/check-mk-managed:2.3.0p17
         ports:
-          - 5223:5000
+          - 5323:5000
         env:
-          CMK_SITE_ID: "stable_cce"
+          CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
 
     steps:
