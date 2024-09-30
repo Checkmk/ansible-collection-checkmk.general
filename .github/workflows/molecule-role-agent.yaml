@@ -19,6 +19,8 @@ on:
       - devel
     paths:
       - 'roles/agent/**'
+      - '.github/workflows/molecule-role-agent.yaml'
+
 
 jobs:
   build:

@@ -9,13 +9,6 @@ env:
 name: Ansible Linting
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - devel
-    paths:
-      - 'roles/**'
-      - 'playbooks/**'
   pull_request:
     branches:
       - main
@@ -23,6 +16,14 @@ on:
     paths:
       - 'roles/**'
       - 'playbooks/**'
+  push:
+    branches:
+      - main
+      - devel
+    paths:
+      - 'roles/**'
+      - 'playbooks/**'
+      - '.github/workflows/ansible-lint.yaml'
 
 jobs:
 

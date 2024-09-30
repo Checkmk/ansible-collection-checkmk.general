@@ -28,6 +28,7 @@ on:
   push:
     paths:
       - 'plugins/modules/bakery.py'
+      - '.github/workflows/ans-int-test-bakery.yaml'
 
 jobs:
 

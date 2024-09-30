@@ -28,6 +28,7 @@ on:
   push:
     paths:
       - 'plugins/modules/folder.py'
+      - '.github/workflows/ans-int-test-folder.yaml'
 
 jobs:
 

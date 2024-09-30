@@ -28,6 +28,7 @@ on:
   push:
     paths:
       - 'plugins/modules/downtime.py'
+      - '.github/workflows/ans-int-test-downtime.yaml'
 
 jobs:
 

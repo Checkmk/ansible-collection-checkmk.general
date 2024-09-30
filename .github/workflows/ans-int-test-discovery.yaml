@@ -28,6 +28,7 @@ on:
   push:
     paths:
       - 'plugins/modules/discovery.py'
+      - '.github/workflows/ans-int-test-discovery.yaml'
 
 jobs:
 
