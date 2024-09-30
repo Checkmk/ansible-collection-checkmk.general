@@ -38,11 +38,11 @@ For any form of support queries or requests refer to [SUPPORT.md](SUPPORT.md).
 You can find playbooks, demonstrating the content of this collection in the folder [playbooks/demo/](playbooks/demo/).
 
 <!--start collection content-->
-<!-- ### Inventory plugins
-Name | Description
---- | ---
-[checkmk.general.ec2](https://github.com/Checkmk/ansible-collection-checkmk.general/tree/main/docs/checkmk.general.ec2_inventory.rst)|EC2 inventory source
--->
+### Inventory plugins
+
+Name | Description | Tests
+--- | --- | ---
+[checkmk.general.checkmk](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/inventory/checkmk.py)|Dynamic Inventory Source for Checkmk | [![Ansible Unit Test for Inventory Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml)
 
 ### Lookup plugins
 Click on the lookup plugin name below, to get detailed documentation about it.
@@ -154,7 +154,6 @@ Please do **not** consider it a concrete planning document!
     - BI
     - Distributed Monitoring
     - Notification Rules
-- Dynamic Inventory
 - OMD Module
 
 ## More information about Ansible
