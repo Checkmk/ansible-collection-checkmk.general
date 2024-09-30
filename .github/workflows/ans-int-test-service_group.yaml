@@ -91,13 +91,6 @@ jobs:
           CMK_PASSWORD: "Sup3rSec4et!"
 
     steps:
-      - name: "Docker Login."
-        uses: docker/login-action@v3
-        with:
-          registry: registry.checkmk.com
-          username: d-gh-ansible-dl
-          password: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
-
       - name: "Manually run CME."
         run: |
           docker run -d -p 5323:5000 \
