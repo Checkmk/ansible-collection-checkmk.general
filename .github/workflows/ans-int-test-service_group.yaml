@@ -62,28 +62,28 @@ jobs:
 
     services:
       ancient_cre:
-        image: checkmk/check-mk-raw:2.1.0p44
+        image: checkmk/check-mk-raw:2.1.0p47
         ports:
           - 5021:5000
         env:
           CMK_SITE_ID: "ancient_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cre:
-        image: checkmk/check-mk-raw:2.2.0p27
+        image: checkmk/check-mk-raw:2.2.0p34
         ports:
           - 5022:5000
         env:
           CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cre:
-        image: checkmk/check-mk-raw:2.3.0p6
+        image: checkmk/check-mk-raw:2.3.0p17
         ports:
           - 5023:5000
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cce:
-        image: checkmk/check-mk-managed:2.3.0p6
+        image: checkmk/check-mk-managed:2.3.0p17
         ports:
           - 5223:5000
         env:
@@ -102,7 +102,7 @@ jobs:
         run: |
           docker run -d -p 5323:5000 \
           -e CMK_SITE_ID="stable_cme" -e CMK_PASSWORD='Sup3rSec4et!' \
-          registry.checkmk.com/managed/check-mk-managed:2.3.0p6 && sleep 10
+          registry.checkmk.com/managed/check-mk-managed:2.3.0p17
 
       - name: Check out code
         uses: actions/checkout@v4

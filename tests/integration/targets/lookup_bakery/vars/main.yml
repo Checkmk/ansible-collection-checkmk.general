@@ -1,14 +1,14 @@
 ---
 test_sites:
-  - version: "2.3.0p6"
+  - version: "2.3.0p17"
     edition: "cce"
     site: "stable_cce"
     port: "5223"
-  - version: "2.2.0p27"
+  - version: "2.2.0p34"
     edition: "cce"
     site: "old_cce"
     port: "5222"
-  - version: "2.1.0p44"
+  - version: "2.1.0p47"
     edition: "cce"
     site: "ancient_cce"
     port: "5221"
