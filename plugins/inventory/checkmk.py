@@ -100,33 +100,34 @@ class InventoryModule(BaseInventoryPlugin):
         return valid
 
     def _generate_groups(self):
-        if "hosttags" in self.groupsources:
-            hosttags = []
-            for hosttaggroups in self.hosttaggroups:
-                if len(hosttaggroups.get("tags")) > 1:
-                    hosttags += [
-                        (
-                            "tag_" + hosttaggroups.get("id") + "_" + tag.get("id")
-                            if tag.get("id")
-                            else "tag_" + hosttaggroups.get("id") + "_None"
+        if self.groupsources:
+            if "hosttags" in self.groupsources:
+                hosttags = []
+                for hosttaggroups in self.hosttaggroups:
+                    if len(hosttaggroups.get("tags")) > 1:
+                        hosttags += [
+                            (
+                                "tag_" + hosttaggroups.get("id") + "_" + tag.get("id")
+                                if tag.get("id")
+                                else "tag_" + hosttaggroups.get("id") + "_None"
+                            )
+                            for tag in (hosttaggroups.get("tags"))
+                        ]
+                    else:
+                        # If the tag group has only one choice, we have to generate TWO groups,
+                        # one for hosts that have this tag set and one for hosts that have it unset
+                        hosttags.append("tag_" + hosttaggroups.get("id") + "_None")
+                        hosttags.append(
+                            "tag_"
+                            + hosttaggroups.get("id")
+                            + "_"
+                            + hosttaggroups.get("tags")[0].get("id")
                         )
-                        for tag in (hosttaggroups.get("tags"))
-                    ]
-                else:
-                    # If the tag group has only one choice, we have to generate TWO groups,
-                    # one for hosts that have this tag set and one for hosts that have it unset
-                    hosttags.append("tag_" + hosttaggroups.get("id") + "_None")
-                    hosttags.append(
-                        "tag_"
-                        + hosttaggroups.get("id")
-                        + "_"
-                        + hosttaggroups.get("tags")[0].get("id")
-                    )
-            self.groups.extend(hosttags)
+                self.groups.extend(hosttags)
 
-        if "sites" in self.groupsources:
-            sites = ["site_" + site.get("id") for site in self.sites]
-            self.groups.extend(sites)
+            if "sites" in self.groupsources:
+                sites = ["site_" + site.get("id") for site in self.sites]
+                self.groups.extend(sites)
 
     def parse(self, inventory, loader, path, cache=False):
         super(InventoryModule, self).parse(inventory, loader, path, cache)
@@ -172,21 +173,22 @@ class InventoryModule(BaseInventoryPlugin):
             self.inventory.set_variable(host["id"], "ipaddress", host["ipaddress"])
             self.inventory.set_variable(host["id"], "folder", host["folder"])
 
-        if "hosttags" in self.groupsources:
-            for host in self.hosts:
-                for tag in self.tags:
-                    if host.get("tags").get(tag):
-                        self.inventory.add_child(
-                            tag + "_" + self.convertname(host.get("tags").get(tag)),
-                            host.get("id"),
-                        )
-                    else:
-                        self.inventory.add_child(tag + "_None", host.get("id"))
-        if "sites" in self.groupsources:
-            for host in self.hosts:
-                self.inventory.add_child(
-                    "site_" + self.convertname(host.get("site")), host.get("id")
-                )
+        if self.groupsources:
+            if "hosttags" in self.groupsources:
+                for host in self.hosts:
+                    for tag in self.tags:
+                        if host.get("tags").get(tag):
+                            self.inventory.add_child(
+                                tag + "_" + self.convertname(host.get("tags").get(tag)),
+                                host.get("id"),
+                            )
+                        else:
+                            self.inventory.add_child(tag + "_None", host.get("id"))
+            if "sites" in self.groupsources:
+                for host in self.hosts:
+                    self.inventory.add_child(
+                        "site_" + self.convertname(host.get("site")), host.get("id")
+                    )
 
     def _get_hosts(self, api):
         response = json.loads(
