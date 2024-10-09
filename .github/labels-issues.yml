@@ -11,6 +11,9 @@ role:server:
 role:agent:
   - 'Component Name: agent'
 
+inventory:
+  - 'Component Name: inventory'
+
 module:activation:
   - 'Component Name: activation'
 
@@ -44,6 +47,9 @@ module:rule:
 module:service_group:
   - 'Component Name: service_group'
 
+module:site:
+  - 'Component Name: site'
+
 module:tag_group:
   - 'Component Name: tag_group'
 
@@ -53,8 +59,8 @@ module:timeperiod:
 module:user:
   - 'Component Name: user'
 
-lookup:version:
-  - 'Component Name: lookup_version'
+lookup:bakery:
+  - 'Component Name: lookup_bakery'
 
 lookup:folder:
   - 'Component Name: lookup_folder'
@@ -80,5 +86,11 @@ lookup:ruleset:
 lookup:rulesets:
   - 'Component Name: lookup_rulesets'
 
-lookup:bakery:
-  - 'Component Name: lookup_bakery'
+lookup:site:
+  - 'Component Name: lookup_site'
+
+lookup:sites:
+  - 'Component Name: lookup_sites'
+
+lookup:version:
+  - 'Component Name: lookup_version'
