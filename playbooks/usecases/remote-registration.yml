@@ -1,15 +1,15 @@
 ---
 # This playbook uses the inventory from the 'playbooks/hosts' file and expects
-# an expects an existing site with the below configuration and hosts of the group
-# 'vagrant'.
+# an existing site with the below configuration and hosts of the group
+# 'linux'.
 
 - name: "Register hosts against a remote site. Both for updates and TLS."
-  hosts: vagrant
+  hosts: linux
   strategy: linear
   vars:
     # Basic server and authentication information.
     # You have to provide the distributed setup yourself.
-    checkmk_agent_version: "2.3.0p6"
+    checkmk_agent_version: "2.3.0p14"
     checkmk_agent_edition: "cre"
     checkmk_agent_user: "cmkadmin"
     checkmk_agent_pass: "password"

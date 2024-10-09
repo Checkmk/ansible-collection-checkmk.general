@@ -279,7 +279,7 @@ class FolderAPI(CheckmkAPI):
         p = Path(path)
         if not p.is_absolute():
             p = Path("/").joinpath(p)
-        return str(p.parent).lower(), p.name
+        return str(p.parent), p.name
 
     def _urlize_path(self, path):
         return path.replace("/", "~").replace("~~", "~")

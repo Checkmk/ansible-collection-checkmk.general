@@ -1,0 +1,3 @@
+bugfixes:
+  - Folder module - Fix an issue, where the folder module would create an
+    uppercase folder but would not be able to find said folder.

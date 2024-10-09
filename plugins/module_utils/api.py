@@ -41,7 +41,7 @@ class CheckmkAPI:
         }
         self.current = {}
         self.required = {}
-        # may be "present", "abesent" or an individual one
+        # may be "present", "absent" or an individual one
         self.state = ""
 
     def _fetch(self, code_mapping="", endpoint="", data=None, method="GET"):

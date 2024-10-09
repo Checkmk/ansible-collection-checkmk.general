@@ -1,0 +1,213 @@
+---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    customer: "provider"
+  when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    customer: null
+  when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create remote sites."
+  ansible.builtin.command: "omd -V {{ outer_item.version }}.{{ outer_item.edition }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site_id }}"
+  args:
+    creates: "/omd/sites/{{ item.site_id }}"
+  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Configure Sites."  # noqa no-changed-when
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd config {{ item.site_id }} set LIVEPROXYD on
+    omd config {{ item.site_id }} set LIVESTATUS_TCP_PORT {{ item.site_config.status_connection.connection.port }}
+    omd config {{ item.site_id }} set LIVESTATUS_TCP_TLS off
+  args:
+    executable: /bin/bash
+  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Start Sites."
+  ansible.builtin.shell: "omd status -b {{ item.site_id }} || omd start {{ item.site_id }}"
+  register: site_status
+  changed_when: site_status.rc == "0"
+  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for site to be ready."
+  ansible.builtin.pause:
+    seconds: 5
+  when: |
+    ((download_pass is defined and download_pass | length) or outer_item.edition == 'cre')
+    and (outer_item.stdout_lines is defined and 'OVERALL 1' in outer_item.stdout_lines)
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create site connection."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    site_id: "{{ item.site_id }}"
+    site_connection:
+      site_config: "{{ item.site_config }}"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create site connection again."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    site_id: "{{ item.site_id }}"
+    site_connection:
+      site_config: "{{ item.site_config }}"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log in to remote site."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    site_id: "{{ item.site_id }}"
+    site_connection:
+      authentication: "{{ item.authentication }}"
+    state: "login"
+  delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log in to remote site again."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    site_id: "{{ item.site_id }}"
+    site_connection:
+      authentication: "{{ item.authentication }}"
+    state: "login"
+  delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  run_once: true  # noqa run-once[task]
+  register: result
+  failed_when: result.changed | bool
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update remote site."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    site_id: "{{ item.site_id }}"
+    site_connection:
+      site_config:
+        basic_settings:
+          alias: "{{ item.site_id }} with new alias"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update remote site again. "
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    site_id: "{{ item.site_id }}"
+    site_connection:
+      site_config:
+        basic_settings:
+          alias: "{{ item.site_id }} with new alias"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  run_once: true  # noqa run-once[task]
+  register: result
+  failed_when: result.changed | bool
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log out from remote site."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    site_id: "{{ item.site_id }}"
+    state: "logout"
+  delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log out from remote site again."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    site_id: "{{ item.site_id }}"
+    state: "logout"
+  delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  run_once: true  # noqa run-once[task]
+  register: result
+  failed_when: result.changed | bool
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete remote site."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    site_id: "{{ item.site_id }}"
+    state: "absent"
+  delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete remote site again."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    site_id: "{{ item.site_id }}"
+    state: "absent"
+  delegate_to: localhost
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  run_once: true  # noqa run-once[task]
+  register: result
+  failed_when: result.changed | bool

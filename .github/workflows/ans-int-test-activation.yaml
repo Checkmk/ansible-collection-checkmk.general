@@ -29,6 +29,7 @@ on:
   push:
     paths:
       - 'plugins/modules/activation.py'
+      - '.github/workflows/ans-int-test-activation.yaml'
 
 jobs:
 

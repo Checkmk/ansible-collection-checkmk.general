@@ -28,6 +28,7 @@ on:
     paths:
       - 'plugins/lookup/ruleset.py'
       - 'plugins/lookup/rulesets.py'
+      - '.github/workflows/ans-int-test-lkp-rulesets.yaml'
 
 jobs:
 

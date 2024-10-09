@@ -45,6 +45,13 @@ help:
 	@echo "  publish       			- Make files available, update git and announce"
 	@echo ""
 
+build:
+	@echo "Building Collection from current working directory. This can take a while."
+	@ansible-galaxy collection build --force ./
+
+install:
+	@ansible-galaxy collection install -f ./checkmk-general-$(VERSION).tar.gz
+
 release: version
 	# gh workflow run release.yaml --ref main  # https://cli.github.com/manual/gh_workflow_run
 
@@ -151,15 +158,12 @@ tests-sanity: vm
 	cd $(COLLECTION_ROOT) && \
 	ansible-test sanity --docker"
 
+tests-units: vm
+	@vagrant ssh collection -c "\
+	cd $(COLLECTION_ROOT) && \
+	ansible-test units --docker"
+
 tests-integration: vm
 	@vagrant ssh collection -c "\
 	cd $(COLLECTION_ROOT) && \
 	ansible-test integration --docker"
-
-tests-integration-custom: vm container
-	@vagrant ssh collection -c "\
-	cd $(COLLECTION_ROOT) && \
-	docker load -i ansible-checkmk-test-latest-image.tar.gz && \
-	ansible-test integration --docker-privileged --python 3.10 --docker ansible-checkmk-test && \
-	ansible-test integration --docker-privileged --python 3.11 --docker ansible-checkmk-test && \
-	ansible-test integration --docker-privileged --python 3.12 --docker ansible-checkmk-test"

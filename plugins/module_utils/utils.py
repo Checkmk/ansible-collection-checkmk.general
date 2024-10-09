@@ -10,6 +10,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+
 
 def result_as_dict(result):
     return {
@@ -17,6 +19,61 @@ def result_as_dict(result):
         "failed": result.failed,
         "msg": result.msg,
     }
+
+
+def merge_results(results):
+    """Merges two or more results. Call like this:
+    over_all_result = merge_results({"created": create_result, "moved": move_result})"""
+
+    return RESULT(
+        http_code=list(results.values())[-1].http_code,
+        msg=", ".join(
+            ["%s (%d)" % (results[k].msg, results[k].http_code) for k in results.keys()]
+        ),
+        content=list(results.values())[-1].content,
+        etag=list(results.values())[-1].etag,
+        failed=any(r.failed for r in list(results.values())),
+        changed=any(r.changed for r in list(results.values())),
+    )
+
+
+def remove_null_value_keys(params):
+    """Takes the module.params and removes all parameters that are set to 'null'.
+    This unsually removes all parameters that are neither explicitly set
+    nor provided in the ansible task"""
+
+    for k in list(params.keys()):
+        if isinstance(params[k], dict):
+            remove_null_value_keys(params[k])
+        elif params[k] is None:
+            del params[k]
+
+
+def exit_module(
+    module,
+    result=None,
+    http_code=0,
+    msg="",
+    content="{}",
+    etag="",
+    failed=False,
+    changed=False,
+    logger=None,
+):
+    if not result:
+        result = RESULT(
+            http_code=http_code,
+            msg=msg,
+            content=content,
+            etag=etag,
+            failed=failed,
+            changed=changed,
+        )
+
+    result_as_dict = result._asdict()
+    if logger:
+        result_as_dict["debug"] = logger.get_log()
+    module.exit_json(**result_as_dict)
 
 
 GENERIC_HTTP_CODES = {

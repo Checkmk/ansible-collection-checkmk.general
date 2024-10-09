@@ -43,6 +43,7 @@
     if [ "$(omd config {{ item.name }} show AUTOSTART)" != "on" ]
     then
       omd config {{ item.name }} set AUTOSTART on
+      omd enable "{{ item.name }}"
       echo "Autostart enabled."
     fi
   args:
@@ -91,6 +92,7 @@
     if [ "$(omd config {{ item.name }} show AUTOSTART)" != "off" ]
     then
       omd config {{ item.name }} set AUTOSTART off
+      omd disable {{ item.name }}
       echo "Autostart disabled."
     fi
   args:
@@ -163,7 +165,7 @@
     msg:
       - "Just a trigger."
   loop: "{{ __checkmk_server_sites_created.results }}"
-  when: __checkmk_server_sites_created.changed | bool and not item.item.admin_pw is defined
+  when: __checkmk_server_sites_created.changed | bool and not item.item.admin_pw is defined and item.item.state != "absent"
   changed_when: true
   notify: Warn site admin password
   no_log: "{{ checkmk_server_no_log | bool }}"

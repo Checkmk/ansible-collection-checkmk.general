@@ -38,11 +38,11 @@ For any form of support queries or requests refer to [SUPPORT.md](SUPPORT.md).
 You can find playbooks, demonstrating the content of this collection in the folder [playbooks/demo/](playbooks/demo/).
 
 <!--start collection content-->
-<!-- ### Inventory plugins
-Name | Description
---- | ---
-[checkmk.general.ec2](https://github.com/Checkmk/ansible-collection-checkmk.general/tree/main/docs/checkmk.general.ec2_inventory.rst)|EC2 inventory source
--->
+### Inventory plugins
+
+Name | Description | Tests
+--- | --- | ---
+[checkmk.general.checkmk](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/inventory/checkmk.py)|Dynamic Inventory Source for Checkmk | [![Ansible Unit Test for Inventory Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml)
 
 ### Lookup plugins
 Click on the lookup plugin name below, to get detailed documentation about it.
@@ -59,6 +59,8 @@ Name | Description | Tests
 [checkmk.general.rules](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/rules.py)|Look up all rules.|[![Integration Tests for Rules Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rules.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rules.yaml)
 [checkmk.general.ruleset](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/ruleset.py)|Look up ruleset attributes.|[![Integration Tests for Ruleset Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rulesets.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rulesets.yaml)
 [checkmk.general.rulesets](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/rulesets.py)|Look up all rulesets.|[![Integration Tests for Rulesets Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rulesets.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-rulesets.yaml)
+[checkmk.general.site](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/site.py)|Look up site attributes.|[![Integration Tests for Site Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-site.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-site.yaml)
+[checkmk.general.sites](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/sites.py)|Look up all sites.|[![Integration Tests for Sites Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-sites.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-sites.yaml)
 [checkmk.general.version](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/version.py)|Look up version and edition information.|[![Integration Tests for Version Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-version.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-version.yaml)
 
 ### Modules
@@ -76,6 +78,7 @@ Name | Description | Tests
 [checkmk.general.host](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/host.py)|Manage hosts.|[![Integration Tests for Host Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-host.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-host.yaml)
 [checkmk.general.rule](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rule.py)|Manage rules.|[![Integration Tests for Rule Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-rule.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-rule.yaml)
 [checkmk.general.service_group](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/service_group.py)|Manage service groups.|[![Integration Tests for Service Group Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-service_group.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-service_group.yaml)
+[checkmk.general.site](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/site.py)|Manage sites.|[![Integration Tests for Site Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-site.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-site.yaml)
 [checkmk.general.tag_group](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/tag_group.py)|Manage tag groups.|[![Integration Tests for Tag Group Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-tag_group.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-tag_group.yaml)
 [checkmk.general.user](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/user.py)|Manage users.|[![Integration Tests for User Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-user.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-user.yaml)
 
@@ -101,20 +104,17 @@ Please refer to the [official Ansible documentation](https://docs.ansible.com/an
 
 ## Using this collection
 
-You can either call modules by their Fully Qualified Collection Namespace (FQCN),
-such as `checkmk.general.activation`, or you can call modules by their short name
-if you list the `checkmk.general` collection in the playbook's [`collections`](https://docs.ansible.com/ansible/devel/user_guide/collections_using.html#using-collections-in-playbooks) keyword:
+We encourage you - in accordance with Ansible Best Practices -
+to always use FQCNs (Fully Qualified Collection Names) as seen below.
+This ensures, that you always know, which module is at play.
 
 ```yaml
 ---
 - hosts: all
 
-  collections:
-    - checkmk.general
-
   tasks:
     - name: "Run activation."
-      activation:
+      checkmk.general.activation:
         server_url: "http://myserver/"
         site: "mysite"
         automation_user: "myuser"
@@ -149,12 +149,14 @@ Please do **not** consider it a concrete planning document!
 - Modules
   - Monitoring
     - Acknowledgement
+    - Business Intelligence
+    - Event Console
   - Setup
     - Agents
-    - BI
-    - Distributed Monitoring
+    - Business Intelligence
+    - Dynamic host management (DCD)
+    - Event Console
     - Notification Rules
-- Dynamic Inventory
 - OMD Module
 
 ## More information about Ansible

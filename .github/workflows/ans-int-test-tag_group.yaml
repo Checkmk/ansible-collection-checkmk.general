@@ -28,6 +28,7 @@ on:
   push:
     paths:
       - 'plugins/modules/tag_group.py'
+      - '.github/workflows/ans-int-test-tag_group.yaml'
 
 jobs:
 
