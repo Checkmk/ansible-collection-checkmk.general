@@ -43,6 +43,7 @@
     if [ "$(omd config {{ item.name }} show AUTOSTART)" != "on" ]
     then
       omd config {{ item.name }} set AUTOSTART on
+      omd enable "{{ item.name }}"
       echo "Autostart enabled."
     fi
   args:
@@ -91,6 +92,7 @@
     if [ "$(omd config {{ item.name }} show AUTOSTART)" != "off" ]
     then
       omd config {{ item.name }} set AUTOSTART off
+      omd disable {{ item.name }}
       echo "Autostart disabled."
     fi
   args:
