@@ -28,6 +28,7 @@ on:
   push:
     paths:
       - 'plugins/modules/site.py'
+      - '.github/workflows/ans-int-test-site.yaml'
 
 jobs:
 

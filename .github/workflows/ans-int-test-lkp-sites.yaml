@@ -22,10 +22,11 @@ on:
       - main
       - devel
     paths:
-      - 'plugins/lookup/site.py'
+      - 'plugins/lookup/sites.py'
   push:
     paths:
-      - 'plugins/lookup/site.py'
+      - 'plugins/lookup/sites.py'
+      - '.github/workflows/ans-int-test-lkp-sites.yaml'
 
 jobs:
 

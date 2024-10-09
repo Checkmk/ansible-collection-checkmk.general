@@ -26,6 +26,7 @@ on:
   push:
     paths:
       - 'plugins/lookup/site.py'
+      - '.github/workflows/ans-int-test-lkp-site.yaml'
 
 jobs:
 
