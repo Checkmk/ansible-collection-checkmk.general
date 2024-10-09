@@ -1,4 +1,14 @@
 ---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    customer: "provider"
+  when: outer_item.edition == "cme"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    customer: null
+  when: not outer_item.edition == "cme"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"

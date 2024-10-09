@@ -1,4 +1,14 @@
 ---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    customer: "provider"
+  when: outer_item.edition == "cme"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    customer: null
+  when: not outer_item.edition == "cme"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
@@ -93,7 +103,7 @@
       loop: "{{ checkmk_hosts }}"
       register: monitorundecidedservices_output
       failed_when: "'State is not supported before 2.3.0' not in monitorundecidedservices_output.msg"
-      when: "not '2.3.0' in outer_item.version"      
+      when: "not '2.3.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update service labels."
       discovery:
