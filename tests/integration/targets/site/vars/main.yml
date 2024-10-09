@@ -1,6 +1,6 @@
 ---
 test_sites:
-  - version: "2.3.0p12"
+  - version: "2.3.0p18"
     edition: "cme"
     site: "stable_cme"
     remote_sites:
@@ -99,7 +99,7 @@ test_sites:
         authentication:
           username: "cmkadmin"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.3.0p12"
+  - version: "2.3.0p18"
     edition: "cee"
     site: "stable_cee"
     remote_sites:
@@ -127,7 +127,7 @@ test_sites:
         authentication:
           username: "cmkadmin"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.3.0p12"
+  - version: "2.3.0p18"
     edition: "cre"
     site: "stable_cre"
     remote_sites:
@@ -174,7 +174,7 @@ test_sites:
         authentication:
           username: "cmkadmin"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.2.0p32"
+  - version: "2.2.0p35"
     edition: "cre"
     site: "old_cre"
     remote_sites:
@@ -202,6 +202,6 @@ test_sites:
         authentication:
           username: "cmkadmin"
           password: "{{ checkmk_var_automation_secret }}"
-  # - version: "2.1.0p46"
+  # - version: "2.1.0p48"
   #   edition: "cre"
   #   site: "ancient_cre"

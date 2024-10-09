@@ -15,9 +15,9 @@ script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 collection_dir="${script_dir%/*}"
 
 # Update these as necessary:
-checkmk_ancient="2.1.0p47"
-checkmk_oldstable="2.2.0p34"
-checkmk_stable="2.3.0p17"
+checkmk_ancient="2.1.0p48"
+checkmk_oldstable="2.2.0p35"
+checkmk_stable="2.3.0p18"
 
 while getopts 's:t:' OPTION; do
   case "$OPTION" in
