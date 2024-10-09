@@ -1,0 +1,81 @@
+---
+# This playbook uses the inventory from the 'playbooks/hosts' file and expects
+# The VM 'debsible' to be running.
+
+- name: "Install a Central and Remote Site and connect them."
+  hosts: debsible
+  strategy: linear
+  vars:
+    checkmk_server_version: "2.3.0p14"
+    checkmk_server_edition: "cre"
+    checkmk_server_admin_pass: "password"
+    checkmk_server_sites:
+      - name: central
+        version: "{{ checkmk_server_version }}"
+        state: started
+        admin_pw: "{{ checkmk_server_admin_pass }}"
+        update_conflict_resolution: install
+      - name: remote
+        version: "{{ checkmk_server_version }}"
+        state: started
+        admin_pw: "{{ checkmk_server_admin_pass }}"
+        update_conflict_resolution: install
+        omd_auto_restart: 'true'
+        omd_config:
+          - var: LIVESTATUS_TCP
+            value: "on"
+          - var: LIVESTATUS_TCP_TLS
+            value: "on"
+          - var: LIVESTATUS_TCP_PORT
+            value: "6558"
+  tasks:
+    - name: "Install Checkmk and create Sites."
+      ansible.builtin.import_role:
+        name: checkmk.general.server
+    - name: "Connect Central Site to Remote Site."
+      checkmk.general.site:
+        server_url: "http://localhost/"
+        site: "central"
+        automation_user: "cmkadmin"
+        automation_secret: "{{ checkmk_server_admin_pass }}"
+        site_id: "remote"
+        site_connection:
+          site_config:
+            status_connection:
+              connection:
+                socket_type: tcp
+                port: 6558
+                encrypted: true
+                host: localhost
+                verify: true
+              proxy:
+                use_livestatus_daemon: "direct"
+              connect_timeout: 2
+              status_host:
+                status_host_set: "disabled"
+              url_prefix: "/remote/"
+            configuration_connection:
+              enable_replication: true
+              url_of_remote_site: "http://localhost/remote/check_mk/"
+            basic_settings:
+              site_id: "remote"
+              alias: "My Remote Site"
+        state: "present"
+    - name: "Log in to Remote Site."
+      checkmk.general.site:
+        server_url: "http://localhost/"
+        site: "central"
+        automation_user: "cmkadmin"
+        automation_secret: "{{ checkmk_server_admin_pass }}"
+        site_id: "remote"
+        site_connection:
+          authentication:
+            username: "cmkadmin"
+            password: "{{ checkmk_server_admin_pass }}"
+        state: "login"
+    - name: "Activate Changes on all Sites."
+      checkmk.general.activation:
+        server_url: "http://localhost/"
+        site: "central"
+        automation_user: "cmkadmin"
+        automation_secret: "{{ checkmk_server_admin_pass }}"
