@@ -14,6 +14,11 @@ role:agent:
       - changed-files:
           - any-glob-to-any-file: 'roles/agent/*'
 
+inventory:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/inventory/checkmk.py'
+
 module:activation:
   - any:
       - changed-files:
@@ -69,6 +74,11 @@ module:service_group:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/service_group.py'
 
+module:site:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/site.py'
+
 module:tag_group:
   - any:
       - changed-files:
@@ -84,10 +94,10 @@ module:user:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/user.py'
 
-lookup:version:
+lookup:bakery:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/lookup/version.py'
+          - any-glob-to-any-file: 'plugins/modules/lookup/bakery.py'
 
 lookup:folder:
   - any:
@@ -129,7 +139,17 @@ lookup:rulesets:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/rulesets.py'
 
-lookup:bakery:
+lookup:site:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/lookup/bakery.py'
+          - any-glob-to-any-file: 'plugins/modules/lookup/site.py'
+
+lookup:sites:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/sites.py'
+
+lookup:version:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/version.py'
