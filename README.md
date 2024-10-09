@@ -104,20 +104,17 @@ Please refer to the [official Ansible documentation](https://docs.ansible.com/an
 
 ## Using this collection
 
-You can either call modules by their Fully Qualified Collection Namespace (FQCN),
-such as `checkmk.general.activation`, or you can call modules by their short name
-if you list the `checkmk.general` collection in the playbook's [`collections`](https://docs.ansible.com/ansible/devel/user_guide/collections_using.html#using-collections-in-playbooks) keyword:
+We encourage you - in accordance with Ansible Best Practices -
+to always use FQCNs (Fully Qualified Collection Names) as seen below.
+This ensures, that you always know, which module is at play.
 
 ```yaml
 ---
 - hosts: all
 
-  collections:
-    - checkmk.general
-
   tasks:
     - name: "Run activation."
-      activation:
+      checkmk.general.activation:
         server_url: "http://myserver/"
         site: "mysite"
         automation_user: "myuser"
@@ -152,9 +149,13 @@ Please do **not** consider it a concrete planning document!
 - Modules
   - Monitoring
     - Acknowledgement
+    - Business Intelligence
+    - Event Console
   - Setup
     - Agents
-    - BI
+    - Business Intelligence
+    - Dynamic host management (DCD)
+    - Event Console
     - Notification Rules
 - OMD Module
 
