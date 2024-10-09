@@ -7,13 +7,13 @@
 /plugins/module_utils/ @lgetwan
 /plugins/modules/ @lgetwan
 /plugins/modules/bakery.py @Max-checkmk
-/plugins/modules/contact_group.py @msekania
+/plugins/modules/contact_group.py @lgetwan
 /plugins/modules/discovery.py @Max-checkmk
-/plugins/modules/host_group.py @msekania
+/plugins/modules/host_group.py @lgetwan
 /plugins/modules/tag_group.py @Max-checkmk
 /plugins/modules/timeperiod.py @Max-checkmk
 /plugins/modules/password.py @Max-checkmk
-/plugins/modules/service_group.py @msekania
+/plugins/modules/service_group.py @lgetwan
 /roles/agent/tasks/Windows.yml @Max-checkmk
 /roles/agent/vars/Windows.yml @Max-checkmk
 /roles/agent/tasks/Win32NT.yml @Max-checkmk
