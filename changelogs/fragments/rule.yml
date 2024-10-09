@@ -1,0 +1,2 @@
+minor_changes:
+  - Rule module - Return 'content' and 'http_code', which includes the 'rule_id'.

@@ -1,6 +1,9 @@
 major_changes:
-  - Site module - Added a module for distributed monitoring.
+  - Site module - Add module for distributed monitoring.
     Refer to the module documentation for further details.
+  - Site lookup module - Add module to lookup details of a single site.
+  - Sites lookup module - Add module to lookup all sites and their details
+    in a distributed monitoring setup.
 
 known_issues:
   - Site module - To completely enable a site, the livestatus certificate
