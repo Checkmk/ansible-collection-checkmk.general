@@ -13,7 +13,7 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "Run Single Discoveries."
   block:
@@ -27,7 +27,7 @@
         state: "refresh"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
+      loop: "{{ checkmk_var_hosts }}"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update host labels."
       discovery:
@@ -39,7 +39,7 @@
         state: "only_host_labels"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
+      loop: "{{ checkmk_var_hosts }}"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove vanished services."
       discovery:
@@ -51,7 +51,7 @@
         state: "remove"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
+      loop: "{{ checkmk_var_hosts }}"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Add undecided services."
       discovery:
@@ -63,7 +63,7 @@
         state: "new"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
+      loop: "{{ checkmk_var_hosts }}"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update service labels. (Should fail < 2.3.0)"
       discovery:
@@ -75,9 +75,9 @@
         state: "only_service_labels"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
-      register: updateservicelabels_output
-      failed_when: "'State is not supported before 2.3.0' not in updateservicelabels_output.msg"
+      loop: "{{ checkmk_var_hosts }}"
+      register: __checkmk_var_result_labels
+      failed_when: "'State is not supported before 2.3.0' not in __checkmk_var_result_labels.msg"
       when: "not '2.3.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Monitor undecided services. (Should fail < 2.3.0)"
@@ -90,10 +90,10 @@
         state: "monitor_undecided_services"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
-      register: monitorundecidedservices_output
-      failed_when: "'State is not supported before 2.3.0' not in monitorundecidedservices_output.msg"
-      when: "not '2.3.0' in outer_item.version"      
+      loop: "{{ checkmk_var_hosts }}"
+      register: __checkmk_var_result_undecided_pre_23
+      failed_when: "'State is not supported before 2.3.0' not in __checkmk_var_result_undecided_pre_23.msg"
+      when: "not '2.3.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update service labels."
       discovery:
@@ -105,7 +105,7 @@
         state: "only_service_labels"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
+      loop: "{{ checkmk_var_hosts }}"
       when: "'2.3.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Monitor undecided services. (Should fail in 2.3.0)"
@@ -118,9 +118,9 @@
         state: "monitor_undecided_services"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
-      register: stablemonitorundecidedservices_output
-      failed_when: "'State can only be used in bulk mode' not in stablemonitorundecidedservices_output.msg"
+      loop: "{{ checkmk_var_hosts }}"
+      register: __checkmk_var_result_undecided_post_23
+      failed_when: "'State can only be used in bulk mode' not in __checkmk_var_result_undecided_post_23.msg"
       when: "'2.3.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Tabula Rasa. (New since 2.2)"
@@ -133,7 +133,7 @@
         state: "tabula_rasa"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
+      loop: "{{ checkmk_var_hosts }}"
       when: "not '2.1' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Discover hosts (fix_all)."
@@ -146,7 +146,7 @@
         state: "fix_all"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
+      loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -171,7 +171,7 @@
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -201,7 +201,7 @@
         state: "present"
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
-      loop: "{{ checkmk_hosts }}"
+      loop: "{{ checkmk_var_hosts }}"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Refresh (tabula_rasa) services."
       discovery:
@@ -209,7 +209,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
+        hosts: "{{ checkmk_var_host_names }}"
         state: "refresh"
         bulk_size: 5
       delegate_to: localhost
@@ -220,7 +220,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
+        hosts: "{{ checkmk_var_host_names }}"
         state: "only_host_labels"
         bulk_size: 5
       delegate_to: localhost
@@ -231,7 +231,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
+        hosts: "{{ checkmk_var_host_names }}"
         state: "remove"
         bulk_size: 5
       delegate_to: localhost
@@ -242,12 +242,12 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
+        hosts: "{{ checkmk_var_host_names }}"
         state: "only_service_labels"
         bulk_size: 5
       delegate_to: localhost
-      register: bulkupdateservicelabels_output
-      failed_when: "'State is not supported before 2.3.0' not in bulkupdateservicelabels_output.msg"
+      register: __checkmk_var_result_labels_pre_23
+      failed_when: "'State is not supported before 2.3.0' not in __checkmk_var_result_labels_pre_23.msg"
       when: "not '2.3.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Monitor undecided services. (Should fail < 2.3.0)"
@@ -256,12 +256,12 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
+        hosts: "{{ checkmk_var_host_names }}"
         state: "monitor_undecided_services"
         bulk_size: 5
       delegate_to: localhost
-      register: bulkmonitorundecidedservices_output
-      failed_when: "'State is not supported before 2.3.0' not in bulkmonitorundecidedservices_output.msg"
+      register: __checkmk_var_result_labels_post_23
+      failed_when: "'State is not supported before 2.3.0' not in __checkmk_var_result_labels_post_23.msg"
       when: "not '2.3.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Update service labels. (only 2.3)"
@@ -270,7 +270,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
+        hosts: "{{ checkmk_var_host_names }}"
         state: "only_service_labels"
         bulk_size: 5
       delegate_to: localhost
@@ -282,7 +282,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
+        hosts: "{{ checkmk_var_host_names }}"
         state: "monitor_undecided_services"
         bulk_size: 5
       delegate_to: localhost
@@ -294,7 +294,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
+        hosts: "{{ checkmk_var_host_names }}"
         state: "new"
         bulk_size: 5
       delegate_to: localhost
@@ -305,7 +305,7 @@
         site: "{{ outer_item.site }}"
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
-        hosts: "{{ checkmk_host_names }}"
+        hosts: "{{ checkmk_var_host_names }}"
         state: "fix_all"
         bulk_size: 5
       delegate_to: localhost
@@ -333,7 +333,7 @@
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:

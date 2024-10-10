@@ -1,5 +1,5 @@
 ---
-test_sites:
+checkmk_var_test_sites:
   - version: "2.3.0p18"
     edition: "cee"
     site: "stable_cee"
@@ -13,7 +13,7 @@ test_sites:
   #   edition: "cre"
   #   site: "ancient_cre"
 
-checkmk_hosts:
+checkmk_var_hosts:
   - name: test1.tld
     folder: "/"
   - name: test2.tld
