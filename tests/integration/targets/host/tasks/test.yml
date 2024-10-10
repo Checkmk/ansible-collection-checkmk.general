@@ -351,7 +351,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove nodes to cluster hosts."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove nodes from cluster hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -380,7 +380,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Cehck idempotency of Remove nodes to cluster hosts."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of nodes removal from cluster hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
