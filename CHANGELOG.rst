@@ -4,6 +4,46 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.3.0
+======
+
+Major Changes
+-------------
+
+- Inventory module - Add module for creating a dynamic inventory from Checkmk.
+- Site lookup module - Add module to lookup details of a single site.
+- Site module - Add module for distributed monitoring. Refer to the module documentation for further details.
+- Sites lookup module - Add module to lookup all sites and their details in a distributed monitoring setup.
+
+Minor Changes
+-------------
+
+- Rule module - Return 'content' and 'http_code', which includes the 'rule_id'.
+
+Bugfixes
+--------
+
+- Folder module - Fix an issue, where the folder module would create an uppercase folder but would not be able to find said folder.
+
+Known Issues
+------------
+
+- Site module - To completely enable a site, the livestatus certificate needs to be trusted. This cannot be done with the site module. As of now, there is no automatic way to do this, so you need to log into the site and add the certificate to the trusted certificates manually.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.site - Show the configuration of a site
+- checkmk.general.sites - Get a list of all sites
+
+New Modules
+-----------
+
+- checkmk.general.site - Manage distributed monitoring in Checkmk.
+
 v5.2.1
 ======
 

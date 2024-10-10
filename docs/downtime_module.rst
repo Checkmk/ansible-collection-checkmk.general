@@ -1,4 +1,3 @@
-
 .. Document meta
 
 :orphan:
@@ -7,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 .. Anchors
 
@@ -23,7 +22,7 @@ checkmk.general.downtime module -- Manage downtimes in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.2.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -250,7 +249,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The timedelta between \ :emphasis:`start\_time`\  and \ :emphasis:`end\_time`\ . If you want to use \ :emphasis:`end\_after`\  you have to omit \ :emphasis:`end\_time`\ . For keys and values see \ https://docs.python.org/3/library/datetime.html#datetime.timedelta\ 
+      The timedelta between :emphasis:`start\_time` and :emphasis:`end\_time`. If you want to use :emphasis:`end\_after` you have to omit :emphasis:`end\_time`. For keys and values see \ `https://docs.python.org/3/library/datetime.html#datetime.timedelta <https://docs.python.org/3/library/datetime.html#datetime.timedelta>`__
 
 
       .. rst-class:: ansible-option-line
@@ -288,7 +287,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The end datetime of the downtime. The format has to conform to the ISO 8601 profile \ :emphasis:`e.g. 2017-07-21T17:32:28Z`\ . The built-in default is 30 minutes after now.
+      The end datetime of the downtime. The format has to conform to the ISO 8601 profile :emphasis:`e.g. 2017-07-21T17:32:28Z`. The built-in default is 30 minutes after now.
 
 
       .. rst-class:: ansible-option-line
@@ -508,7 +507,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The timedelta between now and \ :emphasis:`start\_time`\ . If you want to use \ :emphasis:`start\_after`\  you have to omit \ :emphasis:`start\_time`\ . For keys and values see \ https://docs.python.org/3/library/datetime.html#datetime.timedelta\ 
+      The timedelta between now and :emphasis:`start\_time`. If you want to use :emphasis:`start\_after` you have to omit :emphasis:`start\_time`. For keys and values see \ `https://docs.python.org/3/library/datetime.html#datetime.timedelta <https://docs.python.org/3/library/datetime.html#datetime.timedelta>`__
 
 
       .. rst-class:: ansible-option-line
@@ -546,7 +545,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The start datetime of the downtime. The format has to conform to the ISO 8601 profile \ :emphasis:`e.g. 2017-07-21T17:32:28Z`\ . The built-in default is now.
+      The start datetime of the downtime. The format has to conform to the ISO 8601 profile :emphasis:`e.g. 2017-07-21T17:32:28Z`. The built-in default is now.
 
 
       .. rst-class:: ansible-option-line
@@ -651,7 +650,7 @@ Notes
 -----
 
 .. note::
-   - Idempotency for creation was made for host downtimes by only using the hostname and comment attributes. If this combination already exists as a downtime, the new downtime will not be created except using the \ :strong:`force`\  argument. The creation of service downtimes works accordingly, with hostname, service description and comment.
+   - Idempotency for creation was made for host downtimes by only using the hostname and comment attributes. If this combination already exists as a downtime, the new downtime will not be created except using the :strong:`force` argument. The creation of service downtimes works accordingly, with hostname, service description and comment.
 
 .. Seealso
 
@@ -663,7 +662,6 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    
     - name: "Schedule host downtime."
       checkmk.general.downtime:
         server_url: "{{ checkmk_var_server_url }}"
@@ -703,7 +701,6 @@ Examples
           - "CPU utilization"
           - "Memory"
         state: absent
-
 
 
 
@@ -802,4 +799,3 @@ Collection links
 
 
 .. Parsing errors
-

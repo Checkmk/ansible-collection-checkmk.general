@@ -8,7 +8,11 @@ plugins:
   connection: {}
   filter: {}
   httpapi: {}
-  inventory: {}
+  inventory:
+    checkmk:
+      description: Dynamic Inventory Source or Checkmk
+      name: checkmk
+      version_added: null
   lookup:
     bakery:
       description: Get the bakery status of a Checkmk server
@@ -46,6 +50,14 @@ plugins:
       description: Search rulesets
       name: rulesets
       version_added: 3.5.0
+    site:
+      description: Show the configuration of a site
+      name: site
+      version_added: 5.3.0
+    sites:
+      description: Get a list of all sites
+      name: sites
+      version_added: 5.3.0
     version:
       description: Get the version of a Checkmk server
       name: version
@@ -106,6 +118,11 @@ plugins:
       name: service_group
       namespace: ''
       version_added: 0.12.0
+    site:
+      description: Manage distributed monitoring in Checkmk.
+      name: site
+      namespace: ''
+      version_added: 5.3.0
     tag_group:
       description: Manage tag groups in Checkmk.
       name: tag_group
@@ -126,4 +143,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 5.2.1
+version: 5.3.0

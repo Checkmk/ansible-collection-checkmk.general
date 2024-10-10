@@ -1,4 +1,3 @@
-
 .. Document meta
 
 :orphan:
@@ -7,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 .. Anchors
 
@@ -23,7 +22,7 @@ checkmk.general.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.2.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -181,7 +180,7 @@ Parameters
       .. raw:: html
 
         </div>
-    
+
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -267,7 +266,7 @@ Parameters
       .. raw:: html
 
         </div>
-    
+
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -305,11 +304,11 @@ Parameters
 
       Folder of the rule.
 
-      Required when \ :emphasis:`position`\  is \ :literal:`top`\ , \ :literal:`bottom`\ , or (any).
+      Required when :emphasis:`position` is :literal:`top`\ , :literal:`bottom`\ , or (any).
 
-      Required when \ :emphasis:`state=absent`\ .
+      Required when :emphasis:`state=absent`.
 
-      Mutually exclusive with \ :emphasis:`neighbour`\ .
+      Mutually exclusive with :emphasis:`neighbour`.
 
 
       .. rst-class:: ansible-option-line
@@ -359,11 +358,11 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      Put the rule \ :literal:`before`\  or \ :literal:`after`\  this rule\_id.
+      Put the rule :literal:`before` or :literal:`after` this rule\_id.
 
-      Required when \ :emphasis:`position`\  is \ :literal:`before`\  or \ :literal:`after`\ .
+      Required when :emphasis:`position` is :literal:`before` or :literal:`after`.
 
-      Mutually exclusive with \ :emphasis:`folder`\ .
+      Mutually exclusive with :emphasis:`folder`.
 
 
       .. raw:: html
@@ -407,9 +406,9 @@ Parameters
 
       Position of the rule in the folder.
 
-      Has no effect when \ :emphasis:`state=absent`\ .
+      Has no effect when :emphasis:`state=absent`.
 
-      For new rule \ :literal:`any`\  wil be equivalent to \ :literal:`bottom`\ 
+      For new rule :literal:`any` wil be equivalent to :literal:`bottom`
 
 
       .. rst-class:: ansible-option-line
@@ -507,7 +506,7 @@ Parameters
 
       If provided, update/delete an existing rule.
 
-      If omitted, we try to find an equal rule based on \ :literal:`properties`\ , \ :literal:`conditions`\ , \ :literal:`folder`\  and \ :literal:`value\_raw`\ .
+      If omitted, we try to find an equal rule based on :literal:`properties`\ , :literal:`conditions`\ , :literal:`folder` and :literal:`value\_raw`.
 
       Please mind the additional notes below.
 
@@ -553,7 +552,7 @@ Parameters
 
       Rule values as exported from the web interface.
 
-      Required when \ :emphasis:`state`\  is \ :literal:`present`\ .
+      Required when :emphasis:`state` is :literal:`present`.
 
 
       .. raw:: html
@@ -757,7 +756,7 @@ Notes
 -----
 
 .. note::
-   - If rule\_id is omitted, due to the internal processing of the \ :literal:`value\_raw`\ , finding the matching rule is not reliable, when \ :literal:`rule\_id`\  is omitted. This sometimes leads to the module not being idempotent or to rules being created over and over again.
+   - If rule\_id is omitted, due to the internal processing of the :literal:`value\_raw`\ , finding the matching rule is not reliable, when :literal:`rule\_id` is omitted. This sometimes leads to the module not being idempotent or to rules being created over and over again.
    - If rule\_id is provided, for the same reason, it might happen, that tasks changing a rule again and again, even if it already meets the expectations.
 
 .. Seealso
@@ -770,7 +769,6 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    
     # Create a rule in checkgroup_parameters:memory_percentage_used
     # at the top of the main folder.
     - name: "Create a rule in checkgroup_parameters:memory_percentage_used."
@@ -938,7 +936,6 @@ Examples
 
 
 
-
 .. Facts
 
 
@@ -998,7 +995,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         </div>
 
-    
+
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -1046,7 +1043,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         </div>
 
-    
+
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -1557,4 +1554,3 @@ Collection links
 
 
 .. Parsing errors
-

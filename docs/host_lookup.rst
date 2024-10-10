@@ -1,4 +1,3 @@
-
 .. Document meta
 
 :orphan:
@@ -7,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 .. Anchors
 
@@ -23,7 +22,7 @@ checkmk.general.host lookup -- Get host attributes
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.2.1).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -176,7 +175,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
       - INI entry:
 
-        .. code-block::
+        .. code-block:: ini
 
           [checkmk_lookup]
           automation_secret = VALUE
@@ -230,7 +229,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
       - INI entry:
 
-        .. code-block::
+        .. code-block:: ini
 
           [checkmk_lookup]
           automation_user = VALUE
@@ -329,7 +328,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
       - INI entry:
 
-        .. code-block::
+        .. code-block:: ini
 
           [checkmk_lookup]
           server_url = VALUE
@@ -383,7 +382,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
       - INI entry:
 
-        .. code-block::
+        .. code-block:: ini
 
           [checkmk_lookup]
           site = VALUE
@@ -445,7 +444,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
       - INI entry:
 
-        .. code-block::
+        .. code-block:: ini
 
           [checkmk_lookup]
           validate_certs = true
@@ -475,7 +474,7 @@ Notes
    - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'. If you need to use different permissions, you must change the command or run Ansible as another user.
    - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
    - The directory of the play is used as the current working directory.
-   - It is \ :strong:`NOT`\  possible to assign other variables to the variables mentioned in the \ :literal:`vars`\  section! This is a limitation of Ansible itself.
+   - It is :strong:`NOT` possible to assign other variables to the variables mentioned in the :literal:`vars` section! This is a limitation of Ansible itself.
 
 .. Seealso
 
@@ -487,7 +486,6 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    
     - name: Get the attributes of host example.com
       ansible.builtin.debug:
         msg: "Attributes of host example: {{ attributes }}"
@@ -514,7 +512,6 @@ Examples
         ansible_lookup_checkmk_automation_secret: "mysecret"
         ansible_lookup_checkmk_validate_certs: false
         attributes: "{{ lookup('checkmk.general.host', 'example.com', effective_attributes=True) }}"
-
 
 
 
@@ -608,4 +605,3 @@ Collection links
 
 
 .. Parsing errors
-
