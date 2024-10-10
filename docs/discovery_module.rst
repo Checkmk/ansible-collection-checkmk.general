@@ -1,4 +1,3 @@
-
 .. Document meta
 
 :orphan:
@@ -7,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 .. Anchors
 
@@ -23,7 +22,7 @@ checkmk.general.discovery module -- Discover services in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.2.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -516,7 +515,6 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    
     # Create a single host.
     - name: "Add newly discovered services on host."
       checkmk.general.discovery:
@@ -551,7 +549,6 @@ Examples
         hosts: ["my_host_0", "my_host_1", "my_host_2", "my_host_3", "my_host_4", "my_host_5"]
         state: "fix_all"
         bulk_size: 3
-
 
 
 
@@ -696,4 +693,3 @@ Collection links
 
 
 .. Parsing errors
-

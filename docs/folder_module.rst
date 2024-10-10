@@ -1,4 +1,3 @@
-
 .. Document meta
 
 :orphan:
@@ -7,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 .. Anchors
 
@@ -23,7 +22,7 @@ checkmk.general.folder module -- Manage folders in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.2.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -106,7 +105,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The attributes of your folder as described in the API documentation. \ :strong:`Attention! This option OVERWRITES all existing attributes!`\  As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of \ :emphasis:`attributes`\ , \ :emphasis:`remove\_attributes`\ , and \ :emphasis:`update\_attributes`\  is no longer supported.
+      The attributes of your folder as described in the API documentation. :strong:`Attention! This option OVERWRITES all existing attributes!` As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of :emphasis:`attributes`\ , :emphasis:`remove\_attributes`\ , and :emphasis:`update\_attributes` is no longer supported.
 
 
       .. raw:: html
@@ -254,7 +253,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The name (title) of your folder. If omitted defaults to the string after the last \ :literal:`/`\  in \ :emphasis:`path`\ .
+      The name (title) of your folder. If omitted defaults to the string after the last :literal:`/` in :emphasis:`path`.
 
 
       .. raw:: html
@@ -288,7 +287,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The full path to the folder you want to manage. Pay attention to the leading \ :literal:`/`\  and avoid trailing \ :literal:`/`\ . Special characters apart from \ :literal:`\_`\  are not allowed!
+      The full path to the folder you want to manage. Pay attention to the leading :literal:`/` and avoid trailing :literal:`/`. Special characters apart from :literal:`\_` are not allowed!
 
 
       .. raw:: html
@@ -322,7 +321,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The remove\_attributes of your host as described in the API documentation. \ :strong:`If a list of strings is supplied, the listed attributes are removed.`\  \ :strong:`If extended\_functionality and a dict is supplied, the attributes that exactly match the passed attributes are removed.`\  This will only remove the given attributes. As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of \ :emphasis:`attributes`\ , \ :emphasis:`remove\_attributes`\ , and \ :emphasis:`update\_attributes`\  is no longer supported.
+      The remove\_attributes of your host as described in the API documentation. :strong:`If a list of strings is supplied, the listed attributes are removed.` :strong:`If extended\_functionality and a dict is supplied, the attributes that exactly match the passed attributes are removed.` This will only remove the given attributes. As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of :emphasis:`attributes`\ , :emphasis:`remove\_attributes`\ , and :emphasis:`update\_attributes` is no longer supported.
 
 
       .. raw:: html
@@ -466,7 +465,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The update\_attributes of your host as described in the API documentation. This will only update the given attributes. As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of \ :emphasis:`attributes`\ , \ :emphasis:`remove\_attributes`\ , and \ :emphasis:`update\_attributes`\  is no longer supported.
+      The update\_attributes of your host as described in the API documentation. This will only update the given attributes. As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of :emphasis:`attributes`\ , :emphasis:`remove\_attributes`\ , and :emphasis:`update\_attributes` is no longer supported.
 
 
       .. raw:: html
@@ -532,7 +531,6 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    
     # Create a single folder.
     - name: "Create a single folder."
       checkmk.general.folder:
@@ -593,7 +591,6 @@ Examples
         remove_attributes:
           - tag_networking
         state: "present"
-
 
 
 
@@ -693,4 +690,3 @@ Collection links
 
 
 .. Parsing errors
-

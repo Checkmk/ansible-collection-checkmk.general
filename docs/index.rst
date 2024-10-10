@@ -1,7 +1,5 @@
-
-
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 
 .. _plugins_in_checkmk.general:
@@ -9,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 5.2.1
+Collection version 5.3.0
 
 .. contents::
    :local:
@@ -66,6 +64,7 @@ Modules
 * :ansplugin:`password module <checkmk.general.password#module>` -- Manage passwords in Checkmk.
 * :ansplugin:`rule module <checkmk.general.rule#module>` -- Manage rules in Checkmk.
 * :ansplugin:`service_group module <checkmk.general.service_group#module>` -- Manage service groups in Checkmk (bulk version).
+* :ansplugin:`site module <checkmk.general.site#module>` -- Manage distributed monitoring in Checkmk.
 * :ansplugin:`tag_group module <checkmk.general.tag_group#module>` -- Manage tag groups in Checkmk.
 * :ansplugin:`timeperiod module <checkmk.general.timeperiod#module>` -- Manage time periods in checkmk.
 * :ansplugin:`user module <checkmk.general.user#module>` -- Manage users in Checkmk.
@@ -85,9 +84,22 @@ Modules
     password_module
     rule_module
     service_group_module
+    site_module
     tag_group_module
     timeperiod_module
     user_module
+
+
+Inventory Plugins
+~~~~~~~~~~~~~~~~~
+
+* :ansplugin:`checkmk inventory <checkmk.general.checkmk#inventory>` -- Dynamic Inventory Source or Checkmk
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+
+    checkmk_inventory
 
 
 Lookup Plugins
@@ -102,6 +114,8 @@ Lookup Plugins
 * :ansplugin:`rules lookup <checkmk.general.rules#lookup>` -- Get a list rules
 * :ansplugin:`ruleset lookup <checkmk.general.ruleset#lookup>` -- Show a ruleset
 * :ansplugin:`rulesets lookup <checkmk.general.rulesets#lookup>` -- Search rulesets
+* :ansplugin:`site lookup <checkmk.general.site#lookup>` -- Show the configuration of a site
+* :ansplugin:`sites lookup <checkmk.general.sites#lookup>` -- Get a list of all sites
 * :ansplugin:`version lookup <checkmk.general.version#lookup>` -- Get the version of a Checkmk server
 
 .. toctree::
@@ -117,6 +131,6 @@ Lookup Plugins
     rules_lookup
     ruleset_lookup
     rulesets_lookup
+    site_lookup
+    sites_lookup
     version_lookup
-
-

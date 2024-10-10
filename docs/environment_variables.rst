@@ -1,8 +1,7 @@
-
 :orphan:
 
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 .. _list_of_collection_env_vars:
 
@@ -26,6 +25,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.rules lookup plugin <checkmk.general.rules#lookup>`,
     :ansplugin:`checkmk.general.ruleset lookup plugin <checkmk.general.ruleset#lookup>`,
     :ansplugin:`checkmk.general.rulesets lookup plugin <checkmk.general.rulesets#lookup>`,
+    :ansplugin:`checkmk.general.site lookup plugin <checkmk.general.site#lookup>`,
+    :ansplugin:`checkmk.general.sites lookup plugin <checkmk.general.sites#lookup>`,
     :ansplugin:`checkmk.general.version lookup plugin <checkmk.general.version#lookup>`
 .. envvar:: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_USER
 
@@ -41,6 +42,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.rules lookup plugin <checkmk.general.rules#lookup>`,
     :ansplugin:`checkmk.general.ruleset lookup plugin <checkmk.general.ruleset#lookup>`,
     :ansplugin:`checkmk.general.rulesets lookup plugin <checkmk.general.rulesets#lookup>`,
+    :ansplugin:`checkmk.general.site lookup plugin <checkmk.general.site#lookup>`,
+    :ansplugin:`checkmk.general.sites lookup plugin <checkmk.general.sites#lookup>`,
     :ansplugin:`checkmk.general.version lookup plugin <checkmk.general.version#lookup>`
 .. envvar:: ANSIBLE_LOOKUP_CHECKMK_SERVER_URL
 
@@ -56,10 +59,12 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.rules lookup plugin <checkmk.general.rules#lookup>`,
     :ansplugin:`checkmk.general.ruleset lookup plugin <checkmk.general.ruleset#lookup>`,
     :ansplugin:`checkmk.general.rulesets lookup plugin <checkmk.general.rulesets#lookup>`,
+    :ansplugin:`checkmk.general.site lookup plugin <checkmk.general.site#lookup>`,
+    :ansplugin:`checkmk.general.sites lookup plugin <checkmk.general.sites#lookup>`,
     :ansplugin:`checkmk.general.version lookup plugin <checkmk.general.version#lookup>`
 .. envvar:: ANSIBLE_LOOKUP_CHECKMK_SITE
 
-    Site name.
+    See the documentations for the options where this environment variable is used.
 
     *Used by:*
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
@@ -71,6 +76,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.rules lookup plugin <checkmk.general.rules#lookup>`,
     :ansplugin:`checkmk.general.ruleset lookup plugin <checkmk.general.ruleset#lookup>`,
     :ansplugin:`checkmk.general.rulesets lookup plugin <checkmk.general.rulesets#lookup>`,
+    :ansplugin:`checkmk.general.site lookup plugin <checkmk.general.site#lookup>`,
+    :ansplugin:`checkmk.general.sites lookup plugin <checkmk.general.sites#lookup>`,
     :ansplugin:`checkmk.general.version lookup plugin <checkmk.general.version#lookup>`
 .. envvar:: ANSIBLE_LOOKUP_CHECKMK_VALIDATE_CERTS
 
@@ -86,4 +93,6 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.rules lookup plugin <checkmk.general.rules#lookup>`,
     :ansplugin:`checkmk.general.ruleset lookup plugin <checkmk.general.ruleset#lookup>`,
     :ansplugin:`checkmk.general.rulesets lookup plugin <checkmk.general.rulesets#lookup>`,
+    :ansplugin:`checkmk.general.site lookup plugin <checkmk.general.site#lookup>`,
+    :ansplugin:`checkmk.general.sites lookup plugin <checkmk.general.sites#lookup>`,
     :ansplugin:`checkmk.general.version lookup plugin <checkmk.general.version#lookup>`

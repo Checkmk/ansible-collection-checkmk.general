@@ -1,4 +1,3 @@
-
 .. Document meta
 
 :orphan:
@@ -7,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 .. Anchors
 
@@ -23,7 +22,7 @@ checkmk.general.tag_group module -- Manage tag groups in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.2.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -250,7 +249,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Give permission to update or remove the tag on hosts using it automatically. \ :strong:`Use with caution!`\ 
+      Give permission to update or remove the tag on hosts using it automatically. :strong:`Use with caution!`
 
 
       .. rst-class:: ansible-option-line
@@ -416,7 +415,7 @@ Parameters
       .. raw:: html
 
         </div>
-    
+
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
@@ -641,7 +640,6 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    
     # Create a tag group
     - name: "Create tag group"
       checkmk.general.tag_group:
@@ -673,7 +671,6 @@ Examples
         automation_secret: "mysecret"
         name: datacenter
         state: "absent"
-
 
 
 
@@ -817,4 +814,3 @@ Collection links
 
 
 .. Parsing errors
-

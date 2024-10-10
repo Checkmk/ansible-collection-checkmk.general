@@ -1,4 +1,3 @@
-
 .. Document meta
 
 :orphan:
@@ -7,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 .. Anchors
 
@@ -23,7 +22,7 @@ checkmk.general.activation module -- Activate changes in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.2.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -51,7 +50,7 @@ Synopsis
 .. Description
 
 - Activate changes within Checkmk.
-- This module only needs to be run once and not for every host. Use \ :literal:`run\_once`\ .
+- This module only needs to be run once and not for every host. Use :literal:`run\_once`.
 
 
 .. Aliases
@@ -217,7 +216,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      If set to \ :literal:`true`\ , wait for the activation to complete. If set to \ :literal:`false`\ , start the activation, but do not wait for it to finish.
+      If set to :literal:`true`\ , wait for the activation to complete. If set to :literal:`false`\ , start the activation, but do not wait for it to finish.
 
 
       .. rst-class:: ansible-option-line
@@ -397,7 +396,6 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    
     - name: "Start activation on all sites."
       checkmk.general.activation:
           server_url: "http://myserver/"
@@ -434,7 +432,6 @@ Examples
           redirect: 'true'
           force_foreign_changes: 'true'
       run_once: 'true'
-
 
 
 
@@ -577,4 +574,3 @@ Collection links
 
 
 .. Parsing errors
-
