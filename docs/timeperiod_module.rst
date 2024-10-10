@@ -1,4 +1,3 @@
-
 .. Document meta
 
 :orphan:
@@ -7,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 .. Anchors
 
@@ -23,7 +22,7 @@ checkmk.general.timeperiod module -- Manage time periods in checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.2.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -486,7 +485,6 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    
     # Creating and Updating is the same.
     - name: "Create a new time period. (Attributes in one line)"
       checkmk.general.timeperiod:
@@ -544,7 +542,6 @@ Examples
         automation_secret: "mysecret"
         name: "worktime"
         state: "absent"
-
 
 
 
@@ -687,4 +684,3 @@ Collection links
 
 
 .. Parsing errors
-

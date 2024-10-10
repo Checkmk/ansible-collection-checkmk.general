@@ -1,4 +1,3 @@
-
 .. Document meta
 
 :orphan:
@@ -7,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 .. Anchors
 
@@ -23,7 +22,7 @@ checkmk.general.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.2.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -106,7 +105,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      List of nodes to be added as members of the cluster-container host provided in name. Works only if the existing host was already a cluster host, or entirely new is created. \ :strong:`Mutualy exclusive with I(nodes`\  and \ :emphasis:`remove\_nodes`\ .)
+      List of nodes to be added as members of the cluster-container host provided in name. Works only if the existing host was already a cluster host, or entirely new is created. :strong:`Mutualy exclusive with I(nodes` and :emphasis:`remove\_nodes`.)
 
 
       .. raw:: html
@@ -140,7 +139,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The attributes of your host as described in the API documentation. \ :strong:`Attention! This option OVERWRITES all existing attributes!`\  \ :strong:`Attention! I(folder`\  should match the folder where host is residing) If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ .
+      The attributes of your host as described in the API documentation. :strong:`Attention! This option OVERWRITES all existing attributes!` :strong:`Attention! I(folder` should match the folder where host is residing) If you are using custom tags, make sure to prepend the attribute with :literal:`tag\_`.
 
 
       .. raw:: html
@@ -284,7 +283,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The folder your host is located in. On create it defaults to \ :literal:`/`\ . \ :strong:`For existing host, host is moved to the specified folder if different and this procedue is mutualy exclusive with specified I(attributes`\ , \ :emphasis:`update\_attributes`\ , and \ :emphasis:`remove\_attributes`\ ).
+      The folder your host is located in. On create it defaults to :literal:`/`. :strong:`For existing host, host is moved to the specified folder if different and this procedue is mutualy exclusive with specified I(attributes`\ , :emphasis:`update\_attributes`\ , and :emphasis:`remove\_attributes`\ ).
 
 
       .. raw:: html
@@ -352,7 +351,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Nodes, members of the cluster-container host provided in name. \ :strong:`Mutualy exclusive with I(add\_nodes`\  and \ :emphasis:`remove\_nodes`\ .)
+      Nodes, members of the cluster-container host provided in name. :strong:`Mutualy exclusive with I(add\_nodes` and :emphasis:`remove\_nodes`.)
 
 
       .. raw:: html
@@ -386,7 +385,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The remove\_attributes of your host as described in the API documentation. \ :strong:`Attention! I(folder`\  should match the folder where host is residing) \ :strong:`If a list of strings is supplied, the listed attributes are removed.`\  \ :strong:`If`\  \ :emphasis:`extended\_functionality`\  \ :strong:`and a dict is supplied, the attributes that exactly match the passed attributes are removed.`\  This will only remove the given attributes. If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ . As of Checkmk 2.2.0p7 and 2.3.0b1, simultaneous use of \ :emphasis:`attributes`\ , \ :emphasis:`remove\_attributes`\ , and \ :emphasis:`update\_attributes`\  is no longer supported.
+      The remove\_attributes of your host as described in the API documentation. :strong:`Attention! I(folder` should match the folder where host is residing) :strong:`If a list of strings is supplied, the listed attributes are removed.` :strong:`If` :emphasis:`extended\_functionality` :strong:`and a dict is supplied, the attributes that exactly match the passed attributes are removed.` This will only remove the given attributes. If you are using custom tags, make sure to prepend the attribute with :literal:`tag\_`. As of Checkmk 2.2.0p7 and 2.3.0b1, simultaneous use of :emphasis:`attributes`\ , :emphasis:`remove\_attributes`\ , and :emphasis:`update\_attributes` is no longer supported.
 
 
       .. raw:: html
@@ -420,7 +419,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      List of nodes to be removes from the cluster-container host provided in name. \ :strong:`Mutualy exclusive with I(nodes`\  and \ :emphasis:`add\_nodes`\ .)
+      List of nodes to be removes from the cluster-container host provided in name. :strong:`Mutualy exclusive with I(nodes` and :emphasis:`add\_nodes`.)
 
 
       .. raw:: html
@@ -564,7 +563,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The update\_attributes of your host as described in the API documentation. \ :strong:`Attention! I(folder`\  should match the folder where host is residing) This will only update the given attributes. If you are using custom tags, make sure to prepend the attribute with \ :literal:`tag\_`\ .
+      The update\_attributes of your host as described in the API documentation. :strong:`Attention! I(folder` should match the folder where host is residing) This will only update the given attributes. If you are using custom tags, make sure to prepend the attribute with :literal:`tag\_`.
 
 
       .. raw:: html
@@ -630,7 +629,6 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    
     # Create a host.
     - name: "Create a host."
       checkmk.general.host:
@@ -750,7 +748,6 @@ Examples
 
 
 
-
 .. Facts
 
 
@@ -848,4 +845,3 @@ Collection links
 
 
 .. Parsing errors
-

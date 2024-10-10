@@ -1,4 +1,3 @@
-
 .. Document meta
 
 :orphan:
@@ -7,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.12.0
+  :antsibull-docs: 2.15.0
 
 .. Anchors
 
@@ -23,7 +22,7 @@ checkmk.general.user module -- Manage users in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.2.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -106,7 +105,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The authentication type. Setting this to \ :literal:`password`\  will create a normal user, \ :literal:`automation`\  will create an automation user.
+      The authentication type. Setting this to :literal:`password` will create a normal user, :literal:`automation` will create an automation user.
 
 
       .. rst-class:: ansible-option-line
@@ -318,7 +317,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      If set to \ :literal:`true`\ , the user cannot log in anymore, but will remain part of the site. Disabling a user does not affect notifications.
+      If set to :literal:`true`\ , the user cannot log in anymore, but will remain part of the site. Disabling a user does not affect notifications.
 
 
       .. rst-class:: ansible-option-line
@@ -360,7 +359,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Temporarily disable \ :strong:`all`\  notifications for this user.
+      Temporarily disable :strong:`all` notifications for this user.
 
 
       .. rst-class:: ansible-option-line
@@ -402,7 +401,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The duration, for how log notifications should be disabled, if \ :literal:`disable\_notifications`\  is set to \ :literal:`true`\ .
+      The duration, for how log notifications should be disabled, if :literal:`disable\_notifications` is set to :literal:`true`.
 
 
       .. raw:: html
@@ -470,7 +469,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      If set to \ :literal:`true`\ , the user will be forced to change their password on the next login.
+      If set to :literal:`true`\ , the user will be forced to change their password on the next login.
 
 
       .. rst-class:: ansible-option-line
@@ -588,7 +587,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The duration in seconds, if \ :literal:`idle\_timeout\_option`\  is set to \ :literal:`individual`\ .
+      The duration in seconds, if :literal:`idle\_timeout\_option` is set to :literal:`individual`.
 
 
       .. raw:: html
@@ -907,7 +906,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The password or secret for login. Depending on the \ :literal:`auth\_type`\ , this is interpreted as a password or secret.
+      The password or secret for login. Depending on the :literal:`auth\_type`\ , this is interpreted as a password or secret.
 
 
       .. raw:: html
@@ -1204,7 +1203,6 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    
     # Create a user.
     - name: "Create a user."
       checkmk.general.user:
@@ -1288,7 +1286,6 @@ Examples
         mega_menu_icons: "entry"
         show_mode: "default_show_more"
         state: "present"
-
 
 
 
@@ -1388,4 +1385,3 @@ Collection links
 
 
 .. Parsing errors
-
