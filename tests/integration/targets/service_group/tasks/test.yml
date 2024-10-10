@@ -1,12 +1,12 @@
 ---
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
   ansible.builtin.set_fact:
-    customer: "provider"
+    checkmk_var_customer: "provider"
   when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
   ansible.builtin.set_fact:
-    customer: null
+    checkmk_var_customer: null
   when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create service groups."
@@ -15,13 +15,13 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     title: "{{ item.title | default(item.name) }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_service_groups_create }}"
+  loop: "{{ checkmk_var_service_groups_create }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for mutually exclusive module args: 'groups|name'."
   service_group:
@@ -29,16 +29,16 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     title: "{{ item.title | default(item.name) }}"
-    groups: checkmk_service_groups_create
+    groups: checkmk_var_service_groups_create
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_service_groups_create }}"
-  register: checkmk_service_group_status
-  failed_when: "'parameters are mutually exclusive: groups|name' not in checkmk_service_group_status.msg"
+  loop: "{{ checkmk_var_service_groups_create }}"
+  register: __checkmk_var_result_mutex_loop
+  failed_when: "'parameters are mutually exclusive: groups|name' not in __checkmk_var_result_mutex_loop.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -58,13 +58,13 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     name: "{{ item.name | default(item.name) }}"
     title: "{{ item.title }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_service_groups_modify }}"
+  loop: "{{ checkmk_var_service_groups_modify }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -84,12 +84,12 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_service_groups_delete }}"
+  loop: "{{ checkmk_var_service_groups_delete }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -109,12 +109,12 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_service_groups_create }}"
+  loop: "{{ checkmk_var_service_groups_create }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -134,8 +134,8 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
-    groups: "{{ checkmk_service_groups_create }}"
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    groups: "{{ checkmk_var_service_groups_create }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -146,14 +146,14 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
-    groups: "{{ checkmk_service_groups_create }}"
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    groups: "{{ checkmk_var_service_groups_create }}"
     name: "test"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  register: checkmk_service_group_status
-  failed_when: "'parameters are mutually exclusive: groups|name' not in checkmk_service_group_status.msg"
+  register: __checkmk_var_result_mutex_single
+  failed_when: "'parameters are mutually exclusive: groups|name' not in __checkmk_var_result_mutex_single.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for uneffective module args: 'groups' and 'title'."
   service_group:
@@ -161,15 +161,15 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
-    groups: "{{ checkmk_service_groups_create }}"
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    groups: "{{ checkmk_var_service_groups_create }}"
     title: "Test"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  register: checkmk_service_group_status
+  register: __checkmk_var_result_ineffective
   failed_when: |
-    "'title' has only effect when 'name' is defined and not 'groups'" not in checkmk_service_group_status.msg
+    "'title' has only effect when 'name' is defined and not 'groups'" not in __checkmk_var_result_ineffective.msg
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk modify part of service groups (also checks for idempotency!)."
   service_group:
@@ -177,8 +177,8 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
-    groups: "{{ checkmk_service_groups_modify }}"
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    groups: "{{ checkmk_var_service_groups_modify }}"
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -189,8 +189,8 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
-    groups: "{{ checkmk_service_groups_delete }}"
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    groups: "{{ checkmk_var_service_groups_delete }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -201,8 +201,8 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    customer: "{{ (customer != None) | ternary(customer, omit) }}"  # See PR #427
-    groups: "{{ checkmk_service_groups_create }}"
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    groups: "{{ checkmk_var_service_groups_create }}"
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]

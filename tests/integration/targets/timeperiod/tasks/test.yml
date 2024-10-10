@@ -12,7 +12,7 @@
     exclude: "{{ item.exclude | default(omit) }}"
     state: "present"
   delegate_to: localhost
-  loop: "{{ checkmk_timeperiods_create }}"
+  loop: "{{ checkmk_var_timeperiods_create }}"
   no_log: false
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -40,7 +40,7 @@
     exclude: "{{ item.exclude | default(omit) }}"
     state: "present"
   delegate_to: localhost
-  loop: "{{ checkmk_timeperiods_update }}"
+  loop: "{{ checkmk_var_timeperiods_update }}"
   no_log: false
 
 # As this time period is equal to the existing one, no change should happen.
@@ -57,7 +57,7 @@
     exclude: "{{ item.exclude | default(omit) }}"
     state: "present"
   delegate_to: localhost
-  loop: "{{ checkmk_timeperiods_noupdate }}"
+  loop: "{{ checkmk_var_timeperiods_noupdate }}"
   no_log: false
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -82,9 +82,9 @@
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
-  loop: "{{ checkmk_timeperiods_faildelete }}"
-  register: checkmk_timeperiod_status
-  failed_when: "'The time period is still in use' not in checkmk_timeperiod_status.msg"
+  loop: "{{ checkmk_var_timeperiods_faildelete }}"
+  register: __checkmk_var_result_used
+  failed_when: "'The time period is still in use' not in __checkmk_var_result_used.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete other time period first."
   timeperiod:
@@ -95,7 +95,7 @@
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
-  loop: "{{ checkmk_timeperiods_deletefirst }}"
+  loop: "{{ checkmk_var_timeperiods_deletefirst }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete a time period."
   timeperiod:
@@ -106,7 +106,7 @@
     name: "{{ item.name }}"
     state: "absent"
   delegate_to: localhost
-  loop: "{{ checkmk_timeperiods_delete }}"
+  loop: "{{ checkmk_var_timeperiods_delete }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:

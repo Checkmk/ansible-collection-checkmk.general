@@ -1,2 +1,2 @@
 major_changes:
-  - Inventory module - Add module for creating a dynamic inventory from Checkmk.
+  - Dynamic Inventory Source - Add dynamic inventory source for Checkmk.

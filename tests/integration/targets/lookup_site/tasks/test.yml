@@ -1,10 +1,9 @@
 ---
 - name: " {{ outer_item.version }} - {{ outer_item.edition | upper }} - Get config of the site."
   ansible.builtin.debug:
-      #msg: "Config of site {{ extensions.basic_settings.site_id }} is {{ extensions }}"
-      msg: "Config of site {{ extensions.basic_settings.site_id }}: {{ extensions }}"
+    msg: "Config of site {{ __checkmk_var_site.basic_settings.site_id }}: {{ __checkmk_var_site }}"
   vars:
-    extensions: "{{ lookup('checkmk.general.site',
+    __checkmk_var_site: "{{ lookup('checkmk.general.site',
                     outer_item.site,
                     server_url=checkmk_var_server_url,
                     site=outer_item.site,
@@ -17,9 +16,9 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify local connection."
   ansible.builtin.assert:
-    that: "extensions.status_connection.connection.socket_type == 'local'"
+    that: "__checkmk_var_site.status_connection.connection.socket_type == 'local'"
   vars:
-    extensions: "{{ lookup('checkmk.general.site',
+    __checkmk_var_site: "{{ lookup('checkmk.general.site',
                     outer_item.site,
                     server_url=checkmk_var_server_url,
                     site=outer_item.site,

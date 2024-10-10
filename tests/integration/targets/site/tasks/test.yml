@@ -1,19 +1,19 @@
 ---
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
   ansible.builtin.set_fact:
-    customer: "provider"
+    checkmk_var_customer: "provider"
   when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
   ansible.builtin.set_fact:
-    customer: null
+    checkmk_var_customer: null
   when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create remote sites."
   ansible.builtin.command: "omd -V {{ outer_item.version }}.{{ outer_item.edition }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site_id }}"
   args:
     creates: "/omd/sites/{{ item.site_id }}"
-  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
@@ -27,16 +27,16 @@
     omd config {{ item.site_id }} set LIVESTATUS_TCP_TLS off
   args:
     executable: /bin/bash
-  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Start Sites."
   ansible.builtin.shell: "omd status -b {{ item.site_id }} || omd start {{ item.site_id }}"
-  register: site_status
-  changed_when: site_status.rc == "0"
-  when: (download_pass is defined and download_pass | length) or outer_item.edition == "cre"
+  register: __checkmk_var_result_sites_start
+  changed_when: __checkmk_var_result_sites_start.rc == "0"
+  when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
@@ -45,7 +45,7 @@
   ansible.builtin.pause:
     seconds: 5
   when: |
-    ((download_pass is defined and download_pass | length) or outer_item.edition == 'cre')
+    ((checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == 'cre')
     and (outer_item.stdout_lines is defined and 'OVERALL 1' in outer_item.stdout_lines)
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create site connection."
@@ -111,8 +111,8 @@
   loop_control:
     label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
-  register: result
-  failed_when: result.changed | bool
+  register: __checkmk_var_result_login
+  failed_when: __checkmk_var_result_login.changed | bool
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update remote site."
   site:
@@ -149,8 +149,8 @@
   loop_control:
     label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
-  register: result
-  failed_when: result.changed | bool
+  register: __checkmk_var_result_update
+  failed_when: __checkmk_var_result_update.changed | bool
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log out from remote site."
   site:
@@ -179,8 +179,8 @@
   loop_control:
     label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
-  register: result
-  failed_when: result.changed | bool
+  register: __checkmk_var_result_logout
+  failed_when: __checkmk_var_result_logout.changed | bool
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete remote site."
   site:
@@ -209,5 +209,5 @@
   loop_control:
     label: "{{ item.site_id }}"
   run_once: true  # noqa run-once[task]
-  register: result
-  failed_when: result.changed | bool
+  register: __checkmk_var_result_delete
+  failed_when: __checkmk_var_result_delete.changed | bool

@@ -14,7 +14,7 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get a list of all hosts."
   ansible.builtin.debug:
@@ -33,9 +33,9 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of hosts."
   ansible.builtin.assert:
-    that: "checkmk_hosts|length == hosts|length"
+    that: "checkmk_var_hosts|length == __checkmk_var_hosts|length"
   vars:
-    hosts: "{{ lookup('checkmk.general.hosts',
+    __checkmk_var_hosts: "{{ lookup('checkmk.general.hosts',
                       server_url=checkmk_var_server_url,
                       site=outer_item.site,
                       validate_certs=False,
@@ -47,9 +47,9 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
   ansible.builtin.assert:
-    that: "checkmk_hosts|length == hosts|length"
+    that: "checkmk_var_hosts|length == __checkmk_var_hosts|length"
   vars:
-    folders: "{{ lookup('checkmk.general.hosts') }}"
+    __checkmk_var_hosts: "{{ lookup('checkmk.general.hosts') }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   when: outer_item.edition == "stable_cee"
