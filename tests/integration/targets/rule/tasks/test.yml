@@ -165,5 +165,5 @@
   loop: "{{ __checkmk_var_created_rules.results }}"
   loop_control:
     label: "{{ item.content.id }}"
-  register: __checkmk_var_result_rules_delete.changed
+  register: __checkmk_var_result_rules_delete
   failed_when: __checkmk_var_result_rules_delete.changed
