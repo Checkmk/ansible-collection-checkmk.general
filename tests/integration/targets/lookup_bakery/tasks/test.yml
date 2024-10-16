@@ -7,7 +7,7 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
   ansible.builtin.set_fact:
     customer: null
-  when: not outer_item.edition == "cme"
+  when: outer_item.edition != "cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get Checkmk bakery status."
   ansible.builtin.debug:
