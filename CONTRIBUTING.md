@@ -136,7 +136,7 @@ You can also run a subset by mentioning them as follows. See `tests/integration/
 
 ### Unit
 
-[Ansible Unit Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_unit.html) run unit tests created by the maintainers of the respective modules, to ensure the code works as intended. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
+[Ansible Unit Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_units.html) run unit tests created by the maintainers of the respective modules, to ensure the code works as intended. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
 We strongly recommend using the `--docker` option, so you do not modify your local system with these tests.
 **Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
 

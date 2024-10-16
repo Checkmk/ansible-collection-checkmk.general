@@ -224,4 +224,4 @@
   run_once: true # noqa run-once[task]
   register: __checkmk_var_result_users_redelete
   loop: "{{ checkmk_var_users_create }}"
-  failed_when: __checkmk_var_result_users_redelete-changed
+  failed_when: __checkmk_var_result_users_redelete.changed
