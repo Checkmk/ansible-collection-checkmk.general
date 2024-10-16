@@ -1,12 +1,12 @@
 ---
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
   ansible.builtin.set_fact:
-    customer: "provider"
+    checkmk_var_customer: "provider"
   when: outer_item.edition == "cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
   ansible.builtin.set_fact:
-    customer: null
+    checkmk_var_customer: null
   when: outer_item.edition != "cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate without changes."
