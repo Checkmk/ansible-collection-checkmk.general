@@ -306,7 +306,7 @@
       - "Check_MK"
     state: absent
   register: __checkmk_var_result_delete
-  failed_when: __checkmk_var_result_delete.changed == False
+  failed_when: not __checkmk_var_result_delete.changed | bool
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
