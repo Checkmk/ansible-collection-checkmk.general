@@ -1004,3 +1004,40 @@ releases:
     - folder.yml
     - release_summary.yml
     release_date: '2024-08-14'
+  5.3.0:
+    changes:
+      bugfixes:
+      - Folder module - Fix an issue, where the folder module would create an uppercase
+        folder but would not be able to find said folder.
+      known_issues:
+      - Site module - To completely enable a site, the livestatus certificate needs
+        to be trusted. This cannot be done with the site module. As of now, there
+        is no automatic way to do this, so you need to log into the site and add the
+        certificate to the trusted certificates manually.
+      major_changes:
+      - Dynamic Inventory Source - Add dynamic inventory source for Checkmk.
+      - Site lookup module - Add module to lookup details of a single site.
+      - Site module - Add module for distributed monitoring. Refer to the module documentation
+        for further details.
+      - Sites lookup module - Add module to lookup all sites and their details in
+        a distributed monitoring setup.
+      minor_changes:
+      - Rule module - Return 'content' and 'http_code', which includes the 'rule_id'.
+    fragments:
+    - checkmk.yml
+    - folder.yml
+    - rule.yml
+    - site.yml
+    modules:
+    - description: Manage distributed monitoring in Checkmk.
+      name: site
+      namespace: ''
+    plugins:
+      lookup:
+      - description: Show the configuration of a site
+        name: site
+        namespace: null
+      - description: Get a list of all sites
+        name: sites
+        namespace: null
+    release_date: '2024-10-10'

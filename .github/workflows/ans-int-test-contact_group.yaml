@@ -28,6 +28,7 @@ on:
   push:
     paths:
       - 'plugins/modules/contact_group.py'
+      - '.github/workflows/ans-int-test-contact_group.yaml'
 
 jobs:
 

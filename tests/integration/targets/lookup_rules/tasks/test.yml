@@ -20,13 +20,13 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_rules }}"
+  loop: "{{ checkmk_var_rules }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all rules of a ruleset."
   ansible.builtin.debug:
-    var: rules
+    var: __checkmk_var_one_ruleset
   vars:
-    rules: "{{ lookup('checkmk.general.rules',
+    __checkmk_var_one_ruleset: "{{ lookup('checkmk.general.rules',
                   ruleset='checkgroup_parameters:cpu_load',
                   server_url=checkmk_var_server_url,
                   site=outer_item.site,
@@ -34,16 +34,16 @@
                   automation_user=checkmk_var_automation_user,
                   automation_secret=checkmk_var_automation_secret)
               }}"
-  register: cpu_load_ruleset
+  register: __checkmk_var_cpu_load_ruleset
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - compare rules with ansible data."
   ansible.builtin.assert:
     # For each rule that we created, check, if the comment is identical
-    that: "'- Ansible managed' in rules[0].extensions.properties.comment"
+    that: "'- Ansible managed' in __checkmk_var_rules_managed[0].extensions.properties.comment"
   vars:
-    rules: "{{ lookup('checkmk.general.rules',
+    __checkmk_var_rules_managed: "{{ lookup('checkmk.general.rules',
                       ruleset=item,
                       server_url=checkmk_var_server_url,
                       site=outer_item.site,
@@ -53,13 +53,13 @@
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_rulesets }}"
+  loop: "{{ checkmk_var_rulesets }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - filter for certain rulesets."
   ansible.builtin.debug:
-    var: rules
+    var: __checkmk_var_rules_filtered
   vars:
-    rules: "{{ lookup('checkmk.general.rules',
+    __checkmk_var_rules_filtered: "{{ lookup('checkmk.general.rules',
                       ruleset=item,
                       server_url=checkmk_var_server_url,
                       site=outer_item.site,
@@ -69,14 +69,14 @@
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_rulesets }}"
+  loop: "{{ checkmk_var_rulesets }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - filter for certain rulesets and check the count."
   ansible.builtin.assert:
     # Check the number of rules
-    that: rules|length == 1
+    that: __checkmk_var_rules_filtered_count|length == 1
   vars:
-    rules: "{{ lookup('checkmk.general.rules',
+    __checkmk_var_rules_filtered_count: "{{ lookup('checkmk.general.rules',
                       ruleset=item,
                       comment_regex='Ansible managed',
                       server_url=checkmk_var_server_url,
@@ -87,13 +87,13 @@
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_rulesets }}"
+  loop: "{{ checkmk_var_rulesets }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get each single rule of a ruleset."
   ansible.builtin.debug:
-    var: "rule"
+    var: __checkmk_var_rule_single
   vars:
-    rule: "{{ lookup('checkmk.general.rule',
+    __checkmk_var_rule_single: "{{ lookup('checkmk.general.rule',
                       rule_id=item.id,
                       server_url=checkmk_var_server_url,
                       site=outer_item.site,
@@ -103,25 +103,25 @@
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ cpu_load_ruleset.rules }}"
+  loop: "{{ __checkmk_var_cpu_load_ruleset.__checkmk_var_one_ruleset }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: rule."
   ansible.builtin.debug:
-    var: "rule"
+    var: __checkmk_var_rule_module
   vars:
-    rule: "{{ lookup('checkmk.general.rule', rule_id=item.id) }}"
+    __checkmk_var_rule_module: "{{ lookup('checkmk.general.rule', rule_id=item.id) }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ cpu_load_ruleset.rules }}"
+  loop: "{{ __checkmk_var_cpu_load_ruleset.rules }}"
   when: outer_item.edition == "stable_cee"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: rules."
   ansible.builtin.assert:
     # Check the number of rules
-    that: rules|length == 1
+    that: __checkmk_var_rules_module|length == 1
   vars:
-    rules: "{{ lookup('checkmk.general.rules', ruleset=item, commebt_regex='Ansible managed') }}"
+    __checkmk_var_rules_module: "{{ lookup('checkmk.general.rules', ruleset=item, commebt_regex='Ansible managed') }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_rulesets }}"
+  loop: "{{ checkmk_var_rulesets }}"
   when: outer_item.edition == "stable_cee"

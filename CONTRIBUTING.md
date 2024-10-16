@@ -10,13 +10,13 @@ See [Contributing to Ansible-maintained collections](https://docs.ansible.com/an
 ## A word of warning
 
 While we want the community to engage in developing this collection, please be
-aware, that we want to ensure a certain level of quality and scope.
+aware, that we also want to ensure a certain level of quality and scope.
 Additionally, this is purely a side project of a few people, which means
 the time available is limited. We will try to be as transparent as possible
 about what we will include but please do not feel discouraged, if an idea
 or proposal gets rejected. Instead go on and create something yourself,
 if you think your approach is viable! There is already a lot of great content
-out there and we love seeing you add to that plethora of it!
+out there and we love seeing you add to that plethora!
 
 ## How to contribute
 
@@ -27,9 +27,8 @@ There are several ways in which you can contribute:
 3. Pick an [issue, which needs help](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
 
 Everything helps, really!
-We do test everything to the best of our abilities, but nothing beats real world
-scenarios. Also if you can provide a bugfix yourself or you have an addition to
-the functionality, [pull requests](#Pull-Requests) are appreciated.
+Not only issues and code, but also documentation and
+just spreading the word about this collection goes a long way!
 
 ### Submitting Issues
 
@@ -40,7 +39,8 @@ and us to gather the necessary information to tackle the issue efficiently.
 ### Pull Requests
 
 Please open a [pull request](https://github.com/Checkmk/ansible-collection-checkmk.general/pulls?q=is%3Apr+is%3Aopen)
-against the `devel` branch, if you have something to contribute.
+against the `devel` branch, if you have something to contribute. It does not matter, if that is
+a cool new feature, a bug fix or documentation, we appreciate everything you want to contribute!
 On pull request creation, checks will run and tell you, if your changes work with the collection.
 If errors are detected, please try to fix them and update your pull request accordingly.
 If you need help, do ask for it.
@@ -103,6 +103,9 @@ The following are guidelines to keep in mind, when creating or changing roles an
 We strive to provide the best possible quality with this collection, hence we have implemented tests, that verify different aspects of code quality.
 We urge you to run the following tests locally as applicable, so the turnaround on your pull request is as low as possible.
 
+If you are developing a plugin or module yourself, please try to create
+unit and integration tests for them as well. You can refer to existing tests as inspiration.
+
 ### Sanity
 
 [Ansible Sanity Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html) enforce Ansible coding standards and requirements facilitating static code analysis. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
@@ -119,7 +122,7 @@ You can also run a subset by mentioning them as follows. See `ansible-test sanit
 
 ### Integration
 
-[Ansible Integration Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html) run test cases created by the maintainers of this project, to ensure the collection actually does what is intended. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
+[Ansible Integration Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html) run test cases created by the maintainers of the respective modules, to ensure the collection actually does what is intended. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
 We strongly recommend using the `--docker` option, so you do not modify your local system with these tests.
 **Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
 
@@ -131,17 +134,27 @@ You can also run a subset by mentioning them as follows. See `tests/integration/
 
     ansible-test integration $TEST_CASE --docker
 
+### Unit
+
+[Ansible Unit Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_unit.html) run unit tests created by the maintainers of the respective modules, to ensure the code works as intended. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
+We strongly recommend using the `--docker` option, so you do not modify your local system with these tests.
+**Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
+
+To run all tests locally, use the following command in the project root:
+
+    ansible-test units --docker
+
+You can also run a subset by mentioning them as follows. See `tests/unit/plugins` for potential test targets).
+
+    ansible-test units --docker tests/unit/plugins/inventory/test_checkmk.py
+
 ### Molecule
 
-To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/testing-your-ansible-roles-molecule). It can be installed using the `requirements.txt`in this project or manually. The tests are crafted by the maintainers of this project to reflect real world scenarios a role would be used in. To run the tests, you need to navigate to the role directory and choose a scenario. At the time of writing those are named after the supported Checkmk versions: `2.2.0`and `2.3.0`.
+To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/testing-your-ansible-roles-molecule). It can be installed using the `requirements.txt` in this project or manually. The tests are crafted by the maintainers of the respective role to reflect real world scenarios a role would be used in. To run the tests, you need to navigate to the role directory and choose a scenario. At the time of writing those are named after the supported Checkmk versions: `2.2.0`and `2.3.0`.
 
     cd roles/server/
     molecule test -s 2.2.0
     molecule test -s 2.3.0
-
-### Unit
-
-There are currently no unit tests.
 
 ## Releasing this collection
 

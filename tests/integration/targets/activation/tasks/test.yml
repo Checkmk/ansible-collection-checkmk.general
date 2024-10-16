@@ -32,7 +32,7 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate without explicit site."
   activation:
@@ -54,7 +54,7 @@
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate forcing foreign changes."
   activation:
@@ -80,7 +80,7 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate with explicit site."
   activation:
@@ -105,7 +105,7 @@
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate with explicit site and redirect."
   activation:

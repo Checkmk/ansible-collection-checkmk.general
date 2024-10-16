@@ -13,6 +13,7 @@ action_groups:
     - password
     - rule
     - service_group
+    - site
     - tag_group
     - timeperiod
     - user

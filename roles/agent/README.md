@@ -16,7 +16,7 @@ Please make sure it is installed on your system and available for Ansible.
 
 ## Role Variables
 
-    checkmk_agent_version: "2.3.0p16"
+    checkmk_agent_version: "2.3.0p18"
 
 The Checkmk version of the site your agents will talk to.
 

@@ -158,15 +158,12 @@ tests-sanity: vm
 	cd $(COLLECTION_ROOT) && \
 	ansible-test sanity --docker"
 
+tests-units: vm
+	@vagrant ssh collection -c "\
+	cd $(COLLECTION_ROOT) && \
+	ansible-test units --docker"
+
 tests-integration: vm
 	@vagrant ssh collection -c "\
 	cd $(COLLECTION_ROOT) && \
 	ansible-test integration --docker"
-
-tests-integration-custom: vm container
-	@vagrant ssh collection -c "\
-	cd $(COLLECTION_ROOT) && \
-	docker load -i ansible-checkmk-test-latest-image.tar.gz && \
-	ansible-test integration --docker-privileged --python 3.10 --docker ansible-checkmk-test && \
-	ansible-test integration --docker-privileged --python 3.11 --docker ansible-checkmk-test && \
-	ansible-test integration --docker-privileged --python 3.12 --docker ansible-checkmk-test"

@@ -1,5 +1,5 @@
 ---
-test_sites:
+checkmk_var_test_sites:
   - version: "2.3.0p17"
     edition: "cme"
     site: "stable_cme"
@@ -13,10 +13,10 @@ test_sites:
     site: "ancient_cme"
     port: "5321"
 
-signature_key_id: 1
-signature_key_passphrase: "{{ checkmk_var_automation_secret }}"
+checkmk_var_signature_key_id: 1
+checkmk_var_signature_key_passphrase: "{{ checkmk_var_automation_secret }}"
 
-checkmk_hosts:
+checkmk_var_hosts:
   - name: test1.tld
     folder: "/"
   - name: test2.tld

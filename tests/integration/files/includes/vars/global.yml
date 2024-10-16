@@ -5,9 +5,9 @@ checkmk_var_automation_user: "cmkadmin"
 checkmk_var_automation_secret: "Sup3rSec4et!"
 
 # Generate download URL and provide credentials to download Checkmk setups
-download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ __checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
-download_user: "d-gh-ansible-dl"
-download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret', errors='ignore') | default(omit) }}"  # noqa yaml[line-length]
+checkmk_var_download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ __checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
+checkmk_var_download_user: "d-gh-ansible-dl"
+checkmk_var_download_pass: "{{ lookup('ansible.builtin.file', '/root/ansible_collections/checkmk/general/tests/integration/files/.dl-secret', errors='ignore') | default(omit) }}"  # noqa yaml[line-length]
 
 # Due to inconsistent naming of editions, we normalize them here for convenience
 __checkmk_server_edition_mapping:
@@ -19,9 +19,10 @@ __checkmk_server_edition_mapping:
 
 # This is a very hacky workaround, as it is not possible to assign variables
 # to other variables when using them in lookup modules.
-ansible_lookup_checkmk_server_url: "http://127.0.0.1:{{ outer_item.port }}/"
-ansible_lookup_checkmk_site: "stable_cee"  # This is especially hacky.
-                                           # All integration tests were adapted to run the specific task only on this site.
-ansible_lookup_checkmk_automation_user: "cmkadmin"
-ansible_lookup_checkmk_automation_secret: "Sup3rSec4et!"
-ansible_lookup_checkmk_validate_certs: false
+ansible_lookup_checkmk_server_url: "http://127.0.0.1"  # noqa var-naming[pattern]
+# The variable below is especially hacky.
+# All integration tests were adapted to run the specific task only on this site.
+ansible_lookup_checkmk_site: "stable_cee"  # noqa var-naming[pattern]
+ansible_lookup_checkmk_automation_user: "cmkadmin"  # noqa var-naming[pattern]
+ansible_lookup_checkmk_automation_secret: "Sup3rSec4et!"  # noqa var-naming[pattern]
+ansible_lookup_checkmk_validate_certs: false  # noqa var-naming[pattern]

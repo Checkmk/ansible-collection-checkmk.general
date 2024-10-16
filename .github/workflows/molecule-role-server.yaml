@@ -19,6 +19,7 @@ on:
       - devel
     paths:
       - 'roles/server/**'
+      - '.github/workflows/molecule-role-server.yaml'
 
 jobs:
   build:

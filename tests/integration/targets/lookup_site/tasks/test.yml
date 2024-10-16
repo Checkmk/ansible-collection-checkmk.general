@@ -1,0 +1,30 @@
+---
+- name: " {{ outer_item.version }} - {{ outer_item.edition | upper }} - Get config of the site."
+  ansible.builtin.debug:
+    msg: "Config of site {{ __checkmk_var_site.basic_settings.site_id }}: {{ __checkmk_var_site }}"
+  vars:
+    __checkmk_var_site: "{{ lookup('checkmk.general.site',
+                    outer_item.site,
+                    server_url=checkmk_var_server_url,
+                    site=outer_item.site,
+                    validate_certs=False,
+                    automation_user=checkmk_var_automation_user,
+                    automation_secret=checkmk_var_automation_secret)
+              }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify local connection."
+  ansible.builtin.assert:
+    that: "__checkmk_var_site.status_connection.connection.socket_type == 'local'"
+  vars:
+    __checkmk_var_site: "{{ lookup('checkmk.general.site',
+                    outer_item.site,
+                    server_url=checkmk_var_server_url,
+                    site=outer_item.site,
+                    validate_certs=False,
+                    automation_user=checkmk_var_automation_user,
+                    automation_secret=checkmk_var_automation_secret)
+              }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]

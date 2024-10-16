@@ -28,6 +28,7 @@ on:
   push:
     paths:
       - 'plugins/lookup/bakery.py'
+      - '.github/workflows/ans-int-test-lkp-bakery.yaml'
 
 jobs:
 

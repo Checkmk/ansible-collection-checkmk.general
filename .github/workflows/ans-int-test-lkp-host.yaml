@@ -26,6 +26,7 @@ on:
   push:
     paths:
       - 'plugins/lookup/host.py'
+      - '.github/workflows/ans-int-test-lkp-host.yaml'
 
 jobs:
 

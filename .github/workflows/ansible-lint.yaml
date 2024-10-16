@@ -9,13 +9,6 @@ env:
 name: Ansible Linting
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - devel
-    paths:
-      - 'roles/**'
-      - 'playbooks/**'
   pull_request:
     branches:
       - main
@@ -23,6 +16,16 @@ on:
     paths:
       - 'roles/**'
       - 'playbooks/**'
+      - 'tests/**'
+  push:
+    branches:
+      - main
+      - devel
+    paths:
+      - 'roles/**'
+      - 'playbooks/**'
+      - 'tests/**'
+      - '.github/workflows/ansible-lint.yaml'
 
 jobs:
 
@@ -67,8 +70,19 @@ jobs:
         run: yamllint -c ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.yamllint ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/playbooks/
         working-directory: ./ansible_collections/
 
+      - name: Run yamllint on tests
+        run: yamllint -c ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.yamllint ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/
+        working-directory: ./ansible_collections/
+
       - name: Run ansible-lint on roles
         run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles/
+        working-directory: ./ansible_collections/
+        env:
+          ANSIBLE_LIBRARY: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/plugins/modules"
+          ANSIBLE_ROLES_PATH: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles"
+
+      - name: Run ansible-lint on tests
+        run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/
         working-directory: ./ansible_collections/
         env:
           ANSIBLE_LIBRARY: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/plugins/modules"

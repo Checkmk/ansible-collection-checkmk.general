@@ -1,5 +1,5 @@
 ---
-test_sites:
+checkmk_var_test_sites:
   - version: "2.3.0p17"
     edition: "cme"
     site: "stable_cme"
@@ -17,7 +17,7 @@ test_sites:
     site: "ancient_cre"
     port: "5021"
 
-checkmk_service_groups_create:
+checkmk_var_service_groups_create:
   - name: "test1"
     title: "Test_1"
   - name: "test2"
@@ -28,7 +28,7 @@ checkmk_service_groups_create:
     title: "Test_5"
 
 # 2 and 3 remains unchanged, good for idempotency check
-checkmk_service_groups_modify:
+checkmk_var_service_groups_modify:
   - name: "test1"
     title: "Test_one"
   - name: "test2"
@@ -40,6 +40,6 @@ checkmk_service_groups_modify:
   - name: "test5"
     title: "Test_five"
 
-checkmk_service_groups_delete:
+checkmk_var_service_groups_delete:
   - name: "test1"
   - name: "test3"

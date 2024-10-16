@@ -1,5 +1,5 @@
 ---
-test_sites:
+checkmk_var_test_sites:
   - version: "2.3.0p17"
     edition: "cme"
     site: "stable_cme"
@@ -27,7 +27,7 @@ checkmk_var_folders:
   - path: /foo/bar1
     name: Digital
 
-checkmk_hosts:
+checkmk_var_hosts:
   - name: test0.tld
   - name: test1.tld
     folder: "/"
@@ -40,7 +40,7 @@ checkmk_hosts:
   - name: test5.tld
     folder: "/foo/bar1"
 
-checkmk_cluster_hosts:
+checkmk_var_cluster_hosts:
   - name: cluster_test0.tld
     nodes:
       - "test0.tld"
@@ -58,7 +58,7 @@ checkmk_cluster_hosts:
     folder: "/"
     nodes: "test4.tld"
 
-checkmk_cluster_hosts_add_nodes:
+checkmk_var_cluster_hosts_add_nodes:
   - name: cluster_test1.tld
     folder: "/"
     add_nodes:
@@ -77,7 +77,7 @@ checkmk_cluster_hosts_add_nodes:
       - "test3.tld"
       - "test4.tld"
 
-checkmk_cluster_hosts_remove_nodes:
+checkmk_var_cluster_hosts_remove_nodes:
   - name: cluster_test1.tld
     folder: "/"
     remove_nodes:

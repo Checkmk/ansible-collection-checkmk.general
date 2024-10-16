@@ -20,13 +20,13 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_rules }}"
+  loop: "{{ checkmk_var_rules }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all rulesets."
   ansible.builtin.debug:
-    var: rulesets
+    var: __checkmk_var_rulesets
   vars:
-    rulesets: "{{ lookup('checkmk.general.rulesets',
+    __checkmk_var_rulesets: "{{ lookup('checkmk.general.rulesets',
                   regex='',
                   rulesets_used=True,
                   rulesets_deprecated=False,
@@ -59,9 +59,9 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get particular rulesets."
   ansible.builtin.debug:
-    var: rulesets
+    var: __checkmk_var_rulesets
   vars:
-    rulesets: "{{ lookup('checkmk.general.rulesets',
+    __checkmk_var_rulesets: "{{ lookup('checkmk.general.rulesets',
                   regex='file',
                   rulesets_used=False,
                   rulesets_deprecated=False,
@@ -77,9 +77,9 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules using lookup-ruleset."
   ansible.builtin.assert:
     # For each rule that we created, check, if the number of rules in its ruleset is 1.
-    that: "ruleset.number_of_rules == 1"
+    that: "__checkmk_var_ruleset.number_of_rules == 1"
   vars:
-    ruleset: "{{ lookup('checkmk.general.ruleset',
+    __checkmk_var_ruleset: "{{ lookup('checkmk.general.ruleset',
                       ruleset=item,
                       server_url=checkmk_var_server_url,
                       site=outer_item.site,
@@ -89,24 +89,24 @@
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_ruleset_regexes }}"
+  loop: "{{ checkmk_var_ruleset_regexes }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: ruleset."
   ansible.builtin.assert:
     # For each rule that we created, check, if the number of rules in its ruleset is 1.
-    that: "ruleset.number_of_rules == 1"
+    that: "__checkmk_var_ruleset.number_of_rules == 1"
   vars:
-    ruleset: "{{ lookup('checkmk.general.ruleset', ruleset=item) }}"
+    __checkmk_var_ruleset: "{{ lookup('checkmk.general.ruleset', ruleset=item) }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_ruleset_regexes }}"
+  loop: "{{ checkmk_var_ruleset_regexes }}"
   when: outer_item.edition == "stable_cee"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: rulesets."
   ansible.builtin.debug:
-    var: rulesets
+    var: __checkmk_var_rulesets
   vars:
-    rulesets: "{{ lookup('checkmk.general.rulesets', regex='file', rulesets_used=False, rulesets_deprecated=False) }}"
+    __checkmk_var_rulesets: "{{ lookup('checkmk.general.rulesets', regex='file', rulesets_used=False, rulesets_deprecated=False) }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   when: outer_item.edition == "stable_cee"
