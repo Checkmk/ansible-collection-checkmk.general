@@ -46,6 +46,7 @@ Vagrant.configure("2") do |config|
     hostnamectl set-hostname collection
     SCRIPT
     srv.vm.provision "shell", inline: $script
+    srv.vm.provision :reload
     srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/", type: "virtiofs"
   end
 
@@ -117,7 +118,7 @@ Vagrant.configure("2") do |config|
 
   # openSUSE
   config.vm.define "ansuse", autostart: false , primary: false do |srv|
-    srv.vm.box = "generic/opensuse42"
+    srv.vm.box = "generic/opensuse15"
     srv.vm.network :private_network,
     :ip                         => "192.168.124.64",
     :libvirt__netmask           => "255.255.255.0",
