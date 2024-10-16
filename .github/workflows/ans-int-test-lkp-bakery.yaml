@@ -63,21 +63,21 @@ jobs:
 
     services:
       ancient_cce:
-        image: checkmk/check-mk-managed:2.1.0p47
+        image: checkmk/check-mk-managed:2.1.0p48
         ports:
           - 5321:5000
         env:
           CMK_SITE_ID: "ancient_cce"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cme:
-        image: checkmk/check-mk-managed:2.2.0p34
+        image: checkmk/check-mk-managed:2.2.0p35
         ports:
           - 5322:5000
         env:
           CMK_SITE_ID: "old_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cme:
-        image: checkmk/check-mk-managed:2.3.0p17
+        image: checkmk/check-mk-managed:2.3.0p18
         ports:
           - 5323:5000
         env:
