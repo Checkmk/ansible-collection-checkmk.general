@@ -8,7 +8,7 @@
     dest: /tmp/agent_signature_keys.mk
     owner: "{{ item.site }}"
     group: "{{ item.site }}"
-    mode: "0664"
+    mode: "0660"
   loop: "{{ checkmk_var_test_sites }}"
   # when: (download_pass is defined and download_pass | length) or item.edition == "cre"
 
@@ -17,6 +17,8 @@
     container: "{{ item.site }}"
     path: /tmp/agent_signature_keys.mk
     container_path: "/omd/sites/{{ item.site }}/etc/check_mk/multisite.d/wato/agent_signature_keys.mk"
+    owner_id: 1000
+    group_id: 1000
     mode: "0664"
   loop: "{{ checkmk_var_test_sites }}"
 
