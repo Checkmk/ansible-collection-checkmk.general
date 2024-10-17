@@ -1,22 +1,23 @@
 ---
-test_sites:
+checkmk_var_test_sites:
   - version: "2.3.0p18"
     edition: "cme"
     site: "stable_cme"
-  - version: "2.3.0p18"
-    edition: "cee"
-    site: "stable_cee"
+    port: "5323"
   - version: "2.3.0p18"
     edition: "cre"
     site: "stable_cre"
+    port: "5023"
   - version: "2.2.0p35"
     edition: "cre"
     site: "old_cre"
-  # - version: "2.1.0p48"
-  #   edition: "cre"
-  #   site: "ancient_cre"
+    port: "5022"
+  - version: "2.1.0p48"
+    edition: "cre"
+    site: "ancient_cre"
+    port: "5021"
 
-checkmk_taggroups_create:
+checkmk_var_tag_groups_create:
   - name: Datacenter
     title: Datacenter
     topic: Tags
@@ -44,7 +45,7 @@ checkmk_taggroups_create:
       - id: jenbarber
         title: Jen Barber
 
-checkmk_taggroups_update:
+checkmk_var_tag_groups_update:
   - name: Datacenter
     title: Datacenter
     topic: Tags
@@ -74,6 +75,6 @@ checkmk_taggroups_update:
       - id: jenbarber
         title: Jen Barber
 
-checkmk_taggroups_delete:
+checkmk_var_tag_groups_delete:
   - name: Supporter
     repair: true

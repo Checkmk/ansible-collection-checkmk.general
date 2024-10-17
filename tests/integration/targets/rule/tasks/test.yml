@@ -1,4 +1,14 @@
 ---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "provider"
+  when: outer_item.edition == "cme"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: null
+  when: outer_item.edition != "cme"
+
 - name: "Include Checkmk version specific Variables."
   ansible.builtin.include_vars: "{{ outer_item.version | regex_search('^[0-9]+[.][0-9]+[.][0-9]+') }}.yml"
 
@@ -14,7 +24,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rules }}"
-  register: created_rules
+  register: __checkmk_var_created_rules
 
 # - name: Extract all rules from employed rulesets
 #   ansible.builtin.uri:
@@ -47,14 +57,8 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rules }}"
-  register: created_rules_again_result
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
-  ansible.builtin.fail:
-    msg: "Rule changed!"
-  when: "created_rules_again_result.changed"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  register: __checkmk_var_result_rules_create
+  failed_when: __checkmk_var_result_rules_create.changed
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify rules."
   rule:
@@ -73,7 +77,7 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ created_rules.results }}"
+  loop: "{{ __checkmk_var_created_rules.results }}"
   loop_control:
     label: "{{ item.content.id }}"
 
@@ -94,17 +98,11 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ created_rules.results }}"
+  loop: "{{ __checkmk_var_created_rules.results }}"
   loop_control:
     label: "{{ item.content.id }}"
-  register: rule_result
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
-  ansible.builtin.fail:
-    msg: "Rule changed!"
-  when: "rule_result.changed"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  register: __checkmk_var_result_rules_modify
+  failed_when: __checkmk_var_result_rules_modify.changed
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify rules found by a lookup."
   rule:
@@ -146,7 +144,7 @@
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ created_rules.results }}"
+  loop: "{{ __checkmk_var_created_rules.results }}"
   loop_control:
     label: "{{ item.content.id }}"
 
@@ -174,13 +172,8 @@
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ created_rules.results }}"
+  loop: "{{ __checkmk_var_created_rules.results }}"
   loop_control:
     label: "{{ item.content.id }}"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
-  ansible.builtin.fail:
-    msg: "Rule changed!"
-  when: "rule_result.changed"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  register: __checkmk_var_result_rules_delete
+  failed_when: __checkmk_var_result_rules_delete.changed

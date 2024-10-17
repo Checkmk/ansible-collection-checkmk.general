@@ -1,4 +1,14 @@
 ---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "provider"
+  when: outer_item.edition == "cme"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: null
+  when: outer_item.edition != "cme"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate without changes."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
@@ -22,7 +32,7 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate without explicit site."
   activation:
@@ -44,7 +54,7 @@
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate forcing foreign changes."
   activation:
@@ -70,7 +80,7 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate with explicit site."
   activation:
@@ -95,7 +105,7 @@
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate with explicit site and redirect."
   activation:

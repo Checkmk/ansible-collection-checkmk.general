@@ -12,14 +12,9 @@
     tags: "{{ item.tags }}"
     state: "present"
   delegate_to: localhost
-  register: create_result
-  loop: "{{ checkmk_taggroups_create }}"
-
-- name: "{{ outer_item.version }} - Fail if not changed." # noqa no-handler
-  ansible.builtin.fail:
-    msg: "Tag groups not created! Maybe already existing?"
-  when: create_result is not changed
-  run_once: true  # noqa run-once[task]
+  register: __checkmk_var_result_tag_group_create
+  loop: "{{ checkmk_var_tag_groups_create }}"
+  failed_when: not __checkmk_var_result_tag_group_create.changed
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
   activation:
@@ -43,15 +38,9 @@
     tags: "{{ item.tags }}"
     state: "present"
   delegate_to: localhost
-  register: createagain_result
-  loop: "{{ checkmk_taggroups_create }}"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
-  ansible.builtin.fail:
-    msg: "Tried to create the same tag group twice!"
-  when: "createagain_result.changed"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
+  register: __checkmk_var_result_tag_group_recreate
+  loop: "{{ checkmk_var_tag_groups_create }}"
+  failed_when: __checkmk_var_result_tag_group_recreate.changed
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create Host"
   host:
@@ -78,9 +67,9 @@
     tags: "{{ item.tags }}"
     state: "present"
   delegate_to: localhost
-  loop: "{{ checkmk_taggroups_update }}"
-  register: update_taggroup_status
-  failed_when: "'You must authorize Checkmk to update the relevant instances using the repair parameter' not in update_taggroup_status.msg"
+  loop: "{{ checkmk_var_tag_groups_update }}"
+  register: __checkmk_var_result_tag_group_update
+  failed_when: "'You must authorize Checkmk to update the relevant instances using the repair parameter' not in __checkmk_var_result_tag_group_update.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update tag_group."
   tag_group:
@@ -96,7 +85,7 @@
     repair: "{{ item.repair | default(omit) }}"
     state: "present"
   delegate_to: localhost
-  loop: "{{ checkmk_taggroups_update }}"
+  loop: "{{ checkmk_var_tag_groups_update }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
   activation:
@@ -117,15 +106,9 @@
     repair: "{{ item.repair | default(omit) }}"
     state: "absent"
   delegate_to: localhost
-  register: delete_result
-  loop: "{{ checkmk_taggroups_delete }}"
-
-- name: "{{ outer_item.version }} - Fail if not changed." # noqa no-handler
-  ansible.builtin.fail:
-    msg: "Tag groups not deleted"
-  when: delete_result is not changed
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
+  register: __checkmk_var_result_tag_group_delete
+  loop: "{{ checkmk_var_tag_groups_delete }}"
+  failed_when: not __checkmk_var_result_tag_group_delete.changed
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
   activation:
@@ -146,12 +129,6 @@
     repair: "{{ item.repair | default(omit) }}"
     state: "absent"
   delegate_to: localhost
-  register: deleteagain_result
-  loop: "{{ checkmk_taggroups_delete }}"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Fail if changed."  # noqa no-handler
-  ansible.builtin.fail:
-    msg: "Rule changed!"
-  when: "deleteagain_result.changed"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
+  register: __checkmk_var_result_tag_group_redelete
+  loop: "{{ checkmk_var_tag_groups_delete }}"
+  failed_when: __checkmk_var_result_tag_group_redelete.changed
