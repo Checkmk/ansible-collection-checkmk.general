@@ -104,7 +104,7 @@ jobs:
         env:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
-      - name: "Install 'community.docker' Collection."
+      - name: "Install 'community.docker' Collection to be able to inject files into test containers."
         run: ansible-galaxy collection install community.docker -p /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/
 
       - name: Run integration test

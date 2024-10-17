@@ -9,7 +9,7 @@
     owner: "{{ item.site }}"
     group: "{{ item.site }}"
     mode: "0664"
-  loop: "{{ test_sites }}"
+  loop: "{{ checkmk_var_test_sites }}"
   # when: (download_pass is defined and download_pass | length) or item.edition == "cre"
 
 - name: "Copy a file into the container with owner, group, and mode set"
