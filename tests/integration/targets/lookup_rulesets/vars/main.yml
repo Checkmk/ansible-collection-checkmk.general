@@ -1,5 +1,5 @@
 ---
-test_sites:
+checkmk_var_test_sites:
   - version: "2.3.0p18"
     edition: "cee"
     site: "stable_cee"
@@ -13,7 +13,7 @@ test_sites:
   #   edition: "cre"
   #   site: "ancient_cre"
 
-checkmk_ruleset_regexes:
+checkmk_var_ruleset_regexes:
   - "checkgroup_parameters:filesystem"
   - "checkgroup_parameters:cpu_load"
   - "checkgroup_parameters:cpu_iowait"
@@ -21,7 +21,7 @@ checkmk_ruleset_regexes:
   - "usewalk_hosts"
   - "checkgroup_parameters:memory_percentage_used"
 
-checkmk_rules:
+checkmk_var_rules:
 
   - name: "Filesystem - Magic Factor."
     ruleset: "checkgroup_parameters:filesystem"

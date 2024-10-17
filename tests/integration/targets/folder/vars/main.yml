@@ -1,5 +1,5 @@
 ---
-test_sites:
+checkmk_var_test_sites:
   - version: "2.3.0p18"
     edition: "cee"
     site: "stable_cee"
@@ -29,7 +29,7 @@ checkmk_var_folders:
   - path: /foo/bar1
     name: Digital
 
-checkmk_folder_attr_test:
+checkmk_var_folder_attr_test:
   path: /test
   name: Test
   attributes:

@@ -1015,7 +1015,7 @@ releases:
         is no automatic way to do this, so you need to log into the site and add the
         certificate to the trusted certificates manually.
       major_changes:
-      - Inventory module - Add module for creating a dynamic inventory from Checkmk.
+      - Dynamic Inventory Source - Add dynamic inventory source for Checkmk.
       - Site lookup module - Add module to lookup details of a single site.
       - Site module - Add module for distributed monitoring. Refer to the module documentation
         for further details.
