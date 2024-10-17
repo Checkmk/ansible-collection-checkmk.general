@@ -105,7 +105,7 @@ jobs:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
       - name: "Install 'community.docker' Collection."
-        run: ansible-galaxy collection install community.docker
+        run: ansible-galaxy collection install community.docker -p /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/
 
       - name: Run integration test
         run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }}
