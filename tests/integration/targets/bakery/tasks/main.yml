@@ -12,12 +12,6 @@
   loop: "{{ test_sites }}"
   # when: (download_pass is defined and download_pass | length) or item.edition == "cre"
 
-- name: "Install 'community.docker' Collection."
-  ansible.builtin.command: ansible-galaxy collection install community.docker
-  register: collection_install
-
-- debug: var=collection_install
-
 - name: "Copy a file into the container with owner, group, and mode set"
   community.docker.docker_container_copy_into:
     container: "{{ item.site }}"
