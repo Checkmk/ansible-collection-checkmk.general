@@ -42,7 +42,7 @@ You can find playbooks, demonstrating the content of this collection in the fold
 
 Name | Description | Tests
 --- | --- | ---
-[checkmk.general.checkmk](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/inventory/checkmk.py)|Dynamic Inventory Source for Checkmk | [![Ansible Unit Test for Inventory Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml)
+[checkmk.general.checkmk](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/inventory/checkmk.py)|Dynamic Inventory Source for Checkmk | [![Ansible Unit Test for Inventory Module.](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml)
 
 ### Lookup plugins
 Click on the lookup plugin name below, to get detailed documentation about it.
@@ -88,7 +88,7 @@ Click on the role name below, to get documentation about the role.
 Name | Description | Tests
 --- | --- | ---
 [checkmk.general.agent](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/roles/agent/README.md)|Installs Checkmk agents.| [![Molecule Tests for Agent Role](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-agent.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-agent.yaml)
-[checkmk.general.server](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/roles/server/README.md)|Installs Checkmk servers.|[![Molecule Tests for Server Role](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-server.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-server.yaml)
+[checkmk.general.server](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/roles/server/README.md)|Installs Checkmk servers and manages Checkmk sites.|[![Molecule Tests for Server Role](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-server.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-server.yaml)
 <!--end collection content-->
 
 ## Additional content
