@@ -24,7 +24,7 @@ checkmk_var_test_sites:
             url_of_remote_site: "http://localhost/stable_cme_r1/check_mk/"
           basic_settings:
             site_id: "stable_cme_r1"
-            checkmk_var_customer: "provider"
+            customer: "provider"
             alias: "stable_cme remote site 1"
         authentication:
           username: "cmkadmin"
@@ -50,7 +50,7 @@ checkmk_var_test_sites:
             url_of_remote_site: "http://localhost/stable_cme_r2/check_mk/"
           basic_settings:
             site_id: "stable_cme_r2"
-            checkmk_var_customer: "provider"
+            customer: "provider"
             alias: "stable_cme remote site 2"
         authentication:
           username: "cmkadmin"
@@ -94,7 +94,7 @@ checkmk_var_test_sites:
             replicate_extensions: false
           basic_settings:
             site_id: "stable_cme_r3"
-            checkmk_var_customer: "provider"
+            customer: "provider"
             alias: "stable_cme remote site 3"
         authentication:
           username: "cmkadmin"

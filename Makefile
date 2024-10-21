@@ -103,7 +103,7 @@ vagrant:
 	@sudo apt update -y
 	@sudo apt -y install vagrant
 	@sudo usermod -aG libvirt $(USER)
-	@vagrant plugin install vagrant-libvirt
+	@vagrant plugin install vagrant-libvirt vagrant-reload
 
 venv:
 	@python3 -m venv venv

@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
     apt-get -y install python3-pip ca-certificates curl gnupg lsb-release qemu-guest-agent python3.8 python3.9 python3.10 python3.11 python3.12
     sudo -u vagrant python3 -m pip install pip --upgrade
     sudo -u vagrant python3 -m pip install -r /home/vagrant/ansible_collections/checkmk/general/requirements.txt
-    sudo -u vagrant python3 -m pip install -r /home/vagrant/ansible_collections/checkmk/general/requirements-qa.txt
+    sudo -u vagrant python3 -m pip install -r /home/vagrant/ansible_collections/checkmk/general/qa-requirements.txt
     sudo -u vagrant ansible-galaxy collection install -f -r /home/vagrant/ansible_collections/checkmk/general/requirements.yml
     mkdir -p /home/vagrant/ansible_collections/checkmk/general
     mkdir -p /etc/apt/keyrings
@@ -46,6 +46,7 @@ Vagrant.configure("2") do |config|
     hostnamectl set-hostname collection
     SCRIPT
     srv.vm.provision "shell", inline: $script
+    srv.vm.provision :reload
     srv.vm.synced_folder "./", "/home/vagrant/ansible_collections/checkmk/general/", type: "virtiofs"
   end
 
@@ -117,7 +118,7 @@ Vagrant.configure("2") do |config|
 
   # openSUSE
   config.vm.define "ansuse", autostart: false , primary: false do |srv|
-    srv.vm.box = "generic/opensuse42"
+    srv.vm.box = "generic/opensuse15"
     srv.vm.network :private_network,
     :ip                         => "192.168.124.64",
     :libvirt__netmask           => "255.255.255.0",
