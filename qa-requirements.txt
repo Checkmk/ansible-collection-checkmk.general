@@ -4,5 +4,5 @@ isort==5.13.2
 mypy-extensions==0.4.3
 pathspec==0.12.1
 platformdirs==4.3.6
-tomli==2.0.1
+tomli==2.0.2
 typing-extensions==4.12.2
