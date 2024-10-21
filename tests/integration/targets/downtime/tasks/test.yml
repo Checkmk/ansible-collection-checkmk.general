@@ -13,7 +13,7 @@
     state: "present"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Discover hosts."
   discovery:
@@ -25,7 +25,7 @@
     state: "fix_all"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run activation."
   activation:
@@ -47,7 +47,7 @@
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
     state: present
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete downtime on host without comment."
   downtime:
@@ -59,7 +59,7 @@
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
     state: absent
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services with relative times."
   downtime:
@@ -78,7 +78,7 @@
     service_descriptions:
       - "Check_MK"
       - "Check_MK Discovery"
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services with relative times in strings."
   downtime:
@@ -97,7 +97,7 @@
     service_descriptions:
       - "Check_MK"
       - "Check_MK Discovery"
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services with absolute timestamps."
   downtime:
@@ -112,7 +112,7 @@
     service_descriptions:
       - "Check_MK"
       - "Check_MK Discovery"
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services without timestamps."
   downtime:
@@ -127,7 +127,7 @@
       - "Check_MK Discovery"
     end_after:
       minutes: 1
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with relative times."
   downtime:
@@ -143,7 +143,7 @@
     end_after:
       hours: 1
       minutes: 30
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with absolute timestamps."
   downtime:
@@ -155,7 +155,7 @@
     comment: Schedule downtime on host with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with absolute timestamps. Again."
   downtime:
@@ -167,7 +167,7 @@
     comment: Schedule downtime on host with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with absolute timestamps. Again. With force."
   downtime:
@@ -180,7 +180,7 @@
     comment: Schedule downtime on host with absolute timestamps
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime forcibly on host with absolute timestamps."
   downtime:
@@ -193,7 +193,7 @@
     start_time: 2024-03-25T20:39:28Z
     end_time: 2024-03-26T20:39:28Z
     force: true
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host without timestamps."
   downtime:
@@ -203,7 +203,7 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host without timestamps
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete service downtimes with comment."
   downtime:
@@ -217,7 +217,7 @@
       - "Check_MK"
       - "Check_MK Discovery"
     state: absent
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host downtimes with comment."
   downtime:
@@ -228,7 +228,7 @@
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host without timestamps
     state: absent
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete service downtimes with comment again."
   downtime:
@@ -242,7 +242,7 @@
       - "Check_MK"
       - "Check_MK Discovery"
     state: absent
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host downtimes with comment again."
   downtime:
@@ -253,7 +253,7 @@
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host without timestamps
     state: absent
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete service downtimes."
   downtime:
@@ -268,7 +268,7 @@
       - "Memory"
       - "Uptime"
     state: absent
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host downtimes."
   downtime:
@@ -278,7 +278,7 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     state: absent
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on single service."
   downtime:
@@ -292,7 +292,7 @@
       minutes: 30
     service_descriptions:
       - "Check_MK"
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete downtime on single service."
   downtime:
@@ -305,9 +305,9 @@
     service_descriptions:
       - "Check_MK"
     state: absent
-  register: result
-  failed_when: result.changed == False
-  loop: "{{ checkmk_hosts }}"
+  register: __checkmk_var_result_delete
+  failed_when: not __checkmk_var_result_delete.changed | bool
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:
@@ -320,7 +320,7 @@
     state: "absent"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  loop: "{{ checkmk_hosts }}"
+  loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run activation."
   activation:
