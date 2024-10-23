@@ -1,0 +1,7 @@
+bugfixes:
+  - contact_group module - Fix the passing of the 'customer' attribute, when the
+    'groups' parameter is used.
+  - host_group module - Fix the passing of the 'customer' attribute, when the
+    'groups' parameter is used.
+  - service_group module - Fix the passing of the 'customer' attribute, when the
+    'groups' parameter is used.
