@@ -1,6 +1,6 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.3.0p18"
+  - version: "2.3.0p19"
     edition: "cme"
     site: "stable_cme"
     remote_sites:
@@ -99,7 +99,7 @@ checkmk_var_test_sites:
         authentication:
           username: "cmkadmin"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.3.0p18"
+  - version: "2.3.0p19"
     edition: "cee"
     site: "stable_cee"
     remote_sites:
@@ -127,7 +127,7 @@ checkmk_var_test_sites:
         authentication:
           username: "cmkadmin"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.3.0p18"
+  - version: "2.3.0p19"
     edition: "cre"
     site: "stable_cre"
     remote_sites:

@@ -1,9 +1,9 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.3.0p18"
+  - version: "2.3.0p19"
     edition: "cre"
     site: "stable_cre"
-  - version: "2.3.0p18"
+  - version: "2.3.0p19"
     edition: "cee"
     site: "stable_cee"
   - version: "2.2.0p35"
