@@ -1,4 +1,14 @@
 ---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "provider"
+  when: outer_item.edition == "cme"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: null
+  when: outer_item.edition != "cme"
+
 - name: "Include Checkmk version specific Variables."
   ansible.builtin.include_vars: "{{ outer_item.version | regex_search('^[0-9]+[.][0-9]+[.][0-9]+') }}.yml"
 
