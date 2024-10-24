@@ -1041,3 +1041,17 @@ releases:
         name: sites
         namespace: null
     release_date: '2024-10-10'
+  5.3.1:
+    changes:
+      bugfixes:
+      - contact_group module - Fix the passing of the 'customer' attribute, when the
+        'groups' parameter is used.
+      - host_group module - Fix the passing of the 'customer' attribute, when the
+        'groups' parameter is used.
+      - rule module - Fix moving of existing rules to a different folder.
+      - service_group module - Fix the passing of the 'customer' attribute, when the
+        'groups' parameter is used.
+    fragments:
+    - groups.yml
+    - rule.yml
+    release_date: '2024-10-24'
