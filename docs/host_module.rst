@@ -22,7 +22,7 @@ checkmk.general.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -105,7 +105,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      List of nodes to be added as members of the cluster-container host provided in name. Works only if the existing host was already a cluster host, or entirely new is created. :strong:`Mutualy exclusive with I(nodes` and :emphasis:`remove\_nodes`.)
+      List of nodes to be added as members of the cluster host provided in name. Works only if the existing host was already a cluster host, or entirely new is created. :strong:`Mutualy exclusive with I(nodes` and :emphasis:`remove\_nodes`.)
 
 
       .. raw:: html
@@ -351,7 +351,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Nodes, members of the cluster-container host provided in name. :strong:`Mutualy exclusive with I(add\_nodes` and :emphasis:`remove\_nodes`.)
+      Nodes, members of the cluster host provided in name. :strong:`Mutualy exclusive with I(add\_nodes` and :emphasis:`remove\_nodes`.)
 
 
       .. raw:: html
@@ -419,7 +419,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      List of nodes to be removes from the cluster-container host provided in name. :strong:`Mutualy exclusive with I(nodes` and :emphasis:`add\_nodes`.)
+      List of nodes to be removes from the cluster host provided in name. :strong:`Mutualy exclusive with I(nodes` and :emphasis:`add\_nodes`.)
 
 
       .. raw:: html
@@ -669,7 +669,7 @@ Examples
 
     # Create a cluster host.
     - name: "Create a cluster host."
-      checkmk.general.cluster:
+      checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
         automation_user: "myuser"
@@ -681,7 +681,7 @@ Examples
 
     # Create a cluster host with IP.
     - name: "Create a cluster host with IP address."
-      checkmk.general.cluster:
+      checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
         automation_user: "myuser"
