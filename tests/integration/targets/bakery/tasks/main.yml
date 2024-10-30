@@ -2,18 +2,8 @@
 - name: "Include Global Variables."
   ansible.builtin.include_vars: /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/files/includes/vars/global.yml
 
-# - name: "Inject a Key into the Sites."
-#   community.docker.docker_container_copy_into:
-#     container: "{{ item.site }}"
-#     path: agent_signature_keys.mk
-#     container_path: "/omd/sites/{{ item.site }}/etc/check_mk/multisite.d/wato/agent_signature_keys.mk"
-#     owner_id: 1000
-#     group_id: 1000
-#     mode: "0664"
-#   loop: "{{ checkmk_var_test_sites }}"
-
-- name: "Inject a Key into the Sites."
-  ansible.builtin.shell: docker cp ../files/agent_signature_keys.mk {{ item.site }}:/omd/sites/{{ item.site }}/etc/check_mk/multisite.d/wato/agent_signature_keys.mk || pwd ; ls -lah
+- name: "Inject a Key into the Sites."  # noqa no-changed-when
+  ansible.builtin.command: docker cp ../files/agent_signature_keys.mk {{ item.site }}:/omd/sites/{{ item.site }}/etc/check_mk/multisite.d/wato/agent_signature_keys.mk
   loop: "{{ checkmk_var_test_sites }}"
 
 - name: "Testing."
@@ -21,4 +11,4 @@
   loop: "{{ checkmk_var_test_sites }}"
   loop_control:
     loop_var: outer_item
-  when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
+  # when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
