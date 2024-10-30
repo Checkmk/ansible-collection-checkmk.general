@@ -3,7 +3,7 @@
   ansible.builtin.include_vars: /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/files/includes/vars/global.yml
 
 - name: "Inject a Key into the Sites."  # noqa no-changed-when
-  ansible.builtin.command: docker cp ../files/agent_signature_keys.mk {{ item.site }}:/omd/sites/{{ item.site }}/etc/check_mk/multisite.d/wato/agent_signature_keys.mk
+  ansible.builtin.command: docker cp targets/bakery/files/agent_signature_keys.mk {{ item.site }}:/omd/sites/{{ item.site }}/etc/check_mk/multisite.d/wato/agent_signature_keys.mk
   loop: "{{ checkmk_var_test_sites }}"
 
 - name: "Testing."
