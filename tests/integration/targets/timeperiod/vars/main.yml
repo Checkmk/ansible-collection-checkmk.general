@@ -1,10 +1,10 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.3.0p18"
+  - version: "2.3.0p19"
     edition: "cme"
     site: "stable_cme"
     port: "5323"
-  - version: "2.3.0p18"
+  - version: "2.3.0p19"
     edition: "cre"
     site: "stable_cre"
     port: "5023"

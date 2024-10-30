@@ -4,13 +4,24 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.3.1
+======
+
+Bugfixes
+--------
+
+- contact_group module - Fix the passing of the 'customer' attribute, when the 'groups' parameter is used.
+- host_group module - Fix the passing of the 'customer' attribute, when the 'groups' parameter is used.
+- rule module - Fix moving of existing rules to a different folder.
+- service_group module - Fix the passing of the 'customer' attribute, when the 'groups' parameter is used.
+
 v5.3.0
 ======
 
 Major Changes
 -------------
 
-- Inventory module - Add module for creating a dynamic inventory from Checkmk.
+- Dynamic Inventory Source - Add dynamic inventory source for Checkmk.
 - Site lookup module - Add module to lookup details of a single site.
 - Site module - Add module for distributed monitoring. Refer to the module documentation for further details.
 - Sites lookup module - Add module to lookup all sites and their details in a distributed monitoring setup.

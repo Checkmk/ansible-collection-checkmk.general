@@ -79,14 +79,14 @@ options:
     #     type: str
     nodes:
         description:
-            - Nodes, members of the cluster-container host provided in name.
+            - Nodes, members of the cluster host provided in name.
               B(Mutualy exclusive with I(add_nodes) and I(remove_nodes).)
         required: false
         type: list
         elements: str
     add_nodes:
         description:
-            - List of nodes to be added as members of the cluster-container host provided in name.
+            - List of nodes to be added as members of the cluster host provided in name.
               Works only if the existing host was already a cluster host, or entirely new is created.
               B(Mutualy exclusive with I(nodes) and I(remove_nodes).)
         required: false
@@ -94,7 +94,7 @@ options:
         elements: str
     remove_nodes:
         description:
-            - List of nodes to be removes from the cluster-container host provided in name.
+            - List of nodes to be removes from the cluster host provided in name.
               B(Mutualy exclusive with I(nodes) and I(add_nodes).)
         required: false
         type: list
@@ -148,7 +148,7 @@ EXAMPLES = r"""
 
 # Create a cluster host.
 - name: "Create a cluster host."
-  checkmk.general.cluster:
+  checkmk.general.host:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -160,7 +160,7 @@ EXAMPLES = r"""
 
 # Create a cluster host with IP.
 - name: "Create a cluster host with IP address."
-  checkmk.general.cluster:
+  checkmk.general.host:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"

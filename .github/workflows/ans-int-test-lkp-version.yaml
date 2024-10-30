@@ -77,14 +77,14 @@ jobs:
           CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cre:
-        image: checkmk/check-mk-raw:2.3.0p18
+        image: checkmk/check-mk-raw:2.3.0p19
         ports:
           - 5023:5000
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cme:
-        image: checkmk/check-mk-managed:2.3.0p18
+        image: checkmk/check-mk-managed:2.3.0p19
         ports:
           - 5323:5000
         env:

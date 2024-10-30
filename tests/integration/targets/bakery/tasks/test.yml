@@ -54,7 +54,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     signature_key_id: "{{ checkmk_var_signature_key_id }}"
-    signature_key_passphrase: "{{ signature_key_passphrase }}"
+    signature_key_passphrase: "{{ checkmk_var_signature_key_passphrase }}"
     state: "signed"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -66,7 +66,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     signature_key_id: "{{ checkmk_var_signature_key_id }}"
-    signature_key_passphrase: "{{ signature_key_passphrase }}"
+    signature_key_passphrase: "{{ checkmk_var_signature_key_passphrase }}"
     state: "baked_signed"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]

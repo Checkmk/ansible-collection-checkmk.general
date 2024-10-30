@@ -307,7 +307,7 @@ def create_service_groups(module, base_url, groups, headers):
                 {
                     "name": el.get("name"),
                     "alias": el.get("title", el.get("name")),
-                    "customer": el.get("customer", "provider"),
+                    "customer": module.params.get("customer"),
                 }
                 for el in groups
             ],
