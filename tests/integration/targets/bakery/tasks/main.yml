@@ -2,20 +2,10 @@
 - name: "Include Global Variables."
   ansible.builtin.include_vars: /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/files/includes/vars/global.yml
 
-- name: "Inject a Key into the Sites."  # This is a hack and should never be done in production!
-  ansible.builtin.copy:
-    src: agent_signature_keys.mk
-    dest: /tmp/agent_signature_keys.mk
-    owner: "{{ item.site }}"
-    group: "{{ item.site }}"
-    mode: "0660"
-  loop: "{{ checkmk_var_test_sites }}"
-  # when: (download_pass is defined and download_pass | length) or item.edition == "cre"
-
-- name: "Copy a file into the container with owner, group, and mode set"
+- name: "Inject a Key into the Sites."
   community.docker.docker_container_copy_into:
     container: "{{ item.site }}"
-    path: /tmp/agent_signature_keys.mk
+    path: agent_signature_keys.mk
     container_path: "/omd/sites/{{ item.site }}/etc/check_mk/multisite.d/wato/agent_signature_keys.mk"
     owner_id: 1000
     group_id: 1000
