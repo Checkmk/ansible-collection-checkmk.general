@@ -11,4 +11,3 @@
   loop: "{{ checkmk_var_test_sites }}"
   loop_control:
     loop_var: outer_item
-  # when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
