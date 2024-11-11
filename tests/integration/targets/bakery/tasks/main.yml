@@ -7,7 +7,10 @@
     set -o pipefail
     for container in $(docker ps | tail -n +2 | cut -d " " -f 1)
     do
-      docker cp targets/bakery/files/agent_signature_keys.mk $container:/omd/sites/*/etc/check_mk/multisite.d/wato/agent_signature_keys.mk
+      for site in $(docker exec $container ls /omd/sites/)
+      do
+        docker cp targets/bakery/files/agent_signature_keys.mk $container:/omd/sites/$site/etc/check_mk/multisite.d/wato/agent_signature_keys.mk
+      done
     done
   args:
     executable: /bin/bash
