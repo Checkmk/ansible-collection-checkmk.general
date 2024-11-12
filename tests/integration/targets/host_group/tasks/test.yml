@@ -2,12 +2,12 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
   ansible.builtin.set_fact:
     checkmk_var_customer: "provider"
-  when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
+  when: outer_item.edition == "cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
   ansible.builtin.set_fact:
     checkmk_var_customer: null
-  when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
+  when: outer_item.edition != "cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create host groups."
   host_group:

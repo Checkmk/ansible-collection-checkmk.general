@@ -1,13 +1,9 @@
 ---
 - name: "Include Global Variables."
-  ansible.builtin.include_vars: /root/ansible_collections/checkmk/general/tests/integration/files/includes/vars/global.yml
-
-- name: "Run Preparations."
-  ansible.builtin.include_tasks: /root/ansible_collections/checkmk/general/tests/integration/files/includes/tasks/prep.yml
+  ansible.builtin.include_vars: /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/files/includes/vars/global.yml
 
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml
   loop: "{{ checkmk_var_test_sites }}"
   loop_control:
     loop_var: outer_item
-  when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"

@@ -1,14 +1,17 @@
 ---
 checkmk_var_test_sites:
   - version: "2.3.0p19"
-    edition: "cee"
-    site: "stable_cee"
+    edition: "cme"
+    site: "stable_cme"
+    port: "5323"
   - version: "2.2.0p35"
-    edition: "cee"
-    site: "old_cee"
-  # - version: "2.1.0p48"
-  #   edition: "cee"
-  #   site: "ancient_cee"
+    edition: "cce"
+    site: "old_cce"
+    port: "5222"
+  - version: "2.1.0p48"
+    edition: "cfe"
+    site: "ancient_cfe"
+    port: "5421"
 
 checkmk_var_signature_key_id: 1
 checkmk_var_signature_key_passphrase: "{{ checkmk_var_automation_secret }}"

@@ -52,6 +52,37 @@ jobs:
           # Exclude unsupported sets.
           - ansible: stable-2.15
             python: '3.12'
+          - ansible: stable-2.16
+            python: '3.9'
+          - ansible: stable-2.17
+            python: '3.9'
+          - ansible: devel
+            python: '3.9'
+          - ansible: devel
+            python: '3.10'
+
+    services:
+      ancient_cfe:
+        image: checkmk/check-mk-free:2.1.0p48
+        ports:
+          - 5421:5000
+        env:
+          CMK_SITE_ID: "ancient_cfe"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      old_cce:
+        image: checkmk/check-mk-cloud:2.2.0p35
+        ports:
+          - 5222:5000
+        env:
+          CMK_SITE_ID: "old_cce"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      stable_cme:
+        image: checkmk/check-mk-managed:2.3.0p19
+        ports:
+          - 5323:5000
+        env:
+          CMK_SITE_ID: "stable_cme"
+          CMK_PASSWORD: "Sup3rSec4et!"
 
     steps:
       - name: Check out code
@@ -62,7 +93,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python }}
 
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
@@ -74,5 +105,5 @@ jobs:
           CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
       - name: Run integration test
-        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }} --docker default
+        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
