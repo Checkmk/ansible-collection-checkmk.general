@@ -3,6 +3,7 @@ checkmk_var_test_sites:
   - version: "2.3.0p19"
     edition: "cme"
     site: "stable_cme"
+    port: "5323"
     remote_sites:
       - site_id: "stable_cme_r1"
         site_config:
@@ -100,10 +101,11 @@ checkmk_var_test_sites:
           username: "cmkadmin"
           password: "{{ checkmk_var_automation_secret }}"
   - version: "2.3.0p19"
-    edition: "cee"
-    site: "stable_cee"
+    edition: "cce"
+    site: "stable_cce"
+    port: "5223"
     remote_sites:
-      - site_id: "stable_cee_r"
+      - site_id: "stable_cce_r"
         site_config:
           status_connection:
             connection:
@@ -117,19 +119,20 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/stable_cee_r/"
+            url_prefix: "/stable_cce_r/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost/stable_cee_r/check_mk/"
+            url_of_remote_site: "http://localhost/stable_cce_r/check_mk/"
           basic_settings:
-            site_id: "stable_cee_r"
-            alias: "stable_cee remote site"
+            site_id: "stable_cce_r"
+            alias: "stable_cce remote site"
         authentication:
           username: "cmkadmin"
           password: "{{ checkmk_var_automation_secret }}"
   - version: "2.3.0p19"
     edition: "cre"
     site: "stable_cre"
+    port: "5023"
     remote_sites:
       - site_id: "stable_cre_r1"
         site_config:
@@ -177,6 +180,7 @@ checkmk_var_test_sites:
   - version: "2.2.0p35"
     edition: "cre"
     site: "old_cre"
+    port: "5222"
     remote_sites:
       - site_id: "old_cre_r"
         site_config:
@@ -202,6 +206,3 @@ checkmk_var_test_sites:
         authentication:
           username: "cmkadmin"
           password: "{{ checkmk_var_automation_secret }}"
-  # - version: "2.1.0p48"
-  #   edition: "cre"
-  #   site: "ancient_cre"
