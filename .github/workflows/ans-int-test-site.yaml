@@ -69,6 +69,15 @@ jobs:
         env:
           CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
+      old_cre_r1:
+        image: checkmk/check-mk-raw:2.2.0p35
+        ports:
+          - 6022:5000
+          - 6559:6557
+        env:
+          CMK_SITE_ID: "old_cre_r1"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
       stable_cre:
         image: checkmk/check-mk-raw:2.3.0p19
         ports:
@@ -76,6 +85,16 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
+      stable_cre_r1:
+        image: checkmk/check-mk-raw:2.3.0p19
+        ports:
+          - 6023:5000
+          - 6564:6557
+          - 6664:6664
+        env:
+          CMK_SITE_ID: "stable_cre_r1"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
       stable_cce:
         image: checkmk/check-mk-cloud:2.3.0p19
         ports:
@@ -83,6 +102,15 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cce"
           CMK_PASSWORD: "Sup3rSec4et!"
+      stable_cce_r1:
+        image: checkmk/check-mk-cloud:2.3.0p19
+        ports:
+          - 6021:5000
+          - 6559:6557
+        env:
+          CMK_SITE_ID: "stable_cce_r1"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
       stable_cme:
         image: checkmk/check-mk-managed:2.3.0p19
         ports:
@@ -90,6 +118,34 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
+      stable_cme_r1:
+        image: checkmk/check-mk-managed:2.3.0p19
+        ports:
+          - 6323:5000
+          - 6561:6557
+        env:
+          CMK_SITE_ID: "stable_cme_r1"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
+      stable_cme_r2:
+        image: checkmk/check-mk-managed:2.3.0p19
+        ports:
+          - 7323:5000
+          - 6562:6557
+        env:
+          CMK_SITE_ID: "stable_cme_r2"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
+      stable_cme_r3:
+        image: checkmk/check-mk-managed:2.3.0p19
+        ports:
+          - 8323:5000
+          - 6563:6557
+          - 6663:6663
+        env:
+          CMK_SITE_ID: "stable_cme_r3"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
 
     steps:
       - name: Check out code

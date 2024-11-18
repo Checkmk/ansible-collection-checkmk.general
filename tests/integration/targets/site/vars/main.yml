@@ -105,7 +105,7 @@ checkmk_var_test_sites:
     site: "stable_cce"
     port: "5223"
     remote_sites:
-      - site_id: "stable_cce_r"
+      - site_id: "stable_cce_r1"
         site_config:
           status_connection:
             connection:
@@ -119,12 +119,12 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/stable_cce_r/"
+            url_prefix: "/stable_cce_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost/stable_cce_r/check_mk/"
+            url_of_remote_site: "http://localhost/stable_cce_r1/check_mk/"
           basic_settings:
-            site_id: "stable_cce_r"
+            site_id: "stable_cce_r1"
             alias: "stable_cce remote site"
         authentication:
           username: "cmkadmin"
@@ -182,7 +182,7 @@ checkmk_var_test_sites:
     site: "old_cre"
     port: "5022"
     remote_sites:
-      - site_id: "old_cre_r"
+      - site_id: "old_cre_r1"
         site_config:
           status_connection:
             connection:
@@ -196,12 +196,12 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/old_cre_r/"
+            url_prefix: "/old_cre_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost/old_cre_r/check_mk/"
+            url_of_remote_site: "http://localhost/old_cre_r1/check_mk/"
           basic_settings:
-            site_id: "old_cre_r"
+            site_id: "old_cre_r1"
             alias: "old_cre remote site"
         authentication:
           username: "cmkadmin"

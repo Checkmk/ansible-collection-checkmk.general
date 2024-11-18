@@ -9,44 +9,44 @@
     checkmk_var_customer: null
   when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create remote sites."
-  ansible.builtin.command: "omd -V {{ outer_item.version }}.{{ outer_item.edition }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site_id }}"
-  args:
-    creates: "/omd/sites/{{ item.site_id }}"
-  when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
-  loop: "{{ outer_item.remote_sites }}"
-  loop_control:
-    label: "{{ item.site_id }}"
+# - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create remote sites."
+#   ansible.builtin.command: "omd -V {{ outer_item.version }}.{{ outer_item.edition }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site_id }}"
+#   args:
+#     creates: "/omd/sites/{{ item.site_id }}"
+#   when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
+#   loop: "{{ outer_item.remote_sites }}"
+#   loop_control:
+#     label: "{{ item.site_id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Configure Sites."  # noqa no-changed-when
-  become: true
-  ansible.builtin.shell: |
-    set -o pipefail
-    omd config {{ item.site_id }} set LIVEPROXYD on
-    omd config {{ item.site_id }} set LIVESTATUS_TCP_PORT {{ item.site_config.status_connection.connection.port }}
-    omd config {{ item.site_id }} set LIVESTATUS_TCP_TLS off
-  args:
-    executable: /bin/bash
-  when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
-  loop: "{{ outer_item.remote_sites }}"
-  loop_control:
-    label: "{{ item.site_id }}"
+# - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Configure Sites."  # noqa no-changed-when
+#   become: true
+#   ansible.builtin.shell: |
+#     set -o pipefail
+#     omd config {{ item.site_id }} set LIVEPROXYD on
+#     omd config {{ item.site_id }} set LIVESTATUS_TCP_PORT {{ item.site_config.status_connection.connection.port }}
+#     omd config {{ item.site_id }} set LIVESTATUS_TCP_TLS off
+#   args:
+#     executable: /bin/bash
+#   when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
+#   loop: "{{ outer_item.remote_sites }}"
+#   loop_control:
+#     label: "{{ item.site_id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Start Sites."
-  ansible.builtin.shell: "omd status -b {{ item.site_id }} || omd start {{ item.site_id }}"
-  register: __checkmk_var_result_sites_start
-  changed_when: __checkmk_var_result_sites_start.rc == "0"
-  when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
-  loop: "{{ outer_item.remote_sites }}"
-  loop_control:
-    label: "{{ item.site_id }}"
+# - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Start Sites."
+#   ansible.builtin.shell: "omd status -b {{ item.site_id }} || omd start {{ item.site_id }}"
+#   register: __checkmk_var_result_sites_start
+#   changed_when: __checkmk_var_result_sites_start.rc == "0"
+#   when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == "cre"
+#   loop: "{{ outer_item.remote_sites }}"
+#   loop_control:
+#     label: "{{ item.site_id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for site to be ready."
-  ansible.builtin.pause:
-    seconds: 5
-  when: |
-    ((checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == 'cre')
-    and (outer_item.stdout_lines is defined and 'OVERALL 1' in outer_item.stdout_lines)
+# - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for site to be ready."
+#   ansible.builtin.pause:
+#     seconds: 5
+#   when: |
+#     ((checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or outer_item.edition == 'cre')
+#     and (outer_item.stdout_lines is defined and 'OVERALL 1' in outer_item.stdout_lines)
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create site connection."
   site:
