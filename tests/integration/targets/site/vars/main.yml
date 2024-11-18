@@ -180,7 +180,7 @@ checkmk_var_test_sites:
   - version: "2.2.0p35"
     edition: "cre"
     site: "old_cre"
-    port: "5222"
+    port: "5022"
     remote_sites:
       - site_id: "old_cre_r"
         site_config:
