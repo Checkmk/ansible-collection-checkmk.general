@@ -161,6 +161,10 @@ Typically this would be your Ansible host, hence the default `localhost`.
 
 Configure the host to which downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download itself.
 
+    checkmk_agent_delegate_registration: "{{ checkmk_agent_proxy_registration | default(omit) }}"
+
+Configure the host which is used to register the target on the checkmk server for TLS. This can be used to keep firewalls closed between the target and the server, which would be necessary for tls registration (8000, 8001, ...).
+
     checkmk_agent_mode: 'pull'
 
 The mode the agent operates in. For most deployments, this will be the `pull` mode.
