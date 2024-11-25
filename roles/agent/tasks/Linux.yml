@@ -172,7 +172,7 @@
   delegate_to: "{{ checkmk_agent_delegate_registration }}"
   changed_when: "'-----BEGIN PRIVATE KEY-----' in __checkmk_agent_proxy_registration_state.stdout"
 
-- name: "Import proxy-register TLS-secret."
+- name: "{{ ansible_system }}: Import proxy-register TLS-secret."
   become: true
   ansible.builtin.shell: "set -o pipefail && echo '{{ __checkmk_agent_proxy_registration_state.stdout }}' | cmk-agent-ctl import"
   no_log: "{{ checkmk_agent_no_log | bool }}"
