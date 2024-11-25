@@ -1,0 +1,45 @@
+---
+- name: "Download MKP Packages."
+  ansible.builtin.get_url:
+    url: "{{ __mkp.url }}"
+    dest: "{{ checkmk_server_mkp_staging }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+    mode: "0640"
+    url_username: "{{ __mkp.download_user | default(omit) }}"
+    url_password: "{{ __mkp.download_password | default(omit) }}"
+  retries: 3
+  loop: "{{ checkmk_server_mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: __mkp.url is defined
+
+
+- name: "Install mkp packages."
+  ansible.builtin.shell: "set -o pipefail && mkp add {{ checkmk_server_mkp_staging }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+  loop: "{{ checkmk_server_mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: __mkp.installed is defined and __mkp.installed
+
+
+- name: "Enable mkp packages."
+  ansible.builtin.shell: "set -o pipefail && mkp enable {{ __mkp.name }} {{ __mkp.version }}"
+  loop: "{{ checkmk_server_mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: __mkp.enabled is defined and __mkp.enabled
+
+
+- name: "Disable mkp packages."
+  ansible.builtin.shell: "set -o pipefail && mkp disable {{ __mkp.name }} {{ __mkp.version }}"
+  loop: "{{ checkmk_server_mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: __mkp.enabled is not defined or not __mkp.enabled
+
+
+- name: "Remove mkp packages."
+  ansible.builtin.shell: "set -o pipefail && mkp remove {{ __mkp.name }} {{ __mkp.version }}"
+  loop: "{{ checkmk_server_mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: __mkp.removed is defined and __mkp.removed
