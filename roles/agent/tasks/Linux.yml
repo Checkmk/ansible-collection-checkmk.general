@@ -151,6 +151,7 @@
   when: |
     __checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
+    and not checkmk_agent_delegate_registration is defined
     and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
   changed_when: "'Registration complete' in __checkmk_agent_tls_state.stdout"
@@ -183,6 +184,7 @@
     and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
     and __checkmk_agent_proxy_registration_state is defined
+  changed_when: rc == 0
 
 - name: "{{ ansible_system }}: Verify Checkmk Agent Port is open."
   ansible.builtin.wait_for:
