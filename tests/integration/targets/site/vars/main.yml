@@ -19,12 +19,12 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/{{ site_id }}/"
+            url_prefix: "/stable_cme_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://{{ site_id }}:6323/{{ site_id }}/check_mk/"
+            url_of_remote_site: "http://stable_cme_r1:6323/stable_cme_r1/check_mk/"
           basic_settings:
-            site_id: "{{ site_id }}"
+            site_id: "stable_cme_r1"
             customer: "provider"
             alias: "stable_cme remote site 1"
         authentication:
@@ -45,12 +45,12 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/{{ site_id }}/"
+            url_prefix: "/stable_cme_r2/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://{{ site_id }}:7323/{{ site_id }}/check_mk/"
+            url_of_remote_site: "http://stable_cme_r2:7323/stable_cme_r2/check_mk/"
           basic_settings:
-            site_id: "{{ site_id }}"
+            site_id: "stable_cme_r2"
             customer: "provider"
             alias: "stable_cme remote site 2"
         authentication:
@@ -84,17 +84,17 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/{{ site_id }}/"
+            url_prefix: "/stable_cme_r3/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://{{ site_id }}:8323/{{ site_id }}/check_mk/"
+            url_of_remote_site: "http://stable_cme_r3:8323/stable_cme_r3/check_mk/"
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false
             replicate_event_console: true
             replicate_extensions: false
           basic_settings:
-            site_id: "{{ site_id }}"
+            site_id: "stable_cme_r3"
             customer: "provider"
             alias: "stable_cme remote site 3"
         authentication:
@@ -119,12 +119,12 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/{{ site_id }}/"
+            url_prefix: "/stable_cce_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://{{ site_id }}:6021/{{ site_id }}/check_mk/"
+            url_of_remote_site: "http://stable_cce_r1:6021/stable_cce_r1/check_mk/"
           basic_settings:
-            site_id: "{{ site_id }}"
+            site_id: "stable_cce_r1"
             alias: "stable_cce remote site"
         authentication:
           username: "{{ checkmk_var_automation_user }}"
@@ -162,17 +162,17 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/{{ site_id }}/"
+            url_prefix: "/stable_cre_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://{{ site_id }}:6023/{{ site_id }}/check_mk/"
+            url_of_remote_site: "http://stable_cre_r1:6023/stable_cre_r1/check_mk/"
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false
             replicate_event_console: true
             replicate_extensions: false
           basic_settings:
-            site_id: "{{ site_id }}"
+            site_id: "stable_cre_r1"
             alias: "stable_cre remote site 1"
         authentication:
           username: "{{ checkmk_var_automation_user }}"
@@ -196,12 +196,12 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/{{ site_id }}/"
+            url_prefix: "/old_cre_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://{{ site_id }}:6022/{{ site_id }}/check_mk/"
+            url_of_remote_site: "http://old_cre_r1:6022/old_cre_r1/check_mk/"
           basic_settings:
-            site_id: "{{ site_id }}"
+            site_id: "old_cre_r1"
             alias: "old_cre remote site"
         authentication:
           username: "{{ checkmk_var_automation_user }}"
