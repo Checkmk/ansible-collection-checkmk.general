@@ -88,7 +88,7 @@
       loop: "{{ checkmk_var_hosts }}"
       register: __checkmk_var_result_labels
       failed_when: "'State is not supported before 2.3.0' not in __checkmk_var_result_labels.msg"
-      when: "not '2.3.0' in outer_item.version"
+      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Monitor undecided services. (Should fail < 2.3.0)"
       discovery:
@@ -103,7 +103,7 @@
       loop: "{{ checkmk_var_hosts }}"
       register: __checkmk_var_result_undecided_pre_23
       failed_when: "'State is not supported before 2.3.0' not in __checkmk_var_result_undecided_pre_23.msg"
-      when: "not '2.3.0' in outer_item.version"
+      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update service labels."
       discovery:
@@ -116,7 +116,7 @@
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_var_hosts }}"
-      when: "'2.3.0' in outer_item.version"
+      when: "'2.3.0' in outer_item.version or '2.4.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Monitor undecided services. (Should fail in 2.3.0)"
       discovery:
@@ -131,7 +131,7 @@
       loop: "{{ checkmk_var_hosts }}"
       register: __checkmk_var_result_undecided_post_23
       failed_when: "'State can only be used in bulk mode' not in __checkmk_var_result_undecided_post_23.msg"
-      when: "'2.3.0' in outer_item.version"
+      when: "'2.3.0' in outer_item.version or '2.4.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Tabula Rasa. (New since 2.2)"
       discovery:
@@ -258,7 +258,7 @@
       delegate_to: localhost
       register: __checkmk_var_result_labels_pre_23
       failed_when: "'State is not supported before 2.3.0' not in __checkmk_var_result_labels_pre_23.msg"
-      when: "not '2.3.0' in outer_item.version"
+      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Monitor undecided services. (Should fail < 2.3.0)"
       discovery:
@@ -272,7 +272,7 @@
       delegate_to: localhost
       register: __checkmk_var_result_labels_post_23
       failed_when: "'State is not supported before 2.3.0' not in __checkmk_var_result_labels_post_23.msg"
-      when: "not '2.3.0' in outer_item.version"
+      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Update service labels. (only 2.3)"
       discovery:
@@ -284,7 +284,7 @@
         state: "only_service_labels"
         bulk_size: 5
       delegate_to: localhost
-      when: "'2.3.0' in outer_item.version"
+      when: "'2.3.0' in outer_item.version or '2.4.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Monitor undecided services. (only 2.3)"
       discovery:
@@ -296,7 +296,7 @@
         state: "monitor_undecided_services"
         bulk_size: 5
       delegate_to: localhost
-      when: "'2.3.0' in outer_item.version"
+      when: "'2.3.0' in outer_item.version or '2.4.0' in outer_item.version"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Add undecided services to monitoring."
       discovery:
