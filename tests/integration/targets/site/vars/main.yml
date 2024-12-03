@@ -28,7 +28,7 @@ checkmk_var_test_sites:
             customer: "provider"
             alias: "stable_cme remote site 1"
         authentication:
-          username: "cmkadmin"
+          username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
       - site_id: "stable_cme_r2"
         site_config:
@@ -54,7 +54,7 @@ checkmk_var_test_sites:
             customer: "provider"
             alias: "stable_cme remote site 2"
         authentication:
-          username: "cmkadmin"
+          username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
       - site_id: "stable_cme_r3"
         site_config:
@@ -98,7 +98,7 @@ checkmk_var_test_sites:
             customer: "provider"
             alias: "stable_cme remote site 3"
         authentication:
-          username: "cmkadmin"
+          username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
   - version: "2.3.0p19"
     edition: "cce"
@@ -127,7 +127,7 @@ checkmk_var_test_sites:
             site_id: "stable_cce_r1"
             alias: "stable_cce remote site"
         authentication:
-          username: "cmkadmin"
+          username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
   - version: "2.3.0p19"
     edition: "cre"
@@ -175,7 +175,7 @@ checkmk_var_test_sites:
             site_id: "stable_cre_r1"
             alias: "stable_cre remote site 1"
         authentication:
-          username: "cmkadmin"
+          username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
   - version: "2.2.0p35"
     edition: "cre"
@@ -204,5 +204,5 @@ checkmk_var_test_sites:
             site_id: "old_cre_r1"
             alias: "old_cre remote site"
         authentication:
-          username: "cmkadmin"
+          username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
