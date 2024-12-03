@@ -1,0 +1,123 @@
+argument_specs:
+
+  main:
+    short_description: Install and manage Checkmk servers
+    description:
+      - This role installs Checkmk on servers and manages sites.
+    author:
+      - Robin Gierse
+
+    options:
+
+      checkmk_server_version:
+        type: "str"
+        default: "2.3.0p19"
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_edition:
+        type: "str"
+        default: "cre"
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_verify_setup:
+        type: "bool"
+        default: true
+
+      checkmk_server_download_user:
+        type: "str"
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_download_pass:
+        type: "str"
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_sites:
+        type: "list"
+        elements: "dict"
+        options:
+          name:
+            type: "str"
+            required: true
+            description: "The name of the site."
+          version:
+            type: "str"
+            required: true
+            description: "The version of the site."
+          state:
+            type: "str"
+            required: true
+            description: "The desired target state for the site."
+          admin_pw:
+            type: "str"
+            description: "The initial password for the cmkadmin user."
+          update_conflict_resolution:
+            type: "str"
+            description: "How to handle file conflicts during updates."
+          omd_auto_restart:
+            type: "bool"
+            description: "Whether to automatically restart a site for configuration."
+          omd_config:
+            type: "list"
+            elements: "dict"
+            options:
+              var:
+                type: "str"
+                description: "The name of the OMD configuration variable."
+              value:
+                type: "str"
+                description: "The value of the variable."
+
+      checkmk_server_configure_firewall:
+        type: "bool"
+        default: true
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_backup_on_update:
+        type: "bool"
+        default: true
+        description:
+          - Refer to the README for details.
+            Not recommended to disable this option!
+
+      checkmk_server_backup_dir:
+        type: "str"
+        default: "/tmp"
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_backup_opts:
+        type: "str"
+        default: "--no-past"
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_allow_downgrades:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+
+      checkmk_server_epel_gpg_check:
+        type: "bool"
+        default: true
+        description:
+          - Refer to the README for details.
+
+
+      checkmk_server_cleanup:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_no_log:
+        type: "bool"
+        default: true
+        description:
+          - Refer to the README for details.
