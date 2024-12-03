@@ -22,7 +22,7 @@ checkmk_var_test_sites:
             url_prefix: "/stable_cme_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost:6323/stable_cme_r1/check_mk/"
+            url_of_remote_site: "http://127.0.0.1:6323/stable_cme_r1/check_mk/"
           basic_settings:
             site_id: "stable_cme_r1"
             customer: "provider"
@@ -48,7 +48,7 @@ checkmk_var_test_sites:
             url_prefix: "/stable_cme_r2/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost:7323/stable_cme_r2/check_mk/"
+            url_of_remote_site: "http://127.0.0.1:7323/stable_cme_r2/check_mk/"
           basic_settings:
             site_id: "stable_cme_r2"
             customer: "provider"
@@ -87,7 +87,7 @@ checkmk_var_test_sites:
             url_prefix: "/stable_cme_r3/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost:8323/stable_cme_r3/check_mk/"
+            url_of_remote_site: "http://127.0.0.1:8323/stable_cme_r3/check_mk/"
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false
@@ -122,7 +122,7 @@ checkmk_var_test_sites:
             url_prefix: "/stable_cce_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost:6021/stable_cce_r1/check_mk/"
+            url_of_remote_site: "http://127.0.0.1:6021/stable_cce_r1/check_mk/"
           basic_settings:
             site_id: "stable_cce_r1"
             alias: "stable_cce remote site"
@@ -165,7 +165,7 @@ checkmk_var_test_sites:
             url_prefix: "/stable_cre_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost:6023/stable_cre_r1/check_mk/"
+            url_of_remote_site: "http://127.0.0.1:6023/stable_cre_r1/check_mk/"
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false
@@ -199,7 +199,7 @@ checkmk_var_test_sites:
             url_prefix: "/old_cre_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://localhost:6022/old_cre_r1/check_mk/"
+            url_of_remote_site: "http://127.0.0.1:6022/old_cre_r1/check_mk/"
           basic_settings:
             site_id: "old_cre_r1"
             alias: "old_cre remote site"
