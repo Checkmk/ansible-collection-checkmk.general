@@ -132,18 +132,9 @@ jobs:
         ports:
           - 7323:5000
           - 6562:6557
-        env:
-          CMK_SITE_ID: "stable_cme_r2"
-          CMK_PASSWORD: "Sup3rSec4et!"
-          CMK_LIVESTATUS_TCP: "on"
-      stable_cme_r3:
-        image: checkmk/check-mk-managed:2.3.0p19
-        ports:
-          - 8323:5000
-          - 6563:6557
           - 6663:6663
         env:
-          CMK_SITE_ID: "stable_cme_r3"
+          CMK_SITE_ID: "stable_cme_r2"
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
 

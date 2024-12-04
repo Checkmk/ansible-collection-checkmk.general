@@ -41,32 +41,6 @@ checkmk_var_test_sites:
               verify: false
             proxy:
               use_livestatus_daemon: "with_proxy"
-              global_settings: true
-            connect_timeout: 2
-            status_host:
-              status_host_set: "disabled"
-            url_prefix: "/stable_cme_r2/"
-          configuration_connection:
-            enable_replication: true
-            url_of_remote_site: "http://stable_cme_r2:7323/stable_cme_r2/check_mk/"
-          basic_settings:
-            site_id: "stable_cme_r2"
-            customer: "provider"
-            alias: "stable_cme remote site 2"
-        authentication:
-          username: "{{ checkmk_var_automation_user }}"
-          password: "{{ checkmk_var_automation_secret }}"
-      - site_id: "stable_cme_r3"
-        site_config:
-          status_connection:
-            connection:
-              socket_type: "tcp"
-              port: 6563
-              encrypted: true
-              host: "localhost"
-              verify: false
-            proxy:
-              use_livestatus_daemon: "with_proxy"
               global_settings: false
               tcp:
                 port: 6663
@@ -84,19 +58,19 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/stable_cme_r3/"
+            url_prefix: "/stable_cme_r2/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://stable_cme_r3:8323/stable_cme_r3/check_mk/"
+            url_of_remote_site: "http://stable_cme_r2:7323/stable_cme_r2/check_mk/"
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false
             replicate_event_console: true
             replicate_extensions: false
           basic_settings:
-            site_id: "stable_cme_r3"
+            site_id: "stable_cme_r2"
             customer: "provider"
-            alias: "stable_cme remote site 3"
+            alias: "stable_cme remote site 2"
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
