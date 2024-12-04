@@ -14,10 +14,8 @@
   ansible.builtin.shell: |
     curl "http://127.0.0.1:6323/"
     curl "http://127.0.0.1:7323/"
-    curl "http://127.0.0.1:8323/"
     curl "http://127.0.0.1:6323/stable_cme_r1/check_mk/"
     curl "http://127.0.0.1:7323/stable_cme_r2/check_mk/"
-    curl "http://127.0.0.1:8323/stable_cme_r3/check_mk/"
 
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml
