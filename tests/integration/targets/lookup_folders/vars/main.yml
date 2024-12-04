@@ -1,6 +1,9 @@
 ---
 checkmk_var_test_sites:
   - version: "2.4.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+    edition: "cme"
+    site: "beta_cme"
+  - version: "2.4.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
     edition: "cre"
     site: "beta_cre"
     port: "5024"
@@ -16,10 +19,6 @@ checkmk_var_test_sites:
     edition: "cre"
     site: "old_cre"
     port: "5022"
-  - version: "2.1.0p49"
-    edition: "cre"
-    site: "ancient_cre"
-    port: "5021"
 
 checkmk_var_folders:
   - name: "Folder 1"

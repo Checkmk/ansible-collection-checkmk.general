@@ -12,7 +12,3 @@ checkmk_var_test_sites:
     edition: "cce"
     site: "old_cce"
     port: "5222"
-  - version: "2.1.0p49"
-    edition: "cfe"
-    site: "ancient_cfe"
-    port: "5421"
