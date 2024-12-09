@@ -6,6 +6,7 @@
     mode: "0640"
     url_username: "{{ __mkp.download_user | default(omit) }}"
     url_password: "{{ __mkp.download_password | default(omit) }}"
+    checksum: "{{ __mkp.checksum | default(omit) }}"
   retries: 3
   loop: "{{ checkmk_server_mkp_packages }}"
   loop_control:
