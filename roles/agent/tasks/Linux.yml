@@ -173,9 +173,14 @@
   delegate_to: "{{ checkmk_agent_delegate_registration }}"
   changed_when: "'-----BEGIN PRIVATE KEY-----' in __checkmk_agent_proxy_registration_state.stdout"
 
-- name: "{{ ansible_system }}: Import proxy-register TLS-secret."
+- name: "{{ ansible_system }}: Create proxy-register import file."
   become: true
-  ansible.builtin.shell: "set -o pipefail && echo '{{ __checkmk_agent_proxy_registration_state.stdout }}' | cmk-agent-ctl import"
+  ansible.builtin.copy:
+    dest: "{{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
+    mode: u=r,g=,o=
+    owner: cmk-agent
+    group: cmk-agent
+    content: "{{ __checkmk_agent_proxy_registration_state.stdout }}"
   no_log: "{{ checkmk_agent_no_log | bool }}"
   when: |
     __checkmk_agent_controller_binary.stat.exists | bool
@@ -184,7 +189,39 @@
     and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
     and __checkmk_agent_proxy_registration_state is defined
-  changed_when: rc == 0
+
+- name: "{{ ansible_system }}: Import proxy-register TLS-secret."
+  become: true
+  ansible.builtin.command: "cmk-agent-ctl import {{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
+  no_log: "{{ checkmk_agent_no_log | bool }}"
+  register: __checkmk_agent_import_result
+  when: |
+    __checkmk_agent_controller_binary.stat.exists | bool
+    and checkmk_agent_tls | bool
+    and checkmk_agent_delegate_registration is defined
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
+    and __checkmk_agent_proxy_registration_state is defined
+  changed_when: __checkmk_agent_import_result.rc == 0
+
+- name: Debug
+  debug:
+    var: checkmk_agent_delegate_registration
+
+
+- name: "{{ ansible_system }}: Remove proxy-register import file."
+  become: true
+  ansible.builtin.file:
+    path: "/tmp/checkmk-import"
+    state: absent
+  no_log: "{{ checkmk_agent_no_log | bool }}"
+  when: |
+    __checkmk_agent_controller_binary.stat.exists | bool
+    and checkmk_agent_tls | bool
+    and checkmk_agent_delegate_registration is defined
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
+    and __checkmk_agent_proxy_registration_state is defined
 
 - name: "{{ ansible_system }}: Verify Checkmk Agent Port is open."
   ansible.builtin.wait_for:
