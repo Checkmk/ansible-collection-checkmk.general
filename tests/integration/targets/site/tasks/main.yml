@@ -2,21 +2,6 @@
 - name: "Include Global Variables."
   ansible.builtin.include_vars: /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/files/includes/vars/global.yml
 
-- name: "Debug"
-  ansible.builtin.command: ss -tulpen
-  register: open_ports
-
-- name: "Debug"
-  ansible.builtin.debug:
-    var: open_ports
-
-- name: "Debugging."
-  ansible.builtin.shell: |
-    curl "http://127.0.0.1:6323/"
-    curl "http://127.0.0.1:7323/"
-    curl "http://127.0.0.1:6323/stable_cme_r1/check_mk/"
-    curl "http://127.0.0.1:7323/stable_cme_r2/check_mk/"
-
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml
   loop: "{{ checkmk_var_test_sites }}"
