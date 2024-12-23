@@ -204,11 +204,6 @@
     and __checkmk_agent_proxy_registration_state is defined
   changed_when: __checkmk_agent_import_result.rc == 0
 
-- name: Debug
-  debug:
-    var: checkmk_agent_delegate_registration
-
-
 - name: "{{ ansible_system }}: Remove proxy-register import file."
   become: true
   ansible.builtin.file:
