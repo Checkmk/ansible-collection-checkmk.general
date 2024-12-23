@@ -75,7 +75,7 @@ jobs:
           - 6022:5000
           - 6564:6557
         env:
-          CMK_SITE_ID: "old-cre-r1"
+          CMK_SITE_ID: "old_cre_r1"
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
       stable_cre:
@@ -92,7 +92,7 @@ jobs:
           - 6565:6557
           - 6664:6664
         env:
-          CMK_SITE_ID: "stable-cre-r1"
+          CMK_SITE_ID: "stable_cre_r1"
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
       stable_cce:
@@ -108,7 +108,7 @@ jobs:
           - 6021:5000
           - 6571:6557
         env:
-          CMK_SITE_ID: "stable-cce-r1"
+          CMK_SITE_ID: "stable_cce_r1"
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
       stable_cme:
@@ -124,7 +124,7 @@ jobs:
           - 6323:5000
           - 6561:6557
         env:
-          CMK_SITE_ID: "stable-cme-r1"
+          CMK_SITE_ID: "stable_cme_r1"
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
       stable-cme-r2:
@@ -134,7 +134,7 @@ jobs:
           - 6562:6557
           - 6663:6663
         env:
-          CMK_SITE_ID: "stable-cme-r2"
+          CMK_SITE_ID: "stable_cme_r2"
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
 
