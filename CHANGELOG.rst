@@ -4,6 +4,14 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.3.2
+======
+
+Release Summary
+---------------
+
+Build related changes and documentation fixes for the holiday season.
+
 v5.3.1
 ======
 
