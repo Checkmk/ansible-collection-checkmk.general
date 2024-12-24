@@ -1,0 +1,209 @@
+argument_specs:
+
+  main:
+    short_description: Install Checkmk agents
+    description:
+      - This role installs Checkmk agents.
+    author:
+      - Robin Gierse
+
+    options:
+
+      checkmk_agent_version:
+        type: "str"
+        default: "2.3.0p19"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_edition:
+        type: "str"
+        default: "cre"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_server:
+        type: "str"
+        required: true
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_server_protocol:
+        type: "str"
+        default: "http"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_site:
+        type: "str"
+        required: true
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_registration_server_protocol:
+        type: "str"
+        default: "{{ checkmk_agent_server_protocol }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_registration_server:
+        type: "str"
+        default: "{{ checkmk_agent_server }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_registration_site:
+        type: "str"
+        default: "{{ checkmk_agent_site }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_server_validate_certs:
+        type: "bool"
+        default: true
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_server_port:
+        type: "str"
+        default: "{% if checkmk_agent_server_protocol == 'https' %}443{% else %}80{% endif %}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_user:
+        type: "str"
+        default: "{{ automation_user | default('automation') }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_port:
+        type: "int"
+        default: 6556
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_pass:
+        type: "str"
+        default: "{{ checkmk_var_automation_secret }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_secret:
+        type: "str"
+        default: "{{ checkmk_var_automation_secret }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_auto_activate:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_add_host:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_discover:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_discover_max_parallel_tasks:
+        type: "int"
+        default: 0
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_force_foreign_changes:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_update:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_tls:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_configure_firewall:
+        type: "bool"
+        default: true
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_configure_firewall_zone:
+        type: "str"
+        default: "public"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_server_ips:
+        type: "list"
+        elements: "str"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_force_install:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_prep_legacy:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_delegate_api_calls:
+        type: "str"
+        default: "localhost"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_delegate_download:
+        type: "str"
+        default: "{{ inventory_hostname }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_host_name:
+        type: "str"
+        default: "{{ inventory_hostname }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_folder:
+        type: "str"
+        default: "{{ checkmk_var_folder_path | default('/') }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_host_attributes:
+        type: "dict"
+        default:
+          ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_mode:
+        type: "str"
+        default: "pull"
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_no_log:
+        type: "bool"
+        default: true
+        description:
+          - Refer to the README for details.
