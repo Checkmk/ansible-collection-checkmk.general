@@ -60,16 +60,6 @@ jobs:
             python: '3.10'
 
     services:
-<<<<<<< HEAD
-      ancient_cre:
-        image: checkmk/check-mk-raw:2.1.0p49
-        ports:
-          - 5021:5000
-        env:
-          CMK_SITE_ID: "ancient_cre"
-          CMK_PASSWORD: "Sup3rSec4et!"
-=======
->>>>>>> 6fa3ec61 (Add 2.4.0 CME and remove 2.1.0.)
       old_cre:
         image: checkmk/check-mk-raw:2.2.0p37
         ports:
