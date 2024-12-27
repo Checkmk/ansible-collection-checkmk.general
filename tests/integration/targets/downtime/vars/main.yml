@@ -8,7 +8,7 @@ checkmk_var_test_sites:
     edition: "cre"
     site: "beta_cre"
     port: "5024"
-  - version: "2.3.0p19"
+  - version: "2.3.0p23"
     edition: "cme"
     site: "stable_cme"
     port: "5323"
