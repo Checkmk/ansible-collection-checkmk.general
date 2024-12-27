@@ -4,7 +4,7 @@ checkmk_var_test_sites:
     edition: "cme"
     site: "beta_cme"
     port: "5324"
-  - version: "2.3.0p19"
+  - version: "2.3.0p23"
     edition: "cme"
     site: "stable_cme"
     port: "5323"
