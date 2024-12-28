@@ -30,7 +30,8 @@ checkmk_agent_force_install: 'false'
 checkmk_agent_prep_legacy: 'false'
 checkmk_agent_delegate_api_calls: 'localhost'
 checkmk_agent_delegate_download: "{{ inventory_hostname }}"
-checkmk_agent_delegate_registration: "{{ checkmk_agent_proxy_registration | default(omit) }}"
+checkmk_agent_delegate_registration: 'false'
+checkmk_agent_delegate_registration_target: "{{ inventory_hostname }}"
 checkmk_agent_host_name: "{{ inventory_hostname }}"
 checkmk_agent_folder: "{{ checkmk_var_folder_path | default('/') }}"
 checkmk_agent_host_attributes:
