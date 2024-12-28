@@ -207,7 +207,7 @@
 - name: "{{ ansible_system }}: Remove proxy-register import file."
   become: true
   ansible.builtin.file:
-    path: "/tmp/checkmk-import"
+    path: "{{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
     state: absent
   no_log: "{{ checkmk_agent_no_log | bool }}"
   when: |
