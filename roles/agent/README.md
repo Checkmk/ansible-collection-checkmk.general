@@ -163,12 +163,13 @@ Configure the host to which downloads are delegated to. After download the files
 
     checkmk_agent_delegate_registration: 'false'
 
-Enable this to set up TLS encryption using a third host, that is already set up with TLS. `checkmk_agent_delegate_registration_target` has to be defined to specify the host that should be used.
-This can be used to keep firewalls closed between the target and the server, which would be necessary for tls registration (8000, 8001, ...).
-    
+Enable this to set up TLS encryption using a third host, which has the Checkmk agent installed already.
+`checkmk_agent_delegate_registration_target` defines this third host.
+This feature can be used in case a direct connection to the Checkmk site on the agent receiver port (8000+) is not possible from the monitored host.
+
     checkmk_agent_delegate_registration_target: "{{ inventory_hostname }}"
 
-Configure the host which is used to register the target on the CheckMK server for TLS. The target needs to have a CheckMK agent installed and configured with TLS encryption.
+Configure the target which is used to register the monitored host on the Checkmk server for TLS. The target needs to have a Checkmk agent installed.
 
     checkmk_agent_mode: 'pull'
 

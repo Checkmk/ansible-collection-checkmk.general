@@ -140,7 +140,7 @@
     and ('"error": null' in __checkmk_agent_updater_state.stdout) )
   changed_when: "'Successfully registered agent of host' in __checkmk_agent_update_state.stderr"
 
-- name: "{{ ansible_system }}: Register Agent for TLS."
+- name: "{{ ansible_system }}: Register Agent for TLS directly."
   become: true
   ansible.builtin.shell: |
     cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
@@ -151,7 +151,7 @@
   when: |
     __checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
-    and checkmk_agent_delegate_registration | bool
+    and not checkmk_agent_delegate_registration | bool
     and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
   changed_when: "'Registration complete' in __checkmk_agent_tls_state.stdout"
@@ -173,7 +173,7 @@
   delegate_to: "{{ checkmk_agent_delegate_registration_target }}"
   changed_when: "'-----BEGIN PRIVATE KEY-----' in __checkmk_agent_proxy_registration_state.stdout"
 
-- name: "{{ ansible_system }}: Create proxy-register import file."
+- name: "{{ ansible_system }}: Create proxy-register File."
   become: true
   ansible.builtin.copy:
     dest: "{{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
@@ -190,7 +190,7 @@
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
     and __checkmk_agent_proxy_registration_state is defined
 
-- name: "{{ ansible_system }}: Import proxy-register TLS-secret."
+- name: "{{ ansible_system }}: Import proxy-register File."
   become: true
   ansible.builtin.command: "cmk-agent-ctl import {{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
   no_log: "{{ checkmk_agent_no_log | bool }}"
@@ -204,7 +204,7 @@
     and __checkmk_agent_proxy_registration_state is defined
   changed_when: __checkmk_agent_import_result.rc == 0
 
-- name: "{{ ansible_system }}: Remove proxy-register import file."
+- name: "{{ ansible_system }}: Clean up proxy-register File."
   become: true
   ansible.builtin.file:
     path: "{{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
