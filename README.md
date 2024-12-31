@@ -108,6 +108,8 @@ We encourage you - in accordance with Ansible Best Practices -
 to always use FQCNs (Fully Qualified Collection Names) as seen below.
 This ensures, that you always know, which module is at play.
 
+Please keep in mind the parameters `server_url` and `site` are concatenated to form the base URL of the Checkmk site.
+
 ```yaml
 ---
 - hosts: all
@@ -123,6 +125,7 @@ This ensures, that you always know, which module is at play.
         sites:
           - "mysite"
 ```
+
 ## Getting Involved
 
 See [CONTRIBUTING](CONTRIBUTING.md).
