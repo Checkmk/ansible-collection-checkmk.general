@@ -204,8 +204,15 @@ Vagrant.configure("2") do |config|
       libvirt.memorybacking :access, :mode => 'shared'
       libvirt.memorybacking :source, :type => 'memfd'
     end
-    srv.vm.provision "shell",
-      inline: "powershell Set-NetFirewallRule -name 'FPS-ICMP4-ERQ-In*' -Enabled true"
+    $script = <<-SCRIPT
+    Set-NetFirewallRule -name 'FPS-ICMP4-ERQ-In*' -Enabled true
+    Get-NetFirewallrule -DisplayName *snmp* | Enable-NetFirewallRule
+    Install-WindowsFeature SNMP-Service,SNMP-WMI-Provider -IncludeManagementTools
+    Invoke-WebRequest -Uri 'https://www.spice-space.org/download/windows/spice-guest-tools/spice-guest-tools-latest.exe' -OutFile "C:\\tmp\\spice-guest-tools.exe"
+    Write-Output "You need to run the spice agent setup manually!"
+    Write-Output "Find it at 'C:\\tmp\\spice-guest-tools.exe'"
+    SCRIPT
+    srv.vm.provision "shell", inline: $script
   end
 
 end

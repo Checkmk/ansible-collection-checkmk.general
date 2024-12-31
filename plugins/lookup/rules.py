@@ -125,7 +125,7 @@ EXAMPLES = """
   loop: "{{
     lookup('checkmk.general.rules',
         ruleset='host_groups',
-        regex_folder='^/test$',
+        folder_regex='^/test$',
         server_url=server_url,
         site=site,
         automation_user=automation_user,

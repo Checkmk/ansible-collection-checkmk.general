@@ -1,7 +1,7 @@
 :orphan:
 
 .. meta::
-  :antsibull-docs: 2.15.0
+  :antsibull-docs: 2.16.1
 
 .. _list_of_collection_env_vars:
 
