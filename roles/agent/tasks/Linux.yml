@@ -173,7 +173,7 @@
   delegate_to: "{{ checkmk_agent_delegate_registration_target }}"
   changed_when: "'-----BEGIN PRIVATE KEY-----' in __checkmk_agent_proxy_registration_state.stdout"
 
-- name: "{{ ansible_system }}: Create proxy-register File."
+- name: "{{ ansible_system }}: Create temporary proxy-register file."
   become: true
   ansible.builtin.copy:
     dest: "{{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
@@ -190,7 +190,7 @@
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
     and __checkmk_agent_proxy_registration_state is defined
 
-- name: "{{ ansible_system }}: Import proxy-register File."
+- name: "{{ ansible_system }}: Import proxy-register file."
   become: true
   ansible.builtin.command: "cmk-agent-ctl import {{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
   no_log: "{{ checkmk_agent_no_log | bool }}"
@@ -204,7 +204,7 @@
     and __checkmk_agent_proxy_registration_state is defined
   changed_when: __checkmk_agent_import_result.rc == 0
 
-- name: "{{ ansible_system }}: Clean up proxy-register File."
+- name: "{{ ansible_system }}: Clean-up proxy-register temporary file."
   become: true
   ansible.builtin.file:
     path: "{{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
