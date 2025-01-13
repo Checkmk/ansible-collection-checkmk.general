@@ -69,7 +69,7 @@ jobs:
         env:
           CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
-      old_cre_r1:
+      old-cre-r1:
         image: checkmk/check-mk-raw:2.2.0p37
         ports:
           - 6022:5000
@@ -85,7 +85,7 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
-      stable_cre_r1:
+      stable-cre-r1:
         image: checkmk/check-mk-raw:2.3.0p24
         ports:
           - 6023:5000
@@ -102,7 +102,7 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cce"
           CMK_PASSWORD: "Sup3rSec4et!"
-      stable_cce_r1:
+      stable-cce-r1:
         image: checkmk/check-mk-cloud:2.3.0p24
         ports:
           - 6021:5000
@@ -118,7 +118,7 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
-      stable_cme_r1:
+      stable-cme-r1:
         image: checkmk/check-mk-managed:2.3.0p24
         ports:
           - 6323:5000
@@ -127,7 +127,7 @@ jobs:
           CMK_SITE_ID: "stable_cme_r1"
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
-      stable_cme_r2:
+      stable-cme-r2:
         image: checkmk/check-mk-managed:2.3.0p24
         ports:
           - 7323:5000
