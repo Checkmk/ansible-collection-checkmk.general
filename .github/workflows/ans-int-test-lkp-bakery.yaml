@@ -62,40 +62,33 @@ jobs:
             python: '3.10'
 
     services:
-      ancient_cfe:
-        image: checkmk/check-mk-free:2.1.0p49
-        ports:
-          - 5421:5000
-        env:
-          CMK_SITE_ID: "ancient_cfe"
-          CMK_PASSWORD: "Sup3rSec4et!"
-      old_cce:
+      ancient_cce:
         image: checkmk/check-mk-cloud:2.2.0p37
         ports:
           - 5222:5000
         env:
-          CMK_SITE_ID: "old_cce"
+          CMK_SITE_ID: "ancient_cce"
           CMK_PASSWORD: "Sup3rSec4et!"
-      stable_cme:
+      old_cme:
         image: checkmk/check-mk-managed:2.3.0p24
         ports:
           - 5323:5000
         env:
-          CMK_SITE_ID: "stable_cme"
+          CMK_SITE_ID: "old_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
-      beta_cre:
+      old_cre:
         image: checkmk/check-mk-raw:master-daily
         ports:
           - 5024:5000
         env:
-          CMK_SITE_ID: "beta_cre"
+          CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
-      beta_cme:
+      stable_cme:
         image: checkmk/check-mk-managed:master-daily
         ports:
           - 5324:5000
         env:
-          CMK_SITE_ID: "beta_cme"
+          CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
 
     steps:
