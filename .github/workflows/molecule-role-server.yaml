@@ -4,6 +4,10 @@ env:
   NAMESPACE: checkmk
   COLLECTION_NAME: general
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 name: Molecule Tests for Server Role
 on:
   workflow_dispatch:

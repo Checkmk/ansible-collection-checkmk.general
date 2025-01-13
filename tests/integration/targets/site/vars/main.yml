@@ -1,6 +1,10 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.3.0p24"
+  - version: "2.4.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+    edition: "cre"
+    site: "beta_cre"
+    # port: "5024"
+  - version: "2.3.0p23"
     edition: "cme"
     site: "stable_cme"
     port: "5323"
@@ -74,10 +78,9 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.3.0p24"
-    edition: "cce"
-    site: "stable_cce"
-    port: "5223"
+  - version: "2.3.0p23"
+    edition: "cee"
+    site: "stable_cee"
     remote_sites:
       - site_id: "stable_cce_r1"
         site_config:
@@ -103,7 +106,7 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.3.0p24"
+  - version: "2.3.0p23"
     edition: "cre"
     site: "stable_cre"
     port: "5023"
@@ -180,3 +183,6 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
+  # - version: "2.1.0p49"
+  #   edition: "cre"
+  #   site: "ancient_cre"

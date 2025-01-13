@@ -7,11 +7,11 @@ class ModuleDocFragment(object):
     DOCUMENTATION = r"""
     options:
         server_url:
-            description: The base url of your Checkmk server including the protocol.
+            description: The base url of your Checkmk server including the protocol but excluding the site.
             required: true
             type: str
         site:
-            description: The site you want to connect to.
+            description: The site you want to connect to. This will be appended to the server_url as part of the API request url.
             required: true
             type: str
         automation_user:

@@ -1,5 +1,13 @@
 objects:
-  role: {}
+  role:
+    agent:
+      description: Install Checkmk agents
+      name: agent
+      version_added: null
+    server:
+      description: Install and manage Checkmk servers
+      name: server
+      version_added: null
 plugins:
   become: {}
   cache: {}
@@ -143,4 +151,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 5.3.1
+version: 5.3.2

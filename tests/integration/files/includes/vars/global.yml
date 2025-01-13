@@ -1,6 +1,6 @@
 ---
 # Configure location and credentials for the Checkmk REST API
-checkmk_var_server_url: "http://127.0.0.1:{{ outer_item.port }}/"
+checkmk_var_server_url: "http://127.0.0.1:{{ outer_item.port | default('80') }}/"
 checkmk_var_automation_user: "cmkadmin"
 checkmk_var_automation_secret: "Sup3rSec4et!"
 

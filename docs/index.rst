@@ -1,5 +1,5 @@
 .. meta::
-  :antsibull-docs: 2.15.0
+  :antsibull-docs: 2.16.1
 
 
 .. _plugins_in_checkmk.general:
@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 5.3.1
+Collection version 5.3.2
 
 .. contents::
    :local:
@@ -134,3 +134,19 @@ Lookup Plugins
     site_lookup
     sites_lookup
     version_lookup
+
+
+Role Index
+----------
+
+These are the roles in the checkmk.general collection:
+
+* :ansplugin:`agent role <checkmk.general.agent#role>` -- Install Checkmk agents
+* :ansplugin:`server role <checkmk.general.server#role>` -- Install and manage Checkmk servers
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+
+    agent_role
+    server_role
