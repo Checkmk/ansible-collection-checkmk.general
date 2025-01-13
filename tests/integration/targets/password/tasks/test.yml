@@ -26,7 +26,7 @@
     state: "present"
   delegate_to: localhost
   loop: "{{ checkmk_var_passwords_create }}"
-  no_log: true
+  no_log: false
 
 # This should fail.
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create new passwords without customer(Should fail with CME)."
@@ -45,10 +45,12 @@
     state: "present"
   delegate_to: localhost
   loop: "{{ checkmk_var_passwords_create_cme }}"
-  no_log: true
+  no_log: false
   when: (outer_item.edition == "cme")
   register: __checkmk_var_result_new_pass
-  failed_when: "'Missing required parameter' not in __checkmk_var_result_new_pass.msg"
+  failed_when: |
+    ('Missing required parameter' not in __checkmk_var_result_new_pass.msg)
+    or ('Missing data for required field.' not in __checkmk_var_result_new_pass.msg)
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -79,7 +81,7 @@
     state: "present"
   delegate_to: localhost
   loop: "{{ checkmk_var_passwords_update }}"
-  no_log: true
+  no_log: false
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
