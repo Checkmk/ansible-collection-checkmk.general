@@ -78,7 +78,7 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.3.0p23"
+  - version: "2.3.0p24"
     edition: "cee"
     site: "old_cee"
     port: "5223"
@@ -107,7 +107,7 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.3.0p23"
+  - version: "2.3.0p24"
     edition: "cre"
     site: "old_cre"
     port: "5023"
