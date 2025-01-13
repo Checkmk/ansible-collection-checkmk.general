@@ -4,6 +4,31 @@ checkmk_var_test_sites:
     edition: "cre"
     site: "stable_cre"
     port: "5024"
+    remote_sites:
+      - site_id: "stable_cre_r1"
+        site_config:
+          status_connection:
+            connection:
+              socket_type: "tcp"
+              port: 6568
+              encrypted: true
+              host: "localhost"
+              verify: "true"
+            proxy:
+              use_livestatus_daemon: "direct"
+            connect_timeout: 2
+            status_host:
+              status_host_set: "disabled"
+            url_prefix: "/stable_cre_r1/"
+          configuration_connection:
+            enable_replication: true
+            url_of_remote_site: "http://stablet-cre-r1:5124/stable_cre_r1/check_mk/"
+          basic_settings:
+            site_id: "stable_cre_r1"
+            alias: "stable_cre remote site"
+        authentication:
+          username: "{{ checkmk_var_automation_user }}"
+          password: "{{ checkmk_var_automation_secret }}"
   - version: "2.4.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
     edition: "cme"
     site: "stable_cme"
@@ -157,10 +182,10 @@ checkmk_var_test_sites:
           password: "{{ checkmk_var_automation_secret }}"
   - version: "2.2.0p37"
     edition: "cre"
-    site: "ancient_cre"
+    site: "ancientt_cre"
     port: "5022"
     remote_sites:
-      - site_id: "ancient_cre_r1"
+      - site_id: "ancientt_cre_r1"
         site_config:
           status_connection:
             connection:
@@ -174,13 +199,13 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/ancien_cre_r1/"
+            url_prefix: "/ancient_cre_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://ancien-cre-r1:6022/ancien_cre_r1/check_mk/"
+            url_of_remote_site: "http://ancientt-cre-r1:6022/ancient_cre_r1/check_mk/"
           basic_settings:
-            site_id: "ancien_cre_r1"
-            alias: "ancien_cre remote site"
+            site_id: "ancient_cre_r1"
+            alias: "ancient_cre remote site"
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
