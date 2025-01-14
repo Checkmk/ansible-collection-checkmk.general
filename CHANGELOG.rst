@@ -4,6 +4,19 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.4.0
+======
+
+Release Summary
+---------------
+
+Enabling proxy registration for the agent role.
+
+Minor Changes
+-------------
+
+- Agent role - Add option to perform a proxy registration. Refer to the README for details.
+
 v5.3.2
 ======
 

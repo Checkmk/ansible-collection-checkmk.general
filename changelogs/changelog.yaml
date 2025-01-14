@@ -1062,3 +1062,13 @@ releases:
     fragments:
     - release.yml
     release_date: '2024-12-24'
+  5.4.0:
+    changes:
+      minor_changes:
+      - Agent role - Add option to perform a proxy registration. Refer to the README
+        for details.
+      release_summary: Enabling proxy registration for the agent role.
+    fragments:
+    - agent.yml
+    - release_summary.yml
+    release_date: '2025-01-14'
