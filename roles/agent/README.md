@@ -16,7 +16,7 @@ Please make sure it is installed on your system and available for Ansible.
 
 ## Role Variables
 
-    checkmk_agent_version: "2.3.0p23"
+    checkmk_agent_version: "2.3.0p24"
 
 The Checkmk version of the site your agents will talk to.
 
@@ -160,6 +160,16 @@ Typically this would be your Ansible host, hence the default `localhost`.
     checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 
 Configure the host to which downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download itself.
+
+    checkmk_agent_delegate_registration: 'false'
+
+Enable this to set up TLS encryption using a third host, which has the Checkmk agent installed already.
+`checkmk_agent_delegate_registration_target` defines this third host.
+This feature can be used in case a direct connection to the Checkmk site on the agent receiver port (8000+) is not possible from the monitored host.
+
+    checkmk_agent_delegate_registration_target: "{{ inventory_hostname }}"
+
+Configure the target which is used to register the monitored host on the Checkmk server for TLS. The target needs to have a Checkmk agent installed.
 
     checkmk_agent_mode: 'pull'
 
