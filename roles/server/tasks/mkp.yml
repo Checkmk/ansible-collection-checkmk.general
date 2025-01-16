@@ -13,34 +13,52 @@
     loop_var: __mkp
   when: __mkp.url is defined
 
+- name: "Copy MKP Packages."
+  ansible.builtin.copy:
+    src: "{{ __mkp.src }}"
+    dest: "{{ checkmk_server_mkp_staging }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+    mode: "0640"
+  loop: "{{ checkmk_server_mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: __mkp.src is defined
 
 - name: "Install mkp packages."
-  ansible.builtin.shell: "set -o pipefail && mkp add {{ checkmk_server_mkp_staging }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+  become: true
+  ansible.builtin.command: "omd su {{ __site.name }} -c mkp add {{ checkmk_server_mkp_staging }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+  changed_when: __checkmk_server_mkp_install_output.rc == 0
+  register: __checkmk_server_mkp_install_output
   loop: "{{ checkmk_server_mkp_packages }}"
   loop_control:
     loop_var: __mkp
-  when: __mkp.installed is defined and __mkp.installed
-
+  when: (__mkp.installed | default(true) )
 
 - name: "Enable mkp packages."
-  ansible.builtin.shell: "set -o pipefail && mkp enable {{ __mkp.name }} {{ __mkp.version }}"
+  become: true
+  ansible.builtin.command: "omd su {{ __site.name }} -c mkp enable {{ __mkp.name }} {{ __mkp.version }}"
+  changed_when: __checkmk_server_mkp_enable_output.rc == 0
+  register: __checkmk_server_mkp_enable_output
   loop: "{{ checkmk_server_mkp_packages }}"
   loop_control:
     loop_var: __mkp
-  when: __mkp.enabled is defined and __mkp.enabled
-
+  when: (__mkp.enabled | default(true))
 
 - name: "Disable mkp packages."
-  ansible.builtin.shell: "set -o pipefail && mkp disable {{ __mkp.name }} {{ __mkp.version }}"
+  become: true
+  ansible.builtin.command: "omd su {{ __site.name }} -c mkp disable {{ __mkp.name }} {{ __mkp.version }}"
+  changed_when: __checkmk_server_mkp_disable_output.rc == 0
+  register: __checkmk_server_mkp_disable_output
   loop: "{{ checkmk_server_mkp_packages }}"
   loop_control:
     loop_var: __mkp
-  when: __mkp.enabled is not defined or not __mkp.enabled
-
+  when: __mkp.enabled is defined and not __mkp.enabled
 
 - name: "Remove mkp packages."
-  ansible.builtin.shell: "set -o pipefail && mkp remove {{ __mkp.name }} {{ __mkp.version }}"
+  become: true
+  ansible.builtin.command: "omd su {{ __site.name }} -c mkp remove {{ __mkp.name }} {{ __mkp.version }}"
+  changed_when: __checkmk_server_mkp_remove_output.rc == 0
+  register: __checkmk_server_mkp_remove_output
   loop: "{{ checkmk_server_mkp_packages }}"
   loop_control:
     loop_var: __mkp
-  when: __mkp.removed is defined and __mkp.removed
+  when: (__mkp.removed | default(false))
