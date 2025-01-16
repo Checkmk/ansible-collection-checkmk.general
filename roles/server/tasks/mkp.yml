@@ -8,7 +8,7 @@
     url_password: "{{ __mkp.download_password | default(omit) }}"
     checksum: "{{ __mkp.checksum | default(omit) }}"
   retries: 3
-  loop: "{{ checkmk_server_mkp_packages }}"
+  loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
   when: __mkp.url is defined
@@ -18,7 +18,7 @@
     src: "{{ __mkp.src }}"
     dest: "{{ checkmk_server_mkp_staging }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
     mode: "0640"
-  loop: "{{ checkmk_server_mkp_packages }}"
+  loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
   when: __mkp.src is defined
@@ -28,7 +28,7 @@
   ansible.builtin.command: "omd su {{ __site.name }} -c mkp add {{ checkmk_server_mkp_staging }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
   changed_when: __checkmk_server_mkp_install_output.rc == 0
   register: __checkmk_server_mkp_install_output
-  loop: "{{ checkmk_server_mkp_packages }}"
+  loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
   when: (__mkp.installed | default(true) )
@@ -38,7 +38,7 @@
   ansible.builtin.command: "omd su {{ __site.name }} -c mkp enable {{ __mkp.name }} {{ __mkp.version }}"
   changed_when: __checkmk_server_mkp_enable_output.rc == 0
   register: __checkmk_server_mkp_enable_output
-  loop: "{{ checkmk_server_mkp_packages }}"
+  loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
   when: (__mkp.enabled | default(true))
@@ -48,7 +48,7 @@
   ansible.builtin.command: "omd su {{ __site.name }} -c mkp disable {{ __mkp.name }} {{ __mkp.version }}"
   changed_when: __checkmk_server_mkp_disable_output.rc == 0
   register: __checkmk_server_mkp_disable_output
-  loop: "{{ checkmk_server_mkp_packages }}"
+  loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
   when: __mkp.enabled is defined and not __mkp.enabled
@@ -58,7 +58,7 @@
   ansible.builtin.command: "omd su {{ __site.name }} -c mkp remove {{ __mkp.name }} {{ __mkp.version }}"
   changed_when: __checkmk_server_mkp_remove_output.rc == 0
   register: __checkmk_server_mkp_remove_output
-  loop: "{{ checkmk_server_mkp_packages }}"
+  loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
   when: (__mkp.removed | default(false))
