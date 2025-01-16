@@ -90,7 +90,6 @@ Note: this is not a recommended procedure, and will not be supported for enterpr
             checksum: 'md5:download checksum'
             installed: true
             enabled: true
-            removed: false
 
 A dictionary of sites, containing the desired version, admin password and state.
 MKP packages can be listed to be installed on the specific site. A source can be set on the ansible controller. Alternatively a url can be specified to download the mkp package from.

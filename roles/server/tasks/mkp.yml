@@ -71,6 +71,6 @@
   loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
-  when: (__mkp.removed | default(false))
+  when: __mkp.installed is defined and not __mkp.installed
   tags:
     - manage-mkp-packages
