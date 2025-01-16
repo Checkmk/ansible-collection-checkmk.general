@@ -82,8 +82,18 @@ Note: this is not a recommended procedure, and will not be supported for enterpr
         omd_config:
           - var: AUTOSTART
             value: 'on'
+        mkp_packages:
+          - name: 'mypackage'
+            version: 1.0
+            src: 'path'
+            url: 'download'
+            checksum: 'md5:download checksum'
+            installed: true
+            enabled: true
+            removed: false
 
 A dictionary of sites, containing the desired version, admin password and state.
+MKP packages can be listed to be installed on the specific site. A source can be set on the ansible controller. Alternatively a url can be specified to download the mkp package from.
 There are also advanced settings, which will be outlined below.
 
 Valid values for `state` are:
