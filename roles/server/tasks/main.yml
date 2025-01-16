@@ -95,10 +95,6 @@
   ansible.builtin.include_tasks: "sites.yml"
   when: checkmk_server_sites is defined
 
-- name: Include MKP Management."
-  include_tasks: mkp.yml
-  when: checkmk_server_mkp_packages is defined
-
 - name: "Cleanup unused Checkmk Versions."
   become: true
   ansible.builtin.shell: |
