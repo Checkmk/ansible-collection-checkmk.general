@@ -132,6 +132,12 @@
   tags:
     - configure-sites
 
+- name: "Configure MKP packages."
+  ansible.builtin.include_tasks: mkp.yml
+  loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    loop_var: __site
+
 - name: "Update Site Admin Password for Checkmk < 2.1."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: |
