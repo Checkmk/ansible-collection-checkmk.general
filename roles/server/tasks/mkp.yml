@@ -12,6 +12,8 @@
   loop_control:
     loop_var: __mkp
   when: __mkp.url is defined
+  tags:
+    - manage-mkp-packages
 
 - name: "Copy MKP Packages."
   ansible.builtin.copy:
@@ -22,6 +24,8 @@
   loop_control:
     loop_var: __mkp
   when: __mkp.src is defined
+  tags:
+    - manage-mkp-packages
 
 - name: "Install mkp packages."
   become: true
@@ -32,6 +36,8 @@
   loop_control:
     loop_var: __mkp
   when: (__mkp.installed | default(true) )
+  tags:
+    - manage-mkp-packages
 
 - name: "Enable mkp packages."
   become: true
@@ -42,6 +48,8 @@
   loop_control:
     loop_var: __mkp
   when: (__mkp.enabled | default(true))
+  tags:
+    - manage-mkp-packages
 
 - name: "Disable mkp packages."
   become: true
@@ -52,6 +60,8 @@
   loop_control:
     loop_var: __mkp
   when: __mkp.enabled is defined and not __mkp.enabled
+  tags:
+    - manage-mkp-packages
 
 - name: "Remove mkp packages."
   become: true
@@ -62,3 +72,5 @@
   loop_control:
     loop_var: __mkp
   when: (__mkp.removed | default(false))
+  tags:
+    - manage-mkp-packages
