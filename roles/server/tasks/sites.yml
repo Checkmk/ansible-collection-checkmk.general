@@ -137,6 +137,7 @@
   loop: "{{ checkmk_server_sites }}"
   loop_control:
     loop_var: __site
+  when: __site.mkp_packages is defined
 
 - name: "Update Site Admin Password for Checkmk < 2.1."  # noqa no-changed-when
   become: true
