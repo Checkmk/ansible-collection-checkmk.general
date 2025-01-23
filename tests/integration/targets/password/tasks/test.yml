@@ -49,8 +49,8 @@
   when: (outer_item.edition == "cme")
   register: __checkmk_var_result_new_pass
   failed_when: |
-    ('Missing required parameter' not in __checkmk_var_result_new_pass.msg)
-    or ('Missing data for required field.' not in __checkmk_var_result_new_pass.msg)
+    not ('Missing required parameter' in __checkmk_var_result_new_pass.msg
+    or 'Missing data for required field.' in __checkmk_var_result_new_pass.msg)
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
