@@ -48,6 +48,10 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for the activation to finish."
+  ansible.builtin.wait_for:
+    sleep: 60
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host without comment."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"

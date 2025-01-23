@@ -1,17 +1,17 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.4.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
-    edition: "cme"
-    site: "stable_cme"
-    port: "5324"
-  - version: "2.3.0p24"
-    edition: "cme"
-    site: "old_cme"
-    port: "5323"
   - version: "2.2.0p37"
     edition: "cce"
     site: "ancient_cce"
     port: "5222"
+  - version: "2.3.0p24"
+    edition: "cme"
+    site: "old_cme"
+    port: "5323"
+  - version: "2.4.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+    edition: "cme"
+    site: "stable_cme"
+    port: "5324"
 
 checkmk_var_signature_key_id: 1
 checkmk_var_signature_key_passphrase: "{{ checkmk_var_automation_secret }}"
