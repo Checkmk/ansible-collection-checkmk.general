@@ -240,13 +240,23 @@ class newBulkDiscoveryAPI(CheckmkAPI):
             "update_host_labels": False,
         }
 
-        if self.params.get("state") in ["new", "fix_all", "monitor_undecided_services", "refresh"]:
+        if self.params.get("state") in [
+            "new", 
+            "fix_all", 
+            "monitor_undecided_services", 
+            "refresh"
+        ]:
             options["monitor_undecided_services"] = True
         if self.params.get("state") in ["remove", "fix_all", "refresh"]:
             options["remove_vanished_services"] = True
         if self.params.get("state") in ["only_service_labels", "refresh"]:
             options["update_service_labels"] = True
-        if self.params.get("state") in ["new", "fix_all", "only_host_labels", "refresh"]:
+        if self.params.get("state") in [
+            "new", 
+            "fix_all", 
+            "only_host_labels", 
+            "refresh"
+        ]:
             options["update_host_labels"] = True
 
         data = {
@@ -358,7 +368,6 @@ def run_module():
         servicecompletion = ServiceCompletionAPI(module)
     else:
         discovery = BulkDiscoveryAPI(module)
-        print("### Using BulkDiscoveryAPI")
         servicecompletion = ServiceCompletionBulkAPI(module)
 
     ver = discovery.getversion()
@@ -419,7 +428,6 @@ def run_module():
                 module.fail_json(**result_as_dict(result))
 
     if not single_mode and ver >= CheckmkVersion("2.3.0"):
-        print("### Using newBulkDiscoveryAPI")
         discovery = newBulkDiscoveryAPI(module)
 
     result = wait_for_completion(single_mode, servicecompletion)
