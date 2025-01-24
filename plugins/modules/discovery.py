@@ -241,9 +241,9 @@ class newBulkDiscoveryAPI(CheckmkAPI):
         }
 
         if self.params.get("state") in [
-            "new", 
-            "fix_all", 
-            "monitor_undecided_services", 
+            "new",
+            "fix_all",
+            "monitor_undecided_services",
             "refresh"
         ]:
             options["monitor_undecided_services"] = True
@@ -252,9 +252,9 @@ class newBulkDiscoveryAPI(CheckmkAPI):
         if self.params.get("state") in ["only_service_labels", "refresh"]:
             options["update_service_labels"] = True
         if self.params.get("state") in [
-            "new", 
-            "fix_all", 
-            "only_host_labels", 
+            "new",
+            "fix_all",
+            "only_host_labels",
             "refresh"
         ]:
             options["update_host_labels"] = True
