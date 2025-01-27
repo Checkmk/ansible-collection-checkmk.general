@@ -2,10 +2,10 @@
 checkmk_var_test_sites:
   - version: "2.2.0p37"
     edition: "cre"
-    site: "ancientt_cre"
+    site: "ancient_cre"
     port: "5022"
     remote_sites:
-      - site_id: "ancientt_cre_r1"
+      - site_id: "ancient_cre_r1"
         site_config:
           status_connection:
             connection:
@@ -22,7 +22,7 @@ checkmk_var_test_sites:
             url_prefix: "/ancient_cre_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://ancientt-cre-r1:6022/ancient_cre_r1/check_mk/"
+            url_of_remote_site: "http://ancient-cre-r1:6022/ancient_cre_r1/check_mk/"
           basic_settings:
             site_id: "ancient_cre_r1"
             alias: "ancient_cre remote site"
