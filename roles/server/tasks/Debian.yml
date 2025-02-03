@@ -3,7 +3,7 @@
   when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
   become: true
   ansible.builtin.apt:
-    deb: "/tmp/{{ __checkmk_server_setup_file }}"
+    deb: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
     update_cache: 'yes'
     state: present
   notify: Start Apache
