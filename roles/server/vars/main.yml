@@ -9,3 +9,5 @@ __checkmk_server_edition_mapping:
   cee: enterprise
   cce: cloud
   cme: managed
+
+__checkmk_server_tmp_dir: "/tmp"
