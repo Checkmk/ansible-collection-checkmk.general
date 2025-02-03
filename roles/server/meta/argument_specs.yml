@@ -51,6 +51,10 @@ argument_specs:
             type: "str"
             required: true
             description: "The version of the site."
+          edition:
+            type: "str"
+            required: true
+            description: "The edition of the site."
           state:
             type: "str"
             required: true
