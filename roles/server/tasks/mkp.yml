@@ -2,7 +2,7 @@
 - name: "Download MKP Packages."
   ansible.builtin.get_url:
     url: "{{ __mkp.url }}"
-    dest: "{{ checkmk_server_mkp_staging }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+    dest: "{{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
     mode: "0640"
     url_username: "{{ __mkp.download_user | default(omit) }}"
     url_password: "{{ __mkp.download_password | default(omit) }}"
@@ -18,7 +18,7 @@
 - name: "Copy MKP Packages."
   ansible.builtin.copy:
     src: "{{ __mkp.src }}"
-    dest: "{{ checkmk_server_mkp_staging }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+    dest: "{{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
     mode: "0640"
   loop: "{{ __site.mkp_packages }}"
   loop_control:
@@ -29,7 +29,7 @@
 
 - name: "Install mkp packages."
   become: true
-  ansible.builtin.command: "omd su {{ __site.name }} -c mkp add {{ checkmk_server_mkp_staging }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+  ansible.builtin.command: "omd su {{ __site.name }} -c mkp add {{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
   changed_when: __checkmk_server_mkp_install_output.rc == 0
   register: __checkmk_server_mkp_install_output
   loop: "{{ __site.mkp_packages }}"
