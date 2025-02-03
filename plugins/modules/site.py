@@ -246,7 +246,24 @@ class SiteAPI(CheckmkAPI):
     def _verify_compatibility(self):
         if self.getversion() <= CheckmkVersion("2.2.0"):
             exit_module(
-                msg="Site management is only available for Checkmk versions starting with 2.2.0.",
+                self.module,
+                msg="Site management is only available for Checkmk versions starting with 2.2.0. Version found: %s"
+                % self.getversion(),
+                failed=True,
+            )
+
+        message_broker_port = (
+            self.params.get("site_connection", {})
+            .get("site_config", {})
+            .get("configuration_connection", {})
+            .get("message_broker_port")
+        )
+
+        if self.getversion() < CheckmkVersion("2.4.0i1") and message_broker_port:
+            exit_module(
+                self.module,
+                msg="The parameter message_broker_port is only available for Checkmk versions starting with 2.4.0. Version found: %s"
+                % self.getversion(),
                 failed=True,
             )
 
