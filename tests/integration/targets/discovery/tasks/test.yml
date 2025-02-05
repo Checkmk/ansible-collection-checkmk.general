@@ -9,6 +9,26 @@
     checkmk_var_customer: null
   when: outer_item.edition != "cme"
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check Apache."
+  ansible.builtin.uri:
+    url: "{{ checkmk_var_server_url }}"
+  register: result
+  ignore_errors: yes
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Apache Result."
+  ansible.builtin.debug:
+    var: result
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check UI."
+  ansible.builtin.uri:
+    url: "{{ checkmk_var_server_url }}"
+  register: result
+  ignore_errors: yes
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - UI Result."
+  ansible.builtin.debug:
+    var: result
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check REST API."
   ansible.builtin.uri:
     url: "{{ checkmk_var_server_url }}/{{ outer_item.site }}/check_mk/api/1.0/version"
