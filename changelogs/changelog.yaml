@@ -1072,3 +1072,16 @@ releases:
     - agent.yml
     - release_summary.yml
     release_date: '2025-01-14'
+  5.5.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix permissions on vanilla agent setup file.
+      - Server role - Fix argument spec for checkmk_server_sites.edition.
+      minor_changes:
+      - Server role - Make tmp directory configurable.
+      release_summary: Make the server tmp directory configurable.
+    fragments:
+    - agent.yml
+    - release.yml
+    - server.yml
+    release_date: '2025-02-12'

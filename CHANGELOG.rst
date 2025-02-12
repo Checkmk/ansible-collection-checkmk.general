@@ -4,6 +4,25 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.5.0
+======
+
+Release Summary
+---------------
+
+Make the server tmp directory configurable.
+
+Minor Changes
+-------------
+
+- Server role - Make tmp directory configurable.
+
+Bugfixes
+--------
+
+- Agent role - Fix permissions on vanilla agent setup file.
+- Server role - Fix argument spec for checkmk_server_sites.edition.
+
 v5.4.0
 ======
 
