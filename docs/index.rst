@@ -1,5 +1,5 @@
 .. meta::
-  :antsibull-docs: 2.16.2
+  :antsibull-docs: 2.16.3
 
 
 .. _plugins_in_checkmk.general:
@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 5.4.0
+Collection version 5.5.0
 
 .. contents::
    :local:
