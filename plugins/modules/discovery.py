@@ -372,9 +372,6 @@ def run_module():
 
     ver = discovery.getversion()
 
-    # if single_mode and ver < CheckmkVersion("2.1.0"):
-    #     discovery = oldDiscoveryAPI(module)
-
     if ver < CheckmkVersion("2.2.0") and module.params.get("state") == "tabula_rasa":
         result = RESULT(
             http_code=0,
