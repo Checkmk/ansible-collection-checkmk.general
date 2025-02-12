@@ -81,7 +81,7 @@ jobs:
         ports:
           - 5323:5000
         env:
-          CMK_SITE_ID: "stable_cme"
+          CMK_SITE_ID: "old_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cre:
         image: checkmk/check-mk-raw:2.4.0-daily
