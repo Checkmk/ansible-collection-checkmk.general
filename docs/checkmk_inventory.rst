@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.16.1
+  :antsibull-docs: 2.16.3
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.checkmk inventory -- Dynamic Inventory Source or Checkmk
 .. Collection note
 
 .. note::
-    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.2).
+    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.5.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -263,7 +263,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The base url of your Checkmk server including the protocol.
+      The base url of your Checkmk server including the protocol but excluding the site.
 
 
       .. raw:: html
@@ -300,7 +300,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The site you want to connect to.
+      The site you want to connect to. This will be appended to the server\_url as part of the API request url.
 
 
       .. raw:: html

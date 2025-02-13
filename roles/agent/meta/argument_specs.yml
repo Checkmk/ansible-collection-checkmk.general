@@ -41,19 +41,19 @@ argument_specs:
 
       checkmk_agent_registration_server_protocol:
         type: "str"
-        default: "{{ checkmk_agent_server_protocol }}"
+        default: "http"
         description:
           - Refer to the README for details.
 
       checkmk_agent_registration_server:
         type: "str"
-        default: "{{ checkmk_agent_server }}"
+        default: "localhost"
         description:
           - Refer to the README for details.
 
       checkmk_agent_registration_site:
         type: "str"
-        default: "{{ checkmk_agent_site }}"
+        default: "mysite"
         description:
           - Refer to the README for details.
 
@@ -71,7 +71,7 @@ argument_specs:
 
       checkmk_agent_user:
         type: "str"
-        default: "{{ automation_user | default('automation') }}"
+        default: "automation"
         description:
           - Refer to the README for details.
 
@@ -83,15 +83,13 @@ argument_specs:
 
       checkmk_agent_pass:
         type: "str"
-        default: "{{ checkmk_var_automation_secret }}"
         description:
-          - Refer to the README for details.
+          - Refer to the README for details. This is mutually exclusive with 'checkmk_agent_secret'.
 
       checkmk_agent_secret:
         type: "str"
-        default: "{{ checkmk_var_automation_secret }}"
         description:
-          - Refer to the README for details.
+          - Refer to the README for details. This is mutually exclusive with 'checkmk_agent_pass'.
 
       checkmk_agent_auto_activate:
         type: "bool"

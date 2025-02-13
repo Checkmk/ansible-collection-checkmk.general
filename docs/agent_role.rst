@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.16.1
+  :antsibull-docs: 2.16.3
 
 .. Anchors
 
@@ -20,7 +20,7 @@ checkmk.general.agent role -- Install Checkmk agents
 .. Collection note
 
 .. note::
-    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.3.2).
+    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.5.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -491,7 +491,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_var\_folder\_path | default('/') }}"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_var\_folder\_path \| default('/') }}"`
 
       .. raw:: html
 
@@ -622,7 +622,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`{"ipaddress": "{{ checkmk\_agent\_host\_ip | default(omit) }}"}`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`{"ipaddress": "{{ checkmk\_agent\_host\_ip \| default(omit) }}"}`
 
       .. raw:: html
 
@@ -785,12 +785,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Refer to the README for details.
+      Refer to the README for details. This is mutually exclusive with 'checkmk\_agent\_secret'.
 
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_var\_automation\_secret }}"`
 
       .. raw:: html
 
@@ -917,7 +913,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_agent\_server }}"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"localhost"`
 
       .. raw:: html
 
@@ -958,7 +954,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_agent\_server\_protocol }}"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"http"`
 
       .. raw:: html
 
@@ -999,7 +995,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_agent\_site }}"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"mysite"`
 
       .. raw:: html
 
@@ -1035,12 +1031,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Refer to the README for details.
+      Refer to the README for details. This is mutually exclusive with 'checkmk\_agent\_pass'.
 
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_var\_automation\_secret }}"`
 
       .. raw:: html
 
@@ -1409,7 +1401,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ automation\_user | default('automation') }}"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"automation"`
 
       .. raw:: html
 
