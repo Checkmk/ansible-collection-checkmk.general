@@ -63,21 +63,21 @@ jobs:
 
     services:
       ancient_cre:
-        image: checkmk/check-mk-raw:2.1.0p49
-        ports:
-          - 5021:5000
-        env:
-          CMK_SITE_ID: "ancient_cre"
-          CMK_PASSWORD: "Sup3rSec4et!"
-      old_cre:
         image: checkmk/check-mk-raw:2.2.0p39
         ports:
           - 5022:5000
         env:
           CMK_SITE_ID: "ancient_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
+      old_cre:
+        image: checkmk/check-mk-raw:2.3.0p26
+        ports:
+          - 5023:5000
+        env:
+          CMK_SITE_ID: "stable_cre"
+          CMK_PASSWORD: "Sup3rSec4et!"
       old_cme:
-        image: checkmk/check-mk-managed:2.3.0p24
+        image: checkmk/check-mk-managed:2.3.0p26
         ports:
           - 5323:5000
         env:
@@ -91,11 +91,11 @@ jobs:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cme:
-        image: checkmk/check-mk-managed:2.3.0p26
+        image: checkmk/check-mk-managed:2.4.0-daily
         ports:
           - 5324:5000
         env:
-          CMK_SITE_ID: "stable_cme"
+          CMK_SITE_ID: "old_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
 
     steps:
