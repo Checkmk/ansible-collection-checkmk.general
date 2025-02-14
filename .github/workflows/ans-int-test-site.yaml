@@ -62,22 +62,22 @@ jobs:
             python: '3.10'
 
     services:
-      ancient_cre:
-        image: checkmk/check-mk-raw:2.2.0p39
-        ports:
-          - 5022:5000
-        env:
-          CMK_SITE_ID: "ancient_cre"
-          CMK_PASSWORD: "Sup3rSec4et!"
-      ancient-cre-r1:
-        image: checkmk/check-mk-raw:2.2.0p39
-        ports:
-          - 6022:5000
-          - 6564:6557
-        env:
-          CMK_SITE_ID: "ancient_cre_r1"
-          CMK_PASSWORD: "Sup3rSec4et!"
-          CMK_LIVESTATUS_TCP: "on"
+      # ancient_cre:
+      #   image: checkmk/check-mk-raw:2.2.0p39
+      #   ports:
+      #     - 5022:5000
+      #   env:
+      #     CMK_SITE_ID: "ancient_cre"
+      #     CMK_PASSWORD: "Sup3rSec4et!"
+      # ancient-cre-r1:
+      #   image: checkmk/check-mk-raw:2.2.0p39
+      #   ports:
+      #     - 6022:5000
+      #     - 6564:6557
+      #   env:
+      #     CMK_SITE_ID: "ancient_cre_r1"
+      #     CMK_PASSWORD: "Sup3rSec4et!"
+      #     CMK_LIVESTATUS_TCP: "on"
       old_cre:
         image: checkmk/check-mk-raw:2.3.0p26
         ports:
