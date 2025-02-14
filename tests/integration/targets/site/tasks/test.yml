@@ -125,6 +125,8 @@
       site_config:
         basic_settings:
           alias: "{{ item.site_id }} with new alias"
+        configuration_connection:
+        status_connection:
     state: "present"
   delegate_to: localhost
   loop: "{{ outer_item.remote_sites }}"
