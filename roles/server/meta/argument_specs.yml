@@ -78,6 +78,36 @@ argument_specs:
               value:
                 type: "str"
                 description: "The value of the variable."
+          mkp_packages:
+            type: "list"
+            elements: "dict"
+            options:
+              name:
+                type: "str"
+                description: "Name of the MKP package."
+              version:
+                type: "str"
+                description: "Version of the MKP package."
+              src:
+                type: "str"
+                description: "Path to the local installation file."
+                required: false
+              url:
+                type: "str"
+                description: "URL to download the MKP package from."
+                required: false
+              checksum:
+                type: "str"
+                description: "Checksum of the downloaded package."
+                required: false
+              installed:
+                type: "bool"
+                description: "Trigger to install the package."
+                default: true
+              enabled:
+                type: "bool"
+                description: "Trigger to enable the package."
+                default: true
 
       checkmk_server_configure_firewall:
         type: "bool"
