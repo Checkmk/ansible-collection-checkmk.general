@@ -127,11 +127,11 @@ class SiteAPI(CheckmkAPI):
     def __init__(self, module):
         super().__init__(module)
 
-        self._verify_compatibility()
-
         self.module = module
         self.params = self.module.params
         self.state = self.params.get("state")
+
+        self._verify_compatibility()
 
     def _get_endpoint(self, target_api, site_id=""):
         if target_api == TargetAPI.CREATE:
@@ -266,6 +266,32 @@ class SiteAPI(CheckmkAPI):
                 % self.getversion(),
                 failed=True,
             )
+
+        if self.getversion() > CheckmkVersion("2.3.0p25"):
+            # Remove previously mandatory fields. See https://checkmk.com/werk/16722
+
+            configuration_connection = (
+                self.params.get("site_connection", {})
+                .get("site_config", {})
+                .get("configuration_connection", {})
+            )
+            replication_enabled = configuration_connection.get(
+                "enable_replication", False
+            )
+
+            if not replication_enabled:
+                for key in [
+                    "url_of_remote_site",
+                    "disable_remote_configuration",
+                    "ignore_tls_errors",
+                    "direct_login_to_web_gui_allowed",
+                    "replicate_event_console",
+                    "replicate_extensions",
+                ]:
+                    try:
+                        del configuration_connection[key]
+                    except KeyError:
+                        pass
 
 
 logger = Logger()
