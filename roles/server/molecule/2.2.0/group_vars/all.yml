@@ -26,13 +26,13 @@ checkmk_server_sites:
         value: "on"
       - var: LIVESTATUS_TCP_PORT
         value: "6557"
-    # mkp_packages:
-    #   - name: 'sslcertificates'
-    #     version: 8.9.1
-    #     src: '/tmp/sslcertificates.mkp'
-    #     checksum: 'md5:d759c6be90fdbe2bb3a27e15fe2488b0'
-    #     installed: true
-    #     enabled: true
+    mkp_packages:
+      - name: 'sslcertificates'
+        version: 8.9.1
+        src: '/tmp/sslcertificates.mkp'
+        checksum: 'md5:d759c6be90fdbe2bb3a27e15fe2488b0'
+        installed: true
+        enabled: true
   - name: "stopped"
     version: "{{ checkmk_var_version }}"
     state: stopped
@@ -41,9 +41,8 @@ checkmk_server_sites:
     mkp_packages:
       - name: 'sslcertificates'
         version: 8.9.1
-        # src: '/tmp/sslcertificates.mkp'
-        url: 'https://exchange.checkmk.com/p/sslcertificates'
-        # checksum: 'md5:d759c6be90fdbe2bb3a27e15fe2488b0'
+        url: 'https://exchange.checkmk.com/packages/sslcertificates/1570/sslcertificates-8.9.1.mkp'
+        checksum: 'md5:d759c6be90fdbe2bb3a27e15fe2488b0'
         installed: true
         enabled: true
   - name: "enabled"
@@ -64,6 +63,12 @@ checkmk_server_sites:
     omd_config:
       - var: AUTOSTART
         value: "off"
+    mkp_packages:
+      - name: 'sslcertificates'
+        version: 8.9.1
+        url: 'https://exchange.checkmk.com/packages/sslcertificates/1570/sslcertificates-8.9.1.mkp'
+        installed: true
+        enabled: true
   - name: "present"
     version: "{{ checkmk_var_version }}"
     state: present
@@ -76,8 +81,7 @@ checkmk_server_sites:
     mkp_packages:
       - name: 'sslcertificates'
         version: 8.9.1
-        url: 'https://exchange.checkmk.com/p/sslcertificates'
-        # checksum: 'md5:d759c6be90fdbe2bb3a27e15fe2488b0'
+        url: 'https://exchange.checkmk.com/packages/sslcertificates/1570/sslcertificates-8.9.1.mkp'
         installed: true
         enabled: true
   - name: "absent"
