@@ -147,7 +147,11 @@ def exit_changed(module, msg):
 
 
 def exit_ok(module, msg):
-    result = {"msg": msg + "LOG: " + logger.get_log(), "changed": False, "failed": False}
+    result = {
+        "msg": msg + "LOG: " + logger.get_log(),
+        "changed": False,
+        "failed": False,
+    }
     module.exit_json(**result)
 
 
@@ -231,7 +235,9 @@ def update_single_host_group(module, base_url, headers):
     }
     url = base_url + api_endpoint
 
-    logger.debug("Calling URL %s, data: %s, Method: PUT" % (url, str(module.jsonify(params))))
+    logger.debug(
+        "Calling URL %s, data: %s, Method: PUT" % (url, str(module.jsonify(params)))
+    )
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="PUT"
     )
@@ -259,7 +265,9 @@ def update_host_groups(module, base_url, groups, headers):
     }
     url = base_url + api_endpoint
 
-    logger.debug("Calling URL %s, data: %s, Method: PUT" % (url, str(module.jsonify(params))))
+    logger.debug(
+        "Calling URL %s, data: %s, Method: PUT" % (url, str(module.jsonify(params)))
+    )
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="PUT"
     )
@@ -289,7 +297,9 @@ def create_single_host_group(module, base_url, headers):
         }
     url = base_url + api_endpoint
 
-    logger.debug("Calling URL %s, data: %s, Method: POST" % (url, str(module.jsonify(params))))
+    logger.debug(
+        "Calling URL %s, data: %s, Method: POST" % (url, str(module.jsonify(params)))
+    )
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="POST"
     )
@@ -329,7 +339,9 @@ def create_host_groups(module, base_url, groups, headers):
 
     url = base_url + api_endpoint
 
-    logger.debug("Calling URL %s, data: %s, Method: POST" % (url, str(module.jsonify(params))))
+    logger.debug(
+        "Calling URL %s, data: %s, Method: POST" % (url, str(module.jsonify(params)))
+    )
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="POST"
     )
@@ -364,7 +376,9 @@ def delete_host_groups(module, base_url, groups, headers):
     }
     url = base_url + api_endpoint
 
-    logger.debug("Calling URL %s, data: %s, Method: POST" % (url, str(module.jsonify(params))))
+    logger.debug(
+        "Calling URL %s, data: %s, Method: POST" % (url, str(module.jsonify(params)))
+    )
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="POST"
     )
