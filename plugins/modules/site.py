@@ -278,6 +278,7 @@ class SiteAPI(CheckmkAPI):
             replication_enabled = configuration_connection.get(
                 "enable_replication", False
             )
+            logger.debug("Werk 16722 found. replication params: %s" %s str(configuration_connection))
 
             if not replication_enabled:
                 for key in [
@@ -292,6 +293,7 @@ class SiteAPI(CheckmkAPI):
                         del configuration_connection[key]
                     except KeyError:
                         pass
+            logger.debug("Cleaned replication params: %s" %s str(configuration_connection))
 
 
 logger = Logger()
