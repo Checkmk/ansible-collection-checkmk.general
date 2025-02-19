@@ -290,7 +290,10 @@ class SiteAPI(CheckmkAPI):
                 "enable_replication", False
             )
 
-            logger.debug("Werk 16722 found.")
+            logger.debug(
+                "Werk 16722 found. Replication is %s."
+                % "enabled" if replication_enabled else "disabled"
+            )
 
             if not replication_enabled:
                 for key in [
@@ -303,6 +306,7 @@ class SiteAPI(CheckmkAPI):
                     "replicate_extensions",
                 ]:
                     try:
+                        logger.debug("Removing key %s" % key)
                         del configuration_connection[key]
                     except KeyError:
                         pass
