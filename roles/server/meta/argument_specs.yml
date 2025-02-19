@@ -84,30 +84,25 @@ argument_specs:
             options:
               name:
                 type: "str"
-                description: "Name of the MKP package."
+                description: "The name of the extension package."
               version:
                 type: "str"
-                description: "Version of the MKP package."
+                description: "The version of the extension package."
               src:
                 type: "str"
-                description: "Path to the local installation file."
-                required: false
+                description: "The path to the the extension package."
               url:
                 type: "str"
-                description: "URL to download the MKP package from."
-                required: false
+                description: "The URL to download the extension package from."
               checksum:
                 type: "str"
-                description: "Checksum of the downloaded package."
-                required: false
+                description: "The checksum of the extension package."
               installed:
                 type: "bool"
-                description: "Trigger to install the package."
-                default: true
+                description: "Install the extension package."
               enabled:
                 type: "bool"
-                description: "Trigger to enable the package."
-                default: true
+                description: "Enable the extension package."
 
       checkmk_server_configure_firewall:
         type: "bool"

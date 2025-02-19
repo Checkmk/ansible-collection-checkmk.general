@@ -15,7 +15,7 @@
   tags:
     - manage-mkp-packages
 
-- name: "Copy MKP Packages."
+- name: "Transfer MKP Packages."
   ansible.builtin.copy:
     src: "{{ __mkp.src }}"
     dest: "{{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
