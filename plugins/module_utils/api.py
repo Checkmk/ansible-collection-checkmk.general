@@ -14,10 +14,9 @@ import json
 
 from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
-from ansible_collections.checkmk.general.plugins.module_utils.utils import (
-    exit_module,
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (  # result_as_dict,
     GENERIC_HTTP_CODES,
-    result_as_dict,
+    exit_module,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
@@ -45,7 +44,9 @@ class CheckmkAPI:
         # may be "present", "absent" or an individual one
         self.state = ""
 
-    def _fetch(self, code_mapping="", endpoint="", data=None, method="GET", logger=None):
+    def _fetch(
+        self, code_mapping="", endpoint="", data=None, method="GET", logger=None
+    ):
         http_mapping = GENERIC_HTTP_CODES.copy()
         http_mapping.update(code_mapping)
 
@@ -98,7 +99,7 @@ class CheckmkAPI:
                 failed=True,
                 logger=logger,
             )
-            #self.module.fail_json(**result_as_dict(result))
+            # self.module.fail_json(**result_as_dict(result))
         return result
 
     def getversion(self):

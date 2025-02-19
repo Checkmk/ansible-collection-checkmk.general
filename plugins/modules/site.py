@@ -182,7 +182,7 @@ class SiteAPI(CheckmkAPI):
         return self._fetch(
             code_mapping=SiteHTTPCodes.create,
             endpoint=self._get_endpoint(TargetAPI.CREATE),
-            data=self._werk16722(site_connection.get_api_data(TargetAPI.CREATE)),
+            data=site_connection.get_api_data(TargetAPI.CREATE),
             method="POST",
             logger=logger,
         )
@@ -192,16 +192,13 @@ class SiteAPI(CheckmkAPI):
         site_connection.merge_with(desired_site_connection)
         nachher = site_connection.site_config
         logger.debug("update endpoint: %s" % self._get_endpoint(TargetAPI.UPDATE))
-        logger.debug(
-            "update data: %s"
-            % self._werk16722(site_connection.get_api_data(TargetAPI.UPDATE))
-        )
+        logger.debug("update data: %s" % site_connection.get_api_data(TargetAPI.UPDATE))
         return self._fetch(
             code_mapping=SiteHTTPCodes.update,
             endpoint=self._get_endpoint(
                 TargetAPI.UPDATE, site_id=site_connection.site_id
             ),
-            data=self._werk16722(site_connection.get_api_data(TargetAPI.UPDATE)),
+            data=site_connection.get_api_data(TargetAPI.UPDATE),
             method="PUT",
             logger=logger,
         )
@@ -278,45 +275,38 @@ class SiteAPI(CheckmkAPI):
                 logger=logger,
             )
 
-    def _werk16722(self, api_data):
-        # Don't modify the original data.
-        api_data_copy = api_data.copy()
 
-        if self.getversion() > CheckmkVersion("2.3.0p25"):
-            # Remove previously mandatory fields. See https://checkmk.com/werk/16722
+def werk16722(params):
+    # Remove previously mandatory fields. See https://checkmk.com/werk/16722
 
-            configuration_connection = api_data_copy.get("site_config", {}).get(
-                "configuration_connection", {}
-            )
-            replication_enabled = configuration_connection.get(
-                "enable_replication", False
-            )
+    configuration_connection = (
+        params.get("site_connection", {})
+        .get("site_config", {})
+        .get("configuration_connection", {})
+    )
 
-            logger.debug(
-                "Werk 16722 found. Replication is %s." % (
-                    "enabled"
-                    if replication_enabled
-                    else "disabled"
-                )
-            )
+    replication_enabled = configuration_connection.get("enable_replication", False)
 
-            if not replication_enabled:
-                for key in [
-                    "url_of_remote_site",
-                    "user_sync",
-                    "disable_remote_configuration",
-                    "ignore_tls_errors",
-                    "direct_login_to_web_gui_allowed",
-                    "replicate_event_console",
-                    "replicate_extensions",
-                ]:
-                    try:
-                        logger.debug("Removing key %s" % key)
-                        del configuration_connection[key]
-                    except KeyError:
-                        pass
+    logger.debug(
+        "Werk 16722 found. Replication is %s."
+        % ("enabled" if replication_enabled else "disabled")
+    )
 
-        return api_data_copy
+    if not replication_enabled:
+        for key in [
+            "url_of_remote_site",
+            "user_sync",
+            "disable_remote_configuration",
+            "ignore_tls_errors",
+            "direct_login_to_web_gui_allowed",
+            "replicate_event_console",
+            "replicate_extensions",
+        ]:
+            try:
+                logger.debug("Removing key %s" % key)
+                del configuration_connection[key]
+            except KeyError:
+                pass
 
 
 logger = Logger()
@@ -331,6 +321,11 @@ def run_module():
     site_id = module.params.get("site_id")
 
     site_api = SiteAPI(module)
+
+    # Can be removed, once we no longer support Checkmk versions older than 2.3.0p25
+    if site_api.getversion() > CheckmkVersion("2.3.0p25"):
+        werk16722(module.params)
+
     desired_site_connection = SiteConnection.from_module_params(module.params)
     existing_site_connection = SiteConnection.from_api(site_api.get(site_id))
 
