@@ -128,7 +128,7 @@ checkmk_var_test_sites:
             url_prefix: "/stable_cre_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://stablet-cre-r1:5000/stable_cre_r1/check_mk/"
+            url_of_remote_site: "http://stable-cre-r1:5000/stable_cre_r1/check_mk/"
             message_broker_port: 5671
           basic_settings:
             site_id: "stable_cre_r1"
