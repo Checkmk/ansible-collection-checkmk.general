@@ -191,6 +191,14 @@ class SiteAPI(CheckmkAPI):
         vorher = site_connection.site_config
         site_connection.merge_with(desired_site_connection)
         nachher = site_connection.site_config
+        logger.debug(
+            "merging update data. current: %s, desired: %s, merged: %s"
+            % (
+                str(vorher),
+                str(desired_site_connection.get_api_data(TargetAPI.UPDATE)),
+                str(nachher),
+            )
+        )
         logger.debug("update endpoint: %s" % self._get_endpoint(TargetAPI.UPDATE))
         logger.debug("update data: %s" % site_connection.get_api_data(TargetAPI.UPDATE))
         return self._fetch(
