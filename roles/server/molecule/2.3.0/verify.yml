@@ -66,16 +66,18 @@
 
     - name: "Test that MKP is installed."  # noqa no-changed-when
       ansible.builtin.command: mkp list
-      register: checkmk_server_site_mkps
+      become: "{{ item.name }}"
+      loop: checkmk_server_sites
+      register: checkmk_server_sites_mkps
       changed_when: false
-      failed_when: not checkmk_server_site_mkps.rc == 0
+      failed_when: not checkmk_server_sites_mkps.rc == 0
 
     - debug:
-        var: checkmk_server_site_mkps
+        var: checkmk_server_sites_mkps
 
     - name: "Verify that MKP is installed."
       ansible.builtin.assert:
-        that: "'{{ item.name }}.*{{ item.version }}.*{% if item.enabled %}Enabled{% else %}Disabled{% endif %}' in checkmk_server_site_mkps.stdout_lines"
+        that: "'{{ item.name }}.*{{ item.version }}.*{% if item.enabled %}Enabled{% else %}Disabled{% endif %}' in checkmk_server_sites_mkps.stdout_lines"
       loop: mkp_packages
 
     # mkp_packages:
