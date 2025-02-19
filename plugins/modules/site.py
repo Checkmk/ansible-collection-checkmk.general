@@ -182,7 +182,7 @@ class SiteAPI(CheckmkAPI):
         return self._fetch(
             code_mapping=SiteHTTPCodes.create,
             endpoint=self._get_endpoint(TargetAPI.CREATE),
-            data=site_connection.get_api_data(TargetAPI.CREATE),
+            data=self._werk16722(site_connection.get_api_data(TargetAPI.CREATE)),
             method="POST",
             logger=logger,
         )
@@ -198,7 +198,7 @@ class SiteAPI(CheckmkAPI):
             endpoint=self._get_endpoint(
                 TargetAPI.UPDATE, site_id=site_connection.site_id
             ),
-            data=site_connection.get_api_data(TargetAPI.UPDATE),
+            data=self._werk16722(site_connection.get_api_data(TargetAPI.UPDATE)),
             method="PUT",
             logger=logger,
         )
@@ -275,14 +275,14 @@ class SiteAPI(CheckmkAPI):
                 logger=logger,
             )
 
+    def _werk16722(self, api_data):
+        # Don't modify the original data.
+        api_data_copy = api_data.copy()
+
         if self.getversion() > CheckmkVersion("2.3.0p25"):
             # Remove previously mandatory fields. See https://checkmk.com/werk/16722
 
-            configuration_connection = (
-                self.params.get("site_connection", {})
-                .get("site_config", {})
-                .get("configuration_connection", {})
-            )
+            configuration_connection = api_data_copy.get("configuration_connection", {})
             replication_enabled = configuration_connection.get(
                 "enable_replication", False
             )
@@ -303,6 +303,8 @@ class SiteAPI(CheckmkAPI):
                         del configuration_connection[key]
                     except KeyError:
                         pass
+
+        return api_data_copy
 
 
 logger = Logger()
