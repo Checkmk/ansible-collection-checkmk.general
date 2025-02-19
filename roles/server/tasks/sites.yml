@@ -132,7 +132,7 @@
   tags:
     - configure-sites
 
-- name: "Configure MKP packages."
+- name: "Include MKP management tasks."
   ansible.builtin.include_tasks: mkp.yml
   loop: "{{ checkmk_server_sites }}"
   loop_control:
