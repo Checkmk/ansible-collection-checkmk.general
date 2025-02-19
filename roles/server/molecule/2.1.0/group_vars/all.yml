@@ -38,13 +38,6 @@ checkmk_server_sites:
     state: stopped
     admin_pw: "{{ checkmk_var_automation_secret }}"
     update_conflict_resolution: install
-    mkp_packages:
-      - name: 'sslcertificates'
-        version: 8.9.1
-        url: 'https://exchange.checkmk.com/packages/sslcertificates/1570/sslcertificates-8.9.1.mkp'
-        checksum: 'md5:d759c6be90fdbe2bb3a27e15fe2488b0'
-        installed: true
-        enabled: true
   - name: "enabled"
     version: "{{ checkmk_var_version }}"
     state: enabled
@@ -63,12 +56,6 @@ checkmk_server_sites:
     omd_config:
       - var: AUTOSTART
         value: "off"
-    mkp_packages:
-      - name: 'sslcertificates'
-        version: 8.9.1
-        url: 'https://exchange.checkmk.com/packages/sslcertificates/1570/sslcertificates-8.9.1.mkp'
-        installed: true
-        enabled: true
   - name: "present"
     version: "{{ checkmk_var_version }}"
     state: present
