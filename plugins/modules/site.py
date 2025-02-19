@@ -165,6 +165,7 @@ class SiteAPI(CheckmkAPI):
         result = self._fetch(
             code_mapping=SiteHTTPCodes.get,
             endpoint=self._get_endpoint(TargetAPI.GET, site_id=site_id),
+            logger=logger,
         )
 
         logger.debug("get data: %s" % str(result))
@@ -183,6 +184,7 @@ class SiteAPI(CheckmkAPI):
             endpoint=self._get_endpoint(TargetAPI.CREATE),
             data=site_connection.get_api_data(TargetAPI.CREATE),
             method="POST",
+            logger=logger,
         )
 
     def update(self, site_connection, desired_site_connection):
@@ -198,6 +200,7 @@ class SiteAPI(CheckmkAPI):
             ),
             data=site_connection.get_api_data(TargetAPI.UPDATE),
             method="PUT",
+            logger=logger,
         )
 
     def login(self, site_connection):
@@ -213,6 +216,7 @@ class SiteAPI(CheckmkAPI):
             ),
             data=site_connection.get_api_data(TargetAPI.LOGIN),
             method="POST",
+            logger=logger,
         )
 
     def logout(self, site_connection):
@@ -227,6 +231,7 @@ class SiteAPI(CheckmkAPI):
                 TargetAPI.LOGOUT, site_id=site_connection.site_id
             ),
             method="POST",
+            logger=logger,
         )
 
     def delete(self, site_connection):
@@ -241,6 +246,7 @@ class SiteAPI(CheckmkAPI):
                 TargetAPI.DELETE, site_id=site_connection.site_id
             ),
             method="POST",
+            logger=logger,
         )
 
     def _verify_compatibility(self):
