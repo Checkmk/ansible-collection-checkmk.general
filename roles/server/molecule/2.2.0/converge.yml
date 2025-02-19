@@ -35,6 +35,7 @@
         mode: "0644"
         owner: root
         group: root
+      delegate_to: localhost
 
   tasks:
 
