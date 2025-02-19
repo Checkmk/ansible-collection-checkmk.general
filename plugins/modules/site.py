@@ -285,14 +285,19 @@ class SiteAPI(CheckmkAPI):
         if self.getversion() > CheckmkVersion("2.3.0p25"):
             # Remove previously mandatory fields. See https://checkmk.com/werk/16722
 
-            configuration_connection = api_data_copy.get("configuration_connection", {})
+            configuration_connection = api_data_copy.get("site_config", {}).get(
+                "configuration_connection", {}
+            )
             replication_enabled = configuration_connection.get(
                 "enable_replication", False
             )
 
             logger.debug(
-                "Werk 16722 found. Replication is %s."
-                % "enabled" if replication_enabled else "disabled"
+                "Werk 16722 found. Replication is %s." % (
+                    "enabled"
+                    if replication_enabled
+                    else "disabled"
+                )
             )
 
             if not replication_enabled:
