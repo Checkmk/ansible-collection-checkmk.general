@@ -33,8 +33,6 @@
         url: https://exchange.checkmk.com/packages/sslcertificates/1570/sslcertificates-8.9.1.mkp
         dest: /tmp/sslcertificates.mkp
         mode: "0644"
-        owner: root
-        group: root
       delegate_to: localhost
 
   tasks:
