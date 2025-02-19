@@ -63,3 +63,24 @@
     - name: "Verify REST API call."
       ansible.builtin.assert:
         that: checkmk_server_api_state.msg == "422 - There are no changes to be activated."
+
+    - name: "Test that MKP is installed."  # noqa no-changed-when
+      ansible.builtin.command: mkp list
+      register: checkmk_server_site_mkps
+      changed_when: false
+      failed_when: not checkmk_server_site_mkps.rc == 0
+
+    - debug:
+        var: checkmk_server_site_mkps
+
+    - name: "Verify that MKP is installed."
+      ansible.builtin.assert:
+        that: "'{{ item.name }}.*{{ item.version }}.*{% if item.enabled %}Enabled{% else %}Disabled{% endif %}' in checkmk_server_site_mkps.stdout_lines"
+      loop: mkp_packages
+
+    # mkp_packages:
+    #   - name: 'sslcertificates'
+    #     version: 8.9.1
+    #     url: 'https://exchange.checkmk.com/packages/sslcertificates/1570/sslcertificates-8.9.1.mkp'
+    #     installed: true
+    #     enabled: true
