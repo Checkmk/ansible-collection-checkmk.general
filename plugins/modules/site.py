@@ -289,7 +289,7 @@ def werk16722(site_config):
 
     configuration_connection = site_config.get("configuration_connection", {})
 
-    logger.debug("Werk 16722 found. Replication is enabed.")
+    logger.debug("Werk 16722 found. Replication is disabled.")
 
     for key in [
         "url_of_remote_site",
@@ -299,6 +299,7 @@ def werk16722(site_config):
         "direct_login_to_web_gui_allowed",
         "replicate_event_console",
         "replicate_extensions",
+        "message_broker_port",
     ]:
         try:
             logger.debug("Removing key %s" % key)
