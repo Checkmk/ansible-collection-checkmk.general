@@ -284,37 +284,27 @@ class SiteAPI(CheckmkAPI):
             )
 
 
-def werk16722(params):
+def werk16722(site_config):
     # Remove previously mandatory fields. See https://checkmk.com/werk/16722
 
-    configuration_connection = (
-        params.get("site_connection", {})
-        .get("site_config", {})
-        .get("configuration_connection", {})
-    )
+    configuration_connection = site_config.get("configuration_connection", {})
 
-    replication_enabled = configuration_connection.get("enable_replication", False)
+    logger.debug("Werk 16722 found. Replication is enabed.")
 
-    logger.debug(
-        "Werk 16722 found. Replication is %s."
-        % ("enabled" if replication_enabled else "disabled")
-    )
-
-    if not replication_enabled:
-        for key in [
-            "url_of_remote_site",
-            "user_sync",
-            "disable_remote_configuration",
-            "ignore_tls_errors",
-            "direct_login_to_web_gui_allowed",
-            "replicate_event_console",
-            "replicate_extensions",
-        ]:
-            try:
-                logger.debug("Removing key %s" % key)
-                del configuration_connection[key]
-            except KeyError:
-                pass
+    for key in [
+        "url_of_remote_site",
+        "user_sync",
+        "disable_remote_configuration",
+        "ignore_tls_errors",
+        "direct_login_to_web_gui_allowed",
+        "replicate_event_console",
+        "replicate_extensions",
+    ]:
+        try:
+            logger.debug("Removing key %s" % key)
+            del configuration_connection[key]
+        except KeyError:
+            pass
 
 
 logger = Logger()
@@ -329,13 +319,27 @@ def run_module():
     site_id = module.params.get("site_id")
 
     site_api = SiteAPI(module)
+    replication_enabled = (
+        module.params.get("site_connection", {})
+        .get("site_config", {})
+        .get("configuration_connection", {})
+        .get("enable_replication", False)
+    )
 
     # Can be removed, once we no longer support Checkmk versions older than 2.3.0p25
-    if site_api.getversion() > CheckmkVersion("2.3.0p25"):
-        werk16722(module.params)
+    if site_api.getversion() > CheckmkVersion("2.3.0p25") and not replication_enabled:
+        # Remove unneeded parameters from the module's parameters
+        logger.debug("Cleaning up module parameters")
+        werk16722(module.params.get("site_connection", {}).get("site_config", {}))
 
     desired_site_connection = SiteConnection.from_module_params(module.params)
     existing_site_connection = SiteConnection.from_api(site_api.get(site_id))
+
+    # Can be removed, once we no longer support Checkmk versions older than 2.3.0p25
+    if site_api.getversion() > CheckmkVersion("2.3.0p25") and not replication_enabled:
+        # Remove unneeded parameters from the existing site connection's config
+        logger.debug("Cleaning parameters of existing connection")
+        werk16722(existing_site_connection.site_config)
 
     if desired_site_connection.state == "present":
         if existing_site_connection and existing_site_connection.state == "present":
