@@ -1,34 +1,5 @@
 ---
 checkmk_var_test_sites:
-  # - version: "2.2.0p39"
-  #   edition: "cre"
-  #   site: "ancient_cre"
-  #   port: "5022"
-  #   remote_sites:
-  #     - site_id: "ancient_cre_r1"
-  #       site_config:
-  #         status_connection:
-  #           connection:
-  #             socket_type: "tcp"
-  #             port: 6564
-  #             encrypted: true
-  #             host: "localhost"
-  #             verify: "true"
-  #           proxy:
-  #             use_livestatus_daemon: "direct"
-  #           connect_timeout: 2
-  #           status_host:
-  #             status_host_set: "disabled"
-  #           url_prefix: "/ancient_cre_r1/"
-  #         configuration_connection:
-  #           enable_replication: true
-  #           url_of_remote_site: "http://ancient-cre-r1:5000/ancient_cre_r1/check_mk/"
-  #         basic_settings:
-  #           site_id: "ancient_cre_r1"
-  #           alias: "ancient_cre remote site"
-  #       authentication:
-  #         username: "{{ checkmk_var_automation_user }}"
-  #         password: "{{ checkmk_var_automation_secret }}"
   - version: "2.3.0p26"
     edition: "cre"
     site: "old_cre"
@@ -77,35 +48,6 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.3.0p26"
-    edition: "cee"
-    site: "old_cee"
-    port: "5223"
-    remote_sites:
-      - site_id: "old_cce_r1"
-        site_config:
-          status_connection:
-            connection:
-              socket_type: "tcp"
-              port: 6571
-              encrypted: true
-              host: "localhost"
-              verify: "true"
-            proxy:
-              use_livestatus_daemon: "direct"
-            connect_timeout: 2
-            status_host:
-              status_host_set: "disabled"
-            url_prefix: "/old_cce_r1/"
-          configuration_connection:
-            enable_replication: true
-            url_of_remote_site: "http://old-cce-r1:5000/old_cce_r1/check_mk/"
-          basic_settings:
-            site_id: "old_cce_r1"
-            alias: "old_cce remote site"
-        authentication:
-          username: "{{ checkmk_var_automation_user }}"
-          password: "{{ checkmk_var_automation_secret }}"
   - version: "2.4.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
     edition: "cre"
     site: "stable_cre"
@@ -128,7 +70,8 @@ checkmk_var_test_sites:
             url_prefix: "/stable_cre_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://stablet-cre-r1:5000/stable_cre_r1/check_mk/"
+            url_of_remote_site: "http://stable-cre-r1:5000/stable_cre_r1/check_mk/"
+            message_broker_port: 5674
           basic_settings:
             site_id: "stable_cre_r1"
             alias: "stable_cre remote site"
@@ -141,31 +84,6 @@ checkmk_var_test_sites:
     port: "5323"
     remote_sites:
       - site_id: "stable_cme_r1"
-        site_config:
-          status_connection:
-            connection:
-              socket_type: "tcp"
-              port: 6561
-              encrypted: true
-              host: "localhost"
-              verify: false
-            proxy:
-              use_livestatus_daemon: "direct"
-            connect_timeout: 2
-            status_host:
-              status_host_set: "disabled"
-            url_prefix: "/stable_cme_r1/"
-          configuration_connection:
-            enable_replication: true
-            url_of_remote_site: "http://stable-cme-r1:5000/stable_cme_r1/check_mk/"
-          basic_settings:
-            site_id: "stable_cme_r1"
-            customer: "provider"
-            alias: "stable_cme remote site 1"
-        authentication:
-          username: "{{ checkmk_var_automation_user }}"
-          password: "{{ checkmk_var_automation_secret }}"
-      - site_id: "stable_cme_r2"
         site_config:
           status_connection:
             connection:
@@ -193,17 +111,18 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/stable_cme_r2/"
+            url_prefix: "/stable_cme_r1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://stable-cme-r2:5000/stable_cme_r2/check_mk/"
+            url_of_remote_site: "http://stable-cme-r1:5000/stable_cme_r1/check_mk/"
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false
             replicate_event_console: true
             replicate_extensions: false
+            message_broker_port: 5684
           basic_settings:
-            site_id: "stable_cme_r2"
+            site_id: "stable_cme_r1"
             customer: "provider"
             alias: "stable_cme remote site 2"
         authentication:

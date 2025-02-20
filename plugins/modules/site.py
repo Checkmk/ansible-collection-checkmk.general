@@ -127,11 +127,11 @@ class SiteAPI(CheckmkAPI):
     def __init__(self, module):
         super().__init__(module)
 
-        self._verify_compatibility()
-
         self.module = module
         self.params = self.module.params
         self.state = self.params.get("state")
+
+        self._verify_compatibility()
 
     def _get_endpoint(self, target_api, site_id=""):
         if target_api == TargetAPI.CREATE:
@@ -165,6 +165,7 @@ class SiteAPI(CheckmkAPI):
         result = self._fetch(
             code_mapping=SiteHTTPCodes.get,
             endpoint=self._get_endpoint(TargetAPI.GET, site_id=site_id),
+            logger=logger,
         )
 
         logger.debug("get data: %s" % str(result))
@@ -183,12 +184,21 @@ class SiteAPI(CheckmkAPI):
             endpoint=self._get_endpoint(TargetAPI.CREATE),
             data=site_connection.get_api_data(TargetAPI.CREATE),
             method="POST",
+            logger=logger,
         )
 
     def update(self, site_connection, desired_site_connection):
         vorher = site_connection.site_config
         site_connection.merge_with(desired_site_connection)
         nachher = site_connection.site_config
+        logger.debug(
+            "merging update data. current: %s, desired: %s, merged: %s"
+            % (
+                str(vorher),
+                str(desired_site_connection.get_api_data(TargetAPI.UPDATE)),
+                str(nachher),
+            )
+        )
         logger.debug("update endpoint: %s" % self._get_endpoint(TargetAPI.UPDATE))
         logger.debug("update data: %s" % site_connection.get_api_data(TargetAPI.UPDATE))
         return self._fetch(
@@ -198,6 +208,7 @@ class SiteAPI(CheckmkAPI):
             ),
             data=site_connection.get_api_data(TargetAPI.UPDATE),
             method="PUT",
+            logger=logger,
         )
 
     def login(self, site_connection):
@@ -213,6 +224,7 @@ class SiteAPI(CheckmkAPI):
             ),
             data=site_connection.get_api_data(TargetAPI.LOGIN),
             method="POST",
+            logger=logger,
         )
 
     def logout(self, site_connection):
@@ -227,6 +239,7 @@ class SiteAPI(CheckmkAPI):
                 TargetAPI.LOGOUT, site_id=site_connection.site_id
             ),
             method="POST",
+            logger=logger,
         )
 
     def delete(self, site_connection):
@@ -241,6 +254,7 @@ class SiteAPI(CheckmkAPI):
                 TargetAPI.DELETE, site_id=site_connection.site_id
             ),
             method="POST",
+            logger=logger,
         )
 
     def _verify_compatibility(self):
@@ -250,6 +264,7 @@ class SiteAPI(CheckmkAPI):
                 msg="Site management is only available for Checkmk versions starting with 2.2.0. Version found: %s"
                 % self.getversion(),
                 failed=True,
+                logger=logger,
             )
 
         message_broker_port = (
@@ -265,7 +280,32 @@ class SiteAPI(CheckmkAPI):
                 msg="The parameter message_broker_port is only available for Checkmk versions starting with 2.4.0. Version found: %s"
                 % self.getversion(),
                 failed=True,
+                logger=logger,
             )
+
+
+def werk16722(site_config):
+    # Remove previously mandatory fields. See https://checkmk.com/werk/16722
+
+    configuration_connection = site_config.get("configuration_connection", {})
+
+    logger.debug("Werk 16722 found. Replication is disabled.")
+
+    for key in [
+        "url_of_remote_site",
+        "user_sync",
+        "disable_remote_configuration",
+        "ignore_tls_errors",
+        "direct_login_to_web_gui_allowed",
+        "replicate_event_console",
+        "replicate_extensions",
+        "message_broker_port",
+    ]:
+        try:
+            logger.debug("Removing key %s" % key)
+            del configuration_connection[key]
+        except KeyError:
+            pass
 
 
 logger = Logger()
@@ -280,8 +320,27 @@ def run_module():
     site_id = module.params.get("site_id")
 
     site_api = SiteAPI(module)
+    replication_enabled = (
+        module.params.get("site_connection", {})
+        .get("site_config", {})
+        .get("configuration_connection", {})
+        .get("enable_replication", False)
+    )
+
+    # Can be removed, once we no longer support Checkmk versions older than 2.3.0p25
+    if site_api.getversion() > CheckmkVersion("2.3.0p25") and not replication_enabled:
+        # Remove unneeded parameters from the module's parameters
+        logger.debug("Cleaning up module parameters")
+        werk16722(module.params.get("site_connection", {}).get("site_config", {}))
+
     desired_site_connection = SiteConnection.from_module_params(module.params)
     existing_site_connection = SiteConnection.from_api(site_api.get(site_id))
+
+    # Can be removed, once we no longer support Checkmk versions older than 2.3.0p25
+    if site_api.getversion() > CheckmkVersion("2.3.0p25") and not replication_enabled:
+        # Remove unneeded parameters from the existing site connection's config
+        logger.debug("Cleaning parameters of existing connection")
+        werk16722(existing_site_connection.site_config)
 
     if desired_site_connection.state == "present":
         if existing_site_connection and existing_site_connection.state == "present":
@@ -307,40 +366,41 @@ def run_module():
         else:
             result = site_api.create(desired_site_connection)
 
-        exit_module(module, result=result)
+        exit_module(module, result=result, logger=logger)
 
     elif desired_site_connection.state == "absent":
         if existing_site_connection and existing_site_connection.state == "present":
             result = site_api.delete(existing_site_connection)
-            exit_module(module, result=result)
+            exit_module(module, result=result, logger=logger)
         else:
-            exit_module(module, msg="Site connection already absent.")
+            exit_module(module, msg="Site connection already absent.", logger=logger)
 
     elif desired_site_connection.state == "login":
         if not existing_site_connection:
-            exit_module(module, msg="Site does not exist", failed=True)
+            exit_module(module, msg="Site does not exist", failed=True, logger=logger)
 
         if not existing_site_connection.logged_in():
             result = site_api.login(desired_site_connection)
-            exit_module(module, result=result)
+            exit_module(module, result=result, logger=logger)
         else:
-            exit_module(module, msg="Already logged in to site.")
+            exit_module(module, msg="Already logged in to site.", logger=logger)
 
     elif desired_site_connection.state == "logout":
         if not existing_site_connection:
-            exit_module(module, msg="Site does not exist", failed=True)
+            exit_module(module, msg="Site does not exist", failed=True, logger=logger)
 
         if existing_site_connection.logged_in():
             result = site_api.logout(desired_site_connection)
-            exit_module(module, result=result)
+            exit_module(module, result=result, logger=logger)
         else:
-            exit_module(module, msg="Already logged out from site.")
+            exit_module(module, msg="Already logged out from site.", logger=logger)
 
     else:
         exit_module(
             module,
             msg="Unexpected target state %s" % desired_site_connection.state,
             failed=True,
+            logger=logger,
         )
 
 
