@@ -188,17 +188,7 @@ class SiteAPI(CheckmkAPI):
         )
 
     def update(self, site_connection, desired_site_connection):
-        vorher = site_connection.site_config
         site_connection.merge_with(desired_site_connection)
-        nachher = site_connection.site_config
-        logger.debug(
-            "merging update data. current: %s, desired: %s, merged: %s"
-            % (
-                str(vorher),
-                str(desired_site_connection.get_api_data(TargetAPI.UPDATE)),
-                str(nachher),
-            )
-        )
         logger.debug("update endpoint: %s" % self._get_endpoint(TargetAPI.UPDATE))
         logger.debug("update data: %s" % site_connection.get_api_data(TargetAPI.UPDATE))
         return self._fetch(
@@ -286,9 +276,7 @@ class SiteAPI(CheckmkAPI):
 
 def werk16722(site_config):
     # Remove previously mandatory fields. See https://checkmk.com/werk/16722
-
     configuration_connection = site_config.get("configuration_connection", {})
-
     logger.debug("Werk 16722 found. Replication is disabled.")
 
     for key in [
