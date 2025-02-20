@@ -129,18 +129,18 @@ checkmk_var_test_sites:
           configuration_connection:
             enable_replication: true
             url_of_remote_site: "http://stable-cre-r1:5000/stable_cre_r1/check_mk/"
-            message_broker_port: 5671
+            message_broker_port: 5674
           basic_settings:
             site_id: "stable_cre_r1"
             alias: "stable_cre remote site"
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
-  #- version: "2.4.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
-  #  edition: "cme"
-  #  site: "stable_cme"
-  #  port: "5323"
-  #  remote_sites:
+  - version: "2.4.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+    edition: "cme"
+    site: "stable_cme"
+    port: "5323"
+    remote_sites:
   #    - site_id: "stable_cme_r1"
   #      site_config:
   #        status_connection:
@@ -166,47 +166,48 @@ checkmk_var_test_sites:
   #      authentication:
   #        username: "{{ checkmk_var_automation_user }}"
   #        password: "{{ checkmk_var_automation_secret }}"
-  #    - site_id: "stable_cme_r2"
-  #      site_config:
-  #        status_connection:
-  #          connection:
-  #            socket_type: "tcp"
-  #            port: 6562
-  #            encrypted: true
-  #            host: "localhost"
-  #            verify: false
-  #          proxy:
-  #            use_livestatus_daemon: "with_proxy"
-  #            global_settings: false
-  #            tcp:
-  #              port: 6663
-  #              only_from: []
-  #              tls: true
-  #            params:
-  #              channels: 6
-  #              heartbeat:
-  #                interval: 10
-  #                timeout: 4
-  #              channel_timeout: 6
-  #              query_timeout: 240
-  #              connect_retry: 5
-  #              cache: true
-  #          connect_timeout: 2
-  #          status_host:
-  #            status_host_set: "disabled"
-  #          url_prefix: "/stable_cme_r2/"
-  #        configuration_connection:
-  #          enable_replication: true
-  #          url_of_remote_site: "http://stable-cme-r2:5000/stable_cme_r2/check_mk/"
-  #          disable_remote_configuration: true
-  #          ignore_tls_errors: false
-  #          direct_login_to_web_gui_allowed: false
-  #          replicate_event_console: true
-  #          replicate_extensions: false
-  #        basic_settings:
-  #          site_id: "stable_cme_r2"
-  #          customer: "provider"
-  #          alias: "stable_cme remote site 2"
-  #      authentication:
-  #        username: "{{ checkmk_var_automation_user }}"
-  #        password: "{{ checkmk_var_automation_secret }}"
+      - site_id: "stable_cme_r2"
+        site_config:
+          status_connection:
+            connection:
+              socket_type: "tcp"
+              port: 6562
+              encrypted: true
+              host: "localhost"
+              verify: false
+            proxy:
+              use_livestatus_daemon: "with_proxy"
+              global_settings: false
+              tcp:
+                port: 6663
+                only_from: []
+                tls: true
+              params:
+                channels: 6
+                heartbeat:
+                  interval: 10
+                  timeout: 4
+                channel_timeout: 6
+                query_timeout: 240
+                connect_retry: 5
+                cache: true
+            connect_timeout: 2
+            status_host:
+              status_host_set: "disabled"
+            url_prefix: "/stable_cme_r2/"
+          configuration_connection:
+            enable_replication: true
+            url_of_remote_site: "http://stable-cme-r2:5000/stable_cme_r2/check_mk/"
+            disable_remote_configuration: true
+            ignore_tls_errors: false
+            direct_login_to_web_gui_allowed: false
+            replicate_event_console: true
+            replicate_extensions: false
+            message_broker_port: 5684
+          basic_settings:
+            site_id: "stable_cme_r2"
+            customer: "provider"
+            alias: "stable_cme remote site 2"
+        authentication:
+          username: "{{ checkmk_var_automation_user }}"
+          password: "{{ checkmk_var_automation_secret }}"

@@ -129,13 +129,13 @@ jobs:
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
           CMK_RABBITMQ_PORT: 5671
-      #stable_cme:
-      #  image: checkmk/check-mk-managed:2.4.0-daily
-      #  ports:
-      #    - 5323:5000
-      #  env:
-      #    CMK_SITE_ID: "stable_cme"
-      #    CMK_PASSWORD: "Sup3rSec4et!"
+      stable_cme:
+        image: checkmk/check-mk-managed:2.4.0-daily
+        ports:
+          - 5323:5000
+        env:
+          CMK_SITE_ID: "stable_cme"
+          CMK_PASSWORD: "Sup3rSec4et!"
       #stable-cme-r1:
       #  image: checkmk/check-mk-managed:2.4.0-daily
       #  ports:
@@ -145,16 +145,18 @@ jobs:
       #    CMK_SITE_ID: "stable_cme_r1"
       #    CMK_PASSWORD: "Sup3rSec4et!"
       #    CMK_LIVESTATUS_TCP: "on"
-      #stable-cme-r2:
-      #  image: checkmk/check-mk-managed:2.4.0-daily
-      #  ports:
-      #    - 7323:5000
-      #    - 6562:6557
-      #    - 6663:6663
-      #  env:
-      #    CMK_SITE_ID: "stable_cme_r2"
-      #    CMK_PASSWORD: "Sup3rSec4et!"
-      #    CMK_LIVESTATUS_TCP: "on"
+      stable-cme-r2:
+        image: checkmk/check-mk-managed:2.4.0-daily
+        ports:
+          - 7323:5000
+          - 6562:6557
+          - 6663:6663
+          - 5684:5671
+        env:
+          CMK_SITE_ID: "stable_cme_r2"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
+          CMK_RABBITMQ_PORT: 5671
 
     steps:
       - name: Check out code
