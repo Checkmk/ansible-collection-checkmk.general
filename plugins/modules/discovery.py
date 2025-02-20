@@ -37,7 +37,12 @@ options:
         elements: str
         default: []
     state:
-        description: The action to perform during discovery.
+        description:
+            - The action to perform during discovery.
+            - Not all choices are available with all Checkmk versions.
+            - Check the ReDoc documentation in your site for details.
+            - In versions 2.4.0 and newer, the modes tabula_rasa and refresh are no longer available,
+            - in that case, we perform a add/remove all services and labels, instead.
         type: str
         default: new
         choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels, only_service_labels, monitor_undecided_services]
@@ -235,31 +240,32 @@ class newBulkDiscoveryAPI(CheckmkAPI):
             "update_host_labels": False,
         }
 
-        if self.params.get("state") in ["new", "fix_all", "monitor_undecided_services"]:
+        if self.params.get("state") in [
+            "new",
+            "fix_all",
+            "monitor_undecided_services",
+            "refresh",
+        ]:
             options["monitor_undecided_services"] = True
-        if self.params.get("state") in ["remove", "fix_all"]:
+        if self.params.get("state") in ["remove", "fix_all", "refresh"]:
             options["remove_vanished_services"] = True
-        if self.params.get("state") in ["only_service_labels"]:
+        if self.params.get("state") in ["only_service_labels", "refresh"]:
             options["update_service_labels"] = True
-        if self.params.get("state") in ["new", "fix_all", "only_host_labels"]:
+        if self.params.get("state") in [
+            "new",
+            "fix_all",
+            "only_host_labels",
+            "refresh",
+        ]:
             options["update_host_labels"] = True
 
-        if self.params.get("state") == "refresh":
-            data = {
-                "hostnames": self.params.get("hosts", []),
-                "mode": self.params.get("state"),
-                "do_full_scan": self.params.get("do_full_scan", True),
-                "bulk_size": self.params.get("bulk_size", 1),
-                "ignore_errors": self.params.get("ignore_errors", True),
-            }
-        else:
-            data = {
-                "hostnames": self.params.get("hosts", []),
-                "options": options,
-                "do_full_scan": self.params.get("do_full_scan", True),
-                "bulk_size": self.params.get("bulk_size", 1),
-                "ignore_errors": self.params.get("ignore_errors", True),
-            }
+        data = {
+            "hostnames": self.params.get("hosts", []),
+            "options": options,
+            "do_full_scan": self.params.get("do_full_scan", True),
+            "bulk_size": self.params.get("bulk_size", 1),
+            "ignore_errors": self.params.get("ignore_errors", True),
+        }
 
         return self._fetch(
             code_mapping=HTTP_CODES_BULK,
@@ -365,9 +371,6 @@ def run_module():
         servicecompletion = ServiceCompletionBulkAPI(module)
 
     ver = discovery.getversion()
-
-    if single_mode and ver < CheckmkVersion("2.1.0"):
-        discovery = oldDiscoveryAPI(module)
 
     if ver < CheckmkVersion("2.2.0") and module.params.get("state") == "tabula_rasa":
         result = RESULT(

@@ -361,6 +361,9 @@ module_args = dict(
                                 default=True,
                                 type="bool",
                             ),
+                            message_broker_port=dict(
+                                type="int",
+                            ),
                         ),
                     ),
                     basic_settings=dict(

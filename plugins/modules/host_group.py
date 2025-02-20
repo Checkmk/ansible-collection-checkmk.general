@@ -131,20 +131,27 @@ import json
 # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
+from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
+
+logger = Logger()
 
 
 def exit_failed(module, msg):
-    result = {"msg": msg, "changed": False, "failed": True}
+    result = {"msg": msg + "LOG: " + logger.get_log(), "changed": False, "failed": True}
     module.fail_json(**result)
 
 
 def exit_changed(module, msg):
-    result = {"msg": msg, "changed": True, "failed": False}
+    result = {"msg": msg + "LOG: " + logger.get_log(), "changed": True, "failed": False}
     module.exit_json(**result)
 
 
 def exit_ok(module, msg):
-    result = {"msg": msg, "changed": False, "failed": False}
+    result = {
+        "msg": msg + "LOG: " + logger.get_log(),
+        "changed": False,
+        "failed": False,
+    }
     module.exit_json(**result)
 
 
@@ -157,6 +164,7 @@ def get_current_single_host_group(module, base_url, headers):
     api_endpoint = "/objects/host_group_config/" + name
     url = base_url + api_endpoint
 
+    logger.debug("Calling URL %s, data: None, Method: GET" % url)
     response, info = fetch_url(module, url, data=None, headers=headers, method="GET")
 
     if info["status"] == 200:
@@ -184,6 +192,7 @@ def get_current_host_groups(module, base_url, headers):
     api_endpoint = "/domain-types/host_group_config/collections/all"
     url = base_url + api_endpoint
 
+    logger.debug("Calling URL %s, data: None, Method: GET" % url)
     response, info = fetch_url(module, url, headers=headers, method="GET")
 
     if info["status"] == 200:
@@ -226,6 +235,9 @@ def update_single_host_group(module, base_url, headers):
     }
     url = base_url + api_endpoint
 
+    logger.debug(
+        "Calling URL %s, data: %s, Method: PUT" % (url, str(module.jsonify(params)))
+    )
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="PUT"
     )
@@ -253,6 +265,9 @@ def update_host_groups(module, base_url, groups, headers):
     }
     url = base_url + api_endpoint
 
+    logger.debug(
+        "Calling URL %s, data: %s, Method: PUT" % (url, str(module.jsonify(params)))
+    )
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="PUT"
     )
@@ -282,6 +297,9 @@ def create_single_host_group(module, base_url, headers):
         }
     url = base_url + api_endpoint
 
+    logger.debug(
+        "Calling URL %s, data: %s, Method: POST" % (url, str(module.jsonify(params)))
+    )
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="POST"
     )
@@ -321,6 +339,9 @@ def create_host_groups(module, base_url, groups, headers):
 
     url = base_url + api_endpoint
 
+    logger.debug(
+        "Calling URL %s, data: %s, Method: POST" % (url, str(module.jsonify(params)))
+    )
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="POST"
     )
@@ -337,6 +358,7 @@ def delete_single_host_group(module, base_url, headers):
     api_endpoint = "/objects/host_group_config/" + module.params["name"]
     url = base_url + api_endpoint
 
+    logger.debug("Calling URL %s, data: None, Method: DELETE" % url)
     response, info = fetch_url(module, url, data=None, headers=headers, method="DELETE")
 
     if info["status"] != 204:
@@ -354,6 +376,9 @@ def delete_host_groups(module, base_url, groups, headers):
     }
     url = base_url + api_endpoint
 
+    logger.debug(
+        "Calling URL %s, data: %s, Method: POST" % (url, str(module.jsonify(params)))
+    )
     response, info = fetch_url(
         module, url, module.jsonify(params), headers=headers, method="POST"
     )
