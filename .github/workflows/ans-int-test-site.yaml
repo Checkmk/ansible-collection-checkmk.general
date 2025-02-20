@@ -62,22 +62,6 @@ jobs:
             python: '3.10'
 
     services:
-      # ancient_cre:
-      #   image: checkmk/check-mk-raw:2.2.0p39
-      #   ports:
-      #     - 5022:5000
-      #   env:
-      #     CMK_SITE_ID: "ancient_cre"
-      #     CMK_PASSWORD: "Sup3rSec4et!"
-      # ancient-cre-r1:
-      #   image: checkmk/check-mk-raw:2.2.0p39
-      #   ports:
-      #     - 6022:5000
-      #     - 6564:6557
-      #   env:
-      #     CMK_SITE_ID: "ancient_cre_r1"
-      #     CMK_PASSWORD: "Sup3rSec4et!"
-      #     CMK_LIVESTATUS_TCP: "on"
       old_cre:
         image: checkmk/check-mk-raw:2.3.0p26
         ports:
@@ -93,22 +77,6 @@ jobs:
           - 6664:6664
         env:
           CMK_SITE_ID: "old_cre_r1"
-          CMK_PASSWORD: "Sup3rSec4et!"
-          CMK_LIVESTATUS_TCP: "on"
-      old_cce:
-        image: checkmk/check-mk-cloud:2.3.0p26
-        ports:
-          - 5223:5000
-        env:
-          CMK_SITE_ID: "old_cce"
-          CMK_PASSWORD: "Sup3rSec4et!"
-      old-cce-r1:
-        image: checkmk/check-mk-cloud:2.3.0p26
-        ports:
-          - 6021:5000
-          - 6571:6557
-        env:
-          CMK_SITE_ID: "old_cce_r1"
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
       stable_cre:
@@ -136,16 +104,7 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
-      #stable-cme-r1:
-      #  image: checkmk/check-mk-managed:2.4.0-daily
-      #  ports:
-      #    - 6323:5000
-      #    - 6561:6557
-      #  env:
-      #    CMK_SITE_ID: "stable_cme_r1"
-      #    CMK_PASSWORD: "Sup3rSec4et!"
-      #    CMK_LIVESTATUS_TCP: "on"
-      stable-cme-r2:
+      stable-cme-r1:
         image: checkmk/check-mk-managed:2.4.0-daily
         ports:
           - 7323:5000
@@ -153,7 +112,7 @@ jobs:
           - 6663:6663
           - 5684:5671
         env:
-          CMK_SITE_ID: "stable_cme_r2"
+          CMK_SITE_ID: "stable_cme_r1"
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
           CMK_RABBITMQ_PORT: 5671
