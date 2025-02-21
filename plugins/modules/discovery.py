@@ -299,7 +299,10 @@ def wait_for_completion(single_mode, servicecompletion, sleep_time=3):
             if result.http_code != 302:
                 break
         else:
-            if not (json.loads(result.content).get("extensions").get("active")):
+            if result.http_code == 204:
+                break
+
+            if not json.loads(result.content).get("extensions").get("active"):
                 break
 
             time.sleep(sleep_time)
