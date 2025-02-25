@@ -121,12 +121,17 @@ import time
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+from ansible_collections.checkmk.general.plugins.module_utils.logger import (
+    Logger,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )
+
+logger = Logger()
 
 HTTP_CODES = {
     # http_code: (changed, failed, "Message")
@@ -299,8 +304,14 @@ def wait_for_completion(single_mode, servicecompletion, sleep_time=3):
             if result.http_code != 302:
                 break
         else:
-            if result.http_code == 204:
-                break
+            if result.http_code == 404:
+                # Only in Checkmk > 2.4.0
+                raise Exception("No bulk discovery possible")
+
+            print("############# wait_for_discovery, RC=%s, msg=%s" % (
+                result.http_code,
+                result.msg,
+            ))
 
             if not json.loads(result.content).get("extensions").get("active"):
                 break
@@ -348,6 +359,7 @@ def run_module():
         supports_check_mode=False,
     )
 
+    logger.set_loglevel(module._verbosity)
     result = RESULT(
         http_code=0,
         msg="Nothing to be done",
@@ -446,6 +458,11 @@ def run_module():
 
         result = discovery.post()
 
+    print("############ result.http_code: %s, msg: %s" % (
+        result.http_code,
+        result.msg,
+    ))
+    module.exit_json(**result_as_dict(result))
     # If single_mode and the API returns 302, check the service completion endpoint
     # If not single_mode and the API returns 200, check the service completion endpoint
     if (single_mode and result.http_code == 302) or (
