@@ -70,14 +70,14 @@ jobs:
           CMK_SITE_ID: "ancient_cfe"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cce:
-        image: checkmk/check-mk-cloud:2.2.0p39
+        image: checkmk/check-mk-cloud:2.2.0p40
         ports:
           - 5222:5000
         env:
           CMK_SITE_ID: "old_cce"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cme:
-        image: checkmk/check-mk-managed:2.3.0p26
+        image: checkmk/check-mk-managed:2.3.0p27
         ports:
           - 5323:5000
         env:
