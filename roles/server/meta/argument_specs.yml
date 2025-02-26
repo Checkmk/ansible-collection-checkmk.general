@@ -78,6 +78,31 @@ argument_specs:
               value:
                 type: "str"
                 description: "The value of the variable."
+          mkp_packages:
+            type: "list"
+            elements: "dict"
+            options:
+              name:
+                type: "str"
+                description: "The name of the extension package."
+              version:
+                type: "str"
+                description: "The version of the extension package."
+              src:
+                type: "str"
+                description: "The path to the the extension package."
+              url:
+                type: "str"
+                description: "The URL to download the extension package from."
+              checksum:
+                type: "str"
+                description: "The checksum of the extension package."
+              installed:
+                type: "bool"
+                description: "Install the extension package."
+              enabled:
+                type: "bool"
+                description: "Enable the extension package."
 
       checkmk_server_configure_firewall:
         type: "bool"
