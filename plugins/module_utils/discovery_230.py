@@ -26,9 +26,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.discovery import (
 from ansible_collections.checkmk.general.plugins.module_utils.types import (
     generate_result,
 )
-from ansible_collections.checkmk.general.plugins.module_utils.version import (
-    CheckmkVersion,
-)
 
 COMPATIBLE_MODES = [
     "new",

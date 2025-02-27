@@ -147,7 +147,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.discovery_240 impo
     Discovery240,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
-from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+from ansible_collections.checkmk.general.plugins.module_utils.types import (
+    generate_result,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.utils import exit_module
 
 logger = Logger()
