@@ -26,8 +26,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.version import (
 class CheckmkAPI:
     """Base class to contact a Checkmk server"""
 
-    def __init__(self, module):
+    def __init__(self, module, logger=None):
         self.module = module
+        self.logger = logger
         self.params = self.module.params
         server = self.params.get("server_url")
         site = self.params.get("site")
@@ -47,6 +48,15 @@ class CheckmkAPI:
     def _fetch(
         self, code_mapping="", endpoint="", data=None, method="GET", logger=None
     ):
+        if not logger:
+            logger = self.logger
+
+        if logger:
+            logger.debug("_fetch(): endpoint: %s, data: %s, method: %s" % (
+                endpoint,
+                str(data),
+                method,
+            ))
         http_mapping = GENERIC_HTTP_CODES.copy()
         http_mapping.update(code_mapping)
 
@@ -100,6 +110,8 @@ class CheckmkAPI:
                 logger=logger,
             )
             # self.module.fail_json(**result_as_dict(result))
+        if logger:
+            logger.debug("_fetch(): result: %s" % str(result))
         return result
 
     def getversion(self):

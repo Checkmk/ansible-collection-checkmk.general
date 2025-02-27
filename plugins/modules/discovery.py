@@ -1,9 +1,13 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, Michael Sekania &
-#                      Robin Gierse <robin.gierse@checkmk.com>
+# Copyright: (c) 2022 - 2025,
+#   Michael Sekania &
+#   Robin Gierse <robin.gierse@checkmk.com> &
+#   Max Sickora <max.sickora@checkmk.com> &
+#   Lars Getwan <lars.getwan@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
@@ -58,6 +62,19 @@ options:
         description: The option whether to ignore errors in single check plugins. (Bulk mode only).
         type: bool
         default: True
+    wait_for_completion:
+        description: If true, wait for the discovery to finish.
+        type: bool
+        default: True
+    wait_for_previous:
+        description: If true, wait for previously running discovery jobs to finish.
+        type: bool
+        default: True
+    wait_timeout:
+        description: The time in seconds to wait for (previous/current) completion.
+        type: int
+        default: 15
+
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -115,210 +132,37 @@ message:
     sample: 'Host created.'
 """
 
-import json
-import time
-
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.discovery_210 import (
+    Discovery210,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.discovery_220 import (
+    Discovery220,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.discovery_230 import (
+    Discovery230,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.discovery_240 import (
+    Discovery240,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.logger import (
     Logger,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
-    result_as_dict,
-)
-from ansible_collections.checkmk.general.plugins.module_utils.version import (
-    CheckmkVersion,
+    exit_module,
 )
 
 logger = Logger()
 
-HTTP_CODES = {
-    # http_code: (changed, failed, "Message")
-    200: (True, False, "Discovery successful."),
-    302: (
-        True,
-        False,
-        "The service discovery background job has been initialized. Redirecting to the 'Wait for service discovery completion' endpoint.",
-    ),
-    404: (False, True, "Not Found: Host could not be found."),
-    409: (False, False, "Conflict: A discovery background job is already running"),
-}
-
-HTTP_CODES_SC = {
-    # http_code: (changed, failed, "Message")
-    200: (True, False, "The service discovery has been completed."),
-    302: (
-        True,
-        False,
-        "The service discovery is still running. Redirecting to the 'Wait for completion' endpoint.",
-    ),
-    404: (False, False, "Not Found: There is no running service discovery"),
-}
-
-HTTP_CODES_BULK = {
-    # http_code: (changed, failed, "Message")
-    200: (True, False, "Discovery successful."),
-    409: (False, False, "Conflict: A bulk discovery job is already active"),
-}
-
-HTTP_CODES_BULK_SC = {
-    # http_code: (changed, failed, "Message")
-    200: (True, False, "The service discovery has been completed."),
-    404: (False, False, "Not Found: There is no running bulk_discovery job"),
-}
-
-
-class DiscoveryAPI(CheckmkAPI):
-    def post(self):
-        data = {
-            "host_name": self.params.get("host_name"),
-            "mode": self.params.get("state"),
-        }
-
-        return self._fetch(
-            code_mapping=HTTP_CODES,
-            endpoint="domain-types/service_discovery_run/actions/start/invoke",
-            data=data,
-            method="POST",
-        )
-
-
-class oldDiscoveryAPI(CheckmkAPI):
-    def post(self):
-        data = {
-            "mode": self.params.get("state"),
-        }
-
-        return self._fetch(
-            code_mapping=HTTP_CODES,
-            endpoint=(
-                "/objects/host/"
-                + self.params.get("host_name")
-                + "/actions/discover_services/invoke"
-            ),
-            data=data,
-            method="POST",
-        )
-
-
-class ServiceCompletionAPI(CheckmkAPI):
-    def get(self):
-        data = {}
-
-        return self._fetch(
-            code_mapping=HTTP_CODES_SC,
-            endpoint=(
-                "objects/service_discovery_run/"
-                + self.params.get("host_name")
-                + "/actions/wait-for-completion/invoke"
-            ),
-            data=data,
-            method="GET",
-        )
-
-
-class BulkDiscoveryAPI(CheckmkAPI):
-    def post(self):
-        data = {
-            "hostnames": self.params.get("hosts", []),
-            "mode": self.params.get("state"),
-            "do_full_scan": self.params.get("do_full_scan", True),
-            "bulk_size": self.params.get("bulk_size", 1),
-            "ignore_errors": self.params.get("ignore_errors", True),
-        }
-
-        return self._fetch(
-            code_mapping=HTTP_CODES_BULK,
-            endpoint="domain-types/discovery_run/actions/bulk-discovery-start/invoke",
-            data=data,
-            method="POST",
-        )
-
-
-class newBulkDiscoveryAPI(CheckmkAPI):
-    def post(self):
-        options = {
-            "monitor_undecided_services": False,
-            "remove_vanished_services": False,
-            "update_service_labels": False,
-            "update_host_labels": False,
-        }
-
-        if self.params.get("state") in [
-            "new",
-            "fix_all",
-            "monitor_undecided_services",
-            "refresh",
-        ]:
-            options["monitor_undecided_services"] = True
-        if self.params.get("state") in ["remove", "fix_all", "refresh"]:
-            options["remove_vanished_services"] = True
-        if self.params.get("state") in ["only_service_labels", "refresh"]:
-            options["update_service_labels"] = True
-        if self.params.get("state") in [
-            "new",
-            "fix_all",
-            "only_host_labels",
-            "refresh",
-        ]:
-            options["update_host_labels"] = True
-
-        data = {
-            "hostnames": self.params.get("hosts", []),
-            "options": options,
-            "do_full_scan": self.params.get("do_full_scan", True),
-            "bulk_size": self.params.get("bulk_size", 1),
-            "ignore_errors": self.params.get("ignore_errors", True),
-        }
-
-        return self._fetch(
-            code_mapping=HTTP_CODES_BULK,
-            endpoint="domain-types/discovery_run/actions/bulk-discovery-start/invoke",
-            data=data,
-            method="POST",
-        )
-
-
-class ServiceCompletionBulkAPI(CheckmkAPI):
-    def get(self):
-        data = {}
-
-        return self._fetch(
-            code_mapping=HTTP_CODES_BULK_SC,
-            endpoint=("objects/discovery_run/bulk_discovery"),
-            data=data,
-            method="GET",
-        )
-
-
-# If single_mode check if discovery process is already running. If API returns 302, check the service completion endpoint
-# until the discovery has completed successfully (or failed).
-# If not single_mode check if bulk_discovery process is already running. If active, check the service completion endpoint
-# until the bulk_discovery has completed successfully (or failed).
-def wait_for_completion(single_mode, servicecompletion, sleep_time=3):
-    while True:
-        result = servicecompletion.get()
-
-        if single_mode:
-            if result.http_code != 302:
-                break
-        else:
-            if result.http_code == 404:
-                # Only in Checkmk > 2.4.0
-                raise Exception("No bulk discovery possible")
-
-            print("############# wait_for_discovery, RC=%s, msg=%s" % (
-                result.http_code,
-                result.msg,
-            ))
-
-            if not json.loads(result.content).get("extensions").get("active"):
-                break
-
-            time.sleep(sleep_time)
-
-    return result
+AVAILABLE_API_VERSIONS = [
+    # Let's try the newest Version, first.
+    Discovery240,
+    Discovery230,
+    Discovery220,
+    Discovery210,
+]
 
 
 def run_module():
@@ -347,6 +191,9 @@ def run_module():
         do_full_scan=dict(type="bool", default=True),
         bulk_size=dict(type="int", default=1),
         ignore_errors=dict(type="bool", default=True),
+        wait_for_completion=dict(type="bool", default=True),
+        wait_for_previous=dict(type="bool", default=True),
+        wait_timeout=dict(type="int", default=15),
     )
     module = AnsibleModule(
         argument_spec=module_args,
@@ -360,118 +207,38 @@ def run_module():
     )
 
     logger.set_loglevel(module._verbosity)
-    result = RESULT(
+    result = generate_result(
         http_code=0,
         msg="Nothing to be done",
-        content="",
-        etag="",
         failed=False,
-        changed=False,
     )
 
-    single_mode = not (
-        "hosts" in module.params
-        and module.params.get("hosts")
-        and len(module.params.get("hosts", [])) > 0
-    )
-
+    version = CheckmkAPI(module, logger).getversion()
+    logger.debug("Version found: %s" % str(version))
     discovery = None
-    servicecompletion = None
 
-    if single_mode:
-        discovery = DiscoveryAPI(module)
-        servicecompletion = ServiceCompletionAPI(module)
-    else:
-        discovery = BulkDiscoveryAPI(module)
-        servicecompletion = ServiceCompletionBulkAPI(module)
+    # Find a submodule compatible to the RESP API's version
+    for api in AVAILABLE_API_VERSIONS:
+        logger.debug("Checking compatibility with %s" % str(api))
+        if api(module, logger).compatible(version):
+            discovery = api(module, logger)
+            break
 
-    ver = discovery.getversion()
-
-    if ver < CheckmkVersion("2.2.0") and module.params.get("state") == "tabula_rasa":
-        result = RESULT(
-            http_code=0,
-            msg="State 'tabula_rasa' is not supported before 2.2.0",
-            content="",
-            etag="",
+    if not discovery:
+        exit_module(
+            module,
+            msg="Version %s is not supported by this module" % version,
             failed=True,
-            changed=False,
+            logger=logger,
         )
-        module.fail_json(**result_as_dict(result))
 
-    if not single_mode and module.params.get("state") == "tabula_rasa":
-        module.params["state"] = "refresh"
+    result = discovery.start_discovery()
 
-    if module.params.get("state") in [
-        "only_service_labels",
-        "monitor_undecided_services",
-    ]:
-        if ver < CheckmkVersion("2.3.0"):
-            result = RESULT(
-                http_code=0,
-                msg="State is not supported before 2.3.0",
-                content="",
-                etag="",
-                failed=True,
-                changed=False,
-            )
-            module.fail_json(**result_as_dict(result))
-        if single_mode:
-            if module.params.get("state") == "monitor_undecided_services":
-                result = RESULT(
-                    http_code=0,
-                    msg="State can only be used in bulk mode",
-                    content="",
-                    etag="",
-                    failed=True,
-                    changed=False,
-                )
-                module.fail_json(**result_as_dict(result))
-            if module.params.get(
-                "state"
-            ) == "only_service_labels" and ver < CheckmkVersion("2.3.0p3"):
-                result = RESULT(
-                    http_code=0,
-                    msg="State can only be used in bulk mode",
-                    content="",
-                    etag="",
-                    failed=True,
-                    changed=False,
-                )
-                module.fail_json(**result_as_dict(result))
-
-    if not single_mode and ver >= CheckmkVersion("2.3.0"):
-        discovery = newBulkDiscoveryAPI(module)
-
-    result = wait_for_completion(single_mode, servicecompletion)
-
-    result = discovery.post()
-
-    # In case the API returns 409 (discovery running) we wait and try again.
-    # This can happen as example in versions where the endpoint doesn't respond with the correct redirect.
-    while (single_mode and result.http_code == 409) or (
-        len(module.params.get("hosts", [])) > 0 and result.http_code == 409
-    ):
-        if single_mode:
-            time.sleep(1)
-        else:
-            time.sleep(10)
-
-        result = discovery.post()
-
-    print("############ result.http_code: %s, msg: %s" % (
-        result.http_code,
-        result.msg,
-    ))
-    module.exit_json(**result_as_dict(result))
-    # If single_mode and the API returns 302, check the service completion endpoint
-    # If not single_mode and the API returns 200, check the service completion endpoint
-    if (single_mode and result.http_code == 302) or (
-        len(module.params.get("hosts", [])) > 0 and result.http_code == 200
-    ):
-        result = wait_for_completion(single_mode, servicecompletion)
-
-    # content of json.loads(result.content).get("extensions").get("logs").get("result") is alos quite interesting
-    module.exit_json(**result_as_dict(result))
+    exit_module(
+        module,
+        result=result,
+        logger=logger,
+    )
 
 
 def main():
