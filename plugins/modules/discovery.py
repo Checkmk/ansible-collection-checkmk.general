@@ -146,13 +146,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.discovery_230 impo
 from ansible_collections.checkmk.general.plugins.module_utils.discovery_240 import (
     Discovery240,
 )
+from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
-from ansible_collections.checkmk.general.plugins.module_utils.logger import (
-    Logger,
-)
-from ansible_collections.checkmk.general.plugins.module_utils.utils import (
-    exit_module,
-)
+from ansible_collections.checkmk.general.plugins.module_utils.utils import exit_module
 
 logger = Logger()
 

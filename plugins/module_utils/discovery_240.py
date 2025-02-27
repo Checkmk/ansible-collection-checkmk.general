@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
 # Copyright: (c) 2022 - 2025,
@@ -16,18 +16,18 @@ import json
 import time
 
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.discovery import (
+    HTTP_CODES,
+    HTTP_CODES_BULK,
+    HTTP_CODES_BULK_SC,
+    HTTP_CODES_SC,
+    Discovery,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.types import (
     generate_result,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
-)
-from ansible_collections.checkmk.general.plugins.module_utils.discovery import (
-    HTTP_CODES,
-    HTTP_CODES_SC,
-    HTTP_CODES_BULK,
-    HTTP_CODES_BULK_SC,
-    Discovery,
 )
 
 COMPATIBLE_MODES = [
@@ -172,7 +172,7 @@ class Discovery240(Discovery):
                 msg=(
                     "Unable to get job_id for bulk service discovery. "
                     "Will not wait for job to finish"
-                )
+                ),
                 failed=False,
                 changed=True,
             )

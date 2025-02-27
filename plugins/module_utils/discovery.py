@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
 # Copyright: (c) 2022, Michael Sekania &
@@ -8,7 +8,10 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible_collections.checkmk.general.plugins.module_utils.version import CheckmkVersion
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
+
 #from .version import CheckmkVersion
 
 HTTP_CODES = {
