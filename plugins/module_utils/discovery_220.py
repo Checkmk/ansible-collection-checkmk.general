@@ -69,7 +69,7 @@ class ServiceBulkDiscoveryAPI(CheckmkAPI):
         mode = self.params.get("state")
         if mode not in COMPATIBLE_MODES:
             return generate_result(
-                msg="State %s is not supported with this Checkmk version."
+                msg="State %s is not supported with this Checkmk version." % mode
             )
 
         data = {

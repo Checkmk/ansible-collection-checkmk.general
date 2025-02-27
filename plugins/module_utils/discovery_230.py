@@ -47,9 +47,14 @@ SUPPORTED_VERSIONS = {
 class ServiceDiscoveryAPI(CheckmkAPI):
     def post(self):
         mode = self.params.get("state")
-        if mode not in COMPATIBLE_MODES or mode == "monitor_undecided_services":
+        if mode not in COMPATIBLE_MODES:
             return generate_result(
                 msg="State %s is not supported with this Checkmk version." % mode
+            )
+
+        if mode == "monitor_undecided_services":
+            return generate_result(
+                msg="State %s is only supported in bulk mode." % mode
             )
 
         data = {
@@ -71,7 +76,7 @@ class ServiceBulkDiscoveryAPI(CheckmkAPI):
         mode = self.params.get("state")
         if mode not in COMPATIBLE_MODES:
             return generate_result(
-                msg="State %s is not supported with this Checkmk version."
+                msg="State %s is not supported with this Checkmk version." % mode
             )
 
         options = {
