@@ -12,7 +12,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )
 
-#from .version import CheckmkVersion
+# from .version import CheckmkVersion
 
 HTTP_CODES = {
     # http_code: (changed, failed, "Message")
@@ -60,7 +60,8 @@ SUPPORTED_VERSIONS = {
     "max": "2.5.0",
 }
 
-class Discovery():
+
+class Discovery:
     def __init__(self, module, logger):
         self.module = module
         self.logger = logger
@@ -85,13 +86,6 @@ class Discovery():
         return CheckmkVersion(self.supported_versions["max"])
 
     def compatible(self, version):
-        #self.logger.debug(
-        #    "min: %s, found: %s, max: %s" % (
-        #        self._min_version()._value(),
-        #        version._value(),
-        #        self._max_version()._value(),
-        #    )
-        #)
         return self._min_version() <= version <= self._max_version()
 
     def start_discovery(self):
