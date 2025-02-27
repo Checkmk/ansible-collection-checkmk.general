@@ -52,11 +52,14 @@ class CheckmkAPI:
             logger = self.logger
 
         if logger:
-            logger.debug("_fetch(): endpoint: %s, data: %s, method: %s" % (
-                endpoint,
-                str(data),
-                method,
-            ))
+            logger.debug(
+                "_fetch(): endpoint: %s, data: %s, method: %s"
+                % (
+                    endpoint,
+                    str(data),
+                    method,
+                )
+            )
         http_mapping = GENERIC_HTTP_CODES.copy()
         http_mapping.update(code_mapping)
 

@@ -23,6 +23,7 @@ RESULT_DEFAULTS = {
     "etag": "",
 }
 
+
 def generate_result(
     msg=RESULT_DEFAULTS["msg"],
     http_code=RESULT_DEFAULTS["http_code"],
