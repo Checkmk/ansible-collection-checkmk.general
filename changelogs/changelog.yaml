@@ -1085,3 +1085,12 @@ releases:
     - release.yml
     - server.yml
     release_date: '2025-02-12'
+  5.6.0:
+    changes:
+      minor_changes:
+      - Server role - Enable management of MKP packages.
+      release_summary: Enable MKP management for the server role.
+    fragments:
+    - release_summary.yml
+    - server.yml
+    release_date: '2025-02-27'
