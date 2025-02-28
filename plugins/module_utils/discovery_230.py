@@ -86,16 +86,8 @@ class ServiceBulkDiscoveryAPI(CheckmkAPI):
             "update_host_labels": False,
         }
 
-        if self.params.get("state") in ["new", "fix_all", "monitor_undecided_services"]:
-            options["monitor_undecided_services"] = True
-        if self.params.get("state") in ["remove", "fix_all"]:
-            options["remove_vanished_services"] = True
-        if self.params.get("state") in ["only_service_labels"]:
-            options["update_service_labels"] = True
-        if self.params.get("state") in ["new", "fix_all", "only_host_labels"]:
-            options["update_host_labels"] = True
-
-        if self.params.get("state") == "refresh":
+        if self.params.get("state") in ["refresh", "tabula_rasa"]:
+            # Use the deprecated parameter "mode"
             data = {
                 "hostnames": self.params.get("hosts", []),
                 "mode": self.params.get("state"),
@@ -104,6 +96,20 @@ class ServiceBulkDiscoveryAPI(CheckmkAPI):
                 "ignore_errors": self.params.get("ignore_errors", True),
             }
         else:
+            # Use the new parameter "options"
+            if self.params.get("state") in [
+                "new",
+                "fix_all",
+                "monitor_undecided_services",
+            ]:
+                options["monitor_undecided_services"] = True
+            if self.params.get("state") in ["remove", "fix_all"]:
+                options["remove_vanished_services"] = True
+            if self.params.get("state") in ["only_service_labels", "fix_all", "new"]:
+                options["update_service_labels"] = True
+            if self.params.get("state") in ["new", "fix_all", "only_host_labels"]:
+                options["update_host_labels"] = True
+
             data = {
                 "hostnames": self.params.get("hosts", []),
                 "options": options,

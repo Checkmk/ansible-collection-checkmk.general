@@ -74,7 +74,7 @@ class ServiceDiscoveryAPI(CheckmkAPI):
 class ServiceBulkDiscoveryAPI(CheckmkAPI):
     def post(self):
         mode = self.params.get("state")
-        if mode not in COMPATIBLE_MODES or mode == "refresh":
+        if mode not in COMPATIBLE_MODES:
             return generate_result(
                 msg="State %s is not supported with this Checkmk version." % mode
             )
@@ -86,13 +86,30 @@ class ServiceBulkDiscoveryAPI(CheckmkAPI):
             "update_host_labels": False,
         }
 
-        if self.params.get("state") in ["new", "fix_all", "monitor_undecided_services"]:
+        if self.params.get("state") in [
+            "new",
+            "fix_all",
+            "refresh",
+            "tabula_rasa",
+            "monitor_undecided_services",
+        ]:
             options["monitor_undecided_services"] = True
-        if self.params.get("state") in ["remove", "fix_all"]:
+        if self.params.get("state") in ["remove", "fix_all", "refresh", "tabula_rasa"]:
             options["remove_vanished_services"] = True
-        if self.params.get("state") in ["only_service_labels"]:
+        if self.params.get("state") in [
+            "only_service_labels",
+            "fix_all",
+            "refresh",
+            "tabula_rasa",
+        ]:
             options["update_service_labels"] = True
-        if self.params.get("state") in ["new", "fix_all", "only_host_labels"]:
+        if self.params.get("state") in [
+            "new",
+            "fix_all",
+            "only_host_labels",
+            "refresh",
+            "tabula_rasa",
+        ]:
             options["update_host_labels"] = True
 
         data = {
