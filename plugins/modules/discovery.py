@@ -80,6 +80,7 @@ author:
     - Robin Gierse (@robin-checkmk)
     - Michael Sekania (@msekania)
     - Max Sickora (@max-checkmk)
+    - Lars Getwan (@lgetwan)
 """
 
 EXAMPLES = r"""
@@ -100,14 +101,24 @@ EXAMPLES = r"""
     automation_secret: "mysecret"
     host_name: "my_host"
     state: "fix_all"
-- name: "Add newly discovered services on hosts. (Bulk)"
+- name: "Add newly discovered services on hosts and wait up to 30s for finishing. (Bulk)"
   checkmk.general.discovery:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
     automation_secret: "mysecret"
     hosts: ["my_host_0", "my_host_1"]
+    wait_timeout: 30
     state: "new"
+- name: "Tabula rasa, the bulk way."
+  checkmk.general.discovery:
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
+    hosts: ["my_host_0", "my_host_1"]
+    wait_for_completion: false
+    state: "tabula_rasa"
 - name: "Add newly discovered services, update labels and remove vanished services on host; 3 at once (Bulk)"
   checkmk.general.discovery:
     server_url: "http://myserver/"
