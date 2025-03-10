@@ -38,6 +38,26 @@ COMPATIBLE_MODES = [
     "monitor_undecided_services",
 ]
 
+MONITOR_UNDECIDED_SERVICES = [
+    "new",
+    "fix_all",
+    "monitor_undecided_services",
+]
+
+REMOVE_VANISHED_SERVICES = ["remove", "fix_all"]
+
+UPDATE_SERVICE_LABELS = [
+    "only_service_labels",
+    "fix_all",
+    "new",
+]
+
+UPDATE_HOST_LABELS = [
+    "new",
+    "fix_all",
+    "only_host_labels",
+]
+
 SUPPORTED_VERSIONS = {
     "min": "2.3.0",
     "max": "2.3.0p99",
@@ -97,17 +117,16 @@ class ServiceBulkDiscoveryAPI(CheckmkAPI):
             }
         else:
             # Use the new parameter "options"
-            if self.params.get("state") in [
-                "new",
-                "fix_all",
-                "monitor_undecided_services",
-            ]:
+            if self.params.get("state") in MONITOR_UNDECIDED_SERVICES:
                 options["monitor_undecided_services"] = True
-            if self.params.get("state") in ["remove", "fix_all"]:
+
+            if self.params.get("state") in REMOVE_VANISHED_SERVICES:
                 options["remove_vanished_services"] = True
-            if self.params.get("state") in ["only_service_labels", "fix_all", "new"]:
+
+            if self.params.get("state") in UPDATE_SERVICE_LABELS:
                 options["update_service_labels"] = True
-            if self.params.get("state") in ["new", "fix_all", "only_host_labels"]:
+
+            if self.params.get("state") in UPDATE_HOST_LABELS:
                 options["update_host_labels"] = True
 
             data = {
@@ -182,10 +201,14 @@ class Discovery230(Discovery):
 
     def _wait_for_completion(self, what):
         now = time.time()
-        deadline = now + self.timeout
+        if self.timeout > 0:
+            deadline = now + self.timeout
+        else:
+            deadline = 0  # In case of infinite timeout
+
         while True:
             now = time.time()
-            if now > deadline:
+            if self.timeout > 0 and now > deadline:
                 return generate_result(
                     msg="Timeout reached while waiting for %s discovery" % what
                 )

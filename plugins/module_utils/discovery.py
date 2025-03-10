@@ -65,7 +65,7 @@ class Discovery:
     def __init__(self, module, logger):
         self.module = module
         self.logger = logger
-        self.timeout = module.params.get("wait_timeout", 15)
+        self.timeout = module.params.get("wait_timeout", -1)
         self.wait_for_previous = module.params.get("wait_for_previous", True)
         self.wait_for_completion = module.params.get("wait_for_completion", True)
         self.single_mode = self._single_mode()

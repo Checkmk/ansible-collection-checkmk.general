@@ -73,7 +73,7 @@ options:
     wait_timeout:
         description: The time in seconds to wait for (previous/current) completion.
         type: int
-        default: 15
+        default: -1 (infinite)
 
 
 author:
@@ -202,7 +202,7 @@ def run_module():
         ignore_errors=dict(type="bool", default=True),
         wait_for_completion=dict(type="bool", default=True),
         wait_for_previous=dict(type="bool", default=True),
-        wait_timeout=dict(type="int", default=15),
+        wait_timeout=dict(type="int", default=-1),
     )
     module = AnsibleModule(
         argument_spec=module_args,
