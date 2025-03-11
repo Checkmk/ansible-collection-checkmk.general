@@ -71,9 +71,11 @@ options:
         type: bool
         default: True
     wait_timeout:
-        description: The time in seconds to wait for (previous/current) completion.
+        description:
+            - The time in seconds to wait for (previous/current) completion.
+            - Default is -1, which means infinite.
         type: int
-        default: -1 (infinite)
+        default: -1
 
 
 author:

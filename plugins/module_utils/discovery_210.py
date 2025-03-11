@@ -139,10 +139,14 @@ class Discovery210(Discovery):
 
     def _wait_for_completion(self, what):
         now = time.time()
-        deadline = now + self.timeout
+        if self.timeout > 0:
+            deadline = now + self.timeout
+        else:
+            deadline = 0  # In case of infinite timeout
+
         while True:
             now = time.time()
-            if now > deadline:
+            if self.timeout > 0 and now > deadline:
                 return generate_result(
                     msg="Timeout reached while waiting for %s discovery" % what
                 )
