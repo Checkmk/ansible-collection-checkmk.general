@@ -1,0 +1,76 @@
+---
+- name: "Download MKP Packages."
+  ansible.builtin.get_url:
+    url: "{{ __mkp.url }}"
+    dest: "{{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+    mode: "0640"
+    url_username: "{{ __mkp.download_user | default(omit) }}"
+    url_password: "{{ __mkp.download_password | default(omit) }}"
+    checksum: "{{ __mkp.checksum | default(omit) }}"
+  retries: 3
+  loop: "{{ __site.mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: __mkp.url is defined
+  tags:
+    - manage-mkp-packages
+
+- name: "Transfer MKP Packages."
+  ansible.builtin.copy:
+    src: "{{ __mkp.src }}"
+    dest: "{{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+    mode: "0640"
+  loop: "{{ __site.mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: __mkp.src is defined
+  tags:
+    - manage-mkp-packages
+
+- name: "Install mkp packages."
+  become: true
+  ansible.builtin.command: "omd su {{ __site.name }} -c mkp add {{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+  changed_when: __checkmk_server_mkp_install_output.rc == 0
+  register: __checkmk_server_mkp_install_output
+  loop: "{{ __site.mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: (__mkp.installed | default(true) )
+  tags:
+    - manage-mkp-packages
+
+- name: "Enable mkp packages."
+  become: true
+  ansible.builtin.command: "omd su {{ __site.name }} -c mkp enable {{ __mkp.name }} {{ __mkp.version }}"
+  changed_when: __checkmk_server_mkp_enable_output.rc == 0
+  register: __checkmk_server_mkp_enable_output
+  loop: "{{ __site.mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: (__mkp.enabled | default(true))
+  tags:
+    - manage-mkp-packages
+
+- name: "Disable mkp packages."
+  become: true
+  ansible.builtin.command: "omd su {{ __site.name }} -c mkp disable {{ __mkp.name }} {{ __mkp.version }}"
+  changed_when: __checkmk_server_mkp_disable_output.rc == 0
+  register: __checkmk_server_mkp_disable_output
+  loop: "{{ __site.mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: __mkp.enabled is defined and not __mkp.enabled
+  tags:
+    - manage-mkp-packages
+
+- name: "Remove mkp packages."
+  become: true
+  ansible.builtin.command: "omd su {{ __site.name }} -c mkp remove {{ __mkp.name }} {{ __mkp.version }}"
+  changed_when: __checkmk_server_mkp_remove_output.rc == 0
+  register: __checkmk_server_mkp_remove_output
+  loop: "{{ __site.mkp_packages }}"
+  loop_control:
+    loop_var: __mkp
+  when: __mkp.installed is defined and not __mkp.installed
+  tags:
+    - manage-mkp-packages

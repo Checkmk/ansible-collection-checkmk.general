@@ -4,6 +4,19 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.6.0
+======
+
+Release Summary
+---------------
+
+Enable MKP management for the server role.
+
+Minor Changes
+-------------
+
+- Server role - Enable management of MKP packages.
+
 v5.5.0
 ======
 

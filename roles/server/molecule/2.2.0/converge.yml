@@ -4,13 +4,13 @@
 
   pre_tasks:
 
-    - name: Update apt cache.
+    - name: "Update apt cache."
       ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 600
       when: ansible_os_family == 'Debian'
 
-    - name: Install prerequisites.
+    - name: "Install prerequisites."
       ansible.builtin.apt:
         name: "{{ item }}"
         state: present
@@ -19,7 +19,7 @@
         - man
       when: ansible_os_family == 'Debian'
 
-    - name: Create '/usr/share/man/man8/' on Ubuntu.
+    - name: "Create '/usr/share/man/man8/' on Ubuntu."
       ansible.builtin.file:
         path: /usr/share/man/man8/
         state: directory
@@ -27,6 +27,13 @@
         owner: root
         group: root
       when: ansible_distribution == 'Ubuntu'
+
+    - name: "Download MKP."
+      ansible.builtin.get_url:
+        url: https://exchange.checkmk.com/packages/sslcertificates/1570/sslcertificates-8.9.1.mkp
+        dest: /tmp/sslcertificates.mkp
+        mode: "0644"
+      delegate_to: localhost
 
   tasks:
 

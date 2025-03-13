@@ -25,7 +25,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Role Variables
 
-    checkmk_server_version: "2.3.0p26"
+    checkmk_server_version: "2.3.0p27"
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.
@@ -82,9 +82,17 @@ Note: this is not a recommended procedure, and will not be supported for enterpr
         omd_config:
           - var: AUTOSTART
             value: 'on'
+        mkp_packages:
+          - name: 'mypackage'
+            version: 1.0.0
+            src: '/path/to/my.mkp'
+            url: 'https://exchange.checkmk.com/packages/mypackage/4711/mypackage-1.0.0.mkp'
+            checksum: 'md5:mychecksum'
+            installed: 'true'
+            enabled: 'true'
 
-A dictionary of sites, containing the desired version, admin password and state.
-There are also advanced settings, which will be outlined below.
+A dictionary of sites, containing the desired version, admin password, site configuration options, extension packages and state.
+The more advanced settings will be outlined below.
 
 Valid values for `state` are:
 - `started`: The site is started and enabled for autostart on system boot.
@@ -101,6 +109,8 @@ Site configuration can be passed with the `omd_config` keyword.
 The format can be seen above, for a list of variables run `omd show`
 on an existing site.
 **Pay special attention to the `omd_auto_restart` variable!** As site configuration needs the site to be stopped, this needs to be handled. By default the variable is set to `false` to avoid unexpected restarting. However, no configuration will be performed if the site is started.
+
+Extension packages can also be listed to be installed on the specific central site. Remote sites will get extension packages replicated upon change activation. A source path can be set on the Ansible controller. Alternatively a URL can be specified to download the mkp package from directly. These options are mutually exclusive.
 
     checkmk_server_backup_on_update: 'true'
 
