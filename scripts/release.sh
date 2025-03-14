@@ -17,7 +17,7 @@ collection_dir="${script_dir%/*}"
 # Update these as necessary:
 checkmk_ancient="2.2.0p40"
 checkmk_oldstable="2.3.0p27"
-checkmk_stable="2.4.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+checkmk_stable="2.4.0b1"
 
 while getopts 's:t:' OPTION; do
   case "$OPTION" in
