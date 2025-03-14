@@ -1,6 +1,6 @@
 ---
 # General
-checkmk_var_version: "2.1.0p49"
+checkmk_var_version: "2.4.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
 checkmk_var_edition: "cre"
 checkmk_server_verify_setup: 'true'
 checkmk_var_server_url: "http://127.0.0.1/"
