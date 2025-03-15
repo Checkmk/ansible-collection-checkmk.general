@@ -37,6 +37,7 @@
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ __checkmk_agent_agent.file.cre }}"
     mode: '0640'
+    timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
   when: checkmk_agent_edition | lower == "cre"
   register: __checkmk_agent_download_state
   retries: 3

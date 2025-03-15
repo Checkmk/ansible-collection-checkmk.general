@@ -7,6 +7,7 @@
         url: "{{ __checkmk_agent_agent.url.cre }}"
         validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
         dest: "{{ __checkmk_agent_agent.file.cre }}"
+        url_timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
       when: |
         checkmk_agent_edition | lower == "cre"
       register: __checkmk_agent_vanilla_download_state
@@ -29,6 +30,7 @@
         headers:
           Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
           Accept: "application/octet-stream"
+        url_timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
       when: |
         checkmk_agent_edition | lower != "cre"
       register: __checkmk_agent_host_download_state
@@ -58,6 +60,7 @@
         headers:
           Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
           Accept: "application/octet-stream"
+        url_timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
       register: __checkmk_agent_folder_download_state
       when: |
         checkmk_agent_edition | lower != "cre"
@@ -88,6 +91,7 @@
         headers:
           Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
           Accept: "application/octet-stream"
+        url_timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
       when: |
         checkmk_agent_edition | lower != "cre"
         and not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
@@ -126,6 +130,7 @@
         headers:
           Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
           Accept: "application/octet-stream"
+        timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
       when: |
         checkmk_agent_edition | lower != "cre"
       register: __checkmk_agent_host_download_state
@@ -156,6 +161,7 @@
         headers:
           Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
           Accept: "application/octet-stream"
+        timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
       register: __checkmk_agent_folder_download_state
       when: |
         checkmk_agent_edition | lower != "cre"
@@ -187,6 +193,7 @@
         headers:
           Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
           Accept: "application/octet-stream"
+        timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
       when: |
         checkmk_agent_edition | lower != "cre"
         and not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
