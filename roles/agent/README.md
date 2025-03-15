@@ -182,6 +182,10 @@ If you are using the Checkmk Cloud Edition (CCE) with an agent in `push` mode, y
 
 Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
+    checkmk_agent_download_timeout: 30
+
+The timeout interval that is respected when trying to download the Checkmk agent. This is an optional variable and not required by default. If you omit this, the module's default values will be used.
+
 ## Tags
 
 Tasks are tagged with the following tags:
