@@ -5,6 +5,7 @@
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     dest: "{{ __checkmk_agent_agent.file.cre }}"
     mode: '0644'
+    timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
   when: checkmk_agent_edition | lower == "cre"
   register: __checkmk_agent_vanilla_download_state
   retries: 3
@@ -27,6 +28,7 @@
     headers:
       Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
       Accept: "application/octet-stream"
+    timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
   when: |
     checkmk_agent_edition | lower != "cre"
   become: false
@@ -58,6 +60,7 @@
     headers:
       Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
       Accept: "application/octet-stream"
+    timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
   become: false
   register: __checkmk_agent_folder_download_state
   when: |
@@ -90,6 +93,7 @@
     headers:
       Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
       Accept: "application/octet-stream"
+    timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
   become: false
   when: |
     checkmk_agent_edition | lower != "cre"
