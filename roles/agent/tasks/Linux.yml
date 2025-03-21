@@ -110,7 +110,7 @@
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_registration_server_protocol }} \
-    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth }}
+    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth | ansible.builtin.quote }}
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_update_state
   when: |
@@ -128,7 +128,7 @@
   ansible.builtin.shell: |
     cmk-update-agent register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_registration_server_protocol }} \
-    -U {{ checkmk_agent_user }} -S {{ __checkmk_agent_auth }}
+    -U {{ checkmk_agent_user }} -S {{ __checkmk_agent_auth | ansible.builtin.quote }}
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_update_state
   when: |
@@ -145,7 +145,7 @@
   ansible.builtin.shell: |
     cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
-    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth }} --trust-cert
+    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth | ansible.builtin.quote }} --trust-cert
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_tls_state
   when: |
@@ -161,7 +161,7 @@
   ansible.builtin.shell: |
     cmk-agent-ctl proxy-register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
-    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth }} --trust-cert
+    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth | ansible.builtin.quote }} --trust-cert
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_proxy_registration_state
   when: |
