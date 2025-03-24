@@ -306,6 +306,10 @@ class ModuleDocFragment(object):
                                         - files below C($OMD_ROOT/local/) on the remote site will be removed.
                                     type: bool
                                     default: true
+                                message_broker_port:
+                                    description:
+                                        - The port used by the message broker to exchange messages.
+                                    type: int
                         basic_settings:
                             description:
                                 - A site's basic settings.
