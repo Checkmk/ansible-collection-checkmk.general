@@ -4,6 +4,24 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.7.0
+======
+
+Release Summary
+---------------
+
+Agent Smith approved.
+
+Minor Changes
+-------------
+
+- Agent role - Enable specifying a custom timeout for downloading the agent setup from the server.
+
+Bugfixes
+--------
+
+- Agent role - Fix quoting of passwords for agent registration.
+
 v5.6.0
 ======
 
