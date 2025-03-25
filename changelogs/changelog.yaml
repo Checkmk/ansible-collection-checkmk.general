@@ -1094,3 +1094,15 @@ releases:
     - release_summary.yml
     - server.yml
     release_date: '2025-02-27'
+  5.7.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix quoting of passwords for agent registration.
+      minor_changes:
+      - Agent role - Enable specifying a custom timeout for downloading the agent
+        setup from the server.
+      release_summary: Agent Smith approved.
+    fragments:
+    - agent.yml
+    - release_summary.yml
+    release_date: '2025-03-25'
