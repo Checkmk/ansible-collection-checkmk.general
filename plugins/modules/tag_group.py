@@ -65,6 +65,7 @@ options:
                 default: []
                 required: false
                 type: list
+                elements: str
     title:
         description: The title of the tag group.
         default: ""
