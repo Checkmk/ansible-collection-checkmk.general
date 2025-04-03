@@ -271,7 +271,7 @@ def run_module():
             options=dict(
                 id=dict(type="str", required=True),
                 title=dict(type="str", required=True),
-                aux_tags=dict(type="list", required=False, default=[]),
+                aux_tags=dict(type="list", elements="str", required=False, default=[]),
             ),
         ),
         repair=dict(type="bool", default=False),
