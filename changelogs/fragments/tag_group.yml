@@ -1,0 +1,2 @@
+minor_changes:
+  - tag_group module - Allow specifying a list of aux_tags for the tags.
