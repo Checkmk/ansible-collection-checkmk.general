@@ -60,6 +60,11 @@ options:
                 description: The title of the tag
                 required: true
                 type: str
+            aux_tags:
+                description: The list of aux_tags
+                default: []
+                required: false
+                type: list
     title:
         description: The title of the tag group.
         default: ""
@@ -90,9 +95,11 @@ EXAMPLES = r"""
       - id: datacenter_none
         title: No Datacenter
       - id: datacenter_1
-        title: Datacenter 2
+        title: Datacenter 1
+        aux_tags: ["support_a","support_b"]
       - id: datacenter_2
         title: Datacenter 2
+        aux_tags: ["support_c"]
       - id: datacenter_3
         title: Datacenter 3
     state: present
@@ -236,9 +243,6 @@ def changes_detected(module, current):
         # The number of tags has changed
         return True
 
-    for d in current_tags:
-        d.pop("aux_tags")
-
     pairs = zip(desired_tags, current_tags)
 
     if not all(a == b for a, b in pairs):
@@ -267,6 +271,7 @@ def run_module():
             options=dict(
                 id=dict(type="str", required=True),
                 title=dict(type="str", required=True),
+                aux_tags=dict(type="list", required=False, default=[]),
             ),
         ),
         repair=dict(type="bool", default=False),
