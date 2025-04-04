@@ -1,0 +1,5 @@
+minor_changes:
+  - Agent role - Enable specifying a custom timeout for downloading the agent setup from the server.
+
+bugfixes:
+  - Agent role - Fix quoting of passwords for agent registration.

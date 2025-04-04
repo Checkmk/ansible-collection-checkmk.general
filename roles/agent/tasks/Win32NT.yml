@@ -58,7 +58,7 @@
   ansible.windows.win_command: |
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_server_protocol }} \
-    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth }}
+    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth | ansible.windows.quote }}
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_update_state
   args:
@@ -77,7 +77,7 @@
   ansible.windows.win_command: |
     check_mk_agent.exe updater register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_registration_server_protocol }} \
-    -U {{ checkmk_agent_user }} -S {{ __checkmk_agent_auth }}
+    -U {{ checkmk_agent_user }} -S {{ __checkmk_agent_auth | ansible.windows.quote }}
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_update_state
   args:
@@ -95,7 +95,7 @@
   ansible.windows.win_command: |
     cmk-agent-ctl.exe register -H {{ checkmk_agent_host_name }} \
     -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
-    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth }} --trust-cert
+    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth | ansible.windows.quote }} --trust-cert
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_tls_state
   args:
