@@ -11,7 +11,7 @@ argument_specs:
 
       checkmk_server_version:
         type: "str"
-        default: "2.3.0p19"
+        default: "2.3.0p26"
         description:
           - Refer to the README for details.
 
