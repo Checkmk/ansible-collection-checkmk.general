@@ -30,6 +30,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
+    redirect: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
@@ -77,6 +78,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
+    redirect: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
@@ -152,6 +154,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
+    redirect: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
@@ -181,6 +184,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
+    redirect: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
@@ -207,6 +211,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
+    redirect: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
