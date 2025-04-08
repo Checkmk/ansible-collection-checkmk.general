@@ -36,6 +36,10 @@
   delegate_to: localhost
   run_once: true # noqa run-once[task]
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for the activation to finish."
+  ansible.builtin.wait_for:
+    sleep: 60
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
