@@ -46,3 +46,12 @@
   when: checkmk_agent_edition | lower == "cre"
   tags:
     - install-package
+
+- name: "{{ ansible_os_family }} Derivatives: Allow Checkmk services access to the agent."
+  when: checkmk_agent_configure_firewall | bool and "firewalld.service" in ansible_facts.services
+  ansible.posix.firewalld:
+    permanent: true
+    immediate: true
+    port: 6556/tcp
+    state: "enabled"
+  become: true
