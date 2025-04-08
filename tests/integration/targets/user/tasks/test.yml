@@ -30,10 +30,15 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
+    redirect: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for the activation to finish."
+  ansible.builtin.wait_for:
+    sleep: 60
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
@@ -77,6 +82,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
+    redirect: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
@@ -152,6 +158,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
+    redirect: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
@@ -181,6 +188,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
+    redirect: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
@@ -207,6 +215,7 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     force_foreign_changes: true
+    redirect: true
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
