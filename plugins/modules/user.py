@@ -510,7 +510,7 @@ def run_module():
     if module.params.get("automation_user") == module.params.get("name"):
         result = RESULT(
             http_code=0,
-            msg="Can't modify the user that is used for API authorization."
+            msg="You cannot modify the user that is used for API authorization",
             content="",
             etag="",
             failed=True,
