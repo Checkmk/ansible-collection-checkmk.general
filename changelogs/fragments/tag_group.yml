@@ -1,0 +1,2 @@
+minor_changes:
+  - tag_group module - Add aux_tags suboption for tags in tag_group module.
