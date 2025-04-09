@@ -1213,7 +1213,8 @@ Examples
         name: "krichards"
         fullname: "Keith Richards"
         email: "keith.richards@rollingstones.com"
-        password: "Open-G"
+        auth_type: "password"
+        password: "Open-G" # must be at least 12 chars long
         contactgroups:
           - "rolling_stones"
           - "glimmer_twins"
