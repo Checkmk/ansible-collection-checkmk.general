@@ -507,6 +507,18 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
 
+    if module.params.get("automation_user") == module.params.get("name"):
+        result = RESULT(
+            http_code=0,
+            msg="Can't modify the user that is used for API authorization."
+            content="",
+            etag="",
+            failed=True,
+            changed=False,
+        )
+        module.exit_json(**result_as_dict(result))
+
+
     # Use the parameters to initialize some common api variables
     user = UserAPI(module)
 
