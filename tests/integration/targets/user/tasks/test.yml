@@ -160,7 +160,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_dont_edit
-  failed_when: "'Will not modify the user that is used' not in __checkmk_var_result_dont_edit.msg"
+  failed_when: "'You cannot modify the user that is used for API' not in __checkmk_var_result_dont_edit.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
