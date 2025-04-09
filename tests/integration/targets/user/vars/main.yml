@@ -195,8 +195,3 @@ checkmk_var_users_edit:
     contactgroups: []
     roles:
       - admin
-  - name: cmkadmin
-    show_mode: "enforce_show_more"
-    fullname: cmkadmin
-    roles:
-      - admin
