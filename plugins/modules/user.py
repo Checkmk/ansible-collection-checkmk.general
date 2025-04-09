@@ -518,7 +518,6 @@ def run_module():
         )
         module.exit_json(**result_as_dict(result))
 
-
     # Use the parameters to initialize some common api variables
     user = UserAPI(module)
 
