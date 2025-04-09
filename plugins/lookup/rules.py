@@ -136,12 +136,12 @@ EXAMPLES = """
   loop_control:
     label: "{{ item.id }}"
 
-- name: actice_checks:http rules that match a certain description AND comment
+- name: active_checks:http rules that match a certain description AND comment
   ansible.builtin.debug:
     msg: "Rule: {{ item.extensions }}"
   loop: "{{
     lookup('checkmk.general.rules',
-        ruleset='actice_checks:http',
+        ruleset='active_checks:http',
         description_regex='foo.*bar',
         comment_regex='xmas-edition',
         server_url=server_url,
