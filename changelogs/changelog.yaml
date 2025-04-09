@@ -1106,3 +1106,22 @@ releases:
     - agent.yml
     - release_summary.yml
     release_date: '2025-03-25'
+  5.8.0:
+    changes:
+      bugfixes:
+      - User role - No longer allow to modify the user that is used for API authorization.
+      major_changes:
+      - All modules and roles - Supporting Checkmk 2.4.0 from this version onwards.
+      - Discovery module - Rewrite the whole module for better support across Checkmk
+        versions.
+      minor_changes:
+      - All modules - Enable extended logging.
+      - Server role - Make GPG key download URL configurable.
+      - Site module - Support the new mandatory broker port parameter.
+      release_summary: Checkmk 2.4.0 support is here!
+    fragments:
+    - 2.4.0.yml
+    - gpg.yml
+    - release_summary.yml
+    - user.yml
+    release_date: '2025-04-09'
