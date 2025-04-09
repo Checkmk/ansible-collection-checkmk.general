@@ -1,0 +1,7 @@
+major_changes:
+  - All modules and roles - Supporting Checkmk 2.4.0 from this version onwards.
+  - Discovery module - Rewrite the whole module for better support across Checkmk versions.
+
+minor_changes:
+  - Site module - Support the new mandatory broker port parameter.
+  - All modules - Enable extended logging.
