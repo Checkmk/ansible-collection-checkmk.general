@@ -4,6 +4,32 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.8.0
+======
+
+Release Summary
+---------------
+
+Checkmk 2.4.0 support is here!
+
+Major Changes
+-------------
+
+- All modules and roles - Supporting Checkmk 2.4.0 from this version onwards.
+- Discovery module - Rewrite the whole module for better support across Checkmk versions.
+
+Minor Changes
+-------------
+
+- All modules - Enable extended logging.
+- Server role - Make GPG key download URL configurable.
+- Site module - Support the new mandatory broker port parameter.
+
+Bugfixes
+--------
+
+- User role - No longer allow to modify the user that is used for API authorization.
+
 v5.7.0
 ======
 

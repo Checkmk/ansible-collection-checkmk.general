@@ -22,7 +22,7 @@ checkmk.general.discovery module -- Discover services in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.7.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.8.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -437,6 +437,14 @@ Parameters
 
       The action to perform during discovery.
 
+      Not all choices are available with all Checkmk versions.
+
+      Check the ReDoc documentation in your site for details.
+
+      In versions 2.4.0 and newer, the modes tabula\_rasa and refresh are no longer available,
+
+      in that case, we perform a add/remove all services and labels, instead.
+
 
       .. rst-class:: ansible-option-line
 
@@ -498,6 +506,130 @@ Parameters
 
         </div>
 
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-wait_for_completion"></div>
+
+      .. _ansible_collections.checkmk.general.discovery_module__parameter-wait_for_completion:
+
+      .. rst-class:: ansible-option-title
+
+      **wait_for_completion**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-wait_for_completion" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      If true, wait for the discovery to finish.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-wait_for_previous"></div>
+
+      .. _ansible_collections.checkmk.general.discovery_module__parameter-wait_for_previous:
+
+      .. rst-class:: ansible-option-title
+
+      **wait_for_previous**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-wait_for_previous" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      If true, wait for previously running discovery jobs to finish.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-wait_timeout"></div>
+
+      .. _ansible_collections.checkmk.general.discovery_module__parameter-wait_timeout:
+
+      .. rst-class:: ansible-option-title
+
+      **wait_timeout**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-wait_timeout" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The time in seconds to wait for (previous/current) completion.
+
+      Default is -1, which means infinite.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`-1`
+
+      .. raw:: html
+
+        </div>
+
 
 .. Attributes
 
@@ -532,14 +664,24 @@ Examples
         automation_secret: "mysecret"
         host_name: "my_host"
         state: "fix_all"
-    - name: "Add newly discovered services on hosts. (Bulk)"
+    - name: "Add newly discovered services on hosts and wait up to 30s for finishing. (Bulk)"
       checkmk.general.discovery:
         server_url: "http://myserver/"
         site: "mysite"
         automation_user: "myuser"
         automation_secret: "mysecret"
         hosts: ["my_host_0", "my_host_1"]
+        wait_timeout: 30
         state: "new"
+    - name: "Tabula rasa, the bulk way."
+      checkmk.general.discovery:
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
+        hosts: ["my_host_0", "my_host_1"]
+        wait_for_completion: false
+        state: "tabula_rasa"
     - name: "Add newly discovered services, update labels and remove vanished services on host; 3 at once (Bulk)"
       checkmk.general.discovery:
         server_url: "http://myserver/"
@@ -674,6 +816,7 @@ Authors
 - Robin Gierse (@robin-checkmk)
 - Michael Sekania (@msekania)
 - Max Sickora (@max-checkmk)
+- Lars Getwan (@lgetwan)
 
 
 
