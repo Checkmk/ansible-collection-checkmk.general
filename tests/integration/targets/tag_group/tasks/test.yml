@@ -135,7 +135,7 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create aux_tags."
   ansible.builtin.uri:
-    url: "{{ checkmk_var_server_url }}/domain-types/aux_tag/collections/all"
+    url: "{{ checkmk_var_server_url }}check_mk/api/1.0/domain-types/aux_tag/collections/all"
     method: POST
     validate_certs: false
     headers:
