@@ -22,7 +22,7 @@ checkmk.general.rules lookup -- Get a list rules
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.7.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.8.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -577,12 +577,12 @@ Examples
       loop_control:
         label: "{{ item.id }}"
 
-    - name: actice_checks:http rules that match a certain description AND comment
+    - name: active_checks:http rules that match a certain description AND comment
       ansible.builtin.debug:
         msg: "Rule: {{ item.extensions }}"
       loop: "{{
         lookup('checkmk.general.rules',
-            ruleset='actice_checks:http',
+            ruleset='active_checks:http',
             description_regex='foo.*bar',
             comment_regex='xmas-edition',
             server_url=server_url,

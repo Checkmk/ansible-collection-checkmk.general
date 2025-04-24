@@ -22,7 +22,7 @@ checkmk.general.site module -- Manage distributed monitoring in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.7.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.8.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -848,6 +848,48 @@ Parameters
 
       - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
       - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-site_connection/site_config/configuration_connection/message_broker_port"></div>
+
+      .. raw:: latex
+
+        \hspace{0.06\textwidth}\begin{minipage}[t]{0.26\textwidth}
+
+      .. _ansible_collections.checkmk.general.site_module__parameter-site_connection/site_config/configuration_connection/message_broker_port:
+
+      .. rst-class:: ansible-option-title
+
+      **message_broker_port**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-site_connection/site_config/configuration_connection/message_broker_port" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The port used by the message broker to exchange messages.
 
 
       .. raw:: html

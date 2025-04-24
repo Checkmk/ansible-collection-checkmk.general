@@ -36,10 +36,6 @@
   delegate_to: localhost
   run_once: true # noqa run-once[task]
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for the activation to finish."
-  ansible.builtin.wait_for:
-    sleep: 60
-
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
@@ -150,6 +146,21 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_users_edit }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Don't edit auth user."
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    name: "{{ checkmk_var_automation_user }}"
+    show_mode: "enforce_show_more"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  register: __checkmk_var_result_dont_edit
+  failed_when: "'You cannot modify the user that is used for API' not in __checkmk_var_result_dont_edit.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
