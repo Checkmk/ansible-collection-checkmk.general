@@ -148,8 +148,8 @@
       topic: "{{ item.topic }}"
       title: "{{ item.title }}"
       help: "{{ item.help }}"
-    delegate_to: localhost
-    loop: "{{ checkmk_var_aux_tags_create }}"
+  delegate_to: localhost
+  loop: "{{ checkmk_var_aux_tags_create }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create tag_group with aux_tags."
   tag_group:

@@ -108,7 +108,7 @@ checkmk_var_tag_groups_with_aux_tags_create:
         aux_tags: ["cust_a"]
       - id: business_b
         title: Business B
-        aux_tags: ["cust_b","cust_c"]
+        aux_tags: ["cust_b", "cust_c"]
       - id: business_c
         title: Business C
 
