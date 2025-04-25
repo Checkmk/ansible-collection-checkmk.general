@@ -10,6 +10,17 @@
         - /root/ansible_collections/checkmk/general/tests/integration/files/includes/vars/
         - tests/integration/files/includes/vars/
 
+- name: "Run preparations."
+  ansible.builtin.include_tasks: "{{ lookup('ansible.builtin.first_found', checkmk_var_params) }}"
+  vars:
+    checkmk_var_params:
+      files:
+        - prep.yml
+      paths:
+        - /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/files/includes/tasks/
+        - /root/ansible_collections/checkmk/general/tests/integration/files/includes/tasks/
+        - tests/integration/files/includes/tasks/
+
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml
   loop: "{{ checkmk_var_test_sites }}"
