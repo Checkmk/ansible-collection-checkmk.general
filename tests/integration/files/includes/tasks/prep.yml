@@ -1,11 +1,11 @@
 ---
-- name: "Print OS Information."
-  ansible.builtin.debug:
-    var: ansible_lsb
+# - name: "Print OS Information."
+#   ansible.builtin.debug:
+#     var: ansible_lsb
 
-- name: "Print Identifier."
-  ansible.builtin.debug:
-    msg: "{{ ansible_facts.system_vendor }} {{ ansible_facts.product_name }} running {{ ansible_facts.virtualization_type }}"
+# - name: "Print Identifier."
+#   ansible.builtin.debug:
+#     msg: "{{ ansible_facts.system_vendor }} {{ ansible_facts.product_name }} running {{ ansible_facts.virtualization_type }}"
 
 - name: "Install dependencies."
   ansible.builtin.package:
