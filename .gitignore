@@ -11,3 +11,4 @@ playbooks/test*.yml
 *venv/
 .direnv/
 .vscode/
+uv.lock
