@@ -1,6 +1,14 @@
 ---
 - name: "Include Global Variables."
-  ansible.builtin.include_vars: /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/files/includes/vars/global.yml
+  ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', checkmk_var_params) }}"
+  vars:
+    checkmk_var_params:
+      files:
+        - global.yml
+      paths:
+        - /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/files/includes/vars/
+        - /root/ansible_collections/checkmk/general/tests/integration/files/includes/vars/
+        - tests/integration/files/includes/vars/
 
 - name: "Inject a Key into the Sites."  # noqa no-changed-when
   ansible.builtin.shell: |
