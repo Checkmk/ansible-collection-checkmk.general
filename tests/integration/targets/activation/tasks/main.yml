@@ -20,6 +20,7 @@
         - /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/files/includes/tasks/
         - /root/ansible_collections/checkmk/general/tests/integration/files/includes/tasks/
         - tests/integration/files/includes/tasks/
+  when: ansible_facts.system_vendor == "Dell Inc." and 'Latitude' in ansible_facts.product_name and ansible_facts.virtualization_type == "container"
 
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml

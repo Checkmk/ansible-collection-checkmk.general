@@ -3,9 +3,9 @@
   ansible.builtin.debug:
     var: ansible_lsb
 
-- name: "Print OS Information."
+- name: "Print Identifier."
   ansible.builtin.debug:
-    var: ansible_facts
+    msg: "{{ ansible_facts.system_vendor }} {{ ansible_facts.product_name }} running {{ ansible_facts.virtualization_type }}"
 
 - name: "Install dependencies."
   ansible.builtin.package:
@@ -38,6 +38,10 @@
   ansible.builtin.command: "omd -V {{ item.version }}.{{ item.edition }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site }}"
   args:
     creates: "/omd/sites/{{ item.site }}"
+  loop: "{{ checkmk_var_test_sites }}"
+
+- name: "Configure Sites."  # noqa no-changed-when
+  ansible.builtin.command: omd config {{ item.site }} set APACHE_TCP_PORT {{ item.port }}
   loop: "{{ checkmk_var_test_sites }}"
 
 - name: "Start Apache2."
