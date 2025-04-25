@@ -1,2 +1,32 @@
+[project]
+name = "checkmk_ansible_collection"
+version = "5.8.0"
+requires-python = ">=3.11"
+dependencies = [
+    "ansible",
+    "antsibull-changelog",
+    "antsibull-docs",
+    "ansible-lint",
+    "jinja2",
+    "molecule < 25.2.0",
+    "molecule-plugins[docker]",
+    "yamllint",
+    "pywinrm",
+    "netaddr",
+]
+
+[dependency-groups]
+dev = [
+    "black==25.1.0",
+    "click==8.1.8",
+    "isort==6.0.1",
+    "mypy-extensions==1.0.0",
+    "pathspec==0.12.1",
+    "platformdirs==4.3.7",
+    "tomli==2.2.1",
+    "typing-extensions==4.13.1",
+]
+
+
 [tool.isort]
 profile = "black"
