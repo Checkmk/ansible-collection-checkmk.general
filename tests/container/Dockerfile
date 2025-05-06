@@ -4,12 +4,9 @@ LABEL maintainer="Robin Gierse"
 ARG distro="jammy"
 ARG DEBIAN_FRONTEND=noninteractive
 
-ENV stable "2.2.0p17"
-ENV old "2.1.0p37"
-ENV ancient "2.0.0p39"
-
-ARG DL_USER="d-gh-ansible-dl"
-ARG DL_PW
+ENV stable "2.4.0b6"
+ENV old "2.3.0p31"
+ENV ancient "2.2.0p41"
 
 # Install dependencies.
 RUN apt-get update && \
@@ -45,15 +42,15 @@ RUN \
     wget https://download.checkmk.com/checkmk/${ancient}/check-mk-raw-${ancient}_0.${distro}_amd64.deb ; \
     wget https://download.checkmk.com/checkmk/${old}/check-mk-raw-${old}_0.${distro}_amd64.deb ; \
     wget https://download.checkmk.com/checkmk/${stable}/check-mk-raw-${stable}_0.${distro}_amd64.deb ; \
-    wget https://download.checkmk.com/checkmk/${stable}/check-mk-cloud-${stable}_0.${distro}_amd64.deb
-## Restricted downloads
+## Formerly Restricted downloads
 RUN \
-    wget --user=${DL_USER} --password=${DL_PW} https://download.checkmk.com/checkmk/${stable}/check-mk-enterprise-${stable}_0.${distro}_amd64.deb ; \
-    wget --user=${DL_USER} --password=${DL_PW} https://download.checkmk.com/checkmk/${stable}/check-mk-managed-${stable}_0.${distro}_amd64.deb ; \
-    wget --user=${DL_USER} --password=${DL_PW} https://download.checkmk.com/checkmk/${old}/check-mk-enterprise-${old}_0.${distro}_amd64.deb ; \
-    wget --user=${DL_USER} --password=${DL_PW} https://download.checkmk.com/checkmk/${old}/check-mk-managed-${old}_0.${distro}_amd64.deb ; \
-    wget --user=${DL_USER} --password=${DL_PW} https://download.checkmk.com/checkmk/${ancient}/check-mk-enterprise-${ancient}_0.${distro}_amd64.deb ; \
-    wget --user=${DL_USER} --password=${DL_PW} https://download.checkmk.com/checkmk/${ancient}/check-mk-managed-${ancient}_0.${distro}_amd64.deb
+    wget https://download.checkmk.com/checkmk/${stable}/check-mk-cloud-${stable}_0.${distro}_amd64.deb ; \
+    wget https://download.checkmk.com/checkmk/${stable}/check-mk-managed-${stable}_0.${distro}_amd64.deb ; \
+    wget https://download.checkmk.com/checkmk/${old}/check-mk-cloud-${old}_0.${distro}_amd64.deb ; \
+    wget https://download.checkmk.com/checkmk/${old}/check-mk-managed-${old}_0.${distro}_amd64.deb
+## Restricted downloads
+    wget https://download.checkmk.com/checkmk/${ancient}/check-mk-cloud-${ancient}_0.${distro}_amd64.deb ; \
+    wget https://download.checkmk.com/checkmk/${ancient}/check-mk-managed-${ancient}_0.${distro}_amd64.deb
 
 # Fix potential UTF-8 errors with ansible-test.
 RUN locale-gen en_US.UTF-8
@@ -78,11 +75,11 @@ RUN apt-get update && \
       ./check-mk-raw-${old}_0.${distro}_amd64.deb \
       ./check-mk-raw-${stable}_0.${distro}_amd64.deb \
       ./check-mk-cloud-${stable}_0.${distro}_amd64.deb \
-      ./check-mk-enterprise-${ancient}_0.${distro}_amd64.deb \
+      ./check-mk-cloud-${ancient}_0.${distro}_amd64.deb \
       ./check-mk-managed-${ancient}_0.${distro}_amd64.deb \
-      ./check-mk-enterprise-${old}_0.${distro}_amd64.deb \
+      ./check-mk-cloud-${old}_0.${distro}_amd64.deb \
       ./check-mk-managed-${old}_0.${distro}_amd64.deb \
-      ./check-mk-enterprise-${stable}_0.${distro}_amd64.deb \
+      ./check-mk-cloud-${stable}_0.${distro}_amd64.deb \
       ./check-mk-managed-${stable}_0.${distro}_amd64.deb
 
 # Install Python Versions from Deadsnakes
