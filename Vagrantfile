@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
 
   # Main Box
   config.vm.define "collection", primary: true do |srv|
-    srv.vm.box = "generic/ubuntu2204"
+    srv.vm.box = "generic/debian12"
     srv.vm.network :private_network,
         :ip                         => "192.168.124.42",
         :libvirt__netmask           => "255.255.255.0",
@@ -28,21 +28,13 @@ Vagrant.configure("2") do |config|
     end
     $script = <<-SCRIPT
     apt-get -y update --quiet
-    add-apt-repository -y ppa:deadsnakes
-    apt-get -y install python3-pip ca-certificates curl gnupg lsb-release qemu-guest-agent python3.8 python3.9 python3.10 python3.11 python3.12
-    sudo -u vagrant python3 -m pip install pip --upgrade
-    sudo -u vagrant python3 -m pip install -r /home/vagrant/ansible_collections/checkmk/general/requirements.txt
-    sudo -u vagrant python3 -m pip install -r /home/vagrant/ansible_collections/checkmk/general/qa-requirements.txt
-    sudo -u vagrant ansible-galaxy collection install -f -r /home/vagrant/ansible_collections/checkmk/general/requirements.yml
-    mkdir -p /home/vagrant/ansible_collections/checkmk/general
-    mkdir -p /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-    apt-get update
-    apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
-    usermod -aG docker vagrant
-    grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='ansible-galaxy collection build --force ~/ansible_collections/checkmk/general && ansible-galaxy collection install -f ./checkmk-general-*.tar.gz && rm ./checkmk-general-*.tar.gz'" >> /home/vagrant/.bashrc
-    grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
+    apt-get -y install ca-certificates curl direnv gnupg lsb-release qemu-guest-agent
+    sudo -u vagrant bash -c "curl -LsSf https://astral.sh/uv/install.sh | sh"
+    sudo -u vagrant bash -c "cd /home/vagrant/ansible_collections/checkmk/general/ && /home/vagrant/.local/bin/uv sync"
+    sudo -u vagrant bash -c "cd /home/vagrant/ansible_collections/checkmk/general/ && /home/vagrant/.local/bin/uv run ansible-galaxy collection install -f -r /home/vagrant/ansible_collections/checkmk/general/requirements.yml"
+    apt-get install -y podman
+    grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='uv run ansible-galaxy collection build --force ~/ansible_collections/checkmk/general && uv run ansible-galaxy collection install -f ./checkmk-general-*.tar.gz && rm ./checkmk-general-*.tar.gz'" >> /home/vagrant/.bashrc
+    grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='uv run ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
     hostnamectl set-hostname collection
     SCRIPT
     srv.vm.provision "shell", inline: $script
