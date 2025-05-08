@@ -23,21 +23,23 @@
   delegate_to: localhost
   register: __checkmk_var_result_bakery
 
+- debug: var=__checkmk_var_result_bakery
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify bakery status."
   ansible.builtin.assert:
-    that: ("'finished' in __checkmk_var_result_bakery.msg") | bool or
-          ("'running' in __checkmk_var_result_bakery.msg") | bool or
-          ("'initialized' in __checkmk_var_result_bakery.msg") | bool or
-          ("'stopped' in __checkmk_var_result_bakery.msg") | bool or
-          ("'exception' in __checkmk_var_result_bakery.msg") | bool
+    that: ('finished' in __checkmk_var_result_bakery.msg) | bool or
+          ('running' in __checkmk_var_result_bakery.msg) | bool or
+          ('initialized' in __checkmk_var_result_bakery.msg) | bool or
+          ('stopped' in __checkmk_var_result_bakery.msg) | bool or
+          ('exception' in __checkmk_var_result_bakery.msg) | bool
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
   ansible.builtin.assert:
-    that: ("'finished' in __checkmk_var_result_bakery_module.msg") | bool or
-          ("'running' in __checkmk_var_result_bakery_module.msg") | bool or
-          ("'initialized' in __checkmk_var_result_bakery_module.msg") | bool or
-          ("'stopped' in __checkmk_var_result_bakery_module.msg") | bool or
-          ("'exception' in __checkmk_var_result_bakery_module.msg") | bool
+    that: ('finished' in __checkmk_var_result_bakery_module.msg) | bool or
+          ('running' in __checkmk_var_result_bakery_module.msg) | bool or
+          ('initialized' in __checkmk_var_result_bakery_module.msg) | bool or
+          ('stopped' in __checkmk_var_result_bakery_module.msg) | bool or
+          ('exception' in __checkmk_var_result_bakery_module.msg) | bool
   vars:
     __checkmk_var_result_bakery_module: "{{ lookup('checkmk.general.bakery') }}"
   delegate_to: localhost
