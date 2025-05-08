@@ -242,8 +242,8 @@ from ansible.module_utils.common.validation import check_type_list
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
-    result_as_dict,
     base_argument_spec,
+    result_as_dict,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,

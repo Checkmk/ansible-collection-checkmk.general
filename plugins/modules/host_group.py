@@ -132,7 +132,9 @@ import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
-from ansible_collections.checkmk.general.plugins.module_utils.utils import base_argument_spec
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_argument_spec,
+)
 
 logger = Logger()
 
