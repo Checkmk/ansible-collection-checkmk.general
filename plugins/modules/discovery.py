@@ -164,8 +164,8 @@ from ansible_collections.checkmk.general.plugins.module_utils.types import (
     generate_result,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
-    exit_module,
     base_argument_spec,
+    exit_module,
 )
 
 logger = Logger()

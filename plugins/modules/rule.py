@@ -334,7 +334,9 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.validation import safe_eval
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
-from ansible_collections.checkmk.general.plugins.module_utils.utils import base_argument_spec
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_argument_spec,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )

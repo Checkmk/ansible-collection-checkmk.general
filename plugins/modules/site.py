@@ -114,9 +114,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.site import (
 )
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_argument_spec,
     exit_module,
     remove_null_value_keys,
-    base_argument_spec,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,

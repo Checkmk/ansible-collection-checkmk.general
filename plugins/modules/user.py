@@ -234,9 +234,8 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
-    result_as_dict,
     base_argument_spec,
-
+    result_as_dict,
 )
 
 USER = (
