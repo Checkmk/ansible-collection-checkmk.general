@@ -28,6 +28,7 @@ Vagrant.configure("2") do |config|
     end
     $script = <<-SCRIPT
     apt-get -y update --quiet
+    apt-get -y dist-upgrade --quiet
     apt-get -y install ca-certificates curl direnv gnupg lsb-release qemu-guest-agent
     sudo -u vagrant bash -c "curl -LsSf https://astral.sh/uv/install.sh | sh"
     sudo -u vagrant bash -c "cd /home/vagrant/ansible_collections/checkmk/general/ && /home/vagrant/.local/bin/uv sync"
