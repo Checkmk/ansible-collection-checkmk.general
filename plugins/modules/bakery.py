@@ -93,6 +93,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
+    base_argument_spec,
 )
 
 
@@ -121,12 +122,8 @@ class BakeryAPI(CheckmkAPI):
 
 
 def run_module():
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        validate_certs=dict(type="bool", required=False, default=True),
-        automation_user=dict(type="str", required=True),
-        automation_secret=dict(type="str", required=True, no_log=True),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         signature_key_id=dict(type="int", required=False),
         signature_key_passphrase=dict(type="str", required=False, no_log=True),
         state=dict(
@@ -135,7 +132,8 @@ def run_module():
             required=True,
         ),
     )
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
 
     bakery = BakeryAPI(module)
     result = bakery.post()

@@ -101,6 +101,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
+    base_argument_spec,
 )
 
 HTTP_CODES = {
@@ -136,18 +137,14 @@ class ActivationAPI(CheckmkAPI):
 
 
 def run_module():
-    # define available arguments/parameters a user can pass to the module
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        validate_certs=dict(type="bool", required=False, default=True),
-        automation_user=dict(type="str", required=True),
-        automation_secret=dict(type="str", required=True, no_log=True),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         sites=dict(type="raw", default=[]),
         force_foreign_changes=dict(type="bool", default=False),
         redirect=dict(type="bool", default=False),
     )
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
 
     activation = ActivationAPI(module)
     activation.headers["If-Match"] = "*"

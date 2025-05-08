@@ -129,6 +129,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
+    base_argument_spec,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
@@ -249,12 +250,8 @@ def changes_detected(module, current):
 
 
 def run_module():
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        validate_certs=dict(type="bool", required=False, default=True),
-        automation_user=dict(type="str", required=True),
-        automation_secret=dict(type="str", required=True, no_log=True),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         title=dict(type="str", default=""),
         name=dict(type="str", required=True, aliases=["id"]),
         topic=dict(type="str", default=""),
@@ -273,7 +270,7 @@ def run_module():
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
 
     result = RESULT(
         http_code=0,

@@ -243,6 +243,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     result_as_dict,
+    base_argument_spec,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
@@ -819,13 +820,8 @@ class HostAPI(CheckmkAPI):
 
 
 def run_module():
-    # define available arguments/parameters a user can pass to the module
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        validate_certs=dict(type="bool", required=False, default=True),
-        automation_user=dict(type="str", required=True),
-        automation_secret=dict(type="str", required=True, no_log=True),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         name=dict(
             type="str",
             required=True,
@@ -843,7 +839,7 @@ def run_module():
     )
 
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=argument_spec,
         mutually_exclusive=[
             ("nodes", "add_nodes"),
             ("nodes", "remove_nodes"),

@@ -334,6 +334,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.validation import safe_eval
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
+from ansible_collections.checkmk.general.plugins.module_utils.utils import base_argument_spec
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )
@@ -886,13 +887,8 @@ class RuleAPI(CheckmkAPI):
 
 
 def run_module():
-    # define available arguments/parameters a user can pass to the module
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        validate_certs=dict(type="bool", required=False, default=True),
-        automation_user=dict(type="str", required=True),
-        automation_secret=dict(type="str", required=True, no_log=True),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         ruleset=dict(type="str", required=True),
         rule=dict(
             type="dict",
@@ -931,7 +927,7 @@ def run_module():
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
 
     # Create an API object that contains the current and desired state
     current_rule = RuleAPI(module)

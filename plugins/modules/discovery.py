@@ -163,7 +163,10 @@ from ansible_collections.checkmk.general.plugins.module_utils.logger import Logg
 from ansible_collections.checkmk.general.plugins.module_utils.types import (
     generate_result,
 )
-from ansible_collections.checkmk.general.plugins.module_utils.utils import exit_module
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    exit_module,
+    base_argument_spec,
+)
 
 logger = Logger()
 
@@ -177,12 +180,8 @@ AVAILABLE_API_VERSIONS = [
 
 
 def run_module():
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        validate_certs=dict(type="bool", required=False, default=True),
-        automation_user=dict(type="str", required=True),
-        automation_secret=dict(type="str", required=True, no_log=True),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         host_name=dict(type="str", required=False),
         hosts=dict(type="list", elements="str", required=False, default=[]),
         state=dict(
@@ -206,8 +205,9 @@ def run_module():
         wait_for_previous=dict(type="bool", default=True),
         wait_timeout=dict(type="int", default=-1),
     )
+
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=argument_spec,
         mutually_exclusive=[
             ("host_name", "hosts"),
         ],

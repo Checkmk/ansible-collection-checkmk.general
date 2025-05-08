@@ -136,6 +136,7 @@ import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
+from ansible_collections.checkmk.general.plugins.module_utils.utils import base_argument_spec
 
 logger = Logger()
 
@@ -396,12 +397,8 @@ def delete_contact_groups(module, base_url, groups, headers):
 
 
 def run_module():
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        validate_certs=dict(type="bool", required=False, default=True),
-        automation_user=dict(type="str", required=True),
-        automation_secret=dict(type="str", required=True, no_log=True),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         name=dict(type="str", required=False),
         title=dict(type="str", required=False),
         customer=dict(type="str", required=False),
@@ -410,7 +407,7 @@ def run_module():
     )
 
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=argument_spec,
         mutually_exclusive=[
             ("groups", "name"),
         ],
