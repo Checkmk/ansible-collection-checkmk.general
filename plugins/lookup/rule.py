@@ -21,9 +21,9 @@ DOCUMENTATION = """
         description: URL of the Checkmk server.
         required: True
         vars:
-          - name: ansible_lookup_checkmk_server_url
+          - name: checkmk_var_server_url
         env:
-          - name: ANSIBLE_LOOKUP_CHECKMK_SERVER_URL
+          - name: CHECKMK_VAR_SERVER_URL
         ini:
           - section: checkmk_lookup
             key: server_url
@@ -32,9 +32,9 @@ DOCUMENTATION = """
         description: Site name.
         required: True
         vars:
-          - name: ansible_lookup_checkmk_site
+          - name: checkmk_var_site
         env:
-          - name: ANSIBLE_LOOKUP_CHECKMK_SITE
+          - name: CHECKMK_VAR_SITE
         ini:
           - section: checkmk_lookup
             key: site
@@ -43,9 +43,9 @@ DOCUMENTATION = """
         description: Automation user for the REST API access.
         required: True
         vars:
-          - name: ansible_lookup_checkmk_automation_user
+          - name: checkmk_var_automation_user
         env:
-          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_USER
+          - name: CHECKMK_VAR_AUTOMATION_USER
         ini:
           - section: checkmk_lookup
             key: automation_user
@@ -54,9 +54,9 @@ DOCUMENTATION = """
         description: Automation secret for the REST API access.
         required: True
         vars:
-          - name: ansible_lookup_checkmk_automation_secret
+          - name: checkmk_var_automation_secret
         env:
-          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_SECRET
+          - name: CHECKMK_VAR_AUTOMATION_SECRET
         ini:
           - section: checkmk_lookup
             key: automation_secret
@@ -67,9 +67,9 @@ DOCUMENTATION = """
         required: False
         default: True
         vars:
-          - name: ansible_lookup_checkmk_validate_certs
+          - name: checkmk_var_validate_certs
         env:
-          - name: ANSIBLE_LOOKUP_CHECKMK_VALIDATE_CERTS
+          - name: CHECKMK_VAR_VALIDATE_CERTS
         ini:
           - section: checkmk_lookup
             key: validate_certs
@@ -107,11 +107,11 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "Rule: {{ extensions }}"
   vars:
-    ansible_lookup_checkmk_server_url: "http://myserver/"
-    ansible_lookup_checkmk_site: "mysite"
-    ansible_lookup_checkmk_automation_user: "myuser"
-    ansible_lookup_checkmk_automation_secret: "mysecret"
-    ansible_lookup_checkmk_validate_certs: false
+    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_site: "mysite"
+    checkmk_var_automation_user: "myuser"
+    checkmk_var_automation_secret: "mysecret"
+    checkmk_var_validate_certs: false
     attributes: "{{ lookup('checkmk.general.rule', rule_id='a9285bc1-dcaf-45e0-a3ba-ad398ef06a49') }}"
 """
 
