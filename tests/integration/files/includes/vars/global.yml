@@ -22,7 +22,7 @@ __checkmk_server_edition_mapping:
 ansible_lookup_checkmk_server_url: "http://127.0.0.1"  # noqa var-naming[pattern]
 # The variable below is especially hacky.
 # All integration tests were adapted to run the specific task only on this site.
-ansible_lookup_checkmk_site: "stable_cee"  # noqa var-naming[pattern]
+ansible_lookup_checkmk_site: "stable_cme"  # noqa var-naming[pattern]
 ansible_lookup_checkmk_automation_user: "cmkadmin"  # noqa var-naming[pattern]
 ansible_lookup_checkmk_automation_secret: "Sup3rSec4et!"  # noqa var-naming[pattern]
 ansible_lookup_checkmk_validate_certs: false  # noqa var-naming[pattern]

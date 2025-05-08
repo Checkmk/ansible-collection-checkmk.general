@@ -43,4 +43,4 @@
   vars:
     __checkmk_var_result_bakery_module: "{{ lookup('checkmk.general.bakery') }}"
   delegate_to: localhost
-  when: outer_item.edition == "stable_cee"
+  when: outer_item.edition == "stable_cme"
