@@ -21,7 +21,7 @@ checkmk_var_test_sites:
                 port: 6664
                 only_from: []
                 tls: true
-              checkmk_var_params:
+              params:
                 channels: 6
                 heartbeat:
                   interval: 10
@@ -99,7 +99,7 @@ checkmk_var_test_sites:
                 port: 6663
                 only_from: []
                 tls: true
-              checkmk_var_params:
+              params:
                 channels: 6
                 heartbeat:
                   interval: 10
