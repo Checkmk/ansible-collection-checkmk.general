@@ -23,8 +23,6 @@
   delegate_to: localhost
   register: __checkmk_var_result_bakery
 
-- debug: var=__checkmk_var_result_bakery
-
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify bakery status."
   ansible.builtin.assert:
     that: ('finished' in __checkmk_var_result_bakery.msg) | bool or
