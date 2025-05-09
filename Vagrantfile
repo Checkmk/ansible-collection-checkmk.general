@@ -28,6 +28,7 @@ Vagrant.configure("2") do |config|
     end
     $script = <<-SCRIPT
     apt-get -y update --quiet
+    apt-get -y purge postfix --quiet  # Necessary, as it breaks the upgrade process
     apt-get -y dist-upgrade --quiet
     apt-get -y install ca-certificates curl direnv gnupg lsb-release qemu-guest-agent
     sudo -u vagrant bash -c "curl -LsSf https://astral.sh/uv/install.sh | sh"
