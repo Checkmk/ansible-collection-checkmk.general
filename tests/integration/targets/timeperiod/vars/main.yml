@@ -4,19 +4,19 @@ checkmk_var_test_sites:
     edition: "cre"
     site: "ancient_cre"
     port: "5022"
-  - version: "2.3.0p30"
+  - version: "2.3.0p31"
     edition: "cre"
     site: "old_cre"
     port: "5023"
-  - version: "2.3.0p30"
+  - version: "2.3.0p31"
     edition: "cme"
     site: "old_cme"
     port: "5323"
-  - version: "2.4.0b4"
+  - version: "2.4.0"
     edition: "cre"
     site: "stable_cre"
     port: "5024"
-  - version: "2.4.0b4"
+  - version: "2.4.0"
     edition: "cme"
     site: "stable_cme"
     port: "5324"
@@ -24,19 +24,19 @@ checkmk_var_test_sites:
 checkmk_var_timeperiods_create:
   - name: "lunchtime"
     alias: "Lunchtime"
-    active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "12:00:00", "end": "13:00:00"}]}]'
+    active_time_ranges: [{"day": "all", "time_ranges": [{"start": "12:00:00", "end": "13:00:00"}]}]
   - name: "worktime"
     alias: "Worktime"
-    active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]'
-    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
-    exclude: '[ "lunchtime" ]'
+    active_time_ranges: [{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]
+    exceptions: [{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]
+    exclude: ["lunchtime"]
   - name: "notonfriday"
     alias: "Notonfriday"
-    active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "13:00:00", "end": "23:59:59"}]}]'
+    active_time_ranges: [{"day": "friday", "time_ranges": [{"start": "13:00:00", "end": "23:59:59"}]}]
   - name: "fridaybreak"
     alias: "fridaybreak"
-    active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "14:00", "end": "15:00"}]}]'
-    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00", "end": "11:00"}]}]'
+    active_time_ranges: [{"day": "friday", "time_ranges": [{"start": "14:00", "end": "15:00"}]}]
+    exceptions: [{"date": "2023-12-24", "time_ranges": [{"start": "10:00", "end": "11:00"}]}]
   - name: "nonsense"
     alias: "nonsense"
     active_time_ranges: [{'day': 'all', 'time_ranges': [{'start': '09:00:00', 'end': '17:00:00'}, {'start': '20:00:00', 'end': '22:00:00'}, {'start': '7:00', 'end': '08:00'}]},
@@ -47,19 +47,19 @@ checkmk_var_timeperiods_create:
 
 checkmk_var_timeperiods_update:
   - name: "worktime"
-    active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "08:00:00", "end": "17:00:00"}]}]'
-    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
-    exclude: '[ "notonfriday" ]'
+    active_time_ranges: [{"day": "all", "time_ranges": [{"start": "08:00:00", "end": "17:00:00"}]}]
+    exceptions: [{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]
+    exclude: ["notonfriday"]
   - name: "notonfriday"
-    active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "00:00:00", "end": "23:59:59"}]}]'
+    active_time_ranges: [{"day": "friday", "time_ranges": [{"start": "00:00:00", "end": "23:59:59"}]}]
   - name: "worktime"
-    exclude: '[ "lunchtime" ]'
+    exclude: ["lunchtime"]
 
 checkmk_var_timeperiods_noupdate:
   - name: "fridaybreak"
     alias: "fridaybreak"
-    active_time_ranges: '[{"day": "friday", "time_ranges": [{"start": "14:00", "end": "15:00"}]}]'
-    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00", "end": "11:00"}]}]'
+    active_time_ranges: [{"day": "friday", "time_ranges": [{"start": "14:00", "end": "15:00"}]}]
+    exceptions: [{"date": "2023-12-24", "time_ranges": [{"start": "10:00", "end": "11:00"}]}]
   - name: "nonsense"
     alias: "nonsense"
     active_time_ranges: [{'day': 'all', 'time_ranges': [{'start': '20:00:00', 'end': '22:00:00'}, {'start': '09:00:00', 'end': '17:00:00'}, {'start': '7:00', 'end': '08:00'}]},

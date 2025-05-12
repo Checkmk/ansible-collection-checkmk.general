@@ -1,8 +1,4 @@
 ---
-- name: "Print OS Information."
-  ansible.builtin.debug:
-    var: ansible_lsb
-
 - name: "Install dependencies."
   ansible.builtin.package:
     name: python3-apt
@@ -20,8 +16,7 @@
     url_password: "{{ checkmk_var_download_pass | default(omit) }}"
   loop: "{{ checkmk_var_test_sites }}"
   when: |
-    ((checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or item.edition == "cre")
-    and not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
+    not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
 
 - name: "Install Checkmk Versions."
   ansible.builtin.apt:
@@ -29,15 +24,17 @@
     state: present
   loop: "{{ checkmk_var_test_sites }}"
   when: |
-    ((checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or item.edition == "cre")
-    and not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
+    not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
 
 - name: "Create Sites."
   ansible.builtin.command: "omd -V {{ item.version }}.{{ item.edition }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site }}"
   args:
     creates: "/omd/sites/{{ item.site }}"
   loop: "{{ checkmk_var_test_sites }}"
-  when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or item.edition == "cre"
+
+- name: "Configure Sites."  # noqa no-changed-when
+  ansible.builtin.command: omd config {{ item.site }} set APACHE_TCP_PORT {{ item.port }}
+  loop: "{{ checkmk_var_test_sites }}"
 
 - name: "Start Apache2."
   ansible.builtin.service:
@@ -49,12 +46,10 @@
   register: __checkmk_var_site_status
   changed_when: __checkmk_var_site_status.rc == "0"
   loop: "{{ checkmk_var_test_sites }}"
-  when: (checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or item.edition == "cre"
 
 - name: "Wait for site to be ready."
   ansible.builtin.pause:
     seconds: 5
   when: |
-    ((checkmk_var_download_pass is defined and checkmk_var_download_pass | length) or item.item.edition == 'cre')
-    and (item.stdout_lines is defined and 'OVERALL 1' in item.stdout_lines)
+    item.stdout_lines is defined and 'OVERALL 1' in item.stdout_lines
   loop: "{{ __checkmk_var_site_status.results }}"

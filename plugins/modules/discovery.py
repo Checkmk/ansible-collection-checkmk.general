@@ -159,6 +159,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.discovery_230 impo
 from ansible_collections.checkmk.general.plugins.module_utils.discovery_240 import (
     Discovery240,
 )
+from ansible_collections.checkmk.general.plugins.module_utils.discovery_250 import (
+    Discovery250,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.types import (
     generate_result,
@@ -169,6 +172,7 @@ logger = Logger()
 
 AVAILABLE_API_VERSIONS = [
     # Let's try the newest Version, first.
+    Discovery250,
     Discovery240,
     Discovery230,
     Discovery220,

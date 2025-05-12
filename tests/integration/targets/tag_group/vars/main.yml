@@ -4,19 +4,19 @@ checkmk_var_test_sites:
     edition: "cre"
     site: "ancient_cre"
     port: "5022"
-  - version: "2.3.0p30"
+  - version: "2.3.0p31"
     edition: "cre"
     site: "old_cre"
     port: "5023"
-  - version: "2.3.0p30"
+  - version: "2.3.0p31"
     edition: "cme"
     site: "old_cme"
     port: "5323"
-  - version: "2.4.0b4"
+  - version: "2.4.0"
     edition: "cre"
     site: "stable_cre"
     port: "5024"
-  - version: "2.4.0b4"
+  - version: "2.4.0"
     edition: "cme"
     site: "stable_cme"
     port: "5324"
@@ -82,3 +82,48 @@ checkmk_var_tag_groups_update:
 checkmk_var_tag_groups_delete:
   - name: Supporter
     repair: true
+
+checkmk_var_aux_tags_create:
+  - aux_tag_id: cust_a
+    topic: Tags
+    title: Customer A
+    help: "something useful"
+  - aux_tag_id: cust_b
+    topic: Tags
+    title: Customer B
+    help: "something useful"
+  - aux_tag_id: cust_c
+    topic: Tags
+    title: Customer C
+    help: "something useful"
+
+checkmk_var_tag_groups_with_aux_tags_create:
+  - name: Business
+    title: Business
+    topic: Tags
+    help: "something useful"
+    tags:
+      - id: business_a
+        title: Business A
+        aux_tags: ["cust_a"]
+      - id: business_b
+        title: Business B
+        aux_tags: ["cust_b", "cust_c"]
+      - id: business_c
+        title: Business C
+
+checkmk_var_tag_groups_with_aux_tags_update:
+  - name: Business
+    title: Business
+    topic: Tags
+    help: "something useful"
+    tags:
+      - id: business_a
+        title: Business A
+        aux_tags: ["cust_a"]
+      - id: business_b
+        title: Business B
+        aux_tags: ["cust_b"]
+      - id: business_c
+        title: Business C
+        aux_tags: ["cust_c"]

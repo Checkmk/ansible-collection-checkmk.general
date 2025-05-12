@@ -16,8 +16,8 @@ collection_dir="${script_dir%/*}"
 
 # Update these as necessary:
 checkmk_ancient="2.2.0p41"
-checkmk_oldstable="2.3.0p30"
-checkmk_stable="2.4.0b4"
+checkmk_oldstable="2.3.0p31"
+checkmk_stable="2.4.0"
 
 while getopts 's:t:' OPTION; do
   case "$OPTION" in
@@ -57,7 +57,8 @@ find "${collection_dir}/roles/" -type f \( -name "main.yml" -o -name "argument_s
 find "${collection_dir}/roles/" -type f -name README.md -exec sed -i "s/2.4.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated default Checkmk version in roles README to ${checkmk_stable}."
 # Support Matrix
 grep "${target_version}" "${collection_dir}/SUPPORT.md" > /dev/null || echo "${target_version} | ${checkmk_ancient}, ${checkmk_oldstable}, ${checkmk_stable} | 2.15, 2.16, 2.17 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
-
+# pyproject.toml
+sed -i "s/version = \"${source_version}\"/version = \"${target_version}\"/g" "${collection_dir}/pyproject.toml" && echo "Updated Checkmk version in pyproject.toml from ${source_version} to ${target_version}."
 echo "# End changes section."
 echo
 

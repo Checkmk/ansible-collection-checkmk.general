@@ -47,10 +47,10 @@ help:
 
 build:
 	@echo "Building Collection from current working directory. This can take a while."
-	@ansible-galaxy collection build --force ./
+	@uv run ansible-galaxy collection build --force ./
 
 install:
-	@ansible-galaxy collection install -f ./checkmk-general-$(VERSION).tar.gz
+	@uv run ansible-galaxy collection install -f ./checkmk-general-$(VERSION).tar.gz
 
 release: version
 	# gh workflow run release.yaml --ref main  # https://cli.github.com/manual/gh_workflow_run
@@ -65,16 +65,7 @@ version:
 setup: setup-python kvm vagrant
 
 python:
-	@sudo apt-get -y update --quiet
-	@sudo apt-get -y install -y \
-		python3-pip \
-		python3-venv \
-		ca-certificates \
-		curl \
-		gnupg \
-		lsb-release
-	@python3 -m pip install pip --upgrade
-	@python3 -m pip install -r requirements.txt
+	@curl -LsSf https://astral.sh/uv/install.sh | sh
 
 kvm:
 	@sudo apt update -y
@@ -97,7 +88,8 @@ vagrant:
 		apt-transport-https \
 		ca-certificates \
 		wget \
-		software-properties-common
+		software-properties-common \
+		virtiofsd
 	@wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
 	@echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $$(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 	@sudo apt update -y
@@ -106,12 +98,8 @@ vagrant:
 	@vagrant plugin install vagrant-libvirt vagrant-reload
 
 venv:
-	@python3 -m venv venv
-	@(. venv/bin/activate && python3 -m pip install pip --upgrade && python3 -m pip install -r requirements.txt)
-	@echo
-	@echo "Run the following command to actually activate the venv!"
-	@echo ". venv/bin/activate"
-	@echo
+	@uv venv
+	@uv sync
 
 clean:
 	@rm -rf .tox/
@@ -137,33 +125,33 @@ vms-suse:
 vms-windows:
 	@vagrant up ansidows
 
-container:
+container: vm
 	vagrant ssh collection -c "\
-	docker build -t $(CONTAINER_NAME) $(CONTAINER_BUILD_ROOT) --build-arg DL_PW=$$(cat .secret) && \
-	docker save $(CONTAINER_NAME):latest > $(COLLECTION_ROOT)/$(CONTAINER_NAME)-latest-image.tar.gz"
+	podman build -t $(CONTAINER_NAME) $(CONTAINER_BUILD_ROOT) --build-arg DL_PW=$$(cat .secret) && \
+	podman save $(CONTAINER_NAME):latest > $(COLLECTION_ROOT)/$(CONTAINER_NAME)-latest-image.tar.gz"
 
 tests: tests-linting tests-sanity tests-integration
 
 tests-linting: vm
 	@vagrant ssh collection -c "\
 	cd $(COLLECTION_ROOT) && \
-	ansible-galaxy collection install ./ && \
-	yamllint -c .yamllint ./roles/ && \
-	yamllint -c .yamllint ./playbooks/ && \
-	ansible-lint -c .ansible-lint ./roles/ && \
-	ansible-lint -c .ansible-lint ./playbooks/"
+	LC_ALL=C.UTF-8 uv run ansible-galaxy collection install ./ && \
+	uv run yamllint -c .yamllint ./roles/ && \
+	uv run yamllint -c .yamllint ./playbooks/ && \
+	LC_ALL=C.UTF-8 uv run ansible-lint -c .ansible-lint ./roles/ && \
+	LC_ALL=C.UTF-8 uv run ansible-lint -c .ansible-lint ./playbooks/"
 
 tests-sanity: vm
 	@vagrant ssh collection -c "\
 	cd $(COLLECTION_ROOT) && \
-	ansible-test sanity --docker"
+	LC_ALL=C.UTF-8 uv run ansible-test sanity --docker"
 
 tests-units: vm
 	@vagrant ssh collection -c "\
 	cd $(COLLECTION_ROOT) && \
-	ansible-test units --docker"
+	LC_ALL=C.UTF-8 uv run ansible-test units --docker"
 
 tests-integration: vm
 	@vagrant ssh collection -c "\
 	cd $(COLLECTION_ROOT) && \
-	ansible-test integration --docker"
+	LC_ALL=C.UTF-8 uv run ansible-test integration --docker"
