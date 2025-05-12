@@ -1,0 +1,6 @@
+minor_changes:
+  - tag_group module - Add "aux_tags" suboption for tags in tag_group module.
+
+known_issues:
+  - tag_group module - The "aux_tags" suboption introduced in this version enables assigning existing "aux_tags" to tag groups.
+    It does not enable management of "aux_tags" themselves. See issue 771 for progress on that module.
