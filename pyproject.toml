@@ -1,6 +1,6 @@
 [project]
 name = "checkmk_ansible_collection"
-version = "5.8.0"
+version = "5.9.0"
 requires-python = ">=3.11"
 dependencies = [
     "ansible",
@@ -8,7 +8,7 @@ dependencies = [
     "antsibull-docs",
     "ansible-lint",
     "jinja2",
-    "molecule < 25.5.0",
+    "molecule<25.5.0",
     "molecule-plugins[docker]",
     "yamllint",
     "pywinrm",
@@ -18,13 +18,13 @@ dependencies = [
 [dependency-groups]
 dev = [
     "black==25.1.0",
-    "click==8.1.8",
+    "click==8.2.0",
     "isort==6.0.1",
-    "mypy-extensions==1.0.0",
+    "mypy-extensions==1.1.0",
     "pathspec==0.12.1",
-    "platformdirs==4.3.7",
+    "platformdirs==4.3.8",
     "tomli==2.2.1",
-    "typing-extensions==4.13.1",
+    "typing-extensions==4.13.2",
 ]
 
 
