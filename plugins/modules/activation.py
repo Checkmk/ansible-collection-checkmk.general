@@ -137,7 +137,7 @@ class ActivationAPI(CheckmkAPI):
 
 
 def run_module():
-    argument_spec = base_argument_spec()
+    argument_spec = base_argument_spec
     argument_spec.update(
         sites=dict(type="raw", default=[]),
         force_foreign_changes=dict(type="bool", default=False),

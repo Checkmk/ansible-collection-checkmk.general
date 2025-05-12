@@ -475,7 +475,7 @@ def _exit_if_missing_pathlib(module):
 
 
 def run_module():
-    argument_spec = base_argument_spec()
+    argument_spec = base_argument_spec
     argument_spec.update(
         path=dict(type="str", required=True),
         name=dict(

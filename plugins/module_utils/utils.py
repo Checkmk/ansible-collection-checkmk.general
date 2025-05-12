@@ -13,8 +13,7 @@ __metaclass__ = type
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 
 
-def base_argument_spec():
-    return dict(
+base_argument_spec = dict(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
         validate_certs=dict(type="bool", required=False, default=True),

@@ -374,7 +374,7 @@ def delete_service_groups(module, base_url, groups, headers):
 
 
 def run_module():
-    argument_spec = base_argument_spec()
+    argument_spec = base_argument_spec
     argument_spec.update(
         name=dict(type="str", required=False),
         title=dict(type="str", required=False),
