@@ -1,0 +1,3 @@
+minor_changes:
+  - Discovery module - Support the latest development version of Checkmk.
+    This is a work in progress, but should enable using the collection with daily builds of Checkmk.
