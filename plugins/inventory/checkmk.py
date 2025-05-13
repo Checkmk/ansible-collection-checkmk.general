@@ -29,6 +29,10 @@ DOCUMENTATION = """
             type: list
             elements: str
             required: false
+        want_ipv4:
+            description: Update ansible_host variable with ip address from Checkmk instead of DNS
+            type: boolean
+            required: false
 """
 
 EXAMPLES = """
@@ -44,6 +48,7 @@ automation_user: "cmkadmin"
 automation_secret: "******"
 validate_certs: False
 groupsources: ["hosttags", "sites"]
+want_ipv4: False
 """
 
 import json
@@ -73,6 +78,7 @@ class InventoryModule(BaseInventoryPlugin):
         self.user = None
         self.secret = None
         self.validate_certs = None
+        self.want_ipv4 = None
         self.groupsources = []
         self.hosttaggroups = []
         self.tags = []
@@ -141,6 +147,7 @@ class InventoryModule(BaseInventoryPlugin):
             self.user = self.get_option("automation_user")
             self.secret = self.get_option("automation_secret")
             self.validate_certs = self.get_option("validate_certs")
+            self.want_ipv4 = self.get_option("want_ipv4")
             self.groupsources = self.get_option("groupsources")
         except Exception as e:
             raise AnsibleParserError("All correct options required: {}".format(e))
@@ -172,6 +179,8 @@ class InventoryModule(BaseInventoryPlugin):
             self.inventory.add_host(host["id"])
             self.inventory.set_variable(host["id"], "ipaddress", host["ipaddress"])
             self.inventory.set_variable(host["id"], "folder", host["folder"])
+            if self.want_ipv4:
+                self.inventory.set_variable(host["id"], "ansible_host", host["ipaddress"])
 
         if self.groupsources:
             if "hosttags" in self.groupsources:
