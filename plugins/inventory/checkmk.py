@@ -30,7 +30,7 @@ DOCUMENTATION = """
             elements: str
             required: false
         want_ipv4:
-            description: Update ansible_host variable with ip address from Checkmk instead of DNS
+            description: Update ansible_host variable with ip address from Checkmk
             type: boolean
             required: false
 """
