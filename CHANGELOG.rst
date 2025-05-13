@@ -4,6 +4,27 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.9.0
+======
+
+Release Summary
+---------------
+
+Spring cleaning. Some module maintenance and some quality of life improvements for developing the collection.
+
+Minor Changes
+-------------
+
+- Development - Many clean-ups and fixes in various places. No functional changes.
+- Development - The main Vagrant box which supports development of this collection was moved to Debian 10, Podman and uv. This change does not affect the contents of the collection. It should also be mostly transparent for contributors, developing content for the collection. But be advised, if something feels off, these changes might be relevant.
+- Discovery module - Support the latest development version of Checkmk. This is a work in progress, but should enable using the collection with daily builds of Checkmk.
+- tag_group module - Add "aux_tags" suboption for tags in tag_group module.
+
+Known Issues
+------------
+
+- tag_group module - The "aux_tags" suboption introduced in this version enables assigning existing "aux_tags" to tag groups. It does not enable management of "aux_tags" themselves. See issue 771 for progress on that module.
+
 v5.8.0
 ======
 

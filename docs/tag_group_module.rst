@@ -22,7 +22,7 @@ checkmk.general.tag_group module -- Manage tag groups in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.8.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.9.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -419,6 +419,54 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-tags/aux_tags"></div>
+        <div class="ansibleOptionAnchor" id="parameter-choices/aux_tags"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-choices/aux_tags:
+      .. _ansible_collections.checkmk.general.tag_group_module__parameter-tags/aux_tags:
+
+      .. rst-class:: ansible-option-title
+
+      **aux_tags**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-tags/aux_tags" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The list of aux\_tags
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-tags/id"></div>
         <div class="ansibleOptionAnchor" id="parameter-choices/id"></div>
 
@@ -655,9 +703,11 @@ Examples
           - id: datacenter_none
             title: No Datacenter
           - id: datacenter_1
-            title: Datacenter 2
+            title: Datacenter 1
+            aux_tags: ["support_a","support_b"]
           - id: datacenter_2
             title: Datacenter 2
+            aux_tags: ["support_c"]
           - id: datacenter_3
             title: Datacenter 3
         state: present
