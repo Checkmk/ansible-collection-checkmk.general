@@ -180,7 +180,9 @@ class InventoryModule(BaseInventoryPlugin):
             self.inventory.set_variable(host["id"], "ipaddress", host["ipaddress"])
             self.inventory.set_variable(host["id"], "folder", host["folder"])
             if self.want_ipv4:
-                self.inventory.set_variable(host["id"], "ansible_host", host["ipaddress"])
+                self.inventory.set_variable(
+                    host["id"], "ansible_host", host["ipaddress"]
+                )
 
         if self.groupsources:
             if "hosttags" in self.groupsources:
