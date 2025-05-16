@@ -42,7 +42,7 @@ server_url: "http://hostname/"
 site: "sitename"
 automation_user: "cmkadmin"
 automation_secret: "******"
-validate_certs: False
+validate_certs: false
 groupsources: ["hosttags", "sites"]
 """
 
