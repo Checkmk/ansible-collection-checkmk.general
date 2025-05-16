@@ -19,8 +19,8 @@
     not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
 
 - name: "Install Checkmk Versions."
-  ansible.builtin.apt:
-    deb: /tmp/checkmk-server-{{ item.site }}.deb
+  ansible.builtin.package:
+    name: /tmp/checkmk-server-{{ item.site }}.deb
     state: present
   loop: "{{ checkmk_var_test_sites }}"
   when: |
