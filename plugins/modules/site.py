@@ -107,11 +107,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.site import (
-    site_argument_spec,
     SiteConnection,
     SiteEndpoints,
     SiteHTTPCodes,
     TargetAPI,
+    site_argument_spec,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
