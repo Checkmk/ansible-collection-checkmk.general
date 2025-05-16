@@ -406,7 +406,7 @@ def remove_downtime(module, base_url, headers):
 
 
 def run_module():
-    argument_spec = base_argument_spec
+    argument_spec = base_argument_spec()
     argument_spec.update(
         host_name=dict(type="str", required=True),
         comment=dict(type="str", default="Created by Ansible"),

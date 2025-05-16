@@ -250,7 +250,7 @@ def changes_detected(module, current):
 
 
 def run_module():
-    argument_spec = base_argument_spec
+    argument_spec = base_argument_spec()
     argument_spec.update(
         title=dict(type="str", default=""),
         name=dict(type="str", required=True, aliases=["id"]),

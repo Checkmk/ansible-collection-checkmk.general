@@ -820,7 +820,7 @@ class HostAPI(CheckmkAPI):
 
 
 def run_module():
-    argument_spec = base_argument_spec
+    argument_spec = base_argument_spec()
     argument_spec.update(
         name=dict(
             type="str",

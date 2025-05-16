@@ -395,7 +395,7 @@ def delete_host_groups(module, base_url, groups, headers):
 
 
 def run_module():
-    argument_spec = base_argument_spec
+    argument_spec = base_argument_spec()
     argument_spec.update(
         name=dict(
             type="str",

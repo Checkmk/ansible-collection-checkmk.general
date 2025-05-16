@@ -301,7 +301,7 @@ logger = Logger()
 
 
 def run_module():
-    argument_spec = base_argument_spec
+    argument_spec = base_argument_spec()
     argument_spec.update(site_argument_spec)
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)

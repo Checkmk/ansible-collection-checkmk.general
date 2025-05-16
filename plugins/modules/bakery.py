@@ -122,7 +122,7 @@ class BakeryAPI(CheckmkAPI):
 
 
 def run_module():
-    argument_spec = base_argument_spec
+    argument_spec = base_argument_spec()
     argument_spec.update(
         signature_key_id=dict(type="int", required=False),
         signature_key_passphrase=dict(type="str", required=False, no_log=True),

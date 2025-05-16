@@ -459,7 +459,7 @@ class UserAPI(CheckmkAPI):
 
 
 def run_module():
-    argument_spec = base_argument_spec
+    argument_spec = base_argument_spec()
     argument_spec.update(
         name=dict(required=True, type="str"),
         fullname=dict(type="str"),

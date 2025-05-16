@@ -889,7 +889,7 @@ class RuleAPI(CheckmkAPI):
 
 
 def run_module():
-    argument_spec = base_argument_spec
+    argument_spec = base_argument_spec()
     argument_spec.update(
         ruleset=dict(type="str", required=True),
         rule=dict(

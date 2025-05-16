@@ -180,7 +180,7 @@ AVAILABLE_API_VERSIONS = [
 
 
 def run_module():
-    argument_spec = base_argument_spec
+    argument_spec = base_argument_spec()
     argument_spec.update(
         host_name=dict(type="str", required=False),
         hosts=dict(type="list", elements="str", required=False, default=[]),
