@@ -1,0 +1,5 @@
+bugfixes:
+  - roles/server/tasks/mkp was using 'omd su site -c' to execute comands a site user but it does not work in all flavors/versions so changed to become_user instead (https://github.com/Checkmk/ansible-collection-checkmk.general/issues/777)
+  - roles/server/tasks/mkp fails when try to install a mkp packages that already exists in the server. Added a conditional to validate stderr and don't fail if "exists on the site" is found (https://github.com/Checkmk/ansible-collection-checkmk.general/issues/777)
+minor_changes:
+  - roles/server/tasks/mkp expects a boolean value for __mkp.installed and __mkp.enabled but in README.md and defaults.yml the usage examples set them as string. Changed README.md but also added "| bool" to force boolean even if string is defined (https://github.com/Checkmk/ansible-collection-checkmk.general/issues/777)
