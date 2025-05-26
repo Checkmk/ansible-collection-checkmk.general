@@ -124,13 +124,7 @@ class SiteConnection:
             return self.authentication
 
 
-# Define available arguments/parameters a user can pass to the module
-module_args = dict(
-    server_url=dict(type="str", required=True),
-    site=dict(type="str", required=True),
-    validate_certs=dict(type="bool", required=False, default=True),
-    automation_user=dict(type="str", required=True),
-    automation_secret=dict(type="str", required=True, no_log=True),
+site_argument_spec = dict(
     state=dict(
         type="str",
         default="present",

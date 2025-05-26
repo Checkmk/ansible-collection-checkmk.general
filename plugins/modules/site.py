@@ -111,10 +111,11 @@ from ansible_collections.checkmk.general.plugins.module_utils.site import (
     SiteEndpoints,
     SiteHTTPCodes,
     TargetAPI,
-    module_args,
+    site_argument_spec,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_argument_spec,
     exit_module,
     remove_null_value_keys,
 )
@@ -300,9 +301,11 @@ logger = Logger()
 
 
 def run_module():
-    # define available arguments/parameters a user can pass to the module
+    argument_spec = base_argument_spec()
+    argument_spec.update(site_argument_spec)
 
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
+
     logger.set_loglevel(module._verbosity)
     remove_null_value_keys(module.params)
     site_id = module.params.get("site_id")

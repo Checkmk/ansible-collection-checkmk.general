@@ -123,6 +123,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_argument_spec,
     result_as_dict,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
@@ -211,12 +212,8 @@ class PasswordsGetAPI(CheckmkAPI):
 
 
 def run_module():
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        validate_certs=dict(type="bool", required=False, default=True),
-        automation_user=dict(type="str", required=True),
-        automation_secret=dict(type="str", required=True, no_log=True),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         name=dict(type="str", required=True),
         title=dict(type="str", required=False),
         customer=dict(type="str", required=False),
@@ -231,7 +228,8 @@ def run_module():
             required=True,
         ),
     )
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
+
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
 
     result = RESULT(
         http_code=0,

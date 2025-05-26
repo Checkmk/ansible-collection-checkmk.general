@@ -159,6 +159,7 @@ from ansible.module_utils.common.validation import check_type_list
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_argument_spec,
     result_as_dict,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
@@ -474,13 +475,8 @@ def _exit_if_missing_pathlib(module):
 
 
 def run_module():
-    # define available arguments/parameters a user can pass to the module
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        validate_certs=dict(type="bool", required=False, default=True),
-        automation_user=dict(type="str", required=True),
-        automation_secret=dict(type="str", required=True, no_log=True),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         path=dict(type="str", required=True),
         name=dict(
             type="str",
@@ -496,7 +492,7 @@ def run_module():
         extended_functionality=dict(type="bool", required=False, default=True),
     )
 
-    module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
 
     _exit_if_missing_pathlib(module)
 
