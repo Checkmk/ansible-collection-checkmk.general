@@ -70,7 +70,7 @@ jobs:
           CMK_SITE_ID: "ancient_cce"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cme:
-        image: checkmk/check-mk-managed:2.3.0p32
+        image: checkmk/check-mk-managed:2.3.0p33
         ports:
           - 5323:5000
         env:
