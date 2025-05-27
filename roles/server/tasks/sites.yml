@@ -9,6 +9,8 @@
     creates: "/omd/sites/{{ item.name }}"
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    label: "{{ item | combine({'admin_pw': omit}) }}"
   when: item.state != "absent"
   register: __checkmk_server_sites_created
   tags:
