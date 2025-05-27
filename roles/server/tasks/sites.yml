@@ -23,6 +23,8 @@
     executable: /bin/bash
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    label: "{{ item | combine({'admin_pw': omit}) }}"
   changed_when: "__checkmk_server_sites_versions.stdout != item.version + '.' + checkmk_server_edition | lower"
   when: item.state != "absent"
   register: __checkmk_server_sites_versions
@@ -32,6 +34,8 @@
 - name: "Include update site tasks."  # noqa no-handler
   ansible.builtin.include_tasks: update-site.yml
   loop: "{{ __checkmk_server_sites_versions.results }}"
+  loop_control:
+    label: "{{ item | ansible.utils.remove_keys(target=['admin_pw']) }}"
   when: "item.changed"
   tags:
     - update-sites
@@ -50,6 +54,8 @@
     executable: /bin/bash
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    label: "{{ item | combine({'admin_pw': omit}) }}"
   when: (item.state == "enabled") or (item.state == "started")
   register: __checkmk_server_sites_stopped
   changed_when: "'Autostart enabled.' in __checkmk_server_sites_stopped.stdout"
@@ -66,6 +72,8 @@
     creates: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    label: "{{ item | combine({'admin_pw': omit}) }}"
   when: item.state == "started"
   register: __checkmk_server_sites_started
   tags:
@@ -81,6 +89,8 @@
     removes: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    label: "{{ item | combine({'admin_pw': omit}) }}"
   when: item.state != "started"
   register: __checkmk_server_sites_stopped
   tags:
@@ -99,6 +109,8 @@
     executable: /bin/bash
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    label: "{{ item | combine({'admin_pw': omit}) }}"
   when: (item.state == "disabled") or (item.state == "present") or (item.state == "stopped")
   register: __checkmk_server_sites_stopped
   changed_when: "'Autostart disabled.' in __checkmk_server_sites_stopped.stdout"
@@ -115,6 +127,8 @@
     removes: "/omd/sites/{{ item.name }}"
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    label: "{{ item | combine({'admin_pw': omit}) }}"
   when: item.state == "absent"
   register: __checkmk_server_sites_removed
   tags:
@@ -124,6 +138,7 @@
   ansible.builtin.include_tasks: configure-site.yml
   loop: "{{ checkmk_server_sites }}"
   loop_control:
+    label: "{{ outer_item | combine({'admin_pw': omit}) }}"
     loop_var: outer_item
   when: |
     outer_item.omd_config is defined and
@@ -136,6 +151,7 @@
   ansible.builtin.include_tasks: mkp.yml
   loop: "{{ checkmk_server_sites }}"
   loop_control:
+    label: "{{ __site | combine({'admin_pw': omit}) }}"
     loop_var: __site
   when: __site.mkp_packages is defined
 
@@ -148,6 +164,8 @@
     executable: /bin/bash
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    label: "{{ item | combine({'admin_pw': omit}) }}"
   when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '<'))
   tags:
     - set-site-admin-pw
@@ -163,6 +181,8 @@
     executable: /bin/bash
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    label: "{{ item | combine({'admin_pw': omit}) }}"
   when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '>='))
   tags:
     - set-site-admin-pw
@@ -172,6 +192,8 @@
     msg:
       - "Just a trigger."
   loop: "{{ __checkmk_server_sites_created.results }}"
+  loop_control:
+    label: "{{ item | ansible.utils.remove_keys(target=['admin_pw']) }}"
   when: __checkmk_server_sites_created.changed | bool and not item.item.admin_pw is defined and item.item.state != "absent"
   changed_when: true
   notify: Warn site admin password
