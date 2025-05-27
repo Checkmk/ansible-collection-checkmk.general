@@ -88,8 +88,8 @@ Note: this is not a recommended procedure, and will not be supported for enterpr
             src: '/path/to/my.mkp'
             url: 'https://exchange.checkmk.com/packages/mypackage/4711/mypackage-1.0.0.mkp'
             checksum: 'md5:mychecksum'
-            installed: 'true'
-            enabled: 'true'
+            installed: true
+            enabled: true
 
 A dictionary of sites, containing the desired version, admin password, site configuration options, extension packages and state.
 The more advanced settings will be outlined below.

@@ -1,0 +1,8 @@
+plugin: checkmk.general.checkmk
+server_url: "http://localhost/"
+site: "hyde"
+automation_user: "cmkadmin"
+automation_secret: "cmk"
+validate_certs: false
+groupsources: ["hosttags", "sites"]
+want_ipv4: false

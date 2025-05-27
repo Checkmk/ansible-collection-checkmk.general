@@ -22,7 +22,7 @@
 
 - name: "Update APT Cache."
   become: true
-  ansible.builtin.apt:
+  ansible.builtin.package:
     update_cache: true
   when: ansible_os_family == "Debian"
 

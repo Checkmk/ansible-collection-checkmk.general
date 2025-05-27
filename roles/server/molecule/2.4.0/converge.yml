@@ -5,13 +5,13 @@
   pre_tasks:
 
     - name: "Update apt cache."
-      ansible.builtin.apt:
+      ansible.builtin.package:
         update_cache: true
         cache_valid_time: 600
       when: ansible_os_family == 'Debian'
 
     - name: "Install prerequisites."
-      ansible.builtin.apt:
+      ansible.builtin.package:
         name: "{{ item }}"
         state: present
       loop:
