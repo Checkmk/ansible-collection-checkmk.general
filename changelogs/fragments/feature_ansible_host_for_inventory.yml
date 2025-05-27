@@ -1,4 +1,3 @@
 ---
-
 minor_changes:
   - Dynamic Inventory Source - Add possibility to update ansible_host with ip address from Checkmk
