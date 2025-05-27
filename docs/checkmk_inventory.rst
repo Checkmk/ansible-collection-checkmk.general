@@ -22,7 +22,7 @@ checkmk.general.checkmk inventory -- Dynamic Inventory Source or Checkmk
 .. Collection note
 
 .. note::
-    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.9.0).
+    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.10.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -352,6 +352,51 @@ Parameters
 
         </div>
 
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-want_ipv4"></div>
+
+      .. _ansible_collections.checkmk.general.checkmk_inventory__parameter-want_ipv4:
+
+      .. rst-class:: ansible-option-title
+
+      **want_ipv4**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-want_ipv4" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Update ansible\_host variable with ip address from Checkmk
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
 
 .. Attributes
 
@@ -379,8 +424,9 @@ Examples
     site: "sitename"
     automation_user: "cmkadmin"
     automation_secret: "******"
-    validate_certs: False
+    validate_certs: false
     groupsources: ["hosttags", "sites"]
+    want_ipv4: False
 
 
 
