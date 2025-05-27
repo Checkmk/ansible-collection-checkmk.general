@@ -131,10 +131,10 @@ See [this link](https://docs.checkmk.com/latest/en/agent_linux.html#registration
 
     checkmk_agent_configure_firewall: 'true'
 
-Automatically configure the firewall to allow access to the Checkmk agent.
+Automatically configure the firewall to allow access to the Checkmk agent on the `checkmk_agent_port`.
 **This is a very rudamentary configration!**
-It only opens port 6556. Everything else uses defaults of the respective platform.
-If you need more elaborate configuration, use your own firewall management!
+It only opens port 6556/tcp by default. Everything else uses defaults of the respective platform.
+If you need more elaborate configuration, use your own firewall management and set this to `false`!
 
     checkmk_agent_force_install: 'false'
 
