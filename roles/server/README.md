@@ -70,9 +70,9 @@ For elaborate firewall configuration, use your own firewall management!
 This setting only enables very basic firewall configuration.
 
     checkmk_server_ports:
-    - 80/tcp
-    - 443/tcp
-    - 8000/tcp
+    - 80
+    - 443
+    - 8000
 
 The ports to open automatically. Adapt this to the specific requirements of your site.
 
