@@ -108,7 +108,33 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
 """
 
-# TODO Add examples here and check return
+EXAMPLES = """
+- name: "Get the default BI aggregation."
+  ansible.builtin.debug:
+    msg: "BI aggregation: {{ bi_aggregation_details }}"
+  vars:
+    bi_aggregation_details: "{{
+      lookup('checkmk.general.bi_aggregation',
+        'default_aggregation',
+        server_url='http://myserver/',
+        site='mysite',
+        automation_user='myuser',
+        automation_secret='mysecret',
+        validate_certs=False
+      )
+    }}"
+
+- name: "Use variables outside the module call."
+  ansible.builtin.debug:
+    msg: "BI bi_aggregation: {{ bi_aggregation_details }}"
+  vars:
+    ansible_lookup_checkmk_server_url: "http://myserver/"
+    ansible_lookup_checkmk_site: "mysite"
+    ansible_lookup_checkmk_automation_user: "myuser"
+    ansible_lookup_checkmk_automation_secret: "mysecret"
+    ansible_lookup_checkmk_validate_certs: false
+    bi_aggregation_details: "{{ lookup('checkmk.general.bi_aggregation', 'default_aggregation') }}"
+"""
 
 RETURN = """
 _list:

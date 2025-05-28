@@ -93,7 +93,7 @@ EXAMPLES = """
   vars:
     attributes: "{{
                     lookup('checkmk.general.bi_pack',
-                        'example_pack',
+                        'default',
                         server_url=my_server_url,
                         site=mysite,
                         automation_user=myuser,
@@ -111,7 +111,7 @@ EXAMPLES = """
     ansible_lookup_checkmk_automation_user: "myuser"
     ansible_lookup_checkmk_automation_secret: "mysecret"
     ansible_lookup_checkmk_validate_certs: false
-    attributes: "{{ lookup('checkmk.general.bi_pack', 'example_pack') }}"
+    attributes: "{{ lookup('checkmk.general.bi_pack', 'default') }}"
 """
 
 RETURN = """
