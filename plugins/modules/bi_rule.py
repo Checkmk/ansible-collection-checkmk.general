@@ -11,12 +11,12 @@ DOCUMENTATION = r"""
 ---
 module: bi_rule
 
-short_description: Manage BI rules in Checkmk.
+short_description: Manage BI rules.
 
 version_added: "6.1.0"
 
 description:
-  - Manage BI rules in Checkmk, including creation, updating, and deletion.
+  - Manage BI rules, including creation, updating, and deletion.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -60,11 +60,11 @@ options:
                 required: false
                 description: Additional parameters for the BI rule.
                 suboptions:
-                arguments:
-                    type: list
-                    elements: str
-                    required: false
-                    description: List of arguments for the BI rule.
+                    arguments:
+                        type: list
+                        elements: str
+                        required: false
+                        description: List of arguments for the BI rule.
 
     state:
         type: str
@@ -81,7 +81,7 @@ EXAMPLES = r"""
   checkmk.general.bi_rule:
     server_url: "https://example.com/"
     site: "mysite"
-    auth_type: "bearer"
+    automation_auth_type: "bearer"
     automation_user: "myuser"
     automation_secret: "mysecret"
     rule:
@@ -116,7 +116,7 @@ EXAMPLES = r"""
   checkmk.general.bi_rule:
     server_url: "https://example.com/"
     site: "mysite"
-    auth_type: "bearer"
+    automation_auth_type: "bearer"
     automation_user: "myuser"
     automation_secret: "mysecret"
     rule:
@@ -153,6 +153,9 @@ import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_argument_spec,
+)
 
 
 class ExtendedCheckmkAPI(CheckmkAPI):
@@ -164,12 +167,12 @@ class ExtendedCheckmkAPI(CheckmkAPI):
     def __init__(self, module):
         """Initialize ExtendedCheckmkAPI with authentication handling."""
         super().__init__(module)
-        auth_type = self.params.get("auth_type", "bearer")
+        automation_auth_type = self.params.get("automation_auth_type", "bearer")
         automation_user = self.params.get("automation_user")
         automation_secret = self.params.get("automation_secret")
-        auth_cookie = self.params.get("auth_cookie")
+        automation_auth_cookie = self.params.get("automation_auth_cookie")
 
-        if auth_type == "bearer":
+        if automation_auth_type == "bearer":
             if not automation_user or not automation_secret:
                 self.module.fail_json(
                     msg="`automation_user` and `automation_secret` are required for bearer authentication."
@@ -177,7 +180,7 @@ class ExtendedCheckmkAPI(CheckmkAPI):
             self.headers["Authorization"] = (
                 f"Bearer {automation_user} {automation_secret}"
             )
-        elif auth_type == "basic":
+        elif automation_auth_type == "basic":
             if not automation_user or not automation_secret:
                 self.module.fail_json(
                     msg="`automation_user` and `automation_secret` are required for basic authentication."
@@ -185,14 +188,16 @@ class ExtendedCheckmkAPI(CheckmkAPI):
             auth_str = f"{automation_user}:{automation_secret}"
             auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
             self.headers["Authorization"] = f"Basic {auth_b64}"
-        elif auth_type == "cookie":
-            if not auth_cookie:
+        elif automation_auth_type == "cookie":
+            if not automation_auth_cookie:
                 self.module.fail_json(
-                    msg="`auth_cookie` is required for cookie authentication."
+                    msg="`automation_auth_cookie` is required for cookie authentication."
                 )
-            self.cookies["auth_cmk"] = auth_cookie
+            self.cookies["auth_cmk"] = automation_auth_cookie
         else:
-            self.module.fail_json(msg=f"Unsupported `auth_type`: {auth_type}")
+            self.module.fail_json(
+                msg=f"Unsupported `automation_auth_type`: {automation_auth_type}"
+            )
 
 
 class BIRuleHTTPCodes:
@@ -394,79 +399,49 @@ def run_module():
     Returns:
         None: The result is returned to Ansible via module.exit_json().
     """
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        auth_type=dict(
-            type="str",
-            choices=["bearer", "basic", "cookie"],
-            default="bearer",
-            required=False,
-        ),
-        automation_user=dict(
-            type="str",
-            required=False,
-            description="The automation user for API authentication.",
-        ),
-        automation_secret=dict(
-            type="str",
-            required=False,
-            no_log=True,
-            description="The automation secret (password) for API authentication.",
-        ),
-        auth_cookie=dict(
-            type="str",
-            required=False,
-            no_log=True,
-            description="The authentication cookie for API authentication.",
-        ),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         rule=dict(
             type="dict",
             required=True,
-            description="Definition of the BI rule as needed by the Checkmk API.",
             options=dict(
                 pack_id=dict(
                     type="str",
                     required=True,
-                    description="The identifier of the BI pack.",
                 ),
                 id=dict(
-                    type="str", required=True, description="The unique BI rule ID."
+                    type="str",
+                    required=True,
                 ),
                 nodes=dict(
                     type="list",
                     elements="dict",
                     required=True,
-                    description="List of nodes associated with the BI rule.",
                 ),
                 properties=dict(
-                    type="dict", required=True, description="Properties of the BI rule."
+                    type="dict",
+                    required=True,
                 ),
                 aggregation_function=dict(
                     type="dict",
                     required=True,
-                    description="Aggregation function configuration.",
                 ),
                 computation_options=dict(
                     type="dict",
                     required=True,
-                    description="Computation options for the BI rule.",
                 ),
                 node_visualization=dict(
                     type="dict",
                     required=True,
-                    description="Visualization options for the BI rule nodes.",
                 ),
                 params=dict(
                     type="dict",
                     required=False,
-                    description="Additional parameters for the BI rule.",
                     options=dict(
                         arguments=dict(
                             type="list",
                             elements="str",
                             required=False,
-                            description="List of arguments for the BI rule.",
                         ),
                     ),
                 ),
@@ -476,24 +451,17 @@ def run_module():
             type="str",
             default="present",
             choices=["present", "absent"],
-            description="State of the BI rule.",
-        ),
-        validate_certs=dict(
-            type="bool",
-            default=True,
-            required=False,
-            description="Whether to validate SSL certificates.",
         ),
     )
 
     required_if = [
-        ("auth_type", "bearer", ["automation_user", "automation_secret"]),
-        ("auth_type", "basic", ["automation_user", "automation_secret"]),
-        ("auth_type", "cookie", ["auth_cookie"]),
+        ("automation_auth_type", "bearer", ["automation_user", "automation_secret"]),
+        ("automation_auth_type", "basic", ["automation_user", "automation_secret"]),
+        ("automation_auth_type", "cookie", ["automation_auth_cookie"]),
     ]
 
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=argument_spec,
         supports_check_mode=True,
         required_if=required_if,
     )

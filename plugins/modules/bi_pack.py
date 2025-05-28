@@ -35,7 +35,7 @@ options:
             title:
                 description: Title of the BI pack.
                 type: str
-                required: true
+                required: false
 
             contact_groups:
                 description: List of contact groups associated with the BI pack.
@@ -70,7 +70,7 @@ EXAMPLES = r"""
   bi_pack:
     server_url: "https://checkmk.example.com/"
     site: "mysite"
-    auth_type: "bearer"
+    automation_auth_type: "bearer"
     automation_user: "myuser"
     automation_secret: "mysecret"
     pack:
@@ -86,7 +86,7 @@ EXAMPLES = r"""
   bi_pack:
     server_url: "https://checkmk.example.com/"
     site: "mysite"
-    auth_type: "basic"
+    automation_auth_type: "basic"
     automation_user: "basicuser"
     automation_secret: "basicpassword"
     pack:
@@ -101,8 +101,8 @@ EXAMPLES = r"""
   bi_pack:
     server_url: "https://checkmk.example.com/"
     site: "mysite"
-    auth_type: "cookie"
-    auth_cookie: "sessionid=abc123xyz"
+    automation_auth_type: "cookie"
+    automation_auth_cookie: "sessionid=abc123xyz"
     pack:
       id: "storage_pack"
       title: "Storage Pack"
@@ -115,7 +115,7 @@ EXAMPLES = r"""
   bi_pack:
     server_url: "https://checkmk.example.com/"
     site: "mysite"
-    auth_type: "bearer"
+    automation_auth_type: "bearer"
     automation_user: "myuser"
     automation_secret: "mysecret"
     pack:
@@ -147,6 +147,9 @@ import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_argument_spec,
+)
 
 
 class BIPackHTTPCodes:
@@ -360,18 +363,8 @@ def run_module():
     Returns:
         None: The result is returned to Ansible via module.exit_json().
     """
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        auth_type=dict(
-            type="str",
-            choices=["bearer", "basic", "cookie"],
-            default="bearer",
-            required=False,
-        ),
-        automation_user=dict(type="str", required=False),
-        automation_secret=dict(type="str", required=False, no_log=True),
-        auth_cookie=dict(type="str", required=False, no_log=True),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         pack=dict(
             type="dict",
             required=True,
@@ -385,17 +378,16 @@ def run_module():
             ),
         ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
-        validate_certs=dict(type="bool", default=True, required=False),
     )
 
     required_if = [
-        ("auth_type", "bearer", ["automation_user", "automation_secret"]),
-        ("auth_type", "basic", ["automation_user", "automation_secret"]),
-        ("auth_type", "cookie", ["auth_cookie"]),
+        ("automation_auth_type", "bearer", ["automation_user", "automation_secret"]),
+        ("automation_auth_type", "basic", ["automation_user", "automation_secret"]),
+        ("automation_auth_type", "cookie", ["automation_auth_cookie"]),
     ]
 
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=argument_spec,
         supports_check_mode=True,
         required_if=required_if,
     )
