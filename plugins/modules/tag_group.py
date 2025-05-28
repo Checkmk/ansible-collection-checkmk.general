@@ -84,7 +84,7 @@ EXAMPLES = r"""
 # Create a tag group
 - name: "Create tag group"
   checkmk.general.tag_group:
-    server_url: "https://myserver/"
+    server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
     automation_secret: "mysecret"
@@ -108,7 +108,7 @@ EXAMPLES = r"""
 # Delete a tag group
 - name: "Delete tag group."
   checkmk.general.tag_group:
-    server_url: "https://myserver/"
+    server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
     automation_secret: "mysecret"
