@@ -4,6 +4,29 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.10.0
+=======
+
+Release Summary
+---------------
+
+Code cleaning and inventory organizing.
+
+Minor Changes
+-------------
+
+- Agent role - Use the generic `ansible.builtin.package` module for all packaging related tasks.
+- All modules - Move basic module parameters to utils. No functional changes.
+- Dynamic Inventory Source - Add possibility to update ansible_host with ip address from Checkmk
+- Server role - Use the generic `ansible.builtin.package` module for all packaging related tasks.
+
+Bugfixes
+--------
+
+- Server role - The MKP management expects a boolean value for __mkp.installed and __mkp.enabled but in README.md and defaults.yml the usage examples set them as string. Changed README.md but also added "| bool" to force boolean even if string is defined.
+- Server role - The MKP management failed when try to install a mkp packages that already exists in the server. Added a conditional to validate stderr and don't fail if "exists on the site" is found.
+- Server role - The MKP management was using 'omd su site -c' to execute commands as site user but it does not work in all flavors/versions so changed to become_user instead.
+
 v5.9.0
 ======
 
