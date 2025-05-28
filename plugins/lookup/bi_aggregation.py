@@ -43,19 +43,19 @@ DOCUMENTATION = """
           - section: checkmk_lookup
             key: site
 
-      auth_type:
+      automation_auth_type:
         description: Authentication type to use with the Checkmk API.
         type: str
         required: False
         choices: ["bearer", "basic", "cookie"]
         default: "bearer"
         vars:
-          - name: ansible_lookup_checkmk_auth_type
+          - name: ansible_lookup_checkmk_automation_auth_type
         env:
-          - name: ANSIBLE_LOOKUP_CHECKMK_AUTH_TYPE
+          - name: ANSIBLE_LOOKUP_CHECKMK_automation_auth_type
         ini:
           - section: checkmk_lookup
-            key: auth_type
+            key: automation_auth_type
 
       automation_user:
         description: Automation user for the REST API access.
@@ -79,16 +79,16 @@ DOCUMENTATION = """
           - section: checkmk_lookup
             key: automation_secret
 
-      auth_cookie:
+      automation_auth_cookie:
         description: Authentication cookie for the REST API access.
         required: False
         vars:
-          - name: ansible_lookup_checkmk_auth_cookie
+          - name: ansible_lookup_checkmk_automation_auth_cookie
         env:
-          - name: ANSIBLE_LOOKUP_CHECKMK_AUTH_COOKIE
+          - name: ANSIBLE_LOOKUP_CHECKMK_automation_auth_cookie
         ini:
           - section: checkmk_lookup
-            key: auth_cookie
+            key: automation_auth_cookie
 
       validate_certs:
         description: Whether or not to validate TLS certificates.
@@ -137,10 +137,10 @@ class ExtendedCheckmkAPI(CheckMKLookupAPI):
     def __init__(
         self,
         site_url,
-        auth_type="bearer",
+        automation_auth_type="bearer",
         automation_user=None,
         automation_secret=None,
-        auth_cookie=None,
+        automation_auth_cookie=None,
         validate_certs=True,
     ):
         headers = {
@@ -150,7 +150,7 @@ class ExtendedCheckmkAPI(CheckMKLookupAPI):
         cookies = {}
 
         # Bearer Authentication: "Bearer USERNAME PASSWORD"
-        if auth_type == "bearer":
+        if automation_auth_type == "bearer":
             if not automation_user or not automation_secret:
                 raise ValueError(
                     "`automation_user` and `automation_secret` are required for bearer authentication."
@@ -158,7 +158,7 @@ class ExtendedCheckmkAPI(CheckMKLookupAPI):
             headers["Authorization"] = f"Bearer {automation_user} {automation_secret}"
 
         # Basic Authentication
-        elif auth_type == "basic":
+        elif automation_auth_type == "basic":
             if not automation_user or not automation_secret:
                 raise ValueError(
                     "`automation_user` and `automation_secret` are required for basic authentication."
@@ -168,13 +168,17 @@ class ExtendedCheckmkAPI(CheckMKLookupAPI):
             headers["Authorization"] = f"Basic {auth_b64}"
 
         # Cookie Authentication
-        elif auth_type == "cookie":
-            if not auth_cookie:
-                raise ValueError("`auth_cookie` is required for cookie authentication.")
-            cookies["auth_cmk"] = auth_cookie
+        elif automation_auth_type == "cookie":
+            if not automation_auth_cookie:
+                raise ValueError(
+                    "`automation_auth_cookie` is required for cookie authentication."
+                )
+            cookies["auth_cmk"] = automation_auth_cookie
 
         else:
-            raise ValueError(f"Unsupported `auth_type`: {auth_type}")
+            raise ValueError(
+                f"Unsupported `automation_auth_type`: {automation_auth_type}"
+            )
 
         super().__init__(
             site_url=site_url, user="", secret="", validate_certs=validate_certs
@@ -189,10 +193,10 @@ class LookupModule(LookupBase):
         aggregation_id = terms[0]
         server_url = self.get_option("server_url")
         site = self.get_option("site")
-        auth_type = self.get_option("auth_type")
+        automation_auth_type = self.get_option("automation_auth_type")
         automation_user = self.get_option("automation_user")
         automation_secret = self.get_option("automation_secret")
-        auth_cookie = self.get_option("auth_cookie")
+        automation_auth_cookie = self.get_option("automation_auth_cookie")
         validate_certs = self.get_option("validate_certs")
 
         site_url = f"{server_url.rstrip('/')}/{site}"
@@ -200,10 +204,10 @@ class LookupModule(LookupBase):
         try:
             api = ExtendedCheckmkAPI(
                 site_url=site_url,
-                auth_type=auth_type,
+                automation_auth_type=automation_auth_type,
                 automation_user=automation_user,
                 automation_secret=automation_secret,
-                auth_cookie=auth_cookie,
+                automation_auth_cookie=automation_auth_cookie,
                 validate_certs=validate_certs,
             )
         except ValueError as e:

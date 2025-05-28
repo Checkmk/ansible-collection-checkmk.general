@@ -69,7 +69,7 @@ options:
                 description:
                     - Node generation definition.
                 type: dict
-                required: true
+                required: false
                 suboptions:
                     search:
                         description:
@@ -107,7 +107,7 @@ EXAMPLES = r"""
   checkmk.general.bi_aggregation:
     server_url: "http://myserver/"
     site: "mysite"
-    auth_type: "bearer"
+    automation_auth_type: "bearer"
     automation_user: "myuser"
     automation_secret: "mysecret"
     aggregation:
@@ -142,7 +142,7 @@ EXAMPLES = r"""
   checkmk.general.bi_aggregation:
     server_url: "http://myserver/"
     site: "mysite"
-    auth_type: "bearer"
+    automation_auth_type: "bearer"
     automation_user: "myuser"
     automation_secret: "mysecret"
     aggregation:
@@ -174,6 +174,9 @@ import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_argument_spec,
+)
 
 
 class ExtendedCheckmkAPI(CheckmkAPI):
@@ -185,12 +188,12 @@ class ExtendedCheckmkAPI(CheckmkAPI):
     def __init__(self, module):
         """Initialize ExtendedCheckmkAPI with authentication handling."""
         super().__init__(module)
-        auth_type = self.params.get("auth_type", "bearer")
+        automation_auth_type = self.params.get("automation_auth_type", "bearer")
         automation_user = self.params.get("automation_user")
         automation_secret = self.params.get("automation_secret")
-        auth_cookie = self.params.get("auth_cookie")
+        automation_auth_cookie = self.params.get("automation_auth_cookie")
 
-        if auth_type == "bearer":
+        if automation_auth_type == "bearer":
             if not automation_user or not automation_secret:
                 self.module.fail_json(
                     msg="`automation_user` and `automation_secret` are required for bearer authentication."
@@ -198,7 +201,7 @@ class ExtendedCheckmkAPI(CheckmkAPI):
             self.headers["Authorization"] = (
                 f"Bearer {automation_user} {automation_secret}"
             )
-        elif auth_type == "basic":
+        elif automation_auth_type == "basic":
             if not automation_user or not automation_secret:
                 self.module.fail_json(
                     msg="`automation_user` and `automation_secret` are required for basic authentication."
@@ -206,14 +209,16 @@ class ExtendedCheckmkAPI(CheckmkAPI):
             auth_str = f"{automation_user}:{automation_secret}"
             auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
             self.headers["Authorization"] = f"Basic {auth_b64}"
-        elif auth_type == "cookie":
-            if not auth_cookie:
+        elif automation_auth_type == "cookie":
+            if not automation_auth_cookie:
                 self.module.fail_json(
-                    msg="`auth_cookie` is required for cookie authentication."
+                    msg="`automation_auth_cookie` is required for cookie authentication."
                 )
-            self.cookies["auth_cmk"] = auth_cookie
+            self.cookies["auth_cmk"] = automation_auth_cookie
         else:
-            self.module.fail_json(msg=f"Unsupported `auth_type`: {auth_type}")
+            self.module.fail_json(
+                msg=f"Unsupported `automation_auth_type`: {automation_auth_type}"
+            )
 
 
 class BIAggregationHTTPCodes:
@@ -415,18 +420,8 @@ def run_module():
     Returns:
         None: The result is returned to Ansible via module.exit_json().
     """
-    module_args = dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        auth_type=dict(
-            type="str",
-            choices=["bearer", "basic", "cookie"],
-            default="bearer",
-            required=False,
-        ),
-        automation_user=dict(type="str", required=False),
-        automation_secret=dict(type="str", required=False, no_log=True),
-        auth_cookie=dict(type="str", required=False, no_log=True),
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         aggregation=dict(
             type="dict",
             required=True,
@@ -466,17 +461,16 @@ def run_module():
             ),
         ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
-        validate_certs=dict(type="bool", default=True, required=False),
     )
 
     required_if = [
-        ("auth_type", "bearer", ["automation_user", "automation_secret"]),
-        ("auth_type", "basic", ["automation_user", "automation_secret"]),
-        ("auth_type", "cookie", ["auth_cookie"]),
+        ("automation_auth_type", "bearer", ["automation_user", "automation_secret"]),
+        ("automation_auth_type", "basic", ["automation_user", "automation_secret"]),
+        ("automation_auth_type", "cookie", ["automation_auth_cookie"]),
     ]
 
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=argument_spec,
         supports_check_mode=True,
         required_if=required_if,
     )

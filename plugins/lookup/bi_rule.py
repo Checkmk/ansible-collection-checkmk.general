@@ -43,7 +43,7 @@ DOCUMENTATION = """
           - section: checkmk_lookup
             key: site
 
-      auth_type:
+      automation_auth_type:
         description: The authentication type to use ('bearer', 'basic', 'cookie').
         required: False
         default: 'bearer'
@@ -56,7 +56,7 @@ DOCUMENTATION = """
         description: The automation secret or password for authentication.
         required: True
 
-      auth_cookie:
+      automation_auth_cookie:
         description: The authentication cookie value if using cookie-based authentication.
         required: False
 
@@ -128,10 +128,10 @@ class ExtendedCheckmkAPI(CheckMKLookupAPI):
     def __init__(
         self,
         site_url,
-        auth_type="bearer",
+        automation_auth_type="bearer",
         automation_user=None,
         automation_secret=None,
-        auth_cookie=None,
+        automation_auth_cookie=None,
         validate_certs=True,
     ):
         headers = {
@@ -141,7 +141,7 @@ class ExtendedCheckmkAPI(CheckMKLookupAPI):
         cookies = {}
 
         # Bearer Authentication: "Bearer USERNAME PASSWORD"
-        if auth_type == "bearer":
+        if automation_auth_type == "bearer":
             if not automation_user or not automation_secret:
                 raise ValueError(
                     "`automation_user` and `automation_secret` are required for bearer authentication."
@@ -149,7 +149,7 @@ class ExtendedCheckmkAPI(CheckMKLookupAPI):
             headers["Authorization"] = f"Bearer {automation_user} {automation_secret}"
 
         # Basic Authentication
-        elif auth_type == "basic":
+        elif automation_auth_type == "basic":
             if not automation_user or not automation_secret:
                 raise ValueError(
                     "`automation_user` and `automation_secret` are required for basic authentication."
@@ -159,13 +159,17 @@ class ExtendedCheckmkAPI(CheckMKLookupAPI):
             headers["Authorization"] = f"Basic {auth_b64}"
 
         # Cookie Authentication
-        elif auth_type == "cookie":
-            if not auth_cookie:
-                raise ValueError("`auth_cookie` is required for cookie authentication.")
-            cookies["auth_cmk"] = auth_cookie
+        elif automation_auth_type == "cookie":
+            if not automation_auth_cookie:
+                raise ValueError(
+                    "`automation_auth_cookie` is required for cookie authentication."
+                )
+            cookies["auth_cmk"] = automation_auth_cookie
 
         else:
-            raise ValueError(f"Unsupported `auth_type`: {auth_type}")
+            raise ValueError(
+                f"Unsupported `automation_auth_type`: {automation_auth_type}"
+            )
 
         super().__init__(
             site_url=site_url, user="", secret="", validate_certs=validate_certs
@@ -182,10 +186,10 @@ class LookupModule(LookupBase):
         try:
             server_url = self.get_option("server_url")
             site = self.get_option("site")
-            auth_type = self.get_option("auth_type") or "bearer"
+            automation_auth_type = self.get_option("automation_auth_type") or "bearer"
             automation_user = self.get_option("automation_user")
             automation_secret = self.get_option("automation_secret")
-            auth_cookie = self.get_option("auth_cookie")
+            automation_auth_cookie = self.get_option("automation_auth_cookie")
             validate_certs = self.get_option("validate_certs")
         except KeyError as e:
             raise AnsibleError(f"Missing required configuration option: {str(e)}")
@@ -193,17 +197,17 @@ class LookupModule(LookupBase):
         site_url = f"{server_url.rstrip('/')}/{site}"
 
         # Optional: Debugging prints
-        # print(f"auth_type: {auth_type}")
+        # print(f"automation_auth_type: {automation_auth_type}")
         # print(f"server_url: {server_url}")
         # print(f"rule_id: {rule_id}")
 
         try:
             api = ExtendedCheckmkAPI(
                 site_url=site_url,
-                auth_type=auth_type,
+                automation_auth_type=automation_auth_type,
                 automation_user=automation_user,
                 automation_secret=automation_secret,
-                auth_cookie=auth_cookie,
+                automation_auth_cookie=automation_auth_cookie,
                 validate_certs=validate_certs,
             )
         except ValueError as e:
