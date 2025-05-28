@@ -17,6 +17,15 @@ inventory:
 module:activation:
   - 'Component Name: activation'
 
+module:bi_aggregation:
+  - 'Component Name: bi_aggregation'
+
+module:bi_pack:
+  - 'Component Name: bi_pack'
+
+module:bi_rule:
+  - 'Component Name: bi_rule'
+
 module:bakery:
   - 'Component Name: bakery'
 
@@ -61,6 +70,15 @@ module:user:
 
 lookup:bakery:
   - 'Component Name: lookup_bakery'
+
+lookup:bi_aggregation:
+  - 'Component Name: lookup_bi_aggregation'
+
+lookup:bi_pack:
+  - 'Component Name: lookup_bi_pack'
+
+lookup:bi_rule:
+  - 'Component Name: lookup_bi_rule'
 
 lookup:folder:
   - 'Component Name: lookup_folder'

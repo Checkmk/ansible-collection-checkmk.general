@@ -4,7 +4,11 @@ action_groups:
   checkmk:
     - activation
     - bakery
+    - bi_aggregation
+    - bi_pack
+    - bi_rule
     - contact_group
+    - dcd
     - discovery
     - downtime
     - folder

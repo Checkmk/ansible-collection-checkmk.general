@@ -24,6 +24,21 @@ module:activation:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/activation.py'
 
+module:bi_aggregation:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/bi_aggregation.py'
+
+module:bi_pack:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/bi_pack.py'
+
+module:bi_rule:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/bi_rule.py'
+
 module:bakery:
   - any:
       - changed-files:
@@ -98,6 +113,21 @@ lookup:bakery:
   - any:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/bakery.py'
+
+lookup:bi_aggregation:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/bi_aggregation.py'
+
+lookup:bi_pack:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/bi_pack.py'
+
+lookup:bi_rule:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/bi_rule.py'
 
 lookup:folder:
   - any:
