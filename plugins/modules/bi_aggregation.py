@@ -112,7 +112,7 @@ EXAMPLES = r"""
     automation_secret: "mysecret"
     aggregation:
       id: "aggr1"
-      pack_id: "pack1"
+      pack_id: "default"
       comment: "Aggregation comment"
       customer: "customer1"
       groups:
@@ -125,7 +125,6 @@ EXAMPLES = r"""
           type: "empty"
         action:
           type: "state_of_host"
-          rule_id: "rule123"
           host_regex: ".*"
       aggregation_visualization:
         ignore_rule_styles: false
@@ -147,7 +146,7 @@ EXAMPLES = r"""
     automation_secret: "mysecret"
     aggregation:
       id: "aggr1"
-      pack_id: "pack1"
+      pack_id: "default"
     state: "absent"
 """
 
