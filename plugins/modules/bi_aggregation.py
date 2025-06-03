@@ -172,7 +172,10 @@ import base64
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.api import (
+    CheckmkAPI,
+    ExtendedCheckmkAPI,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
