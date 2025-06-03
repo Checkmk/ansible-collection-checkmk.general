@@ -22,7 +22,7 @@ class ModuleDocFragment(object):
             description: The secret to authenticate your automation user.
             required: true
             type: str
-        auth_type:
+        automation_auth_type:
             description: Type of authentication to use.
             required: false
             type: str
@@ -31,7 +31,7 @@ class ModuleDocFragment(object):
                 - basic
                 - cookie
             default: bearer
-        auth_cookie:
+        automation_auth_cookie:
             description: Authentication cookie for the Checkmk session.
             required: false
             type: str
