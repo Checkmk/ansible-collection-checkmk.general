@@ -54,6 +54,11 @@ module:discovery:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/discovery.py'
 
+module:dcd:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/dcd.py'
+
 module:downtime:
   - any:
       - changed-files:
@@ -128,6 +133,11 @@ lookup:bi_rule:
   - any:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/bi_rule.py'
+
+lookup:dcd:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/dcd.py'
 
 lookup:folder:
   - any:

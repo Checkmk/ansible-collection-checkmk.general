@@ -35,6 +35,9 @@ module:contact_group:
 module:discovery:
   - 'Component Name: discovery'
 
+module:dcd:
+  - 'Component Name: dcd'
+
 module:downtime:
   - 'Component Name: downtime'
 
@@ -79,6 +82,9 @@ lookup:bi_pack:
 
 lookup:bi_rule:
   - 'Component Name: lookup_bi_rule'
+
+lookup:dcd:
+  - 'Component Name: lookup_dcd'
 
 lookup:folder:
   - 'Component Name: lookup_folder'
