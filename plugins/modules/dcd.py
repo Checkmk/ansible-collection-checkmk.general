@@ -11,91 +11,90 @@ DOCUMENTATION = r"""
 ---
 module: dcd
 
-short_description: Manage Dynamic Configuration Definitions in Checkmk.
+short_description: Manage Dynamic Host Management.
 
 version_added: "6.1.0"
 
 description:
-  - Manage Dynamic Configuration Definitions (DCD) in Checkmk, including creation, updating, and deletion.
+  - Manage Dynamic Host Management (DCD), including creation, updating, and deletion.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
+    dcd_config:
+        description: Configuration parameters for the DCD.
+        type: dict
+        required: true
+        suboptions:
+            dcd_id:
+                description: Identifier for the DCD configuration.
+                type: str
+                required: true
+            title:
+                description: Title of the DCD.
+                type: str
+                required: false
+            comment:
+                description: Description or comment for the DCD.
+                type: str
+                default: ""
+            site:
+                description: Name of the Checkmk site for the DCD configuration.
+                type: str
+                required: false
+            connector_type:
+                description: Type of connector (e.g., "piggyback").
+                type: str
+                default: piggyback
+            interval:
+                description: Interval in seconds for DCD polling.
+                type: int
+                default: 60
+            creation_rules:
+                description: Rules for creating hosts.
+                type: list
+                elements: dict
+                suboptions:
+                    folder_path:
+                        description: Folder path for host creation.
+                        type: str
+                        required: true
+                    delete_hosts:
+                        description: Whether to delete hosts that no longer match.
+                        type: bool
+                        default: false
+                    host_attributes:
+                        description: Additional host attributes to set on created hosts.
+                        type: dict
+            exclude_time_ranges:
+                description: Do not activate changes during these times.
+                type: list
+                elements: str
+            discover_on_creation:
+                description: Discover services on host creation.
+                type: bool
+                default: true
+            restrict_source_hosts:
+                description: List of source hosts to restrict the DCD to.
+                type: list
+                elements: str
+            no_deletion_time_after_init:
+                description: Seconds to prevent host deletion after site startup, e.g. when booting the Checkmk server.
+                type: int
+            max_cache_age:
+                description: Seconds to keep hosts when piggyback source only sends piggyback data for other hosts.
+                type: int
+            validity_period:
+                description: Seconds to continue consider outdated piggyback data as valid.
+                type: int
 
-  dcd_config:
-    description:
-      - Configuration parameters for the DCD.
-    type: dict
-    required: true
-    options:
-      dcd_id:
-        description:
-          - Identifier for the DCD configuration.
+    state:
+        description: Desired state of the DCD.
         type: str
-        required: true
-      title:
-        description:
-          - Title of the DCD.
-        type: str
-        required: false
-      comment:
-        description:
-          - Description or comment for the DCD.
-        type: str
-        default: ""
-      site:
-        description:
-          - Name of the Checkmk site for the DCD configuration.
-        type: str
-        required: true
-      connector_type:
-        description:
-          - Type of connector (e.g., "piggyback").
-        type: str
-        default: piggyback
-      interval:
-        description:
-          - Interval in seconds for DCD polling.
-        type: int
-        default: 60
-      creation_rules:
-        description:
-          - Rules for creating hosts.
-        type: list
-        elements: dict
-        options:
-          folder_path:
-            description:
-              - Folder path for host creation.
-            type: str
-            required: true
-          delete_hosts:
-            description:
-              - Whether to delete hosts that no longer match.
-            type: bool
-            default: false
-          host_attributes:
-            description:
-              - Additional host attributes to set on created hosts.
-            type: dict
-      discover_on_creation:
-        description:
-          - Discover services on host creation.
-        type: bool
-        default: true
-      restrict_source_hosts:
-        description:
-          - List of source hosts to restrict the DCD to.
-        type: list
-        elements: str
-  state:
-    description:
-      - Desired state of the DCD.
-    type: str
-    choices:
-      - present
-      - absent
-    default: present
+        choices:
+        - present
+        - absent
+        default: present
 
 author:
   - Lars Getwan (@lgetwan)
@@ -106,7 +105,7 @@ EXAMPLES = r"""
   checkmk.general.dcd:
     server_url: "http://myserver/"
     site: "mysite"
-    auth_type: "bearer"
+    automation_auth_type: "bearer"
     automation_user: "myuser"
     automation_secret: "mysecret"
     dcd_config:
@@ -133,7 +132,7 @@ EXAMPLES = r"""
   checkmk.general.dcd:
     server_url: "http://myserver/"
     site: "mysite"
-    auth_type: "bearer"
+    automation_auth_type: "bearer"
     automation_user: "myuser"
     automation_secret: "mysecret"
     dcd_config:
@@ -165,54 +164,16 @@ diff:
   returned: when differences are detected or in diff mode
 """
 
-import base64
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.api import (
+    ExtendedCheckmkAPI,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
-
-
-class ExtendedCheckmkAPI(CheckmkAPI):
-    """
-    Extends CheckmkAPI to support bearer, basic, and cookie authentication methods.
-    """
-
-    def __init__(self, module):
-        super().__init__(module)
-        auth_type = self.params.get("auth_type", "bearer")
-        automation_user = self.params.get("automation_user")
-        automation_secret = self.params.get("automation_secret")
-        auth_cookie = self.params.get("auth_cookie")
-
-        if auth_type == "bearer":
-            if not automation_user or not automation_secret:
-                self.module.fail_json(
-                    msg="`automation_user` and `automation_secret` are required for bearer authentication."
-                )
-            self.headers["Authorization"] = (
-                f"Bearer {automation_user} {automation_secret}"
-            )
-
-        elif auth_type == "basic":
-            if not automation_user or not automation_secret:
-                self.module.fail_json(
-                    msg="`automation_user` and `automation_secret` are required for basic authentication."
-                )
-            auth_b64 = base64.b64encode(
-                f"{automation_user}:{automation_secret}".encode()
-            ).decode()
-            self.headers["Authorization"] = f"Basic {auth_b64}"
-
-        elif auth_type == "cookie":
-            if not auth_cookie:
-                self.module.fail_json(
-                    msg="`auth_cookie` is required for cookie authentication."
-                )
-            self.cookies["auth_cmk"] = auth_cookie
-
-        else:
-            self.module.fail_json(msg=f"Unsupported `auth_type`: {auth_type}")
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_argument_spec,
+)
 
 
 class DCDHTTPCodes:
@@ -525,15 +486,11 @@ def run_module():
     Returns:
         None: The result is returned to Ansible via module.exit_json().
     """
-    module_args = dict(
+
+    argument_spec = base_argument_spec()
+    argument_spec.update(
         server_url=dict(type="str", required=True),
         site=dict(type="str", required=True),
-        auth_type=dict(
-            type="str", choices=["bearer", "basic", "cookie"], default="bearer"
-        ),
-        automation_user=dict(type="str"),
-        automation_secret=dict(type="str", no_log=True),
-        auth_cookie=dict(type="str", no_log=True),
         dcd_config=dict(
             type="dict",
             required=True,
@@ -553,26 +510,29 @@ def run_module():
                         "host_attributes": dict(type="dict", required=False),
                     },
                 ),
-                "exclude_time_ranges": dict(type="list", required=False),
+                "exclude_time_ranges": dict(
+                    type="list", elements="str", required=False
+                ),
                 "discover_on_creation": dict(type="bool", default=True),
-                "restrict_source_hosts": dict(type="list", elements="str"),
+                "restrict_source_hosts": dict(
+                    type="list", elements="str", required=False
+                ),
                 "no_deletion_time_after_init": dict(type="int", required=False),
                 "max_cache_age": dict(type="int", required=False),
                 "validity_period": dict(type="int", required=False),
             },
         ),
         state=dict(type="str", default="present", choices=["present", "absent"]),
-        validate_certs=dict(type="bool", default=True),
     )
 
     required_if = [
-        ("auth_type", "bearer", ["automation_user", "automation_secret"]),
-        ("auth_type", "basic", ["automation_user", "automation_secret"]),
-        ("auth_type", "cookie", ["auth_cookie"]),
+        ("automation_auth_type", "bearer", ["automation_user", "automation_secret"]),
+        ("automation_auth_type", "basic", ["automation_user", "automation_secret"]),
+        ("automation_auth_type", "cookie", ["automation_auth_cookie"]),
     ]
 
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=argument_spec,
         supports_check_mode=True,
         required_if=required_if,
     )
