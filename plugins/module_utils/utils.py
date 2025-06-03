@@ -20,6 +20,10 @@ def base_argument_spec():
         validate_certs=dict(type="bool", required=False, default=True),
         automation_user=dict(type="str", required=True),
         automation_secret=dict(type="str", required=True, no_log=True),
+        automation_auth_type=dict(
+            type="str", choices=["bearer", "basic", "cookie"], default="bearer"
+        ),
+        automation_auth_cookie=dict(type="str", no_log=True),
     )
 
 
