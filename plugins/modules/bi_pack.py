@@ -68,7 +68,7 @@ author:
 EXAMPLES = r"""
 - name: Create a BI pack with Bearer Authentication
   bi_pack:
-    server_url: "https://checkmk.example.com/"
+    server_url: "http://myserver/"
     site: "mysite"
     automation_auth_type: "bearer"
     automation_user: "myuser"
@@ -84,7 +84,7 @@ EXAMPLES = r"""
 
 - name: Create a BI pack with Basic Authentication
   bi_pack:
-    server_url: "https://checkmk.example.com/"
+    server_url: "http://myserver/"
     site: "mysite"
     automation_auth_type: "basic"
     automation_user: "basicuser"
@@ -99,7 +99,7 @@ EXAMPLES = r"""
 
 - name: Create a BI pack with Cookie Authentication
   bi_pack:
-    server_url: "https://checkmk.example.com/"
+    server_url: "http://myserver/"
     site: "mysite"
     automation_auth_type: "cookie"
     automation_auth_cookie: "sessionid=abc123xyz"
@@ -113,7 +113,7 @@ EXAMPLES = r"""
 
 - name: Delete a BI pack
   bi_pack:
-    server_url: "https://checkmk.example.com/"
+    server_url: "http://myserver/"
     site: "mysite"
     automation_auth_type: "bearer"
     automation_user: "myuser"
