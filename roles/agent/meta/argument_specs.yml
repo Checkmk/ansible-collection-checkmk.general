@@ -145,12 +145,6 @@ argument_specs:
         description:
           - Refer to the README for details.
 
-      checkmk_agent_server_ips:
-        type: "list"
-        elements: "str"
-        description:
-          - Refer to the README for details.
-
       checkmk_agent_force_install:
         type: "bool"
         default: false

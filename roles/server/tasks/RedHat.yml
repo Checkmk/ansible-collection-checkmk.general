@@ -97,20 +97,12 @@
   tags:
     - set-selinux-boolean
 
-- name: "Make sure firewalld is started and enabled"
-  become: true
-  ansible.builtin.systemd:
-    name: firewalld
-    state: started
-    enabled: true
-  when: checkmk_server_configure_firewall | bool
-
-- name: "Open firewall ports."
-  become: true
+- name: "{{ ansible_os_family }} Derivatives: Open Firewall Ports for the Checkmk Server."
+  when: checkmk_server_configure_firewall | bool and "firewalld.service" in ansible_facts.services
   ansible.posix.firewalld:
-    port: "{{ item }}"
     permanent: true
     immediate: true
-    state: enabled
-  loop: "{{ __checkmk_server_ports }}"
-  when: checkmk_server_configure_firewall | bool
+    port: "{{ item }}/tcp"
+    state: "enabled"
+  become: true
+  loop: "{{ checkmk_server_ports }}"
