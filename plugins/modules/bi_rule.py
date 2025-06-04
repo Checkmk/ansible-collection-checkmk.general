@@ -79,7 +79,7 @@ author:
 EXAMPLES = r"""
 - name: Create a BI rule
   checkmk.general.bi_rule:
-    server_url: "https://example.com/"
+    server_url: "http://myserver/"
     site: "mysite"
     automation_auth_type: "bearer"
     automation_user: "myuser"
@@ -114,7 +114,7 @@ EXAMPLES = r"""
 
 - name: Delete a BI rule
   checkmk.general.bi_rule:
-    server_url: "https://example.com/"
+    server_url: "http://myserver/"
     site: "mysite"
     automation_auth_type: "bearer"
     automation_user: "myuser"
