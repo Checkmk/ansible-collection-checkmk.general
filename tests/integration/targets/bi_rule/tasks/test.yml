@@ -1,0 +1,61 @@
+---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "provider"
+  when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: null
+  when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create a BI rule."
+  bi_rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    automation_auth_type: "bearer"
+    rule:
+      pack_id: "default"
+      id: "testrule1"
+      nodes:
+        - search:
+            type: "empty"
+          action:
+            type: "call_a_rule"
+            rule_id: "test-child-rule1"
+            params:
+              arguments: []
+      properties:
+        title: "Test Rule 1"
+        comment: ""
+        docu_url: ""
+        icon: ""
+        state_messages: {}
+      aggregation_function:
+        type: "best"
+        count: 1
+        restrict_state: 2
+      computation_options:
+        disabled: false
+      node_visualization:
+        type: "block"
+        style_config: {}
+      params:
+        arguments: []
+    state: "present"
+  delegate_to: localhost
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete a BI rule."
+  bi_rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    automation_auth_type: "bearer"
+    rule:
+      pack_id: "cluster_pack"
+      id: "testrule1"
+    state: "absent"
+  delegate_to: localhost
