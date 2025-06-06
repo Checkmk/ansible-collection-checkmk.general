@@ -19,7 +19,7 @@ DOCUMENTATION = """
     options:
 
       server_url:
-        description: URL of the Checkmk server
+        description: URL of the Checkmk server.
         required: True
         vars:
           - name: checkmk_var_server_url

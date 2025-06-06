@@ -35,7 +35,7 @@ DOCUMENTATION = """
             key: server_url
 
       site:
-        description: Site name for REST API access.
+        description: Site name.
         required: True
         vars:
           - name: checkmk_var_site
