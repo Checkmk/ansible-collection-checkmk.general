@@ -252,3 +252,13 @@
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+  folder:
+    path: "{{ item.path }}"
+    name: "{{ item.name | default(omit) }}"
+    state: "absent"
+  loop: "{{ checkmk_var_folders_defaults_test }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  environment: "{{ __checkmk_var_testing_environment }}"
