@@ -27,8 +27,10 @@ DOCUMENTATION = """
         required: True
         vars:
           - name: checkmk_var_server_url
+          - name: ansible_lookup_checkmk_server_url
         env:
           - name: CHECKMK_VAR_SERVER_URL
+          - name: ANSIBLE_LOOKUP_CHECKMK_SERVER_URL
         ini:
           - section: checkmk_lookup
             key: server_url
@@ -38,8 +40,10 @@ DOCUMENTATION = """
         required: True
         vars:
           - name: checkmk_var_site
+          - name: ansible_lookup_checkmk_site
         env:
           - name: CHECKMK_VAR_SITE
+          - name: ANSIBLE_LOOKUP_CHECKMK_SITE
         ini:
           - section: checkmk_lookup
             key: site
@@ -49,8 +53,10 @@ DOCUMENTATION = """
         required: True
         vars:
           - name: checkmk_var_automation_user
+          - name: ansible_lookup_checkmk_automation_user
         env:
           - name: CHECKMK_VAR_AUTOMATION_USER
+          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_USER
         ini:
           - section: checkmk_lookup
             key: automation_user
@@ -60,8 +66,10 @@ DOCUMENTATION = """
         required: True
         vars:
           - name: checkmk_var_automation_secret
+          - name: ansible_lookup_checkmk_automation_secret
         env:
           - name: CHECKMK_VAR_AUTOMATION_SECRET
+          - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_SECRET
         ini:
           - section: checkmk_lookup
             key: automation_secret
@@ -73,8 +81,10 @@ DOCUMENTATION = """
         default: True
         vars:
           - name: checkmk_var_validate_certs
+          - name: ansible_lookup_checkmk_validate_certs
         env:
           - name: CHECKMK_VAR_VALIDATE_CERTS
+          - name: ANSIBLE_LOOKUP_CHECKMK_VALIDATE_CERTS
         ini:
           - section: checkmk_lookup
             key: validate_certs
