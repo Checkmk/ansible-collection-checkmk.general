@@ -245,3 +245,12 @@
   register: __checkmk_var_result_users_redelete
   loop: "{{ checkmk_var_users_create }}"
   failed_when: __checkmk_var_result_users_redelete.changed
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    name: "{{ item.name }}"
+    state: "absent"
+  loop: "{{ checkmk_var_users_create }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  environment: "{{ __checkmk_var_testing_environment }}"

@@ -26,3 +26,10 @@ checkmk_var_site: "stable_cme"
 # checkmk_var_automation_user: "cmkadmin"  # noqa var-naming[pattern]
 # checkmk_var_automation_secret: "Sup3rSec4et!"  # noqa var-naming[pattern]
 checkmk_var_validate_certs: false
+
+__checkmk_var_testing_environment:
+  CHECKMK_VAR_SERVER_URL: http://127.0.0.1:5324/
+  CHECKMK_VAR_SITE: stable_cme
+  CHECKMK_VAR_AUTOMATION_USER: cmkadmin
+  CHECKMK_VAR_AUTOMATION_SECRET: Sup3rSec4et!
+  CHECKMK_VAR_VALIDATE_CERTS: false
