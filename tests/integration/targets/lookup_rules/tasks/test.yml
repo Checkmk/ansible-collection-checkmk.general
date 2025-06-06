@@ -109,6 +109,7 @@
 - name: "Set fact: checkmk_var_server_url."
   ansible.builtin.set_fact:
     checkmk_var_server_url: "http://127.0.0.1:5324/"
+  when: outer_item.site == "stable_cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: rule."
   ansible.builtin.debug:
