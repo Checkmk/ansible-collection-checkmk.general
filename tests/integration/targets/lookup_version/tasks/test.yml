@@ -34,15 +34,10 @@
   when: outer_item.site == "stable_cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
-  ansible.builtin.debug:
-    msg: "Version is {{ __checkmk_var_result_internal }}"
+  ansible.builtin.assert:
+    that: "outer_item.version in __checkmk_var_result_internal"
   vars:
     __checkmk_var_result_internal: "{{ lookup('checkmk.general.version') }}"
   delegate_to: localhost
-  register: __checkmk_var_result_version
-  when: outer_item.site == "stable_cme"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify Checkmk version using variables outside the module call."
-  ansible.builtin.assert:
-    that: "outer_item.version in __checkmk_var_result_version.msg"
+  register: __checkmk_var_result_internal
   when: outer_item.site == "stable_cme"
