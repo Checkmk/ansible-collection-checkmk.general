@@ -27,7 +27,6 @@ checkmk_var_site: "stable_cme"
 # checkmk_var_automation_secret: "Sup3rSec4et!"  # noqa var-naming[pattern]
 checkmk_var_validate_certs: false
 
-
 # Use this to override the test-specific sites for local testing:
 # checkmk_var_test_sites:
 #   - version: "2.4.0p3"
