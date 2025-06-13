@@ -149,7 +149,7 @@ EXAMPLES = """
   loop_control:
     label: "{{ item.0.id }}"
 
-- name: "Use variables outside the module call."
+- name: "Use variables from inventory."
   ansible.builtin.debug:
     msg: "Folder tree: {{ item.id }}"
   vars:

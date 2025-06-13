@@ -164,7 +164,7 @@ EXAMPLES = """
   loop_control:
     label: "{{ item.id }}"
 
-- name: "Use variables outside the module call."
+- name: "Use variables from inventory."
   ansible.builtin.debug:
     msg: "Rule: {{ item.extensions }}"
   vars:

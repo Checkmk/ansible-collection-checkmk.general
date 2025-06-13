@@ -117,7 +117,7 @@ EXAMPLES = """
   loop_control:
       label: "{{ item.id }}"
 
-- name: "Use variables outside the module call."
+- name: "Use variables from inventory."
   ansible.builtin.debug:
     msg: "Host: {{ item.id }} in folder {{ item.extensions.folder }}, IP: {{ item.extensions.effective_attributes.ipaddress }}"
   vars:
