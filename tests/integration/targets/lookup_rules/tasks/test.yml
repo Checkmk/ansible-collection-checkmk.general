@@ -117,8 +117,7 @@
   vars:
     __checkmk_var_rule_module: "{{ lookup('checkmk.general.rule', rule_id=item.id) }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
-  loop: "{{ __checkmk_var_cpu_load_ruleset.rules }}"
+  loop: "{{ __checkmk_var_cpu_load_ruleset.__checkmk_var_one_ruleset }}"
   when: outer_item.site == "stable_cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: rules."
@@ -126,8 +125,7 @@
     # Check the number of rules
     that: __checkmk_var_rules_module|length == 1
   vars:
-    __checkmk_var_rules_module: "{{ lookup('checkmk.general.rules', ruleset=item, commebt_regex='Ansible managed') }}"
+    __checkmk_var_rules_module: "{{ lookup('checkmk.general.rules', ruleset=item, comment_regex='Ansible managed') }}"
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rulesets }}"
   when: outer_item.site == "stable_cme"

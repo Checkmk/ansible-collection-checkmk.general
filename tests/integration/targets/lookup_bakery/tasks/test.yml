@@ -39,12 +39,12 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
   ansible.builtin.assert:
-    that: ('finished' in __checkmk_var_result_bakery_module.msg) | bool or
-          ('running' in __checkmk_var_result_bakery_module.msg) | bool or
-          ('initialized' in __checkmk_var_result_bakery_module.msg) | bool or
-          ('stopped' in __checkmk_var_result_bakery_module.msg) | bool or
-          ('exception' in __checkmk_var_result_bakery_module.msg) | bool
+    that: ('finished' in __checkmk_var_result_bakery_internal) | bool or
+          ('running' in __checkmk_var_result_bakery_internal) | bool or
+          ('initialized' in __checkmk_var_result_bakery_internal) | bool or
+          ('stopped' in __checkmk_var_result_bakery_internal) | bool or
+          ('exception' in __checkmk_var_result_bakery_internal) | bool
   vars:
-    __checkmk_var_result_bakery_module: "{{ lookup('checkmk.general.bakery') }}"
+    __checkmk_var_result_bakery_internal: "{{ lookup('checkmk.general.bakery') }}"
   delegate_to: localhost
   when: outer_item.site == "stable_cme"
