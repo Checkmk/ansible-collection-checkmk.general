@@ -1,0 +1,17 @@
+---
+# This playbook runs on localhost and expects an existing site with the below configuration.
+
+- name: "Lookup the version of your local Checkmk site."
+  hosts: localhost
+  vars:
+    checkmk_var_server_url: "http://localhost"
+    checkmk_var_site: "mysite"
+    checkmk_var_automation_user: "myuser"
+    checkmk_var_automation_secret: "mysecret"
+    checkmk_var_validate_certs: false
+
+  tasks:
+    - name: "Lookup version."
+      ansible.builtin.debug:
+        msg: "Server version is {{ lookup('checkmk.general.version') }}"
+      delegate_to: localhost
