@@ -49,7 +49,7 @@
 
 - name: "Wait for site to be ready."
   ansible.builtin.pause:
-    seconds: 5
+    seconds: 10
   when: |
     item.stdout_lines is defined and 'OVERALL 1' in item.stdout_lines
   loop: "{{ __checkmk_var_site_status.results }}"
