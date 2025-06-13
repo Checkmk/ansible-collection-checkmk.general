@@ -75,7 +75,7 @@ EXAMPLES = r"""
   checkmk.general.activation:
       server_url: "http://localhost/"
       site: "mysite"
-      automation_user: "automation"
+      automation_user: "myuser"
       automation_secret: "$SECRET"
       redirect: 'true'
       force_foreign_changes: 'true'

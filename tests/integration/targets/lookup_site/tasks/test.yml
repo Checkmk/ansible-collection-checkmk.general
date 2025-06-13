@@ -28,3 +28,12 @@
               }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
+  ansible.builtin.assert:
+    that: "__checkmk_var_site.status_connection.connection.socket_type == 'local'"
+  vars:
+    __checkmk_var_site: "{{ lookup('checkmk.general.site', outer_item.site) }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  when: outer_item.site == "stable_cme"

@@ -34,4 +34,4 @@
     __checkmk_var_result_module: "{{ lookup('checkmk.general.version') }}"
   delegate_to: localhost
   # register: __checkmk_var_result_module
-  when: outer_item.edition == "stable_cme"
+  when: outer_item.site == "stable_cme"

@@ -20,7 +20,7 @@
 
 - name: "Install Checkmk Versions."
   ansible.builtin.package:
-    name: /tmp/checkmk-server-{{ item.site }}.deb
+    deb: /tmp/checkmk-server-{{ item.site }}.deb
     state: present
   loop: "{{ checkmk_var_test_sites }}"
   when: |

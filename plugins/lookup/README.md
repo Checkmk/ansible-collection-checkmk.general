@@ -32,7 +32,7 @@ validate_certs = False
   vars:
     ansible_lookup_checkmk_server_url: "https://myserver"
     ansible_lookup_checkmk_site: "mysite"
-    ansible_lookup_checkmk_automation_user: "automation"
+    ansible_lookup_checkmk_automation_user: "myuser"
     ansible_lookup_checkmk_automation_secret: "mysecret"
     ansible_lookup_checkmk_validate_certs: false
 
