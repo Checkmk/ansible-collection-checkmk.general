@@ -177,3 +177,16 @@
     label: "{{ item.content.id }}"
   register: __checkmk_var_result_rules_delete
   failed_when: __checkmk_var_result_rules_delete.changed
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+  rule:
+    ruleset: "{{ item.content.extensions.ruleset }}"
+    rule:
+      rule_id: "{{ item.content.id }}"
+    state: "absent"
+  loop: "{{ __checkmk_var_created_rules.results }}"
+  loop_control:
+    label: "{{ item.content.id }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  environment: "{{ __checkmk_var_testing_environment }}"
