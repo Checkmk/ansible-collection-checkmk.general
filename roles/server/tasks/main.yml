@@ -17,8 +17,12 @@
     - include-os-family-vars
     - install-package
 
-- name: "Get installed Packages."
+- name: "{{ ansible_system }}: Get RPM or APT package facts."
   ansible.builtin.package_facts:
+    manager: "auto"
+
+- name: "{{ ansible_system }}: Populate service facts."
+  ansible.builtin.service_facts:
 
 - name: "Update APT Cache."
   become: true
