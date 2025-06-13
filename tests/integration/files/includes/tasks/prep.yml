@@ -47,9 +47,15 @@
   changed_when: __checkmk_var_site_status.rc == "0"
   loop: "{{ checkmk_var_test_sites }}"
 
-- name: "Wait for site to be ready."
-  ansible.builtin.pause:
-    seconds: 10
-  when: |
-    item.stdout_lines is defined and 'OVERALL 1' in item.stdout_lines
-  loop: "{{ __checkmk_var_site_status.results }}"
+- name: "Wait for Sites to be ready."
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ item.port}}/{{ item.site }}"
+    return_content: yes
+    validate_certs: no
+    status_code:
+      - 200
+  until: __checkmk_var_site_status_online.status == 200
+  retries: 30
+  delay: 5
+  register: __checkmk_var_site_status_online
+  loop: "{{ checkmk_var_test_sites }}"
