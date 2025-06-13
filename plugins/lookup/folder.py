@@ -112,7 +112,7 @@ EXAMPLES = """
                   )
          }}"
 
-- name: "Use variables outside the module call."
+- name: "Use variables from inventory."
   ansible.builtin.debug:
     msg: "Extended attributes of folder /network: {{ attributes.extensions }}"
   vars:

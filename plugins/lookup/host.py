@@ -120,7 +120,7 @@ EXAMPLES = """
                         )
                  }}"
 
-- name: "Use variables outside the module call."
+- name: "Use variables from inventory."
   ansible.builtin.debug:
     msg: "Attributes of host example: {{ attributes }}"
   vars:
