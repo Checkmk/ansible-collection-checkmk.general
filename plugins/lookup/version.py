@@ -106,7 +106,7 @@ EXAMPLES = """
                    automation_secret=mysecret
                )}}"
 
-- name: "Use variables outside the module call."
+- name: "Use variables from inventory."
   ansible.builtin.debug:
     msg: "Server version is {{ version }}"
   vars:

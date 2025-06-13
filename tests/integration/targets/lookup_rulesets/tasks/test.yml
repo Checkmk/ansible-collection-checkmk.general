@@ -97,7 +97,7 @@
     checkmk_var_server_url: "http://127.0.0.1:5324/"
   when: outer_item.site == "stable_cme"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: ruleset."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory: ruleset."
   ansible.builtin.assert:
     # For each rule that we created, check, if the number of rules in its ruleset is 1.
     that: "__checkmk_var_ruleset.number_of_rules == 1"
@@ -108,7 +108,7 @@
   loop: "{{ checkmk_var_ruleset_regexes }}"
   when: outer_item.site == "stable_cme"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: rulesets."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory: rulesets."
   ansible.builtin.debug:
     var: __checkmk_var_rulesets
   vars:
