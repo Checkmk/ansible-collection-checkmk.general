@@ -49,9 +49,9 @@
 
 - name: "Wait for Sites to be ready."
   ansible.builtin.uri:
-    url: "http://127.0.0.1:{{ item.port}}/{{ item.site }}"
-    return_content: yes
-    validate_certs: no
+    url: "http://127.0.0.1:{{ item.port }}/{{ item.site }}"
+    return_content: true
+    validate_certs: false
     status_code:
       - 200
   until: __checkmk_var_site_status_online.status == 200
