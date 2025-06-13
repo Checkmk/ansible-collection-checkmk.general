@@ -40,5 +40,4 @@
   vars:
     __checkmk_var_result_internal: "{{ lookup('checkmk.general.version') }}"
   delegate_to: localhost
-  register: __checkmk_var_result_internal
   when: outer_item.site == "stable_cme"
