@@ -1,0 +1,2 @@
+bugfixes:
+  - Server role - Fix accidental password logging in Ansible output, even if `no_log` was enabled.
