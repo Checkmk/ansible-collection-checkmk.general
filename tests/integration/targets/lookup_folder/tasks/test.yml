@@ -75,4 +75,4 @@
     __checkmk_var_folder: "{{ lookup('checkmk.general.folder', checkmk_var_folder.path) }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
-  when: outer_item.edition == "stable_cme"
+  when: outer_item.site == "stable_cme"

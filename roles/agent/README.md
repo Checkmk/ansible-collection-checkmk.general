@@ -16,7 +16,7 @@ Please make sure it is installed on your system and available for Ansible.
 
 ## Role Variables
 
-    checkmk_agent_version: "2.3.0p29"
+    checkmk_agent_version: "2.4.0p4"
 
 The Checkmk version of the site your agents will talk to.
 
@@ -116,13 +116,13 @@ Automatically discover services on the host where the agent was installed.
 
     checkmk_agent_discover_max_parallel_tasks: 0
 
-When this parameter is greater then zero, then only the defined number of
+If the value of this parameter is greater than zero, only the defined number of
 discovery tasks run at the same time in parallel.
 
     checkmk_agent_update: 'false'
 
 Register host for automatic updates. Make sure to have the server side prepared for automatic updates. Otherwise this will fail.
-See [this link](hhttps://docs.checkmk.com/latest/en/agent_deployment.html) for more information on the preparations.
+See [this link](https://docs.checkmk.com/latest/en/agent_deployment.html) for more information on the preparations.
 
     checkmk_agent_tls: 'false'
 

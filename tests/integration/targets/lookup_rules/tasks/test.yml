@@ -113,7 +113,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ __checkmk_var_cpu_load_ruleset.rules }}"
-  when: outer_item.edition == "stable_cme"
+  when: outer_item.site == "stable_cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call: rules."
   ansible.builtin.assert:
@@ -124,4 +124,4 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rulesets }}"
-  when: outer_item.edition == "stable_cme"
+  when: outer_item.site == "stable_cme"
