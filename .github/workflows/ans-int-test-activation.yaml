@@ -28,13 +28,16 @@ on:
       - 'plugins/modules/activation.py'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/modules/activation.py'
       - '.github/workflows/ans-int-test-activation.yaml'
+      - 'tests/integration/files/includes/'
+      - 'tests/integration/targets/activation/'
 
 jobs:
 
   integration:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
     strategy:
       fail-fast: false

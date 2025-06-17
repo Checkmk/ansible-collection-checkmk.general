@@ -25,13 +25,16 @@ on:
       - 'plugins/lookup/hosts.py'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/lookup/hosts.py'
       - '.github/workflows/ans-int-test-lkp-hosts.yaml'
+      - 'tests/integration/files/includes/'
+      - 'tests/integration/targets/lookup_hosts/'
 
 jobs:
 
   integration:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
     strategy:
       fail-fast: false

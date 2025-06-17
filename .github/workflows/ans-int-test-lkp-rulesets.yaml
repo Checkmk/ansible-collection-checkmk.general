@@ -26,14 +26,17 @@ on:
       - 'plugins/lookup/rulesets.py'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/lookup/ruleset.py'
       - 'plugins/lookup/rulesets.py'
       - '.github/workflows/ans-int-test-lkp-rulesets.yaml'
+      - 'tests/integration/files/includes/'
+      - 'tests/integration/targets/lookup_rulesets/'
 
 jobs:
 
   integration:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
     strategy:
       fail-fast: false

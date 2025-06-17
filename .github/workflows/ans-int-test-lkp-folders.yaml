@@ -25,13 +25,16 @@ on:
       - 'plugins/lookup/folders.py'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/lookup/folders.py'
       - '.github/workflows/ans-int-test-lkp-folders.yaml'
+      - 'tests/integration/files/includes/'
+      - 'tests/integration/targets/lookup_folders/'
 
 jobs:
 
   integration:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
     strategy:
       fail-fast: false
