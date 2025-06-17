@@ -27,8 +27,11 @@ on:
       - 'plugins/modules/folder.py'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/modules/folder.py'
       - '.github/workflows/ans-int-test-folder.yaml'
+      - 'tests/integration/files/includes/'
+      - 'tests/integration/targets/folder/'
 
 jobs:
 

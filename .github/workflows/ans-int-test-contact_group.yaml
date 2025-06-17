@@ -27,8 +27,11 @@ on:
       - 'plugins/modules/contact_group.py'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/modules/contact_group.py'
       - '.github/workflows/ans-int-test-contact_group.yaml'
+      - 'tests/integration/files/includes/'
+      - 'tests/integration/targets/contact_group/'
 
 jobs:
 

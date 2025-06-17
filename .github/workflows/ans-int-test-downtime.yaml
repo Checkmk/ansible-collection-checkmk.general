@@ -27,8 +27,11 @@ on:
       - 'plugins/modules/downtime.py'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/modules/downtime.py'
       - '.github/workflows/ans-int-test-downtime.yaml'
+      - 'tests/integration/files/includes/'
+      - 'tests/integration/targets/downtime/'
 
 jobs:
 

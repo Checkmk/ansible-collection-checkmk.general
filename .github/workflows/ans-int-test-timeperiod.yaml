@@ -27,8 +27,11 @@ on:
       - 'plugins/modules/timeperiod.py'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/modules/timeperiod.py'
       - '.github/workflows/ans-int-test-timeperiod.yaml'
+      - 'tests/integration/files/includes/'
+      - 'tests/integration/targets/timeperiod/'
 
 jobs:
 

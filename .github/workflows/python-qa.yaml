@@ -6,6 +6,7 @@ on:
     - cron: '0 3 * * *'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - '**.py'
   pull_request:
     paths:

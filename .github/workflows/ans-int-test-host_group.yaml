@@ -27,8 +27,11 @@ on:
       - 'plugins/modules/host_group.py'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/modules/host_group.py'
       - '.github/workflows/ans-int-test-host_group.yaml'
+      - 'tests/integration/files/includes/'
+      - 'tests/integration/targets/host_group/'
 
 jobs:
 
