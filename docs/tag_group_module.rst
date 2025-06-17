@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.16.3
+  :antsibull-docs: 2.17.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.tag_group module -- Manage tag groups in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.10.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.10.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -691,7 +691,7 @@ Examples
     # Create a tag group
     - name: "Create tag group"
       checkmk.general.tag_group:
-        server_url: "https://myserver/"
+        server_url: "http://myserver/"
         site: "mysite"
         automation_user: "myuser"
         automation_secret: "mysecret"
@@ -715,7 +715,7 @@ Examples
     # Delete a tag group
     - name: "Delete tag group."
       checkmk.general.tag_group:
-        server_url: "https://myserver/"
+        server_url: "http://myserver/"
         site: "mysite"
         automation_user: "myuser"
         automation_secret: "mysecret"
