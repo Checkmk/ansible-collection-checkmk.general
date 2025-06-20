@@ -34,7 +34,7 @@
         state: "present"
       delegate_to: localhost
 
-    - name: "Activate changes on site."
+    - name: "Activate changes on site."  # noqa name[unique]
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
@@ -133,7 +133,7 @@
         comment: downtime 6 - on host without timestamps
       delegate_to: localhost
 
-    - name: "Pause to review changes."
+    - name: "Pause to review changes."  # noqa name[unique]
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
@@ -163,7 +163,7 @@
         state: absent
       delegate_to: localhost
 
-    - name: "Pause to review changes."
+    - name: "Pause to review changes."  # noqa name[unique]
       ansible.builtin.pause:
         prompt: |
           "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
@@ -194,7 +194,7 @@
       run_once: true  # noqa run-once[task]
       loop: "{{ checkmk_var_folders }}"
 
-    - name: "Activate changes on site."
+    - name: "Activate changes on site."  # noqa name[unique]
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
