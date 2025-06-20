@@ -2,6 +2,7 @@
 *.md @robin-checkmk
 /plugins/ @lgetwan
 /plugins/doc_fragments/ @robin-checkmk
+/plugins/inventory/checkmk.py @Max-checkmk
 /plugins/lookup/ @lgetwan
 /plugins/lookup/bakery.py @Max-checkmk
 /plugins/module_utils/ @lgetwan

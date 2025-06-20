@@ -13,6 +13,10 @@ ansuse ansible_host=192.168.124.64 checkmk_var_folder_path="/bar"
 ansles ansible_host=192.168.124.65 checkmk_var_folder_path="/bar/foo"
 ansoracle ansible_host=192.168.124.66 checkmk_var_folder_path="/foo"
 
+[linux:vars]
+ansible_user = vagrant
+ansible_password = vagrant
+
 [windows]
 ansidows ansible_host=192.168.124.67 checkmk_var_folder_path="/"
 
