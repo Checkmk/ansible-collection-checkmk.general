@@ -10,7 +10,7 @@
         cache_valid_time: 600
       when: ansible_os_family == 'Debian'
 
-    - name: Install prerequisites.
+    - name: Install Prerequisites for Debian Derivatives.
       ansible.builtin.package:
         name: "{{ item }}"
         state: present
@@ -20,7 +20,7 @@
         - ufw
       when: ansible_os_family == 'Debian'
 
-    - name: Install prerequisites.
+    - name: Install Prerequisites for RedHat Derivatives.
       ansible.builtin.package:
         name: "{{ item }}"
         state: present
