@@ -998,6 +998,16 @@ releases:
     - release_summary.yml
     - utils.yml
     release_date: '2025-05-27'
+  5.10.1:
+    changes:
+      bugfixes:
+      - Server role - Fix accidental password logging in Ansible output, even if `no_log`
+        was enabled.
+      release_summary: Some more house keeping and a minor security fix.
+    fragments:
+    - release_summary.yml
+    - server.yml
+    release_date: '2025-06-16'
   5.2.0:
     changes:
       bugfixes:

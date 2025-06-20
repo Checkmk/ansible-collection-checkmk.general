@@ -1,6 +1,6 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.3.0p33"
+  - version: "2.3.0p34"
     edition: "cre"
     site: "old_cre"
     port: "5023"
@@ -48,7 +48,7 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.4.0p2"
+  - version: "2.4.0p4"
     edition: "cre"
     site: "stable_cre"
     port: "5024"
@@ -78,7 +78,7 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.4.0p2"
+  - version: "2.4.0p4"
     edition: "cme"
     site: "stable_cme"
     port: "5323"

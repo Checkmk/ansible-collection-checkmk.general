@@ -4,6 +4,19 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.10.1
+=======
+
+Release Summary
+---------------
+
+Some more house keeping and a minor security fix.
+
+Bugfixes
+--------
+
+- Server role - Fix accidental password logging in Ansible output, even if `no_log` was enabled.
+
 v5.10.0
 =======
 
