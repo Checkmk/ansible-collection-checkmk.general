@@ -4,6 +4,8 @@
     msg: |
       variable `update_conflict_resolution` is not given. See `omd update --help` for more information.
   when: item.item.update_conflict_resolution is undefined
+  tags:
+    - update-sites
 
 - name: "Check if desired version is installed."
   ansible.builtin.shell: |
@@ -13,6 +15,8 @@
     executable: /bin/bash
   register: __checkmk_server_sites_versions
   changed_when: false
+  tags:
+    - update-sites
 
 - name: "Fail if this is a downgrade."
   ansible.builtin.fail:
@@ -22,6 +26,8 @@
     checkmk_server_allow_downgrades is defined
     and not checkmk_server_allow_downgrades | bool
     and item.stdout is version(item.item.version, '>')
+  tags:
+    - update-sites
 
 - name: "Short pause for patch update."
   ansible.builtin.pause:
@@ -56,6 +62,8 @@
   args:
     executable: /bin/bash
   when: checkmk_server_backup_on_update
+  tags:
+    - update-sites
 
 - name: "Update Site."
   become: true
@@ -66,3 +74,5 @@
     executable: /bin/bash
   register: __checkmk_server_sites_updated
   changed_when: ("Finished update" in __checkmk_server_sites_updated.stdout)
+  tags:
+    - update-sites

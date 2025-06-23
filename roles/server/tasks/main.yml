@@ -5,26 +5,37 @@
   when: (ansible_distribution is not defined) or
         (ansible_distribution_version is not defined) or
         (ansible_distribution + "-" + ansible_distribution_major_version not in checkmk_server_server_stable_os)
+  tags:
+    - always
 
 - name: "Preflight - Fail if Checkmk Edition is incorrect."
   ansible.builtin.fail:
     msg: "The provided Checkmk Edition '{{ checkmk_server_edition | lower }}' does  not exist or is not supported by this role."
   when: checkmk_server_edition | lower not in __checkmk_server_edition_mapping
+  tags:
+    - always
 
 - name: "Include OS Family specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-vars
     - install-package
+    - update-sites
 
 - name: "Get installed Packages."
   ansible.builtin.package_facts:
+  tags:
+    - install-package
+    - install-prerequisites
 
 - name: "Update APT Cache."
   become: true
   ansible.builtin.package:
     update_cache: true
   when: ansible_os_family == "Debian"
+  tags:
+    - install-package
+    - install-prerequisites
 
 - name: "Install Checkmk Prerequisites."
   become: true
@@ -78,6 +89,9 @@
           register: __checkmk_server_verify_state
           changed_when: false
           failed_when: "'Bad signature' in __checkmk_server_verify_state.stderr"
+          tags:
+            - download-package
+            - install-package
 
     - name: "Import Checkmk GPG Key."
       become: true
@@ -90,10 +104,14 @@
 
 - name: Include OS Family specific Playbook.
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+  tags:
+    - always
 
 - name: Include Site Management Playbook.
   ansible.builtin.include_tasks: "sites.yml"
   when: checkmk_server_sites is defined
+  tags:
+    - always
 
 - name: "Cleanup unused Checkmk Versions."
   become: true
@@ -111,3 +129,5 @@
 - name: "Flush Handlers."
   ansible.builtin.meta:
     flush_handlers
+  tags:
+    - always
