@@ -61,8 +61,10 @@
   become: true
   ansible.builtin.shell: |
     omd stop {{ item.item.name }}
+    umount -l $(mount -t tmpfs | grep /{{ item.item.name }}/ | tail -1 | awk '{print $3}') || true
     omd -f -V {{ item.item.version }}.{{ checkmk_server_edition | lower }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
   args:
     executable: /bin/bash
   register: __checkmk_server_sites_updated
   changed_when: ("Finished update" in __checkmk_server_sites_updated.stdout)
+  ignore_errors: true

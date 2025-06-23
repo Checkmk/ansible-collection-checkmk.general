@@ -1,0 +1,3 @@
+minor_changes:
+  - server role - Add umount of tmpfs when updating site.
+    Ignore error when updating site to allow start of the site after aborted update.
