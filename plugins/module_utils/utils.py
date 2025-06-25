@@ -10,16 +10,37 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+from ansible.module_utils.basic import env_fallback
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 
 
 def base_argument_spec():
     return dict(
-        server_url=dict(type="str", required=True),
-        site=dict(type="str", required=True),
-        validate_certs=dict(type="bool", required=False, default=True),
-        automation_user=dict(type="str", required=True),
-        automation_secret=dict(type="str", required=True, no_log=True),
+        server_url=dict(
+            type="str",
+            required=True,
+            fallback=(env_fallback, ["CHECKMK_VAR_SERVER_URL"]),
+        ),
+        site=dict(
+            type="str", required=True, fallback=(env_fallback, ["CHECKMK_VAR_SITE"])
+        ),
+        validate_certs=dict(
+            type="bool",
+            required=False,
+            default=True,
+            fallback=(env_fallback, ["CHECKMK_VAR_VALIDATE_CERTS"]),
+        ),
+        automation_user=dict(
+            type="str",
+            required=True,
+            fallback=(env_fallback, ["CHECKMK_VAR_AUTOMATION_USER"]),
+        ),
+        automation_secret=dict(
+            type="str",
+            required=True,
+            no_log=True,
+            fallback=(env_fallback, ["CHECKMK_VAR_AUTOMATION_SECRET"]),
+        ),
     )
 
 

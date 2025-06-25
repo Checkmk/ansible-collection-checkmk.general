@@ -47,10 +47,10 @@ help:
 
 build:
 	@echo "Building Collection from current working directory. This can take a while."
-	@uv run ansible-galaxy collection build --force ./
+	@LC_ALL=C.UTF-8 uv run ansible-galaxy collection build --force ./
 
 install:
-	@uv run ansible-galaxy collection install -f ./checkmk-general-$(VERSION).tar.gz
+	@LC_ALL=C.UTF-8 uv run ansible-galaxy collection install -f ./checkmk-general-$(VERSION).tar.gz
 
 release: version
 	# gh workflow run release.yaml --ref main  # https://cli.github.com/manual/gh_workflow_run
@@ -136,9 +136,11 @@ tests-linting: vm
 	@vagrant ssh collection -c "\
 	cd $(COLLECTION_ROOT) && \
 	LC_ALL=C.UTF-8 uv run ansible-galaxy collection install ./ && \
-	uv run yamllint -c .yamllint ./roles/ && \
-	uv run yamllint -c .yamllint ./playbooks/ && \
+	LC_ALL=C.UTF-8 uv run yamllint -c .yamllint ./roles/ && \
+	LC_ALL=C.UTF-8 uv run yamllint -c .yamllint ./tests/ && \
+	LC_ALL=C.UTF-8 uv run yamllint -c .yamllint ./playbooks/ && \
 	LC_ALL=C.UTF-8 uv run ansible-lint -c .ansible-lint ./roles/ && \
+	LC_ALL=C.UTF-8 uv run ansible-lint -c .ansible-lint ./tests/ && \
 	LC_ALL=C.UTF-8 uv run ansible-lint -c .ansible-lint ./playbooks/"
 
 tests-sanity: vm
