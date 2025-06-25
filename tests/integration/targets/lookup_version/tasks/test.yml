@@ -28,12 +28,6 @@
     checkmk_var_server_url: "http://127.0.0.1:5324/"
   when: outer_item.site == "stable_cme"
 
-# We need this hack to overwrite the colliding global variable
-- name: "Set fact: checkmk_var_server_url."
-  ansible.builtin.set_fact:
-    checkmk_var_server_url: "http://127.0.0.1:5324/"
-  when: outer_item.site == "stable_cme"
-
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
   ansible.builtin.assert:
     that: "outer_item.version in __checkmk_var_result_internal"
