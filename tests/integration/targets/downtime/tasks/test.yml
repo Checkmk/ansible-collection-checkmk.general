@@ -355,5 +355,5 @@
       - "Check_MK"
     state: absent
   delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_var_hosts }}"
   environment: "{{ __checkmk_var_testing_environment }}"
