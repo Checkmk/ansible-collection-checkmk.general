@@ -15,7 +15,7 @@ script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 collection_dir="${script_dir%/*}"
 
 # Update these as necessary:
-checkmk_ancient="2.2.0p44"
+checkmk_ancient="2.2.0p43"
 checkmk_oldstable="2.3.0p34"
 checkmk_stable="2.4.0p5"
 
