@@ -68,6 +68,8 @@
         url: "{{ checkmk_server_gpg_download_url }}"
         dest: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
         mode: "0640"
+        url_username: "{{ checkmk_server_gpg_download_user | default(omit) }}"
+        url_password: "{{ checkmk_server_gpg_download_pass | default(omit) }}"
       when: checkmk_server_verify_setup | bool
       retries: 3
       tags:

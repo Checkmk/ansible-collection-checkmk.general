@@ -13,6 +13,8 @@ checkmk_server_version: "{{ checkmk_var_version }}"
 
 checkmk_server_download_user: []
 checkmk_server_download_pass: []
+checkmk_server_gpg_download_user: []
+checkmk_server_gpg_download_pass: []
 
 checkmk_server_sites:
   - name: "started"
