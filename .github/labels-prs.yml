@@ -7,12 +7,12 @@ documentation:
 role:server:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'roles/server/*'
+          - any-glob-to-any-file: 'roles/server/**'
 
 role:agent:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'roles/agent/*'
+          - any-glob-to-any-file: 'roles/agent/**'
 
 inventory:
   - any:
