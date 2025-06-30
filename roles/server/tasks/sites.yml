@@ -200,3 +200,5 @@
   changed_when: true
   notify: Warn site admin password
   no_log: "{{ checkmk_server_no_log | bool }}"
+  tags:
+    - create-sites
