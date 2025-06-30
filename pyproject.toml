@@ -1,6 +1,6 @@
 [project]
 name = "checkmk_ansible_collection"
-version = "5.10.1"
+version = "5.11.0"
 requires-python = ">=3.11"
 dependencies = [
     "ansible",
