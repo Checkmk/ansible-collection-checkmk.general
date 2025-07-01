@@ -184,3 +184,5 @@
     label: "{{ item.site_id }}"
   delegate_to: localhost
   environment: "{{ __checkmk_var_testing_environment }}"
+  register: __checkmk_var_result_environment
+  failed_when: __checkmk_var_result_environment.changed | bool
