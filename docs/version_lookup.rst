@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.17.0
+  :antsibull-docs: 2.18.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.version lookup -- Get the version of a Checkmk server
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.10.1).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.11.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -126,7 +126,11 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
           automation_secret = VALUE
 
 
+      - Environment variable: :envvar:`CHECKMK\_VAR\_AUTOMATION\_SECRET`
+
       - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_AUTOMATION\_SECRET`
+
+      - Variable: checkmk\_var\_automation\_secret
 
       - Variable: ansible\_lookup\_checkmk\_automation\_secret
 
@@ -180,7 +184,11 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
           automation_user = VALUE
 
 
+      - Environment variable: :envvar:`CHECKMK\_VAR\_AUTOMATION\_USER`
+
       - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_AUTOMATION\_USER`
+
+      - Variable: checkmk\_var\_automation\_user
 
       - Variable: ansible\_lookup\_checkmk\_automation\_user
 
@@ -234,7 +242,11 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
           server_url = VALUE
 
 
+      - Environment variable: :envvar:`CHECKMK\_VAR\_SERVER\_URL`
+
       - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_SERVER\_URL`
+
+      - Variable: checkmk\_var\_server\_url
 
       - Variable: ansible\_lookup\_checkmk\_server\_url
 
@@ -288,7 +300,11 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
           site = VALUE
 
 
+      - Environment variable: :envvar:`CHECKMK\_VAR\_SITE`
+
       - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_SITE`
+
+      - Variable: checkmk\_var\_site
 
       - Variable: ansible\_lookup\_checkmk\_site
 
@@ -350,7 +366,11 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
           validate_certs = true
 
 
+      - Environment variable: :envvar:`CHECKMK\_VAR\_VALIDATE\_CERTS`
+
       - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_VALIDATE\_CERTS`
+
+      - Variable: checkmk\_var\_validate\_certs
 
       - Variable: ansible\_lookup\_checkmk\_validate\_certs
 
@@ -396,15 +416,15 @@ Examples
                        automation_secret=mysecret
                    )}}"
 
-    - name: "Use variables outside the module call."
+    - name: "Use variables from inventory."
       ansible.builtin.debug:
         msg: "Server version is {{ version }}"
       vars:
-        ansible_lookup_checkmk_server_url: "http://myserver/"
-        ansible_lookup_checkmk_site: "mysite"
-        ansible_lookup_checkmk_automation_user: "myuser"
-        ansible_lookup_checkmk_automation_secret: "mysecret"
-        ansible_lookup_checkmk_validate_certs: false
+        checkmk_var_server_url: "http://myserver/"
+        checkmk_var_site: "mysite"
+        checkmk_var_automation_user: "myuser"
+        checkmk_var_automation_secret: "mysecret"
+        checkmk_var_validate_certs: false
         attributes: "{{ lookup('checkmk.general.version') }}"
 
 
