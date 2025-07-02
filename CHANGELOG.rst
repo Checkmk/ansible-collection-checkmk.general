@@ -4,6 +4,26 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v5.11.0
+=======
+
+Major Changes
+-------------
+
+- All lookup modules - Add new environment and inventory variables, which follow the naming schemes `CHECKMK_VAR_` and `checkmk_var_` respectively. The existing variables can still be used, but are deprecated and will be removed with a later release. Refer to the module documentation for details.
+- All normal modules - Add new environment variables, which follow the naming scheme `CHECKMK_VAR_`. The existing variables can still be used, but are deprecated and will be removed with a later release. Refer to the module documentation for details.
+
+Minor Changes
+-------------
+
+- server role - Add Checkmk version in the filename of site backup.
+- server role - Add support for optional GPG credentials in the download process.
+
+Bugfixes
+--------
+
+- Server role - Fix the server role tags. Some existing tags are added to additional existing tasks, in order to make the run of certain tasks working when executing playbook with tags.
+
 v5.10.1
 =======
 

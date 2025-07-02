@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.17.0
+  :antsibull-docs: 2.18.0
 
 .. Anchors
 
@@ -20,7 +20,7 @@ checkmk.general.server role -- Install and manage Checkmk servers
 .. Collection note
 
 .. note::
-    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.10.1).
+    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.11.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -33,6 +33,7 @@ checkmk.general.server role -- Install and manage Checkmk servers
    :local:
    :depth: 2
 
+.. _ansible_collections.checkmk.general.server_role__entrypoint-main:
 
 .. Entry point title
 
@@ -487,6 +488,80 @@ Parameters
 
       - :ansible-option-choices-entry:`false`
       - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_gpg_download_pass"></div>
+
+      .. _ansible_collections.checkmk.general.server_role__parameter-main__checkmk_server_gpg_download_pass:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_server_gpg_download_pass**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_server_gpg_download_pass" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_gpg_download_user"></div>
+
+      .. _ansible_collections.checkmk.general.server_role__parameter-main__checkmk_server_gpg_download_user:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_server_gpg_download_user**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_server_gpg_download_user" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details.
 
 
       .. raw:: html
