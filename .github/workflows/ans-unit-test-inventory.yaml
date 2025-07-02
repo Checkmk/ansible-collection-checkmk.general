@@ -23,20 +23,22 @@ on:
       - 'plugins/inventory/checkmk.py'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/inventory/checkmk.py'
+      - 'tests/unit/plugins/inventory/'
 
 jobs:
 
   units:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     name: Units (Ⓐ${{ matrix.ansible }})
     strategy:
       fail-fast: true # false?
       matrix:
         ansible:
-          - stable-2.15
           - stable-2.16
           - stable-2.17
+          - stable-2.18
           - devel
         python:
           - '3.10'

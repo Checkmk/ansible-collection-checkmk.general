@@ -27,21 +27,24 @@ on:
       - 'plugins/modules/site.py'
   push:
     paths:
+      - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/modules/site.py'
       - '.github/workflows/ans-int-test-site.yaml'
+      - 'tests/integration/files/includes/'
+      - 'tests/integration/targets/site/'
 
 jobs:
 
   integration:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
     strategy:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.15
           - stable-2.16
           - stable-2.17
+          - stable-2.18
           - devel
         python:
           - '3.9'
@@ -50,12 +53,14 @@ jobs:
           - '3.12'
         exclude:
           # Exclude unsupported sets.
-          - ansible: stable-2.15
-            python: '3.12'
           - ansible: stable-2.16
             python: '3.9'
           - ansible: stable-2.17
             python: '3.9'
+          - ansible: stable-2.18
+            python: '3.9'
+          - ansible: stable-2.18
+            python: '3.10'
           - ansible: devel
             python: '3.9'
           - ansible: devel
@@ -80,14 +85,14 @@ jobs:
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
       stable_cre:
-        image: checkmk/check-mk-raw:2.4.0p4
+        image: checkmk/check-mk-raw:2.4.0p5
         ports:
           - 5024:5000
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable-cre-r1:
-        image: checkmk/check-mk-raw:2.4.0p4
+        image: checkmk/check-mk-raw:2.4.0p5
         ports:
           - 5124:5000
           - 6568:6557
@@ -98,14 +103,14 @@ jobs:
           CMK_LIVESTATUS_TCP: "on"
           CMK_RABBITMQ_PORT: 5671
       stable_cme:
-        image: checkmk/check-mk-managed:2.4.0p4
+        image: checkmk/check-mk-managed:2.4.0p5
         ports:
           - 5323:5000
         env:
           CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable-cme-r1:
-        image: checkmk/check-mk-managed:2.4.0p4
+        image: checkmk/check-mk-managed:2.4.0p5
         ports:
           - 7323:5000
           - 6562:6557

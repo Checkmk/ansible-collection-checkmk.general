@@ -218,3 +218,12 @@
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+  service_group:
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    groups: "{{ checkmk_var_service_groups_create }}"
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  environment: "{{ __checkmk_var_testing_environment }}"

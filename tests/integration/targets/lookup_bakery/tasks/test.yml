@@ -31,14 +31,20 @@
           ('stopped' in __checkmk_var_result_bakery.msg) | bool or
           ('exception' in __checkmk_var_result_bakery.msg) | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables outside the module call."
+# We need this hack to overwrite the colliding global variable
+- name: "Set fact: checkmk_var_server_url."
+  ansible.builtin.set_fact:
+    checkmk_var_server_url: "http://127.0.0.1:5324/"
+  when: outer_item.site == "stable_cme"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
   ansible.builtin.assert:
-    that: ('finished' in __checkmk_var_result_bakery_module) | bool or
-          ('running' in __checkmk_var_result_bakery_module) | bool or
-          ('initialized' in __checkmk_var_result_bakery_module) | bool or
-          ('stopped' in __checkmk_var_result_bakery_module) | bool or
-          ('exception' in __checkmk_var_result_bakery_module) | bool
+    that: ('finished' in __checkmk_var_result_bakery_internal) | bool or
+          ('running' in __checkmk_var_result_bakery_internal) | bool or
+          ('initialized' in __checkmk_var_result_bakery_internal) | bool or
+          ('stopped' in __checkmk_var_result_bakery_internal) | bool or
+          ('exception' in __checkmk_var_result_bakery_internal) | bool
   vars:
-    __checkmk_var_result_bakery_module: "{{ lookup('checkmk.general.bakery') }}"
+    __checkmk_var_result_bakery_internal: "{{ lookup('checkmk.general.bakery') }}"
   delegate_to: localhost
   when: outer_item.site == "stable_cme"

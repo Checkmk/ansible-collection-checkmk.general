@@ -30,16 +30,8 @@ on:
 jobs:
 
   integration:
-    runs-on: ubuntu-22.04
-    name: I py${{ matrix.python }})
-    strategy:
-      fail-fast: false
-      matrix:
-        python:
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
+    runs-on: ubuntu-24.04
+    name: Ansible Linting
 
     steps:
       - name: Check out code

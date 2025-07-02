@@ -332,6 +332,15 @@
       delegate_to: localhost
       run_once: true  # noqa run-once[task]
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+  discovery:
+    hosts: "{{ checkmk_var_host_names }}"
+    state: "fix_all"
+    bulk_size: 5
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  environment: "{{ __checkmk_var_testing_environment }}"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"

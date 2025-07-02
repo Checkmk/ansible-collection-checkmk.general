@@ -37,6 +37,16 @@ argument_specs:
         description:
           - Refer to the README for details.
 
+      checkmk_server_gpg_download_user:
+        type: "str"
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_gpg_download_pass:
+        type: "str"
+        description:
+          - Refer to the README for details.
+
       checkmk_server_sites:
         type: "list"
         elements: "dict"

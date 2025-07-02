@@ -129,3 +129,12 @@
       - "{{ outer_item.site }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+  timeperiod:
+    name: "{{ item.name }}"
+    state: "absent"
+  loop: "{{ checkmk_var_timeperiods_delete }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  environment: "{{ __checkmk_var_testing_environment }}"

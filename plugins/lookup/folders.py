@@ -23,11 +23,13 @@ DOCUMENTATION = """
         required: True
 
       server_url:
-        description: URL of the Checkmk server
+        description: URL of the Checkmk server.
         required: True
         vars:
+          - name: checkmk_var_server_url
           - name: ansible_lookup_checkmk_server_url
         env:
+          - name: CHECKMK_VAR_SERVER_URL
           - name: ANSIBLE_LOOKUP_CHECKMK_SERVER_URL
         ini:
           - section: checkmk_lookup
@@ -37,8 +39,10 @@ DOCUMENTATION = """
         description: Site name.
         required: True
         vars:
+          - name: checkmk_var_site
           - name: ansible_lookup_checkmk_site
         env:
+          - name: CHECKMK_VAR_SITE
           - name: ANSIBLE_LOOKUP_CHECKMK_SITE
         ini:
           - section: checkmk_lookup
@@ -48,8 +52,10 @@ DOCUMENTATION = """
         description: Automation user for the REST API access.
         required: True
         vars:
+          - name: checkmk_var_automation_user
           - name: ansible_lookup_checkmk_automation_user
         env:
+          - name: CHECKMK_VAR_AUTOMATION_USER
           - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_USER
         ini:
           - section: checkmk_lookup
@@ -59,8 +65,10 @@ DOCUMENTATION = """
         description: Automation secret for the REST API access.
         required: True
         vars:
+          - name: checkmk_var_automation_secret
           - name: ansible_lookup_checkmk_automation_secret
         env:
+          - name: CHECKMK_VAR_AUTOMATION_SECRET
           - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_SECRET
         ini:
           - section: checkmk_lookup
@@ -72,8 +80,10 @@ DOCUMENTATION = """
         required: False
         default: True
         vars:
+          - name: checkmk_var_validate_certs
           - name: ansible_lookup_checkmk_validate_certs
         env:
+          - name: CHECKMK_VAR_VALIDATE_CERTS
           - name: ANSIBLE_LOOKUP_CHECKMK_VALIDATE_CERTS
         ini:
           - section: checkmk_lookup
@@ -139,15 +149,15 @@ EXAMPLES = """
   loop_control:
     label: "{{ item.0.id }}"
 
-- name: "Use variables outside the module call."
+- name: "Use variables from inventory."
   ansible.builtin.debug:
     msg: "Folder tree: {{ item.id }}"
   vars:
-    ansible_lookup_checkmk_server_url: "http://myserver/"
-    ansible_lookup_checkmk_site: "mysite"
-    ansible_lookup_checkmk_automation_user: "myuser"
-    ansible_lookup_checkmk_automation_secret: "mysecret"
-    ansible_lookup_checkmk_validate_certs: false
+    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_site: "mysite"
+    checkmk_var_automation_user: "myuser"
+    checkmk_var_automation_secret: "mysecret"
+    checkmk_var_validate_certs: false
   loop: "{{
     lookup('checkmk.general.folders',
         '~',

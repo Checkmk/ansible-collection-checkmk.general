@@ -64,8 +64,8 @@ UPDATE_HOST_LABELS = [
 ]
 
 SUPPORTED_VERSIONS = {
-    "min": "2.4.0",
-    "max": "2.4.0p99",
+    "min": "2.5.0",
+    "max": "2.5.0p99",
 }
 
 

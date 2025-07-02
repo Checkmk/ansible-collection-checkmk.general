@@ -346,3 +346,14 @@
     force_foreign_changes: true
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+  downtime:
+    host_name: "{{ item.name }}"
+    comment: Schedule downtime on single service
+    service_descriptions:
+      - "Check_MK"
+    state: absent
+  delegate_to: localhost
+  loop: "{{ checkmk_var_hosts }}"
+  environment: "{{ __checkmk_var_testing_environment }}"
