@@ -67,14 +67,14 @@ Uninstall unused Checkmk versions on the server.
 Automatically open necessary ports on the Checkmk server.
 This setting only has effect on systems, which are running `ufw` or `firewalld`.
 For elaborate firewall configuration, use your own firewall management!
-This setting only enables very basic firewall configuration.
 
     checkmk_server_ports:
+    - 22
     - 80
     - 443
     - 8000
 
-The ports to open automatically. Adapt this to the specific requirements of your site.
+The TCP ports to open automatically. Adapt this to the specific requirements of your site.
 
     checkmk_server_allow_downgrades: 'false'
 
