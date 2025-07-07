@@ -27,9 +27,8 @@ on:
       - 'plugins/modules/rule.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rules.yaml'
-      - 'plugins/modules/rule.py'
       - '.github/workflows/ans-int-test-rule.yaml'
+      - 'plugins/modules/rule.py'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/rule/'
 

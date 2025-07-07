@@ -27,9 +27,8 @@ on:
       - 'plugins/modules/bakery.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rules.yaml'
-      - 'plugins/modules/bakery.py'
       - '.github/workflows/ans-int-test-bakery.yaml'
+      - 'plugins/modules/bakery.py'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/bakery/'
 

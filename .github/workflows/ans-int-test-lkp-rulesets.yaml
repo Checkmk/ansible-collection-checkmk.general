@@ -26,10 +26,9 @@ on:
       - 'plugins/lookup/rulesets.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rules.yaml'
+      - '.github/workflows/ans-int-test-lkp-rulesets.yaml'
       - 'plugins/lookup/ruleset.py'
       - 'plugins/lookup/rulesets.py'
-      - '.github/workflows/ans-int-test-lkp-rulesets.yaml'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/lookup_rulesets/'
 

@@ -25,9 +25,8 @@ on:
       - 'plugins/lookup/hosts.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rules.yaml'
-      - 'plugins/lookup/hosts.py'
       - '.github/workflows/ans-int-test-lkp-hosts.yaml'
+      - 'plugins/lookup/hosts.py'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/lookup_hosts/'
 

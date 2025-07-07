@@ -27,9 +27,8 @@ on:
       - 'plugins/lookup/sites.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rules.yaml'
-      - 'plugins/lookup/sites.py'
       - '.github/workflows/ans-int-test-lkp-sites.yaml'
+      - 'plugins/lookup/sites.py'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/lookup_sites/'
 

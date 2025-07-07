@@ -27,9 +27,8 @@ on:
       - 'plugins/modules/user.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rules.yaml'
-      - 'plugins/modules/user.py'
       - '.github/workflows/ans-int-test-user.yaml'
+      - 'plugins/modules/user.py'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/user/'
 

@@ -25,9 +25,8 @@ on:
       - 'plugins/lookup/folders.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rules.yaml'
-      - 'plugins/lookup/folders.py'
       - '.github/workflows/ans-int-test-lkp-folders.yaml'
+      - 'plugins/lookup/folders.py'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/lookup_folders/'
 

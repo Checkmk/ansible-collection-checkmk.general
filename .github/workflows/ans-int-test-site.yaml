@@ -27,9 +27,8 @@ on:
       - 'plugins/modules/site.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rules.yaml'
-      - 'plugins/modules/site.py'
       - '.github/workflows/ans-int-test-site.yaml'
+      - 'plugins/modules/site.py'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/site/'
 
