@@ -1,0 +1,376 @@
+localhost | SUCCESS => {
+    "ansible_facts": {
+        "services": {
+            "anacron": {
+                "name": "anacron",
+                "source": "sysv",
+                "state": "stopped"
+            },
+            "anacron.service": {
+                "name": "anacron.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "enabled"
+            },
+            "apache-htcacheclean": {
+                "name": "apache-htcacheclean",
+                "source": "sysv",
+                "state": "stopped"
+            },
+            "apache-htcacheclean.service": {
+                "name": "apache-htcacheclean.service",
+                "source": "systemd",
+                "state": "inactive",
+                "status": "disabled"
+            },
+            "apache-htcacheclean@.service": {
+                "name": "apache-htcacheclean@.service",
+                "source": "systemd",
+                "state": "unknown",
+                "status": "disabled"
+            },
+            "apache2": {
+                "name": "apache2",
+                "source": "sysv",
+                "state": "running"
+            },
+            "apache2.service": {
+                "name": "apache2.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "enabled"
+            },
+            "apache2@.service": {
+                "name": "apache2@.service",
+                "source": "systemd",
+                "state": "unknown",
+                "status": "disabled"
+            },
+            "apparmor": {
+                "name": "apparmor",
+                "source": "sysv",
+                "state": "running"
+            },
+            "apparmor.service": {
+                "name": "apparmor.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "enabled"
+            },
+            "apport": {
+                "name": "apport",
+                "source": "sysv",
+                "state": "running"
+            },
+            "apport-autoreport.service": {
+                "name": "apport-autoreport.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "static"
+            },
+            "apport-coredump-hook@.service": {
+                "name": "apport-coredump-hook@.service",
+                "source": "systemd",
+                "state": "unknown",
+                "status": "static"
+            },
+            "apport-forward@.service": {
+                "name": "apport-forward@.service",
+                "source": "systemd",
+                "state": "unknown",
+                "status": "static"
+            },
+            "apport.service": {
+                "name": "apport.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "enabled"
+            },
+            "apt-cacher": {
+                "name": "apt-cacher",
+                "source": "sysv",
+                "state": "running"
+            },
+            "apt-cacher.service": {
+                "name": "apt-cacher.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "generated"
+            },
+            "apt-daily-upgrade.service": {
+                "name": "apt-daily-upgrade.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "static"
+            },
+            "apt-daily.service": {
+                "name": "apt-daily.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "static"
+            },
+            "apt-news.service": {
+                "name": "apt-news.service",
+                "source": "systemd",
+                "state": "inactive",
+                "status": "static"
+            },
+            "auditd.service": {
+                "name": "auditd.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "not-found"
+            },
+            "auto-cpufreq.service": {
+                "name": "auto-cpufreq.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "not-found"
+            },
+            "autovt@.service": {
+                "name": "autovt@.service",
+                "source": "systemd",
+                "state": "unknown",
+                "status": "alias"
+            },
+            "avahi-daemon.service": {
+                "name": "avahi-daemon.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "enabled"
+            },
+            "blk-availability.service": {
+                "name": "blk-availability.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "enabled"
+            },
+            "bluetooth": {
+                "name": "bluetooth",
+                "source": "sysv",
+                "state": "running"
+            },
+            "bluetooth.service": {
+                "name": "bluetooth.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "enabled"
+            },
+            "bolt.service": {
+                "name": "bolt.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "static"
+            },
+            "brltty-udev.service": {
+                "name": "brltty-udev.service",
+                "source": "systemd",
+                "state": "inactive",
+                "status": "static"
+            },
+            "brltty.service": {
+                "name": "brltty.service",
+                "source": "systemd",
+                "state": "inactive",
+                "status": "disabled"
+            },
+            "check-mk-agent-async.service": {
+                "name": "check-mk-agent-async.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "enabled"
+            },
+            "check-mk-agent@.service": {
+                "name": "check-mk-agent@.service",
+                "source": "systemd",
+                "state": "unknown",
+                "status": "static"
+            },
+            "check-mk-cloud-2.3.0p34": {
+                "name": "check-mk-cloud-2.3.0p34",
+                "source": "sysv",
+                "state": "stopped"
+            },
+            "check-mk-cloud-2.3.0p34.service": {
+                "name": "check-mk-cloud-2.3.0p34.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "generated"
+            },
+            "check-mk-enterprise-2.2.0p43": {
+                "name": "check-mk-enterprise-2.2.0p43",
+                "source": "sysv",
+                "state": "stopped"
+            },
+            "check-mk-enterprise-2.2.0p43.service": {
+                "name": "check-mk-enterprise-2.2.0p43.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "generated"
+            },
+            "check-mk-enterprise-2.3.0p34": {
+                "name": "check-mk-enterprise-2.3.0p34",
+                "source": "sysv",
+                "state": "stopped"
+            },
+            "check-mk-enterprise-2.3.0p34.service": {
+                "name": "check-mk-enterprise-2.3.0p34.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "generated"
+            },
+            "cloud-config.service": {
+                "name": "cloud-config.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "enabled"
+            },
+            "cloud-final.service": {
+                "name": "cloud-final.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "enabled"
+            },
+            "cloud-init-hotplugd.service": {
+                "name": "cloud-init-hotplugd.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "static"
+            },
+            "cloud-init-local.service": {
+                "name": "cloud-init-local.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "enabled"
+            },
+            "cloud-init.service": {
+                "name": "cloud-init.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "enabled"
+            },
+            "cmk-agent-ctl-daemon.service": {
+                "name": "cmk-agent-ctl-daemon.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "enabled"
+            },
+            "cmk-update-agent.service": {
+                "name": "cmk-update-agent.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "static"
+            },
+            "colord.service": {
+                "name": "colord.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "static"
+            },
+            "configure-printer@.service": {
+                "name": "configure-printer@.service",
+                "source": "systemd",
+                "state": "unknown",
+                "status": "static"
+            },
+            "connman.service": {
+                "name": "connman.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "not-found"
+            },
+            "console-getty.service": {
+                "name": "console-getty.service",
+                "source": "systemd",
+                "state": "inactive",
+                "status": "disabled"
+            },
+            "console-screen.service": {
+                "name": "console-screen.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "not-found"
+            },
+            "console-setup.service": {
+                "name": "console-setup.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "enabled"
+            },
+            "console-setup.sh": {
+                "name": "console-setup.sh",
+                "source": "sysv",
+                "state": "stopped"
+            },
+            "container-getty@.service": {
+                "name": "container-getty@.service",
+                "source": "systemd",
+                "state": "unknown",
+                "status": "static"
+            },
+            "containerd.service": {
+                "name": "containerd.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "enabled"
+            },
+            "cron": {
+                "name": "cron",
+                "source": "sysv",
+                "state": "running"
+            },
+            "cron.service": {
+                "name": "cron.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "enabled"
+            },
+            "cryptdisks": {
+                "name": "cryptdisks",
+                "source": "sysv",
+                "state": "stopped"
+            },
+            "cryptdisks-early": {
+                "name": "cryptdisks-early",
+                "source": "sysv",
+                "state": "stopped"
+            },
+            "cryptdisks-early.service": {
+                "name": "cryptdisks-early.service",
+                "source": "systemd",
+                "state": "inactive",
+                "status": "masked"
+            },
+            "cryptdisks.service": {
+                "name": "cryptdisks.service",
+                "source": "systemd",
+                "state": "inactive",
+                "status": "masked"
+            },
+            "cups": {
+                "name": "cups",
+                "source": "sysv",
+                "state": "running"
+            },
+            "cups-browsed.service": {
+                "name": "cups-browsed.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "enabled"
+            },
+            "cups.service": {
+                "name": "cups.service",
+                "source": "systemd",
+                "state": "running",
+                "status": "enabled"
+            },
+            "zfs-mount.service": {
+                "name": "zfs-mount.service",
+                "source": "systemd",
+                "state": "stopped",
+                "status": "not-found"
+            }
+        }
+    },
+    "changed": false
+}
