@@ -101,7 +101,7 @@
   when: checkmk_server_configure_firewall | bool and "firewalld.service" in ansible_facts.services
   ansible.posix.firewalld:
     permanent: true
-    immediate: "{% if ansible_facts.services.firewalld.service.state == running %}true{% else %}false{% endif %}"
+    immediate: "{% if ansible_facts['services']['firewalld.service']['state'] == 'running' %}true{% else %}false{% endif %}"
     port: "{{ item }}/tcp"
     state: "enabled"
   become: true
