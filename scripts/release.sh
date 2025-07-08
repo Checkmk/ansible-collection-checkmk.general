@@ -28,9 +28,9 @@ elif [ ! -f /tmp/stable_downloads.json ]; then
   wget -O /tmp/stable_downloads.json https://download.checkmk.com/stable_downloads.json > /dev/null
 fi
 
-checkmk_ancient="$(cat /tmp/stable_downloads.json | jq '.checkmk."2.2.0".version' | tr -d '"')"
-checkmk_oldstable="$(cat /tmp/stable_downloads.json | jq '.checkmk."2.3.0".version' | tr -d '"')"
-checkmk_stable="$(cat /tmp/stable_downloads.json | jq '.checkmk."2.4.0".version' | tr -d '"')"
+checkmk_ancient="$(jq '.checkmk."2.2.0".version' < /tmp/stable_downloads.json | tr -d '"')"
+checkmk_oldstable="$(jq '.checkmk."2.3.0".version' < /tmp/stable_downloads.json | tr -d '"')"
+checkmk_stable="$(jq '.checkmk."2.4.0".version' < /tmp/stable_downloads.json | tr -d '"')"
 # checkmk_ancient="2.2.0p44"
 # checkmk_oldstable="2.3.0p34"
 # checkmk_stable="2.4.0p6"
