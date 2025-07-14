@@ -131,17 +131,10 @@ See [this link](https://docs.checkmk.com/latest/en/agent_linux.html#registration
 
     checkmk_agent_configure_firewall: 'true'
 
-Automatically configure the firewall (*currently only on RedHat and Debian derivatives*) to allow access to the Checkmk agent.
-
-    checkmk_agent_configure_firewall_zone: 'public'
-
-When checkmk_agent_configure_firewall is set to `true` then configure the firewall zone on RedHat derivatives. Defaults to 'public'.
-
-    checkmk_agent_server_ips: []
-
-A list of IP addresses, that will be whitelisted in the firewall for agent access on `checkmk_agent_port`.
-The `checkmk_agent_server` will automatically be added, but only if it is an IP address.
-This parameter also does **not** take care of any agent-side whitelisting!
+Automatically configure the firewall to allow access to the Checkmk agent on the `checkmk_agent_port`.
+This setting only has effect on systems, which are running `ufw` or `firewalld`.
+For elaborate firewall configuration, use your own firewall management!
+This setting only enables very basic firewall configuration.
 
     checkmk_agent_force_install: 'false'
 
