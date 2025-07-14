@@ -1213,3 +1213,20 @@ releases:
     - release_summary.yml
     - tag_group.yml
     release_date: '2025-05-13'
+  6.0.0:
+    changes:
+      breaking_changes:
+      - Agent role - Remove advanced firewall configuration options and revert to
+        basic firewall management. If you used the `checkmk_agent_server_ips` or `checkmk_agent_configure_firewall_zone`
+        option, you need to take action. Refer to the README for details. If you need
+        elaborate firewall management, use a dedicated role!
+      major_changes:
+      - Server role - Harmonize firewall management accross distributions and simplify
+        configuration. Refer to the README for details! If you need elaborate firewall
+        management, use a dedicated role!
+      release_summary: Remove sub-par firewall management.
+    fragments:
+    - firewall-agent.yml
+    - firewall-server.yml
+    - release_summary.yml
+    release_date: '2025-07-14'
