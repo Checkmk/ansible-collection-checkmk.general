@@ -1,0 +1,51 @@
+---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "provider"
+  when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: null
+  when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create a DCD configuration."
+  dcd:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    automation_auth_type: "bearer"
+    dcd_config:
+      dcd_id: "PiggybackBoar"
+      title: "Piggyback Configuration for Boar"
+      comment: "Piggyback config for Boar host"
+      site: "{{ outer_item.site }}"
+      connector_type: "piggyback"
+      interval: 5
+      creation_rules:
+        - folder_path: "/"
+          delete_hosts: false
+          host_attributes:
+            tag_address_family: "no-ip"
+            tag_agent: "special-agents"
+            tag_piggyback: "piggyback"
+            tag_snmp_ds: "no-snmp"
+      discover_on_creation: true
+      restrict_source_hosts:
+        - "boar"
+    state: "present"
+  delegate_to: localhost
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete a DCD configuration."
+  dcd:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    auth_type: "bearer"
+    dcd_config:
+      dcd_id: "PiggybackBoar"
+      site: "{{ outer_item.site }}"
+    state: "absent"
+  delegate_to: localhost
