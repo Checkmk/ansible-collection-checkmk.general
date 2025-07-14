@@ -27,9 +27,8 @@ on:
       - 'plugins/modules/user.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rules.yaml'
-      - 'plugins/modules/user.py'
       - '.github/workflows/ans-int-test-user.yaml'
+      - 'plugins/modules/user.py'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/user/'
 
@@ -68,7 +67,7 @@ jobs:
 
     services:
       ancient_cre:
-        image: checkmk/check-mk-raw:2.2.0p43
+        image: checkmk/check-mk-raw:2.2.0p44
         ports:
           - 5022:5000
         env:
@@ -89,14 +88,14 @@ jobs:
           CMK_SITE_ID: "old_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cre:
-        image: checkmk/check-mk-raw:2.4.0p5
+        image: checkmk/check-mk-raw:2.4.0p7
         ports:
           - 5024:5000
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cme:
-        image: checkmk/check-mk-managed:2.4.0p5
+        image: checkmk/check-mk-managed:2.4.0p7
         ports:
           - 5324:5000
         env:
@@ -117,12 +116,6 @@ jobs:
       - name: Install ansible-base (${{ matrix.ansible }})
         run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
 
-      - name: Provide secrets file
-        run: echo "${{ secrets.CHECKMK_DOWNLOAD_PW }}" > ./tests/integration/files/.dl-secret
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-        env:
-          CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
-
       - name: Run integration test
-        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --retry-on-error --continue-on-error --diff --python ${{ matrix.python }}
+        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --continue-on-error --diff --python ${{ matrix.python }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}

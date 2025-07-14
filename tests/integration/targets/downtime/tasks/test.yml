@@ -309,6 +309,10 @@
       - "Check_MK"
   loop: "{{ checkmk_var_hosts }}"
 
+- name: "Pause for Downtimes to take Effect."
+  ansible.builtin.pause:
+    seconds: 5
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete downtime on single service."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"

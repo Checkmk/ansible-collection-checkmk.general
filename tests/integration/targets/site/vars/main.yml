@@ -48,7 +48,7 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.4.0p5"
+  - version: "2.4.0p7"
     edition: "cre"
     site: "stable_cre"
     port: "5024"
@@ -78,7 +78,7 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_automation_user }}"
           password: "{{ checkmk_var_automation_secret }}"
-  - version: "2.4.0p5"
+  - version: "2.4.0p7"
     edition: "cme"
     site: "stable_cme"
     port: "5323"

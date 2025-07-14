@@ -23,7 +23,7 @@ on:
       - 'plugins/inventory/checkmk.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rules.yaml'
+      - '.github/workflows/ans-unit-test-inventory.yaml'
       - 'plugins/inventory/checkmk.py'
       - 'tests/unit/plugins/inventory/'
 
@@ -41,8 +41,10 @@ jobs:
           - stable-2.18
           - devel
         python:
+          - '3.9'
           - '3.10'
           - '3.11'
+          - '3.12'
 
     steps:
       - name: Check out code

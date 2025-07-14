@@ -9,3 +9,14 @@
   notify: Start Apache
   tags:
     - install-package
+
+- name: "{{ ansible_os_family }} Derivatives: Open Firewall Ports for the Checkmk Server."
+  when: checkmk_server_configure_firewall | bool and "ufw.service" in ansible_facts.services
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    port: "{{ item }}"
+    comment: "Allow Checkmk Agent access from anywhere."
+    state: "enabled"
+  become: true
+  loop: "{{ checkmk_server_ports }}"

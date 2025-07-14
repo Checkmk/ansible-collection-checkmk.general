@@ -25,7 +25,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Role Variables
 
-    checkmk_server_version: "2.4.0p5"
+    checkmk_server_version: "2.4.0p7"
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.
@@ -64,8 +64,17 @@ Uninstall unused Checkmk versions on the server.
 
     checkmk_server_configure_firewall: 'true'
 
-Automatically open the necessary ports on the Checkmk server for the
-web interface to be accessible.
+Automatically open necessary ports on the Checkmk server.
+This setting only has effect on systems, which are running `ufw` or `firewalld`.
+For elaborate firewall configuration, use your own firewall management!
+
+    checkmk_server_ports:
+    - 22
+    - 80
+    - 443
+    - 8000
+
+The TCP ports to open automatically. Adapt this to the specific requirements of your site.
 
     checkmk_server_allow_downgrades: 'false'
 

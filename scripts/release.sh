@@ -5,19 +5,30 @@
 # Purpose:
 # Prepare this repository for a release.
 #
-# Usage: ./release.sh -s 0.21.0 -t 0.22.0
-#
+# Usage: ./release.sh -s 9.0.0 -t 9.2.1
 
-# ToDo
-# - Collection version prüfen!
+set -e
 
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 collection_dir="${script_dir%/*}"
 
-# Update these as necessary:
-checkmk_ancient="2.2.0p43"
-checkmk_oldstable="2.3.0p34"
-checkmk_stable="2.4.0p5"
+echo "# Preparations:"
+
+wget -V > /dev/null 2>&1 || echo "Please install <wget>."
+jq -h > /dev/null 2>&1 || echo "Please install <jq>."
+
+if [ -f /tmp/stable_downloads.json ] ; then
+  echo "Using cached Checkmk versions manifest."
+elif [ ! -f /tmp/stable_downloads.json ]; then
+  echo "Downloading latest Checkmk versions manifest."
+  wget -O /tmp/stable_downloads.json https://download.checkmk.com/stable_downloads.json > /dev/null
+fi
+
+checkmk_ancient="$(jq '.checkmk."2.2.0".version' < /tmp/stable_downloads.json | tr -d '"')"
+checkmk_oldstable="$(jq '.checkmk."2.3.0".version' < /tmp/stable_downloads.json | tr -d '"')"
+checkmk_stable="$(jq '.checkmk."2.4.0".version' < /tmp/stable_downloads.json | tr -d '"')"
+echo "# End Preparations."
+echo
 
 while getopts 's:t:' OPTION; do
   case "$OPTION" in
@@ -35,6 +46,7 @@ done
 echo "# General things to keep in mind:"
 echo "- Did you provide changelogs for all relevant changes?"
 echo "- Did you update SUPPORT.md with the latest compability information?"
+echo "# End General things sections."
 echo
 
 echo "# Changes:"
