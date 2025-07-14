@@ -20,7 +20,7 @@ checkmk.general.agent role -- Install Checkmk agents
 .. Collection note
 
 .. note::
-    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 5.11.0).
+    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -1057,43 +1057,6 @@ Parameters
       .. ansible-option-type-line::
 
         :ansible-option-type:`string` / :ansible-option-required:`required`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      Refer to the README for details.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_agent_server_ips"></div>
-
-      .. _ansible_collections.checkmk.general.agent_role__parameter-main__checkmk_agent_server_ips:
-
-      .. rst-class:: ansible-option-title
-
-      **checkmk_agent_server_ips**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-main--checkmk_agent_server_ips" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
 
 
 

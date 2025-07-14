@@ -4,6 +4,24 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.0.0
+======
+
+Release Summary
+---------------
+
+Remove sub-par firewall management.
+
+Major Changes
+-------------
+
+- Server role - Harmonize firewall management accross distributions and simplify configuration. Refer to the README for details! If you need elaborate firewall management, use a dedicated role!
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Agent role - Remove advanced firewall configuration options and revert to basic firewall management. If you used the `checkmk_agent_server_ips` or `checkmk_agent_configure_firewall_zone` option, you need to take action. Refer to the README for details. If you need elaborate firewall management, use a dedicated role!
+
 v5.11.0
 =======
 

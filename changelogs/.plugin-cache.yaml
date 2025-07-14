@@ -151,4 +151,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 5.11.0
+version: 6.0.0
