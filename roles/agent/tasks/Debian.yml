@@ -44,21 +44,11 @@
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }} Derivatives: Configure Firewall for Agent."
+- name: "{{ ansible_os_family }} Derivatives: Allow access to the Checkmk agent on port {{ checkmk_agent_port }}/tcp."
   when: checkmk_agent_configure_firewall | bool and "ufw.service" in ansible_facts.services
-  block:
-    - name: "{{ ansible_os_family }} Derivatives: Add Checkmk Server to Firewall Whitelist if it is an IP address."
-      when: checkmk_agent_server | ansible.utils.ipaddr()
-      ansible.builtin.set_fact:
-        checkmk_agent_server_ips: "{{ checkmk_agent_server_ips + [checkmk_agent_server] }}"
-
-    - name: "{{ ansible_os_family }} Derivatives: Allow Checkmk services access to the agent."
-      when: checkmk_agent_server_ips is defined
-      community.general.ufw:
-        rule: allow
-        proto: tcp
-        src: "{{ item }}"
-        port: '6556'
-        comment: Allow Checkmk
-      loop: "{{ checkmk_agent_server_ips }}"
-      become: true
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    port: "{{ checkmk_agent_port }}"
+    comment: "Allow Checkmk Agent access from anywhere."
+  become: true
