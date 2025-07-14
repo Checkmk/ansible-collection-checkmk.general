@@ -5,13 +5,9 @@
 # Purpose:
 # Prepare this repository for a release.
 #
-# Usage: ./release.sh -s 0.21.0 -t 0.22.0
-#
+# Usage: ./release.sh -s 9.0.0 -t 9.2.1
 
 set -e
-
-# ToDo
-# - Collection version prüfen!
 
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 collection_dir="${script_dir%/*}"
@@ -31,9 +27,6 @@ fi
 checkmk_ancient="$(jq '.checkmk."2.2.0".version' < /tmp/stable_downloads.json | tr -d '"')"
 checkmk_oldstable="$(jq '.checkmk."2.3.0".version' < /tmp/stable_downloads.json | tr -d '"')"
 checkmk_stable="$(jq '.checkmk."2.4.0".version' < /tmp/stable_downloads.json | tr -d '"')"
-# checkmk_ancient="2.2.0p44"
-# checkmk_oldstable="2.3.0p34"
-# checkmk_stable="2.4.0p6"
 echo "# End Preparations."
 echo
 
