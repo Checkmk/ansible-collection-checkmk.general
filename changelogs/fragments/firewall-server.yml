@@ -1,3 +1,4 @@
 major_changes:
   - Server role - Harmonize firewall management accross distributions and simplify configuration.
     Refer to the README for details!
+    If you need elaborate firewall management, use a dedicated role!
