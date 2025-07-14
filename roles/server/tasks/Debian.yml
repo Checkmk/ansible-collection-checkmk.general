@@ -16,6 +16,7 @@
     rule: allow
     proto: tcp
     port: "{{ item }}"
+    comment: "Allow Checkmk Agent access from anywhere."
     state: "enabled"
   become: true
   loop: "{{ checkmk_server_ports }}"
