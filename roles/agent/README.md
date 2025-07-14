@@ -137,6 +137,10 @@ Automatically configure the firewall (*currently only on RedHat and Debian deriv
 
 When checkmk_agent_configure_firewall is set to `true` then configure the firewall zone on RedHat derivatives. Defaults to 'public'.
 
+    checkmk_agent_configure_firewall_comment: 'Allow Checkmk'
+
+When checkmk_agent_configure_firewall is set to `true` then use this variable as rule comment. Defaults to 'Allow Checkmk'.
+
     checkmk_agent_server_ips: []
 
 A list of IP addresses, that will be whitelisted in the firewall for agent access on `checkmk_agent_port`.

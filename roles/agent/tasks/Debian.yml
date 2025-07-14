@@ -59,6 +59,6 @@
         proto: tcp
         src: "{{ item }}"
         port: '6556'
-        comment: Allow Checkmk
+        comment: "{{ checkmk_agent_configure_firewall_comment }}"
       loop: "{{ checkmk_agent_server_ips }}"
       become: true

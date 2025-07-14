@@ -145,6 +145,12 @@ argument_specs:
         description:
           - Refer to the README for details.
 
+      checkmk_agent_configure_firewall_comment:
+        type: "str"
+        default: "public"
+        description:
+          - Refer to the README for details.
+
       checkmk_agent_server_ips:
         type: "list"
         elements: "str"
