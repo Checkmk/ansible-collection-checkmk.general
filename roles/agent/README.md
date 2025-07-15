@@ -16,16 +16,17 @@ Please make sure it is installed on your system and available for Ansible.
 
 ## Role Variables
 
+### Basic Configuration
+
     checkmk_agent_version: "2.4.0p7"
 
 The Checkmk version of the site your agents will talk to.
 
     checkmk_agent_edition: cre
 
-The edition you are using. Valid values are `cre`, `cfe`, `cee`, `cce` and `cme`.
+The edition you are using. Valid values are `cre`, `cee`, `cce` and `cme`.
 
 - `cre`: Raw Edition, fully open source.
-- `cfe`: Free Edition, enterprise features, but limited hosts. **Only available until Checkmk 2.1!** For Checkmk 2.2, see `cce`.
 - `cee`: Enterprise Edition, full enterprise features.
 - `cce`: Cloud Edition, for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
 - `cme`: Managed Edition, for service providers.
@@ -53,13 +54,7 @@ The port of the web interface of your Checkmk server. Defaults to port 80 for ht
 
 The name of your Checkmk site.
 
-    checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
-
-The server you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_server }}`.
-
-    checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
-
-The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_site }}`.
+### Authentication
 
     checkmk_agent_user: 'myuser'
 
@@ -75,19 +70,24 @@ This is mutually exclusive with `checkmk_agent_secret`.
 The secret for the automation user used to authenticate against your Checkmk site, both for API calls and agent updates.
 This is mutually exclusive with `checkmk_agent_pass`.
 
-    checkmk_agent_port: '6556'
+### Registration
 
-Configure the port the agent listens on. We recommend to stick to the default.
-**This does not change the agent configuration! It merely tells Ansible which port to talk to.**
+    checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
+
+The server you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_server }}`.
+
+    checkmk_agent_registration_server_protocol: "{{ checkmk_agent_server_protocol }}"
+
+The protocol used to connect to the registration server. Defaults to `{{ checkmk_agent_server_protocol }}`.
+
+    checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
+
+The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_site }}`.
 
     checkmk_agent_auto_activate: 'false'
 
 Enable automatic activation of changes on all sites.
 This is disabled by default, as it might be unexpected.
-
-    checkmk_agent_force_foreign_changes: 'false'
-
-Allow forcing foreign changes on activation by handler.
 
     checkmk_agent_add_host: 'false'
 
@@ -96,10 +96,6 @@ Automatically add the host where the agent was installed on to Checkmk.
     checkmk_agent_host_name: "{{ inventory_hostname }}"
 
 Define the hostname which will be used to add the host to Checkmk.
-
-    checkmk_agent_folder: '/'
-
-The folder into which the automatically created host will be placed.
 
     checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 
@@ -110,6 +106,10 @@ Define an IP address which will be added to the host in Checkmk. This is optiona
 
 Define attributes with which the host will be added to Checkmk.
 
+    checkmk_agent_folder: '/'
+
+The folder into which the automatically created host will be placed.
+
     checkmk_agent_discover: 'false'
 
 Automatically discover services on the host where the agent was installed.
@@ -118,6 +118,24 @@ Automatically discover services on the host where the agent was installed.
 
 If the value of this parameter is greater than zero, only the defined number of
 discovery tasks run at the same time in parallel.
+
+    checkmk_agent_force_foreign_changes: 'false'
+
+Allow forcing foreign changes on activation by handler.
+
+### Agent Configuration
+
+    checkmk_agent_mode: 'pull'
+
+The mode the agent operates in. For most deployments, this will be the `pull` mode.
+If you are uncertain, what you are using, this is most likely your mode.
+If you are using an alternative way to call the agent, e.g. SSH, you can set the variable to `ssh`, so the agent port check is skipped.
+If you are using the Checkmk Cloud Edition (CCE) with an agent in `push` mode, you want to set this to `push` to avoid the agent port check, as well as triggering an initial push of data.
+
+    checkmk_agent_port: '6556'
+
+Configure the port the agent listens on. We recommend to stick to the default.
+**This does not change the agent configuration! It merely tells Ansible which port to talk to.**
 
     checkmk_agent_update: 'false'
 
@@ -129,13 +147,6 @@ See [this link](https://docs.checkmk.com/latest/en/agent_deployment.html) for mo
 Register for TLS encryption. Make sure to have the server side prepared for automatic updates. Otherwise this will fail.
 See [this link](https://docs.checkmk.com/latest/en/agent_linux.html#registration) for more information on the preparations.
 
-    checkmk_agent_configure_firewall: 'true'
-
-Automatically configure the firewall to allow access to the Checkmk agent on the `checkmk_agent_port`.
-This setting only has effect on systems, which are running `ufw` or `firewalld`.
-For elaborate firewall configuration, use your own firewall management!
-This setting only enables very basic firewall configuration.
-
     checkmk_agent_force_install: 'false'
 
 Force the installation of the agent package, no matter the constraints.
@@ -144,6 +155,21 @@ This means, downgrades become possible and unverified packages would be installe
     checkmk_agent_prep_legacy: 'false'
 
 Enable this to automatically install `xinetd` on hosts with systemd prior to version 220.
+
+### Security
+
+    checkmk_agent_no_log: 'true'
+
+Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
+
+    checkmk_agent_configure_firewall: 'true'
+
+Automatically configure the firewall to allow access to the Checkmk agent on the `checkmk_agent_port`.
+This setting only has effect on systems, which are running `ufw` or `firewalld`.
+For elaborate firewall configuration, use your own firewall management!
+This setting only enables very basic firewall configuration.
+
+### Delegation
 
     checkmk_agent_delegate_api_calls: 'localhost'
 
@@ -164,16 +190,7 @@ This feature can be used in case a direct connection to the Checkmk site on the 
 
 Configure the target which is used to register the monitored host on the Checkmk server for TLS. The target needs to have a Checkmk agent installed.
 
-    checkmk_agent_mode: 'pull'
-
-The mode the agent operates in. For most deployments, this will be the `pull` mode.
-If you are uncertain, what you are using, this is most likely your mode.
-If you are using an alternative way to call the agent, e.g. SSH, you can set the variable to `ssh`, so the agent port check is skipped.
-If you are using the Checkmk Cloud Edition (CCE) with an agent in `push` mode, you want to set this to `push` to avoid the agent port check, as well as triggering an initial push of data.
-
-    checkmk_agent_no_log: 'true'
-
-Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
+### Advanced Options
 
     checkmk_agent_download_timeout: "{% if ansible_system == 'Win32NT' %}30{% else %}10{% endif %}"
 
