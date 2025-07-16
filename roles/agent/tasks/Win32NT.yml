@@ -5,7 +5,7 @@
     - include-os-family-tasks
 
 
-- name: "{{ ansible_system }}: Ensure Host is present."
+- name: "{{ ansible_system }}: Ensure Host is present in the correct Folder."
   checkmk.general.host:
     server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
     site: "{{ checkmk_agent_site }}"
