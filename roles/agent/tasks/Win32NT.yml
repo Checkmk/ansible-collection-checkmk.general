@@ -4,14 +4,33 @@
   tags:
     - include-os-family-tasks
 
-- name: "{{ ansible_system }}: Create host on server."
+
+- name: "{{ ansible_system }}: Ensure Host is present in the correct Folder."
   checkmk.general.host:
     server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
     site: "{{ checkmk_agent_site }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
     automation_user: "{{ checkmk_agent_user }}"
     automation_secret: "{{ __checkmk_agent_auth }}"
-    folder: "{{ checkmk_agent_folder | default(omit) }}"
+    folder: "{{ checkmk_agent_folder }}"
+    name: "{{ checkmk_agent_host_name }}"
+    state: "present"
+  become: false
+  register: __checkmk_agent_create_result
+  failed_when: |
+    (__checkmk_agent_create_result.failed == true) and
+    ("The host is already part of the specified target folder" not in __checkmk_agent_create_result.msg)
+  delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
+  when: checkmk_agent_add_host | bool
+  notify: "Activate changes"
+
+- name: "{{ ansible_system }}: Update Host Attributes."
+  checkmk.general.host:
+    server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
+    site: "{{ checkmk_agent_site }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    automation_user: "{{ checkmk_agent_user }}"
+    automation_secret: "{{ __checkmk_agent_auth }}"
     name: "{{ checkmk_agent_host_name }}"
     attributes: "{{ checkmk_agent_host_attributes }}"
     state: "present"
