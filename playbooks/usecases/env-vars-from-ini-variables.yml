@@ -3,6 +3,14 @@
 # At this point it is uncertain, whether normal modules can use ini-style variables.
 # So this playbook provides an example of how to work around this limitation.
 
+# You need the following section in your `ansible.cfg`:
+#
+# [checkmk_lookup]
+# server_url = https://myserver/
+# site = mysite
+# automation_user = myuser
+# automation_secret = mysecret
+
 - name: "Derive Environment Variables from INI-style Variables in ansible.cfg."
   hosts: localhost
   gather_facts: false
@@ -19,7 +27,3 @@
         state: absent
         host_name: "{{ inventory_hostname }}"
       delegate_to: localhost
-
-    - name: "Looking up a host using the ini-variable derived environment variables."
-      ansible.builtin.debug:
-        var: lookup('checkmk.general.host', inventory_hostname)
