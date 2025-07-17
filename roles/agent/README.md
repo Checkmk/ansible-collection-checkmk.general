@@ -107,7 +107,10 @@ Define an IP address which will be added to the host in Checkmk. This is optiona
 
     checkmk_agent_host_attributes:
         ipaddress: "{{ checkmk_agent_host_ip | default(omit) }}"
-
+        tag_mytag: value
+        labels:
+          App: my-app
+          
 Define attributes with which the host will be added to Checkmk.
 
     checkmk_agent_discover: 'false'
