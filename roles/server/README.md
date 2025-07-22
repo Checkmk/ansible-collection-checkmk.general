@@ -25,6 +25,8 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Role Variables
 
+### Basic Configuration
+
     checkmk_server_version: "2.4.0p7"
 
 The global Checkmk version. This is used for installing Checkmk.
@@ -32,17 +34,16 @@ To manage sites and their version, see `checkmk_server_sites`.
 
     checkmk_server_edition: 'cre'
 
-The edition you want to use. Valid values are `cre`, `cfe`, `cee`, `cce` and `cme`.
+The edition you are using. Valid values are `cre`, `cee`, `cce` and `cme`.
 
 - `cre`: Raw Edition, fully open source.
-- `cfe`: Free Edition, enterprise features, but limited hosts. **Only available until Checkmk 2.1!** For Checkmk 2.2, see `cce`.
 - `cee`: Enterprise Edition, full enterprise features.
 - `cce`: Cloud Edition, for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
 - `cme`: Managed Edition, for service providers.
 
 For details about the editions see: https://checkmk.com/product/editions
 
-Note, that you need credentials, to download the following editions: `cee` and `cme`.
+Note, that you need credentials, to download the `cee` edition.
 See below variables, to set those.
 
     checkmk_server_download_user: []
@@ -54,6 +55,11 @@ Your credentials to the Checkmk customer portal.
 
 Cryptographically verify the downloaded Checkmk setup file.
 
+    checkmk_server_gpg_download_user: []
+    checkmk_server_gpg_download_pass: []
+
+Optional authentication do download the GPG key from a non-default location.
+
     checkmk_server_epel_gpg_check: 'true'
 
 Cryptographically verify the downloaded epel-release package on RHEL 8.
@@ -61,6 +67,13 @@ Cryptographically verify the downloaded epel-release package on RHEL 8.
     checkmk_server_cleanup: 'false'
 
 Uninstall unused Checkmk versions on the server.
+
+### Security
+
+    checkmk_server_no_log: 'true'
+
+Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default.
+Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
     checkmk_server_configure_firewall: 'true'
 
@@ -76,10 +89,7 @@ For elaborate firewall configuration, use your own firewall management!
 
 The TCP ports to open automatically. Adapt this to the specific requirements of your site.
 
-    checkmk_server_allow_downgrades: 'false'
-
-Whether to allow downgrading a site's version.
-Note: this is not a recommended procedure, and will not be supported for enterprise customers.
+### Site Management
 
     checkmk_server_sites:
       - name: 'mysite'
@@ -121,6 +131,8 @@ on an existing site.
 
 Extension packages can also be listed to be installed on the specific central site. Remote sites will get extension packages replicated upon change activation. A source path can be set on the Ansible controller. Alternatively a URL can be specified to download the mkp package from directly. These options are mutually exclusive.
 
+### Site Updates
+
     checkmk_server_backup_on_update: 'true'
 
 Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups.
@@ -130,10 +142,14 @@ Whether to back up sites when updating between versions. Only disable this if yo
 Directory to backup sites to when updating between versions.
 Of course `/tmp/` is not a sane backup location, so change it!
 
-    checkmk_server_no_log: 'true'
+    checkmk_server_backup_opts: '--no-past'
 
-Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default.
-Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
+Backup options to use. By default no historic data is backed up, in order to create a small disaster recovery backup.
+
+    checkmk_server_allow_downgrades: 'false'
+
+Whether to allow downgrading a site's version.
+Note: this is not a recommended procedure, and will not be supported for enterprise customers.
 
 ## Tags
 
