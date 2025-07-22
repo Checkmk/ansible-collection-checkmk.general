@@ -5,6 +5,7 @@ ansible-lint
 jinja2
 molecule < 25.7.0
 molecule-plugins[docker]
+molecule-plugins[podman]
 yamllint
 pywinrm
 netaddr
