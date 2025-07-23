@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.18.0
+  :antsibull-docs: 2.19.1
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.password module -- Manage passwords in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.0.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.0.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -738,7 +738,6 @@ Authors
 ~~~~~~~
 
 - Max Sickora (@max-checkmk)
-
 
 
 .. Extra links

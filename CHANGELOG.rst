@@ -4,6 +4,21 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.0.1
+======
+
+Release Summary
+---------------
+
+Build related changes and minor useability improvements.
+
+Minor Changes
+-------------
+
+- Build - Move development stack entirely from Docker to Podman. This has no imapact on collection users, but on developers.
+- Playbooks - Add new use-case playbook, that shows how to derive environment variables from ini-style variables.
+- Roles - Restructure role default variables to improve accessibility.
+
 v6.0.0
 ======
 

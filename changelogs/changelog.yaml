@@ -1230,3 +1230,18 @@ releases:
     - firewall-server.yml
     - release_summary.yml
     release_date: '2025-07-14'
+  6.0.1:
+    changes:
+      minor_changes:
+      - Build - Move development stack entirely from Docker to Podman. This has no
+        imapact on collection users, but on developers.
+      - Playbooks - Add new use-case playbook, that shows how to derive environment
+        variables from ini-style variables.
+      - Roles - Restructure role default variables to improve accessibility.
+      release_summary: Build related changes and minor useability improvements.
+    fragments:
+    - build.yml
+    - playbook.yml
+    - release_summary.yml
+    - roles.yml
+    release_date: '2025-07-23'
