@@ -28,9 +28,7 @@
     - manage-mkp-packages
 
 - name: "Install mkp packages."
-  become: true
-  become_user: "{{ __site.name }}"
-  ansible.builtin.command: "/bin/bash -l -c 'mkp add {{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp'"
+  ansible.builtin.command: "/usr/bin/su - {{ __site.name }} -c 'mkp add {{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp'"
   changed_when: __checkmk_server_mkp_install_output.rc == 0
   failed_when: __checkmk_server_mkp_install_output.rc != 0 and 'exists on the site' not in __checkmk_server_mkp_install_output.stderr
   register: __checkmk_server_mkp_install_output
@@ -42,9 +40,7 @@
     - manage-mkp-packages
 
 - name: "Enable mkp packages."
-  become: true
-  become_user: "{{ __site.name }}"
-  ansible.builtin.command: "/bin/bash -l -c 'mkp enable {{ __mkp.name }} {{ __mkp.version }}'"
+  ansible.builtin.command: "/usr/bin/su - {{ __site.name }} -c 'mkp enable {{ __mkp.name }} {{ __mkp.version }}'"
   changed_when: __checkmk_server_mkp_enable_output.rc == 0
   register: __checkmk_server_mkp_enable_output
   loop: "{{ __site.mkp_packages }}"
@@ -55,9 +51,7 @@
     - manage-mkp-packages
 
 - name: "Disable mkp packages."
-  become: true
-  become_user: "{{ __site.name }}"
-  ansible.builtin.command: "/bin/bash -l -c 'mkp disable {{ __mkp.name }} {{ __mkp.version }}'"
+  ansible.builtin.command: "/usr/bin/su - {{ __site.name }} -c 'mkp disable {{ __mkp.name }} {{ __mkp.version }}'"
   changed_when: __checkmk_server_mkp_disable_output.rc == 0
   register: __checkmk_server_mkp_disable_output
   loop: "{{ __site.mkp_packages }}"
@@ -68,9 +62,7 @@
     - manage-mkp-packages
 
 - name: "Remove mkp packages."
-  become: true
-  become_user: "{{ __site.name }}"
-  ansible.builtin.command: "/bin/bash -l -c 'mkp remove {{ __mkp.name }} {{ __mkp.version }}'"
+  ansible.builtin.command: "/usr/bin/su - {{ __site.name }} -c 'mkp remove {{ __mkp.name }} {{ __mkp.version }}'"
   changed_when: __checkmk_server_mkp_remove_output.rc == 0
   register: __checkmk_server_mkp_remove_output
   loop: "{{ __site.mkp_packages }}"
