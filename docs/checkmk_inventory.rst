@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.18.0
+  :antsibull-docs: 2.19.1
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.checkmk inventory -- Dynamic Inventory Source or Checkmk
 .. Collection note
 
 .. note::
-    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.0.0).
+    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.0.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -446,9 +446,6 @@ Authors
 
 - Max Sickora (@max-checkmk)
 
-
-.. hint::
-    Configuration entries for each entry type have a low to high priority order. For example, a variable that is lower in the list will override a variable that is higher up.
 
 .. Extra links
 
