@@ -65,7 +65,8 @@ jobs:
             python: '3.9'
           - ansible: devel
             python: '3.10'
-
+          - ansible: devel
+            python: '3.11'
     services:
       ancient_cre:
         image: checkmk/check-mk-raw:2.2.0p44
