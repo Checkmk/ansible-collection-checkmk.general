@@ -65,13 +65,13 @@ class CheckmkAPI:
 
         # retry if timed out and each time double the timeout value
         #
-        # The below values where changed from 3 retries with an
+        # The below values were changed from 3 retries with an
         # initial timeout of 10 seconds to 1 retry with a timeout
         # of 60 seconds.
         # The reasoning is this: The REST API will continue computing
         # a request, even if the client cancels it. So while the
         # initially implemented back-off mechanism makes sense, in
-        # our case it can actually make things worse. Hence the change.
+        # our case it can actually make things worse. Hence, the change.
         # TODO: If the REST API at some point actually cancels requests
         # properly, we can go back to the initial back-off mechanism.
 
