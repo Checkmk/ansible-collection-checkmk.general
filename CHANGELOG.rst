@@ -4,6 +4,19 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.1.0
+======
+
+Minor Changes
+-------------
+
+- All modules - Change API call timeout to 60 seconds and retry to 1 to avoid server overload. This is a temporary measure, as currently repeating the same expensive query on an already overloaded server several times does actually worsen the situation. As soon as this is fixed upstream, we will re-establish the original back-off mechanism.
+
+Bugfixes
+--------
+
+- Agent role - The agent role now properly moves hosts based on the ``checkmk_agent_folder`` variable. Before, there were two possible behaviors. Either the host was in the expected folder and its atrributes were updated if set. Or the agent role would fail, if the host was in a different folder than defined in ``checkmk_agent_folder`` and had attributes set. While the new behavior now actually is idempotent, it might be surprising, that hosts would be moved in the folder structure, if the ``checkmk_agent_folder`` variable does not match the current folder of the host. So while this is a bug fix by definition, please take note and check your configuration!
+
 v6.0.1
 ======
 
