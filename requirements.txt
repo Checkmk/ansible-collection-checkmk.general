@@ -3,7 +3,7 @@ antsibull-changelog
 antsibull-docs
 ansible-lint
 jinja2
-molecule < 25.7.0
+molecule < 25.8.0
 molecule-plugins[docker]
 molecule-plugins[podman]
 yamllint

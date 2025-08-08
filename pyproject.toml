@@ -1,6 +1,6 @@
 [project]
 name = "checkmk_ansible_collection"
-version = "6.0.1"
+version = "6.1.0"
 requires-python = ">=3.11"
 dependencies = [
     "ansible",
@@ -8,7 +8,7 @@ dependencies = [
     "antsibull-docs",
     "ansible-lint",
     "jinja2",
-    "molecule<25.7.0",
+    "molecule<25.8.0",
     "molecule-plugins[docker]",
     "yamllint",
     "pywinrm",
