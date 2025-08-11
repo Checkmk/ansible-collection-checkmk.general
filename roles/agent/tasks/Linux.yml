@@ -247,3 +247,14 @@
   become: true
   ansible.builtin.command: cmk-agent-ctl push
   when: checkmk_agent_mode == 'push'
+
+- name: "Cleanup Checkmk Agent Setups."
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ __checkmk_agent_agent.file.cre }}"
+    - "{{ __checkmk_agent_agent.file.cee }}"
+    - "{{ __checkmk_agent_agent.file.host }}"
+  tags:
+    - download-package
