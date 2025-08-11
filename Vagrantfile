@@ -156,7 +156,7 @@ Vagrant.configure("2") do |config|
 
   # Windows
   config.vm.define "ansidows", autostart: false , primary: false do |srv|
-    srv.vm.box = "peru/windows-server-2019-standard-x64-eval"
+    srv.vm.box = "peru/windows-server-2022-standard-x64-eval"
     srv.vm.network :private_network,
     :ip                         => "192.168.124.67",
     :libvirt__netmask           => "255.255.255.0",
