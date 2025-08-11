@@ -3,6 +3,8 @@
   ansible.builtin.get_url:
     url: "{{ __mkp.url }}"
     dest: "{{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+    owner: "{{ __site.name }}"
+    group: "{{ __site.name }}"
     mode: "0644"
     url_username: "{{ __mkp.download_user | default(omit) }}"
     url_password: "{{ __mkp.download_password | default(omit) }}"
@@ -19,6 +21,8 @@
   ansible.builtin.copy:
     src: "{{ __mkp.src }}"
     dest: "{{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
+    owner: "{{ __site.name }}"
+    group: "{{ __site.name }}"
     mode: "0644"
   loop: "{{ __site.mkp_packages }}"
   loop_control:
