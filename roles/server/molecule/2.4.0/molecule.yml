@@ -28,6 +28,12 @@ platforms:
     pre_build_image: true
     privileged: true
     systemd: always
+  - name: debian13
+    image: docker.io/geerlingguy/docker-debian13-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    pre_build_image: true
+    privileged: true
+    systemd: always
   - name: rockylinux9
     image: docker.io/geerlingguy/docker-rockylinux9-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}

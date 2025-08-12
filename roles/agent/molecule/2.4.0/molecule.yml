@@ -16,14 +16,14 @@ platforms:
     pre_build_image: true
     privileged: true
     systemd: always
-  - name: debian11
-    image: docker.io/geerlingguy/docker-debian11-ansible
+  - name: debian12
+    image: docker.io/geerlingguy/docker-debian12-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     pre_build_image: true
     privileged: true
     systemd: always
-  - name: debian12
-    image: docker.io/geerlingguy/docker-debian12-ansible
+  - name: debian13
+    image: docker.io/geerlingguy/docker-debian13-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     pre_build_image: true
     privileged: true

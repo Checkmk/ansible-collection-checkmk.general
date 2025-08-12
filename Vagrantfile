@@ -69,7 +69,7 @@ Vagrant.configure("2") do |config|
 
   # Debian
   config.vm.define "debsible", autostart: false , primary: false do |srv|
-    srv.vm.box = "generic/debian12"
+    srv.vm.box = "generic/debian13"  # ToDo: Look for availability of Debian 13 box!
     srv.vm.network :private_network,
     :ip                         => "192.168.124.62",
     :libvirt__netmask           => "255.255.255.0",
