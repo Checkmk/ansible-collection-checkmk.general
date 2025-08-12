@@ -52,10 +52,10 @@ jobs:
 
       - name: "Add swap file to avoid memory shortage."
         run: |
-          sudo fallocate -l 8G /swap
-          sudo chmod 600 /swap
-          sudo mkswap /swap
-          sudo swapon /swap
+          sudo fallocate -l 12G /mnt/swap
+          sudo chmod 600 /mnt/swap
+          sudo mkswap /mnt/swap
+          sudo swapon /mnt/swap
           free -h
           swapon --show
 
