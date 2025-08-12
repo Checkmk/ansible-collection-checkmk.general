@@ -1267,3 +1267,16 @@ releases:
     - agent.yml
     - api.yml
     release_date: '2025-08-08'
+  6.2.0:
+    changes:
+      bugfixes:
+      - Server role - Fix permissions on MKP files after transfer or download.
+      minor_changes:
+      - Agent role - Re-align Windows with Linux file management. The two playbooks
+        had diverted in the past and are now re-aligned again.
+      - Roles - Clean up setup files after successfull role execution.
+    fragments:
+    - mkp.yml
+    - setups.yml
+    - windows.yml
+    release_date: '2025-08-12'
