@@ -329,7 +329,6 @@ content:
 """
 
 import json
-import re
 from ast import literal_eval
 
 from ansible.module_utils.basic import AnsibleModule
