@@ -622,27 +622,12 @@ class RuleAPI(CheckmkAPI):
         value_raw = value_raw.translate(str.maketrans("()", "[]"))
 
         # As safely as possible evaluate the value_raw
-        #
-        # After Ansible marked the "safe_eval" function as deprecated, this code was taken from
-        # the original Ansible code and slightly modified.
-        # The original code was published by the Ansible Project under the Simplified BSD License:
-        # Copyright (c) 2019 Ansible Project
-        if re.search(r"\w\.\w+\(", value_raw):
-            self.module.fail_json(
-                msg="ERROR: The value_raw contains calls to python modules."
-            )
-
-        if re.search(r"import \w+", value_raw):
-            self.module.fail_json(
-                msg="ERROR: The value_raw contains a python module import."
-            )
-
         try:
             return literal_eval(value_raw)
 
         except Exception as e:
             self.module.fail_json(
-                msg="ERROR: The %s value_raw has invalid format" % state
+                msg="ERROR: The %s value_raw has invalid format: %s" % (state, e)
             )
 
     def _get_rules_in_ruleset(self, ruleset):
