@@ -4,6 +4,20 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.2.0
+======
+
+Minor Changes
+-------------
+
+- Agent role - Re-align Windows with Linux file management. The two playbooks had diverted in the past and are now re-aligned again.
+- Roles - Clean up setup files after successfull role execution.
+
+Bugfixes
+--------
+
+- Server role - Fix permissions on MKP files after transfer or download.
+
 v6.1.0
 ======
 
