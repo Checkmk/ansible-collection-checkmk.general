@@ -625,7 +625,8 @@ class RuleAPI(CheckmkAPI):
         #
         # After Ansible marked the "safe_eval" function as deprecated, this code was taken from
         # the original Ansible code and slightly modified.
-        # The original code was published by the Ansible Project under the Simplified BSD License
+        # The original code was published by the Ansible Project under the Simplified BSD License:
+        # Copyright (c) 2019 Ansible Project
         if re.search(r"\w\.\w+\(", value_raw):
             self.module.fail_json(
                 msg="ERROR: The value_raw contains calls to python modules."
