@@ -1,0 +1,2 @@
+bugfixes:
+  - Server role - Fix permissions on MKP files after transfer or download.
