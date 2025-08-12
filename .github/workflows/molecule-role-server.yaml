@@ -39,9 +39,6 @@ jobs:
 
     steps:
 
-      - name: Print Disk Usage
-        run: df -hP
-
       - name: "Free Disk Space."
         uses: jlumbroso/free-disk-space@main
         with:
@@ -74,14 +71,8 @@ jobs:
           python3 -m pip install -r requirements.txt
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: Print Disk Usage
-        run: df -hP
-
       - name: "Run Molecule."
         run: |
           cd roles/server/
           molecule test -s ${{ matrix.checkmk }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-
-      - name: Print Disk Usage
-        run: df -hP
