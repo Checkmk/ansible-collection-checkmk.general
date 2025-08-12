@@ -4,12 +4,6 @@ dependency:
 driver:
   name: podman
 platforms:
-  - name: ubuntu2004
-    image: docker.io/geerlingguy/docker-ubuntu2004-ansible
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
-    pre_build_image: true
-    privileged: true
-    systemd: always
   - name: ubuntu2204
     image: docker.io/geerlingguy/docker-ubuntu2204-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
