@@ -7,14 +7,9 @@ Checkmk and keep your daily operations smooth and efficient.
 
 ## Here be dragons!
 
-This collection is provided AS IS and we cannot guarantee proper functionality.
+This collection is provided AS IS and there is **no commercial support whatsoever.**
 
-Additionally, there is no commercial support whatsoever!
-
-This is an open source endeavour, on which we want to collaborate with the community.
-
-[![Ansible Sanity Tests](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml)
-<!-- [![Ansible Unit Tests](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-unit-tests.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-unit-tests.yaml) -->
+This is an open source endeavour, on which we collaborate with the community. All fixes and support are provided by individuals in their spare time. Please keep that in mind, when using the collection and interacting with this repository.
 
 ## Dependencies
 
@@ -37,12 +32,13 @@ For any form of support queries or requests refer to [SUPPORT.md](SUPPORT.md).
 
 You can find playbooks, demonstrating the content of this collection in the folder [playbooks/demo/](playbooks/demo/).
 
+[![Ansible Sanity Tests](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml)
 <!--start collection content-->
 ### Inventory plugins
 
 Name | Description | Tests
 --- | --- | ---
-[checkmk.general.checkmk](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/inventory/checkmk.py)|Dynamic Inventory Source for Checkmk | [![Ansible Unit Test for Inventory Module.](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml)
+[checkmk.general.checkmk](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/inventory/checkmk.py)|Dynamic Inventory Source for Checkmk. | [![Ansible Unit Test for Inventory Module.](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml)
 
 ### Lookup plugins
 Click on the lookup plugin name below, to get detailed documentation about it.
@@ -50,7 +46,7 @@ For more in-depth documentation, see [this README](https://github.com/Checkmk/an
 
 Name | Description | Tests
 --- | --- | ---
-[checkmk.general.bakery](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/bakery.py)|Look up the status pf the Checkmk agent bakery.|[![Integration Tests for bakery Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-bakery.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-bakery.yaml)
+[checkmk.general.bakery](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/bakery.py)|Look up the status of the agent bakery.|[![Integration Tests for bakery Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-bakery.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-bakery.yaml)
 [checkmk.general.folder](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/folder.py)|Look up folder attributes.|[![Integration Tests for Folder Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folder.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folder.yaml)
 [checkmk.general.folders](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/folders.py)|Look up all folders.|[![Integration Tests for Folders Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folders.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-folders.yaml)
 [checkmk.general.host](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/host.py)|Look up host attributes.|[![Integration Tests for Host Lookup Module](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-host.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-int-test-lkp-host.yaml)
@@ -102,6 +98,8 @@ Check out [COMMUNITY.md](COMMUNITY.md) for a listing of interesting projects tha
 Please refer to the [official Ansible documentation](https://docs.ansible.com/ansible/latest/collections_guide/collections_installing.html) on how to install this collection. The most basic way is this:
 
     ansible-galaxy collection install checkmk.general
+
+*Please be aware, that this command only does an initial installation. If you want to update the collection, you need to specify a specific version, or use the `--force` flag. Please refer to the aforementioned documentation for details.*
 
 ## Using this collection
 

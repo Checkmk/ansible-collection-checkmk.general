@@ -132,6 +132,13 @@
   tags:
     - cleanup
 
+- name: "Cleanup Checkmk Server Setup."
+  ansible.builtin.file:
+    path: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
+    state: absent
+  tags:
+    - download-package
+
 - name: "Flush Handlers."
   ansible.builtin.meta:
     flush_handlers

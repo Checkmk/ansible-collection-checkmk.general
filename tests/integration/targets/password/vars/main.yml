@@ -1,6 +1,6 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.2.0p44"
+  - version: "2.2.0p45"
     edition: "cre"
     site: "ancient_cre"
     port: "5022"

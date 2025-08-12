@@ -46,22 +46,13 @@ jobs:
           - stable-2.18
           - devel
         python:
-          - '3.9'
           - '3.10'
           - '3.11'
           - '3.12'
         exclude:
           # Exclude unsupported sets.
-          - ansible: stable-2.16
-            python: '3.9'
-          - ansible: stable-2.17
-            python: '3.9'
-          - ansible: stable-2.18
-            python: '3.9'
           - ansible: stable-2.18
             python: '3.10'
-          - ansible: devel
-            python: '3.9'
           - ansible: devel
             python: '3.10'
           - ansible: devel
@@ -69,7 +60,7 @@ jobs:
 
     services:
       ancient_cce:
-        image: checkmk/check-mk-cloud:2.2.0p44
+        image: checkmk/check-mk-cloud:2.2.0p45
         ports:
           - 5222:5000
         env:

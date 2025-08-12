@@ -64,9 +64,6 @@
     state: "present"
   become: false
   register: __checkmk_agent_create_result
-  failed_when: |
-    (__checkmk_agent_create_result.failed == true) and
-    ("The host is already part of the specified target folder" not in __checkmk_agent_create_result.msg)
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_add_host | bool
   notify: "Activate changes"
@@ -83,9 +80,6 @@
     state: "present"
   become: false
   register: __checkmk_agent_create_result
-  failed_when: |
-    (__checkmk_agent_create_result.failed == true) and
-    ("The host is already part of the specified target folder" not in __checkmk_agent_create_result.msg)
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_add_host | bool
   notify: "Activate changes"
@@ -247,3 +241,14 @@
   become: true
   ansible.builtin.command: cmk-agent-ctl push
   when: checkmk_agent_mode == 'push'
+
+- name: "Cleanup Checkmk Agent Setups."
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ __checkmk_agent_agent.file.cre }}"
+    - "{{ __checkmk_agent_agent.file.cee }}"
+    - "{{ __checkmk_agent_agent.file.host }}"
+  tags:
+    - download-package
