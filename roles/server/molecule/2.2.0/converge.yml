@@ -28,14 +28,9 @@
         group: root
       when: ansible_distribution == 'Ubuntu'
 
-    - name: "Fix permissions on /etc/shadow for Rocky 9."  # See https://github.com/geerlingguy/docker-rockylinux9-ansible/issues/6
-      ansible.builtin.shell:
-        cmd: |
-          echo ""
-          ls -l /etc/shadow
-          chmod 0400 /etc/shadow
-          ls -l /etc/shadow
-          echo ""
+    # See https://github.com/geerlingguy/docker-rockylinux9-ansible/issues/6
+    - name: "Fix permissions on /etc/shadow for Rocky 9."  # noqa no-changed-when
+      ansible.builtin.command: chmod 0400 /etc/shadow
       when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '9'
 
     - name: "Download MKP."
