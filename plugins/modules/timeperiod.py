@@ -204,23 +204,19 @@ class TimeperiodUpdateAPI(CheckmkAPI):
 
 class TimeperiodDeleteAPI(CheckmkAPI):
     def delete(self):
-        data = {}
 
         return self._fetch(
             endpoint="/objects/time_period/%s" % self.params.get("name"),
-            data=data,
             method="DELETE",
         )
 
 
 class TimeperiodGetAPI(CheckmkAPI):
     def get(self):
-        data = {}
 
         return self._fetch(
             code_mapping=HTTP_CODES_GET,
             endpoint="/objects/time_period/%s" % self.params.get("name"),
-            data=data,
             method="GET",
         )
 

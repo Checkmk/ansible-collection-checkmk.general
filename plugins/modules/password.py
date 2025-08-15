@@ -189,24 +189,20 @@ class PasswordsUpdateAPI(CheckmkAPI):
 
 class PasswordsDeleteAPI(CheckmkAPI):
     def delete(self):
-        data = {}
 
         return self._fetch(
             code_mapping=HTTP_CODES_DELETE,
             endpoint="/objects/password/%s" % self.params.get("name"),
-            data=data,
             method="DELETE",
         )
 
 
 class PasswordsGetAPI(CheckmkAPI):
     def get(self):
-        data = {}
 
         return self._fetch(
             code_mapping=HTTP_CODES_GET,
             endpoint="/objects/password/%s" % self.params.get("name"),
-            data=data,
             method="GET",
         )
 
