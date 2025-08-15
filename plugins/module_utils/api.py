@@ -81,7 +81,7 @@ class CheckmkAPI:
             response, info = fetch_url(
                 module=self.module,
                 url="%s/%s" % (self.url, endpoint),
-                data=self.module.jsonify(data),
+                data=None if not data else self.module.jsonify(data),
                 headers=self.headers,
                 method=method,
                 use_proxy=None,
