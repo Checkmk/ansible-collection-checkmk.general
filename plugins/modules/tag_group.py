@@ -154,12 +154,10 @@ class TaggroupAPI(CheckmkAPI):
     def __init__(self, module):
         super().__init__(module)
 
-        data = {}
         # Get current taggroup
         self.current = self._fetch(
             code_mapping=HTTP_CODES_GET,
             endpoint="/objects/host_tag_group/%s" % self.params.get("name"),
-            data=data,
             method="GET",
         )
 

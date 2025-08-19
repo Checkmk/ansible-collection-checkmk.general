@@ -189,24 +189,19 @@ class PasswordsUpdateAPI(CheckmkAPI):
 
 class PasswordsDeleteAPI(CheckmkAPI):
     def delete(self):
-        data = {}
-
         return self._fetch(
             code_mapping=HTTP_CODES_DELETE,
             endpoint="/objects/password/%s" % self.params.get("name"),
-            data=data,
             method="DELETE",
         )
 
 
 class PasswordsGetAPI(CheckmkAPI):
     def get(self):
-        data = {}
 
         return self._fetch(
             code_mapping=HTTP_CODES_GET,
             endpoint="/objects/password/%s" % self.params.get("name"),
-            data=data,
             method="GET",
         )
 
@@ -274,10 +269,15 @@ def run_module():
             time.sleep(3)
 
     if module.params.get("state") == "absent":
-        passworddelete = PasswordsDeleteAPI(module)
-        result = passworddelete.delete()
+        passwordget = PasswordsGetAPI(module)
+        result = passwordget.get()
 
-        time.sleep(3)
+        if result.http_code == 200:
+            passworddelete = PasswordsDeleteAPI(module)
+            passworddelete.headers["If-Match"] = result.etag
+            result = passworddelete.delete()
+
+            time.sleep(3)
 
     module.exit_json(**result_as_dict(result))
 
