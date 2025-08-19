@@ -1,0 +1,5 @@
+bugfixes:
+  - Rule module - The `rule` module used a function called `safe_eval` from the Ansible utils,
+    which provided a safer `eval` function especially for older Python versions. The function is deprecated,
+    as in recent Python versions (all currently supported), there is `literal_eval`,
+    which has the same security features. This function is used now.

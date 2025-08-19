@@ -1,0 +1,4 @@
+bugfixes:
+  - Password module - Ensure GET and DELETE requests are sent without an HTTP body.
+  - tag_group module - Ensure GET and DELETE requests are sent without an HTTP body.
+  - Timeperiod module - Ensure GET and DELETE requests are sent without an HTTP body.

@@ -28,6 +28,11 @@
         group: root
       when: ansible_distribution == 'Ubuntu'
 
+    # See https://github.com/geerlingguy/docker-rockylinux9-ansible/issues/6
+    - name: "Fix permissions on /etc/shadow for Rocky 9."  # noqa no-changed-when
+      ansible.builtin.command: chmod 0400 /etc/shadow
+      when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '9'
+
     - name: "Download MKP."
       ansible.builtin.get_url:
         url: https://exchange.checkmk.com/packages/sslcertificates/1570/sslcertificates-8.9.1.mkp

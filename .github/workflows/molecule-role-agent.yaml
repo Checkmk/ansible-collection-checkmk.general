@@ -28,7 +28,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     name: Checkmk ${{ matrix.checkmk }}
     strategy:
       fail-fast: false
@@ -49,15 +49,15 @@ jobs:
 
       - name: "Add swap file to avoid memory shortage."
         run: |
-          sudo fallocate -l 8G /swap
-          sudo chmod 600 /swap
-          sudo mkswap /swap
-          sudo swapon /swap
+          sudo fallocate -l 12G /mnt/swap
+          sudo chmod 600 /mnt/swap
+          sudo mkswap /mnt/swap
+          sudo swapon /mnt/swap
           free -h
           swapon --show
 
       - name: "Check out code."
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
@@ -71,12 +71,6 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-
-      - name: "Provide secrets file."
-        run: echo "${{ secrets.CHECKMK_DOWNLOAD_PW }}" > .dl-secret
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-        env:
-          CHECKMK_DOWNLOAD_PW: ${{ secrets.CHECKMK_DOWNLOAD_PW }}
 
       - name: "Run Molecule."
         run: |

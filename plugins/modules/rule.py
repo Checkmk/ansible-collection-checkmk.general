@@ -329,9 +329,9 @@ content:
 """
 
 import json
+from ast import literal_eval
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.common.validation import safe_eval
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
@@ -620,13 +620,14 @@ class RuleAPI(CheckmkAPI):
         # Once the internal handling of value_raw has improved, we will no longer need this.
         value_raw = value_raw.translate(str.maketrans("()", "[]"))
 
-        (safe_value_raw, exc) = safe_eval(value_raw, include_exceptions=True)
-        if exc is not None:
-            self.module.fail_json(
-                msg="ERROR: The %s value_raw has invalid format" % state
-            )
+        # As safely as possible evaluate the value_raw
+        try:
+            return literal_eval(value_raw)
 
-        return safe_value_raw
+        except Exception as e:
+            self.module.fail_json(
+                msg="ERROR: The %s value_raw has invalid format: %s" % (state, e)
+            )
 
     def _get_rules_in_ruleset(self, ruleset):
         result = self._fetch(
