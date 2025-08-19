@@ -1280,3 +1280,25 @@ releases:
     - setups.yml
     - windows.yml
     release_date: '2025-08-12'
+  6.2.1:
+    changes:
+      bugfixes:
+      - Password module - Ensure GET and DELETE requests are sent without an HTTP
+        body.
+      - Rule module - The `rule` module used a function called `safe_eval` from the
+        Ansible utils, which provided a safer `eval` function especially for older
+        Python versions. The function is deprecated, as in recent Python versions
+        (all currently supported), there is `literal_eval`, which has the same security
+        features. This function is used now.
+      - Server role - Checkmk edition handling was inconsistent in the site management
+        playbooks. This is fixed now, but in case you have not used the `edition:`
+        key per site as suggested in `defaults/main.yml`, you need to add it now.
+      - Timeperiod module - Ensure GET and DELETE requests are sent without an HTTP
+        body.
+      - tag_group module - Ensure GET and DELETE requests are sent without an HTTP
+        body.
+    fragments:
+    - http_body.yml
+    - rule.yml
+    - server.yml
+    release_date: '2025-08-19'
