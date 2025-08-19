@@ -1,4 +1,4 @@
-# Checkmk Ansible Collection
+# <img src="https://checkmk.com/favicon.ico" alt="drawing" height="25"/> Checkmk Ansible Collection
 
 Checkmk already provides the needed APIs to automate and configure your monitoring.
 With this project we want to augment the experience and provide easy to use
