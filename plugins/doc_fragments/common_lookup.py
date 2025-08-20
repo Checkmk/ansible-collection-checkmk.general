@@ -97,4 +97,3 @@ class ModuleDocFragment(object):
             type: bool
             default: True
     """
-
