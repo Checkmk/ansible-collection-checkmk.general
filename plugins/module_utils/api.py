@@ -48,7 +48,7 @@ class CheckmkAPI:
                     msg="`automation_user` and `automation_secret` are required for bearer authentication."
                 )
             self.headers["Authorization"] = "Bearer %s %s" % (
-                automation_user, 
+                automation_user,
                 automation_secret,
             )
 
