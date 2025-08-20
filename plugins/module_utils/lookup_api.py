@@ -86,6 +86,7 @@ class CheckMKLookupAPI:
             if parameters:
                 url = "%s?%s" % (url, urlencode(parameters))
 
+            raise ValueError("validate_certs: %s" % str(self.validate_certs))
             raw_response = open_url(
                 url, headers=self.headers, validate_certs=self.validate_certs
             )
