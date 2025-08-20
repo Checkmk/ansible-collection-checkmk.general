@@ -15,7 +15,7 @@ DOCUMENTATION = """
     description:
       - Returns the version of a Checkmk server as a string, e.g. '2.1.0p31.cre'
 
-    extends_documentation_fragment: [checkmk.general.common]
+    extends_documentation_fragment: [checkmk.general.common_lookup]
 
     notes:
       - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'.
