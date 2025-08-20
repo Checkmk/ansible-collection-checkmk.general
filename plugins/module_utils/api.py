@@ -47,8 +47,9 @@ class CheckmkAPI:
                 self.module.fail_json(
                     msg="`automation_user` and `automation_secret` are required for bearer authentication."
                 )
-            self.headers["Authorization"] = (
-                "Bearer %s %s" % (automation_user, automation_secret)
+            self.headers["Authorization"] = "Bearer %s %s" % (
+                automation_user, 
+                automation_secret,
             )
 
         elif auth_type == "basic":
