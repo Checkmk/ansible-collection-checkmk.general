@@ -51,7 +51,7 @@ class CheckMKLookupAPI:
                 raise ValueError(
                     "`automation_user` and `automation_secret` are required for bearer authentication."
                 )
-            self.headers["Authorization"] = f"Bearer {automation_user} {automation_secret}"
+            self.headers["Authorization"] = "Bearer %s %s" % (automation_user, automation_secret)
 
         # Basic Authentication
         elif automation_auth_type == "basic":
@@ -59,9 +59,9 @@ class CheckMKLookupAPI:
                 raise ValueError(
                     "`automation_user` and `automation_secret` are required for basic authentication."
                 )
-            auth_str = f"{automation_user}:{automation_secret}"
+            auth_str = "%s:%s" % (automation_user, automation_secret)
             auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
-            self.headers["Authorization"] = f"Basic {auth_b64}"
+            self.headers["Authorization"] = "Basic %s" % auth_b64
 
         # Cookie Authentication
         elif automation_auth_type == "cookie":
@@ -73,9 +73,8 @@ class CheckMKLookupAPI:
 
         else:
             raise ValueError(
-                f"Unsupported `automation_auth_type`: {automation_auth_type}"
+                "Unsupported `automation_auth_type`: %s" % automation_auth_type
             )
-
 
     def get(self, endpoint="", parameters=None):
         url = self.url + endpoint
