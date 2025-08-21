@@ -72,7 +72,7 @@ class CheckMKLookupAPI:
                 raise ValueError(
                     "`automation_auth_cookie` is required for cookie authentication."
                 )
-            self.cookies["auth_cmk"] = automation_auth_cookie
+            self.headers["Cookie"] = automation_auth_cookie
 
         else:
             raise ValueError(
