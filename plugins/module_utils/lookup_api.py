@@ -69,13 +69,13 @@ class CheckMKLookupAPI:
         # Cookie Authentication
         elif api_auth_type == "cookie":
             if not api_auth_cookie:
-                raise ValueError("`api_auth_cookie` is required for cookie authentication.")
+                raise ValueError(
+                    "`api_auth_cookie` is required for cookie authentication."
+                )
             self.headers["Cookie"] = api_auth_cookie
 
         else:
-            raise ValueError(
-                "Unsupported `api_auth_type`: %s" % api_auth_type
-            )
+            raise ValueError("Unsupported `api_auth_type`: %s" % api_auth_type)
 
     def get(self, endpoint="", parameters=None):
         url = self.url + endpoint
