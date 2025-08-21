@@ -30,7 +30,7 @@ class ModuleDocFragment(object):
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_AUTOMATION_SECRET).
             required: true
             type: str
-        automation_auth_type:
+        api_auth_type:
             description: Type of authentication to use.
             required: false
             type: str
@@ -39,7 +39,7 @@ class ModuleDocFragment(object):
                 - basic
                 - cookie
             default: bearer
-        automation_auth_cookie:
+        api_auth_cookie:
             description: Authentication cookie for the Checkmk session.
             required: false
             type: str

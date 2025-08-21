@@ -30,7 +30,7 @@ class ModuleDocFragment(object):
             ini:
                 - section: checkmk_lookup
                   key: site
-        automation_auth_type:
+        api_auth_type:
             description:
                 - The authentication type to use ('bearer', 'basic', 'cookie').
             required: False
@@ -38,11 +38,11 @@ class ModuleDocFragment(object):
                 - name: checkmk_var_automation_auth_type
                 - name: ansible_lookup_checkmk_automation_auth_type
             env:
-                - name: CHECKMK_VAR_AUTOMATION_AUTH_TYPE
-                - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_AUTH_TYPE
+                - name: CHECKMK_VAR_API_AUTH_TYPE
+                - name: ANSIBLE_LOOKUP_CHECKMK_API_AUTH_TYPE
             ini:
                 - section: checkmk_lookup
-                  key: automation_auth_type
+                  key: api_auth_type
             default: 'bearer'
         automation_user:
             description: Automation user for the REST API access.
@@ -68,15 +68,15 @@ class ModuleDocFragment(object):
             ini:
                 - section: checkmk_lookup
                   key: automation_secret
-        automation_auth_cookie:
+        api_auth_cookie:
             description:
                 - The authentication cookie value if using cookie-based authentication.
             vars:
-                - name: checkmk_var_automation_auth_cookie
-                - name: ansible_lookup_checkmk_automation_auth_cookie
+                - name: checkmk_var_api_auth_cookie
+                - name: ansible_lookup_checkmk_api_auth_cookie
             env:
-                - name: CHECKMK_VAR_AUTOMATION_AUTH_COOKIE
-                - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_AUTH_COOKIE
+                - name: CHECKMK_VAR_API_AUTH_COOKIE
+                - name: ANSIBLE_LOOKUP_CHECKMK_API_AUTH_COOKIE
             ini:
                 - section: checkmk_lookup
                   key: automation_auth_cookie

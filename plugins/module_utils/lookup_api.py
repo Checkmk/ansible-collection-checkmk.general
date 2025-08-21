@@ -30,10 +30,10 @@ class CheckMKLookupAPI:
     def __init__(
         self,
         site_url,
-        automation_auth_type="bearer",
+        api_auth_type="bearer",
         automation_user=None,
         automation_secret=None,
-        automation_auth_cookie=None,
+        api_auth_cookie=None,
         validate_certs=True,
     ):
         self.headers = {
@@ -46,7 +46,7 @@ class CheckMKLookupAPI:
         self.url = "%s/check_mk/api/1.0" % site_url
         self.validate_certs = validate_certs
         # Bearer Authentication: "Bearer USERNAME PASSWORD"
-        if automation_auth_type == "bearer":
+        if api_auth_type == "bearer":
             if not automation_user or not automation_secret:
                 raise ValueError(
                     "`automation_user` and `automation_secret` are required for bearer authentication."
@@ -57,7 +57,7 @@ class CheckMKLookupAPI:
             )
 
         # Basic Authentication
-        elif automation_auth_type == "basic":
+        elif api_auth_type == "basic":
             if not automation_user or not automation_secret:
                 raise ValueError(
                     "`automation_user` and `automation_secret` are required for basic authentication."
@@ -67,16 +67,16 @@ class CheckMKLookupAPI:
             self.headers["Authorization"] = "Basic %s" % auth_b64
 
         # Cookie Authentication
-        elif automation_auth_type == "cookie":
-            if not automation_auth_cookie:
+        elif api_auth_type == "cookie":
+            if not api_auth_cookie:
                 raise ValueError(
-                    "`automation_auth_cookie` is required for cookie authentication."
+                    "`api_auth_cookie` is required for cookie authentication."
                 )
-            self.headers["Cookie"] = automation_auth_cookie
+            self.headers["Cookie"] = api_auth_cookie
 
         else:
             raise ValueError(
-                "Unsupported `automation_auth_type`: %s" % automation_auth_type
+                "Unsupported `api_auth_type`: %s" % api_auth_type
             )
 
     def get(self, endpoint="", parameters=None):
