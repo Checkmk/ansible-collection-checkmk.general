@@ -290,7 +290,7 @@ class DCDAPI(CheckmkAPI):
         if action == "create":
             return "/domain-types/dcd/collections/all"
         elif action in ["get", "edit", "delete"]:
-            return f"/objects/dcd/{self.dcd_id}"
+            return "/objects/dcd/%s" % self.dcd_id
         else:
             exit_module(
                 self.module,
@@ -341,7 +341,7 @@ class DCDAPI(CheckmkAPI):
                 "delete": "would be deleted",
             }
             return dict(
-                msg=f"DCD configuration {action_msgs.get(action, action)}.",
+                msg="DCD configuration %s." % action_msgs.get(action, action),
                 changed=True,  # Indicate that changes would occur
                 diff=diff,
             )
