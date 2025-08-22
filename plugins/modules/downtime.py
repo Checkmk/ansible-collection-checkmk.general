@@ -32,7 +32,7 @@ options:
         default: Created by Ansible
     duration:
         description:
-            - Duration in seconds. When set, the downtime does not begin automatically at a nominated time,
+            - Duration in minutes. When set, the downtime does not begin automatically at a nominated time,
               but when a non-OK status actually appears for the host.
               Consequently, the start_time and end_time is only the time window in which the scheduled downtime can occur.
         type: int
