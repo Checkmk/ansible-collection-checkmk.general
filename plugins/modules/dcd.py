@@ -40,7 +40,7 @@ options:
             connector:
                 description: DCD Connector configuration.
                 type: dict
-                required: true
+                required: false
                 suboptions:
                     connector_type:
                         description: Type of connector (e.g., "piggyback").
@@ -464,9 +464,9 @@ def run_module():
     )
 
     required_if = [
-        ("automation_auth_type", "bearer", ["automation_user", "automation_secret"]),
-        ("automation_auth_type", "basic", ["automation_user", "automation_secret"]),
-        ("automation_auth_type", "cookie", ["api_auth_cookie"]),
+        ("api_auth_type", "bearer", ["automation_user", "automation_secret"]),
+        ("api_auth_type", "basic", ["automation_user", "automation_secret"]),
+        ("api_auth_type", "cookie", ["api_auth_cookie"]),
     ]
 
     module = AnsibleModule(
@@ -515,8 +515,6 @@ def run_module():
         exit_module(
             module, msg="Error managing the DCD configuration: %s" % e, logger=logger
         )
-
-    exit_module(module, result=result, logger=logger)
 
 
 def main():
