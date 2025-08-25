@@ -455,6 +455,7 @@ def run_module():
         if desired_state == "present":
             if dcd_api.state == "absent":
                 result = dcd_api.create()
+                exit_module(module, result=result, logger=logger)
             elif dcd_api.needs_update():
                 exit_module(
                     module,
@@ -474,6 +475,7 @@ def run_module():
         elif desired_state == "absent":
             if dcd_api.state == "present":
                 result = dcd_api.delete()
+                exit_module(module, result=result, logger=logger)
             else:
                 exit_module(
                     module,
@@ -486,7 +488,6 @@ def run_module():
             module, msg="Error managing the DCD configuration: %s" % e, logger=logger
         )
 
-    exit_module(module, result=result, logger=logger)
 
 
 def main():
