@@ -21,19 +21,20 @@
       title: "Piggyback Configuration for Boar"
       comment: "Piggyback config for Boar host"
       site: "{{ outer_item.site }}"
-      connector_type: "piggyback"
-      interval: 5
-      creation_rules:
-        - folder_path: "/"
-          delete_hosts: false
-          host_attributes:
-            tag_address_family: "no-ip"
-            tag_agent: "special-agents"
-            tag_piggyback: "piggyback"
-            tag_snmp_ds: "no-snmp"
-      discover_on_creation: true
-      restrict_source_hosts:
-        - "boar"
+      connector:
+        connector_type: "piggyback"
+        interval: 5
+        creation_rules:
+          - folder_path: "/"
+            delete_hosts: false
+            host_attributes:
+              tag_address_family: "no-ip"
+              tag_agent: "special-agents"
+              tag_piggyback: "piggyback"
+              tag_snmp_ds: "no-snmp"
+        discover_on_creation: true
+        restrict_source_hosts:
+          - "boar"
     state: "present"
   delegate_to: localhost
 
@@ -49,19 +50,20 @@
       title: "Piggyback Configuration for Boar"
       comment: "Piggyback config for Boar host"
       site: "{{ outer_item.site }}"
-      connector_type: "piggyback"
-      interval: 5
-      creation_rules:
-        - folder_path: "/"
-          delete_hosts: false
-          host_attributes:
-            tag_address_family: "no-ip"
-            tag_agent: "special-agents"
-            tag_piggyback: "piggyback"
-            tag_snmp_ds: "no-snmp"
-      discover_on_creation: true
-      restrict_source_hosts:
-        - "boar"
+      connector:
+        connector_type: "piggyback"
+        interval: 5
+        creation_rules:
+          - folder_path: "/"
+            delete_hosts: false
+            host_attributes:
+              tag_address_family: "no-ip"
+              tag_agent: "special-agents"
+              tag_piggyback: "piggyback"
+              tag_snmp_ds: "no-snmp"
+        discover_on_creation: true
+        restrict_source_hosts:
+          - "boar"
     state: "present"
   delegate_to: localhost
   register: __checkmk_var_result_dcd_create
