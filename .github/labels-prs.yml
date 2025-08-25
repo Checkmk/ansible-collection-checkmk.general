@@ -34,6 +34,11 @@ module:contact_group:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/contact_group.py'
 
+module:dcd:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/dcd.py'
+
 module:discovery:
   - any:
       - changed-files:
