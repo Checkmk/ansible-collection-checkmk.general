@@ -8,13 +8,13 @@
 env:
   NAMESPACE: checkmk
   COLLECTION_NAME: general
-  MODULE_NAME: bi_rule
+  MODULE_NAME: dcd
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Ansible Integration Tests for BI rule Module
+name: Ansible Integration Tests for DCD Module
 on:
   workflow_dispatch:
   schedule:
@@ -24,11 +24,11 @@ on:
       - main
       - devel
     paths:
-      - 'plugins/modules/bi_rule.py'
+      - 'plugins/modules/dcd.py'
   push:
     paths:
-      - 'plugins/modules/bi_rule.py'
-      - '.github/workflows/ans-int-test-bi_rule.yaml'
+      - 'plugins/modules/dcd.py'
+      - '.github/workflows/ans-int-test-dcd.yaml'
 
 jobs:
 
