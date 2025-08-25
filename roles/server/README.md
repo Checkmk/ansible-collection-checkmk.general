@@ -94,6 +94,7 @@ The TCP ports to open automatically. Adapt this to the specific requirements of 
     checkmk_server_sites:
       - name: 'mysite'
         version: "{{ checkmk_server_version }}"
+        edition: "{{ checkmk_server_edition }}"
         update_conflict_resolution: 'abort'
         state: 'started'
         admin_pw: 'mypass'
