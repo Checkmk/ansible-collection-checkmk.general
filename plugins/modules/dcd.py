@@ -354,36 +354,6 @@ class DCDAPI(CheckmkAPI):
             method=method,
         )
 
-        # if response.failed:
-        #    if response.http_code == 405:
-        #        exit_module(
-        #            self.module,
-        #            msg="Method Not Allowed: Unable to %s the DCD configuration."
-        #            % action,
-        #            failed=True,
-        #            logger=logger,
-        #        )
-        #    else:
-        #        exit_module(
-        #            self.module,
-        #            msg=response.msg,
-        #            content=response.content,
-        #            failed=True,
-        #            logger=logger,
-        #        )
-
-        # result_dict = {
-        #    "changed": response.changed,
-        #    "msg": response.msg,
-        #    "http_code": response.http_code,
-        #    "content": json.loads(response.content) if response.content else {},
-        # }
-
-        # if diff:
-        #    result_dict["diff"] = diff
-
-        # return result_dict
-
     def create(self):
         """
         Creates a new DCD configuration via the Checkmk API.
