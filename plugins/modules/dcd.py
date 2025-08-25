@@ -489,6 +489,8 @@ def run_module():
             module, msg="Error managing the DCD configuration: %s" % e, logger=logger
         )
 
+    exit_module(module, result=result, logger=logger)
+
 
 def main():
     """
