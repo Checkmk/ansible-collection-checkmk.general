@@ -1,5 +1,8 @@
 name: Python QA
 
+env:
+  UV_SYSTEM_PYTHON: 1
+
 on:
   workflow_dispatch:
   schedule:
@@ -21,9 +24,11 @@ jobs:
 
       - name: "Install uv."
         uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
 
       - name: "Install Dependencies."
-        run: uv sync
+        run: uv sync --all-extras --dev
 
       - name: "Check format."
         run: uv run black --check --diff plugins
