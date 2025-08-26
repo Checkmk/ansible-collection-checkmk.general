@@ -10,7 +10,6 @@ env:
   COLLECTION_NAME: general
   MODULE_NAME: activation
 
-# https://stackoverflow.com/questions/70928424/limit-github-action-workflow-concurrency-on-push-and-pull-request
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -58,6 +57,7 @@ jobs:
             python: '3.10'
           - ansible: devel
             python: '3.11'
+
     services:
       ancient_cre:
         image: checkmk/check-mk-raw:2.2.0p45
@@ -101,14 +101,21 @@ jobs:
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: "Install uv and set the python version."
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python }}
+          enable-cache: true
+          working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+
+      - name: "Setup uv venv."
+        run: uv venv
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Install ansible-base (${{ matrix.ansible }})
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+        run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Run integration test
-        run: ansible-test integration ${{env.MODULE_NAME}} -v --color --continue-on-error --diff --python ${{ matrix.python }}
+        run: uv run ansible-test integration ${{env.MODULE_NAME}} -v --color --continue-on-error --diff --python ${{ matrix.python }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
