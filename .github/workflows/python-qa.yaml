@@ -1,8 +1,5 @@
 name: Python QA
 
-env:
-  UV_SYSTEM_PYTHON: 1
-
 on:
   workflow_dispatch:
   schedule:
