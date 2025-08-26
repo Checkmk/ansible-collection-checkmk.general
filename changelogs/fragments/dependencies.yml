@@ -1,0 +1,4 @@
+minor_changes:
+  - The collection dependencies were updated.
+    The `ansible.windows` collection was missing and for the existing collections the minimum version was raised.
+    This should not have any effect for users, as the constraints are still rather wide.
