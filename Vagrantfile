@@ -45,6 +45,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Ubuntu
+  # If we want to move to Ubuntu 24, this could be an option: cloud-image/ubuntu-24.04
   config.vm.define "ansibuntu", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/ubuntu2204"
     srv.vm.network :private_network,
