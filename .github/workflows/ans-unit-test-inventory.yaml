@@ -31,9 +31,9 @@ jobs:
 
   units:
     runs-on: ubuntu-24.04
-    name: Units (Ⓐ${{ matrix.ansible }})
+    name: Units (Ⓐ${{ matrix.ansible }}+${{ matrix.python }})
     strategy:
-      fail-fast: true # false?
+      fail-fast: false
       matrix:
         ansible:
           - stable-2.16
@@ -51,14 +51,20 @@ jobs:
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: "Install uv and set the python version."
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.python }}
+          enable-cache: true
+
+      - name: "Create uv venv."
+        run: uv venv
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Install ansible-base (${{ matrix.ansible }})
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+        run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Run unit test
-        run: ansible-test units ${{env.TESTPATH}} -v --color --python ${{ matrix.python }} --docker default
+        run: uv run ansible-test units ${{env.TESTPATH}} -v --color --python ${{ matrix.python }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
