@@ -43,6 +43,10 @@ jobs:
         python:
           - '3.11'
           - '3.12'
+        exclude:
+          # Exclude unsupported sets.
+          - ansible: devel
+            python: '3.11'
 
     steps:
       - name: Check out code
