@@ -65,5 +65,5 @@ jobs:
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Run unit test
-        run: uv run ansible-test units ${{env.TESTPATH}} -v --color --python ${{ matrix.python }}
+        run: uv run ansible-test units ${{env.TESTPATH}} -v --color --python ${{ matrix.python }} --docker default
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
