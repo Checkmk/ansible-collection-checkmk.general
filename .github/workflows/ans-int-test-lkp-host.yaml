@@ -44,15 +44,10 @@ jobs:
           - stable-2.18
           - devel
         python:
-          - '3.10'
           - '3.11'
           - '3.12'
         exclude:
           # Exclude unsupported sets.
-          - ansible: stable-2.18
-            python: '3.10'
-          - ansible: devel
-            python: '3.10'
           - ansible: devel
             python: '3.11'
 
