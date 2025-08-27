@@ -101,6 +101,22 @@ Please refer to the [official Ansible documentation](https://docs.ansible.com/an
 
 *Please be aware, that this command only does an initial installation. If you want to update the collection, you need to specify a specific version, or use the `--force` flag. Please refer to the aforementioned documentation for details.*
 
+Depending on the user with that you install the collection it is possible that you command ansible-playbook does not find the modules of the collection.
+
+Try to list the installed collections
+
+    ansible-galaxy collection list
+
+Sometimes you need to create a file ~/.ansible.cfg with this content
+```
+[defaults]
+collections_path = ~/.ansible/collections
+```
+
+You can also verify your ansible collection location with
+
+    ansible --version
+
 ## Using this collection
 
 We encourage you - in accordance with Ansible Best Practices -
