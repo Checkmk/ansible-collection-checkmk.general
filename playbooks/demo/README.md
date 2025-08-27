@@ -5,6 +5,9 @@ These playbooks demonstrate the different modules contained in this collection.
 The naming should be rather obvious. The only *special* playbook is [full.yml](./full.yml).
 As the name suggests, it runs all the playbooks contained in this folder.
 
+## Why not FQCN in demo
+In the demo all modules of the checkmk collection are not used with the FQCNs (Fully Qualified Collection Names) because the demo should use the modules from the Git repository and not from a possible installed checkmk collection.
+
 ## Getting started
 To get started, inspect [../vars/auth.yml](../vars/auth.yml).
 You need to set up a local site, just as described, or provide the details to an existing site. Do **not** use a productive site here!
