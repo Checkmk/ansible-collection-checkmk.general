@@ -30,21 +30,27 @@ jobs:
 
     steps:
 
-      - name: "Checkout Code"
+      - name: Check out code
         uses: actions/checkout@v5
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: "Set up Python"
-        uses: actions/setup-python@v5
+      - name: "Install uv."
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.12'
+          enable-cache: true
+          working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
 
-      - name: "Install ansible-base (${{ matrix.ansible }})"
-        run: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz --disable-pip-version-check
+      - name: "Create uv venv."
+        run: uv venv
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: "Run Sanity Tests"
-        run: ansible-test sanity --docker -v --color --coverage
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: Run sanity tests
+        run: uv run ansible-test sanity --docker -v --color --coverage
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
   release:
@@ -64,15 +70,15 @@ jobs:
         id: current_version
         run: echo "version=$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
 
-      - name: "Set up Python"
-        uses: actions/setup-python@v5
+      - name: "Install uv."
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.12'
+          enable-cache: true
 
-      - name: "Install Dependencies"
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: "Install Dependencies."
+        run: uv sync
+        env:
+          UV_SYSTEM_PYTHON: 1
 
       #
       # First stage: Build and install collection to generate docs and changelogs.
@@ -88,13 +94,13 @@ jobs:
           directories: ${{env.DIRS}}
 
       - name: "Build Ansible Collection"
-        run: ansible-galaxy collection build build/src --force
+        run: uv run ansible-galaxy collection build build/src --force
 
       - name: "Install Ansible Collection"
-        run: ansible-galaxy collection install --no-deps ./${{env.NAMESPACE}}-${{env.COLLECTION_NAME}}-${{ steps.current_version.outputs.version }}.tar.gz
+        run: uv run ansible-galaxy collection install --no-deps ./${{env.NAMESPACE}}-${{env.COLLECTION_NAME}}-${{ steps.current_version.outputs.version }}.tar.gz
 
       - name: "Compile Collection Changelog"
-        run: antsibull-changelog release
+        run: uv run antsibull-changelog release
 
       # This is slightly hacky and we might need to adapt it later.
       # But for now it looks promising. See the below link for documentation:
@@ -108,7 +114,7 @@ jobs:
           } >> $GITHUB_ENV
 
       - name: "Compile Collection Docs"
-        run: antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
+        run: uv run antsibull-docs collection --use-current --squash-hierarchy --fail-on-error --dest-dir ./docs/ ${{env.NAMESPACE}}.${{env.COLLECTION_NAME}}
 
       - name: "Create Pull Request for Docs and Changelog against devel branch"
         uses: peter-evans/create-pull-request@v7
@@ -140,7 +146,7 @@ jobs:
           directories: ${{env.DIRS}}
 
       - name: "Build Ansible Collection"
-        run: ansible-galaxy collection build build/src --force
+        run: uv run ansible-galaxy collection build build/src --force
 
       - name: "Create Release and upload Assets"
         id: create-release
@@ -162,4 +168,4 @@ jobs:
             For a detailed changelog, refer to the [CHANGELOG](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/CHANGELOG.rst).
 
       - name: "Publish Ansible Collection to the Galaxy"
-        run: ansible-galaxy collection publish ${{env.NAMESPACE}}-${{env.COLLECTION_NAME}}-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
+        run: uv run ansible-galaxy collection publish ${{env.NAMESPACE}}-${{env.COLLECTION_NAME}}-${{ steps.current_version.outputs.version }}.tar.gz --api-key ${{ secrets.GALAXY_API_KEY }}
