@@ -27,7 +27,6 @@ Before you start, you need to provide connection details for a Checkmk site.
 Once your `auth.yml` file is configured, you can run the full demo playbook. The command must be run from the **root directory** of this repository.
 
 ```bash
-# Ensure you are in the root directory of the ansible-collection-checkmk.general repository
 ansible-playbook -i playbooks/hosts playbooks/demo/full.yml
 ```
 
