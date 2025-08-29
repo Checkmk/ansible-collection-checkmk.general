@@ -27,6 +27,7 @@
   when: |
     (ansible_facts.system_vendor == "Dell Inc." and 'Latitude' in ansible_facts.product_name and ansible_facts.virtualization_type == "container")
     or (ansible_facts.system_vendor == "QEMU" and 'Ubuntu' in ansible_facts.product_name and ansible_facts.virtualization_type == "container")
+
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml
   loop: "{{ checkmk_var_test_sites }}"
