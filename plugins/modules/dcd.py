@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: dcd
 short_description: Manage Dynamic Host Management.
-version_added: "6.1.0"
+version_added: "6.3.0"
 description:
   - Manage Dynamic Host Management (DCD), including creation, updating, and deletion.
 extends_documentation_fragment: [checkmk.general.common]
@@ -60,7 +60,7 @@ options:
                                 type: str
                                 required: true
                             delete_hosts:
-                                description: Whether to delete hosts that no longer match.
+                                description: Whether to delete hosts that no longer exist.
                                 type: bool
                                 default: false
                             host_attributes:
@@ -71,11 +71,11 @@ options:
                         type: bool
                         default: true
                     restrict_source_hosts:
-                        description: List of source hosts to restrict the DCD to.
+                        description: List of hosts to consider as piggyback sources for the DCD connection.
                         type: list
                         elements: str
                     no_deletion_time_after_init:
-                        description: Seconds to prevent host deletion after site startup, e.g. when booting the Checkmk server.
+                        description: Seconds to prevent host deletion after site startup.
                         type: int
                         default: 600
                     max_cache_age:
@@ -83,11 +83,11 @@ options:
                         type: int
                         default: 3600
                     validity_period:
-                        description: Seconds to continue consider outdated piggyback data as valid.
+                        description: Seconds before piggyback data is considered outdated.
                         type: int
                         default: 60
     state:
-        description: Desired state of the DCD.
+        description: Desired state of the DCD connection.
         type: str
         choices:
         - present
