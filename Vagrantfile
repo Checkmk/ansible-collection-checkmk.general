@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
 
   # Main Box
   config.vm.define "collection", primary: true do |srv|
-    srv.vm.box = "generic/debian12"
+    srv.vm.box = "generic/debian12"  # boxen/debian-13  # generic/debian12  # alvistack/debian-13
     srv.vm.network :private_network,
         :ip                         => "192.168.124.42",
         :libvirt__netmask           => "255.255.255.0",
