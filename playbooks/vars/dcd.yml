@@ -1,0 +1,20 @@
+---
+checkmk_var_dcd:
+
+  - title: "vSphere"
+    dcd_id: "vsphere"
+    comment: "Main vSphere Connector"
+    # site: "mysite"
+    connector:
+      connector_type: "piggyback"
+      interval: 5
+      creation_rules:
+        - folder_path: "/"
+          delete_hosts: false
+          host_attributes:
+            tag_address_family: "no-ip"
+            tag_agent: "special-agents"
+            tag_piggyback: "piggyback"
+            tag_snmp_ds: "no-snmp"
+      discover_on_creation: true
+      restrict_source_hosts: ""
