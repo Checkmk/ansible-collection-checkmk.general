@@ -1,0 +1,4 @@
+bugfixes:
+  - Server role - Fix edition handling for site updates.
+  - Server role - Document permission issues for MKP management, when using an unprivileged user to connect to remote host.
+    See the role README for more details.
