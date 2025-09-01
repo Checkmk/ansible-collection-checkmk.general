@@ -1,5 +1,7 @@
 ---
 - name: "Download MKP Packages."
+  become: true
+  become_user: "{{ __site.name }}"
   ansible.builtin.get_url:
     url: "{{ __mkp.url }}"
     dest: "{{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"
@@ -18,6 +20,8 @@
     - manage-mkp-packages
 
 - name: "Transfer MKP Packages."
+  become: true
+  become_user: "{{ __site.name }}"
   ansible.builtin.copy:
     src: "{{ __mkp.src }}"
     dest: "{{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"

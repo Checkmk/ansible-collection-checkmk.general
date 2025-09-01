@@ -64,7 +64,7 @@ Vagrant.configure("2") do |config|
       libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
-          inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git"
+          inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git acl"
   end
 
   # Debian
@@ -86,7 +86,7 @@ Vagrant.configure("2") do |config|
       libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
-      inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git"
+      inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git acl"
   end
 
   # CentOS Stream
