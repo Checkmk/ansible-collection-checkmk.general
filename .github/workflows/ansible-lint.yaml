@@ -18,9 +18,6 @@ on:
       - 'playbooks/**'
       - 'tests/**'
   push:
-    branches:
-      - main
-      - devel
     paths:
       - 'roles/**'
       - 'playbooks/**'
@@ -39,50 +36,52 @@ jobs:
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: "Install uv."
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.12'
+          enable-cache: true
+          working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+      - name: "Install Dependencies."
+        run: uv sync
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+        env:
+          UV_SYSTEM_PYTHON: 1
 
-      - name: Install Checkmk collection
-        run: ansible-galaxy collection install ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+      - name: "Install Checkmk Collection."
+        run: uv run ansible-galaxy collection install ./
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
 
       # Run the linting
-      - name: Run yamllint on roles
-        run: yamllint -c ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.yamllint ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles/
-        working-directory: ./ansible_collections/
+      - name: "Run yamllint on roles."
+        run:  uv run yamllint -c .yamllint ./roles/
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
 
-      - name: Run yamllint on playbooks
-        run: yamllint -c ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.yamllint ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/playbooks/
-        working-directory: ./ansible_collections/
+      - name: "Run yamllint on playbooks."
+        run:  uv run yamllint -c .yamllint ./playbooks/
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
 
-      - name: Run yamllint on tests
-        run: yamllint -c ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.yamllint ./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/
-        working-directory: ./ansible_collections/
+      - name: "Run yamllint on tests."
+        run:  uv run yamllint -c .yamllint ./tests/
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
 
-      - name: Run ansible-lint on roles
-        run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles/
-        working-directory: ./ansible_collections/
+      - name: "Run ansible-lint on roles."
+        run:  uv run ansible-lint -c .ansible-lint ./roles/
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
         env:
-          ANSIBLE_LIBRARY: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/plugins/modules"
-          ANSIBLE_ROLES_PATH: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles"
+          ANSIBLE_LIBRARY: "./plugins/modules"
+          ANSIBLE_ROLES_PATH: "./roles"
 
-      - name: Run ansible-lint on tests
-        run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/tests/
-        working-directory: ./ansible_collections/
+      - name: "Run ansible-lint on tests."
+        run:  uv run ansible-lint -c .ansible-lint ./tests/
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
         env:
-          ANSIBLE_LIBRARY: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/plugins/modules"
-          ANSIBLE_ROLES_PATH: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles"
+          ANSIBLE_LIBRARY: "./plugins/modules"
+          ANSIBLE_ROLES_PATH: "./roles"
 
-      - name: Run ansible-lint on playbooks
-        run: ansible-lint -c  ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/.ansible-lint ${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/playbooks/
-        working-directory: ./ansible_collections/
+      - name: "Run ansible-lint on playbooks."
+        run:  uv run ansible-lint -c .ansible-lint ./playbooks/
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
         env:
-          ANSIBLE_LIBRARY: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/plugins/modules"
-          ANSIBLE_ROLES_PATH: "./${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/roles"
+          ANSIBLE_LIBRARY: "./plugins/modules"
+          ANSIBLE_ROLES_PATH: "./roles"

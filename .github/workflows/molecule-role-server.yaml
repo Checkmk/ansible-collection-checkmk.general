@@ -39,12 +39,14 @@ jobs:
 
     steps:
 
-      - name: "Free Disk Space."
-        uses: jlumbroso/free-disk-space@main
-        with:
-          # this might remove tools that are actually needed,
-          # if set to "true" but frees about 6 GB
-          tool-cache: false
+      # This was necessary at some point to avoid random failure.
+      # Disabling on 20250826 to check, if it is still necessary.
+      # - name: "Free Disk Space."
+      #   uses: jlumbroso/free-disk-space@main
+      #   with:
+      #     # this might remove tools that are actually needed,
+      #     # if set to "true" but frees about 6 GB
+      #     tool-cache: false
 
       - name: "Add swap file to avoid memory shortage."
         run: |
@@ -60,19 +62,18 @@ jobs:
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
-      - name: "Set up Python."
-        uses: actions/setup-python@v5
+      - name: "Install uv."
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.12'
+          enable-cache: true
+          working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
 
-      - name: "Install dependencies."
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
+      - name: "Install Dependencies."
+        run: uv sync
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: "Run Molecule."
         run: |
           cd roles/server/
-          molecule test -s ${{ matrix.checkmk }}
+          uv run molecule test -s ${{ matrix.checkmk }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
