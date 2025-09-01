@@ -15,9 +15,14 @@ This is an open source endeavour, on which we collaborate with the community. Al
 
  - [ansible.posix](https://github.com/ansible-collections/ansible.posix)
  - [ansible.utils](https://github.com/ansible-collections/ansible.utils)
+ - [ansible.windows](https://github.com/ansible-collections/ansible.windows)
  - [community.general](https://github.com/ansible-collections/community.general)
 
 Although the Ansible project notes, that collections should have no or very little dependencies, we want to make sure the  collection works for you out-of-the-box. Currently we only depend on very basic collections, which are most likely already installed in your environment. For version constraints, see [galaxy.yml](galaxy.yml).
+
+## :wrench: Installing this collection
+
+Please refer to [INSTALL.md](INSTALL.md) for detailed installation instructions.
 
 ## :information_source: Getting help
 
@@ -92,10 +97,6 @@ Name | Description | Tests
 
 We love to see the community build things on top of this collection.
 Check out [COMMUNITY.md](COMMUNITY.md) for a listing of interesting projects that build upon this collection in some way.
-
-## :wrench: Installing this collection
-
-Please refer to [INSTALL.md](INSTALL.md) for detailed installation instructions.
 
 ## :bulb: Using this collection
 
