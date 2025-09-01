@@ -1,5 +1,5 @@
 ---
-- name: "Fail if update conflict resolution method is not given."
+- name: "{{ item.item.name }}: Fail if update conflict resolution method is not given."
   ansible.builtin.fail:
     msg: |
       variable `update_conflict_resolution` is not given. See `omd update --help` for more information.
@@ -7,10 +7,10 @@
   tags:
     - update-sites
 
-- name: "Check if desired version is installed."
+- name: "{{ item.item.name }}: Check if desired version is installed."
   ansible.builtin.shell: |
     set -o pipefail
-    omd versions | egrep -o '{{ item.item.version }}.{{ item.edition | lower }}'
+    omd versions | egrep -o '{{ item.item.version }}.{{ item.item.edition | lower }}'
   args:
     executable: /bin/bash
   register: __checkmk_server_sites_versions
@@ -18,7 +18,7 @@
   tags:
     - update-sites
 
-- name: "Fail if this is a downgrade."
+- name: "{{ item.item.name }}: Fail if this is a downgrade."
   ansible.builtin.fail:
     msg: |
       Downgrading is not allowed since checkmk_server_allow_downgrades is set to false.
@@ -29,11 +29,11 @@
   tags:
     - update-sites
 
-- name: "Short pause for patch update."
+- name: "{{ item.item.name }}: Short pause for patch update."
   ansible.builtin.pause:
     seconds: 5
     prompt: |
-      Proceeding with updating site {{ item.item.name }} from version {{ item.stdout }} to version {{ item.item.version }}.{{ item.edition | lower }}.
+      Proceeding with updating site {{ item.item.name }} from version {{ item.stdout }} to version {{ item.item.version }}.{{ item.item.edition | lower }}.
       This is a minor patch update.{% if checkmk_server_backup_on_update %} A backup will be created in {{ checkmk_server_backup_dir }}. {% endif %}
       This can take a while! The site will be down during the update
   when: |
@@ -41,12 +41,12 @@
   tags:
     - update-pause
 
-- name: "Long pause for major update."
+- name: "{{ item.item.name }}: Long pause for major update."
   ansible.builtin.pause:
     seconds: 60
     prompt: >
       Proceeding with updating site {{ item.item.name }}
-      from version {{ item.stdout }} to version {{ item.item.version }}.{{ item.edition | lower }}.\n
+      from version {{ item.stdout }} to version {{ item.item.version }}.{{ item.item.edition | lower }}.\n
       This is a major update. This can carry risks.
       {% if checkmk_server_backup_on_update %} A backup will be created in {{ checkmk_server_backup_dir }}. {% endif %}\n
       This can take a while! The site will be down during the update
@@ -55,21 +55,21 @@
   tags:
     - update-pause
 
-- name: "Create backup of site."  # noqa no-changed-when
+- name: "{{ item.item.name }}: Create Site Backup."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: |
-    omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-{{ item.item.version }}.{{ item.edition | lower }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
+    omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-{{ item.item.version }}.{{ item.item.edition | lower }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
   args:
     executable: /bin/bash
   when: checkmk_server_backup_on_update
   tags:
     - update-sites
 
-- name: "Update Site."
+- name: "{{ item.item.name }}: Update Site."
   become: true
   ansible.builtin.shell: |
     omd stop {{ item.item.name }}
-    omd -f -V {{ item.item.version }}.{{ item.edition | lower }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
+    omd -f -V {{ item.item.version }}.{{ item.item.edition | lower }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
   args:
     executable: /bin/bash
   register: __checkmk_server_sites_updated

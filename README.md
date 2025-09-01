@@ -95,11 +95,7 @@ Check out [COMMUNITY.md](COMMUNITY.md) for a listing of interesting projects tha
 
 ## Installing this collection
 
-Please refer to the [official Ansible documentation](https://docs.ansible.com/ansible/latest/collections_guide/collections_installing.html) on how to install this collection. The most basic way is this:
-
-    ansible-galaxy collection install checkmk.general
-
-*Please be aware, that this command only does an initial installation. If you want to update the collection, you need to specify a specific version, or use the `--force` flag. Please refer to the aforementioned documentation for details.*
+Please refer to [INSTALL.md](INSTALL.md) for detailed installation instructions.
 
 ## Using this collection
 

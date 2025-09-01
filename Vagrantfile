@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
 
   # Main Box
   config.vm.define "collection", primary: true do |srv|
-    srv.vm.box = "generic/debian12"
+    srv.vm.box = "generic/debian12"  # boxen/debian-13  # generic/debian12  # alvistack/debian-13
     srv.vm.network :private_network,
         :ip                         => "192.168.124.42",
         :libvirt__netmask           => "255.255.255.0",
@@ -45,6 +45,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Ubuntu
+  # If we want to move to Ubuntu 24, this could be an option: cloud-image/ubuntu-24.04
   config.vm.define "ansibuntu", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/ubuntu2204"
     srv.vm.network :private_network,
@@ -63,7 +64,7 @@ Vagrant.configure("2") do |config|
       libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
-          inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git"
+          inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git acl"
   end
 
   # Debian
@@ -85,7 +86,7 @@ Vagrant.configure("2") do |config|
       libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
-      inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git"
+      inline: "apt-get -y update --quiet && apt-get -y install vim htop curl wget git acl"
   end
 
   # CentOS Stream

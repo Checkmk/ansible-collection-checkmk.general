@@ -6,7 +6,7 @@ on:
     - cron: '0 3 * * *'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rules.yaml'
+      - '.github/workflows/python-qa.yaml'
       - '**.py'
   pull_request:
     paths:
@@ -16,17 +16,21 @@ jobs:
     name: Run QA
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v5
+      - name: "Check out code."
+        uses: actions/checkout@v5
+
+      - name: "Install uv."
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.12'
-          cache: pip
-          cache-dependency-path: qa-requirements.txt
-      - name: Install linters
-        run: python -m pip install -r qa-requirements.txt
-      - name: Check format
-        run: black --check --diff plugins
+          enable-cache: true
+
+      - name: "Install Dependencies."
+        run: uv sync --all-extras --dev
+
+      - name: "Check format."
+        run: uv run black --check --diff plugins
         if: always()
-      - name: Check imports
-        run: isort --check --diff plugins
+
+      - name: "Check imports."
+        run: uv run isort --check --diff plugins
         if: always()

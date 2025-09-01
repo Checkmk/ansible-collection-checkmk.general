@@ -27,7 +27,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ### Basic Configuration
 
-    checkmk_server_version: "2.4.0p9"
+    checkmk_server_version: "2.4.0p10"
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.
@@ -94,6 +94,7 @@ The TCP ports to open automatically. Adapt this to the specific requirements of 
     checkmk_server_sites:
       - name: 'mysite'
         version: "{{ checkmk_server_version }}"
+        edition: "{{ checkmk_server_edition }}"
         update_conflict_resolution: 'abort'
         state: 'started'
         admin_pw: 'mypass'
@@ -124,12 +125,16 @@ Valid values for `state` are:
 If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
 Valid choices include `install`, `keepold` and `abort`.
 
+#### Site Configuration
 Site configuration can be passed with the `omd_config` keyword.
 The format can be seen above, for a list of variables run `omd show`
 on an existing site.
 **Pay special attention to the `omd_auto_restart` variable!** As site configuration needs the site to be stopped, this needs to be handled. By default the variable is set to `false` to avoid unexpected restarting. However, no configuration will be performed if the site is started.
 
-Extension packages can also be listed to be installed on the specific central site. Remote sites will get extension packages replicated upon change activation. A source path can be set on the Ansible controller. Alternatively a URL can be specified to download the mkp package from directly. These options are mutually exclusive.
+#### MKP Management
+Extension packages can also be listed to be installed on the specific central site. Remote sites will get extension packages replicated upon change activation. A source path can be set on the Ansible controller. Alternatively a URL can be specified to download the MKP package from directly. These options are mutually exclusive.
+
+**Attention!** If you are connecting to the remote host via an unprivileged user, you will run into permission issues explained [here](https://docs.ansible.com/ansible-core/2.18/playbook_guide/playbooks_privilege_escalation.html#risks-of-becoming-an-unprivileged-user). The easiest fix will probably be to install your distribution's `acl` package. But the right solution for your environment is entirely up to you.
 
 ### Site Updates
 

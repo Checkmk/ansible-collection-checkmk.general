@@ -47,10 +47,10 @@ help:
 
 build:
 	@echo "Building Collection from current working directory. This can take a while."
-	@LC_ALL=C.UTF-8 uv run ansible-galaxy collection build --force ./
+	@uv run ansible-galaxy collection build --force ./
 
 install:
-	@LC_ALL=C.UTF-8 uv run ansible-galaxy collection install -f ./checkmk-general-$(VERSION).tar.gz
+	@uv run ansible-galaxy collection install -f ./checkmk-general-$(VERSION).tar.gz
 
 release: version
 	# gh workflow run release.yaml --ref main  # https://cli.github.com/manual/gh_workflow_run
@@ -134,26 +134,28 @@ tests: tests-linting tests-sanity tests-integration
 
 tests-linting: vm
 	@vagrant ssh collection -c "\
+	export LC_ALL=C.UTF-8 && \
 	cd $(COLLECTION_ROOT) && \
-	LC_ALL=C.UTF-8 uv run ansible-galaxy collection install ./ && \
-	LC_ALL=C.UTF-8 uv run yamllint -c .yamllint ./roles/ && \
-	LC_ALL=C.UTF-8 uv run yamllint -c .yamllint ./tests/ && \
-	LC_ALL=C.UTF-8 uv run yamllint -c .yamllint ./playbooks/ && \
-	LC_ALL=C.UTF-8 uv run ansible-lint -c .ansible-lint ./roles/ && \
-	LC_ALL=C.UTF-8 uv run ansible-lint -c .ansible-lint ./tests/ && \
-	LC_ALL=C.UTF-8 uv run ansible-lint -c .ansible-lint ./playbooks/"
+	uv run ansible-galaxy collection install ./ && \
+	uv run yamllint -c .yamllint ./roles/ && \
+	uv run yamllint -c .yamllint ./tests/ && \
+	uv run yamllint -c .yamllint ./playbooks/ && \
+	uv run ansible-lint -c .ansible-lint ./roles/ && \
+	uv run ansible-lint -c .ansible-lint ./tests/ && \
+	uv run ansible-lint -c .ansible-lint ./playbooks/"
 
 tests-sanity: vm
 	@vagrant ssh collection -c "\
+	export LC_ALL=C.UTF-8 && \
 	cd $(COLLECTION_ROOT) && \
-	LC_ALL=C.UTF-8 uv run ansible-test sanity --docker"
+	uv run ansible-test sanity --docker"
 
 tests-units: vm
 	@vagrant ssh collection -c "\
 	cd $(COLLECTION_ROOT) && \
-	LC_ALL=C.UTF-8 uv run ansible-test units --docker"
+	uv run ansible-test units --docker"
 
 tests-integration: vm
 	@vagrant ssh collection -c "\
 	cd $(COLLECTION_ROOT) && \
-	LC_ALL=C.UTF-8 uv run ansible-test integration --docker"
+	uv run ansible-test integration --docker"

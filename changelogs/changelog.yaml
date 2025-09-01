@@ -976,7 +976,7 @@ releases:
         and __mkp.enabled but in README.md and defaults.yml the usage examples set
         them as string. Changed README.md but also added "| bool" to force boolean
         even if string is defined.
-      - Server role - The MKP management failed when try to install a mkp packages
+      - Server role - The MKP management failed when try to install a MKP package
         that already exists in the server. Added a conditional to validate stderr
         and don't fail if "exists on the site" is found.
       - Server role - The MKP management was using 'omd su site -c' to execute commands

@@ -16,7 +16,7 @@
   tags:
     - create-sites
 
-- name: "Get site version."
+- name: "Get Site Versions."
   become: true
   ansible.builtin.shell: |
     set -o pipefail
@@ -33,7 +33,7 @@
   tags:
     - update-sites
 
-- name: "Include update site tasks."  # noqa no-handler
+- name: "Include Site Update Management."  # noqa no-handler
   ansible.builtin.include_tasks: update-site.yml
   loop: "{{ __checkmk_server_sites_versions.results }}"
   loop_control:
@@ -136,7 +136,7 @@
   tags:
     - destroy-sites
 
-- name: "Include site configuration tasks."
+- name: "Include Site Configuration Management."
   ansible.builtin.include_tasks: configure-site.yml
   loop: "{{ checkmk_server_sites }}"
   loop_control:
@@ -149,7 +149,7 @@
   tags:
     - configure-sites
 
-- name: "Include MKP management tasks."
+- name: "Include MKP Management."
   ansible.builtin.include_tasks: mkp.yml
   loop: "{{ checkmk_server_sites }}"
   loop_control:

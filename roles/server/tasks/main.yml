@@ -15,7 +15,7 @@
   tags:
     - always
 
-- name: "Include OS Family specific Variables."
+- name: "{{ ansible_system }}: Include OS Family specific Variables."
   ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - include-os-family-vars
@@ -32,7 +32,7 @@
 - name: "{{ ansible_system }}: Populate service facts."
   ansible.builtin.service_facts:
 
-- name: "Update APT Cache."
+- name: "{{ ansible_os_family }} Derivatives: Update APT Cache."
   become: true
   ansible.builtin.package:
     update_cache: true
@@ -41,7 +41,7 @@
     - install-package
     - install-prerequisites
 
-- name: "Install Checkmk Prerequisites."
+- name: "{{ ansible_system }}: Install Checkmk Prerequisites."
   become: true
   ansible.builtin.package:
     name: "{{ item }}"
@@ -52,11 +52,11 @@
     - install-package
     - install-prerequisites
 
-- name: "Downloads Management."
+- name: "{{ ansible_system }}: Downloads Management."
   when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
   block:
 
-    - name: "Download Checkmk Server Setup."
+    - name: "{{ ansible_system }}: Download Checkmk Server Setup."
       ansible.builtin.get_url:
         url: "{{ checkmk_server_download_url }}"
         dest: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
@@ -67,7 +67,7 @@
       tags:
         - download-package
 
-    - name: "Download Checkmk GPG Key."
+    - name: "{{ ansible_system }}: Download Checkmk GPG Key."
       ansible.builtin.get_url:
         url: "{{ checkmk_server_gpg_download_url }}"
         dest: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
@@ -79,7 +79,7 @@
       tags:
         - download-gpg-key
 
-    - name: "GPG Verification on Debian Derivatives."
+    - name: "{{ ansible_system }}: GPG Verification on Debian Derivatives."
       when: checkmk_server_verify_setup | bool and ansible_os_family == "Debian"
       block:
         - name: "Import Checkmk GPG Key."
@@ -90,7 +90,7 @@
           tags:
             - import-gpg-key
 
-        - name: "Verify Checkmk Setup."
+        - name: "{{ ansible_system }}: Verify Checkmk Setup."
           ansible.builtin.command: gpg --verify "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
           register: __checkmk_server_verify_state
           changed_when: false
@@ -99,7 +99,7 @@
             - download-package
             - install-package
 
-    - name: "Import Checkmk GPG Key."
+    - name: "{{ ansible_system }}: Import Checkmk GPG Key."
       become: true
       ansible.builtin.rpm_key:
         key: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
@@ -108,18 +108,18 @@
       tags:
         - import-gpg-key
 
-- name: Include OS Family specific Playbook.
+- name: "{{ ansible_system }}: Include OS Family specific Playbook."
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
   tags:
     - always
 
-- name: Include Site Management Playbook.
+- name: "{{ ansible_system }}: Include Site Management Playbook."
   ansible.builtin.include_tasks: "sites.yml"
   when: checkmk_server_sites is defined
   tags:
     - always
 
-- name: "Cleanup unused Checkmk Versions."
+- name: "{{ ansible_system }}: Cleanup unused Checkmk Versions."
   become: true
   ansible.builtin.shell: |
     set -o pipefail
@@ -132,7 +132,7 @@
   tags:
     - cleanup
 
-- name: "Cleanup Checkmk Server Setup."
+- name: "{{ ansible_system }}: Cleanup Checkmk Server Setup."
   ansible.builtin.file:
     path: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
     state: absent

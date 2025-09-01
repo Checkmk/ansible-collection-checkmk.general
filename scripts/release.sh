@@ -68,6 +68,8 @@ find "${collection_dir}/roles/" -type f -name all.yml -exec sed -i "s/2.2.0.*/${
 # Roles:
 find "${collection_dir}/roles/" -type f \( -name "main.yml" -o -name "argument_specs.yml" \) -exec sed -i "s/2.4.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated default Checkmk version for roles to ${checkmk_stable}."
 find "${collection_dir}/roles/" -type f -name README.md -exec sed -i "s/2.4.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated default Checkmk version in roles README to ${checkmk_stable}."
+# Playbooks:
+sed -i "s/2.4.0.*/${checkmk_stable}\"/g" "${collection_dir}/playbooks/vars/auth.yml" && echo "Updated default Checkmk version for playbooks to ${checkmk_stable}."
 # Support Matrix
 grep "${target_version}" "${collection_dir}/SUPPORT.md" > /dev/null || echo "${target_version} | ${checkmk_ancient}, ${checkmk_oldstable}, ${checkmk_stable} | 2.16, 2.17, 2.18 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
 # pyproject.toml
