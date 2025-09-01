@@ -10,7 +10,7 @@
 - name: "Check if desired version is installed."
   ansible.builtin.shell: |
     set -o pipefail
-    omd versions | egrep -o '{{ item.item.version }}.{{ item.edition | lower }}'
+    omd versions | egrep -o '{{ item.item.version }}.{{ item.item.edition | lower }}'
   args:
     executable: /bin/bash
   register: __checkmk_server_sites_versions
@@ -33,7 +33,7 @@
   ansible.builtin.pause:
     seconds: 5
     prompt: |
-      Proceeding with updating site {{ item.item.name }} from version {{ item.stdout }} to version {{ item.item.version }}.{{ item.edition | lower }}.
+      Proceeding with updating site {{ item.item.name }} from version {{ item.stdout }} to version {{ item.item.version }}.{{ item.item.edition | lower }}.
       This is a minor patch update.{% if checkmk_server_backup_on_update %} A backup will be created in {{ checkmk_server_backup_dir }}. {% endif %}
       This can take a while! The site will be down during the update
   when: |
@@ -46,7 +46,7 @@
     seconds: 60
     prompt: >
       Proceeding with updating site {{ item.item.name }}
-      from version {{ item.stdout }} to version {{ item.item.version }}.{{ item.edition | lower }}.\n
+      from version {{ item.stdout }} to version {{ item.item.version }}.{{ item.item.edition | lower }}.\n
       This is a major update. This can carry risks.
       {% if checkmk_server_backup_on_update %} A backup will be created in {{ checkmk_server_backup_dir }}. {% endif %}\n
       This can take a while! The site will be down during the update
@@ -58,7 +58,7 @@
 - name: "Create backup of site."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: |
-    omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-{{ item.item.version }}.{{ item.edition | lower }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
+    omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-{{ item.item.version }}.{{ item.item.edition | lower }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
   args:
     executable: /bin/bash
   when: checkmk_server_backup_on_update
@@ -69,7 +69,7 @@
   become: true
   ansible.builtin.shell: |
     omd stop {{ item.item.name }}
-    omd -f -V {{ item.item.version }}.{{ item.edition | lower }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
+    omd -f -V {{ item.item.version }}.{{ item.item.edition | lower }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
   args:
     executable: /bin/bash
   register: __checkmk_server_sites_updated
