@@ -1,5 +1,5 @@
 ---
-- name: "Stop Site."
+- name: "{{ outer_item.name }}: Stop Site."
   become: true
   ansible.builtin.shell: |
     set -o pipefail
@@ -11,7 +11,7 @@
   tags:
     - configure-sites
 
-- name: "Configure Site '{{ outer_item.name }}'."  # noqa no-changed-when
+- name: "{{ outer_item.name }}: Configure Site '{{ outer_item.name }}'."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: |
     set -o pipefail
@@ -23,7 +23,7 @@
   tags:
     - configure-sites
 
-- name: "Start Site."
+- name: "{{ outer_item.name }}: Start Site."
   become: true
   ansible.builtin.shell: |
     set -o pipefail

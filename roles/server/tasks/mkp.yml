@@ -1,5 +1,5 @@
 ---
-- name: "Download MKP Packages."
+- name: "{{ __site.name }}: Download MKP Packages."
   become: true
   ansible.builtin.get_url:
     url: "{{ __mkp.url }}"
@@ -18,7 +18,7 @@
   tags:
     - manage-mkp-packages
 
-- name: "Transfer MKP Packages."
+- name: "{{ __site.name }}: Transfer MKP Packages."
   become: true
   ansible.builtin.copy:
     src: "{{ __mkp.src }}"
@@ -33,7 +33,7 @@
   tags:
     - manage-mkp-packages
 
-- name: "Install MKP packages."
+- name: "{{ __site.name }}: Install MKP packages."
   become: true
   become_user: "{{ __site.name }}"
   ansible.builtin.command: "/bin/bash -l -c 'mkp add {{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp'"
@@ -47,7 +47,7 @@
   tags:
     - manage-mkp-packages
 
-- name: "Enable MKP packages."
+- name: "{{ __site.name }}: Enable MKP packages."
   become: true
   become_user: "{{ __site.name }}"
   ansible.builtin.command: "/bin/bash -l -c 'mkp enable {{ __mkp.name }} {{ __mkp.version }}'"
@@ -60,7 +60,7 @@
   tags:
     - manage-mkp-packages
 
-- name: "Disable MKP packages."
+- name: "{{ __site.name }}: Disable MKP packages."
   become: true
   become_user: "{{ __site.name }}"
   ansible.builtin.command: "/bin/bash -l -c 'mkp disable {{ __mkp.name }} {{ __mkp.version }}'"
@@ -73,7 +73,7 @@
   tags:
     - manage-mkp-packages
 
-- name: "Remove MKP packages."
+- name: "{{ __site.name }}: Remove MKP packages."
   become: true
   become_user: "{{ __site.name }}"
   ansible.builtin.command: "/bin/bash -l -c 'mkp remove {{ __mkp.name }} {{ __mkp.version }}'"
@@ -86,7 +86,7 @@
   tags:
     - manage-mkp-packages
 
-- name: "Cleanup MKP Packages."
+- name: "{{ __site.name }}: Cleanup MKP Packages."
   become: true
   ansible.builtin.file:
     path: "{{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp"

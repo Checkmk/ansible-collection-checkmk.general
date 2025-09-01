@@ -1,10 +1,10 @@
 ---
-- name: "Enable repositories on CentOS & RHEL 8."
+- name: "{{ ansible_os_family }} Derivatives: Enable repositories on CentOS & RHEL 8."
   when: |
     (ansible_facts.distribution == "RedHat" or ansible_facts.distribution == "CentOS" or ansible_facts.distribution == "OracleLinux")
     and ansible_facts.distribution_major_version == "8"
   block:
-    - name: "Download EPEL GPG Key on CentOS & RHEL 8."
+    - name: "{{ ansible_os_family }} Derivatives: Download EPEL GPG Key on CentOS & RHEL 8."
       ansible.builtin.get_url:
         url: "{{ __checkmk_server_epel_gpg_key }}"
         dest: "{{ __checkmk_server_tmp_dir }}/EPEL-pubkey.gpg"
@@ -14,7 +14,7 @@
         - download-gpg-key
         - enable-repos
 
-    - name: "Import Checkmk GPG Key on RHEL 8."
+    - name: "{{ ansible_os_family }} Derivatives: Import Checkmk GPG Key on RHEL 8."
       become: true
       ansible.builtin.rpm_key:
         key: "{{ __checkmk_server_tmp_dir }}/EPEL-pubkey.gpg"
@@ -24,7 +24,7 @@
         - import-gpg-key
         - enable-repos
 
-    - name: "Install epel-release from URL on CentOS & RHEL 8."
+    - name: "{{ ansible_os_family }} Derivatives: Install epel-release from URL on CentOS & RHEL 8."
       become: true
       ansible.builtin.package:
         name: "{{ __checkmk_server_epel_url }}"
@@ -33,7 +33,7 @@
       tags:
         - enable-repos
 
-- name: "Enable CodeReady Linux Builder repo on RHEL 8."
+- name: "{{ ansible_os_family }} Derivatives: Enable CodeReady Linux Builder repo on RHEL 8."
   become: true
   community.general.rhsm_repository:
     name: "codeready-builder-for-rhel-{{ ansible_facts.distribution_major_version }}-x86_64-rpms"
@@ -44,7 +44,7 @@
     ansible_facts.distribution == "RedHat"
     and ansible_facts.distribution_major_version == "8"
 
-- name: "Enable powertools repository on CentOS 8."  # noqa no-changed-when
+- name: "{{ ansible_os_family }} Derivatives: Enable powertools repository on CentOS 8."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: dnf config-manager --set-enabled powertools  # noqa command-instead-of-shell
   when: | # RHEL needs epel and a package URL
@@ -53,7 +53,7 @@
   tags:
     - enable-repos
 
-- name: "Enable codeready builder repository on OracleLinux 8."  # noqa no-changed-when
+- name: "{{ ansible_os_family }} Derivatives: Enable codeready builder repository on OracleLinux 8."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: dnf config-manager --set-enabled ol8_codeready_builder  # noqa command-instead-of-shell
   when: | # RHEL needs epel and a package URL
@@ -62,7 +62,7 @@
   tags:
     - enable-repos
 
-- name: "Enable powertools repository on RHEL 7."
+- name: "{{ ansible_os_family }} Derivatives: Enable powertools repository on RHEL 7."
   become: true
   community.general.rhsm_repository:
     name: "{{ item }}"
@@ -76,7 +76,7 @@
   tags:
     - enable-repos
 
-- name: "Install Checkmk Server."
+- name: "{{ ansible_os_family }} Derivatives: Install Checkmk Server."
   when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
   become: true
   ansible.builtin.package:
@@ -87,7 +87,7 @@
   tags:
     - install-package
 
-- name: "Enable httpd can network connect selinux boolean."
+- name: "{{ ansible_os_family }} Derivatives: Enable httpd can network connect selinux boolean."
   become: true
   ansible.posix.seboolean:
     name: httpd_can_network_connect

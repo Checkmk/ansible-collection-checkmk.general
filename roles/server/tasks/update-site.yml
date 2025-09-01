@@ -1,5 +1,5 @@
 ---
-- name: "Fail if update conflict resolution method is not given."
+- name: "{{ item.item.name }}: Fail if update conflict resolution method is not given."
   ansible.builtin.fail:
     msg: |
       variable `update_conflict_resolution` is not given. See `omd update --help` for more information.
@@ -7,7 +7,7 @@
   tags:
     - update-sites
 
-- name: "Check if desired version is installed."
+- name: "{{ item.item.name }}: Check if desired version is installed."
   ansible.builtin.shell: |
     set -o pipefail
     omd versions | egrep -o '{{ item.item.version }}.{{ item.item.edition | lower }}'
@@ -18,7 +18,7 @@
   tags:
     - update-sites
 
-- name: "Fail if this is a downgrade."
+- name: "{{ item.item.name }}: Fail if this is a downgrade."
   ansible.builtin.fail:
     msg: |
       Downgrading is not allowed since checkmk_server_allow_downgrades is set to false.
@@ -29,7 +29,7 @@
   tags:
     - update-sites
 
-- name: "Short pause for patch update."
+- name: "{{ item.item.name }}: Short pause for patch update."
   ansible.builtin.pause:
     seconds: 5
     prompt: |
@@ -41,7 +41,7 @@
   tags:
     - update-pause
 
-- name: "Long pause for major update."
+- name: "{{ item.item.name }}: Long pause for major update."
   ansible.builtin.pause:
     seconds: 60
     prompt: >
@@ -55,7 +55,7 @@
   tags:
     - update-pause
 
-- name: "Create backup of site."  # noqa no-changed-when
+- name: "{{ item.item.name }}: Create Site Backup."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: |
     omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-{{ item.item.version }}.{{ item.item.edition | lower }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
@@ -65,7 +65,7 @@
   tags:
     - update-sites
 
-- name: "Update Site."
+- name: "{{ item.item.name }}: Update Site."
   become: true
   ansible.builtin.shell: |
     omd stop {{ item.item.name }}

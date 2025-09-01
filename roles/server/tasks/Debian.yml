@@ -1,5 +1,5 @@
 ---
-- name: "Install Checkmk Server."
+- name: "{{ ansible_os_family }} Derivatives: Install Checkmk Server."
   when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
   become: true
   ansible.builtin.package:
