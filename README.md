@@ -11,6 +11,34 @@ This collection is provided AS IS and there is **no commercial support whatsoeve
 
 This is an open source endeavour, on which we collaborate with the community. All fixes and support are provided by individuals in their spare time. Please keep that in mind, when using the collection and interacting with this repository.
 
+## :wrench: Installing this collection
+
+Please refer to [INSTALL.md](INSTALL.md) for detailed installation instructions.
+
+## :construction_worker: Using this collection
+
+We encourage you - in accordance with Ansible Best Practices -
+to always use FQCNs (Fully Qualified Collection Names) as seen below.
+This ensures, that you always know, which module is at play.
+
+Please keep in mind the parameters `server_url` and `site` are concatenated to form the base URL of the Checkmk site.
+
+```yaml
+---
+- hosts: all
+
+  tasks:
+    - name: "Run activation."
+      checkmk.general.activation:
+        server_url: "http://myserver/"
+        site: "mysite"
+        automation_user: "myuser"
+        automation_secret: "mysecret"
+        force_foreign_changes: 'true'
+        sites:
+          - "mysite"
+```
+
 ## :electric_plug: Dependencies
 
  - [ansible.posix](https://github.com/ansible-collections/ansible.posix)
@@ -20,11 +48,7 @@ This is an open source endeavour, on which we collaborate with the community. Al
 
 Although the Ansible project notes, that collections should have no or very little dependencies, we want to make sure the  collection works for you out-of-the-box. Currently we only depend on very basic collections, which are most likely already installed in your environment. For version constraints, see [galaxy.yml](galaxy.yml).
 
-## :wrench: Installing this collection
-
-Please refer to [INSTALL.md](INSTALL.md) for detailed installation instructions.
-
-## :information_source: Getting help
+## :bulb: Getting help
 
 For documentation on the [included modules](#modules), head over to [the Galaxy](https://galaxy.ansible.com/ui/repo/published/checkmk/general/docs/),
 or run the following command substituting the `$MODULE_NAME`:
@@ -38,7 +62,7 @@ For any form of support queries or requests refer to [SUPPORT.md](SUPPORT.md).
 You can find playbooks, demonstrating the content of this collection in the folder [playbooks/demo/](playbooks/demo/).
 
 [![Ansible Sanity Tests](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml)
-<!--start collection content-->
+
 ### :inbox_tray: Inventory plugins
 
 Name | Description | Tests
@@ -91,36 +115,11 @@ Name | Description | Tests
 --- | --- | ---
 [checkmk.general.agent](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/roles/agent/README.md)|Installs Checkmk agents.| [![Molecule Tests for Agent Role](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-agent.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-agent.yaml)
 [checkmk.general.server](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/roles/server/README.md)|Installs Checkmk servers and manages Checkmk sites.|[![Molecule Tests for Server Role](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-server.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/molecule-role-server.yaml)
-<!--end collection content-->
 
 ## :heavy_plus_sign: Additional content
 
 We love to see the community build things on top of this collection.
 Check out [COMMUNITY.md](COMMUNITY.md) for a listing of interesting projects that build upon this collection in some way.
-
-## :bulb: Using this collection
-
-We encourage you - in accordance with Ansible Best Practices -
-to always use FQCNs (Fully Qualified Collection Names) as seen below.
-This ensures, that you always know, which module is at play.
-
-Please keep in mind the parameters `server_url` and `site` are concatenated to form the base URL of the Checkmk site.
-
-```yaml
----
-- hosts: all
-
-  tasks:
-    - name: "Run activation."
-      checkmk.general.activation:
-        server_url: "http://myserver/"
-        site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
-        force_foreign_changes: 'true'
-        sites:
-          - "mysite"
-```
 
 ## :green_heart: Getting Involved
 
@@ -141,7 +140,6 @@ This collection uses [Semantic Versioning](https://semver.org/) for releases. Fr
       PATCH version when you make backward compatible bug fixes
 
 ## :truck: Roadmap
-<!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
 This is merely a collection of possible additions to the collection.
 Please do **not** consider it a concrete planning document!
 
@@ -158,14 +156,14 @@ Please do **not** consider it a concrete planning document!
     - Notification Rules
 - OMD Module
 
-## More information about Ansible
+## :information_source: More information about Ansible
 
 - [Ansible Collection overview](https://github.com/ansible-collections/overview)
 - [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
 - [Ansible Developer guide](https://docs.ansible.com/ansible/latest/dev_guide/index.html)
 - [Ansible Community code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
 
-## More information about Checkmk
+## :information_source: More information about Checkmk
 
 * [Checkmk Website](https://checkmk.com)
 * [Checkmk Documentation](https://docs.checkmk.com/)
