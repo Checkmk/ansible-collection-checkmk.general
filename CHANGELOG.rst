@@ -4,6 +4,25 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.2.2
+======
+
+Release Summary
+---------------
+
+Bugfix release.
+
+Minor Changes
+-------------
+
+- The collection dependencies were updated. The `ansible.windows` collection was missing and for the existing collections the minimum version was raised. This should not have any effect for users, as the constraints are still rather wide.
+
+Bugfixes
+--------
+
+- Server role - Document permission issues for MKP management, when using an unprivileged user to connect to remote host. See the role README for more details.
+- Server role - Fix edition handling for site updates.
+
 v6.2.1
 ======
 
@@ -129,7 +148,7 @@ Bugfixes
 --------
 
 - Server role - The MKP management expects a boolean value for __mkp.installed and __mkp.enabled but in README.md and defaults.yml the usage examples set them as string. Changed README.md but also added "| bool" to force boolean even if string is defined.
-- Server role - The MKP management failed when try to install a mkp packages that already exists in the server. Added a conditional to validate stderr and don't fail if "exists on the site" is found.
+- Server role - The MKP management failed when try to install a MKP package that already exists in the server. Added a conditional to validate stderr and don't fail if "exists on the site" is found.
 - Server role - The MKP management was using 'omd su site -c' to execute commands as site user but it does not work in all flavors/versions so changed to become_user instead.
 
 v5.9.0

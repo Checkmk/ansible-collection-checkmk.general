@@ -1302,3 +1302,21 @@ releases:
     - rule.yml
     - server.yml
     release_date: '2025-08-19'
+  6.2.2:
+    changes:
+      bugfixes:
+      - Server role - Document permission issues for MKP management, when using an
+        unprivileged user to connect to remote host. See the role README for more
+        details.
+      - Server role - Fix edition handling for site updates.
+      minor_changes:
+      - The collection dependencies were updated. The `ansible.windows` collection
+        was missing and for the existing collections the minimum version was raised.
+        This should not have any effect for users, as the constraints are still rather
+        wide.
+      release_summary: Bugfix release.
+    fragments:
+    - bugfixes.yml
+    - dependencies.yml
+    - release_summary.yml
+    release_date: '2025-09-01'
