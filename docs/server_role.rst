@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.21.0
+  :antsibull-docs: 2.16.3
 
 .. Anchors
 
@@ -20,7 +20,7 @@ checkmk.general.server role -- Install and manage Checkmk servers
 .. Collection note
 
 .. note::
-    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.1).
+    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.2).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -33,7 +33,6 @@ checkmk.general.server role -- Install and manage Checkmk servers
    :local:
    :depth: 2
 
-.. _ansible_collections.checkmk.general.server_role__entrypoint-main:
 
 .. Entry point title
 

@@ -1,5 +1,5 @@
 .. meta::
-  :antsibull-docs: 2.21.0
+  :antsibull-docs: 2.16.3
 
 
 .. _plugins_in_checkmk.general:
@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 6.2.1
+Collection version 6.2.2
 
 .. contents::
    :local:
@@ -44,14 +44,11 @@ The official Checkmk Ansible collection - brought to you by the Checkmk company.
 .. toctree::
     :maxdepth: 1
 
-.. _plugin_index_for_checkmk.general:
-
 Plugin Index
 ------------
 
 These are the plugins in the checkmk.general collection:
 
-.. _module_plugins_in_checkmk.general:
 
 Modules
 ~~~~~~~
@@ -92,7 +89,6 @@ Modules
     timeperiod_module
     user_module
 
-.. _inventory_plugins_in_checkmk.general:
 
 Inventory Plugins
 ~~~~~~~~~~~~~~~~~
@@ -105,7 +101,6 @@ Inventory Plugins
 
     checkmk_inventory
 
-.. _lookup_plugins_in_checkmk.general:
 
 Lookup Plugins
 ~~~~~~~~~~~~~~
@@ -140,8 +135,6 @@ Lookup Plugins
     sites_lookup
     version_lookup
 
-
-.. _role_plugins_in_checkmk.general:
 
 Role Index
 ----------

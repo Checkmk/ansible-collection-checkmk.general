@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.21.0
+  :antsibull-docs: 2.16.3
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.downtime module -- Manage downtimes in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.2).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -211,7 +211,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Duration in seconds. When set, the downtime does not begin automatically at a nominated time, but when a non-OK status actually appears for the host. Consequently, the start\_time and end\_time is only the time window in which the scheduled downtime can occur.
+      Duration in minutes. When set, the downtime does not begin automatically at a nominated time, but when a non-OK status actually appears for the host. Consequently, the start\_time and end\_time is only the time window in which the scheduled downtime can occur.
 
 
       .. rst-class:: ansible-option-line
@@ -780,6 +780,7 @@ Authors
 
 - Oliver Gaida (@ogaida)
 - Lars Getwan (@lgetwan)
+
 
 
 .. Extra links
