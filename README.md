@@ -17,27 +17,7 @@ Please refer to [INSTALL.md](INSTALL.md) for detailed installation instructions.
 
 ## :construction_worker: Using this collection
 
-We encourage you - in accordance with Ansible Best Practices -
-to always use FQCNs (Fully Qualified Collection Names) as seen below.
-This ensures, that you always know, which module is at play.
-
-Please keep in mind the parameters `server_url` and `site` are concatenated to form the base URL of the Checkmk site.
-
-```yaml
----
-- hosts: all
-
-  tasks:
-    - name: "Run activation."
-      checkmk.general.activation:
-        server_url: "http://myserver/"
-        site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
-        force_foreign_changes: 'true'
-        sites:
-          - "mysite"
-```
+Please refer to [USAGE.md](USAGE.md) for detailed instructions on how to use this collection.
 
 ## :electric_plug: Dependencies
 
