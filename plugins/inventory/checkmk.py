@@ -12,7 +12,8 @@ DOCUMENTATION = """
     short_description: Dynamic Inventory Source or Checkmk
     description:
         - Get hosts from any checkmk site.
-        - Generate groups based on tag groups or sites in Checkmk.
+        - Generate groups based on tag groups, sites or labels in Checkmk.
+        - Sets host labels as a dictionary variable C(checkmk_labels) for each host.
 
     extends_documentation_fragment: [checkmk.general.common]
 
@@ -25,7 +26,7 @@ DOCUMENTATION = """
         groupsources:
             description:
               - List of sources for grouping
-              - Possible sources are C(sites) and C(hosttags)
+              - Possible sources are C(sites), C(hosttags) and C(labels)
             type: list
             elements: str
             required: false
@@ -40,15 +41,31 @@ EXAMPLES = """
 # one of the example blocks below and use it as your inventory source.
 # E.g., with `ansible-inventory -i checkmk.yml --graph`.
 
-# Group all hosts based on both tag groups and sites:
+# Group all hosts based on tag groups, sites and labels:
 plugin: checkmk.general.checkmk
 server_url: "http://hostname/"
 site: "sitename"
 automation_user: "cmkadmin"
 automation_secret: "******"
 validate_certs: false
-groupsources: ["hosttags", "sites"]
+groupsources: ["hosttags", "sites", "labels"]
 want_ipv4: False
+
+# ---
+# You can then access the labels in a playbook like this:
+#
+# - name: Show labels for a host
+#   hosts: my_checkmk_host
+#   tasks:
+#     - name: Display the labels
+#       ansible.builtin.debug:
+#         var: checkmk_labels
+#
+#     - name: Run a task only if a label is present
+#       ansible.builtin.debug:
+#         msg: "This is a linux machine"
+#       when: checkmk_labels.os == 'linux'
+
 """
 
 import json
@@ -179,6 +196,9 @@ class InventoryModule(BaseInventoryPlugin):
             self.inventory.add_host(host["id"])
             self.inventory.set_variable(host["id"], "ipaddress", host["ipaddress"])
             self.inventory.set_variable(host["id"], "folder", host["folder"])
+            self.inventory.set_variable(
+                host["id"], "checkmk_labels", host.get("labels", {})
+            )
             if self.want_ipv4:
                 self.inventory.set_variable(
                     host["id"], "ansible_host", host["ipaddress"]
@@ -200,31 +220,43 @@ class InventoryModule(BaseInventoryPlugin):
                     self.inventory.add_child(
                         "site_" + self.convertname(host.get("site")), host.get("id")
                     )
+            if "labels" in self.groupsources:
+                for host in self.hosts:
+                    for key, value in host.get("labels", {}).items():
+                        group_name = self.convertname("label_{}_{}".format(key, value))
+                        self.inventory.add_group(group_name)
+                        self.inventory.add_child(group_name, host.get("id"))
 
     def _get_hosts(self, api):
-        response = json.loads(
+        # Step 1: Get host configuration data as a baseline.
+        config_response = json.loads(
             api.get(
                 "/domain-types/host_config/collections/all",
                 {"effective_attributes": True},
             )
         )
-        if "code" in response:
+        if "code" in config_response:
             raise AnsibleError(
                 "Received error for %s - %s: %s"
                 % (
-                    response.get("url", ""),
-                    response.get("code", ""),
-                    response.get("msg", ""),
+                    config_response.get("url", ""),
+                    config_response.get("code", ""),
+                    config_response.get("msg", ""),
                 )
             )
 
-        hosts = [
-            {
+        # Process configuration data into a dictionary for easy lookup,
+        # preserving the labels found here as our baseline.
+        hosts_data = {
+            host.get("id"): {
                 "id": host.get("id"),
                 "title": host.get("extensions").get("title"),
                 "ipaddress": host.get("extensions").get("attributes").get("ipaddress"),
                 "folder": host.get("extensions").get("folder"),
                 "site": host.get("extensions").get("effective_attributes").get("site"),
+                "labels": host.get("extensions")
+                .get("effective_attributes")
+                .get("labels", {}),
                 "tags": {
                     taggroup: tag
                     for taggroup, tag in host.get("extensions")
@@ -233,10 +265,39 @@ class InventoryModule(BaseInventoryPlugin):
                     if taggroup in self.tags
                 },
             }
-            for host in (response.get("value"))
-        ]
+            for host in (config_response.get("value"))
+        }
 
-        return hosts
+        # Step 2: Query the monitoring core for the final, authoritative labels.
+        livestatus_labels = {}
+        try:
+            runtime_response = json.loads(
+                api.get(
+                    "/domain-types/host/collections/all",
+                    {"columns": ["name,labels"]},
+                )
+            )
+
+            if "value" in runtime_response:
+                livestatus_labels = {
+                    host.get("name"): host.get("extensions", {}).get("labels", {})
+                    for host in runtime_response.get("value")
+                }
+            else:
+                display.warning("Authoritative label query returned no data.")
+
+        except Exception as e:
+            display.warning(
+                "Could not fetch authoritative labels: {}. "
+                "Falling back to configuration labels.".format(e)
+            )
+
+        # Step 3: Perform a non-destructive MERGE of the authoritative labels.
+        for host_id, host_info in hosts_data.items():
+            if host_id in livestatus_labels:
+                host_info["labels"].update(livestatus_labels[host_id])
+
+        return list(hosts_data.values())
 
     def _get_taggroups(self, api):
         response = json.loads(api.get("/domain-types/host_tag_group/collections/all"))

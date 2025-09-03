@@ -4,5 +4,5 @@ site: "hyde"
 automation_user: "cmkadmin"
 automation_secret: "cmk"
 validate_certs: false
-groupsources: ["hosttags", "sites"]
+groupsources: ["hosttags", "sites", "labels"]
 want_ipv4: false
