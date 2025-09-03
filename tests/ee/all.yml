@@ -1,0 +1,44 @@
+---
+- name: "Smoke-test the collection inside the execution environment."
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+
+    - name: "Report what the execution environment actually shipped."
+      ansible.builtin.debug:
+        msg: "ansible-core {{ ansible_version.full }} on Python {{ ansible_playbook_python }}"
+
+    - name: "Verify documentation resolves for every plugin type."
+      ansible.builtin.command:
+        cmd: "ansible-doc --type {{ item.type }} {{ item.name }}"
+      changed_when: false
+      loop:
+        - {type: "module", name: "checkmk.general.host"}
+        - {type: "lookup", name: "checkmk.general.version"}
+        - {type: "inventory", name: "checkmk.general.checkmk"}
+      loop_control:
+        label: "{{ item.type }} {{ item.name }}"
+
+    # Documentation parsing does not import the module's Python. Running one
+    # against an unreachable endpoint does, and fails on the connection rather
+    # than on an import, which is exactly what we want to prove here.
+    - name: "Verify a module imports and executes."
+      checkmk.general.host:
+        server_url: "http://localhost:1/"
+        site: "ee_check"
+        automation_user: "ee_check"
+        automation_secret: "ee_check"
+        name: "ee-check-host"
+        state: "absent"
+      register: checkmk_var_ee_module
+      failed_when: false
+
+    - name: "Verify the module failed on the connection, not on an import."
+      ansible.builtin.assert:
+        that:
+          - "'ModuleNotFoundError' not in (checkmk_var_ee_module.msg | default(''))"
+          - "'ImportError' not in (checkmk_var_ee_module.msg | default(''))"
+          - "'Traceback' not in (checkmk_var_ee_module.msg | default(''))"
+        success_msg: "The module imported and executed inside the execution environment."
+        fail_msg: "The module did not import cleanly: {{ checkmk_var_ee_module.msg | default('no message') }}"

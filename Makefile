@@ -9,6 +9,10 @@ COLLECTION_ROOT="/home/vagrant/ansible_collections/checkmk/general"
 UV_ENV_VM := .venv-vm
 CONTAINER_BUILD_ROOT="$(COLLECTION_ROOT)/tests/container"
 CONTAINER_NAME="ansible-checkmk-test"
+# nox places its per-session TMPDIR inside the envdir. The collection root is
+# shared into the box over virtiofs, which buildah cannot use for its rootfs
+# mounts, so the envdir has to live on a local filesystem. Harmless elsewhere.
+NOX_ENVDIR := $${TMPDIR:-/tmp}/nox-checkmk-general
 
 #https://stackoverflow.com/questions/3931741/why-does-make-think-the-target-is-up-to-date
 .PHONY: clean
@@ -31,6 +35,8 @@ help:
 	@echo "vms-suse 	   			- Create a virtual environment with all Suse family OSes."
 	@echo ""
 	@echo "container       			- Create a customized container image for testing."
+	@echo ""
+	@echo "ee              			- Build the execution environment image and smoke-test it."
 	@echo ""
 	@echo "tests	       			- Run all available tests."
 	@echo "tests-sanity    			- Run sanity tests."
@@ -55,6 +61,10 @@ build:
 
 install:
 	@uv run ansible-galaxy collection install -f ./checkmk-general-$(VERSION).tar.gz
+
+ee:
+	@echo "Building the execution environment and smoke-testing it. This can take a while."
+	@uv run nox --envdir $(NOX_ENVDIR) -s ee-check
 
 release: version
 	# gh workflow run release.yaml --ref main  # https://cli.github.com/manual/gh_workflow_run

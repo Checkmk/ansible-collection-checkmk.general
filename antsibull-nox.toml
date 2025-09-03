@@ -1,0 +1,28 @@
+# Configuration for antsibull-nox.
+#
+# Currently scoped to the execution environment (EE) check only. The remaining
+# test matrices are still driven by the hand-written workflows in
+# .github/workflows/. See misc/EE-plan.md.
+#
+# Run with: uv run nox -s ee-check
+
+[sessions]
+
+[sessions.ee_check]
+ansible_builder_package = "ansible-builder==3.1.1"
+ansible_navigator_package = "ansible-navigator==26.8.0"
+
+[[sessions.ee_check.execution_environments]]
+name = "centos-stream-10"
+description = "Build the collection EE on CentOS Stream 10 and smoke-test it."
+# Long-lived base. Its default python3 is 3.12, which satisfies ansible-core's
+# control node requirement of >= 3.11.
+base_image_name = "quay.io/centos/centos:stream10"
+# The one place a concrete ansible-core version is pinned for the image.
+# The collection's compatibility floor lives in meta/runtime.yml.
+ansible_core_package = "ansible-core==2.20.9"
+ansible_runner_package = "ansible-runner"
+python_interpreter_package = "python3"
+python_path = "/usr/bin/python3"
+system_packages = ["openssh-clients"]
+test_playbooks = ["tests/ee/all.yml"]

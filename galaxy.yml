@@ -63,6 +63,9 @@ issues: https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=i
 
 build_ignore:
   - .venv*
+  - ansible-navigator.yml
+  - antsibull-nox.toml
   - misc/
+  - noxfile.py
   - scripts/
   - tests/

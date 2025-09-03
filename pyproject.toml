@@ -14,8 +14,10 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "antsibull-nox==1.9.1",
     "black==26.5.1",
     "isort==9.0.1",
+    "nox==2026.8.17",
 ]
 
 

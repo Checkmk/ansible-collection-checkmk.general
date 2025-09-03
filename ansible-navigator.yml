@@ -1,0 +1,12 @@
+---
+# Configuration for ansible-navigator, which runs the execution environment
+# smoke test. See EXECUTION_ENVIRONMENT.md.
+#
+# Command line arguments take precedence over this file, so the invocation
+# antsibull-nox builds is unaffected by anything set here.
+ansible-navigator:
+  # Without this, every run drops an all-artifact-<timestamp>.json next to the
+  # playbook it ran. antsibull-nox does not pass --playbook-artifact-enable, and
+  # the replay feature is of no use to us here.
+  playbook-artifact:
+    enable: false

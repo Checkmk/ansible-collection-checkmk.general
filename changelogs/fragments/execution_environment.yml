@@ -1,0 +1,17 @@
+---
+minor_changes:
+  - Execution Environment - Add a buildable execution environment definition for the collection,
+    declared in ``antsibull-nox.toml`` and built from the local source tree, so the resulting image
+    always matches the checkout it was built from. Build and smoke-test it with ``make ee``.
+    This only affects users who build execution environments, not regular users of the collection.
+  - Documentation - Add ``EXECUTION_ENVIRONMENT.md``, describing how to build the collection's
+    execution environment image and run playbooks with it.
+  - CI - Add a workflow that builds the execution environment and runs a smoke test inside it,
+    triggered by changes to anything the image is built from and weekly.
+bugfixes:
+  - Execution Environment - Remove ``meta/execution-environment.yml``. That path is reserved for
+    collection-level dependency declarations, where ``ansible-builder`` reads only
+    ``dependencies.python`` and ``dependencies.system`` and expects each to be a path to a
+    requirements file. The file shipped an inline list instead, which would have been malformed in
+    every downstream execution environment build including this collection. The collection has no
+    third-party Python or system dependencies to declare.

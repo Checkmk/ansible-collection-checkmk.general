@@ -1,0 +1,108 @@
+# README:
+# Resources:
+# - Usage and troubleshooting: EXECUTION_ENVIRONMENT.md
+# - The EE definition itself lives in antsibull-nox.toml, not in this file.
+#
+# This builds the collection's execution environment from the checked out source
+# and runs tests/ee/all.yml inside the resulting image. A green run means the
+# image builds AND the collection loads, documents and executes within it.
+#
+# Podman is preinstalled on the GitHub runner image, so no setup is needed.
+
+name: Execution Environment
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  schedule:
+    - cron: '0 0 * * 0'
+
+  push:
+    paths:
+      - 'antsibull-nox.toml'
+      - 'noxfile.py'
+      - 'tests/ee/**'
+      - 'plugins/**'
+      - 'galaxy.yml'
+      - 'meta/runtime.yml'
+      - 'pyproject.toml'
+      - 'Makefile'
+      - '.github/workflows/execution-environment.yaml'
+  pull_request:
+    paths:
+      - 'antsibull-nox.toml'
+      - 'noxfile.py'
+      - 'tests/ee/**'
+      - 'plugins/**'
+      - 'galaxy.yml'
+      - 'meta/runtime.yml'
+      - 'pyproject.toml'
+      - 'Makefile'
+      - '.github/workflows/execution-environment.yaml'
+
+# Building an image takes minutes, so do not let pushes to the same PR stack up.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+
+  build:
+    runs-on: ubuntu-24.04
+    name: Build and smoke-test
+
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@v7
+        with:
+          path: ansible_collections/checkmk/general
+
+      - name: "Install uv."
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          github-token: ${{ github.token }}
+          working-directory: ./ansible_collections/checkmk/general/
+          python-version: '3.13'
+
+      - name: "Create uv venv."
+        run: uv venv
+        working-directory: ./ansible_collections/checkmk/general
+
+      # Deliberately the same entry point the documentation tells users to run,
+      # so the documented path is the tested path.
+      - name: "Build the execution environment and smoke-test it."
+        run: make ee
+        working-directory: ./ansible_collections/checkmk/general
+
+      - name: "Report what the image actually contains."
+        if: success()
+        working-directory: ./ansible_collections/checkmk/general
+        run: |
+          set -euo pipefail
+          image="$(podman images --format '{{.Repository}}:{{.Tag}}' \
+              | grep '^localhost/checkmk-general-' | head -1)"
+          size="$(podman images --format '{{.Size}}' --filter "reference=${image}" | head -1)"
+          core="$(podman run --rm "${image}" ansible --version \
+              | sed -n 's/.*core \([0-9.]*\).*/\1/p' | head -1)"
+          {
+            echo "### Execution environment built"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Image | \`${image}\` |"
+            echo "| Size | ${size} |"
+            echo "| ansible-core | ${core} |"
+            echo
+            echo "<details><summary>Installed collections</summary>"
+            echo
+            echo '```'
+            podman run --rm "${image}" ansible-galaxy collection list
+            echo '```'
+            echo
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
