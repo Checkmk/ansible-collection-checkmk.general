@@ -23,6 +23,12 @@ Refer to [INSTALL.md](https://github.com/Checkmk/ansible-collection-checkmk.gene
 
 Refer to [USAGE.md](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/USAGE.md) for detailed instructions on how to use this collection.
 
+## :package: Execution Environment
+
+[![Execution Environment](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/execution-environment.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/execution-environment.yaml)
+
+The collection ships a definition for building an [Execution Environment](https://docs.ansible.com/ansible/latest/getting_started_ee/index.html) image. This is a proof of concept and no image is published yet, so you build it yourself. Refer to [EXECUTION_ENVIRONMENT.md](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/EXECUTION_ENVIRONMENT.md) for details.
+
 ## :electric_plug: Dependencies
 
  - [ansible.posix](https://github.com/ansible-collections/ansible.posix)

@@ -1,0 +1,135 @@
+# README:
+# Resources:
+# - Usage and troubleshooting: EXECUTION_ENVIRONMENT.md
+# - The EE definition itself lives in antsibull-nox.toml, not in this file.
+#
+# This builds the collection's execution environment from the checked out source
+# and runs tests/ee/all.yml inside the resulting image. A green run means the
+# image builds AND the collection loads, documents and executes within it.
+#
+# Both Docker and Podman are preinstalled on the GitHub runner image, so no setup
+# is needed. Left alone, antsibull-nox prefers Docker when both are present; we
+# pin Podman via ANTSIBULL_NOX_CONTAINER_ENGINE so CI builds the image the same
+# way EXECUTION_ENVIRONMENT.md tells people to build it locally.
+
+name: Execution Environment
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  schedule:
+    - cron: '0 0 * * 0'
+
+  push:
+    paths:
+      - 'antsibull-nox.toml'
+      - 'noxfile.py'
+      - 'tests/ee/**'
+      - 'plugins/**'
+      - 'galaxy.yml'
+      - 'meta/runtime.yml'
+      - 'pyproject.toml'
+      - 'Makefile'
+      - '.github/workflows/execution-environment.yaml'
+  pull_request:
+    paths:
+      - 'antsibull-nox.toml'
+      - 'noxfile.py'
+      - 'tests/ee/**'
+      - 'plugins/**'
+      - 'galaxy.yml'
+      - 'meta/runtime.yml'
+      - 'pyproject.toml'
+      - 'Makefile'
+      - '.github/workflows/execution-environment.yaml'
+
+# Building an image takes minutes, so do not let pushes to the same PR stack up.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+
+  build:
+    runs-on: ubuntu-24.04
+    name: Build and smoke-test
+
+    env:
+      # Pin the container engine rather than letting antsibull-nox pick. Without
+      # this it prefers Docker on the runner, while local development and the
+      # documentation both use Podman.
+      ANTSIBULL_NOX_CONTAINER_ENGINE: podman
+
+    steps:
+
+      - name: Check out code
+        uses: actions/checkout@v7
+        with:
+          path: ansible_collections/checkmk/general
+
+      - name: "Install uv."
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          github-token: ${{ github.token }}
+          working-directory: ./ansible_collections/checkmk/general/
+          python-version: '3.13'
+
+      - name: "Create uv venv."
+        run: uv venv
+        working-directory: ./ansible_collections/checkmk/general
+
+      # Deliberately the same entry point the documentation tells users to run,
+      # so the documented path is the tested path.
+      - name: "Build the execution environment and smoke-test it."
+        run: make ee
+        working-directory: ./ansible_collections/checkmk/general
+
+      - name: "Report what the image actually contains."
+        if: success()
+        working-directory: ./ansible_collections/checkmk/general
+        run: |
+          set -euo pipefail
+
+          # Honour the same pin antsibull-nox was given; fall back to its own
+          # preference order (Docker first) if it is unset or set to an "auto" mode.
+          case "${ANTSIBULL_NOX_CONTAINER_ENGINE:-}" in
+            podman|docker) engine="$(command -v "${ANTSIBULL_NOX_CONTAINER_ENGINE}")" ;;
+            *)             engine="$(command -v docker || command -v podman)" ;;
+          esac
+
+          # Podman prefixes locally built images with "localhost/", Docker does
+          # not, so match on either.
+          image="$("${engine}" images --format '{{.Repository}}:{{.Tag}}' \
+              | grep -E '(^|/)checkmk-general-' | head -1 || true)"
+
+          if [ -z "${image}" ]; then
+            echo "No execution environment image found via $(basename "${engine}")." \
+                >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          size="$("${engine}" images --format '{{.Size}}' --filter "reference=${image}" | head -1)"
+          core="$("${engine}" run --rm "${image}" ansible --version \
+              | sed -n 's/.*core \([0-9.]*\).*/\1/p' | head -1)"
+          {
+            echo "### Execution environment built"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Image | \`${image}\` |"
+            echo "| Size | ${size} |"
+            echo "| ansible-core | ${core} |"
+            echo "| Engine | \`$(basename "${engine}")\` |"
+            echo
+            echo "<details><summary>Installed collections</summary>"
+            echo
+            echo '```'
+            "${engine}" run --rm "${image}" ansible-galaxy collection list
+            echo '```'
+            echo
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
