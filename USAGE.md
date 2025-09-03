@@ -38,7 +38,7 @@ You can set default values for module parameters at the play level. These defaul
 ---
 - hosts: all
   module_defaults:
-    checkmk.general.activation:
+    group/checkmk.general.checkmk:
       server_url: "http://myserver/"
       site: "mysite"
       automation_user: "myuser"
