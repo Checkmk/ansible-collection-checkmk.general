@@ -2,9 +2,11 @@
 .*.swp
 .*.swo
 *~
+ansible-navigator.log
 checkmk-general-*.tar.gz
 .vagrant/
 build/
+meta/context/
 tests/output
 playbooks/vars/config.yml
 playbooks/test*.yml
