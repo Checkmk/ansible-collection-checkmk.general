@@ -34,7 +34,19 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "Run the inventory plugin."  # noqa no-changed-when
+- name: "Run the inventory plugin on GitHub Actions."  # noqa no-changed-when
+  when: |
+    not (ansible_facts.system_vendor == "Dell Inc." and 'Latitude' in ansible_facts.product_name and ansible_facts.virtualization_type == "container")
+    or not (ansible_facts.system_vendor == "QEMU" and 'Ubuntu' in ansible_facts.product_name and ansible_facts.virtualization_type == "container")
+  ansible.builtin.shell: |
+    ansible-inventory -i /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/targets/inv_plugin/inventory/checkmk.yml --list --export
+  register: __checkmk_var_inventory_output
+  failed_when: "'site_stable_cme' not in __checkmk_var_inventory_output.stdout"
+
+- name: "Run the inventory plugin on local Test VM."  # noqa no-changed-when
+  when: |
+    (ansible_facts.system_vendor == "Dell Inc." and 'Latitude' in ansible_facts.product_name and ansible_facts.virtualization_type == "container")
+    or (ansible_facts.system_vendor == "QEMU" and 'Ubuntu' in ansible_facts.product_name and ansible_facts.virtualization_type == "container")
   ansible.builtin.shell: |
     ansible-inventory -i /root/ansible_collections/checkmk/general/tests/integration/targets/inv_plugin/inventory/checkmk.yml --list --export
   register: __checkmk_var_inventory_output
