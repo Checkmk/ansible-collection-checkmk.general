@@ -1,0 +1,41 @@
+---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "provider"
+  when: outer_item.edition == "cme"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: null
+  when: outer_item.edition != "cme"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_var_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+
+- name: "Run the inventory plugin."  # noqa no-changed-when
+  ansible.builtin.shell: |
+    ansible-inventory -i /root/ansible_collections/checkmk/general/tests/integration/targets/inv_plugin/inventory/checkmk.yml --list --export
+  register: __checkmk_var_inventory_output
+  failed_when: "'site_stable_cme' not in __checkmk_var_inventory_output.stdout"
