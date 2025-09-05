@@ -165,7 +165,18 @@ options:
             users:
                 description: The LDAP user configuration.
                 type: dict
-                default: "{'user_base_dn': '', 'search_scope': 'search_whole_subtree', 'search_filter': '', 'filter_group': '', 'user_id_attribute': '', 'user_id_case': 'dont_convert_to_lowercase', 'umlauts_in_user_ids': 'keep_umlauts', 'create_users': 'on_login'}"
+                default:
+                    user_base_dn: ""
+                    search_scope: ""
+                    search_whole_subtree: ""
+                    search_filter: ""
+                    filter_group: ""
+                    user_id_attribute: ""
+                    user_id_case: ""
+                    dont_convert_to_lowercase: ""
+                    umlauts_in_user_ids: ""
+                    keep_umlauts: ""
+                    create_users: "on_login"
                 suboptions:
                     user_base_dn:
                         description:
@@ -257,7 +268,20 @@ options:
             sync_plugins:
                 description: The LDAP sync plug-ins configuration.
                 type: dict
-                default: "{'alias': '', 'authentication_expiration': '', 'disable_notifications': '', 'email_address': '', 'mega_menu_icons': '', 'navigation_bar_icons': '', 'pager': '', 'show_mode': '', 'ui_sidebar_position': '', 'start_url': '', 'temperature_unit': '', 'ui_theme': '', 'visibility_of_hosts_or_services': ''}"
+                default:
+                    alias: ""
+                    authentication_expiration: ""
+                    disable_notifications: ""
+                    email_address: ""
+                    mega_menu_icons: ""
+                    navigation_bar_icons: ""
+                    pager: ""
+                    show_mode: ""
+                    ui_sidebar_position: ""
+                    start_url: ""
+                    temperature_unit: ""
+                    ui_theme: ""
+                    visibility_of_hosts_or_services: ""
                 suboptions:
                     alias:
                         description:
@@ -476,6 +500,7 @@ options:
                             - This setting is only used by sites which have the automatic user
                             - synchronization enabled.
                         type: dict
+                        default: {}
                         suboptions:
                             days:
                                 description: The sync interval in days
