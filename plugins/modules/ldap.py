@@ -253,6 +253,7 @@ options:
             sync_plugins:
                 description: The LDAP sync plug-ins configuration.
                 type: dict
+                default: "{'alias': '', 'authentication_expiration': '', 'disable_notifications': '', 'email_address': '', 'mega_menu_icons': '', 'navigation_bar_icons': '', 'pager': '', 'show_mode': '', 'ui_sidebar_position': '', 'start_url': '', 'temperature_unit': '', 'ui_theme': '', 'visibility_of_hosts_or_services': ''}"
                 suboptions:
                     alias:
                         description:
@@ -417,7 +418,6 @@ options:
                                     - contact group members as well. Please bear in mind that this
                                     - feature might increase the execution time of your LDAP sync.
                                 type: bool
-                                default: false
                             roles_to_sync:
                                 type: list
                                 description: The roles to be handled.
@@ -446,6 +446,7 @@ options:
             other:
                 description: Other config options for the LDAP connection.
                 type: dict
+                default: {}
                 suboptions:
                     sync_interval:
                         description:
