@@ -682,20 +682,20 @@ class LDAPAPI(CheckmkAPI):
             self.desired = self._set_defaults(self.desired)
             self.desired = self._extend_state_parameters(self.desired)
 
-            #logger.debug("DESIRED: %s" % str(self.desired))
+            # logger.debug("DESIRED: %s" % str(self.desired))
 
             ## Ensure 'comment' is not null
-            #if (
+            # if (
             #    "comment" not in self.desired["general_properties"]
             #    or self.desired["general_properties"]["comment"] is None
-            #):
+            # ):
             #    self.desired["general_properties"]["comment"] = ""
 
         self.state = None
 
-        #logger.debug("headers1: %s" % str(self.headers))
+        # logger.debug("headers1: %s" % str(self.headers))
         self._get_current()
-        #logger.debug("headers2: %s" % str(self.headers))
+        # logger.debug("headers2: %s" % str(self.headers))
 
         # Initialize the ConfigDiffer with desired and current configurations
         if self.desired_state == "present":
@@ -771,7 +771,7 @@ class LDAPAPI(CheckmkAPI):
                                 )
                                 d[k]["groups_to_sync"] = v.get("groups_to_sync", [])
                             elif k == "groups_to_roles":
-                                #logger.debug("##### groups_to_roles: %s" % str(v))
+                                # logger.debug("##### groups_to_roles: %s" % str(v))
                                 d[k]["handle_nested"] = v.get("handle_nested", False)
                                 # for role in v.get("roles_to_sync", []):
                                 #    d[k][role.get("role")] = role.get("groups", [])
@@ -805,17 +805,22 @@ class LDAPAPI(CheckmkAPI):
 
             directory_type = ldap_connection.get("directory_type")
             if not directory_type:
-                return "Missing parameter 'directory_type' in directory_type dictionary."
+                return (
+                    "Missing parameter 'directory_type' in directory_type dictionary."
+                )
 
             if directory_type in [
                 "active_directory_manual",
                 "open_ldap",
                 "389_directory_server",
             ] and not directory_type.get("type"):
-                return "Directory type '%s' requires a parameter 'type'." % directory_type
+                return (
+                    "Directory type '%s' requires a parameter 'type'." % directory_type
+                )
 
-            if directory_type == "active_directory_automatic" and not directory_type.get(
-                "domain"
+            if (
+                directory_type == "active_directory_automatic"
+                and not directory_type.get("domain")
             ):
                 return "Directory type 'active_directory_automatic' requires a parameter 'domain'."
 
@@ -835,7 +840,7 @@ class LDAPAPI(CheckmkAPI):
 
         if result.http_code == 200:
             self.state = "present"
-            self.headers['If-Match'] = result.etag.replace("\"", "")
+            self.headers["If-Match"] = result.etag.replace('"', "")
             try:
                 current_raw = json.loads(result.content)
                 self.current = current_raw.get("extensions", {})
@@ -977,9 +982,11 @@ def run_module():
                     type="dict",
                     required=True,
                     options={
-                        "rule_activation": dict(type="str", choices=[
-                            "activated",
-                            "deactivated" ], default="activated"),
+                        "rule_activation": dict(
+                            type="str",
+                            choices=["activated", "deactivated"],
+                            default="activated",
+                        ),
                         "comment": dict(type="str", default=""),
                         "description": dict(type="str", default=""),
                         "documentation_url": dict(type="str", default=""),
@@ -1226,12 +1233,12 @@ def run_module():
     logger.set_loglevel(module._verbosity)
     logger.set_loglevel(2)
 
-    #logger.debug("Starting...")
+    # logger.debug("Starting...")
     desired_state = module.params["state"]
-    #logger.debug("Desired_state: %s" % str(desired_state))
-    #logger.debug("Desired_parameters: %s" % str(module.params))
+    # logger.debug("Desired_state: %s" % str(desired_state))
+    # logger.debug("Desired_parameters: %s" % str(module.params))
     ldap_api = LDAPAPI(module)
-    #logger.debug("LDAPAPI instance created.")
+    # logger.debug("LDAPAPI instance created.")
 
     try:
         if desired_state == "present":
