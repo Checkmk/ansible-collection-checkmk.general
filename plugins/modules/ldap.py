@@ -47,6 +47,7 @@ options:
                             - Selecting 'deactivated' will disable the rule, but it will
                             - remain in the configuration.
                         type: str
+                        default: activated
                         choices:
                             - activated
                             - deactivated
@@ -164,12 +165,14 @@ options:
             users:
                 description: The LDAP user configuration.
                 type: dict
+                default: "{'user_base_dn': '', 'search_scope': 'search_whole_subtree', 'search_filter': '', 'filter_group': '', 'user_id_attribute': '', 'user_id_case': 'dont_convert_to_lowercase', 'umlauts_in_user_ids': 'keep_umlauts', 'create_users': 'on_login'}"
                 suboptions:
                     user_base_dn:
                         description:
                             - Give a base distinguished name here. All user accounts to
                             - synchronize must be located below this one.
                         type: str
+                        default: ""
                     search_scope:
                         description: Scope to be used in LDAP searches.
                         type: str
@@ -221,12 +224,14 @@ options:
             groups:
                 description: The LDAP group configuration.
                 type: dict
+                default: "{'group_base_dn': '', 'search_scope': 'search_whole_subtree', 'search_filter': '', 'member_attribute': ''}"
                 suboptions:
                     group_base_dn:
                         description:
                             - Give a base distinguished name here. All group accounts to
                             - synchronize must be located below this one.
                         type: str
+                        default: ""
                     search_scope:
                         description: Scope to be used in LDAP searches.
                         type: str
@@ -245,7 +250,6 @@ options:
                     member_attribute:
                         description: Member attribute.
                         type: str
-                        default: ""
             sync_plugins:
                 description: The LDAP sync plug-ins configuration.
                 type: dict
@@ -489,6 +493,7 @@ EXAMPLES = r"""
           type: "open_ldap"
           ldap_server: "my.ldap.server.tld"
     state: "present"
+
 - name: Delete a LDAP configuration
   checkmk.general.ldap:
     server_url: "http://myserver/"
@@ -499,6 +504,7 @@ EXAMPLES = r"""
     ldap_config:
       id: "test_ldap_defaults"
     state: "absent"
+
 - name: Create a complex LDAP connector
   checkmk.general.ldap:
     server_url: "http://myserver/"
@@ -1089,6 +1095,7 @@ def run_module():
                         ),
                         "create_users": dict(
                             type="str",
+                            default="on_login",
                             choices=["on_login", "on_sync"],
                         ),
                     },
