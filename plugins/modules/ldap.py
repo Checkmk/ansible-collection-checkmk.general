@@ -437,7 +437,7 @@ options:
                                 description: The groups to be synchronized.
                                 type: list
                                 elements: dict
-                                suboptions:
+                                options:
                                     group_cn:
                                         description: The common name of the group.
                                         type: str
