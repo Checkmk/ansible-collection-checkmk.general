@@ -41,6 +41,19 @@ def base_argument_spec():
             no_log=True,
             fallback=(env_fallback, ["CHECKMK_VAR_AUTOMATION_SECRET"]),
         ),
+        proxy_url=dict(
+            type="str",
+            fallback=(env_fallback, ["CHECKMK_VAR_PROXY_URL"]),
+        ),
+        proxy_user=dict(
+            type="str",
+            fallback=(env_fallback, ["CHECKMK_VAR_PROXY_USER"]),
+        ),
+        proxy_pass=dict(
+            type="str",
+            no_log=True,
+            fallback=(env_fallback, ["CHECKMK_VAR_PROXY_PASS"]),
+        ),
     )
 
 

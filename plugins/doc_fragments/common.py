@@ -36,4 +36,13 @@ class ModuleDocFragment(object):
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_VALIDATE_CERTS).
             default: true
             type: bool
+        proxy_url:
+            description: The URL of your proxy server.
+            type: str
+        proxy_user:
+            description: The username to authenticate against your proxy server.
+            type: str
+        proxy_pass:
+            description: The password to authenticate against your proxy server.
+            type: str
     """

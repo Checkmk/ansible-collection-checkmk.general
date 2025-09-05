@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 import json
+from urllib.parse import urlparse
 
 from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
@@ -34,6 +35,9 @@ class CheckmkAPI:
         site = self.params.get("site")
         user = self.params.get("automation_user")
         secret = self.params.get("automation_secret")
+        self.proxy_url = self.params.get("proxy_url")
+        self.proxy_user = self.params.get("proxy_user")
+        self.proxy_pass = self.params.get("proxy_pass")
         self.url = "%s/%s/check_mk/api/1.0" % (server, site)
         self.headers = {
             "Accept": "application/json",
@@ -75,6 +79,19 @@ class CheckmkAPI:
         # TODO: If the REST API at some point actually cancels requests
         # properly, we can go back to the initial back-off mechanism.
 
+        if self.proxy_url:
+            proxy_uri = urlparse(self.proxy_url)
+            if self.proxy_user and self.proxy_pass:
+                proxy_uri = proxy_uri._replace(
+                    netloc=f"{self.proxy_user}:{self.proxy_pass}@{proxy_uri.netloc}"
+                )
+
+        # Set up the proxy_env dictionary for fetch_url
+        proxy_env = {
+            "https": proxy_uri.geturl(),
+            "http": proxy_uri.geturl().replace("https", "http"),
+        }
+
         num_of_retries = 1
         timeout = 60
         for i in range(num_of_retries):
@@ -84,7 +101,8 @@ class CheckmkAPI:
                 data=None if not data else self.module.jsonify(data),
                 headers=self.headers,
                 method=method,
-                use_proxy=None,
+                use_proxy=True,
+                proxy_env=proxy_env,
                 timeout=timeout,
             )
 
