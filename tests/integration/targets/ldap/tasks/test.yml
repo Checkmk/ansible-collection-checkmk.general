@@ -1,0 +1,108 @@
+---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "provider"
+  when: (outer_item.edition == "cme") or (outer_item.edition == "cce")
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: null
+  when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create an LDAP connection."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ldap_config: "{{ item.ldap_config }}"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ outer_item.ldap_connections }}"
+  loop_control:
+    label: "{{ item.general_properties.id }}"
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create an LDAP connection. Again."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ldap_config: "{{ item.ldap_config }}"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ outer_item.ldap_connections }}"
+  loop_control:
+    label: "{{ item.general_properties.id }}"
+  run_once: true  # noqa run-once[task]
+  register: __checkmk_var_result_create
+  failed_when: __checkmk_var_result_create.changed | bool
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update LDAP connections."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ldap_config:
+      general_properties:
+        comment: "{{ item.general_properties.comment }} with a new suffix"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ outer_item.ldap_connections }}"
+  loop_control:
+    label: "{{ item.ldap_config.general_properties.id }}"
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update LDAP connections. Again."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ldap_config:
+      general_properties:
+        comment: "{{ item.general_properties.comment }} with a new suffix"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ outer_item.ldap_connections }}"
+  loop_control:
+    label: "{{ item.ldap_config.general_properties.id }}"
+  run_once: true  # noqa run-once[task]
+  register: __checkmk_var_result_update
+  failed_when: __checkmk_var_result_update.changed | bool
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete LDAP connection."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ldap_config:
+      general_properties:
+        id: {{ item.general_properties.id }}
+    state: "absent"
+  delegate_to: localhost
+  loop: "{{ outer_item.ldap_connections }}"
+  loop_control:
+    label: "{{ item.ldap_config.general_properties.id }}"
+  run_once: true  # noqa run-once[task]
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete LDAP connection. Again."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    ldap_config:
+      general_properties:
+        id: {{ item.general_properties.id }}
+    state: "absent"
+  delegate_to: localhost
+  loop: "{{ outer_item.ldap_connections }}"
+  loop_control:
+    label: "{{ item.ldap_config.general_properties.id }}"
+  run_once: true  # noqa run-once[task]
+  register: __checkmk_var_result_delete
+  failed_when: __checkmk_var_result_delete.changed | bool
