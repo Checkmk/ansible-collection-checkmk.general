@@ -54,7 +54,6 @@ options:
             ldap_connection:
                 description: The LDAP connection configuration.
                 type: dict
-                required: true
                 default: {}
                 suboptions:
                     directory_type:
@@ -224,7 +223,11 @@ options:
             groups:
                 description: The LDAP group configuration.
                 type: dict
-                default: "{'group_base_dn': '', 'search_scope': 'search_whole_subtree', 'search_filter': '', 'member_attribute': ''}"
+                default:
+                    group_base_dn: ""
+                    search_scope: search_whole_subtree
+                    search_filter: ""
+                    member_attribute: ""
                 suboptions:
                     group_base_dn:
                         description:
@@ -392,8 +395,9 @@ options:
                                 default: []
                             groups_to_sync:
                                 description: The groups to be synchronized.
-                                type: dict
-                                suboptions:
+                                type: list
+                                elements: dict
+                                options:
                                     group_cn:
                                         description: The common name of the group.
                                         type: str
@@ -518,7 +522,7 @@ EXAMPLES = r"""
         id: "test_ldap_complex"
         rule_activation: activated
         comment: "complex"
-        description: "really complex""
+        description: "really complex"
         documentation_url: "www.example.com"
       ldap_connection:
         directory_type:
