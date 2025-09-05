@@ -388,7 +388,7 @@ options:
                                 type: list
                                 description: The roles to be handled.
                                 elements: dict
-                                suboptions:
+                                contains:
                                     role:
                                         description: The role id as defined in Checkmk.
                                         type: str
@@ -396,7 +396,7 @@ options:
                                         description: The LDAP groups that should be considered.
                                         type: list
                                         elements: dict
-                                        suboptions:
+                                        contains:
                                             group_dn:
                                                 description:
                                                     - This group must be defined within the scope
@@ -437,7 +437,7 @@ options:
                                 description: The groups to be synchronized.
                                 type: list
                                 elements: dict
-                                options:
+                                contains:
                                     group_cn:
                                         description: The common name of the group.
                                         type: str
