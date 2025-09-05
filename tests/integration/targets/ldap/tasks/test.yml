@@ -18,7 +18,7 @@
     ldap_config: "{{ item.ldap_config }}"
     state: "present"
   delegate_to: localhost
-  loop: "{{ ldap_connections }}"
+  loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.general_properties.id }}"
   run_once: true  # noqa run-once[task]
@@ -32,7 +32,7 @@
     ldap_config: "{{ item.ldap_config }}"
     state: "present"
   delegate_to: localhost
-  loop: "{{ ldap_connections }}"
+  loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.general_properties.id }}"
   run_once: true  # noqa run-once[task]
@@ -50,7 +50,7 @@
         comment: "{{ item.general_properties.comment }} with a new suffix"
     state: "present"
   delegate_to: localhost
-  loop: "{{ ldap_connections }}"
+  loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
   run_once: true  # noqa run-once[task]
@@ -66,7 +66,7 @@
         comment: "{{ item.general_properties.comment }} with a new suffix"
     state: "present"
   delegate_to: localhost
-  loop: "{{ ldap_connections }}"
+  loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
   run_once: true  # noqa run-once[task]
@@ -84,7 +84,7 @@
         id: "{{ item.general_properties.id }}"
     state: "absent"
   delegate_to: localhost
-  loop: "{{ ldap_connections }}"
+  loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
   run_once: true  # noqa run-once[task]
@@ -100,7 +100,7 @@
         id: "{{ item.general_properties.id }}"
     state: "absent"
   delegate_to: localhost
-  loop: "{{ ldap_connections }}"
+  loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
   run_once: true  # noqa run-once[task]
