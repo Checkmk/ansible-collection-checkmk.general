@@ -353,6 +353,7 @@ options:
                             - This allows you to use the group based permissions of your LDAP
                             - directory in Checkmk.
                         type: dict
+                        required: false
                         suboptions:
                             handle_nested:
                                 description:
@@ -363,6 +364,7 @@ options:
                                     - feature might increase the execution time of your LDAP sync.
                                 type: bool
                                 default: false
+                                required: false
                             sync_from_other_connections:
                                 description:
                                     - The LDAP attribute whose contents shall be synced into this
@@ -370,12 +372,14 @@ options:
                                 type: list
                                 elements: str
                                 default: []
+                                required: false
                     groups_to_roles:
                         description:
                             - Configures the roles of the user depending on its group memberships
                             - in LDAP. Please note, additionally the user is assigned to the
                             - Default Roles. Deactivate them if unwanted.
                         type: dict
+                        required: false
                         suboptions:
                             handle_nested:
                                 description:
@@ -385,9 +389,37 @@ options:
                                     - contact group members as well. Please bear in mind that this
                                     - feature might increase the execution time of your LDAP sync.
                                 type: bool
+                                required: false
                             roles_to_sync:
-                                type: str
+                                type: list
                                 description: The roles to be handled.
+                                elements: dict
+                                required: false
+                                suboptions:
+                                    role:
+                                        description: The role id as defined in Checkmk.
+                                        type: str
+                                        required: false
+                                    groups:
+                                        description: The LDAP groups that should be considered.
+                                        type: list
+                                        elements: dict
+                                        required: false
+                                        suboptions:
+                                            group_dn:
+                                                description:
+                                                    - This group must be defined within the scope
+                                                    - of the LDAP Group Settings
+                                                type: str
+                                                required: false
+                                            search_in:
+                                                default: "this_connection"
+                                                description:
+                                                    - An existing ldap connection. Use
+                                                    - this_connection to select the current
+                                                    - connection.
+                                                type: str
+                                                required: false
                     groups_to_custom_user_attributes:
                         description:
                             - This plug-in allows you to synchronize group memberships of the LDAP
@@ -395,8 +427,10 @@ options:
                             - This allows you to use the group based permissions of your LDAP
                             - directory in Checkmk.
                         type: dict
+                        required: false
                         suboptions:
                             handle_nested:
+                                required: false
                                 description:
                                     - Once you enable this option, this plug-in will not only
                                     - handle direct group memberships, instead it will also dig
@@ -410,22 +444,27 @@ options:
                                     - The LDAP attribute whose contents shall be synced into this
                                     - custom attribute.
                                 type: list
+                                required: false
                                 elements: str
                                 default: []
                             groups_to_sync:
                                 description: The groups to be synchronized.
                                 type: list
                                 elements: dict
+                                required: false
                                 suboptions:
                                     group_cn:
                                         description: The common name of the group.
                                         type: str
+                                        required: false
                                     attribute_to_set:
                                         description: The attribute to set
                                         type: str
+                                        required: false
                                     value:
                                         description: The value to set
                                         type: str
+                                        required: false
             other:
                 description: Other config options for the LDAP connection.
                 type: dict
@@ -1180,7 +1219,15 @@ def run_module():
                                     options={
                                         "role": dict(type="str"),
                                         "groups": dict(
-                                            type="str",
+                                            type="list",
+                                            elements="dict",
+                                            options={
+                                                "group_dn": dict(type="str"),
+                                                "search_in": dict(
+                                                    type="str",
+                                                    default="this_connection",
+                                                ),
+                                            },
                                         ),
                                     },
                                 ),
