@@ -386,30 +386,8 @@ options:
                                     - feature might increase the execution time of your LDAP sync.
                                 type: bool
                             roles_to_sync:
-                                type: list
+                                type: str
                                 description: The roles to be handled.
-                                elements: dict
-                                suboptions:
-                                    role:
-                                        description: The role id as defined in Checkmk.
-                                        type: str
-                                    groups:
-                                        description: The LDAP groups that should be considered.
-                                        type: list
-                                        elements: dict
-                                        suboptions:
-                                            group_dn:
-                                                description:
-                                                    - This group must be defined within the scope
-                                                    - of the LDAP Group Settings
-                                                type: str
-                                            search_in:
-                                                default: "this_connection"
-                                                description:
-                                                    - An existing ldap connection. Use
-                                                    - this_connection to select the current
-                                                    - connection.
-                                                type: str
                     groups_to_custom_user_attributes:
                         description:
                             - This plug-in allows you to synchronize group memberships of the LDAP
@@ -1202,15 +1180,7 @@ def run_module():
                                     options={
                                         "role": dict(type="str"),
                                         "groups": dict(
-                                            type="list",
-                                            elements="dict",
-                                            options={
-                                                "group_dn": dict(type="str"),
-                                                "search_in": dict(
-                                                    type="str",
-                                                    default="this_connection",
-                                                ),
-                                            },
+                                            type="str",
                                         ),
                                     },
                                 ),
