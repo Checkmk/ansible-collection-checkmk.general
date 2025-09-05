@@ -54,7 +54,6 @@ options:
             ldap_connection:
                 description: The LDAP connection configuration.
                 type: dict
-                required: true
                 default: {}
                 suboptions:
                     directory_type:
@@ -224,7 +223,11 @@ options:
             groups:
                 description: The LDAP group configuration.
                 type: dict
-                default: "{'group_base_dn': '', 'search_scope': 'search_whole_subtree', 'search_filter': '', 'member_attribute': ''}"
+                default:
+                    group_base_dn: ""
+                    search_scope: search_whole_subtree
+                    search_filter: ""
+                    member_attribute: ""
                 suboptions:
                     group_base_dn:
                         description:
@@ -366,6 +369,46 @@ options:
                                 type: list
                                 elements: str
                                 default: []
+                    groups_to_roles:
+                        description:
+                            - Configures the roles of the user depending on its group memberships
+                            - in LDAP. Please note, additionally the user is assigned to the
+                            - Default Roles. Deactivate them if unwanted.
+                        type: dict
+                        suboptions:
+                            handle_nested:
+                                description:
+                                    - Once you enable this option, this plug-in will not only
+                                    - handle direct group memberships, instead it will also dig
+                                    - into nested groups and treat the members of those groups as
+                                    - contact group members as well. Please bear in mind that this
+                                    - feature might increase the execution time of your LDAP sync.
+                                type: bool
+                            roles_to_sync:
+                                type: list
+                                description: The roles to be handled.
+                                elements: dict
+                                suboptions:
+                                    role:
+                                        description: The role id as defined in Checkmk.
+                                        type: str
+                                    groups:
+                                        description: The LDAP groups that should be considered.
+                                        type: list
+                                        elements: dict
+                                        suboptions:
+                                            group_dn:
+                                                description:
+                                                    - This group must be defined within the scope
+                                                    - of the LDAP Group Settings
+                                                type: str
+                                            search_in:
+                                                default: "this_connection"
+                                                description:
+                                                    - An existing ldap connection. Use
+                                                    - this_connection to select the current
+                                                    - connection.
+                                                type: str
                     groups_to_custom_user_attributes:
                         description:
                             - This plug-in allows you to synchronize group memberships of the LDAP
@@ -392,7 +435,8 @@ options:
                                 default: []
                             groups_to_sync:
                                 description: The groups to be synchronized.
-                                type: dict
+                                type: list
+                                elements: dict
                                 suboptions:
                                     group_cn:
                                         description: The common name of the group.
@@ -403,46 +447,6 @@ options:
                                     value:
                                         description: The value to set
                                         type: str
-                    groups_to_roles:
-                        description:
-                            - Configures the roles of the user depending on its group memberships
-                            - in LDAP. Please note, additionally the user is assigned to the
-                            - Default Roles. Deactivate them if unwanted.
-                        type: dict
-                        suboptions:
-                            handle_nested:
-                                description:
-                                    - Once you enable this option, this plug-in will not only
-                                    - handle direct group memberships, instead it will also dig
-                                    - into nested groups and treat the members of those groups as
-                                    - contact group members as well. Please bear in mind that this
-                                    - feature might increase the execution time of your LDAP sync.
-                                type: bool
-                            roles_to_sync:
-                                type: list
-                                description: The roles to be handled.
-                                elements: dict
-                                options:
-                                    role:
-                                        description: The role id as defined in Checkmk.
-                                        type: str
-                                    groups:
-                                        description: The LDAP groups that should be considered.
-                                        type: list
-                                        elements: dict
-                                        options:
-                                            group_dn:
-                                                description:
-                                                    - This group must be defined within the scope
-                                                    - of the LDAP Group Settings
-                                                type: str
-                                            search_in:
-                                                description:
-                                                    - An existing ldap connection. Use
-                                                    - this_connection to select the current
-                                                    - connection.
-                                                type: str
-                                                default: "this_connection"
             other:
                 description: Other config options for the LDAP connection.
                 type: dict
@@ -518,7 +522,7 @@ EXAMPLES = r"""
         id: "test_ldap_complex"
         rule_activation: activated
         comment: "complex"
-        description: "really complex""
+        description: "really complex"
         documentation_url: "www.example.com"
       ldap_connection:
         directory_type:

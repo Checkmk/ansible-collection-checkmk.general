@@ -81,7 +81,7 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     ldap_config:
       general_properties:
-        id: {{ item.general_properties.id }}
+        id: "{{ item.general_properties.id }}"
     state: "absent"
   delegate_to: localhost
   loop: "{{ outer_item.ldap_connections }}"
@@ -97,7 +97,7 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     ldap_config:
       general_properties:
-        id: {{ item.general_properties.id }}
+        id: "{{ item.general_properties.id }}"
     state: "absent"
   delegate_to: localhost
   loop: "{{ outer_item.ldap_connections }}"

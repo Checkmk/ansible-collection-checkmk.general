@@ -1,5 +1,5 @@
 ---
-checkmk_var_test_ldap_connections:
+ldap_connections:
   - general_properties:
       id: "test_ldap_defaults"
     ldap_connection:
