@@ -120,7 +120,6 @@ options:
                                 type: str
                             explicit_password:
                                 description: The explicit password.
-                                no_log: true
                                 type: str
                     ssl_encryption:
                         description:
@@ -167,15 +166,12 @@ options:
                 type: dict
                 default:
                     user_base_dn: ""
-                    search_scope: ""
-                    search_whole_subtree: ""
+                    search_scope: "search_whole_subtree"
                     search_filter: ""
                     filter_group: ""
                     user_id_attribute: ""
-                    user_id_case: ""
-                    dont_convert_to_lowercase: ""
-                    umlauts_in_user_ids: ""
-                    keep_umlauts: ""
+                    user_id_case: "dont_convert_to_lowercase"
+                    umlauts_in_user_ids: "keep_umlauts"
                     create_users: "on_login"
                 suboptions:
                     user_base_dn:

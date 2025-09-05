@@ -8,6 +8,7 @@ checkmk_var_test_sites:
     edition: "cme"
     site: "stable_cme"
     port: "5324"
+
 ldap_connections:
   - general_properties:
       id: "test_ldap_defaults"
