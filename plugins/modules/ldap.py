@@ -200,7 +200,7 @@ options:
                             - "convert_to_lowercase"
                         default: "dont_convert_to_lowercase"
                     umlauts_in_user_ids:
-                        description: 
+                        description:
                             - Checkmk does not support special characters in User-IDs. However, to
                             - deal with LDAP users having umlauts in their User-IDs you previously
                             - had the choice to replace umlauts with other characters. This option
@@ -283,7 +283,7 @@ options:
                     mega_menu_icons:
                         description:
                             - When enabled, in the mega menus you can select between two
-                            - options: Have a green icon only for the headlines – the 'topics' –
+                            - options. Have a green icon only for the headlines – the 'topics' –
                             - for lean design. Or have a colored icon for every entry so that over
                             - time you can zoom in more quickly to a specific entry.
                         type: str
@@ -313,7 +313,7 @@ options:
                         type: str
                         default: ""
                     ui_sidebar_position:
-                        description: The sidebar position 
+                        description: The sidebar position
                         type: str
                         default: ""
                     start_url:
@@ -386,6 +386,7 @@ options:
                                 elements: str
                                 default: []
                             groups_to_sync:
+                                description: The groups to be synchronized.
                                 type: dict
                                 suboptions:
                                     group_cn:
@@ -400,7 +401,7 @@ options:
                     groups_to_roles:
                         description:
                             - Configures the roles of the user depending on its group memberships
-                            - in LDAP. Please note: Additionally the user is assigned to the
+                            - in LDAP. Please note, additionally the user is assigned to the
                             - Default Roles. Deactivate them if unwanted.
                         type: dict
                         suboptions:
@@ -415,12 +416,14 @@ options:
                                 default: false
                             roles_to_sync:
                                 type: list
+                                description: The roles to be handled.
                                 elements: dict
                                 options:
                                     role:
                                         description: The role id as defined in Checkmk.
                                         type: str
                                     groups:
+                                        description: The LDAP groups that should be considered.
                                         type: list
                                         elements: dict
                                         options:
@@ -432,8 +435,8 @@ options:
                                             search_in:
                                                 description:
                                                     - An existing ldap connection. Use
-                                                    - 'this_connection' to select the current
-                                                    - connection
+                                                    - this_connection to select the current
+                                                    - connection.
                                                 type: str
                                                 default: "this_connection"
             other:
@@ -441,6 +444,10 @@ options:
                 type: dict
                 suboptions:
                     sync_interval:
+                        description:
+                            - This option defines the interval of the LDAP synchronization.
+                            - This setting is only used by sites which have the automatic user
+                            - synchronization enabled.
                         type: dict
                         suboptions:
                             days:
@@ -684,7 +691,7 @@ class LDAPAPI(CheckmkAPI):
 
             # logger.debug("DESIRED: %s" % str(self.desired))
 
-            ## Ensure 'comment' is not null
+            # # Ensure 'comment' is not null
             # if (
             #    "comment" not in self.desired["general_properties"]
             #    or self.desired["general_properties"]["comment"] is None
@@ -739,10 +746,10 @@ class LDAPAPI(CheckmkAPI):
         """
 
         def _extend_recursive(d):
-            if type(d) == dict:
+            if isinstance(d, dict):
                 to_be_deleted = []
                 for k, v in d.items():
-                    if type(v) == dict:
+                    if isinstance(v, dict):
                         v = _extend_recursive(d[k])
                     if k in EXTEND_STATE:
                         if not v:
