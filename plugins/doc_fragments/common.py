@@ -31,6 +31,10 @@ class ModuleDocFragment(object):
                 - basic
                 - cookie
             default: bearer
+        api_auth_cookie:
+            description: Authentication cookie for the Checkmk session.
+            required: false
+            type: str
         validate_certs:
             description: Whether to validate the SSL certificate of the Checkmk server.
             default: true
