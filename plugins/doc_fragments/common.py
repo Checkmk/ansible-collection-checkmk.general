@@ -22,6 +22,15 @@ class ModuleDocFragment(object):
             description: The secret to authenticate your automation user.
             required: true
             type: str
+        api_auth_type:
+            description: Type of authentication to use.
+            required: false
+            type: str
+            choices:
+                - bearer
+                - basic
+                - cookie
+            default: bearer
         validate_certs:
             description: Whether to validate the SSL certificate of the Checkmk server.
             default: true
