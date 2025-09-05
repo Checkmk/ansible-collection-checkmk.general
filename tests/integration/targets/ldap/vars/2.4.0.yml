@@ -1,0 +1,152 @@
+---
+checkmk_var_rules:
+  - name: "Filesystems (used space and growth) - Magic Factor."
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      location:
+        folder: "/"
+        position: "bottom"
+      conditions: {
+        "host_labels": [],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "description": "",
+        "disabled": false
+      }
+      value_raw: "{'magic': 0.8}"
+
+  - name: "CPU load (not utilization!) - 15 minute load."
+    ruleset: "checkgroup_parameters:cpu_load"
+    rule:
+      location:
+        folder: "/"
+        position: "bottom"
+      conditions: {
+        "host_labels": [],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "description": "",
+        "disabled": false
+      }
+      value_raw: "{'levels15': (1.0, 2.0)}"
+
+  - name: "CPU utilization on Linux/UNIX - Multiple thresholds."
+    ruleset: "checkgroup_parameters:cpu_iowait"
+    rule:
+      location:
+        folder: "/"
+        position: "bottom"
+      conditions: {
+        "host_labels": [],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "description": "",
+        "disabled": false
+      }
+      value_raw: "{'core_util_time': (100.0, 300, 900), 'core_util_time_total': (100.0, 300, 900)}"
+
+  - name: "Logwatch Event Console Forwarding - Multiple values."
+    ruleset: "checkgroup_parameters:logwatch_ec"
+    rule:
+      location:
+        folder: "/"
+        position: "bottom"
+      conditions: {
+        "host_labels": [],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "",
+        "description": "",
+        "disabled": false
+      }
+      value_raw: "{'facility': 17, 'method': '', 'monitor_logfilelist': False}"
+
+  - name: "Simulating SNMP by using a stored SNMP walk - Enable."
+    ruleset: "usewalk_hosts"
+    rule:
+      conditions: {
+        "host_labels": [],
+        "host_tags": [
+          {
+            "key": "snmp_ds",
+            "operator": "is_not",
+            "value": "no-snmp"
+          }
+        ],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+        "disabled": false,
+      }
+      value_raw: 'True'
+
+  - name: "Memory percentage used - Levels."
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      conditions: {
+        "host_labels": [],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 80%\nCritical at 90%\n",
+        "description": "Allow higher memory usage",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (80.0, 90.0)}"
+
+  - name: "Memory percentage used - Combined host label conditions."
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      conditions: {
+        "host_label_groups": [
+          {
+            operator: "and",
+            label_group: [
+              {
+                operator: "and",
+                label: "cmk/site:beta"
+              },
+              {
+                operator: "or",
+                label: "cmk/os_family:linux"
+              }
+            ],
+          },
+          {
+            operator: "or",
+            label_group: [
+              {
+                operator: "and",
+                label: "cmk/site:alpha"
+              },
+              {
+                operator: "or",
+                label: "cmk/os_family:windows"
+              }
+            ],
+          },
+        ],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "Warning at 70%\nCritical at 80%\n",
+        "description": "Allow higher memory usage for certain host label conditions",
+        "disabled": false,
+        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
+      }
+      value_raw: "{'levels': (70.0, 80.0)}"
