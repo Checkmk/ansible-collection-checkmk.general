@@ -1,4 +1,13 @@
 ---
+checkmk_var_test_sites:
+  - version: "2.4.0p9"
+    edition: "cre"
+    site: "stable_cre"
+    port: "5024"
+  - version: "2.4.0p9"
+    edition: "cme"
+    site: "stable_cme"
+    port: "5324"
 ldap_connections:
   - general_properties:
       id: "test_ldap_defaults"

@@ -120,6 +120,7 @@ options:
                                 type: str
                             explicit_password:
                                 description: The explicit password.
+                                no_log: true
                                 type: str
                     ssl_encryption:
                         description:
@@ -388,7 +389,7 @@ options:
                                 type: list
                                 description: The roles to be handled.
                                 elements: dict
-                                contains:
+                                suboptions:
                                     role:
                                         description: The role id as defined in Checkmk.
                                         type: str
@@ -396,7 +397,7 @@ options:
                                         description: The LDAP groups that should be considered.
                                         type: list
                                         elements: dict
-                                        contains:
+                                        suboptions:
                                             group_dn:
                                                 description:
                                                     - This group must be defined within the scope
@@ -437,7 +438,7 @@ options:
                                 description: The groups to be synchronized.
                                 type: list
                                 elements: dict
-                                contains:
+                                suboptions:
                                     group_cn:
                                         description: The common name of the group.
                                         type: str
@@ -534,7 +535,7 @@ EXAMPLES = r"""
         bind_credentials:
           bind_dn: "ldapadmin"
           type: store
-          password_store_id: "ldapadmin""
+          password_store_id: "ldapadmin"
         ssl_encryption: enable_ssl
         tcp_port: 1234
         connect_timeout: 3
@@ -1043,7 +1044,7 @@ def run_module():
                                 ),
                                 "bind_dn": dict(type="str"),
                                 "password_store_id": dict(type="str"),
-                                "explicit_password": dict(type="str"),
+                                "explicit_password": dict(type="str", no_log=True),
                             },
                         ),
                         "ssl_encryption": dict(
