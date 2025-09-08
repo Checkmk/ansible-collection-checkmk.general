@@ -3,7 +3,7 @@ name = "checkmk_ansible_collection"
 version = "6.2.2"
 requires-python = ">=3.11"
 dependencies = [
-    "ansible-core==2.18.5",
+    "ansible-core==2.19.1",
     "antsibull-changelog==0.34.0",
     "antsibull-docs==2.16.3",
     "ansible-lint==25.4.0",
