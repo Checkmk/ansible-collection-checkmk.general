@@ -10,7 +10,7 @@
   when: not ((outer_item.edition == "cme") or (outer_item.edition == "cce"))
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create an LDAP connection."
-  site:
+  ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
@@ -24,7 +24,7 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create an LDAP connection. Again."
-  site:
+  ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
@@ -40,7 +40,7 @@
   failed_when: __checkmk_var_result_create.changed | bool
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update LDAP connections."
-  site:
+  ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
@@ -56,7 +56,7 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update LDAP connections. Again."
-  site:
+  ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
@@ -74,7 +74,7 @@
   failed_when: __checkmk_var_result_update.changed | bool
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete LDAP connection."
-  site:
+  ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
@@ -90,7 +90,7 @@
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete LDAP connection. Again."
-  site:
+  ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
