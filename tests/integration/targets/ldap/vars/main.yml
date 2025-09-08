@@ -13,6 +13,7 @@ checkmk_var_ldap_connections:
   - ldap_config:
       general_properties:
         id: "test_ldap_defaults"
+        comment: "defaults"
       ldap_connection:
         directory_type:
           type: "open_ldap"
