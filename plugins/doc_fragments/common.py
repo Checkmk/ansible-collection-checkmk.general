@@ -30,6 +30,19 @@ class ModuleDocFragment(object):
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_AUTOMATION_SECRET).
             required: true
             type: str
+        api_auth_type:
+            description: Type of authentication to use.
+            required: false
+            type: str
+            choices:
+                - bearer
+                - basic
+                - cookie
+            default: bearer
+        api_auth_cookie:
+            description: Authentication cookie for the Checkmk session.
+            required: false
+            type: str
         validate_certs:
             description:
                 - Whether to validate the SSL certificate of the Checkmk server.
