@@ -725,7 +725,19 @@ class LDAPAPI(CheckmkAPI):
 
         self.desired_state = self.params.get("state")
 
-        error = self._verify_parameters()
+        error = self._verify_basic_parameters()
+        if error:
+            exit_module(
+                self.module,
+                msg=error,
+                failed=True,
+                logger=logger,
+            )
+
+        self.state = None
+        self._get_current()
+
+        error = self._verify_extended_parameters()
         if error:
             exit_module(
                 self.module,
@@ -738,21 +750,6 @@ class LDAPAPI(CheckmkAPI):
             self.desired = self.ldap_config.copy()
             self.desired = self._set_defaults(self.desired)
             self.desired = self._extend_state_parameters(self.desired)
-
-            # logger.debug("DESIRED: %s" % str(self.desired))
-
-            # # Ensure 'comment' is not null
-            # if (
-            #    "comment" not in self.desired["general_properties"]
-            #    or self.desired["general_properties"]["comment"] is None
-            # ):
-            #    self.desired["general_properties"]["comment"] = ""
-
-        self.state = None
-
-        # logger.debug("headers1: %s" % str(self.headers))
-        self._get_current()
-        # logger.debug("headers2: %s" % str(self.headers))
 
         # Initialize the ConfigDiffer with desired and current configurations
         if self.desired_state == "present":
@@ -839,24 +836,28 @@ class LDAPAPI(CheckmkAPI):
 
         return _extend_recursive(ldap_config)
 
-    def _verify_parameters(self):
+    def _verify_basic_parameters(self):
         """
-        Checks if all mandatory parameters are there and making sense.
+        Checks if all mandatory basic parameters are there and making sense.
         """
-        ldap_config = self.params.get("ldap_config")
-        if not ldap_config:
+        self.ldap_config = self.params.get("ldap_config")
+        if not self.ldap_config:
             return "Missing parameter 'ldap_config'."
 
-        general_properties = ldap_config.get("general_properties")
-        if not general_properties:
+        self.general_properties = self.ldap_config.get("general_properties")
+        if not self.general_properties:
             return "Missing parameter 'general_properties' in ldap_config dictionary."
 
-        self.id = general_properties.get("id")
+        self.id = self.general_properties.get("id")
         if not self.id:
             return "Missing parameter 'id' in general_properties dictionary."
 
-        if self.desired_state == "present":
-            ldap_connection = ldap_config.get("ldap_connection")
+    def _verify_extended_parameters(self):
+        """
+        Checks if all mandatory parameters for new connections are there and making sense.
+        """
+        if self.desired_state == "present" and self.state != "present":
+            ldap_connection = self.ldap_config.get("ldap_connection")
             if not ldap_connection:
                 return "Missing parameter 'ldap_connection' in ldap_config dictionary."
 
@@ -880,8 +881,6 @@ class LDAPAPI(CheckmkAPI):
                 and not directory_type.get("domain")
             ):
                 return "Directory type 'active_directory_automatic' requires a parameter 'domain'."
-
-        self.ldap_config = ldap_config
 
     def _get_current(self):
         """
@@ -914,6 +913,7 @@ class LDAPAPI(CheckmkAPI):
         else:
             self.state = "absent"
             self.current = {}
+        logger.debug("state: %s" % self.state)
 
     def _build_endpoint(self, action="get"):
         """
@@ -996,6 +996,7 @@ class LDAPAPI(CheckmkAPI):
         Returns:
             dict: The result of the creation operation.
         """
+        logger.debug("Will create the connection")
         filtered_data = {k: v for k, v in self.desired.items() if v is not None}
         return self._perform_action(action="create", method="POST", data=filtered_data)
 
@@ -1300,7 +1301,10 @@ def run_module():
 
     try:
         if desired_state == "present":
+            logger.debug("desired: present")
+            logger.debug("ldap_api.state: %s" % ldap_api.state)
             if ldap_api.state == "absent":
+                logger.debug("current: absent")
                 result = ldap_api.create()
                 exit_module(module, result=result, logger=logger)
             elif ldap_api.needs_update():
