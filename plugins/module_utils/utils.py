@@ -41,6 +41,17 @@ def base_argument_spec():
             no_log=True,
             fallback=(env_fallback, ["CHECKMK_VAR_AUTOMATION_SECRET"]),
         ),
+        api_auth_type=dict(
+            type="str",
+            choices=["bearer", "basic", "cookie"],
+            default="bearer",
+            fallback=(env_fallback, ["CHECKMK_VAR_API_AUTH_TYPE"]),
+        ),
+        api_auth_cookie=dict(
+            type="str",
+            no_log=True,
+            fallback=(env_fallback, ["CHECKMK_VAR_API_AUTH_COOKIE"]),
+        ),
     )
 
 
