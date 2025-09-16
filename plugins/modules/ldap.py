@@ -1003,6 +1003,7 @@ class LDAPAPI(CheckmkAPI):
         """
         logger.debug("Will create the connection")
         filtered_data = {k: v for k, v in self.desired.items() if v is not None}
+        logger.debug("data: %s" % str(filtered_data))
         return self._perform_action(action="create", method="POST", data=filtered_data)
 
     def edit(self):
@@ -1013,7 +1014,7 @@ class LDAPAPI(CheckmkAPI):
         """
         logger.debug("Will update the connection")
         filtered_data = {k: v for k, v in self.desired.items() if v is not None}
-        logger.debug("data: %s" % str(data))
+        logger.debug("data: %s" % str(filtered_data))
         return self._perform_action(action="edit", method="PUT", data=filtered_data)
 
     def delete(self):
