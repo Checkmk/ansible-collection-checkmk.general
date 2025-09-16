@@ -759,11 +759,16 @@ class LDAPAPI(CheckmkAPI):
         """
         Set some default values
         """
-        ldap_connection = ldap_config.get("ldap_connection")
+        ldap_connection = ldap_config.get("ldap_connection", {})
 
         # Directory type
         directory_type = ldap_connection.get("directory_type")
+
+        if not directory_type:
+            return ldap_config
+
         d_type = directory_type.get("type", "active_directory_manual")
+
         if d_type == "active_directory_automatic":
             ldap_config["ldap_connection"]["directory_type"] = {
                 "type": "active_directory_automatic",
