@@ -746,12 +746,12 @@ class LDAPAPI(CheckmkAPI):
                 logger=logger,
             )
 
+        self.desired = self.ldap_config.copy()
         if self.desired_state == "present":
-            self.desired = self.ldap_config.copy()
             self.desired = self._set_defaults(self.desired)
             self.desired = self._extend_state_parameters(self.desired)
 
-            self.differ = ConfigDiffer(self.desired, self.current)
+        self.differ = ConfigDiffer(self.desired, self.current)
 
     def _set_defaults(self, ldap_config):
         """
