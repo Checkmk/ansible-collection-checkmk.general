@@ -1011,7 +1011,9 @@ class LDAPAPI(CheckmkAPI):
         Returns:
             dict: The result of the update operation.
         """
+        logger.debug("Will update the connection")
         filtered_data = {k: v for k, v in self.desired.items() if v is not None}
+        logger.debug("data: %s" % str(data))
         return self._perform_action(action="edit", method="PUT", data=filtered_data)
 
     def delete(self):
