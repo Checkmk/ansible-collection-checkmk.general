@@ -41,10 +41,10 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Lookup an LDAP connection."
   ansible.builtin.set_fact:
-    checkmk_var_ldap_connection: "{{ extensions }}"
+      checkmk_var_ldap_connection: "{{ checkmk_var_extensions }}"
   vars:
-    extensions: "{{
-                    lookup('checkmk.general.checkmk_var_ldap_connection',
+    checkmk_var_extensions: "{{
+                    lookup('checkmk.general.ldap_connection',
                         checkmk_var_ldap_connections[0].ldap_config.general_properties.id,
                         server_url=checkmk_var_server_url,
                         site=outer_item.site,
@@ -64,10 +64,10 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    ldap_config: "{{ item.extenstions | combine(comment_update, recursive=true) }}"
+    ldap_config: "{{ item.extenstions | combine(checkmk_var_comment_update, recursive=true) }}"
     state: "present"
   vars:
-    comment_update:
+    checkmk_var_comment_update:
       general_properties:
         comment: New comment
   delegate_to: localhost
