@@ -751,8 +751,6 @@ class LDAPAPI(CheckmkAPI):
             self.desired = self._set_defaults(self.desired)
             self.desired = self._extend_state_parameters(self.desired)
 
-        # Initialize the ConfigDiffer with desired and current configurations
-        if self.desired_state == "present":
             self.differ = ConfigDiffer(self.desired, self.current)
 
     def _set_defaults(self, ldap_config):
@@ -1013,6 +1011,7 @@ class LDAPAPI(CheckmkAPI):
             dict: The result of the update operation.
         """
         logger.debug("Will update the connection")
+        logger.debug("diff: %s" % str(self.generate_diff()))
         filtered_data = {k: v for k, v in self.desired.items() if v is not None}
         logger.debug("data: %s" % str(filtered_data))
         return self._perform_action(action="edit", method="PUT", data=filtered_data)
