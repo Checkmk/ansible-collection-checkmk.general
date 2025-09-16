@@ -71,7 +71,7 @@
       general_properties:
         comment: New comment
   delegate_to: localhost
-  loop: "{{ lookup('checkmk.general.checkmk_var_ldap_connection',
+  loop: "{{ lookup('checkmk.general.ldap_connection',
                         checkmk_var_ldap_connections[0].ldap_config.general_properties.id,
                         server_url=checkmk_var_server_url,
                         site=outer_item.site,
