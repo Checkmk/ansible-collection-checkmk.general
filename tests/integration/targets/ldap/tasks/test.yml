@@ -91,7 +91,7 @@
                         )
                  }}"
   loop_control:
-    label: "{{ item.extensions.ldap_config.general_properties.id }}"
+    label: "{{ item.extensions.eneral_properties.id }}"
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update LDAP connections."
@@ -116,7 +116,7 @@
                         )
                  }}"
   loop_control:
-    label: "{{ item.extensions.ldap_config.general_properties.id }}"
+    label: "{{ item.extensions.general_properties.id }}"
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update LDAP connections. Again."
