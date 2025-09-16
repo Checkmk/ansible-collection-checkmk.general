@@ -79,3 +79,74 @@ checkmk_var_ldap_connections:
               groups:
                 - group_dn: blebb
                   search_in: this_connection
+
+checkmk_var_ldap_connections_update:
+  - ldap_config:
+      general_properties:
+        id: "test_ldap_defaults"
+        comment: "defaults. Updated!"
+      ldap_connection:
+        directory_type:
+          type: "open_ldap"
+          ldap_server: "my.ldap.server.tld"
+  - ldap_config:
+      general_properties:
+        id: "test_ldap_complex"
+        rule_activation: activated
+        comment: "komplex. Updated!"
+        description: "echt kompliziert"
+        documentation_url: "www.checkmk.com"
+      ldap_connection:
+        directory_type:
+          type: "open_ldap"
+          ldap_server: "my.ldap.server.tld"
+          failover_servers:
+            - my2nd.ldap.server.tld
+            - my3rd.ldap.server.tld
+        bind_credentials:
+          bind_dn: "ldapadmin"
+          type: store
+          password_store_id: "my_ldap"
+        ssl_encryption: enable_ssl
+        tcp_port: 1234
+        connect_timeout: 3
+        ldap_version: 2
+        page_size: 2000
+        response_timeout: 8
+        connection_suffix: "dc=domaincomp,dc=de"
+      users:
+        user_base_dn: "basen.und.vettern"
+        search_scope: search_only_base_dn_entry
+        search_filter: "(abc=123)"
+        filter_group: "(member=xyz)"
+        user_id_attribute: samaccountname
+        user_id_case: convert_to_lowercase
+        umlauts_in_user_ids: replace_umlauts
+        create_users: on_sync
+      groups:
+        group_base_dn: "basen.und.vettern"
+        search_scope: search_only_base_dn_entry
+        search_filter: "(abc=123)"
+        member_attribute: "momper"
+      sync_plugins:
+        alias: blubb
+        visibility_of_hosts_or_services: blobb
+        contact_group_membership:
+          handle_nested: true
+          sync_from_other_connections: test_ldap_defaults
+        groups_to_custom_user_attributes:
+          handle_nested: true
+          groups_to_sync:
+            - group_cn: blibb
+              attribute_to_set: mega_menu_icons
+              value: per_entry
+            - group_cn: blabb
+              attribute_to_set: mega_menu_icons
+              value: per_entry
+        groups_to_roles:
+          handle_nested: true
+          roles_to_sync:
+            - role: admin
+              groups:
+                - group_dn: blebb
+                  search_in: this_connection
