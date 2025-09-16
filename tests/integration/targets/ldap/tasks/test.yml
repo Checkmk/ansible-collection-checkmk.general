@@ -39,6 +39,26 @@
   register: __checkmk_var_result_create
   failed_when: __checkmk_var_result_create.changed | bool
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Lookup an LDAP connection."
+  ansible.builtin.set_fact:
+    ldap_connection: "{{ extensions }}"
+  vars:
+        extensions: "{{
+                        lookup('checkmk.general.ldap_connection',
+                            checkmk_var_ldap_connections[0].ldap_config.general_properties.id,
+                            effective_attributes=True,
+                            server_url=server_url,
+                            site=site,
+                            automation_user=automation_user,
+                            automation_secret=automation_secret,
+                            validate_certs=False
+                            )
+                     }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Debug."
+  ansible.builtin.debug:
+    msg: "LDAP connection: {{ ldap_connection }}"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update LDAP connections."
   ldap:
     server_url: "{{ checkmk_var_server_url }}"

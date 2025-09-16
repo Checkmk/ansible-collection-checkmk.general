@@ -804,7 +804,6 @@ class LDAPAPI(CheckmkAPI):
                     if k in EXTEND_STATE:
                         if not v:
                             d[k] = {"state": "disabled"}
-                            # to_be_deleted.append(k)
                         elif EXTEND_STATE[k]:
                             d[k] = {"state": "enabled", EXTEND_STATE[k]: v}
                         else:
@@ -828,10 +827,7 @@ class LDAPAPI(CheckmkAPI):
                                 )
                                 d[k]["groups_to_sync"] = v.get("groups_to_sync", [])
                             elif k == "groups_to_roles":
-                                # logger.debug("##### groups_to_roles: %s" % str(v))
                                 d[k]["handle_nested"] = v.get("handle_nested", False)
-                                # for role in v.get("roles_to_sync", []):
-                                #    d[k][role.get("role")] = role.get("groups", [])
                 for key in to_be_deleted:
                     del d[key]
 
@@ -1001,7 +997,6 @@ class LDAPAPI(CheckmkAPI):
         """
         logger.debug("Will create the connection")
         filtered_data = {k: v for k, v in self.desired.items() if v is not None}
-        logger.debug("data: %s" % str(filtered_data))
         return self._perform_action(action="create", method="POST", data=filtered_data)
 
     def edit(self):
@@ -1013,7 +1008,6 @@ class LDAPAPI(CheckmkAPI):
         logger.debug("Will update the connection")
         logger.debug("diff: %s" % str(self.generate_diff()))
         filtered_data = {k: v for k, v in self.desired.items() if v is not None}
-        logger.debug("data: %s" % str(filtered_data))
         return self._perform_action(action="edit", method="PUT", data=filtered_data)
 
     def delete(self):
@@ -1191,9 +1185,6 @@ def run_module():
                         "temperature_unit": "",
                         "ui_theme": "",
                         "visibility_of_hosts_or_services": "",
-                        # "contact_group_membership": {},
-                        # "groups_to_custom_user_attributes": {},
-                        # "groups_to_roles": {},
                     },
                     options={
                         "alias": dict(type="str", default=""),
@@ -1299,19 +1290,12 @@ def run_module():
     logger.set_loglevel(module._verbosity)
     logger.set_loglevel(2)
 
-    # logger.debug("Starting...")
     desired_state = module.params["state"]
-    # logger.debug("Desired_state: %s" % str(desired_state))
-    # logger.debug("Desired_parameters: %s" % str(module.params))
     ldap_api = LDAPAPI(module)
-    # logger.debug("LDAPAPI instance created.")
 
     try:
         if desired_state == "present":
-            logger.debug("desired: present")
-            logger.debug("ldap_api.state: %s" % ldap_api.state)
             if ldap_api.state == "absent":
-                logger.debug("current: absent")
                 result = ldap_api.create()
                 exit_module(module, result=result, logger=logger)
             elif ldap_api.needs_update():
