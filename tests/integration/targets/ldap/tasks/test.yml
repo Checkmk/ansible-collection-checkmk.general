@@ -70,8 +70,6 @@
                         validate_certs=False
                         )
                  }}"
-  loop_control:
-    label: "{{ item.ldap_config.general_properties.id }}"
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Show LDAP connections updates."
@@ -90,8 +88,8 @@
                         validate_certs=False
                         )
                  }}"
-  loop_control:
-    label: "{{ item.ldap_config.general_properties.id }}"
+  #loop_control:
+    #label: "{{ item.ldap_config.general_properties.id }}"
   run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update LDAP connections."
