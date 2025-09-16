@@ -41,7 +41,7 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Lookup an LDAP connection."
   ansible.builtin.set_fact:
-      checkmk_var_ldap_connection: "{{ checkmk_var_extensions }}"
+    checkmk_var_ldap_connection: "{{ checkmk_var_extensions }}"
   vars:
     checkmk_var_extensions: "{{
                     lookup('checkmk.general.ldap_connection',
