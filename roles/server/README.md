@@ -138,7 +138,7 @@ Extension packages can also be listed to be installed on the specific central si
 
 ### Site Updates
 
-    checkmk_server_backup_on_update: 'true'
+    checkmk_server_backup_on_update: true
 
 Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups.
 
