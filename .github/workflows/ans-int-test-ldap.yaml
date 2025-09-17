@@ -28,6 +28,9 @@ on:
   push:
     paths:
       - '.github/workflows/ans-int-test-ldap.yaml'
+      - 'plugins/lookup/ldap_connection.py'
+      - 'plugins/lookup/ldap_connections.py'
+      - 'plugins/module_utils/ldap.py'
       - 'plugins/modules/ldap.py'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/ldap/'
