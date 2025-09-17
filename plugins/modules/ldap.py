@@ -137,7 +137,7 @@ options:
                     connect_timeout:
                         description:
                             - Timeout for the initial connection to the LDAP server in seconds.
-                        type: int
+                        type: float
                     ldap_version:
                         description:
                             - The selected LDAP version the LDAP server is serving. Most modern
@@ -816,18 +816,21 @@ class LDAPAPI(CheckmkAPI):
                                 else:
                                     del d[k]["password_store_id"]
                             elif k == "contact_group_membership":
-                                d[k]["handle_nested"] = v.get("handle_nested", False)
+                                if "handle_nested" in v:
+                                    d[k]["handle_nested"] = v.get("handle_nested")
                                 d[k]["sync_from_other_connections"] = v.get(
                                     "sync_from_other_connections", []
                                 )
                             elif k == "groups_to_custom_user_attributes":
-                                d[k]["handle_nested"] = v.get("handle_nested", False)
+                                if "handle_nested" in v:
+                                    d[k]["handle_nested"] = v.get("handle_nested")
                                 d[k]["sync_from_other_connections"] = v.get(
                                     "sync_from_other_connections", []
                                 )
                                 d[k]["groups_to_sync"] = v.get("groups_to_sync", [])
                             elif k == "groups_to_roles":
-                                d[k]["handle_nested"] = v.get("handle_nested", False)
+                                if "handle_nested" in v:
+                                    d[k]["handle_nested"] = v.get("handle_nested")
                 for key in to_be_deleted:
                     del d[key]
 
@@ -1093,7 +1096,7 @@ def run_module():
                             choices=["disable_ssl", "enable_ssl"],
                         ),
                         "tcp_port": dict(type="int"),
-                        "connect_timeout": dict(type="int"),
+                        "connect_timeout": dict(type="float"),
                         "ldap_version": dict(type="int", choices=[2, 3]),
                         "page_size": dict(type="int"),
                         "response_timeout": dict(type="int"),
