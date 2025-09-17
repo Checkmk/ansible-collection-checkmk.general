@@ -101,7 +101,7 @@ def extend_recursive(d):
         to_be_deleted = []
         for k, v in d.items():
             if isinstance(v, dict):
-                v = _extend_recursive(d[k])
+                v = extend_recursive(d[k])
             if k in EXTEND_STATE:
                 if not v:
                     d[k] = {"state": "disabled"}
@@ -136,4 +136,3 @@ def extend_recursive(d):
             del d[key]
 
     return d
-
