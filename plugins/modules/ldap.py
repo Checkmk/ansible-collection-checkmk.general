@@ -933,7 +933,8 @@ class LDAPAPI(CheckmkAPI):
             }
             exit_module(
                 self.module,
-                msg="LDAP configuration %s. diff=%s" % (
+                msg="LDAP configuration %s. diff=%s"
+                % (
                     action_msgs.get(action, action),
                     str(diff),
                 ),
