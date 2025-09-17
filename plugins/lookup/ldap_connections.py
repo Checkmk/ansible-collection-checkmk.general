@@ -195,6 +195,7 @@ def compress_recursive(d):
                         "groups": groups,
                     }
                 )
+            d["groups_to_roles"] = gtr
         for k in del_state_from:
             try:
                 del d[k]["state"]
@@ -238,12 +239,12 @@ class LookupModule(LookupBase):
             )
 
         ldap_connection_list = response.get("value")
-        #ldap_connection_list = ldap_connection_list[3:4]
+        # ldap_connection_list = ldap_connection_list[3:4]
         log.append("#### before: %s" % str(ldap_connection_list))
         for lc in ldap_connection_list:
             lc["extensions"] = compress_recursive(lc["extensions"])
         log.append("#### after: %s" % str(ldap_connection_list))
 
-        #return [log]
-        #return [[lc]]
+        # return [log]
+        # return [[lc]]
         return [ldap_connection_list]
