@@ -598,7 +598,6 @@ EXAMPLES = r"""
         visibility_of_hosts_or_services: blobb
         contact_group_membership:
           handle_nested: true
-          sync_from_other_connections: test_ldap_defaults
         groups_to_custom_user_attributes:
           handle_nested: true
           groups_to_sync:
@@ -613,6 +612,29 @@ EXAMPLES = r"""
                 - group_dn: CN=admins,OU=Groups,DC=example,DC=com
                   search_in: this_connection
     state: "present"
+
+- name: Update all LDAP connectors
+  checkmk.general.ldap:
+    server_url: "http://myserver/"
+    site: "mysite"
+    automation_auth_type: "bearer"
+    automation_user: "myuser"
+    automation_secret: "mysecret"
+    ldap_config: "{{ item.extensions | combine(checkmk_var_comment_update, recursive=true) }}"
+    state: "present"
+  vars:
+    checkmk_var_comment_update:
+      general_properties:
+        comment: New comment
+  loop: "{{ lookup('checkmk.general.ldap_connections',
+                        server_url='http://myserver/',
+                        site='mysite',
+                        automation_user='myuser',
+                        automation_secret='mysecret',
+                        )
+                 }}"
+  loop_control:
+    label: "{{ item.extensions.general_properties.id }}"
 """
 
 RETURN = r"""
@@ -635,7 +657,7 @@ diff:
   description:
     - The diff between the current and desired state.
   type: dict
-  returned: when differences are detected or in diff mode
+  returned: when in diff mode
 """
 
 import json
@@ -909,10 +931,14 @@ class LDAPAPI(CheckmkAPI):
                 "edit": "would be modified",
                 "delete": "would be deleted",
             }
-            return dict(
-                msg="LDAP configuration %s." % action_msgs.get(action, action),
+            exit_module(
+                self.module,
+                msg="LDAP configuration %s. diff=%s" % (
+                    action_msgs.get(action, action),
+                    str(diff),
+                ),
                 changed=True,  # Indicate that changes would occur
-                diff=diff,
+                logger=logger,
             )
 
         return self._fetch(
