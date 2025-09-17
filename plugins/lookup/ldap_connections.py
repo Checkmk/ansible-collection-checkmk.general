@@ -172,30 +172,39 @@ def compress_recursive(d):
                         if COMPRESS_STATE[k]:
                             d[k] = v[COMPRESS_STATE[k]]
                         else:
-                            del_state_from.append(k)
                             if k == "groups_to_roles":
                                 # Handle this later not to mix up our dict now
                                 gtr = v.copy()
+                            else:
+                                del_state_from.append(k)
                     else:
                         del_key.append(k)
                 else:
                     v = compress_recursive(v)
         log.append("compressed: %s" % str(d))
         if gtr:
-            old_gtr = d["groups_to_roles"]
             log.append("### gtr: %s" % str(gtr))
+            del gtr["state"]
+            old_gtr = d["groups_to_roles"]
             log.append("### old_gtr: %s" % str(old_gtr))
             if "handle_nested" in old_gtr:
                 del old_gtr["handle_nested"]
             gtr["roles_to_sync"] = []
+            to_be_deleted = []
+            del old_gtr["state"]
             for role, groups in old_gtr.items():
+                to_be_deleted.append(role)
                 gtr["roles_to_sync"].append(
                     {
                         "role": role,
                         "groups": groups,
                     }
                 )
+            log.append("### to_be_deleted: %s" % str(to_be_deleted))
+            for role in to_be_deleted:
+                del gtr[role]
             d["groups_to_roles"] = gtr
+            log.append("### new gtr: %s" % str(gtr))
         for k in del_state_from:
             try:
                 del d[k]["state"]
