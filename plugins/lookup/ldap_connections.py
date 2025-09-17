@@ -126,6 +126,82 @@ from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import 
     CheckMKLookupAPI,
 )
 
+COMPRESS_STATE = {
+    "connection_suffix": "suffix",
+    "connect_timeout": "seconds",
+    "response_timeout": "seconds",
+    "ldap_version": "version",
+    "page_size": "size",
+    "tcp_port": "port",
+    "search_filter": "filter",
+    "member_attribute": "attribute",
+    "authentication_expiration": "attribute_to_sync",
+    "disable_notifications": "attribute_to_sync",
+    "mega_menu_icons": "attribute_to_sync",
+    "navigation_bar_icons": "attribute_to_sync",
+    "pager": "attribute_to_sync",
+    "show_mode": "attribute_to_sync",
+    "start_url": "attribute_to_sync",
+    "temperature_unit": "attribute_to_sync",
+    "ui_sidebar_position": "attribute_to_sync",
+    "ui_theme": "attribute_to_sync",
+    "visibility_of_hosts_or_services": "attribute_to_sync",
+    "filter_group": "filter",
+    "user_id_attribute": "attribute",
+    "alias": "attribute_to_sync",
+    "email_address": "attribute_to_sync",
+    "bind_credentials": None,
+    "contact_group_membership": None,
+    "groups_to_custom_user_attributes": None,
+    "groups_to_roles": None,
+}
+
+log = []
+
+
+def compress_recursive(d):
+    log.append("compress: %s" % str(d))
+    if isinstance(d, dict):
+        del_state_from = []
+        del_key = []
+        gtr = None
+        for k, v in d.items():
+            if isinstance(v, dict):
+                if "state" in v:
+                    if v.get("state") == "enabled":
+                        if COMPRESS_STATE[k]:
+                            d[k] = v[COMPRESS_STATE[k]]
+                        else:
+                            del_state_from.append(k)
+                            if k == "groups_to_roles":
+                                # Handle this later not to mix up our dict now
+                                gtr = v.copy()
+                    else:
+                        del_key.append(k)
+                else:
+                    v = compress_recursive(v)
+        log.append("compressed: %s" % str(d))
+        if gtr:
+            old_gtr = d["groups_to_roles"]
+            if handle_nested in old_gtr:
+                del old_gtr["handle_nested"]
+            for role, groups in old_gtr:
+                gtr["roles_to_sync"].append(
+                    {
+                        "role": role,
+                        "groups": groups,
+                    }
+                )
+        for k in del_state_from:
+            try:
+                del d[k]["state"]
+            except KeyError:
+                log.append("KEY ERROR: %s" % k)
+        for k in del_key:
+            del d[k]
+        log.append("cleaned: %s" % str(d))
+    return d
+
 
 class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
@@ -159,5 +235,12 @@ class LookupModule(LookupBase):
             )
 
         ldap_connection_list = response.get("value")
+        ldap_connection_list = ldap_connection_list[3:4]
+        log.append("#### before: %s" % str(ldap_connection_list))
+        for lc in ldap_connection_list:
+            lc["extensions"] = compress_recursive(lc["extensions"])
+        log.append("#### after: %s" % str(ldap_connection_list))
 
+        #return [log]
+        #return [[lc]]
         return [ldap_connection_list]

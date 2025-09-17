@@ -173,6 +173,7 @@ COMPRESS_STATE = {
 
 log = []
 
+
 def compress_recursive(d):
     log.append("compress: %s" % str(d))
     if isinstance(d, dict):
@@ -212,6 +213,7 @@ def compress_recursive(d):
         log.append("cleaned: %s" % str(d))
     return d
 
+
 class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
@@ -247,5 +249,5 @@ class LookupModule(LookupBase):
 
             ret.append(compress_recursive(response.get("extensions", {})))
 
-        #return log
+        # return log
         return ret
