@@ -137,8 +137,12 @@ import json
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
-from ansible_collections.checkmk.general.plugins.module_utils.ldap import compress_recursive
-from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import CheckMKLookupAPI
+from ansible_collections.checkmk.general.plugins.module_utils.ldap import (
+    compress_recursive,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
+    CheckMKLookupAPI,
+)
 
 
 class LookupModule(LookupBase):
