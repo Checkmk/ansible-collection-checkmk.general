@@ -183,9 +183,12 @@ def compress_recursive(d):
         log.append("compressed: %s" % str(d))
         if gtr:
             old_gtr = d["groups_to_roles"]
-            if handle_nested in old_gtr:
+            log.append("### gtr: %s" % str(gtr))
+            log.append("### old_gtr: %s" % str(old_gtr))
+            if "handle_nested" in old_gtr:
                 del old_gtr["handle_nested"]
-            for role, groups in old_gtr:
+            gtr["roles_to_sync"] = []
+            for role, groups in old_gtr.items():
                 gtr["roles_to_sync"].append(
                     {
                         "role": role,
@@ -235,7 +238,7 @@ class LookupModule(LookupBase):
             )
 
         ldap_connection_list = response.get("value")
-        ldap_connection_list = ldap_connection_list[3:4]
+        #ldap_connection_list = ldap_connection_list[3:4]
         log.append("#### before: %s" % str(ldap_connection_list))
         for lc in ldap_connection_list:
             lc["extensions"] = compress_recursive(lc["extensions"])
