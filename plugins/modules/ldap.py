@@ -645,41 +645,12 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import (
     CheckmkAPI,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
+from ansible_collections.checkmk.general.plugins.module_utils.ldap import extend_recursive
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
     exit_module,
 )
-
-EXTEND_STATE = {
-    "connection_suffix": "suffix",
-    "connect_timeout": "seconds",
-    "response_timeout": "seconds",
-    "ldap_version": "version",
-    "page_size": "size",
-    "tcp_port": "port",
-    "search_filter": "filter",
-    "member_attribute": "attribute",
-    "authentication_expiration": "attribute_to_sync",
-    "disable_notifications": "attribute_to_sync",
-    "mega_menu_icons": "attribute_to_sync",
-    "navigation_bar_icons": "attribute_to_sync",
-    "pager": "attribute_to_sync",
-    "show_mode": "attribute_to_sync",
-    "start_url": "attribute_to_sync",
-    "temperature_unit": "attribute_to_sync",
-    "ui_sidebar_position": "attribute_to_sync",
-    "ui_theme": "attribute_to_sync",
-    "visibility_of_hosts_or_services": "attribute_to_sync",
-    "filter_group": "filter",
-    "user_id_attribute": "attribute",
-    "alias": "attribute_to_sync",
-    "email_address": "attribute_to_sync",
-    "bind_credentials": None,
-    "contact_group_membership": None,
-    "groups_to_custom_user_attributes": None,
-    "groups_to_roles": None,
-}
 
 logger = Logger()
 
@@ -794,49 +765,7 @@ class LDAPAPI(CheckmkAPI):
             =>
             connect_timeout: { "state": "enabled", "seconds": 2 }
         """
-
-        def _extend_recursive(d):
-            if isinstance(d, dict):
-                to_be_deleted = []
-                for k, v in d.items():
-                    if isinstance(v, dict):
-                        v = _extend_recursive(d[k])
-                    if k in EXTEND_STATE:
-                        if not v:
-                            d[k] = {"state": "disabled"}
-                        elif EXTEND_STATE[k]:
-                            d[k] = {"state": "enabled", EXTEND_STATE[k]: v}
-                        else:
-                            d[k] = {"state": "enabled"}
-
-                            if k == "bind_credentials":
-                                d[k].update(v)
-                                if v.get("type") == "store":
-                                    del d[k]["explicit_password"]
-                                else:
-                                    del d[k]["password_store_id"]
-                            elif k == "contact_group_membership":
-                                if "handle_nested" in v:
-                                    d[k]["handle_nested"] = v.get("handle_nested")
-                                d[k]["sync_from_other_connections"] = v.get(
-                                    "sync_from_other_connections", []
-                                )
-                            elif k == "groups_to_custom_user_attributes":
-                                if "handle_nested" in v:
-                                    d[k]["handle_nested"] = v.get("handle_nested")
-                                d[k]["sync_from_other_connections"] = v.get(
-                                    "sync_from_other_connections", []
-                                )
-                                d[k]["groups_to_sync"] = v.get("groups_to_sync", [])
-                            elif k == "groups_to_roles":
-                                if "handle_nested" in v:
-                                    d[k]["handle_nested"] = v.get("handle_nested")
-                for key in to_be_deleted:
-                    del d[key]
-
-            return d
-
-        return _extend_recursive(ldap_config)
+        return extend_recursive(ldap_config)
 
     def _verify_basic_parameters(self):
         """
