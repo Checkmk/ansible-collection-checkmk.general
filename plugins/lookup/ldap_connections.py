@@ -160,11 +160,11 @@ log = []
 
 
 def compress_recursive(d):
-    log.append("compress: %s" % str(d))
     if isinstance(d, dict):
         del_state_from = []
         del_key = []
         gtr = None
+
         for k, v in d.items():
             if isinstance(v, dict):
                 if "state" in v:
@@ -181,17 +181,22 @@ def compress_recursive(d):
                         del_key.append(k)
                 else:
                     v = compress_recursive(v)
-        log.append("compressed: %s" % str(d))
+
         if gtr:
-            log.append("### gtr: %s" % str(gtr))
-            del gtr["state"]
-            old_gtr = d["groups_to_roles"]
-            log.append("### old_gtr: %s" % str(old_gtr))
+            old_gtr = d["groups_to_roles"].copy()
+            log.append("#### old_gtr: %s" % str(old_gtr))
+            log.append("#### gtr: %s" % str(gtr))
+            del old_gtr["state"]
+
             if "handle_nested" in old_gtr:
                 del old_gtr["handle_nested"]
+
+            log.append("#### old_gtr (modified): %s" % str(old_gtr))
+            del gtr["state"]
             gtr["roles_to_sync"] = []
             to_be_deleted = []
-            del old_gtr["state"]
+
+            log.append("#### gtr (modified 1): %s" % str(gtr))
             for role, groups in old_gtr.items():
                 to_be_deleted.append(role)
                 gtr["roles_to_sync"].append(
@@ -200,19 +205,23 @@ def compress_recursive(d):
                         "groups": groups,
                     }
                 )
-            log.append("### to_be_deleted: %s" % str(to_be_deleted))
+
+            log.append("#### gtr (modified 2): %s" % str(gtr))
             for role in to_be_deleted:
                 del gtr[role]
+
+            log.append("#### gtr (modified 3): %s" % str(gtr))
             d["groups_to_roles"] = gtr
-            log.append("### new gtr: %s" % str(gtr))
+
         for k in del_state_from:
             try:
                 del d[k]["state"]
             except KeyError:
-                log.append("KEY ERROR: %s" % k)
+                pass
+
         for k in del_key:
             del d[k]
-        log.append("cleaned: %s" % str(d))
+
     return d
 
 
@@ -248,12 +257,9 @@ class LookupModule(LookupBase):
             )
 
         ldap_connection_list = response.get("value")
-        # ldap_connection_list = ldap_connection_list[3:4]
-        log.append("#### before: %s" % str(ldap_connection_list))
         for lc in ldap_connection_list:
             lc["extensions"] = compress_recursive(lc["extensions"])
-        log.append("#### after: %s" % str(ldap_connection_list))
 
+        log.append("#### ldap_connection_list: %s" % str(ldap_connection_list))
         # return [log]
-        # return [[lc]]
         return [ldap_connection_list]
