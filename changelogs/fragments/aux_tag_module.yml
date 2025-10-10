@@ -1,0 +1,2 @@
+minor_changes:
+  - aux_tag - New module to manage auxiliary tags in Checkmk. Auxiliary tags can be created, updated, and deleted independently, making it easier to manage tag hierarchies and dependencies.
