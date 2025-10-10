@@ -49,7 +49,7 @@ options:
         type: str
 
 author:
-    - brainni (@brainni)
+    - Nicolas Brainez (@nicoske)
 """
 
 EXAMPLES = r"""
