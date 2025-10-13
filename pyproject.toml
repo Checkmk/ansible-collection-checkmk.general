@@ -23,7 +23,7 @@ dev = [
     "pathspec==0.12.1",
     "platformdirs==4.5.0",
     "tomli==2.2.1",
-    "typing-extensions==4.14.1",
+    "typing-extensions==4.15.0",
 ]
 
 
