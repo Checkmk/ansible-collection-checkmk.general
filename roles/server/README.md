@@ -27,7 +27,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ### Basic Configuration
 
-    checkmk_server_version: "2.4.0p10"
+    checkmk_server_version: "2.4.0p13"
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.

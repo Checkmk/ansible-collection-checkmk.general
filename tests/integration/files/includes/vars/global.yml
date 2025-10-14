@@ -32,7 +32,7 @@ __checkmk_var_testing_environment:
 
 # Use this to override the test-specific sites for local testing:
 # checkmk_var_test_sites:
-#   - version: "2.4.0p10"
+#   - version: "2.4.0p13"
 #     edition: "cme"
 #     site: "stable_cme"
 #     port: "5324"
