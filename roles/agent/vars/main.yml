@@ -2,7 +2,7 @@
 __checkmk_agent_site_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/{{ checkmk_agent_site }}"
 
 __checkmk_agent_auth: |-
-  {% if checkmk_agent_secret is defined and checkmk_agent_secret| length > 0 %}{{ checkmk_agent_secret }}{% else %}{{ checkmk_agent_pass }}{% endif %}
+  {% if checkmk_agent_secret is defined and checkmk_agent_secret | length > 0 %}{{ checkmk_agent_secret }}{% else %}{{ checkmk_agent_pass }}{% endif %}
 
 # Due to inconsistent naming of editions, we normalize them here for convenience
 __checkmk_agent_edition_mapping:
