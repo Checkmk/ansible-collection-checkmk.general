@@ -165,7 +165,7 @@
     __checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and not checkmk_agent_delegate_registration | bool
-    and (__checkmk_agent_auth is defined and __checkmk_agent_auth| length > 0)
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length > 0)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
   changed_when: "'Registration complete' in __checkmk_agent_tls_state.stdout"
 
@@ -181,7 +181,7 @@
     __checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and checkmk_agent_delegate_registration | bool
-    and (__checkmk_agent_auth is defined and __checkmk_agent_auth| length > 0)
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length > 0)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
   delegate_to: "{{ checkmk_agent_delegate_registration_target }}"
   changed_when: "'-----BEGIN PRIVATE KEY-----' in __checkmk_agent_proxy_registration_state.stdout"
@@ -199,7 +199,7 @@
     __checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and checkmk_agent_delegate_registration | bool
-    and (__checkmk_agent_auth is defined and __checkmk_agent_auth| length > 0)
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length > 0)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
     and __checkmk_agent_proxy_registration_state is defined
 
@@ -212,7 +212,7 @@
     __checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and checkmk_agent_delegate_registration | bool
-    and (__checkmk_agent_auth is defined and __checkmk_agent_auth| length > 0)
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length > 0)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
     and __checkmk_agent_proxy_registration_state is defined
   changed_when: __checkmk_agent_import_result.rc == 0
@@ -227,7 +227,7 @@
     __checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
     and checkmk_agent_delegate_registration | bool
-    and (__checkmk_agent_auth is defined and __checkmk_agent_auth| length > 0)
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length > 0)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
     and __checkmk_agent_proxy_registration_state is defined
 
