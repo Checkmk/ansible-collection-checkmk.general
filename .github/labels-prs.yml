@@ -24,6 +24,11 @@ module:activation:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/activation.py'
 
+module:aux_tag:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/aux_tag.py'
+
 module:bakery:
   - any:
       - changed-files:
