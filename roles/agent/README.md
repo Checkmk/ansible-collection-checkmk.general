@@ -42,7 +42,7 @@ This is used both for API calls and agent updates.
 
 The FQDN or IP address of your Checkmk server.
 
-    checkmk_agent_server_validate_certs: 'true'
+    checkmk_agent_server_validate_certs: true
 
 Whether to validate the SSL certificate of the Checkmk server.
 
@@ -106,7 +106,7 @@ Define an IP address which will be added to the host in Checkmk. This is optiona
         tag_mytag: value
         labels:
           App: my-app
-          
+
 Define attributes with which the host will be added to Checkmk.
 
     checkmk_agent_folder: '/'
@@ -161,11 +161,11 @@ Enable this to automatically install `xinetd` on hosts with systemd prior to ver
 
 ### Security
 
-    checkmk_agent_no_log: 'true'
+    checkmk_agent_no_log: true
 
 Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
-    checkmk_agent_configure_firewall: 'true'
+    checkmk_agent_configure_firewall: true
 
 Automatically configure the firewall to allow access to the Checkmk agent on the `checkmk_agent_port`.
 This setting only has effect on systems, which are running `ufw` or `firewalld`.

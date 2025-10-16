@@ -61,7 +61,7 @@ checkmk_var_test_sites:
               port: 6568
               encrypted: true
               host: "localhost"
-              verify: "true"
+              verify: true
             proxy:
               use_livestatus_daemon: "direct"
             connect_timeout: 2
