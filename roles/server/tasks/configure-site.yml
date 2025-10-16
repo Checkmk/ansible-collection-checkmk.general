@@ -19,7 +19,7 @@
   args:
     executable: /bin/bash
   loop: "{{ outer_item.omd_config }}"
-  when: outer_item.state != "absent"  and outer_item.omd_config | length | bool
+  when: outer_item.state != "absent"  and outer_item.omd_config| length > 0
   tags:
     - configure-sites
 

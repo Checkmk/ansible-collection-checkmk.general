@@ -80,7 +80,7 @@
     checkmk_agent_edition | lower != "cre"
     and __checkmk_agent_binary.stat.exists | bool
     and checkmk_agent_update | bool
-    and (checkmk_agent_pass is defined and checkmk_agent_pass | length | bool)
+    and (checkmk_agent_pass is defined and checkmk_agent_pass| length > 0)
     and (checkmk_agent_secret is not defined)
     and not (('\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout)
     and ('\'last_error\': None' in __checkmk_agent_updater_state.stdout))
@@ -99,7 +99,7 @@
     checkmk_agent_edition | lower != "cre"
     and __checkmk_agent_binary.stat.exists | bool
     and checkmk_agent_update | bool
-    and (checkmk_agent_secret is defined and checkmk_agent_secret | length | bool)
+    and (checkmk_agent_secret is defined and checkmk_agent_secret| length > 0)
     and not (('\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout)
     and ('\'last_error\': None' in __checkmk_agent_updater_state.stdout))
   changed_when: "'Successfully registered agent of host' in __checkmk_agent_update_state.stderr"
@@ -116,7 +116,7 @@
   when: |
     __checkmk_agent_controller_binary.stat.exists | bool
     and checkmk_agent_tls | bool
-    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length | bool)
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth| length > 0)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
   changed_when: "'Registration complete' in __checkmk_agent_tls_state.stdout"
 
