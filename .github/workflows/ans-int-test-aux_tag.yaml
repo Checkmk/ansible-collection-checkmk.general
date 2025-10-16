@@ -14,7 +14,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Ansible Integration Tests for Activation Module
+name: Ansible Integration Tests for Aux Tag Module
 on:
   workflow_dispatch:
   schedule:
