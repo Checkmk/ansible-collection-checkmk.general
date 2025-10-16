@@ -492,7 +492,7 @@ def run_module():
         extended_functionality=dict(type="bool", required=False, default=True),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     _exit_if_missing_pathlib(module)
 
