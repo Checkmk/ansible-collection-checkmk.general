@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.16.3
+  :antsibull-docs: 2.21.0
 
 .. Anchors
 
@@ -20,12 +20,12 @@ checkmk.general.agent role -- Install Checkmk agents
 .. Collection note
 
 .. note::
-    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.2).
+    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.3).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To install it use: :code:`ansible-galaxy collection install checkmk.general`.
+    To install it use: :code:`ansible\-galaxy collection install checkmk.general`.
 
     To use it in a playbook, specify: :code:`checkmk.general.agent`.
 
@@ -33,6 +33,7 @@ checkmk.general.agent role -- Install Checkmk agents
    :local:
    :depth: 2
 
+.. _ansible_collections.checkmk.general.agent_role__entrypoint-main:
 
 .. Entry point title
 

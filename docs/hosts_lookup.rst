@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.16.3
+  :antsibull-docs: 2.21.0
 
 .. Anchors
 
@@ -22,12 +22,12 @@ checkmk.general.hosts lookup -- Get various information about a host
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.2).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.3).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
+    To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
     To use it in a playbook, specify: :code:`checkmk.general.hosts`.
 
@@ -426,6 +426,13 @@ examples: ``lookup('checkmk.general.hosts', key1=value1, key2=value2, ...)`` and
         </div>
 
 
+.. note::
+
+    Configuration entries listed above for each entry type (Ansible variable, environment variable, and so on) have a low to high priority order.
+    For example, a variable that is lower in the list will override a variable that is higher up.
+    The entry types are also ordered by precedence from low to high priority order.
+    For example, an ansible.cfg entry (further up in the list) is overwritten by an Ansible variable (further down in the list).
+
 .. Attributes
 
 
@@ -552,9 +559,6 @@ Authors
 
 - Lars Getwan (@lgetwan)
 
-
-.. hint::
-    Configuration entries for each entry type have a low to high priority order. For example, a variable that is lower in the list will override a variable that is higher up.
 
 .. Extra links
 
