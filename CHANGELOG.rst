@@ -4,6 +4,27 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.2.3
+======
+
+Release Summary
+---------------
+
+Housekeeping.
+
+Minor Changes
+-------------
+
+- Bump minimum `ansible-core` version to `2.17`, as that is the oldest version we test against. Chances are, that older versions of `ansible-core` still work, but we do not verify that. So you could manually change `meta/runtime.yml` to circumvent this limitation, but we do recommend using up-to-date `ansible-core` versions.
+- Bump project `ansible-core` to `2.19`. This is used for development and testing. We do recommend to use the latest stable `ansible-core` version, but that is up to you. The only limit we impose, is the minimum version in `meta/runtime.yml` but that can be circumvented as well.
+
+Bugfixes
+--------
+
+- Make implicit boolean conversion in filters explicit. This should have no functional impact but makes for a clear format.
+- Quoted truthy values are now proper truthy values. This should have no functional impact but makes for a clear format.
+- Rule module - The rule module supports a check mode, but the corresponding flag was set to 'false'. This is fixed now.
+
 v6.2.2
 ======
 
