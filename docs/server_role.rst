@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.16.3
+  :antsibull-docs: 2.21.0
 
 .. Anchors
 
@@ -20,12 +20,12 @@ checkmk.general.server role -- Install and manage Checkmk servers
 .. Collection note
 
 .. note::
-    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.2).
+    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.3).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To install it use: :code:`ansible-galaxy collection install checkmk.general`.
+    To install it use: :code:`ansible\-galaxy collection install checkmk.general`.
 
     To use it in a playbook, specify: :code:`checkmk.general.server`.
 
@@ -33,6 +33,7 @@ checkmk.general.server role -- Install and manage Checkmk servers
    :local:
    :depth: 2
 
+.. _ansible_collections.checkmk.general.server_role__entrypoint-main:
 
 .. Entry point title
 
@@ -237,7 +238,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"--no-past"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"\-\-no\-past"`
 
       .. raw:: html
 

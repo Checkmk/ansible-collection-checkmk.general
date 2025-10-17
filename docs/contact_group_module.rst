@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.16.3
+  :antsibull-docs: 2.21.0
 
 .. Anchors
 
@@ -22,12 +22,12 @@ checkmk.general.contact_group module -- Manage contact groups in Checkmk (bulk v
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.2).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.3).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
+    To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
     To use it in a playbook, specify: :code:`checkmk.general.contact_group`.
 
@@ -105,7 +105,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The secret to authenticate your automation user.
+      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_SECRET`.
 
 
       .. raw:: html
@@ -139,7 +139,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The automation user you want to use. It has to be an 'Automation' user, not a normal one.
+      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_USER`.
 
 
       .. raw:: html
@@ -279,7 +279,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The base url of your Checkmk server including the protocol but excluding the site.
+      The base url of your Checkmk server including the protocol but excluding the site. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_SERVER\_URL`.
 
 
       .. raw:: html
@@ -313,7 +313,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The site you want to connect to. This will be appended to the server\_url as part of the API request url.
+      The site you want to connect to. This will be appended to the server\_url as part of the API request url. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_SITE`.
 
 
       .. raw:: html
@@ -598,7 +598,6 @@ Authors
 ~~~~~~~
 
 - Michael Sekania (@msekania)
-
 
 
 .. Extra links
