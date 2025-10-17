@@ -53,35 +53,35 @@ jobs:
 
     services:
       ancient_cre:
-        image: checkmk/check-mk-raw:2.2.0p45
+        image: checkmk/check-mk-raw:2.2.0p46
         ports:
           - 5022:5000
         env:
           CMK_SITE_ID: "ancient_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cre:
-        image: checkmk/check-mk-raw:2.3.0p36
+        image: checkmk/check-mk-raw:2.3.0p38
         ports:
           - 5023:5000
         env:
           CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cme:
-        image: checkmk/check-mk-managed:2.3.0p36
+        image: checkmk/check-mk-managed:2.3.0p38
         ports:
           - 5323:5000
         env:
           CMK_SITE_ID: "old_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cre:
-        image: checkmk/check-mk-raw:2.4.0p10
+        image: checkmk/check-mk-raw:2.4.0p13
         ports:
           - 5024:5000
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cme:
-        image: checkmk/check-mk-managed:2.4.0p10
+        image: checkmk/check-mk-managed:2.4.0p13
         ports:
           - 5324:5000
         env:
@@ -95,7 +95,7 @@ jobs:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: "Install uv and set the python version."
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python }}
           enable-cache: true

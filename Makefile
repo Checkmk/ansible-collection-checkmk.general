@@ -103,6 +103,7 @@ venv:
 
 clean:
 	@rm -rf .tox/
+	@rm -rf .venv/
 	@rm -rf ./venv/
 	@rm -rf ./tests/output/*
 	@vagrant destroy --force

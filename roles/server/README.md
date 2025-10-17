@@ -27,7 +27,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ### Basic Configuration
 
-    checkmk_server_version: "2.4.0p10"
+    checkmk_server_version: "2.4.0p13"
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.
@@ -51,7 +51,7 @@ See below variables, to set those.
 
 Your credentials to the Checkmk customer portal.
 
-    checkmk_server_verify_setup: 'true'
+    checkmk_server_verify_setup: true
 
 Cryptographically verify the downloaded Checkmk setup file.
 
@@ -60,7 +60,7 @@ Cryptographically verify the downloaded Checkmk setup file.
 
 Optional authentication do download the GPG key from a non-default location.
 
-    checkmk_server_epel_gpg_check: 'true'
+    checkmk_server_epel_gpg_check: true
 
 Cryptographically verify the downloaded epel-release package on RHEL 8.
 
@@ -70,12 +70,12 @@ Uninstall unused Checkmk versions on the server.
 
 ### Security
 
-    checkmk_server_no_log: 'true'
+    checkmk_server_no_log: true
 
 Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default.
 Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
-    checkmk_server_configure_firewall: 'true'
+    checkmk_server_configure_firewall: true
 
 Automatically open necessary ports on the Checkmk server.
 This setting only has effect on systems, which are running `ufw` or `firewalld`.
@@ -138,7 +138,7 @@ Extension packages can also be listed to be installed on the specific central si
 
 ### Site Updates
 
-    checkmk_server_backup_on_update: 'true'
+    checkmk_server_backup_on_update: true
 
 Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups.
 
