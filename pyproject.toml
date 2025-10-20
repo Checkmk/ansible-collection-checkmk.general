@@ -22,7 +22,7 @@ dev = [
     "mypy-extensions==1.1.0",
     "pathspec==0.12.1",
     "platformdirs==4.5.0",
-    "tomli==2.2.1",
+    "tomli==2.3.0",
     "typing-extensions==4.15.0",
 ]
 
