@@ -40,6 +40,7 @@ class CheckMKLookupAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+        self.cookies = {}
 
         self.site_url = site_url
         self.url = "%s/check_mk/api/1.0" % site_url

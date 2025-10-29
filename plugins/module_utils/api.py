@@ -34,10 +34,6 @@ class CheckmkAPI:
         server = self.params.get("server_url")
         site = self.params.get("site")
         self.url = "%s/%s/check_mk/api/1.0" % (server, site)
-        self.headers = {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        }
 
         self.headers = {
             "Accept": "application/json",
