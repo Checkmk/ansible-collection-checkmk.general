@@ -74,6 +74,7 @@ options:
                         description: List of hosts to consider as piggyback sources for the DCD connection.
                         type: list
                         elements: str
+                        default: []
                     no_deletion_time_after_init:
                         description: Seconds to prevent host deletion after site startup.
                         type: int
@@ -419,7 +420,7 @@ def run_module():
                         ),
                         "discover_on_creation": dict(type="bool", default=True),
                         "restrict_source_hosts": dict(
-                            type="list", elements="str", required=False
+                            type="list", elements="str", required=False, default=[]
                         ),
                         "no_deletion_time_after_init": dict(
                             type="int", required=False, default=600
