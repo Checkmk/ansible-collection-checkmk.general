@@ -35,6 +35,11 @@ class CheckmkAPI:
         site = self.params.get("site")
         self.url = "%s/%s/check_mk/api/1.0" % (server, site)
 
+        self.headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
         # Determine authentication type
         auth_type = self.params.get("auth_type", "bearer")
         automation_user = self.params.get("automation_user")

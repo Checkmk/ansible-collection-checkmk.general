@@ -31,9 +31,9 @@ class CheckMKLookupAPI:
         self,
         site_url,
         api_auth_type="bearer",
+        api_auth_cookie=None,
         automation_user=None,
         automation_secret=None,
-        api_auth_cookie=None,
         validate_certs=True,
     ):
         self.headers = {
