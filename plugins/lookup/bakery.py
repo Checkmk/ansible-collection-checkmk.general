@@ -15,9 +15,7 @@ DOCUMENTATION = """
     description:
       - Returns the bakery status of a Checkmk server as a string, e.g. 'running'
 
-    options:
-
-      extends_documentation_fragment: [checkmk.general.common_lookup]
+    extends_documentation_fragment: [checkmk.general.common_lookup]
 
     notes:
       - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'.

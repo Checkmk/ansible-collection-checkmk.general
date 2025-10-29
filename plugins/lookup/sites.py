@@ -15,9 +15,7 @@ DOCUMENTATION = """
     description:
       - Returns a list of all sites and their configuration.
 
-    options:
-
-      extends_documentation_fragment: [checkmk.general.common_lookup]
+    extends_documentation_fragment: [checkmk.general.common_lookup]
 
     notes:
       - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'.
