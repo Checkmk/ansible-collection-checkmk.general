@@ -5,7 +5,6 @@ __metaclass__ = type
 
 class ModuleDocFragment(object):
     DOCUMENTATION = r"""
-    options:
         server_url:
             description: URL of the Checkmk server
             required: True
