@@ -73,7 +73,7 @@ class CheckmkAPI:
                 self.module.fail_json(
                     msg="`auth_cookie` is required for cookie authentication."
                 )
-            self.headers["Cookie"] = auth_cookie
+            self.headers["auth_cmk"] = auth_cookie
 
         else:
             self.module.fail_json(msg="Unsupported `auth_type`: %s" % auth_type)
