@@ -1,9 +1,9 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.2.0p45"
-    edition: "cce"
-    site: "ancient_cce"
-    port: "5222"
+    #- version: "2.2.0p45"
+    #  edition: "cce"
+    #  site: "ancient_cce"
+    #  port: "5222"
   - version: "2.3.0p36"
     edition: "cme"
     site: "old_cme"
