@@ -367,6 +367,7 @@ DESIRED_DEFAULTS = {
             "host_tags": [],
             "host_label_groups": [],
             "service_label_groups": [],
+            "service_description": {},
         },
     },
 }
@@ -395,6 +396,7 @@ IGNORE_DEFAULTS = {
             "service_labels": [],
             "host_label_groups": [],
             "service_label_groups": [],
+            "service_description": {},
         },
     },
 }
