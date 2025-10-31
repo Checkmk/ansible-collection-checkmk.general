@@ -7,7 +7,7 @@ checkmk_var_dcd:
     # site: "mysite"
     connector:
       connector_type: "piggyback"
-      interval: 120
+      interval: 60
       creation_rules:
         - folder_path: "/"
           delete_hosts: false
