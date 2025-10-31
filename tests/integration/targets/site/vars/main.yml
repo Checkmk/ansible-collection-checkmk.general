@@ -54,8 +54,8 @@ checkmk_var_test_sites:
             site_id: "old_cre_r1"
             alias: "old_cre remote site 1"
         authentication:
-          username: "{{ checkmk_var_automation_user }}"
-          password: "{{ checkmk_var_automation_secret }}"
+          username: "{{ checkmk_var_api_user }}"
+          password: "{{ checkmk_var_api_secret }}"
   - version: "2.4.0p19"
     edition: "cre"
     site: "stable_cre"
@@ -84,8 +84,8 @@ checkmk_var_test_sites:
             site_id: "stable_cre_r1"
             alias: "stable_cre remote site"
         authentication:
-          username: "{{ checkmk_var_automation_user }}"
-          password: "{{ checkmk_var_automation_secret }}"
+          username: "{{ checkmk_var_api_user }}"
+          password: "{{ checkmk_var_api_secret }}"
   - version: "2.4.0p19"
     edition: "cme"
     site: "stable_cme"
@@ -134,5 +134,5 @@ checkmk_var_test_sites:
             customer: "provider"
             alias: "stable_cme remote site 2"
         authentication:
-          username: "{{ checkmk_var_automation_user }}"
-          password: "{{ checkmk_var_automation_secret }}"
+          username: "{{ checkmk_var_api_user }}"
+          password: "{{ checkmk_var_api_secret }}"

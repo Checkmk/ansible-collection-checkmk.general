@@ -13,8 +13,8 @@
       contact_group:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ item.name }}"
         title: "{{ item.title | default(item.name) }}"
         state: "present"
@@ -26,8 +26,8 @@
       user:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ item.name }}"
         fullname: "{{ item.fullname }}"
         auth_type: "{{ item.auth_type }}"
@@ -52,8 +52,8 @@
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         force_foreign_changes: true
         sites:
           - "{{ checkmk_var_site }}"
@@ -64,8 +64,8 @@
       user:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
@@ -76,8 +76,8 @@
       contact_group:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
@@ -95,8 +95,8 @@
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         force_foreign_changes: true
         sites:
           - "{{ checkmk_var_site }}"

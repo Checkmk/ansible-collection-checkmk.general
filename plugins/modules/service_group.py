@@ -60,8 +60,8 @@ EXAMPLES = r"""
   checkmk.general.service_group:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: "my_service_group"
     title: "My Service Group"
     customer: "provider"
@@ -72,8 +72,8 @@ EXAMPLES = r"""
   checkmk.general.service_group:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     customer: "provider"
     groups:
       - name: "my_service_group_one"
@@ -89,8 +89,8 @@ EXAMPLES = r"""
   checkmk.general.service_group:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     customer: "provider"
     groups:
       - name: "my_service_group_one"
@@ -104,8 +104,8 @@ EXAMPLES = r"""
   checkmk.general.service_group:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: "my_service_group"
     state: "absent"
 
@@ -114,8 +114,8 @@ EXAMPLES = r"""
   checkmk.general.service_group:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     groups:
       - name: "my_service_group_one"
       - name: "my_service_group_two"
@@ -400,8 +400,8 @@ def run_module():
         "Content-Type": "application/json",
         "Authorization": "Bearer %s %s"
         % (
-            module.params.get("automation_user", ""),
-            module.params.get("automation_secret", ""),
+            module.params.get("api_user", ""),
+            module.params.get("api_secret", ""),
         ),
     }
 

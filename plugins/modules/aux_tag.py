@@ -58,8 +58,8 @@ EXAMPLES = r"""
   checkmk.general.aux_tag:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: https
     title: Web Server HTTPS
     topic: Services
@@ -71,8 +71,8 @@ EXAMPLES = r"""
   checkmk.general.aux_tag:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: https
     title: Web Server HTTPS/TLS
     topic: Services
@@ -83,8 +83,8 @@ EXAMPLES = r"""
   checkmk.general.aux_tag:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: https
     state: "absent"
 """

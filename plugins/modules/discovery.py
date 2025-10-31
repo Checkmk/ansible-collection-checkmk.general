@@ -91,24 +91,24 @@ EXAMPLES = r"""
   checkmk.general.discovery:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     host_name: "my_host"
     state: "new"
 - name: "Add newly discovered services, update labels and remove vanished services on host."
   checkmk.general.discovery:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     host_name: "my_host"
     state: "fix_all"
 - name: "Add newly discovered services on hosts and wait up to 30s for finishing. (Bulk)"
   checkmk.general.discovery:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     hosts: ["my_host_0", "my_host_1"]
     wait_timeout: 30
     state: "new"
@@ -116,8 +116,8 @@ EXAMPLES = r"""
   checkmk.general.discovery:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     hosts: ["my_host_0", "my_host_1"]
     wait_for_completion: false
     state: "tabula_rasa"
@@ -125,8 +125,8 @@ EXAMPLES = r"""
   checkmk.general.discovery:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     hosts: ["my_host_0", "my_host_1", "my_host_2", "my_host_3", "my_host_4", "my_host_5"]
     state: "fix_all"
     bulk_size: 3

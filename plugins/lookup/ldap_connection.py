@@ -42,8 +42,8 @@ EXAMPLES = """
         'my_ldap_connection',
         server_url=server_url,
         site=site,
-        automation_user=automation_user,
-        automation_secret=automation_secret,
+        api_user=api_user,
+        api_secret=api_secret,
         validate_certs=False
       )
     }}"
@@ -87,8 +87,8 @@ class LookupModule(LookupBase):
         site = self.get_option("site")
         # api_auth_type = self.get_option("api_auth_type") or "bearer"
         # api_auth_cookie = self.get_option("api_auth_cookie")
-        automation_user = self.get_option("automation_user")
-        automation_secret = self.get_option("automation_secret")
+        api_user = self.get_option("api_user")
+        api_secret = self.get_option("api_secret")
         validate_certs = self.get_option("validate_certs")
 
         site_url = server_url + "/" + site
@@ -97,8 +97,8 @@ class LookupModule(LookupBase):
             site_url=site_url,
             # api_auth_type=api_auth_type,
             # api_auth_cookie=api_auth_cookie,
-            automation_user=automation_user,
-            automation_secret=automation_secret,
+            api_user=api_user,
+            api_secret=api_secret,
             validate_certs=validate_certs,
         )
 

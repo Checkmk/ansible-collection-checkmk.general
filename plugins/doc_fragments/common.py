@@ -18,18 +18,6 @@ class ModuleDocFragment(object):
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_SITE).
             required: true
             type: str
-        automation_user:
-            description:
-                - The automation user you want to use. It has to be an 'Automation' user, not a normal one.
-                  If not set the module will fall back to the environment variable C(CHECKMK_VAR_AUTOMATION_USER).
-            required: true
-            type: str
-        automation_secret:
-            description:
-                - The secret to authenticate your automation user.
-                  If not set the module will fall back to the environment variable C(CHECKMK_VAR_AUTOMATION_SECRET).
-            required: true
-            type: str
         api_auth_type:
             description: Type of authentication to use.
             required: false
@@ -39,6 +27,20 @@ class ModuleDocFragment(object):
                 - basic
                 - cookie
             default: bearer
+        api_user:
+            description:
+                - The automation user you want to use. It has to be an 'Automation' user, not a normal one.
+                  If not set the module will fall back to the environment variable C(CHECKMK_VAR_API_USER).
+            required: true
+            type: str
+            aliases: [automation_user]
+        api_secret:
+            description:
+                - The secret to authenticate your automation user.
+                  If not set the module will fall back to the environment variable C(CHECKMK_VAR_API_SECRET).
+            required: true
+            type: str
+            aliases: [automation_secret]
         api_auth_cookie:
             description: Authentication cookie for the Checkmk session.
             required: false

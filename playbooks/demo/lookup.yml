@@ -15,8 +15,8 @@
         checkmk_var_version: "{{ lookup('checkmk.general.version',
                        server_url=checkmk_var_server_url,
                        site=checkmk_var_site,
-                       automation_user=checkmk_var_automation_user,
-                       automation_secret=checkmk_var_automation_secret,
+                       api_user=checkmk_var_api_user,
+                       api_secret=checkmk_var_api_secret,
                        validate_certs=False)
                    }}"
       delegate_to: localhost
@@ -31,8 +31,8 @@
                         '~',
                         server_url=checkmk_var_server_url,
                         site=checkmk_var_site,
-                        automation_user=checkmk_var_automation_user,
-                        automation_secret=checkmk_var_automation_secret,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret,
                         validate_certs=False)
                     }}"
       delegate_to: localhost
@@ -48,8 +48,8 @@
             recursive=True,
             server_url=checkmk_var_server_url,
             site=checkmk_var_site,
-            automation_user=checkmk_var_automation_user,
-            automation_secret=checkmk_var_automation_secret,
+            api_user=checkmk_var_api_user,
+            api_secret=checkmk_var_api_secret,
             validate_certs=False)
         }}"
       loop_control:
@@ -68,8 +68,8 @@
                         recursive=True,
                         server_url=checkmk_var_server_url,
                         site=checkmk_var_site,
-                        automation_user=checkmk_var_automation_user,
-                        automation_secret=checkmk_var_automation_secret,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret,
                         validate_certs=False)
                   }}"
       loop: "{{ checkmk_var_looping | subelements('members.hosts.value') }}"
@@ -87,8 +87,8 @@
     #     checkmk_var_sites: "{{ lookup('checkmk.general.sites',
     #                    server_url=checkmk_var_server_url,
     #                    site=checkmk_var_site,
-    #                    automation_user=checkmk_var_automation_user,
-    #                    automation_secret=checkmk_var_automation_secret,
+    #                    api_user=checkmk_var_api_user,
+    #                    api_secret=checkmk_var_api_secret,
     #                    validate_certs=False)
     #                }}"
     #   delegate_to: localhost
@@ -105,8 +105,8 @@
     #                     recursive=True,
     #                     server_url=checkmk_var_server_url,
     #                     site=checkmk_var_site,
-    #                     automation_user=checkmk_var_automation_user,
-    #                     automation_secret=checkmk_var_automation_secret,
+    #                     api_user=checkmk_var_api_user,
+    #                     api_secret=checkmk_var_api_secret,
     #                     validate_certs=False)
     #               }}"
     #   delegate_to: localhost
@@ -119,8 +119,8 @@
     #     checkmk_var_sites: "{{ lookup('checkmk.general.sites',
     #                    server_url=checkmk_var_server_url,
     #                    site=checkmk_var_site,
-    #                    automation_user=checkmk_var_automation_user,
-    #                    automation_secret=checkmk_var_automation_secret,
+    #                    api_user=checkmk_var_api_user,
+    #                    api_secret=checkmk_var_api_secret,
     #                    validate_certs=False)
     #                }}"
     #     checkmk_var_looping: "{{
@@ -130,8 +130,8 @@
     #                     recursive=True,
     #                     server_url=checkmk_var_server_url,
     #                     site=checkmk_var_site,
-    #                     automation_user=checkmk_var_automation_user,
-    #                     automation_secret=checkmk_var_automation_secret,
+    #                     api_user=checkmk_var_api_user,
+    #                     api_secret=checkmk_var_api_secret,
     #                     validate_certs=False)
     #               }}"
     #   loop: "{{ checkmk_var_sites }}"

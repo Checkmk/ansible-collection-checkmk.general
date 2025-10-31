@@ -33,8 +33,8 @@ EXAMPLES = r"""
   checkmk.general.site:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     site_id: "myremotesite"
     site_connection:
       site_config:
@@ -64,8 +64,8 @@ EXAMPLES = r"""
   checkmk.general.site:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     site_id: "myremotesite"
     site_connection:
       authentication:
@@ -77,8 +77,8 @@ EXAMPLES = r"""
   checkmk.general.site:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     site_id: "myremotesite"
     state: "logout"
 
@@ -86,8 +86,8 @@ EXAMPLES = r"""
   checkmk.general.site:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     site_id: "myremotesite"
     state: "absent"
 """

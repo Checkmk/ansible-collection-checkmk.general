@@ -153,10 +153,26 @@ tests-sanity: vm
 
 tests-units: vm
 	@vagrant ssh collection -c "\
+	export LC_ALL=C.UTF-8 && \
 	cd $(COLLECTION_ROOT) && \
 	uv run ansible-test units --docker"
 
+tests-molecule: tests-molecule-agent tests-molecule-server
+
+tests-molecule-agent: vm
+	@vagrant ssh collection -c "\
+	export LC_ALL=C.UTF-8 && \
+	cd $(COLLECTION_ROOT)/roles/agent/ && \
+	uv run molecule test -s 2.4.0"
+
+tests-molecule-server: vm
+	@vagrant ssh collection -c "\
+	export LC_ALL=C.UTF-8 && \
+	cd $(COLLECTION_ROOT)/roles/server/ && \
+	uv run molecule test -s 2.4.0"
+
 tests-integration: vm
 	@vagrant ssh collection -c "\
+	export LC_ALL=C.UTF-8 && \
 	cd $(COLLECTION_ROOT) && \
 	uv run ansible-test integration --docker"
