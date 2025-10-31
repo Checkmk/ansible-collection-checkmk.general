@@ -117,7 +117,7 @@ EXAMPLES = r"""
       comment: "Piggyback config for Cluster1 host"
       site: "mysite"
       connector_type: "piggyback"
-      interval: 5
+      interval: 60
       creation_rules:
         - folder_path: "/cluster1"
           delete_hosts: false
