@@ -10,6 +10,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import base64
 import json
 
 from ansible.module_utils.urls import fetch_url
@@ -32,14 +33,51 @@ class CheckmkAPI:
         self.params = self.module.params
         server = self.params.get("server_url")
         site = self.params.get("site")
-        user = self.params.get("automation_user")
-        secret = self.params.get("automation_secret")
         self.url = "%s/%s/check_mk/api/1.0" % (server, site)
+
         self.headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": "Bearer %s %s" % (user, secret),
         }
+
+        # Determine authentication type
+        auth_type = self.params.get("auth_type", "bearer")
+        automation_user = self.params.get("automation_user")
+        automation_secret = self.params.get("automation_secret")
+        auth_cookie = self.params.get("auth_cookie")
+
+        if auth_type == "bearer":
+            # Bearer Authentication
+            if not automation_user or not automation_secret:
+                self.module.fail_json(
+                    msg="`automation_user` and `automation_secret` are required for bearer authentication."
+                )
+            self.headers["Authorization"] = "Bearer %s %s" % (
+                automation_user,
+                automation_secret,
+            )
+
+        elif auth_type == "basic":
+            # Basic Authentication
+            if not automation_user or not automation_secret:
+                self.module.fail_json(
+                    msg="`automation_user` and `automation_secret` are required for basic authentication."
+                )
+                auth_str = "%s:%s" % (automation_user, automation_secret)
+            auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
+            self.headers["Authorization"] = "Basic %s" % auth_b64
+
+        elif auth_type == "cookie":
+            # Cookie Authentication
+            if not auth_cookie:
+                self.module.fail_json(
+                    msg="`auth_cookie` is required for cookie authentication."
+                )
+            self.cookies["auth_cmk"] = auth_cookie
+
+        else:
+            self.module.fail_json(msg="Unsupported `auth_type`: %s" % auth_type)
+
         self.current = {}
         self.required = {}
         # may be "present", "absent" or an individual one
