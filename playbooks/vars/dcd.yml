@@ -7,7 +7,7 @@ checkmk_var_dcd:
     # site: "mysite"
     connector:
       connector_type: "piggyback"
-      interval: 5
+      interval: 120
       creation_rules:
         - folder_path: "/"
           delete_hosts: false
@@ -17,4 +17,4 @@ checkmk_var_dcd:
             tag_piggyback: "piggyback"
             tag_snmp_ds: "no-snmp"
       discover_on_creation: true
-      restrict_source_hosts: ""
+      restrict_source_hosts: "localhost"
