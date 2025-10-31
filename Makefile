@@ -65,7 +65,7 @@ version:
 setup: setup-python kvm vagrant
 
 python:
-	@curl -LsSf https://astral.sh/uv/install.sh | sh
+	@uv help > /dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
 
 kvm:
 	@sudo apt update -y
