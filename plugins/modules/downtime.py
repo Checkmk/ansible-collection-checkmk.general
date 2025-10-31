@@ -95,8 +95,8 @@ EXAMPLES = r"""
   checkmk.general.downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ mysite }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     host_name: my_host
     start_after:
       minutes: 5
@@ -108,8 +108,8 @@ EXAMPLES = r"""
   checkmk.general.downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ mysite }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     host_name: my_host
     start_time: "2022-03-24T20:39:28Z"
     end_time: "2022-03-24T20:40:28Z"
@@ -123,8 +123,8 @@ EXAMPLES = r"""
   checkmk.general.downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ mysite }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     host_name: my_host
     service_descriptions:
       - "CPU utilization"
@@ -428,8 +428,8 @@ def run_module():
         "Content-Type": "application/json",
         "Authorization": "Bearer %s %s"
         % (
-            module.params.get("automation_user"),
-            module.params.get("automation_secret"),
+            module.params.get("api_user"),
+            module.params.get("api_secret"),
         ),
     }
 

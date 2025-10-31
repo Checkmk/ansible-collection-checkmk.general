@@ -114,8 +114,8 @@ EXAMPLES = r"""
     server_url: "http://myserver/"
     site: "mysite"
     automation_auth_type: "bearer"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     dcd_config:
       dcd_id: "PiggybackCluster1"
       title: "Piggyback Configuration for Cluster1"
@@ -140,8 +140,8 @@ EXAMPLES = r"""
     server_url: "http://myserver/"
     site: "mysite"
     automation_auth_type: "bearer"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     dcd_config:
       dcd_id: "PiggybackCluster1"
       site: "mysite"
@@ -460,8 +460,8 @@ def run_module():
     )
 
     required_if = [
-        ("api_auth_type", "bearer", ["automation_user", "automation_secret"]),
-        ("api_auth_type", "basic", ["automation_user", "automation_secret"]),
+        ("api_auth_type", "bearer", ["api_user", "api_secret"]),
+        ("api_auth_type", "basic", ["api_user", "api_secret"]),
         ("api_auth_type", "cookie", ["api_auth_cookie"]),
     ]
 

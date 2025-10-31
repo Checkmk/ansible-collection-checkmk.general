@@ -19,8 +19,8 @@
       folder:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         path: "{{ item.path }}"
         name: "{{ item.name }}"
         state: "present"
@@ -32,8 +32,8 @@
       host:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ inventory_hostname }}"
         folder: "{{ checkmk_var_folder_path }}"
         attributes:
@@ -46,8 +46,8 @@
       dcd:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         dcd_config: "{{ item }}"
         state: "present"
       loop: "{{ checkmk_var_dcd }}"
@@ -65,8 +65,8 @@
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         force_foreign_changes: 'true'
         sites:
           - "{{ checkmk_var_site }}"
@@ -77,8 +77,8 @@
       dcd:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         dcd_config: "{{ item }}"
         state: "absent"
       loop: "{{ checkmk_var_dcd }}"
@@ -89,8 +89,8 @@
       host:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ inventory_hostname }}"
         folder: "{{ checkmk_var_folder_path }}"
         state: "absent"
@@ -100,8 +100,8 @@
       folder:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         path: "{{ item.path }}"
         name: "{{ item.name }}"
         state: "absent"
@@ -120,8 +120,8 @@
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         force_foreign_changes: 'true'
         sites:
           - "{{ checkmk_var_site }}"

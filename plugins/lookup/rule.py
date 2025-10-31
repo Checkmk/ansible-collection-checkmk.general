@@ -42,8 +42,8 @@ EXAMPLES = """
         rule_id='a9285bc1-dcaf-45e0-a3ba-ad398ef06a49',
         server_url=server_url,
         site=site,
-        automation_user=automation_user,
-        automation_secret=automation_secret,
+        api_user=api_user,
+        api_secret=api_secret,
         validate_certs=False
       )
     }}"
@@ -54,8 +54,8 @@ EXAMPLES = """
   vars:
     checkmk_var_server_url: "http://myserver/"
     checkmk_var_site: "mysite"
-    checkmk_var_automation_user: "myuser"
-    checkmk_var_automation_secret: "mysecret"
+    checkmk_var_api_user: "myuser"
+    checkmk_var_api_secret: "mysecret"
     checkmk_var_validate_certs: false
     attributes: "{{ lookup('checkmk.general.rule', rule_id='a9285bc1-dcaf-45e0-a3ba-ad398ef06a49') }}"
 """
@@ -85,8 +85,8 @@ class LookupModule(LookupBase):
         site = self.get_option("site")
         api_auth_type = self.get_option("api_auth_type") or "bearer"
         api_auth_cookie = self.get_option("api_auth_cookie")
-        automation_user = self.get_option("automation_user")
-        automation_secret = self.get_option("automation_secret")
+        api_user = self.get_option("api_user")
+        api_secret = self.get_option("api_secret")
         validate_certs = self.get_option("validate_certs")
 
         site_url = server_url + "/" + site
@@ -95,8 +95,8 @@ class LookupModule(LookupBase):
             site_url=site_url,
             api_auth_type=api_auth_type,
             api_auth_cookie=api_auth_cookie,
-            automation_user=automation_user,
-            automation_secret=automation_secret,
+            api_user=api_user,
+            api_secret=api_secret,
             validate_certs=validate_certs,
         )
 
