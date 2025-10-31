@@ -30,12 +30,12 @@ def base_argument_spec():
             default=True,
             fallback=(env_fallback, ["CHECKMK_VAR_VALIDATE_CERTS"]),
         ),
-        automation_user=dict(
+        api_user=dict(
             type="str",
             required=True,
             fallback=(env_fallback, ["CHECKMK_VAR_AUTOMATION_USER"]),
         ),
-        automation_secret=dict(
+        api_secret=dict(
             type="str",
             required=True,
             no_log=True,

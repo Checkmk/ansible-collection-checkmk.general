@@ -44,30 +44,30 @@ class ModuleDocFragment(object):
                 - section: checkmk_lookup
                   key: api_auth_type
             default: 'bearer'
-        automation_user:
+        api_user:
             description: Automation user for the REST API access.
             required: False
             vars:
-                - name: checkmk_var_automation_user
+                - name: checkmk_var_api_user
                 - name: ansible_lookup_checkmk_automation_user
             env:
                 - name: CHECKMK_VAR_AUTOMATION_USER
                 - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_USER
             ini:
                 - section: checkmk_lookup
-                  key: automation_user
-        automation_secret:
+                  key: api_user
+        api_secret:
             description: Automation secret for the REST API access.
             required: False
             vars:
-                - name: checkmk_var_automation_secret
+                - name: checkmk_var_api_secret
                 - name: ansible_lookup_checkmk_automation_secret
             env:
                 - name: CHECKMK_VAR_AUTOMATION_SECRET
                 - name: ANSIBLE_LOOKUP_CHECKMK_AUTOMATION_SECRET
             ini:
                 - section: checkmk_lookup
-                  key: automation_secret
+                  key: api_secret
         api_auth_cookie:
             description:
                 - The authentication cookie value if using cookie-based authentication.

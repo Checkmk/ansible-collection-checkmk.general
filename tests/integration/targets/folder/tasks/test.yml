@@ -17,8 +17,8 @@
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     path: "{{ item.path }}"
     name: "{{ item.name }}"
     state: "present"
@@ -30,8 +30,8 @@
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -42,8 +42,8 @@
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     path: "{{ item.path }}"
     name: "{{ item.name }}"
     state: "absent"
@@ -55,8 +55,8 @@
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -67,8 +67,8 @@
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     path: "{{ checkmk_var_folder_attr_test.path }}"
     name: "{{ checkmk_var_folder_attr_test.name }}"
     attributes: "{{ checkmk_var_folder_attr_test.attributes }}"
@@ -80,8 +80,8 @@
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     path: "{{ checkmk_var_folder_attr_test.path }}"
     state: "present"
     update_attributes:
@@ -94,8 +94,8 @@
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     path: "{{ checkmk_var_folder_attr_test.path }}"
     update_attributes:
       tag_criticality: "test"
@@ -109,8 +109,8 @@
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     path: "{{ checkmk_var_folder_attr_test.path }}"
     name: "{{ checkmk_var_folder_attr_test.name }} Modified"
     state: "present"
@@ -121,8 +121,8 @@
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     path: "{{ checkmk_var_folder_attr_test.path }}"
     state: "present"
     remove_attributes:
@@ -134,8 +134,8 @@
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     path: "{{ checkmk_var_folder_attr_test.path }}"
     remove_attributes:
       - "tag_networking"
@@ -149,8 +149,8 @@
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     path: "{{ item.path }}"
     name: "{{ item.name }}"
     state: "absent"
@@ -162,8 +162,8 @@
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -174,8 +174,8 @@
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     path: "{{ item.path }}"
     name: "{{ item.name | default(omit) }}"
     state: "present"
@@ -187,8 +187,8 @@
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -204,8 +204,8 @@
                     server_url=checkmk_var_server_url,
                     site=outer_item.site,
                     validate_certs=False,
-                    automation_user=checkmk_var_automation_user,
-                    automation_secret=checkmk_var_automation_secret)
+                    api_user=checkmk_var_api_user,
+                    api_secret=checkmk_var_api_secret)
               }}"
     __checkmk_var_folder_title: "{{ dict((__checkmk_var_result_print | map(attribute='id') | map('regex_replace', '~', '/')) | zip(__checkmk_var_result_print | map(attribute='title'))) }}"
   delegate_to: localhost
@@ -220,8 +220,8 @@
                     server_url=checkmk_var_server_url,
                     site=outer_item.site,
                     validate_certs=False,
-                    automation_user=checkmk_var_automation_user,
-                    automation_secret=checkmk_var_automation_secret)
+                    api_user=checkmk_var_api_user,
+                    api_secret=checkmk_var_api_secret)
               }}"
     __checkmk_var_folder_title: "{{ dict((__checkmk_var_result_verify | map(attribute='id') | map('regex_replace', '~', '/')) | zip(__checkmk_var_result_verify | map(attribute='title'))) }}"
   loop: "{{ checkmk_var_folders_defaults_test }}"
@@ -232,8 +232,8 @@
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     path: "{{ item.path }}"
     name: "{{ item.name | default(omit) }}"
     state: "absent"
@@ -245,8 +245,8 @@
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"

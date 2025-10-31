@@ -18,13 +18,13 @@ class ModuleDocFragment(object):
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_SITE).
             required: true
             type: str
-        automation_user:
+        api_user:
             description:
                 - The automation user you want to use. It has to be an 'Automation' user, not a normal one.
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_AUTOMATION_USER).
             required: true
             type: str
-        automation_secret:
+        api_secret:
             description:
                 - The secret to authenticate your automation user.
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_AUTOMATION_SECRET).
