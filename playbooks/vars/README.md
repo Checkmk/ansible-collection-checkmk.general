@@ -4,7 +4,7 @@ This directory contains variable files used by the playbooks in the `demo` and `
 
 ## Contents
 
-* **Global Variables**: Configuration files defining common variables such as Checkmk server connection details (`server_url`, `site`, `automation_user`, `automation_secret`).
+* **Global Variables**: Configuration files defining common variables such as Checkmk server connection details (`server_url`, `site`, `api_user`, `api_secret`).
 * **Scenario-Specific Variables**: Variable files tailored for specific test cases or demonstration scenarios.
 
 ## Usage

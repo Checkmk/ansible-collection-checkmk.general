@@ -13,8 +13,8 @@
   rule:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     ruleset: "{{ item.ruleset }}"
     rule: "{{ item.rule }}"
     state: "present"
@@ -31,8 +31,8 @@
                   server_url=checkmk_var_server_url,
                   site=outer_item.site,
                   validate_certs=False,
-                  automation_user=checkmk_var_automation_user,
-                  automation_secret=checkmk_var_automation_secret)
+                  api_user=checkmk_var_api_user,
+                  api_secret=checkmk_var_api_secret)
               }}"
   register: __checkmk_var_cpu_load_ruleset
   delegate_to: localhost
@@ -48,8 +48,8 @@
                       server_url=checkmk_var_server_url,
                       site=outer_item.site,
                       validate_certs=False,
-                      automation_user=checkmk_var_automation_user,
-                      automation_secret=checkmk_var_automation_secret)
+                      api_user=checkmk_var_api_user,
+                      api_secret=checkmk_var_api_secret)
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -64,8 +64,8 @@
                       server_url=checkmk_var_server_url,
                       site=outer_item.site,
                       validate_certs=False,
-                      automation_user=checkmk_var_automation_user,
-                      automation_secret=checkmk_var_automation_secret)
+                      api_user=checkmk_var_api_user,
+                      api_secret=checkmk_var_api_secret)
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -82,8 +82,8 @@
                       server_url=checkmk_var_server_url,
                       site=outer_item.site,
                       validate_certs=False,
-                      automation_user=checkmk_var_automation_user,
-                      automation_secret=checkmk_var_automation_secret)
+                      api_user=checkmk_var_api_user,
+                      api_secret=checkmk_var_api_secret)
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
@@ -98,8 +98,8 @@
                       server_url=checkmk_var_server_url,
                       site=outer_item.site,
                       validate_certs=False,
-                      automation_user=checkmk_var_automation_user,
-                      automation_secret=checkmk_var_automation_secret)
+                      api_user=checkmk_var_api_user,
+                      api_secret=checkmk_var_api_secret)
                   }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]

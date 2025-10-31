@@ -2,8 +2,8 @@
 # Configure location and credentials for the Checkmk REST API
 checkmk_var_server_url: "http://127.0.0.1:{{ outer_item.port | default('80') }}/"
 checkmk_var_validate_certs: false
-checkmk_var_automation_user: "cmkadmin"
-checkmk_var_automation_secret: "Sup3rSec4et!"
+checkmk_var_api_user: "cmkadmin"
+checkmk_var_api_secret: "Sup3rSec4et!"
 
 # Generate download URL and provide credentials to download Checkmk setups
 checkmk_var_download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ __checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_facts['distribution_release'] }}_amd64.deb"  # noqa yaml[line-length]
@@ -43,8 +43,8 @@ __checkmk_var_testing_environment:
   CHECKMK_VAR_SITE: "{{ outer_item.site }}"
   CHECKMK_VAR_VALIDATE_CERTS: "false"
   CHECKMK_VAR_API_AUTH_TYPE: "bearer"
-  CHECKMK_VAR_AUTOMATION_USER: "{{ checkmk_var_automation_user }}"
-  CHECKMK_VAR_AUTOMATION_SECRET: "{{ checkmk_var_automation_secret }}"
+  CHECKMK_VAR_API_USER: "{{ checkmk_var_api_user }}"
+  CHECKMK_VAR_API_SECRET: "{{ checkmk_var_api_secret }}"
 
 # Use this to override the test-specific sites for local testing:
 # checkmk_var_test_sites:
