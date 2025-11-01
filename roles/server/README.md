@@ -136,6 +136,16 @@ Extension packages can also be listed to be installed on the specific central si
 
 **Attention!** If you are connecting to the remote host via an unprivileged user, you will run into permission issues explained [here](https://docs.ansible.com/ansible-core/2.18/playbook_guide/playbooks_privilege_escalation.html#risks-of-becoming-an-unprivileged-user). The easiest fix will probably be to install your distribution's `acl` package. But the right solution for your environment is entirely up to you.
 
+#### HTTP Proxy
+
+    checkmk_server_download_proxy: []
+
+The HTTP proxy used for downloading the Checkmk Server Setup.
+
+    checkmk_server_gpg_download_proxy: "{{ checkmk_server_download_proxy }}"
+
+The HTTP proxy used for downloading the Checkmk GPG Key.
+
 ### Site Updates
 
     checkmk_server_backup_on_update: true
