@@ -156,6 +156,16 @@ Backup options to use. By default no historic data is backed up, in order to cre
 Whether to allow downgrading a site's version.
 Note: this is not a recommended procedure, and will not be supported for enterprise customers.
 
+### Delegation
+
+    checkmk_server_delegate_download: "{{ inventory_hostname }}"
+
+Configure the host to which Checkmk Server Setup downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download itself.
+
+    checkmk_server_gpg_delegate_download: "{{ checkmk_server_delegate_download }}"
+
+Configure the host to which Checkmk GPG Key downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download itself.
+
 ## Tags
 
 Tasks are tagged with the following tags:
