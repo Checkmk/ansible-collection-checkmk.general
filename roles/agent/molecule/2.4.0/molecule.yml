@@ -43,7 +43,7 @@ verifier:
   name: ansible
 scenario:
   test_sequence:
-    # - dependency
+    - dependency
     - cleanup
     - destroy
     - syntax
