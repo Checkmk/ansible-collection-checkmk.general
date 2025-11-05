@@ -1,8 +1,13 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2025, Robin Gierse <robin.gierse@checkmk.com>
+# Copyright: (c) 2025, Lars Getwan <lars.getwan@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+# This code was originally authored by Atruvia AG (https://atruvia.de/)
+# and subsequently modified by Checkmk.
+# Thank you so much for donating this code!
+
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
@@ -117,7 +122,7 @@ EXAMPLES = r"""
       comment: "Piggyback config for Cluster1 host"
       site: "mysite"
       connector_type: "piggyback"
-      interval: 5
+      interval: 60
       creation_rules:
         - folder_path: "/cluster1"
           delete_hosts: false
