@@ -63,6 +63,11 @@ options:
                                 description: Whether to delete hosts that no longer exist.
                                 type: bool
                                 default: false
+                            matching_hosts:
+                                description: Restrict host creation using regular expressions.
+                                type: list
+                                elements: str
+                                default: []
                             host_attributes:
                                 description: Additional host attributes to set on created hosts.
                                 type: dict
@@ -415,6 +420,9 @@ def run_module():
                             options={
                                 "folder_path": dict(type="str", required=True),
                                 "delete_hosts": dict(type="bool", default=False),
+                                "matching_hosts": dict(
+                                    type="list", elements="str", required=False, default=[]
+                                ),
                                 "host_attributes": dict(type="dict", required=False),
                             },
                         ),
