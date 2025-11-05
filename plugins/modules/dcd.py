@@ -252,6 +252,15 @@ class DCDAPI(CheckmkAPI):
         if "comment" not in self.desired or self.desired["comment"] is None:
             self.desired["comment"] = ""
 
+        # Completely remove parameters that contain empty lists
+        if "connector" in self.desired and isinstance(self.desired["connector"], dict):
+            for rule in self.desired["connector"].get("creation_rules", []):
+                if len(rule.get("matching_hosts", [])) == 0:
+                    del rule["matching_hosts"]
+
+            if len(self.desired["connector"].get("restrict_source_hosts", [])) == 0:
+                del self.desired["connector"]["restrict_source_hosts"]
+
         self.state = None
 
         self._get_current()
