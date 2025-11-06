@@ -289,6 +289,7 @@ def werk16722(site_config):
         "replicate_event_console",
         "replicate_extensions",
         "message_broker_port",
+        "is_trusted",
     ]:
         try:
             logger.debug("Removing key %s" % key)
