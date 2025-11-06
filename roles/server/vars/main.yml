@@ -3,12 +3,27 @@ __checkmk_server_base_url: "https://download.checkmk.com/checkmk"
 checkmk_server_download_url: "{{ __checkmk_server_base_url }}/{{ checkmk_server_version }}/{{ __checkmk_server_setup_file }}"
 checkmk_server_gpg_download_url: "{{ __checkmk_server_base_url }}/Check_MK-pubkey.gpg"
 
-# Due to inconsistent naming of editions, we normalize them here for convenience
-__checkmk_server_edition_mapping:
+# Due to inconsistent naming of editions, we normalize them here for convenience.
+__checkmk_var_legacy_edition_mapping:
   cre: raw
   cfe: free
   cee: enterprise
   cce: cloud
   cme: managed
+
+# Due to renaming of editions starting with 2.5.0, we normalize them here for convenience. Again.
+__checkmk_var_modern_edition_mapping:
+  cre: community
+  cee: pro
+  cce: ultimate
+  cme: ultimatemt
+  cse: cloud
+
+# Bringing the above two mappings back together.
+__checkmk_server_edition_mapping: >-
+  {{
+    ( (checkmk_server_version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+    | ternary(__checkmk_var_legacy_edition_mapping, __checkmk_var_modern_edition_mapping)
+  }}
 
 __checkmk_server_tmp_dir: "/tmp"
