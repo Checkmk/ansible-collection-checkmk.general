@@ -5,12 +5,28 @@ __checkmk_agent_auth: |-
   {% if checkmk_agent_secret is defined and checkmk_agent_secret | length > 0 %}{{ checkmk_agent_secret }}{% else %}{{ checkmk_agent_pass }}{% endif %}
 
 # Due to inconsistent naming of editions, we normalize them here for convenience
-__checkmk_agent_edition_mapping:
+# Due to inconsistent naming of editions, we normalize them here for convenience.
+__checkmk_var_legacy_edition_mapping:
   cre: raw
   cfe: free
   cee: enterprise
   cce: cloud
   cme: managed
+
+# Due to renaming of editions starting with 2.5.0, we normalize them here for convenience. Again.
+__checkmk_var_modern_edition_mapping:
+  cre: community
+  cee: pro
+  cce: ultimate
+  cme: ultimatemt
+  cse: cloud
+
+# Bringing the above two mappings back together.
+__checkmk_agent_edition_mapping: >-
+  {{
+    ( (checkmk_server_version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+    | ternary(__checkmk_var_legacy_edition_mapping, __checkmk_var_modern_edition_mapping)
+  }}
 
 __checkmk_agent_files_mapping:
   Debian: linux_deb
