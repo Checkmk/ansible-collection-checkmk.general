@@ -8,13 +8,28 @@ checkmk_var_automation_secret: "Sup3rSec4et!"
 # Generate download URL and provide credentials to download Checkmk setups
 checkmk_var_download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ __checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
 
-# Due to inconsistent naming of editions, we normalize them here for convenience
-__checkmk_server_edition_mapping:
+# Due to inconsistent naming of editions, we normalize them here for convenience.
+__checkmk_var_legacy_edition_mapping:
   cre: raw
+  cfe: free
   cee: enterprise
   cce: cloud
   cme: managed
 
+# Due to renaming of editions starting with 2.5.0, we normalize them here for convenience. Again.
+__checkmk_var_modern_edition_mapping:
+  cre: community
+  cee: pro
+  cce: ultimate
+  cme: ultimatemt
+  cse: cloud
+
+# Bringing the above two mappings back together.
+__checkmk_server_edition_mapping: >-
+  {{
+    ( (item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+    | ternary(__checkmk_var_legacy_edition_mapping, __checkmk_var_modern_edition_mapping)
+  }}
 
 # This is a very hacky workaround, as it is not possible to assign variables
 # to other variables when using them in lookup modules.
@@ -32,8 +47,8 @@ __checkmk_var_testing_environment:
   CHECKMK_VAR_AUTOMATION_SECRET: "{{ checkmk_var_automation_secret }}"
 
 # Use this to override the test-specific sites for local testing:
-# checkmk_var_test_sites:
-#   - version: "2.4.0p15"
-#     edition: "cme"
-#     site: "stable_cme"
-#     port: "5324"
+checkmk_var_test_sites:
+  - version: "2.4.0p15"
+    edition: "cme"
+    site: "stable_cme"
+    port: "5324"
