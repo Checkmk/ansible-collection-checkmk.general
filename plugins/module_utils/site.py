@@ -111,8 +111,7 @@ class SiteConnection:
         # Before werk 18286, 'secret' was there, after werk 18907, there's 'logged_in'.
         # Between those two werks, login/logout is not possible with this module.
         if self.site_config and (
-            self.site_config.get("secret")
-            or self.site_config.get("logged_in")
+            self.site_config.get("secret") or self.site_config.get("logged_in")
         ):
             return True
 
