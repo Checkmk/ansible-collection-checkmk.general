@@ -5,7 +5,7 @@ requires-python = ">=3.11"
 dependencies = [
     "ansible-core==2.19.3",
     "antsibull-changelog==0.34.0",
-    "antsibull-docs==2.21.0",
+    "antsibull-docs==2.22.0",
     "ansible-lint==25.9.2",
     "jinja2==3.1.6",
     "molecule==25.9.0",
@@ -22,7 +22,7 @@ dev = [
     "mypy-extensions==1.1.0",
     "pathspec==0.12.1",
     "platformdirs==4.5.0",
-    "tomli==2.2.1",
+    "tomli==2.3.0",
     "typing-extensions==4.15.0",
 ]
 

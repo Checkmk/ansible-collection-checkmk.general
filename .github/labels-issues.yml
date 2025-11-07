@@ -23,6 +23,9 @@ module:bakery:
 module:contact_group:
   - 'Component Name: contact_group'
 
+module:dcd:
+  - 'Component Name: dcd'
+
 module:discovery:
   - 'Component Name: discovery'
 

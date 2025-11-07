@@ -63,6 +63,9 @@
         mode: "0640"
         url_username: "{{ checkmk_server_download_user | default(omit) }}"
         url_password: "{{ checkmk_server_download_pass | default(omit) }}"
+      environment:
+        http_proxy: "{{ checkmk_server_download_proxy | default(omit, true) }}"
+        https_proxy: "{{ checkmk_server_download_proxy | default(omit, true) }}"
       retries: 3
       delegate_to: "{{ checkmk_server_delegate_download }}"
       tags:
@@ -75,6 +78,9 @@
         mode: "0640"
         url_username: "{{ checkmk_server_gpg_download_user | default(omit) }}"
         url_password: "{{ checkmk_server_gpg_download_pass | default(omit) }}"
+      environment:
+        http_proxy: "{{ checkmk_server_gpg_download_proxy | default(omit, true) }}"
+        https_proxy: "{{ checkmk_server_gpg_download_proxy | default(omit, true) }}"
       when: checkmk_server_verify_setup | bool
       retries: 3
       delegate_to: "{{ checkmk_server_gpg_delegate_download }}"

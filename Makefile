@@ -65,7 +65,7 @@ version:
 setup: setup-python kvm vagrant
 
 python:
-	@curl -LsSf https://astral.sh/uv/install.sh | sh
+	@uv help > /dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
 
 kvm:
 	@sudo apt update -y
@@ -91,7 +91,7 @@ vagrant:
 		software-properties-common \
 		virtiofsd
 	@wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-	@echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $$(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+	@echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $$(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
 	@sudo apt update -y
 	@sudo apt -y install vagrant
 	@sudo usermod -aG libvirt $(USER)

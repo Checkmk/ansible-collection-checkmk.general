@@ -27,12 +27,13 @@ __checkmk_var_testing_environment:
   CHECKMK_VAR_SERVER_URL: "{{ checkmk_var_server_url }}"
   CHECKMK_VAR_SITE: "{{ outer_item.site }}"
   CHECKMK_VAR_VALIDATE_CERTS: "false"
+  CHECKMK_VAR_API_AUTH_TYPE: "bearer"
   CHECKMK_VAR_AUTOMATION_USER: "{{ checkmk_var_automation_user }}"
   CHECKMK_VAR_AUTOMATION_SECRET: "{{ checkmk_var_automation_secret }}"
 
 # Use this to override the test-specific sites for local testing:
 # checkmk_var_test_sites:
-#   - version: "2.4.0p13"
+#   - version: "2.4.0p15"
 #     edition: "cme"
 #     site: "stable_cme"
 #     port: "5324"
