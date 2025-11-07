@@ -390,7 +390,7 @@ def run_module():
     else:
         exit_module(
             module,
-            msg="Unexpected target state %s" % desired_site_connection.state,
+            msg="Unexpected target state %s." % desired_site_connection.state,
             failed=True,
             logger=logger,
         )
