@@ -97,10 +97,23 @@ class SiteConnection:
         return differences
 
     def diff(self, site_connection):
-        return self._diff(self.site_config, site_connection.site_config)
+        # The logged_in state cannot be compared like this, so remove the key locally.
+        selfcopy = self.site_config.copy()
+        othercopy = site_connection.site_config.copy()
+
+        for s in [selfcopy, othercopy]:
+            if "logged_in" in s:
+                del s["logged_in"]
+
+        return self._diff(selfcopy, othercopy)
 
     def logged_in(self):
-        if self.site_config and self.site_config.get("secret"):
+        # Before werk 18286, 'secret' was there, after werk 18907, there's 'logged_in'.
+        # Between those two werks, login/logout is not possible with this module.
+        if self.site_config and (
+            self.site_config.get("secret")
+            or self.site_config.get("logged_in")
+        ):
             return True
 
     def _update(self, d, u):
@@ -112,13 +125,24 @@ class SiteConnection:
         return d
 
     def merge_with(self, site_connection):
-        self._update(self.site_config, site_connection.site_config)
+        # Don't merge the "logged_in" key into the desired connection.
+        # This has to be done with "login".
+        othercopy = site_connection.site_config.copy()
+        if "logged_in" in othercopy:
+            del othercopy["logged_in"]
+
+        self._update(self.site_config, othercopy)
 
     def get_api_data(self, target_api):
 
         t = TargetAPI()
         if target_api in [t.CREATE, t.UPDATE]:
-            return {"site_config": self.site_config}
+            # We don't want the 'logged_in' key in the CREATE & UPDATE data
+            selfcopy = self.site_config.copy()
+            if "logged_in" in selfcopy:
+                del selfcopy["logged_in"]
+
+            return {"site_config": selfcopy}
 
         if target_api in [t.LOGIN]:
             return self.authentication
