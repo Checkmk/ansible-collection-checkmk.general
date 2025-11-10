@@ -138,7 +138,7 @@ Extension packages can also be listed to be installed on the specific central si
 
 #### HTTP Proxy
 
-    checkmk_server_download_proxy: []
+    checkmk_server_download_proxy: ''
 
 The HTTP proxy used for downloading the Checkmk Server Setup.
 
