@@ -22,6 +22,13 @@
     - install-package
     - update-sites
 
+- name: "{{ ansible_system }}: Set Proxy Environment."
+  when: checkmk_server_download_proxy | length > 0
+  ansible.builtin.set_fact:
+    __proxy_env:
+      http_proxy: "{{ checkmk_server_download_proxy | default(omit) }}"
+      https_proxy: "{{ checkmk_server_download_proxy | default(omit) }}"
+
 - name: "{{ ansible_system }}: Get RPM or APT package facts."
   ansible.builtin.package_facts:
     manager: "auto"
@@ -63,24 +70,20 @@
         mode: "0640"
         url_username: "{{ checkmk_server_download_user | default(omit) }}"
         url_password: "{{ checkmk_server_download_pass | default(omit) }}"
-      environment:
-        http_proxy: "{{ checkmk_server_download_proxy | default(omit, true) }}"
-        https_proxy: "{{ checkmk_server_download_proxy | default(omit, true) }}"
+      environment: "{{ __proxy_env | default(omit) }}"
       retries: 3
       tags:
         - download-package
 
     - name: "{{ ansible_system }}: Download Checkmk GPG Key."
+      when: checkmk_server_verify_setup | bool
       ansible.builtin.get_url:
         url: "{{ checkmk_server_gpg_download_url }}"
         dest: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
         mode: "0640"
         url_username: "{{ checkmk_server_gpg_download_user | default(omit) }}"
         url_password: "{{ checkmk_server_gpg_download_pass | default(omit) }}"
-      environment:
-        http_proxy: "{{ checkmk_server_gpg_download_proxy | default(omit, true) }}"
-        https_proxy: "{{ checkmk_server_gpg_download_proxy | default(omit, true) }}"
-      when: checkmk_server_verify_setup | bool
+      environment: "{{ __proxy_env | default(omit) }}"
       retries: 3
       tags:
         - download-gpg-key
