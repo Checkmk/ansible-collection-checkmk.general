@@ -1345,3 +1345,33 @@ releases:
     - release_summary.yml
     - truthy.yml
     release_date: '2025-10-17'
+  6.3.0:
+    changes:
+      bugfixes:
+      - Site module - Fix idempotency.
+      major_changes:
+      - DCD module - Add DCD module. Thanks to Atruvia AG (https://atruvia.de/) for
+        donating the initial code!
+      minor_changes:
+      - Authentication - Thanks to Atruvia AG (https://atruvia.de/), all modules now
+        support two more modes of authentication. In addition to ``bearer``, you can
+        now use both ``basic`` and ``cookie`` authentication. Refer to the respective
+        module documentation for details.
+      - Idempotency - Differences in the desired and current state are currently computed
+        in each module separately. Thanks to Atruvia AG (https://atruvia.de/) there
+        now is a ``ConfigDiffer`` class, which can be used for this moving forward.
+      - Server role - Add support for optional use of a HTTP proxy for downloading
+        the Checkmk Server Setup and GPG Key.
+      release_summary: Introducing the long-awaited module for dynamic host management
+        (also known as the DCD)!
+    fragments:
+    - api.yml
+    - bugfixes.yml
+    - dcd.yml
+    - http_proxy.yml
+    - release_summary.yml
+    modules:
+    - description: Manage Dynamic Host Management.
+      name: dcd
+      namespace: ''
+    release_date: '2025-11-12'

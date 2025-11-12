@@ -4,6 +4,36 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.3.0
+======
+
+Release Summary
+---------------
+
+Introducing the long-awaited module for dynamic host management (also known as the DCD)!
+
+Major Changes
+-------------
+
+- DCD module - Add DCD module. Thanks to Atruvia AG (https://atruvia.de/) for donating the initial code!
+
+Minor Changes
+-------------
+
+- Authentication - Thanks to Atruvia AG (https://atruvia.de/), all modules now support two more modes of authentication. In addition to ``bearer``, you can now use both ``basic`` and ``cookie`` authentication. Refer to the respective module documentation for details.
+- Idempotency - Differences in the desired and current state are currently computed in each module separately. Thanks to Atruvia AG (https://atruvia.de/) there now is a ``ConfigDiffer`` class, which can be used for this moving forward.
+- Server role - Add support for optional use of a HTTP proxy for downloading the Checkmk Server Setup and GPG Key.
+
+Bugfixes
+--------
+
+- Site module - Fix idempotency.
+
+New Modules
+-----------
+
+- checkmk.general.dcd - Manage Dynamic Host Management.
+
 v6.2.3
 ======
 
