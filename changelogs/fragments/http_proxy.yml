@@ -1,2 +1,2 @@
 minor_changes:
-  - server role - Add support for optional use of a HTTP proxy for downloading the Checkmk Server Setup and GPG Key.
+  - Server role - Add support for optional use of a HTTP proxy for downloading the Checkmk Server Setup and GPG Key.
