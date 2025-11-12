@@ -27,7 +27,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ### Basic Configuration
 
-    checkmk_server_version: "2.4.0p13"
+    checkmk_server_version: "2.4.0p15"
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.
@@ -135,6 +135,16 @@ on an existing site.
 Extension packages can also be listed to be installed on the specific central site. Remote sites will get extension packages replicated upon change activation. A source path can be set on the Ansible controller. Alternatively a URL can be specified to download the MKP package from directly. These options are mutually exclusive.
 
 **Attention!** If you are connecting to the remote host via an unprivileged user, you will run into permission issues explained [here](https://docs.ansible.com/ansible-core/2.18/playbook_guide/playbooks_privilege_escalation.html#risks-of-becoming-an-unprivileged-user). The easiest fix will probably be to install your distribution's `acl` package. But the right solution for your environment is entirely up to you.
+
+#### HTTP Proxy
+
+    checkmk_server_download_proxy: ''
+
+The HTTP proxy used for downloading the Checkmk Server Setup.
+
+    checkmk_server_gpg_download_proxy: "{{ checkmk_server_download_proxy }}"
+
+The HTTP proxy used for downloading the Checkmk GPG Key.
 
 ### Site Updates
 

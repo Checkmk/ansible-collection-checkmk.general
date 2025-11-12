@@ -1,0 +1,6 @@
+minor_changes:
+  - Authentication - Thanks to Atruvia AG (https://atruvia.de/), all modules now support two more modes of authentication.
+    In addition to ``bearer``, you can now use both ``basic`` and ``cookie`` authentication.
+    Refer to the respective module documentation for details.
+  - Idempotency - Differences in the desired and current state are currently computed in each module separately.
+    Thanks to Atruvia AG (https://atruvia.de/) there now is a ``ConfigDiffer`` class, which can be used for this moving forward.
