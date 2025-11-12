@@ -1,5 +1,5 @@
 .. meta::
-  :antsibull-docs: 2.21.0
+  :antsibull-docs: 2.22.0
 
 
 .. _plugins_in_checkmk.general:
@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 6.2.3
+Collection version 6.3.0
 
 .. contents::
    :local:
@@ -59,6 +59,7 @@ Modules
 * :ansplugin:`activation module <checkmk.general.activation#module>` -- Activate changes in Checkmk.
 * :ansplugin:`bakery module <checkmk.general.bakery#module>` -- Trigger baking and signing in the agent bakery.
 * :ansplugin:`contact_group module <checkmk.general.contact_group#module>` -- Manage contact groups in Checkmk (bulk version).
+* :ansplugin:`dcd module <checkmk.general.dcd#module>` -- Manage Dynamic Host Management.
 * :ansplugin:`discovery module <checkmk.general.discovery#module>` -- Discover services in Checkmk.
 * :ansplugin:`downtime module <checkmk.general.downtime#module>` -- Manage downtimes in Checkmk.
 * :ansplugin:`folder module <checkmk.general.folder#module>` -- Manage folders in Checkmk.
@@ -79,6 +80,7 @@ Modules
     activation_module
     bakery_module
     contact_group_module
+    dcd_module
     discovery_module
     downtime_module
     folder_module

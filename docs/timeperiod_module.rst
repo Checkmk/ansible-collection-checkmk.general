@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.21.0
+  :antsibull-docs: 2.22.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.timeperiod module -- Manage time periods in checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.3).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -140,6 +140,83 @@ Parameters
         <div class="ansible-option-cell">
 
       An alias for the time period.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_auth_cookie"></div>
+
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-api_auth_cookie:
+
+      .. rst-class:: ansible-option-title
+
+      **api_auth_cookie**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_auth_cookie" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Authentication cookie for the Checkmk session.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_auth_type"></div>
+
+      .. _ansible_collections.checkmk.general.timeperiod_module__parameter-api_auth_type:
+
+      .. rst-class:: ansible-option-title
+
+      **api_auth_type**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_auth_type" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Type of authentication to use.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`"bearer"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"basic"`
+      - :ansible-option-choices-entry:`"cookie"`
 
 
       .. raw:: html
@@ -494,8 +571,8 @@ Examples
         automation_secret: "mysecret"
         name: "worktime"
         alias: "Worktime"
-        active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]'
-        exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
+        active_time_ranges: [{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]
+        exceptions: [{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]
         exclude: '[ "Lunchtime" ]'
         state: "present"
 
