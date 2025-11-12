@@ -55,14 +55,14 @@ jobs:
 
     services:
       old_cme:
-        image: checkmk/check-mk-managed:2.3.0p38
+        image: checkmk/check-mk-managed:2.3.0p40
         ports:
           - 5323:5000
         env:
           CMK_SITE_ID: "old_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cme:
-        image: checkmk/check-mk-managed:2.4.0p13
+        image: checkmk/check-mk-managed:2.4.0p15
         ports:
           - 5324:5000
         env:
