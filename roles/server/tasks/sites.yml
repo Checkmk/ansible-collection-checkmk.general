@@ -1,9 +1,15 @@
 ---
 - name: "Create Sites."
   become: true
+  vars:
+    __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
+      {{
+        ( (item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        | ternary(item.edition, __checkmk_server_edition_mapping[item.edition])
+      }}
   ansible.builtin.shell: |
     set -o pipefail
-    omd -V {{ item.version }}.{{ item.edition | lower }} create {{ item.name }}
+    omd -V {{ item.version }}.{{ __checkmk_var_edition_id | lower }} create {{ item.name }}
   args:
     executable: /bin/bash
     creates: "/omd/sites/{{ item.name }}"
@@ -18,6 +24,12 @@
 
 - name: "Get Site Versions."
   become: true
+  vars:
+    __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
+      {{
+        ( (item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        | ternary(item.edition, __checkmk_server_edition_mapping[item.edition])
+      }}
   ansible.builtin.shell: |
     set -o pipefail
     omd version {{ item.name }} | egrep -o '[^ ]+$'
@@ -27,7 +39,7 @@
   loop: "{{ checkmk_server_sites }}"
   loop_control:
     label: "{{ item | combine({'admin_pw': omit}) }}"
-  changed_when: "__checkmk_server_sites_versions.stdout != item.version + '.' + item.edition | lower"
+  changed_when: "__checkmk_server_sites_versions.stdout != item.version + '.' + __checkmk_var_edition_id | lower"
   when: item.state != "absent"
   register: __checkmk_server_sites_versions
   tags:
