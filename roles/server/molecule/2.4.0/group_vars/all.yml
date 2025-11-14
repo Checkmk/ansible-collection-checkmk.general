@@ -41,9 +41,9 @@ checkmk_server_sites:
         value: "6557"
     mkp_packages:
       - name: 'sslcertificates'
-        version: 9.2.1
+        version: 9.5.1
         src: '/tmp/sslcertificates.mkp'
-        checksum: 'md5:0bdaa05f53877a23dbc4fe65d30f0b54'
+        checksum: 'md5:398b9d6e7bfc7e640b361f988be96227'
         installed: true
         enabled: true
   - name: "stopped"
@@ -84,8 +84,8 @@ checkmk_server_sites:
         value: "on"
     mkp_packages:
       - name: 'sslcertificates'
-        version: 9.2.1
-        url: 'https://exchange.checkmk.com/packages/sslcertificates/1928/sslcertificates-9.2.1.mkp'
+        version: 9.5.1
+        url: 'https://exchange.checkmk.com/packages/sslcertificates/2244/sslcertificates-9.5.1.mkp'
         installed: true
         enabled: true
   - name: "absent"
