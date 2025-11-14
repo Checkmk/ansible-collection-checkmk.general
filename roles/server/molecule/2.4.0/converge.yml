@@ -44,7 +44,7 @@
 
     - name: "Download MKP."
       ansible.builtin.get_url:
-        url: https://exchange.checkmk.com/packages/sslcertificates/1928/sslcertificates-9.2.1.mkp
+        url: https://exchange.checkmk.com/packages/sslcertificates/2244/sslcertificates-9.5.1.mkp
         dest: /tmp/sslcertificates.mkp
         mode: "0644"
       delegate_to: localhost

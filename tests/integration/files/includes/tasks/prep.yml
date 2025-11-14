@@ -39,7 +39,7 @@
   vars:
     __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
       {{
-        ( (item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        ( (item.version | regex_replace('p.*', '')) is version('2.5', '<') )
         | ternary(item.edition, __checkmk_server_edition_mapping[item.edition])
       }}
   ansible.builtin.command: "omd -V {{ item.version }}.{{ __checkmk_var_edition_id }} create --no-tmpfs --admin-password {{ checkmk_var_api_secret }} {{ item.site }}"
@@ -51,7 +51,7 @@
   vars:
     __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
       {{
-        ( (item.0.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        ( (item.0.version | regex_replace('p.*', '')) is version('2.5', '<') )
         | ternary(
             item.0.edition,
             __checkmk_var_modern_edition_mapping[item.0.edition]
