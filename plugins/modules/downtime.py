@@ -111,8 +111,8 @@ EXAMPLES = r"""
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: my_host
-    start_time: 2022-03-24T20:39:28Z
-    end_time: 2022-03-24T20:40:28Z
+    start_time: "2022-03-24T20:39:28Z"
+    end_time: "2022-03-24T20:40:28Z"
     state: "present"
     duration: 0
     service_descriptions:
