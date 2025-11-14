@@ -48,7 +48,7 @@ scenario:
     - destroy
     - syntax
     - create
-    - prepare
+    # - prepare
     - converge
     # - idempotence  # disable for now, as we have non-idempotent tasks
     # - side_effect
