@@ -1,6 +1,7 @@
 ---
 # General
-checkmk_var_version: "2.2.0p47"
+# checkmk_var_version: "2.5.0-{{ ansible_facts.date_time.year }}.{{ ansible_facts.date_time.month }}.{{ ansible_facts.date_time.day }}"
+checkmk_var_version: "2.5.0-2026.02.15"  # Temporarily pin version to "weekend build"
 checkmk_var_edition: "cre"
 checkmk_var_checkmk_site: "mysite"
 checkmk_var_api_user: "cmkadmin"

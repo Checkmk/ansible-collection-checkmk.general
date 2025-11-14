@@ -4,7 +4,7 @@
   vars:
     __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
       {{
-        ( (item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        ( (item.version | regex_replace('p.*', '')) is version('2.5', '<') )
         | ternary(item.edition, __checkmk_server_edition_mapping[item.edition])
       }}
   ansible.builtin.shell: |
@@ -27,7 +27,7 @@
   vars:
     __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
       {{
-        ( (item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        ( (item.version | regex_replace('p.*', '')) is version('2.5', '<') )
         | ternary(item.edition, __checkmk_server_edition_mapping[item.edition])
       }}
   ansible.builtin.shell: |
