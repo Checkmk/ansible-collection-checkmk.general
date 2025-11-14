@@ -1,6 +1,6 @@
 ---
 # General
-checkmk_var_version: "2.2.0p47"
+checkmk_var_version: "2.5.0-{{ ansible_facts.date_time.year }}.{{ ansible_facts.date_time.month }}.{{ ansible_facts.date_time.day }}"
 checkmk_var_edition: "cre"
 checkmk_var_checkmk_site: "mysite"
 checkmk_var_automation_user: "cmkadmin"
