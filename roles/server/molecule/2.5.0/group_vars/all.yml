@@ -1,0 +1,98 @@
+---
+# General
+checkmk_var_version: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+checkmk_var_edition: "cre"
+checkmk_server_verify_setup: true
+checkmk_var_server_url: "http://127.0.0.1/"
+checkmk_var_automation_user: "cmkadmin"
+checkmk_var_automation_secret: "mysecret"
+
+# Server Role
+checkmk_server_edition: "{{ checkmk_var_edition }}"
+checkmk_server_version: "{{ checkmk_var_version }}"
+
+checkmk_server_download_user: []
+checkmk_server_download_pass: []
+checkmk_server_gpg_download_user: []
+checkmk_server_gpg_download_pass: []
+
+checkmk_server_sites:
+  - name: "started"
+    version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    state: started
+    admin_pw: "{{ checkmk_var_automation_secret }}"
+    update_conflict_resolution: install
+    omd_auto_restart: true
+    omd_config:
+      - var: LIVESTATUS_TCP
+        value: "on"
+      - var: LIVESTATUS_TCP_PORT
+        value: "6557"
+    mkp_packages:
+      - name: 'sslcertificates'
+        version: 9.2.1
+        src: '/tmp/sslcertificates.mkp'
+        checksum: 'md5:0bdaa05f53877a23dbc4fe65d30f0b54'
+        installed: true
+        enabled: true
+  - name: "stopped"
+    version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    state: stopped
+    admin_pw: "{{ checkmk_var_automation_secret }}"
+    update_conflict_resolution: install
+  - name: "enabled"
+    version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    state: enabled
+    admin_pw: "{{ checkmk_var_automation_secret }}"
+    update_conflict_resolution: install
+    omd_auto_restart: true
+    omd_config:
+      - var: AUTOSTART
+        value: "on"
+  - name: "disabled"
+    version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    state: disabled
+    admin_pw: "{{ checkmk_var_automation_secret }}"
+    update_conflict_resolution: install
+    omd_auto_restart: 'false'
+    omd_config:
+      - var: AUTOSTART
+        value: "off"
+  - name: "present"
+    version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    state: present
+    admin_pw: "{{ checkmk_var_automation_secret }}"
+    update_conflict_resolution: install
+    omd_auto_restart: 'false'
+    omd_config:
+      - var: LIVESTATUS_TCP
+        value: "on"
+    mkp_packages:
+      - name: 'sslcertificates'
+        version: 9.2.1
+        url: 'https://exchange.checkmk.com/packages/sslcertificates/1928/sslcertificates-9.2.1.mkp'
+        installed: true
+        enabled: true
+  - name: "absent"
+    version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    state: absent
+    admin_pw: "{{ checkmk_var_automation_secret }}"
+    update_conflict_resolution: install
+
+checkmk_server_configure_firewall: true
+
+checkmk_server_backup_on_update: true  # Not recommended to disable this option
+checkmk_server_backup_dir: /tmp
+checkmk_server_backup_opts: '--no-past'
+checkmk_server_allow_downgrades: 'false'
+
+checkmk_server_epel_gpg_check: true
+
+checkmk_server_cleanup: 'false'
+checkmk_server_no_log: 'false'

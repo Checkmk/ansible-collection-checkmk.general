@@ -1,0 +1,53 @@
+---
+- name: Converge
+  hosts: all
+
+  pre_tasks:
+
+    - name: Update apt cache.
+      ansible.builtin.package:
+        update_cache: true
+        cache_valid_time: 600
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Prerequisites for Debian Derivatives.
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apt-utils
+        - man
+        - ufw
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Prerequisites for RedHat Derivatives.
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - firewalld
+      when: ansible_os_family == 'RedHat'
+
+    - name: "Create '/usr/share/man/man8/' on Ubuntu."
+      ansible.builtin.file:
+        path: /usr/share/man/man8/
+        state: directory
+        mode: "0755"
+        owner: root
+        group: root
+      when: ansible_distribution == 'Ubuntu'
+
+    # See https://github.com/geerlingguy/docker-rockylinux9-ansible/issues/6
+    - name: "Fix permissions on /etc/shadow for Rocky 9."  # noqa no-changed-when
+      ansible.builtin.command: chmod 0400 /etc/shadow
+      when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '9'
+
+  tasks:
+
+    - name: "Run server role."
+      ansible.builtin.include_role:
+        name: server
+
+    - name: "Run agent role."
+      ansible.builtin.include_role:
+        name: agent

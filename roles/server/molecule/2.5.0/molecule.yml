@@ -1,0 +1,69 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: podman
+platforms:
+  - name: ubuntu2204
+    image: docker.io/geerlingguy/docker-ubuntu2204-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    pre_build_image: true
+    privileged: true
+    systemd: always
+  - name: ubuntu2404
+    image: docker.io/geerlingguy/docker-ubuntu2404-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    pre_build_image: true
+    privileged: true
+    systemd: always
+  - name: debian11
+    image: docker.io/geerlingguy/docker-debian11-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    pre_build_image: true
+    privileged: true
+    systemd: always
+  - name: debian12
+    image: docker.io/geerlingguy/docker-debian12-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    pre_build_image: true
+    privileged: true
+    systemd: always
+  - name: debian13
+    image: docker.io/geerlingguy/docker-debian13-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    pre_build_image: true
+    privileged: true
+    systemd: always
+  - name: rockylinux9
+    image: docker.io/geerlingguy/docker-rockylinux9-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    pre_build_image: true
+    privileged: true
+    systemd: always
+  - name: rockylinux10
+    image: docker.io/geerlingguy/docker-rockylinux10-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    pre_build_image: true
+    privileged: true
+    systemd: always
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      roles_path: "$MOLECULE_PROJECT_DIRECTORY/.."
+verifier:
+  name: ansible
+scenario:
+  test_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    # - prepare
+    - converge
+    # - idempotence  # disable for now, as we have non-idempotent tasks
+    # - side_effect
+    - verify
+    - cleanup
+    - destroy
