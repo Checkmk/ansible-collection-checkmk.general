@@ -62,7 +62,7 @@ homepage: https://github.com/Checkmk/ansible-collection-checkmk.general
 # The URL to the collection issue tracker
 issues: https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc
 
-# build_ignore:
-#   - '*cloud-config-aws.ini'
-#   - '*cloud-config-aws.yml'
-#   - 'changelogs/.plugin-cache.yaml'
+build_ignore:
+  - misc/
+  - scripts/
+  - tests/
