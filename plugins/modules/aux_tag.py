@@ -204,34 +204,30 @@ def run_module():
         changed=False,
     )
 
+    auxtag = AuxTagAPI(module)
+
     if module.params.get("state") == "present":
-        auxtagget = AuxTagGetAPI(module)
-        result = auxtagget.get()
+        if auxtag.current.http_code == 200:
+            if changes_detected(
+                module, json.loads(auxtag.current.content.decode("utf-8"))
+            ):
+                result = auxtag.put()
 
-        if result.http_code == 200:
-            auxtagupdate = AuxTagUpdateAPI(module)
-            auxtagupdate.headers["If-Match"] = result.etag
-            result = auxtagupdate.put()
-
-            time.sleep(3)
-
-        elif result.http_code == 404:
-            auxtagcreate = AuxTagCreateAPI(module)
-            result = auxtagcreate.post()
-
-            time.sleep(3)
+        elif auxtag.current.http_code == 404:
+            result = auxtag.post()
 
     if module.params.get("state") == "absent":
-        # Only delete if the aux tag exists
-        auxtagget = AuxTagGetAPI(module)
-        result = auxtagget.get()
-
-        if result.http_code == 200:
-            auxtagdelete = AuxTagDeleteAPI(module)
-            auxtagdelete.headers["If-Match"] = result.etag
-            result = auxtagdelete.delete()
-
-            time.sleep(3)
+        if auxtag.current.http_code == 200:
+            result = auxtag.delete()
+        elif auxtag.current.http_code == 404:
+            result = RESULT(
+                http_code=0,
+                msg="Aux tag already absent.",
+                content="",
+                etag="",
+                failed=False,
+                changed=False,
+            )
 
     module.exit_json(**result_as_dict(result))
 
