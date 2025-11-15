@@ -102,7 +102,7 @@ message:
     sample: 'Done.'
 """
 
-import time
+import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
@@ -118,33 +118,19 @@ HTTP_CODES_GET = {
     404: (False, False, "Not Found: The requested object has not been found."),
 }
 
-HTTP_CODES_DELETE = {
-    # http_code: (changed, failed, "Message")
-    404: (False, False, "Not Found: The requested object has not been found."),
-}
 
+class AuxTagAPI(CheckmkAPI):
+    def __init__(self, module):
+        super().__init__(module)
 
-class AuxTagCreateAPI(CheckmkAPI):
-    def post(self):  # Create aux tag
-        data = {
-            "aux_tag_id": self.params.get("name", ""),
-            "title": self.params.get("title", ""),
-            "topic": self.params.get("topic", ""),
-            "help": self.params.get("help", ""),
-        }
-
-        # Remove all keys without value, as otherwise they would be None.
-        data = {key: val for key, val in data.items() if val}
-
-        return self._fetch(
-            endpoint="/domain-types/aux_tag/collections/all",
-            data=data,
-            method="POST",
+        # Get current aux tag
+        self.current = self._fetch(
+            code_mapping=HTTP_CODES_GET,
+            endpoint="/objects/aux_tag/%s" % self.params.get("name"),
+            method="GET",
         )
 
-
-class AuxTagUpdateAPI(CheckmkAPI):
-    def put(self):  # Update aux tag
+    def normalize_data(self):
         data = {
             "title": self.params.get("title", ""),
             "topic": self.params.get("topic", ""),
@@ -154,29 +140,49 @@ class AuxTagUpdateAPI(CheckmkAPI):
         # Remove all keys without value, as they would be emptied.
         data = {key: val for key, val in data.items() if val}
 
+        return data
+
+    def post(self):
+        data = self.normalize_data()
+        data["aux_tag_id"] = self.params.get("name", "")
+
+        return self._fetch(
+            endpoint="/domain-types/aux_tag/collections/all",
+            data=data,
+            method="POST",
+        )
+
+    def put(self):
+        self.headers["If-Match"] = self.current.etag
+        data = self.normalize_data()
+
         return self._fetch(
             endpoint="/objects/aux_tag/%s" % self.params.get("name"),
             data=data,
             method="PUT",
         )
 
+    def delete(self):
+        self.headers["If-Match"] = self.current.etag
 
-class AuxTagDeleteAPI(CheckmkAPI):
-    def delete(self):  # Remove aux tag
         return self._fetch(
-            code_mapping=HTTP_CODES_DELETE,
-            endpoint="/objects/aux_tag/%s" % self.params.get("name"),
-            method="DELETE",
+            endpoint="/objects/aux_tag/%s/actions/delete/invoke" % self.params.get("name"),
+            data={},
+            method="POST",
         )
 
 
-class AuxTagGetAPI(CheckmkAPI):
-    def get(self):
-        return self._fetch(
-            code_mapping=HTTP_CODES_GET,
-            endpoint="/objects/aux_tag/%s" % self.params.get("name"),
-            method="GET",
-        )
+def changes_detected(module, current):
+    if module.params.get("title") and module.params.get("title") != current.get("title"):
+        return True
+
+    if module.params.get("topic") and module.params.get("topic") != current.get("extensions", {}).get("topic"):
+        return True
+
+    if module.params.get("help") and module.params.get("help") != current.get("extensions", {}).get("help"):
+        return True
+
+    return False
 
 
 def run_module():
