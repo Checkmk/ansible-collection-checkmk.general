@@ -1,5 +1,5 @@
 .. meta::
-  :antsibull-docs: 2.16.3
+  :antsibull-docs: 2.22.0
 
 
 .. _plugins_in_checkmk.general:
@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 6.2.2
+Collection version 6.3.0
 
 .. contents::
    :local:
@@ -16,7 +16,7 @@ Collection version 6.2.2
 Description
 -----------
 
-The official Checkmk Ansible collection - brought to you by the Checkmk company.
+The official Checkmk Ansible collection \- brought to you by the Checkmk company.
 
 **Authors:**
 
@@ -27,7 +27,7 @@ The official Checkmk Ansible collection - brought to you by the Checkmk company.
 
 **Supported ansible-core versions:**
 
-* 2.15.0 or newer
+* 2.17.0 or newer
 
 .. ansible-links::
 
@@ -44,11 +44,14 @@ The official Checkmk Ansible collection - brought to you by the Checkmk company.
 .. toctree::
     :maxdepth: 1
 
+.. _plugin_index_for_checkmk.general:
+
 Plugin Index
 ------------
 
 These are the plugins in the checkmk.general collection:
 
+.. _module_plugins_in_checkmk.general:
 
 Modules
 ~~~~~~~
@@ -56,6 +59,7 @@ Modules
 * :ansplugin:`activation module <checkmk.general.activation#module>` -- Activate changes in Checkmk.
 * :ansplugin:`bakery module <checkmk.general.bakery#module>` -- Trigger baking and signing in the agent bakery.
 * :ansplugin:`contact_group module <checkmk.general.contact_group#module>` -- Manage contact groups in Checkmk (bulk version).
+* :ansplugin:`dcd module <checkmk.general.dcd#module>` -- Manage Dynamic Host Management.
 * :ansplugin:`discovery module <checkmk.general.discovery#module>` -- Discover services in Checkmk.
 * :ansplugin:`downtime module <checkmk.general.downtime#module>` -- Manage downtimes in Checkmk.
 * :ansplugin:`folder module <checkmk.general.folder#module>` -- Manage folders in Checkmk.
@@ -76,6 +80,7 @@ Modules
     activation_module
     bakery_module
     contact_group_module
+    dcd_module
     discovery_module
     downtime_module
     folder_module
@@ -89,6 +94,7 @@ Modules
     timeperiod_module
     user_module
 
+.. _inventory_plugins_in_checkmk.general:
 
 Inventory Plugins
 ~~~~~~~~~~~~~~~~~
@@ -101,6 +107,7 @@ Inventory Plugins
 
     checkmk_inventory
 
+.. _lookup_plugins_in_checkmk.general:
 
 Lookup Plugins
 ~~~~~~~~~~~~~~
@@ -135,6 +142,8 @@ Lookup Plugins
     sites_lookup
     version_lookup
 
+
+.. _role_plugins_in_checkmk.general:
 
 Role Index
 ----------

@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.16.3
+  :antsibull-docs: 2.22.0
 
 .. Anchors
 
@@ -22,12 +22,12 @@ checkmk.general.user module -- Manage users in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.2).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
+    To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
     To use it in a playbook, specify: :code:`checkmk.general.user`.
 
@@ -77,6 +77,83 @@ Parameters
 
   * - Parameter
     - Comments
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_auth_cookie"></div>
+
+      .. _ansible_collections.checkmk.general.user_module__parameter-api_auth_cookie:
+
+      .. rst-class:: ansible-option-title
+
+      **api_auth_cookie**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_auth_cookie" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Authentication cookie for the Checkmk session.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_auth_type"></div>
+
+      .. _ansible_collections.checkmk.general.user_module__parameter-api_auth_type:
+
+      .. rst-class:: ansible-option-title
+
+      **api_auth_type**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_auth_type" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Type of authentication to use.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`"bearer"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"basic"`
+      - :ansible-option-choices-entry:`"cookie"`
+
+
+      .. raw:: html
+
+        </div>
 
   * - .. raw:: html
 
@@ -181,7 +258,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The secret to authenticate your automation user.
+      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_SECRET`.
 
 
       .. raw:: html
@@ -215,7 +292,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The automation user you want to use. It has to be an 'Automation' user, not a normal one.
+      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_USER`.
 
 
       .. raw:: html
@@ -974,7 +1051,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The base url of your Checkmk server including the protocol but excluding the site.
+      The base url of your Checkmk server including the protocol but excluding the site. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_SERVER\_URL`.
 
 
       .. raw:: html
@@ -1094,7 +1171,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The site you want to connect to. This will be appended to the server\_url as part of the API request url.
+      The site you want to connect to. This will be appended to the server\_url as part of the API request url. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_SITE`.
 
 
       .. raw:: html
@@ -1171,7 +1248,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Whether to validate the SSL certificate of the Checkmk server.
+      Whether to validate the SSL certificate of the Checkmk server. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_VALIDATE\_CERTS`.
 
 
       .. rst-class:: ansible-option-line
@@ -1366,7 +1443,6 @@ Authors
 - Lars Getwan (@lgetwan)
 - Marcel Arentz (@godspeed-you)
 - Max Sickora (@max-checkmk)
-
 
 
 .. Extra links

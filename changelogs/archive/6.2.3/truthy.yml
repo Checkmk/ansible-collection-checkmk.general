@@ -1,0 +1,7 @@
+bugfixes:
+  - Quoted truthy values are now proper truthy values.
+    This should have no functional impact but makes for a clear format.
+  - Make implicit boolean conversion in filters explicit.
+    This should have no functional impact but makes for a clear format.
+  - Rule module - The rule module supports a check mode, but the corresponding flag was set to 'false'.
+    This is fixed now.

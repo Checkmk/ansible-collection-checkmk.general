@@ -36,7 +36,7 @@ jobs:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: "Install uv."
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
           working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
@@ -71,7 +71,7 @@ jobs:
         run: echo "version=$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
 
       - name: "Install uv."
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
 

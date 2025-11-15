@@ -68,8 +68,8 @@ EXAMPLES = r"""
     automation_secret: "mysecret"
     name: "worktime"
     alias: "Worktime"
-    active_time_ranges: '[{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]'
-    exceptions: '[{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]'
+    active_time_ranges: [{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]
+    exceptions: [{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]
     exclude: '[ "Lunchtime" ]'
     state: "present"
 

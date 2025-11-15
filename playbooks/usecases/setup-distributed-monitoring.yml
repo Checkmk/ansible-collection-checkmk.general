@@ -20,7 +20,7 @@
         state: started
         admin_pw: "{{ checkmk_server_admin_pass }}"
         update_conflict_resolution: install
-        omd_auto_restart: 'true'
+        omd_auto_restart: true
         omd_config:
           - var: LIVESTATUS_TCP
             value: "on"

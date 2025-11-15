@@ -306,6 +306,17 @@ class ModuleDocFragment(object):
                                         - files below C($OMD_ROOT/local/) on the remote site will be removed.
                                     type: bool
                                     default: true
+                                is_trusted:
+                                    description:
+                                        - When this option is enabled the central site might get compromised
+                                        - by a rogue remote site. If you disable this option, some features,
+                                        - such as HTML rendering in service descriptions for the services
+                                        - monitored on this remote site, will no longer work. In case the
+                                        - sites are managed by different groups of people, especially when
+                                        - belonging to different organizations, we recommend to disable this
+                                        - setting. This parameter was introduced with werk 17998
+                                        - (2.3.0p39, 2.4.0p14)
+                                    type: bool
                                 message_broker_port:
                                     description:
                                         - The port used by the message broker to exchange messages.

@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.16.3
+  :antsibull-docs: 2.22.0
 
 .. Anchors
 
@@ -22,12 +22,12 @@ checkmk.general.version lookup -- Get the version of a Checkmk server
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.2).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
+    To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
     To use it in a playbook, specify: :code:`checkmk.general.version`.
 
@@ -84,6 +84,126 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_auth_cookie"></div>
+
+      .. _ansible_collections.checkmk.general.version_lookup__parameter-api_auth_cookie:
+
+      .. rst-class:: ansible-option-title
+
+      **api_auth_cookie**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_auth_cookie" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The authentication cookie value if using cookie\-based authentication.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block:: ini
+
+          [checkmk_lookup]
+          automation_auth_cookie = VALUE
+
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_API\_AUTH\_COOKIE`
+
+      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_API\_AUTH\_COOKIE`
+
+      - Variable: checkmk\_var\_api\_auth\_cookie
+
+      - Variable: ansible\_lookup\_checkmk\_api\_auth\_cookie
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_auth_type"></div>
+
+      .. _ansible_collections.checkmk.general.version_lookup__parameter-api_auth_type:
+
+      .. rst-class:: ansible-option-title
+
+      **api_auth_type**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_auth_type" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The authentication type to use ('bearer', 'basic', 'cookie').
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"bearer"`
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block:: ini
+
+          [checkmk_lookup]
+          api_auth_type = bearer
+
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_API\_AUTH\_TYPE`
+
+      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_API\_AUTH\_TYPE`
+
+      - Variable: checkmk\_var\_automation\_auth\_type
+
+      - Variable: ansible\_lookup\_checkmk\_automation\_auth\_type
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
       .. _ansible_collections.checkmk.general.version_lookup__parameter-automation_secret:
@@ -98,7 +218,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string`
 
 
 
@@ -156,7 +276,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string`
 
 
 
@@ -227,7 +347,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
         <div class="ansible-option-cell">
 
-      URL of the Checkmk server.
+      URL of the Checkmk server
 
 
       .. rst-class:: ansible-option-line
@@ -343,7 +463,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
         <div class="ansible-option-cell">
 
-      Whether or not to validate TLS certificates.
+      Whether to validate SSL certificates.
 
 
       .. rst-class:: ansible-option-line
@@ -379,6 +499,13 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
         </div>
 
+
+.. note::
+
+    Configuration entries listed above for each entry type (Ansible variable, environment variable, and so on) have a low to high priority order.
+    For example, a variable that is lower in the list will override a variable that is higher up.
+    The entry types are also ordered by precedence from low to high priority order.
+    For example, an ansible.cfg entry (further up in the list) is overwritten by an Ansible variable (further down in the list).
 
 .. Attributes
 
@@ -499,9 +626,6 @@ Authors
 
 - Lars Getwan (@lgetwan)
 
-
-.. hint::
-    Configuration entries for each entry type have a low to high priority order. For example, a variable that is lower in the list will override a variable that is higher up.
 
 .. Extra links
 

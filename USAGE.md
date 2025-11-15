@@ -19,7 +19,7 @@ We encourage you - in accordance with Ansible Best Practices - to always use **F
         site: "mysite"
         automation_user: "myuser"
         automation_secret: "mysecret"
-        force_foreign_changes: 'true'
+        force_foreign_changes: true
         sites:
           - "mysite"
 ```
@@ -47,7 +47,7 @@ You can set default values for module parameters at the play level. These defaul
   tasks:
     - name: "Run activation."
       checkmk.general.activation:
-        force_foreign_changes: 'true'
+        force_foreign_changes: true
         sites:
           - "mysite"
 ```

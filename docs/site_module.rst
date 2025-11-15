@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.16.3
+  :antsibull-docs: 2.22.0
 
 .. Anchors
 
@@ -22,12 +22,12 @@ checkmk.general.site module -- Manage distributed monitoring in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.2.2).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-    To install it, use: :code:`ansible-galaxy collection install checkmk.general`.
+    To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
     To use it in a playbook, specify: :code:`checkmk.general.site`.
 
@@ -81,6 +81,83 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_auth_cookie"></div>
+
+      .. _ansible_collections.checkmk.general.site_module__parameter-api_auth_cookie:
+
+      .. rst-class:: ansible-option-title
+
+      **api_auth_cookie**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_auth_cookie" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Authentication cookie for the Checkmk session.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_auth_type"></div>
+
+      .. _ansible_collections.checkmk.general.site_module__parameter-api_auth_type:
+
+      .. rst-class:: ansible-option-title
+
+      **api_auth_type**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_auth_type" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Type of authentication to use.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`"bearer"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"basic"`
+      - :ansible-option-choices-entry:`"cookie"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
       .. _ansible_collections.checkmk.general.site_module__parameter-automation_secret:
@@ -105,7 +182,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The secret to authenticate your automation user.
+      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_SECRET`.
 
 
       .. raw:: html
@@ -139,7 +216,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The automation user you want to use. It has to be an 'Automation' user, not a normal one.
+      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_USER`.
 
 
       .. raw:: html
@@ -173,7 +250,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The base url of your Checkmk server including the protocol but excluding the site.
+      The base url of your Checkmk server including the protocol but excluding the site. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_SERVER\_URL`.
 
 
       .. raw:: html
@@ -207,7 +284,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The site you want to connect to. This will be appended to the server\_url as part of the API request url.
+      The site you want to connect to. This will be appended to the server\_url as part of the API request url. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_SITE`.
 
 
       .. raw:: html
@@ -540,7 +617,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The customer of the site (Managed Edition - CME only).
+      The customer of the site (Managed Edition \- CME only).
 
 
       .. raw:: html
@@ -847,6 +924,70 @@ Parameters
       :ansible-option-choices:`Choices:`
 
       - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-site_connection/site_config/configuration_connection/is_trusted"></div>
+
+      .. raw:: latex
+
+        \hspace{0.06\textwidth}\begin{minipage}[t]{0.26\textwidth}
+
+      .. _ansible_collections.checkmk.general.site_module__parameter-site_connection/site_config/configuration_connection/is_trusted:
+
+      .. rst-class:: ansible-option-title
+
+      **is_trusted**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-site_connection/site_config/configuration_connection/is_trusted" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      When this option is enabled the central site might get compromised
+
+      by a rogue remote site. If you disable this option, some features,
+
+      such as HTML rendering in service descriptions for the services
+
+      monitored on this remote site, will no longer work. In case the
+
+      sites are managed by different groups of people, especially when
+
+      belonging to different organizations, we recommend to disable this
+
+      setting. This parameter was introduced with werk 17998
+
+      (2.3.0p39, 2.4.0p14)
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
       - :ansible-option-choices-entry:`true`
 
 
@@ -1923,7 +2064,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      Enable caching of several non-status queries.
+      Enable caching of several non\-status queries.
 
 
       .. rst-class:: ansible-option-line
@@ -2531,7 +2672,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      By specifying a status host for each non-local connection
+      By specifying a status host for each non\-local connection
 
       you prevent Multisite from running into timeouts when
 
@@ -2839,7 +2980,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Whether to validate the SSL certificate of the Checkmk server.
+      Whether to validate the SSL certificate of the Checkmk server. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_VALIDATE\_CERTS`.
 
 
       .. rst-class:: ansible-option-line
@@ -3010,7 +3151,6 @@ Authors
 ~~~~~~~
 
 - Lars Getwan (@lgetwan)
-
 
 
 .. Extra links

@@ -1,10 +1,11 @@
-requires_ansible: '>=2.15.0'
+requires_ansible: '>=2.17.0'
 
 action_groups:
   checkmk:
     - activation
     - bakery
     - contact_group
+    - dcd
     - discovery
     - downtime
     - folder

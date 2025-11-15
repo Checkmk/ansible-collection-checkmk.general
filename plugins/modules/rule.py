@@ -930,7 +930,7 @@ def run_module():
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     # Create an API object that contains the current and desired state
     current_rule = RuleAPI(module)

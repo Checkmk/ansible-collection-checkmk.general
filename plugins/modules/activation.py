@@ -50,7 +50,7 @@ EXAMPLES = r"""
       site: "mysite"
       automation_user: "myuser"
       automation_secret: "mysecret"
-  run_once: 'true'
+  run_once: true
 
 - name: "Start activation on a specific site."
   checkmk.general.activation:
@@ -60,7 +60,7 @@ EXAMPLES = r"""
       automation_secret: "mysecret"
       sites:
           - "mysite"
-  run_once: 'true'
+  run_once: true
 
 - name: "Start activation including foreign changes."
   checkmk.general.activation:
@@ -68,8 +68,8 @@ EXAMPLES = r"""
       site: "mysite"
       automation_user: "myuser"
       automation_secret: "mysecret"
-      force_foreign_changes: 'true'
-  run_once: 'true'
+      force_foreign_changes: true
+  run_once: true
 
 - name: "Activate changes including foreign changes and wait for completion."
   checkmk.general.activation:
@@ -77,9 +77,9 @@ EXAMPLES = r"""
       site: "mysite"
       automation_user: "myuser"
       automation_secret: "$SECRET"
-      redirect: 'true'
-      force_foreign_changes: 'true'
-  run_once: 'true'
+      redirect: true
+      force_foreign_changes: true
+  run_once: true
 """
 
 RETURN = r"""

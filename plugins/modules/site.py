@@ -289,6 +289,7 @@ def werk16722(site_config):
         "replicate_event_console",
         "replicate_extensions",
         "message_broker_port",
+        "is_trusted",
     ]:
         try:
             logger.debug("Removing key %s" % key)
@@ -389,7 +390,7 @@ def run_module():
     else:
         exit_module(
             module,
-            msg="Unexpected target state %s" % desired_site_connection.state,
+            msg="Unexpected target state %s." % desired_site_connection.state,
             failed=True,
             logger=logger,
         )

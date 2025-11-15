@@ -43,7 +43,7 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of hosts."
   ansible.builtin.assert:
-    that: "checkmk_var_hosts|length == __checkmk_var_hosts|length"
+    that: "checkmk_var_hosts | length == __checkmk_var_hosts | length"
   vars:
     __checkmk_var_hosts: "{{ lookup('checkmk.general.hosts',
                       server_url=checkmk_var_server_url,
@@ -63,7 +63,7 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
   ansible.builtin.assert:
-    that: "checkmk_var_hosts|length == __checkmk_var_hosts|length"
+    that: "checkmk_var_hosts | length == __checkmk_var_hosts | length"
   vars:
     __checkmk_var_hosts: "{{ lookup('checkmk.general.hosts') }}"
   delegate_to: localhost

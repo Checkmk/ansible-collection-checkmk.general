@@ -74,7 +74,7 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - filter for certain rulesets and check the count."
   ansible.builtin.assert:
     # Check the number of rules
-    that: __checkmk_var_rules_filtered_count|length == 1
+    that: __checkmk_var_rules_filtered_count | length == 1
   vars:
     __checkmk_var_rules_filtered_count: "{{ lookup('checkmk.general.rules',
                       ruleset=item,
@@ -123,7 +123,7 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory: rules."
   ansible.builtin.assert:
     # Check the number of rules
-    that: __checkmk_var_rules_module|length == 1
+    that: __checkmk_var_rules_module | length == 1
   vars:
     __checkmk_var_rules_module: "{{ lookup('checkmk.general.rules', ruleset=item, comment_regex='Ansible managed') }}"
   delegate_to: localhost

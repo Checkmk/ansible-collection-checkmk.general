@@ -60,7 +60,7 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of folders."
   ansible.builtin.assert:
     # The looked up list contains the main folder, as well.
-    that: "( 1 + checkmk_var_folders|length ) == __checkmk_var_folders|length"
+    that: "( 1 + checkmk_var_folders | length ) == __checkmk_var_folders | length"
   vars:
     __checkmk_var_folders: "{{ lookup('checkmk.general.folders',
                       '/',
@@ -83,7 +83,7 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
   ansible.builtin.assert:
     # The looked up list contains the main folder, as well.
-    that: "( 1 + checkmk_var_folders|length ) == __checkmk_var_folders|length"
+    that: "( 1 + checkmk_var_folders | length ) == __checkmk_var_folders | length"
   vars:
     __checkmk_var_folders: "{{ lookup('checkmk.general.folders', '/', recursive=True) }}"
   delegate_to: localhost

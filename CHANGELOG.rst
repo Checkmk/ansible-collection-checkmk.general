@@ -4,6 +4,57 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.3.0
+======
+
+Release Summary
+---------------
+
+Introducing the long-awaited module for dynamic host management (also known as the DCD)!
+
+Major Changes
+-------------
+
+- DCD module - Add DCD module. Thanks to Atruvia AG (https://atruvia.de/) for donating the initial code!
+
+Minor Changes
+-------------
+
+- Authentication - Thanks to Atruvia AG (https://atruvia.de/), all modules now support two more modes of authentication. In addition to ``bearer``, you can now use both ``basic`` and ``cookie`` authentication. Refer to the respective module documentation for details.
+- Idempotency - Differences in the desired and current state are currently computed in each module separately. Thanks to Atruvia AG (https://atruvia.de/) there now is a ``ConfigDiffer`` class, which can be used for this moving forward.
+- Server role - Add support for optional use of a HTTP proxy for downloading the Checkmk Server Setup and GPG Key.
+
+Bugfixes
+--------
+
+- Site module - Fix idempotency.
+
+New Modules
+-----------
+
+- checkmk.general.dcd - Manage Dynamic Host Management.
+
+v6.2.3
+======
+
+Release Summary
+---------------
+
+Housekeeping.
+
+Minor Changes
+-------------
+
+- Bump minimum `ansible-core` version to `2.17`, as that is the oldest version we test against. Chances are, that older versions of `ansible-core` still work, but we do not verify that. So you could manually change `meta/runtime.yml` to circumvent this limitation, but we do recommend using up-to-date `ansible-core` versions.
+- Bump project `ansible-core` to `2.19`. This is used for development and testing. We do recommend to use the latest stable `ansible-core` version, but that is up to you. The only limit we impose, is the minimum version in `meta/runtime.yml` but that can be circumvented as well.
+
+Bugfixes
+--------
+
+- Make implicit boolean conversion in filters explicit. This should have no functional impact but makes for a clear format.
+- Quoted truthy values are now proper truthy values. This should have no functional impact but makes for a clear format.
+- Rule module - The rule module supports a check mode, but the corresponding flag was set to 'false'. This is fixed now.
+
 v6.2.2
 ======
 
