@@ -154,8 +154,8 @@ class InventoryModule(BaseInventoryPlugin):
 
         api = CheckMKLookupAPI(
             site_url=self.get_option("server_url") + "/" + self.get_option("site"),
-            user=self.get_option("automation_user"),
-            secret=self.get_option("automation_secret"),
+            automation_user=self.get_option("automation_user"),
+            automation_secret=self.get_option("automation_secret"),
             validate_certs=self.get_option("validate_certs"),
         )
 

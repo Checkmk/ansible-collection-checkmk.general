@@ -8,9 +8,15 @@
     - update-sites
 
 - name: "{{ item.item.name }}: Check if desired version is installed."
+  vars:
+    __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
+      {{
+        ( (item.item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        | ternary(item.item.edition, __checkmk_server_edition_mapping[item.item.edition])
+      }}
   ansible.builtin.shell: |
     set -o pipefail
-    omd versions | egrep -o '{{ item.item.version }}.{{ item.item.edition | lower }}'
+    omd versions | egrep -o '{{ item.item.version }}.{{ __checkmk_var_edition_id | lower }}'
   args:
     executable: /bin/bash
   register: __checkmk_server_sites_versions
@@ -30,10 +36,16 @@
     - update-sites
 
 - name: "{{ item.item.name }}: Short pause for patch update."
+  vars:
+    __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
+      {{
+        ( (item.item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        | ternary(item.item.edition, __checkmk_server_edition_mapping[item.item.edition])
+      }}
   ansible.builtin.pause:
     seconds: 5
     prompt: |
-      Proceeding with updating site {{ item.item.name }} from version {{ item.stdout }} to version {{ item.item.version }}.{{ item.item.edition | lower }}.
+      Proceeding with updating site {{ item.item.name }} from version {{ item.stdout }} to version {{ item.item.version }}.{{ __checkmk_var_edition_id | lower }}.
       This is a minor patch update.{% if checkmk_server_backup_on_update %} A backup will be created in {{ checkmk_server_backup_dir }}. {% endif %}
       This can take a while! The site will be down during the update
   when: |
@@ -42,11 +54,17 @@
     - update-pause
 
 - name: "{{ item.item.name }}: Long pause for major update."
+  vars:
+    __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
+      {{
+        ( (item.item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        | ternary(item.item.edition, __checkmk_server_edition_mapping[item.item.edition])
+      }}
   ansible.builtin.pause:
     seconds: 60
     prompt: >
       Proceeding with updating site {{ item.item.name }}
-      from version {{ item.stdout }} to version {{ item.item.version }}.{{ item.item.edition | lower }}.\n
+      from version {{ item.stdout }} to version {{ item.item.version }}.{{ __checkmk_var_edition_id | lower }}.\n
       This is a major update. This can carry risks.
       {% if checkmk_server_backup_on_update %} A backup will be created in {{ checkmk_server_backup_dir }}. {% endif %}\n
       This can take a while! The site will be down during the update
@@ -57,8 +75,14 @@
 
 - name: "{{ item.item.name }}: Create Site Backup."  # noqa no-changed-when
   become: true
+  vars:
+    __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
+      {{
+        ( (item.item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        | ternary(item.item.edition, __checkmk_server_edition_mapping[item.item.edition])
+      }}
   ansible.builtin.shell: |
-    omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-{{ item.item.version }}.{{ item.item.edition | lower }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
+    omd backup {{ checkmk_server_backup_opts }} {{ item.item.name }} {{ checkmk_server_backup_dir }}/{{ item.item.name }}-{{ item.item.version }}.{{ __checkmk_var_edition_id | lower }}-backup-$(date +%Y%m%d-%H%M%S).tar.gz
   args:
     executable: /bin/bash
   when: checkmk_server_backup_on_update
@@ -67,9 +91,15 @@
 
 - name: "{{ item.item.name }}: Update Site."
   become: true
+  vars:
+    __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
+      {{
+        ( (item.item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        | ternary(item.item.edition, __checkmk_server_edition_mapping[item.item.edition])
+      }}
   ansible.builtin.shell: |
     omd stop {{ item.item.name }}
-    omd -f -V {{ item.item.version }}.{{ item.item.edition | lower }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
+    omd -f -V {{ item.item.version }}.{{ __checkmk_var_edition_id | lower }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
   args:
     executable: /bin/bash
   register: __checkmk_server_sites_updated

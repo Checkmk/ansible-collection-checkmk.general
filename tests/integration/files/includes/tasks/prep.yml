@@ -27,7 +27,13 @@
     not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
 
 - name: "Create Sites."
-  ansible.builtin.command: "omd -V {{ item.version }}.{{ item.edition }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site }}"
+  vars:
+    __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
+      {{
+        ( (item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        | ternary(item.edition, __checkmk_server_edition_mapping[item.edition])
+      }}
+  ansible.builtin.command: "omd -V {{ item.version }}.{{ __checkmk_var_edition_id }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site }}"
   args:
     creates: "/omd/sites/{{ item.site }}"
   loop: "{{ checkmk_var_test_sites }}"

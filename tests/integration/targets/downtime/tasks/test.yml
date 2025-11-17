@@ -59,8 +59,8 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
-    start_time: 2024-03-25T20:39:28Z
-    end_time: 2024-03-26T20:39:28Z
+    start_time: "2024-03-25T20:39:28Z"
+    end_time: "2024-03-26T20:39:28Z"
     state: present
   loop: "{{ checkmk_var_hosts }}"
 
@@ -71,8 +71,8 @@
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
-    start_time: 2024-03-25T20:39:28Z
-    end_time: 2024-03-26T20:39:28Z
+    start_time: "2024-03-25T20:39:28Z"
+    end_time: "2024-03-26T20:39:28Z"
     state: absent
   loop: "{{ checkmk_var_hosts }}"
 
@@ -122,8 +122,8 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on services with absolute timestamps
-    start_time: 2024-03-25T20:39:28Z
-    end_time: 2024-03-26T20:39:28Z
+    start_time: "2024-03-25T20:39:28Z"
+    end_time: "2024-03-26T20:39:28Z"
     service_descriptions:
       - "Check_MK"
       - "Check_MK Discovery"
@@ -168,8 +168,8 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host with absolute timestamps
-    start_time: 2024-03-25T20:39:28Z
-    end_time: 2024-03-26T20:39:28Z
+    start_time: "2024-03-25T20:39:28Z"
+    end_time: "2024-03-26T20:39:28Z"
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with absolute timestamps. Again."
@@ -180,8 +180,8 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host with absolute timestamps
-    start_time: 2024-03-25T20:39:28Z
-    end_time: 2024-03-26T20:39:28Z
+    start_time: "2024-03-25T20:39:28Z"
+    end_time: "2024-03-26T20:39:28Z"
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with absolute timestamps. Again. With force."
@@ -193,8 +193,8 @@
     host_name: "{{ item.name }}"
     force: "yes"
     comment: Schedule downtime on host with absolute timestamps
-    start_time: 2024-03-25T20:39:28Z
-    end_time: 2024-03-26T20:39:28Z
+    start_time: "2024-03-25T20:39:28Z"
+    end_time: "2024-03-26T20:39:28Z"
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime forcibly on host with absolute timestamps."
@@ -205,8 +205,8 @@
     automation_secret: "{{ checkmk_var_automation_secret }}"
     host_name: "{{ item.name }}"
     comment: Schedule downtime on host with absolute timestamps
-    start_time: 2024-03-25T20:39:28Z
-    end_time: 2024-03-26T20:39:28Z
+    start_time: "2024-03-25T20:39:28Z"
+    end_time: "2024-03-26T20:39:28Z"
     force: true
   loop: "{{ checkmk_var_hosts }}"
 
