@@ -29,6 +29,7 @@ on:
     paths:
       - '.github/workflows/ans-int-test-activation.yaml'
       - 'plugins/modules/activation.py'
+      - 'plugins/module_utils/'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/activation/'
 

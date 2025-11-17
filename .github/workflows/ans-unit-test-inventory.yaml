@@ -25,6 +25,7 @@ on:
     paths:
       - '.github/workflows/ans-unit-test-inventory.yaml'
       - 'plugins/inventory/checkmk.py'
+      - 'plugins/module_utils/'
       - 'tests/unit/plugins/inventory/'
 
 jobs:

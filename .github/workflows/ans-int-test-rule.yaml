@@ -29,6 +29,7 @@ on:
     paths:
       - '.github/workflows/ans-int-test-rule.yaml'
       - 'plugins/modules/rule.py'
+      - 'plugins/module_utils/'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/rule/'
 

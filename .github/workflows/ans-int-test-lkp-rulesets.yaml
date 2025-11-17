@@ -29,6 +29,7 @@ on:
       - '.github/workflows/ans-int-test-lkp-rulesets.yaml'
       - 'plugins/lookup/ruleset.py'
       - 'plugins/lookup/rulesets.py'
+      - 'plugins/module_utils/'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/lookup_rulesets/'
 

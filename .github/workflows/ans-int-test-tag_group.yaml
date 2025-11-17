@@ -29,6 +29,7 @@ on:
     paths:
       - '.github/workflows/ans-int-test-tag_group.yaml'
       - 'plugins/modules/tag_group.py'
+      - 'plugins/module_utils/'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/tag_group/'
 
