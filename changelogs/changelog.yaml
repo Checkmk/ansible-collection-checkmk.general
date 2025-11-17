@@ -1375,3 +1375,16 @@ releases:
       name: dcd
       namespace: ''
     release_date: '2025-11-12'
+  6.3.1:
+    changes:
+      bugfixes:
+      - All roles - Update edition name mapping to compensate future naming changes.
+      - Downtime module - Bug fix documentation example, where the time stamps were
+        not quoted correctly.
+      - Inventory plugin - Update CheckMKLookupAPI arguments in Inventory.
+      release_summary: Bugfix release.
+    fragments:
+    - 923-update-inventory-args.yml
+    - bugfixes.yml
+    - release_summary.yml
+    release_date: '2025-11-17'
