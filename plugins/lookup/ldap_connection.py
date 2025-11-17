@@ -150,16 +150,20 @@ class LookupModule(LookupBase):
         self.set_options(var_options=variables, direct=kwargs)
         server_url = self.get_option("server_url")
         site = self.get_option("site")
-        user = self.get_option("automation_user")
-        secret = self.get_option("automation_secret")
+        # api_auth_type = self.get_option("api_auth_type") or "bearer"
+        # api_auth_cookie = self.get_option("api_auth_cookie")
+        automation_user = self.get_option("automation_user")
+        automation_secret = self.get_option("automation_secret")
         validate_certs = self.get_option("validate_certs")
 
         site_url = server_url + "/" + site
 
         api = CheckMKLookupAPI(
             site_url=site_url,
-            user=user,
-            secret=secret,
+            # api_auth_type=api_auth_type,
+            # api_auth_cookie=api_auth_cookie,
+            automation_user=automation_user,
+            automation_secret=automation_secret,
             validate_certs=validate_certs,
         )
 
