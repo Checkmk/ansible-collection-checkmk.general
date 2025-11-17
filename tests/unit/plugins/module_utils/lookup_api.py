@@ -14,17 +14,55 @@ __metaclass__ = type
 class CheckMKLookupAPI:
     """Base class to contact a Checkmk server for ~Lookup calls"""
 
-    def __init__(self, site_url, user, secret, validate_certs=True):
-        self.site_url = site_url
-        self.user = user
-        self.secret = secret
-        self.validate_certs = validate_certs
-        self.url = "%s/check_mk/api/1.0" % site_url
+    def __init__(
+        self,
+        site_url,
+        api_auth_type="bearer",
+        api_auth_cookie=None,
+        automation_user=None,
+        automation_secret=None,
+        validate_certs=True,
+    ):
         self.headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": "Bearer %s %s" % (user, secret),
         }
+        self.cookies = {}
+
+        self.site_url = site_url
+        self.url = "%s/check_mk/api/1.0" % site_url
+        self.validate_certs = validate_certs
+        # Bearer Authentication: "Bearer USERNAME PASSWORD"
+        if api_auth_type == "bearer":
+            if not automation_user or not automation_secret:
+                raise ValueError(
+                    "`automation_user` and `automation_secret` are required for bearer authentication."
+                )
+            self.headers["Authorization"] = "Bearer %s %s" % (
+                automation_user,
+                automation_secret,
+            )
+
+        # Basic Authentication
+        elif api_auth_type == "basic":
+            if not automation_user or not automation_secret:
+                raise ValueError(
+                    "`automation_user` and `automation_secret` are required for basic authentication."
+                )
+            auth_str = "%s:%s" % (automation_user, automation_secret)
+            auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
+            self.headers["Authorization"] = "Basic %s" % auth_b64
+
+        # Cookie Authentication
+        elif api_auth_type == "cookie":
+            if not api_auth_cookie:
+                raise ValueError(
+                    "`api_auth_cookie` is required for cookie authentication."
+                )
+            self.headers["Cookie"] = api_auth_cookie
+
+        else:
+            raise ValueError("Unsupported `api_auth_type`: %s" % api_auth_type)
 
     def get(self, endpoint="", parameters=None):
         if endpoint == "/domain-types/host_tag_group/collections/all":

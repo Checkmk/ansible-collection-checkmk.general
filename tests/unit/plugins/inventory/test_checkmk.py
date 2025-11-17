@@ -64,8 +64,8 @@ def test_populate_allgroups(inventory, mocker):
         site_url=inventory.get_option("server_url")
         + "/"
         + inventory.get_option("site"),
-        user=inventory.get_option("automation_user"),
-        secret=inventory.get_option("automation_secret"),
+        automation_user=inventory.get_option("automation_user"),
+        automation_secret=inventory.get_option("automation_secret"),
         validate_certs=inventory.get_option("validate_certs"),
     )
 
@@ -152,8 +152,8 @@ def test_populate_nogroups(inventory, mocker):
         site_url=inventory.get_option("server_url")
         + "/"
         + inventory.get_option("site"),
-        user=inventory.get_option("automation_user"),
-        secret=inventory.get_option("automation_secret"),
+        automation_user=inventory.get_option("automation_user"),
+        automation_secret=inventory.get_option("automation_secret"),
         validate_certs=inventory.get_option("validate_certs"),
     )
 
