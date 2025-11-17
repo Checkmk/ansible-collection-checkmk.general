@@ -1,0 +1,2 @@
+bugfixes:
+  - checkmk inventory plugin - Update CheckMKLookupAPI arguments in Inventory.
