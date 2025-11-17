@@ -29,6 +29,7 @@ on:
     paths:
       - '.github/workflows/ans-int-test-site.yaml'
       - 'plugins/modules/site.py'
+      - 'plugins/module_utils/'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/site/'
 

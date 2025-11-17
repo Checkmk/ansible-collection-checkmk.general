@@ -29,6 +29,7 @@ on:
     paths:
       - '.github/workflows/ans-int-test-lkp-bakery.yaml'
       - 'plugins/lookup/bakery.py'
+      - 'plugins/module_utils/'
       - 'tests/integration/files/includes/'
       - 'tests/integration/targets/lookup_bakery/'
 
