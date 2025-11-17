@@ -4,6 +4,21 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.3.1
+======
+
+Release Summary
+---------------
+
+Bugfix release.
+
+Bugfixes
+--------
+
+- All roles - Update edition name mapping to compensate future naming changes.
+- Downtime module - Bug fix documentation example, where the time stamps were not quoted correctly.
+- Inventory plugin - Update CheckMKLookupAPI arguments in Inventory.
+
 v6.3.0
 ======
 

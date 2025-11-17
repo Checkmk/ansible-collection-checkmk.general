@@ -22,7 +22,7 @@ checkmk.general.downtime module -- Manage downtimes in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -759,8 +759,8 @@ Examples
         automation_user: "{{ checkmk_var_automation_user }}"
         automation_secret: "{{ checkmk_var_automation_secret }}"
         host_name: my_host
-        start_time: 2022-03-24T20:39:28Z
-        end_time: 2022-03-24T20:40:28Z
+        start_time: "2022-03-24T20:39:28Z"
+        end_time: "2022-03-24T20:40:28Z"
         state: "present"
         duration: 0
         service_descriptions:
