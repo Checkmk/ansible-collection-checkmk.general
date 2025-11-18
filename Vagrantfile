@@ -133,6 +133,28 @@ Vagrant.configure("2") do |config|
       inline: "zypper --quiet up -y"
   end
 
+  # Rocky
+  config.vm.define "rocksible", autostart: false , primary: false do |srv|
+    srv.vm.box = "generic/rocky9"
+    srv.vm.network :private_network,
+    :ip                         => "192.168.124.65",
+    :libvirt__netmask           => "255.255.255.0",
+    :libvirt__network_name      => "ansible_collection",
+    :libvirt__network_address   => "192.168.124.0"
+    srv.ssh.insert_key = false
+    srv.vm.provider "libvirt" do |libvirt|
+      libvirt.default_prefix = "ansible_"
+      libvirt.description = 'This box is used to test roles against.'
+      libvirt.memory = 2048
+      libvirt.cpus = 2
+      libvirt.title = "rocksible"
+      libvirt.memorybacking :access, :mode => 'shared'
+      libvirt.memorybacking :source, :type => 'memfd'
+    end
+    srv.vm.provision "shell",
+      inline: "dnf --quiet check-update ; dnf -y install vim curl wget git"
+  end
+
   # Oracle Linux
   config.vm.define "ansoracle", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/oracle8"

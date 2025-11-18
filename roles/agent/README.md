@@ -18,7 +18,7 @@ Please make sure it is installed on your system and available for Ansible.
 
 ### Basic Configuration
 
-    checkmk_agent_version: "2.4.0p15"
+    checkmk_agent_version: "2.4.0p16"
 
 The Checkmk version of the site your agents will talk to.
 
