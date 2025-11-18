@@ -166,7 +166,8 @@ class AuxTagAPI(CheckmkAPI):
         self.headers["If-Match"] = self.current.etag
 
         return self._fetch(
-            endpoint="/objects/aux_tag/%s/actions/delete/invoke" % self.params.get("name"),
+            endpoint="/objects/aux_tag/%s/actions/delete/invoke"
+            % self.params.get("name"),
             data={},
             method="POST",
         )
