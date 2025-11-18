@@ -173,13 +173,19 @@ class AuxTagAPI(CheckmkAPI):
 
 
 def changes_detected(module, current):
-    if module.params.get("title") and module.params.get("title") != current.get("title"):
+    if module.params.get("title") and module.params.get("title") != current.get(
+        "title"
+    ):
         return True
 
-    if module.params.get("topic") and module.params.get("topic") != current.get("extensions", {}).get("topic"):
+    if module.params.get("topic") and module.params.get("topic") != current.get(
+        "extensions", {}
+    ).get("topic"):
         return True
 
-    if module.params.get("help") and module.params.get("help") != current.get("extensions", {}).get("help"):
+    if module.params.get("help") and module.params.get("help") != current.get(
+        "extensions", {}
+    ).get("help"):
         return True
 
     return False
