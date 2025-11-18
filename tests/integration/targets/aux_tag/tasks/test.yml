@@ -53,7 +53,7 @@
   ansible.builtin.assert:
     that:
       - __checkmk_var_aux_tag_update.changed is true
-      - __checkmk_var_aux_tag_update.http_code == 200 or __checkmk_var_aux_tag_update.http_code == 204
+      - "'200 - OK: The operation was done successfully' in __checkmk_var_aux_tag_update.msg"
     fail_msg: "Auxiliary tag was not updated successfully!"
     success_msg: "Auxiliary tag updated successfully."
 
@@ -72,7 +72,7 @@
   ansible.builtin.assert:
     that:
       - __checkmk_var_aux_tag_delete.changed is true
-      - __checkmk_var_aux_tag_delete.http_code == 204 or __checkmk_var_aux_tag_delete.http_code == 200
+      - "'204 - Operation done successfully. No further output.' in __checkmk_var_aux_tag_delete.msg or '200 - OK: The operation was done successfully' in __checkmk_var_aux_tag_delete.msg"
     fail_msg: "Auxiliary tag was not deleted successfully!"
     success_msg: "Auxiliary tag deleted successfully."
 
