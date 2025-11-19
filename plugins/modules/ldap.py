@@ -560,8 +560,8 @@ EXAMPLES = r"""
       general_properties:
         id: "test_ldap_complex"
         rule_activation: activated
-        comment: "complex"
-        description: "really complex"
+        comment: "This is a complex example."
+        description: "A complex example"
         documentation_url: "www.example.com"
       ldap_connection:
         directory_type:
@@ -571,13 +571,13 @@ EXAMPLES = r"""
             - my2nd.ldap.server.tld
             - my3rd.ldap.server.tld
         bind_credentials:
-          bind_dn: "ldapadmin"
+          bind_dn: "ldap-ro"
           type: store
-          password_store_id: "ldapadmin"
+          password_store_id: "ldap_ro"
         ssl_encryption: enable_ssl
-        tcp_port: 1234
+        tcp_port: 663
         connect_timeout: 3
-        ldap_version: 2
+        ldap_version: 3
         page_size: 2000
         response_timeout: 8
       users:
@@ -586,16 +586,15 @@ EXAMPLES = r"""
         search_filter: "(objectclass=inetOrgPerson)"
         user_id_attribute: uid
         user_id_case: convert_to_lowercase
-        umlauts_in_user_ids: replace_umlauts
-        create_users: on_sync
+        create_users: on_login
       groups:
         group_base_dn: "OU=Groups,DC=example,DC=com"
         search_scope: search_only_base_dn_entry
         search_filter: "(objectclass=posixGroup)"
         member_attribute: "uniquemember"
       sync_plugins:
-        alias: blubb
-        visibility_of_hosts_or_services: blobb
+        alias: custom_user_alias
+        visibility_of_hosts_or_services: visibility
         contact_group_membership:
           handle_nested: true
         groups_to_custom_user_attributes:
