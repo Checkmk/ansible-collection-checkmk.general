@@ -33,9 +33,9 @@ checkmk_var_ldap_connections:
             - my2nd.ldap.server.tld
             - my3rd.ldap.server.tld
         bind_credentials:
-          bind_dn: "ldapadmin"
+          bind_dn: "ldap-ro"
           type: store
-          password_store_id: "my_ldap"
+          password_store_id: "ldap_ro"
         ssl_encryption: enable_ssl
         tcp_port: 1234
         connect_timeout: 3
