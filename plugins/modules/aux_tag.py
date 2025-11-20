@@ -13,7 +13,7 @@ module: aux_tag
 
 short_description: Manage auxiliary tags in Checkmk.
 
-version_added: "6.3.0"
+version_added: "6.5.0"
 
 description:
 - Manage auxiliary tags in Checkmk.
