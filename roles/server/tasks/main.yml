@@ -72,6 +72,7 @@
         url_password: "{{ checkmk_server_download_pass | default(omit) }}"
       environment: "{{ __proxy_env | default(omit) }}"
       retries: 3
+      delegate_to: "{{ checkmk_server_delegate_download }}"
       tags:
         - download-package
 
@@ -85,6 +86,25 @@
         url_password: "{{ checkmk_server_gpg_download_pass | default(omit) }}"
       environment: "{{ __proxy_env | default(omit) }}"
       retries: 3
+      delegate_to: "{{ checkmk_server_gpg_delegate_download }}"
+      tags:
+        - download-gpg-key
+
+    - name: "Transfer Checkmk Server Setup."
+      ansible.builtin.copy:
+        src: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
+        dest: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
+        mode: "0644"
+      when: checkmk_server_delegate_download != inventory_hostname
+      tags:
+        - download-package
+
+    - name: "Transfer Checkmk GPG Key."
+      ansible.builtin.copy:
+        src: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
+        dest: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
+        mode: "0644"
+      when: checkmk_server_gpg_delegate_download != inventory_hostname
       tags:
         - download-gpg-key
 
