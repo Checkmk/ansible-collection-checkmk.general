@@ -1,6 +1,6 @@
 ---
 __checkmk_server_setup_file: |-
-  check-mk-{{ __checkmk_server_edition_mapping[checkmk_server_edition | lower] }}-{{ checkmk_server_version }}_0.{{ ansible_distribution_release }}_amd64.deb
+  check-mk-{{ __checkmk_server_edition_mapping[checkmk_server_edition | lower] }}-{{ checkmk_server_version }}_0.{{ ansible_facts['distribution_release'] }}_amd64.deb
 
 __checkmk_server_prerequisites:
   - freeipmi
