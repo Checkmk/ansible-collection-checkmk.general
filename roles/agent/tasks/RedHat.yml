@@ -1,5 +1,5 @@
 ---
-- name: "{{ ansible_os_family }} Derivatives: Install host-specific {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Install host-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.package:
     name: "{{ __checkmk_agent_agent.file.host }}"
@@ -11,7 +11,7 @@
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }} Derivatives: Install GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Install GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.package:
     name: "{{ __checkmk_agent_agent.file.cee }}"
@@ -23,7 +23,7 @@
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }} Derivatives: Transfer Vanilla agent."
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Transfer Vanilla agent."
   ansible.builtin.copy:
     src: "{{ __checkmk_agent_agent.file.cre }}"
     dest: "{{ __checkmk_agent_agent.file.cre }}"
@@ -34,7 +34,7 @@
   tags:
     - download-package
 
-- name: "{{ ansible_os_family }} Derivatives: Install Vanilla agent."
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Install Vanilla agent."
   become: true
   ansible.builtin.package:
     name: "{{ __checkmk_agent_agent.file.cre }}"
@@ -44,8 +44,8 @@
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }} Derivatives: Allow access to the Checkmk agent on port {{ checkmk_agent_port }}/tcp."
-  when: checkmk_agent_configure_firewall | bool and "firewalld.service" in ansible_facts.services
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Allow access to the Checkmk agent on port {{ checkmk_agent_port }}/tcp."
+  when: checkmk_agent_configure_firewall | bool and "firewalld.service" in ansible_facts['services']
   ansible.posix.firewalld:
     permanent: true
     immediate: "{% if ansible_facts['services']['firewalld.service']['state'] == 'running' %}true{% else %}false{% endif %}"
