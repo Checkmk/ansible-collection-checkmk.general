@@ -71,7 +71,7 @@ find "${collection_dir}/roles/" -type f -name README.md -exec sed -i "s/2.4.0.*/
 # Playbooks:
 sed -i "s/2.4.0.*/${checkmk_stable}\"/g" "${collection_dir}/playbooks/vars/auth.yml" && echo "Updated default Checkmk version for playbooks to ${checkmk_stable}."
 # Support Matrix
-grep "${target_version}" "${collection_dir}/SUPPORT.md" > /dev/null || echo "${target_version} | ${checkmk_ancient}, ${checkmk_oldstable}, ${checkmk_stable} | 2.17, 2.18, 2.19 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
+grep "${target_version}" "${collection_dir}/SUPPORT.md" > /dev/null || echo "${target_version} | ${checkmk_ancient}, ${checkmk_oldstable}, ${checkmk_stable} | 2.18, 2.19, 2.20 | None" >> "${collection_dir}/SUPPORT.md" && echo "Added line to compatibility matrix in SUPPORT.md."
 # pyproject.toml
 sed -i "s/version = \"${source_version}\"/version = \"${target_version}\"/g" "${collection_dir}/pyproject.toml" && echo "Updated Checkmk version in pyproject.toml from ${source_version} to ${target_version}."
 echo "# End changes section."
