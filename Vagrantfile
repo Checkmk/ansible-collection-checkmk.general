@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
     apt-get -y update --quiet
     apt-get -y purge postfix --quiet  # Necessary, as it breaks the upgrade process
     apt-get -y dist-upgrade --quiet
-    apt-get -y install ca-certificates curl direnv gnupg lsb-release qemu-guest-agent podman htop
+    apt-get -y install ca-certificates curl direnv gnupg lsb-release qemu-guest-agent podman htop make
     sudo -u vagrant bash -c "curl -LsSf https://astral.sh/uv/install.sh | sh"
     sudo -u vagrant bash -c "cd /home/vagrant/ansible_collections/checkmk/general/ && /home/vagrant/.local/bin/uv sync"
     sudo -u vagrant bash -c "cd /home/vagrant/ansible_collections/checkmk/general/ && /home/vagrant/.local/bin/uv run ansible-galaxy collection install -f -r /home/vagrant/ansible_collections/checkmk/general/requirements.yml"
