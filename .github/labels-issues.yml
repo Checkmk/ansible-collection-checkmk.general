@@ -17,6 +17,9 @@ inventory:
 module:activation:
   - 'Component Name: activation'
 
+module:aux_tag:
+  - 'Component Name: aux_tag'
+
 module:bakery:
   - 'Component Name: bakery'
 

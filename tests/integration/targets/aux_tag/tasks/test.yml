@@ -1,0 +1,88 @@
+---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create auxiliary tag."
+  aux_tag:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "test_aux_tag"
+    title: "Test Auxiliary Tag"
+    topic: "Testing"
+    help: "An auxiliary tag for testing purposes"
+    state: "present"
+  register: __checkmk_var_aux_tag_create
+  failed_when: __checkmk_var_aux_tag_create.failed
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify aux tag created."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_aux_tag_create.changed is true
+      - "'200 - OK: The operation was done successfully' in __checkmk_var_aux_tag_create.msg"
+    fail_msg: "Auxiliary tag was not created successfully!"
+    success_msg: "Auxiliary tag created successfully."
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create auxiliary tag again (idempotency)."
+  aux_tag:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "test_aux_tag"
+    title: "Test Auxiliary Tag"
+    topic: "Testing"
+    help: "An auxiliary tag for testing purposes"
+    state: "present"
+  register: __checkmk_var___checkmk_var_aux_tag_create_again
+  failed_when: __checkmk_var___checkmk_var_aux_tag_create_again.changed
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update auxiliary tag."
+  aux_tag:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "test_aux_tag"
+    title: "Updated Test Auxiliary Tag"
+    topic: "Testing"
+    help: "An updated auxiliary tag for testing purposes"
+    state: "present"
+  register: __checkmk_var_aux_tag_update
+  failed_when: __checkmk_var_aux_tag_update.failed
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify aux tag updated."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_aux_tag_update.changed is true
+      - "'200 - OK: The operation was done successfully' in __checkmk_var_aux_tag_update.msg"
+    fail_msg: "Auxiliary tag was not updated successfully!"
+    success_msg: "Auxiliary tag updated successfully."
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete auxiliary tag."
+  aux_tag:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "test_aux_tag"
+    state: "absent"
+  register: __checkmk_var_aux_tag_delete
+  failed_when: __checkmk_var_aux_tag_delete.failed
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify aux tag deleted."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_aux_tag_delete.changed is true
+      - "'204 - Operation done successfully. No further output.' in __checkmk_var_aux_tag_delete.msg or '200 - OK: The operation was done successfully' in __checkmk_var_aux_tag_delete.msg"
+    fail_msg: "Auxiliary tag was not deleted successfully!"
+    success_msg: "Auxiliary tag deleted successfully."
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete auxiliary tag again (idempotency)."
+  aux_tag:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    name: "test_aux_tag"
+    state: "absent"
+  register: __checkmk_var_aux_tag_delete_again
+  failed_when: __checkmk_var_aux_tag_delete_again.changed
