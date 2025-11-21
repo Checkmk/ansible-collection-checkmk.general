@@ -81,7 +81,7 @@
             folder: "/"
             position: "bottom"
           properties: {
-            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
             "description": "",
             "disabled": false
           }
@@ -103,7 +103,7 @@
             folder: "/"
             position: "bottom"
           properties: {
-            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
             "description": "",
             "disabled": false
           }
@@ -125,7 +125,7 @@
             folder: "/"
             position: "bottom"
           properties: {
-            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
             "description": "",
             "disabled": false
           }
@@ -166,7 +166,7 @@
             folder: "/"
             position: "bottom"
           properties: {
-            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
             "description": "",
             "disabled": false
           }
@@ -188,7 +188,7 @@
             folder: "/"
             position: "bottom"
           properties: {
-            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
             "description": "",
             "disabled": false
           }
@@ -210,7 +210,7 @@
             folder: "/"
             position: "bottom"
           properties: {
-            "comment": "{{ ansible_date_time.iso8601 }} - Ansible managed",
+            "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
             "description": "",
             "disabled": false
           }
