@@ -1,10 +1,10 @@
 ---
-- name: "{{ ansible_os_family }} Derivatives: Enable repositories on CentOS & RHEL 8."
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Enable repositories on CentOS & RHEL 8."
   when: |
-    (ansible_facts.distribution == "RedHat" or ansible_facts.distribution == "CentOS" or ansible_facts.distribution == "OracleLinux")
-    and ansible_facts.distribution_major_version == "8"
+    (ansible_facts['distribution'] == "RedHat" or ansible_facts['distribution'] == "CentOS" or ansible_facts['distribution'] == "OracleLinux")
+    and ansible_facts['distribution_major_version'] == "8"
   block:
-    - name: "{{ ansible_os_family }} Derivatives: Download EPEL GPG Key on CentOS & RHEL 8."
+    - name: "{{ ansible_facts['os_family'] }} Derivatives: Download EPEL GPG Key on CentOS & RHEL 8."
       ansible.builtin.get_url:
         url: "{{ __checkmk_server_epel_gpg_key }}"
         dest: "{{ __checkmk_server_tmp_dir }}/EPEL-pubkey.gpg"
@@ -14,7 +14,7 @@
         - download-gpg-key
         - enable-repos
 
-    - name: "{{ ansible_os_family }} Derivatives: Import Checkmk GPG Key on RHEL 8."
+    - name: "{{ ansible_facts['os_family'] }} Derivatives: Import Checkmk GPG Key on RHEL 8."
       become: true
       ansible.builtin.rpm_key:
         key: "{{ __checkmk_server_tmp_dir }}/EPEL-pubkey.gpg"
@@ -24,7 +24,7 @@
         - import-gpg-key
         - enable-repos
 
-    - name: "{{ ansible_os_family }} Derivatives: Install epel-release from URL on CentOS & RHEL 8."
+    - name: "{{ ansible_facts['os_family'] }} Derivatives: Install epel-release from URL on CentOS & RHEL 8."
       become: true
       ansible.builtin.package:
         name: "{{ __checkmk_server_epel_url }}"
@@ -33,36 +33,36 @@
       tags:
         - enable-repos
 
-- name: "{{ ansible_os_family }} Derivatives: Enable CodeReady Linux Builder repo on RHEL 8."
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Enable CodeReady Linux Builder repo on RHEL 8."
   become: true
   community.general.rhsm_repository:
-    name: "codeready-builder-for-rhel-{{ ansible_facts.distribution_major_version }}-x86_64-rpms"
+    name: "codeready-builder-for-rhel-{{ ansible_facts['distribution_major_version'] }}-x86_64-rpms"
     state: enabled
   tags:
     - enable-repos
   when: |
-    ansible_facts.distribution == "RedHat"
-    and ansible_facts.distribution_major_version == "8"
+    ansible_facts['distribution'] == "RedHat"
+    and ansible_facts['distribution_major_version'] == "8"
 
-- name: "{{ ansible_os_family }} Derivatives: Enable powertools repository on CentOS 8."  # noqa no-changed-when
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Enable powertools repository on CentOS 8."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: dnf config-manager --set-enabled powertools  # noqa command-instead-of-shell
   when: | # RHEL needs epel and a package URL
-    (ansible_facts.distribution != "RedHat" and ansible_facts.distribution != "OracleLinux")
-    and ansible_distribution_major_version == "8"
+    (ansible_facts['distribution'] != "RedHat" and ansible_facts['distribution'] != "OracleLinux")
+    and ansible_facts['distribution_major_version'] == "8"
   tags:
     - enable-repos
 
-- name: "{{ ansible_os_family }} Derivatives: Enable codeready builder repository on OracleLinux 8."  # noqa no-changed-when
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Enable codeready builder repository on OracleLinux 8."  # noqa no-changed-when
   become: true
   ansible.builtin.shell: dnf config-manager --set-enabled ol8_codeready_builder  # noqa command-instead-of-shell
   when: | # RHEL needs epel and a package URL
-    ansible_facts.distribution == "OracleLinux"
-    and ansible_distribution_major_version == "8"
+    ansible_facts['distribution'] == "OracleLinux"
+    and ansible_facts['distribution_major_version'] == "8"
   tags:
     - enable-repos
 
-- name: "{{ ansible_os_family }} Derivatives: Enable powertools repository on RHEL 7."
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Enable powertools repository on RHEL 7."
   become: true
   community.general.rhsm_repository:
     name: "{{ item }}"
@@ -71,13 +71,13 @@
     - "rhel-7-server-optional-rpms"
     - "rhel-7-server-extras-rpms"
   when: |
-    ansible_facts.distribution == "RedHat"
-    and ansible_facts.distribution_major_version == "7"
+    ansible_facts['distribution'] == "RedHat"
+    and ansible_facts['distribution_major_version'] == "7"
   tags:
     - enable-repos
 
-- name: "{{ ansible_os_family }} Derivatives: Install Checkmk Server."
-  when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Install Checkmk Server."
+  when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts['packages']
   become: true
   ansible.builtin.package:
     name: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
@@ -87,18 +87,18 @@
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }} Derivatives: Enable httpd can network connect selinux boolean."
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Enable httpd can network connect selinux boolean."
   become: true
   ansible.posix.seboolean:
     name: httpd_can_network_connect
     state: true
     persistent: true
-  when: ansible_facts.selinux.status == 'enabled'
+  when: ansible_facts['selinux']['status'] == 'enabled'
   tags:
     - set-selinux-boolean
 
-- name: "{{ ansible_os_family }} Derivatives: Open Firewall Ports for the Checkmk Server."
-  when: checkmk_server_configure_firewall | bool and "firewalld.service" in ansible_facts.services
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Open Firewall Ports for the Checkmk Server."
+  when: checkmk_server_configure_firewall | bool and "firewalld.service" in ansible_facts['services']
   ansible.posix.firewalld:
     permanent: true
     immediate: "{% if ansible_facts['services']['firewalld.service']['state'] == 'running' %}true{% else %}false{% endif %}"

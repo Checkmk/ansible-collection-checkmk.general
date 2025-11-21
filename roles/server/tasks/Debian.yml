@@ -1,6 +1,6 @@
 ---
-- name: "{{ ansible_os_family }} Derivatives: Install Checkmk Server."
-  when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Install Checkmk Server."
+  when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts['packages']
   become: true
   ansible.builtin.package:
     deb: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
@@ -10,8 +10,8 @@
   tags:
     - install-package
 
-- name: "{{ ansible_os_family }} Derivatives: Open Firewall Ports for the Checkmk Server."
-  when: checkmk_server_configure_firewall | bool and "ufw.service" in ansible_facts.services
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Open Firewall Ports for the Checkmk Server."
+  when: checkmk_server_configure_firewall | bool and "ufw.service" in ansible_facts['services']
   community.general.ufw:
     rule: allow
     proto: tcp
