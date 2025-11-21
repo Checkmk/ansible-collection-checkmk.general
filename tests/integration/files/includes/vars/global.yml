@@ -6,7 +6,7 @@ checkmk_var_automation_user: "cmkadmin"
 checkmk_var_automation_secret: "Sup3rSec4et!"
 
 # Generate download URL and provide credentials to download Checkmk setups
-checkmk_var_download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ __checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_distribution_release }}_amd64.deb"  # noqa yaml[line-length]
+checkmk_var_download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ __checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_facts['distribution_release'] }}_amd64.deb"  # noqa yaml[line-length]
 
 # Due to inconsistent naming of editions, we normalize them here for convenience.
 __checkmk_var_legacy_edition_mapping:
