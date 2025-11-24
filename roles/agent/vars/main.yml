@@ -24,7 +24,7 @@ __checkmk_var_modern_edition_mapping:
 # Bringing the above two mappings back together.
 __checkmk_agent_edition_mapping: >-
   {{
-    ( (checkmk_server_version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+    ( (checkmk_agent_version | regex_replace('p.*', '')) is version('2.5.0', '<') )
     | ternary(__checkmk_var_legacy_edition_mapping, __checkmk_var_modern_edition_mapping)
   }}
 
