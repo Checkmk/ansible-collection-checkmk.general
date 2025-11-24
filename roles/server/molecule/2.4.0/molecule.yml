@@ -40,6 +40,12 @@ platforms:
     pre_build_image: true
     privileged: true
     systemd: always
+  - name: rockylinux10
+    image: docker.io/geerlingguy/docker-rockylinux10-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    pre_build_image: true
+    privileged: true
+    systemd: always
 provisioner:
   name: ansible
   config_options:
