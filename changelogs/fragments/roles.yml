@@ -1,0 +1,6 @@
+minor_changes:
+  - Agent role - Add support for Debian 13 and RedHat 10.
+  - Server role - Add support for Debian 13 and RedHat 10. Server setups are available from Checkmk 2.4.0p16 onwards.
+
+bugfixes:
+  - Agent role - Replace misplaced ``checkmk_server_version`` variable with correct ``checkmk_agent_version``.

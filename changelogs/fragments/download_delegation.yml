@@ -1,0 +1,2 @@
+minor_changes:
+  - Server role - Add support for delegation of downloading the Checkmk Server Setup and GPG Key.

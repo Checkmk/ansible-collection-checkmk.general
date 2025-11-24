@@ -41,12 +41,13 @@ jobs:
 
       # This was necessary at some point to avoid random failure.
       # Disabling on 20250826 to check, if it is still necessary.
-      # - name: "Free Disk Space."
-      #   uses: jlumbroso/free-disk-space@main
-      #   with:
-      #     # this might remove tools that are actually needed,
-      #     # if set to "true" but frees about 6 GB
-      #     tool-cache: false
+      # Re-enabling on 20251124 as it still seems necessary.
+      - name: "Free Disk Space."
+        uses: jlumbroso/free-disk-space@main
+        with:
+          # this might remove tools that are actually needed,
+          # if set to "true" but frees about 6 GB
+          tool-cache: false
 
       - name: "Add swap file to avoid memory shortage."
         run: |
@@ -58,7 +59,7 @@ jobs:
           swapon --show
 
       - name: "Check out code."
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 

@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
     apt-get -y update --quiet
     apt-get -y purge postfix --quiet  # Necessary, as it breaks the upgrade process
     apt-get -y dist-upgrade --quiet
-    apt-get -y install ca-certificates curl direnv gnupg lsb-release qemu-guest-agent podman htop
+    apt-get -y install ca-certificates curl direnv gnupg lsb-release qemu-guest-agent podman htop make
     sudo -u vagrant bash -c "curl -LsSf https://astral.sh/uv/install.sh | sh"
     sudo -u vagrant bash -c "cd /home/vagrant/ansible_collections/checkmk/general/ && /home/vagrant/.local/bin/uv sync"
     sudo -u vagrant bash -c "cd /home/vagrant/ansible_collections/checkmk/general/ && /home/vagrant/.local/bin/uv run ansible-galaxy collection install -f -r /home/vagrant/ansible_collections/checkmk/general/requirements.yml"
@@ -48,6 +48,7 @@ Vagrant.configure("2") do |config|
   # If we want to move to Ubuntu 24, this could be an option: cloud-image/ubuntu-24.04
   config.vm.define "ansibuntu", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/ubuntu2204"
+    # srv.vm.box = "boxen/ubuntu-24.04"  # ToDo: Fix issue with local Vagrant
     srv.vm.network :private_network,
     :ip                         => "192.168.124.61",
     :libvirt__netmask           => "255.255.255.0",
@@ -70,6 +71,7 @@ Vagrant.configure("2") do |config|
   # Debian
   config.vm.define "debsible", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/debian12"
+    # srv.vm.box = "boxen/debian-13"  # ToDo: Fix issue with local Vagrant
     srv.vm.network :private_network,
     :ip                         => "192.168.124.62",
     :libvirt__netmask           => "255.255.255.0",
@@ -131,6 +133,28 @@ Vagrant.configure("2") do |config|
     end
     srv.vm.provision "shell",
       inline: "zypper --quiet up -y"
+  end
+
+  # Rocky
+  config.vm.define "rocksible", autostart: false , primary: false do |srv|
+    srv.vm.box = "generic/rocky9"
+    srv.vm.network :private_network,
+    :ip                         => "192.168.124.65",
+    :libvirt__netmask           => "255.255.255.0",
+    :libvirt__network_name      => "ansible_collection",
+    :libvirt__network_address   => "192.168.124.0"
+    srv.ssh.insert_key = false
+    srv.vm.provider "libvirt" do |libvirt|
+      libvirt.default_prefix = "ansible_"
+      libvirt.description = 'This box is used to test roles against.'
+      libvirt.memory = 2048
+      libvirt.cpus = 2
+      libvirt.title = "rocksible"
+      libvirt.memorybacking :access, :mode => 'shared'
+      libvirt.memorybacking :source, :type => 'memfd'
+    end
+    srv.vm.provision "shell",
+      inline: "dnf --quiet check-update ; dnf -y install vim curl wget git"
   end
 
   # Oracle Linux
