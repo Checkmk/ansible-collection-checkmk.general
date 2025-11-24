@@ -4,6 +4,26 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.4.0
+======
+
+Release Summary
+---------------
+
+Update Operating System support for ``agent`` and ``server`` role: Debian 13 and RedHat 10 are here!
+
+Minor Changes
+-------------
+
+- Agent role - Add support for Debian 13 and RedHat 10.
+- Server role - Add support for Debian 13 and RedHat 10. Server setups are available from Checkmk 2.4.0p16 onwards.
+- Server role - Add support for delegation of downloading the Checkmk Server Setup and GPG Key.
+
+Bugfixes
+--------
+
+- Agent role - Replace misplaced ``checkmk_server_version`` variable with correct ``checkmk_agent_version``.
+
 v6.3.1
 ======
 

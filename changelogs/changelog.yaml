@@ -1388,3 +1388,21 @@ releases:
     - bugfixes.yml
     - release_summary.yml
     release_date: '2025-11-17'
+  6.4.0:
+    changes:
+      bugfixes:
+      - Agent role - Replace misplaced ``checkmk_server_version`` variable with correct
+        ``checkmk_agent_version``.
+      minor_changes:
+      - Agent role - Add support for Debian 13 and RedHat 10.
+      - Server role - Add support for Debian 13 and RedHat 10. Server setups are available
+        from Checkmk 2.4.0p16 onwards.
+      - Server role - Add support for delegation of downloading the Checkmk Server
+        Setup and GPG Key.
+      release_summary: 'Update Operating System support for ``agent`` and ``server``
+        role: Debian 13 and RedHat 10 are here!'
+    fragments:
+    - download_delegation.yml
+    - release_summary.yml
+    - roles.yml
+    release_date: '2025-11-24'
