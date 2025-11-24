@@ -48,6 +48,7 @@ Vagrant.configure("2") do |config|
   # If we want to move to Ubuntu 24, this could be an option: cloud-image/ubuntu-24.04
   config.vm.define "ansibuntu", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/ubuntu2204"
+    # srv.vm.box = "boxen/ubuntu-24.04"  # ToDo: Fix issue with local Vagrant
     srv.vm.network :private_network,
     :ip                         => "192.168.124.61",
     :libvirt__netmask           => "255.255.255.0",
@@ -70,6 +71,7 @@ Vagrant.configure("2") do |config|
   # Debian
   config.vm.define "debsible", autostart: false , primary: false do |srv|
     srv.vm.box = "generic/debian12"
+    # srv.vm.box = "boxen/debian-13"  # ToDo: Fix issue with local Vagrant
     srv.vm.network :private_network,
     :ip                         => "192.168.124.62",
     :libvirt__netmask           => "255.255.255.0",

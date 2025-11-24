@@ -27,7 +27,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ### Basic Configuration
 
-    checkmk_server_version: "2.4.0p15"
+    checkmk_server_version: "2.4.0p16"
 
 The global Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites`.
@@ -165,6 +165,16 @@ Backup options to use. By default no historic data is backed up, in order to cre
 
 Whether to allow downgrading a site's version.
 Note: this is not a recommended procedure, and will not be supported for enterprise customers.
+
+### Delegation
+
+    checkmk_server_delegate_download: "{{ inventory_hostname }}"
+
+Configure the host to which Checkmk Server Setup downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download itself.
+
+    checkmk_server_gpg_delegate_download: "{{ checkmk_server_delegate_download }}"
+
+Configure the host to which Checkmk GPG Key downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download itself.
 
 ## Tags
 
