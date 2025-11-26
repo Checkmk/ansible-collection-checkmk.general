@@ -55,7 +55,7 @@ jobs:
 
     services:
       old_cme:
-        image: checkmk/check-mk-managed:2.3.0p40
+        image: checkmk/check-mk-managed:2.3.0p41
         ports:
           - 5323:5000
         env:

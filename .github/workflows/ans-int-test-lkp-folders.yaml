@@ -60,14 +60,14 @@ jobs:
           CMK_SITE_ID: "ancient_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cre:
-        image: checkmk/check-mk-raw:2.3.0p40
+        image: checkmk/check-mk-raw:2.3.0p41
         ports:
           - 5023:5000
         env:
           CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cme:
-        image: checkmk/check-mk-managed:2.3.0p40
+        image: checkmk/check-mk-managed:2.3.0p41
         ports:
           - 5323:5000
         env:
