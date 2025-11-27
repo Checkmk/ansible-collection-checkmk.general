@@ -6,7 +6,7 @@
     deb: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
     update_cache: true
     state: present
-  notify: Start Apache
+  notify: Restart Apache
   tags:
     - install-package
 

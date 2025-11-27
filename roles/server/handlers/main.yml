@@ -1,13 +1,13 @@
 ---
-- name: "Start Apache"
+- name: "Restart Apache"
   ansible.builtin.service:
     name: apache2
-    state: started
+    state: restarted
 
-- name: "Start httpd"
+- name: "Restart httpd"
   ansible.builtin.service:
     name: httpd
-    state: started
+    state: restarted
 
 - name: "Warn site admin password"
   ansible.builtin.debug:
