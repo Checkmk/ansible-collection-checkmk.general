@@ -60,7 +60,7 @@ checkmk_server_sites: []
 #   version: "{{ checkmk_server_version }}"
 #   edition: "{{ checkmk_server_edition }}"
 #   state: started
-#   admin_pw: "{{ checkmk_var_automation_secret | default(omit) }}"
+#   admin_pw: "{{ checkmk_var_api_secret | default(omit) }}"
 #   update_conflict_resolution: abort
 #   omd_auto_restart: 'false'
 #   omd_config:

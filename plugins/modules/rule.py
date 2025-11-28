@@ -111,8 +111,8 @@ EXAMPLES = r"""
   checkmk.general.rule:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -149,8 +149,8 @@ EXAMPLES = r"""
   checkmk.general.rule:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -208,8 +208,8 @@ EXAMPLES = r"""
   checkmk.general.rule:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       rule_id: "{{ response.content.id }}"
@@ -220,8 +220,8 @@ EXAMPLES = r"""
   checkmk.general.rule:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -250,8 +250,8 @@ EXAMPLES = r"""
   checkmk.general.rule:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       rule_id: "{{ item.id }}"
@@ -262,8 +262,8 @@ EXAMPLES = r"""
              comment_regex='Ansible managed',
              server_url=server_url,
              site=site,
-             automation_user=automation_user,
-             automation_secret=automation_secret,
+             api_user=api_user,
+             api_secret=api_secret,
              validate_certs=False
              )
          }}"

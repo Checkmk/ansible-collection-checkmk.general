@@ -4,8 +4,8 @@ checkmk_var_version: "2.3.0p41"
 checkmk_var_edition: "cre"
 checkmk_server_verify_setup: true
 checkmk_var_server_url: "http://127.0.0.1/"
-checkmk_var_automation_user: "cmkadmin"
-checkmk_var_automation_secret: "mysecret"
+checkmk_var_api_user: "cmkadmin"
+checkmk_var_api_secret: "mysecret"
 
 # Server Role
 checkmk_server_edition: "{{ checkmk_var_edition }}"
@@ -21,7 +21,7 @@ checkmk_server_sites:
     version: "{{ checkmk_var_version }}"
     edition: "{{ checkmk_var_edition }}"
     state: started
-    admin_pw: "{{ checkmk_var_automation_secret }}"
+    admin_pw: "{{ checkmk_var_api_secret }}"
     update_conflict_resolution: install
     omd_auto_restart: true
     omd_config:
@@ -40,13 +40,13 @@ checkmk_server_sites:
     version: "{{ checkmk_var_version }}"
     edition: "{{ checkmk_var_edition }}"
     state: stopped
-    admin_pw: "{{ checkmk_var_automation_secret }}"
+    admin_pw: "{{ checkmk_var_api_secret }}"
     update_conflict_resolution: install
   - name: "enabled"
     version: "{{ checkmk_var_version }}"
     edition: "{{ checkmk_var_edition }}"
     state: enabled
-    admin_pw: "{{ checkmk_var_automation_secret }}"
+    admin_pw: "{{ checkmk_var_api_secret }}"
     update_conflict_resolution: install
     omd_auto_restart: true
     omd_config:
@@ -56,7 +56,7 @@ checkmk_server_sites:
     version: "{{ checkmk_var_version }}"
     edition: "{{ checkmk_var_edition }}"
     state: disabled
-    admin_pw: "{{ checkmk_var_automation_secret }}"
+    admin_pw: "{{ checkmk_var_api_secret }}"
     update_conflict_resolution: install
     omd_auto_restart: 'false'
     omd_config:
@@ -66,7 +66,7 @@ checkmk_server_sites:
     version: "{{ checkmk_var_version }}"
     edition: "{{ checkmk_var_edition }}"
     state: present
-    admin_pw: "{{ checkmk_var_automation_secret }}"
+    admin_pw: "{{ checkmk_var_api_secret }}"
     update_conflict_resolution: install
     omd_auto_restart: 'false'
     omd_config:
@@ -82,7 +82,7 @@ checkmk_server_sites:
     version: "{{ checkmk_var_version }}"
     edition: "{{ checkmk_var_edition }}"
     state: absent
-    admin_pw: "{{ checkmk_var_automation_secret }}"
+    admin_pw: "{{ checkmk_var_api_secret }}"
     update_conflict_resolution: install
 
 checkmk_server_configure_firewall: true
