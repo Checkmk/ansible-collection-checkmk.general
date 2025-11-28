@@ -29,9 +29,9 @@ on:
     paths:
       - '.github/workflows/ans-int-test-downtime.yaml'
       - 'plugins/modules/downtime.py'
-      - 'plugins/module_utils/'
-      - 'tests/integration/files/includes/'
-      - 'tests/integration/targets/downtime/'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/downtime/**'
 
 jobs:
 

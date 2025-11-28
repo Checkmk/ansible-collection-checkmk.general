@@ -29,9 +29,9 @@ on:
     paths:
       - '.github/workflows/ans-int-test-service_group.yaml'
       - 'plugins/modules/service_group.py'
-      - 'plugins/module_utils/'
-      - 'tests/integration/files/includes/'
-      - 'tests/integration/targets/service_group/'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/service_group/**'
 
 jobs:
 
