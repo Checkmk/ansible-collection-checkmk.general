@@ -29,9 +29,9 @@ on:
     paths:
       - '.github/workflows/ans-int-test-discovery.yaml'
       - 'plugins/modules/discovery.py'
-      - 'plugins/module_utils/'
-      - 'tests/integration/files/includes/'
-      - 'tests/integration/targets/discovery/'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/discovery/**'
 
 jobs:
 

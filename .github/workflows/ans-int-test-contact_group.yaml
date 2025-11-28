@@ -29,9 +29,9 @@ on:
     paths:
       - '.github/workflows/ans-int-test-contact_group.yaml'
       - 'plugins/modules/contact_group.py'
-      - 'plugins/module_utils/'
-      - 'tests/integration/files/includes/'
-      - 'tests/integration/targets/contact_group/'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/contact_group/**'
 
 jobs:
 
