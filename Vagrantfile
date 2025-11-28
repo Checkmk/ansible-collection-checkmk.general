@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
     apt-get -y update --quiet
     apt-get -y purge postfix --quiet  # Necessary, as it breaks the upgrade process
     apt-get -y dist-upgrade --quiet
-    apt-get -y install ca-certificates curl direnv gnupg lsb-release qemu-guest-agent podman htop make
+    apt-get -y install ca-certificates curl direnv gnupg lsb-release qemu-guest-agent podman htop make glances
     sudo -u vagrant bash -c "curl -LsSf https://astral.sh/uv/install.sh | sh"
     sudo -u vagrant bash -c "cd /home/vagrant/ansible_collections/checkmk/general/ && /home/vagrant/.local/bin/uv sync"
     sudo -u vagrant bash -c "cd /home/vagrant/ansible_collections/checkmk/general/ && /home/vagrant/.local/bin/uv run ansible-galaxy collection install -f -r /home/vagrant/ansible_collections/checkmk/general/requirements.yml"
@@ -137,7 +137,11 @@ Vagrant.configure("2") do |config|
 
   # Rocky
   config.vm.define "rocksible", autostart: false , primary: false do |srv|
+    # Manual download is needed, as the link on HashiCorp is wrong.
+    # vagrant box add https://dl.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-Vagrant-Libvirt.latest.x86_64.box --name rockylinux/10
+    # vagrant box add https://dl.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-Vagrant-Libvirt-10.1-20251116.0.x86_64.box --name rockylinux/10
     srv.vm.box = "generic/rocky9"
+    # srv.vm.box = "rockylinux/10"  #rockylinux/9  #rockylinux/8
     srv.vm.network :private_network,
     :ip                         => "192.168.124.65",
     :libvirt__netmask           => "255.255.255.0",
