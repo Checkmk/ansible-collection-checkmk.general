@@ -25,7 +25,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.version import (
 
 
 class CheckmkAPI:
-    """Base class to contact a Checkmk server."""
+    """Base class to contact a Checkmk server"""
 
     def __init__(self, module, logger=None):
         self.module = module
