@@ -1406,3 +1406,10 @@ releases:
     - release_summary.yml
     - roles.yml
     release_date: '2025-11-24'
+  6.4.1:
+    changes:
+      minor_changes:
+      - Server role - Fix support for Oracle Linux.
+    fragments:
+    - server.yml
+    release_date: '2025-11-28'
