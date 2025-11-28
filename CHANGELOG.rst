@@ -4,6 +4,14 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.4.1
+======
+
+Minor Changes
+-------------
+
+- Server role - Fix support for Oracle Linux.
+
 v6.4.0
 ======
 
