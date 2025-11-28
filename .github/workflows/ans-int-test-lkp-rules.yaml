@@ -29,8 +29,9 @@ on:
       - '.github/workflows/ans-int-test-lkp-rules.yaml'
       - 'plugins/lookup/rule.py'
       - 'plugins/lookup/rules.py'
-      - 'tests/integration/files/includes/'
-      - 'tests/integration/targets/lookup_rules/'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/lookup_rules/**'
 
 jobs:
 

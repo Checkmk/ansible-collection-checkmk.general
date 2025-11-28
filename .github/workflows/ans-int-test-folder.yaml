@@ -29,8 +29,9 @@ on:
     paths:
       - '.github/workflows/ans-int-test-folder.yaml'
       - 'plugins/modules/folder.py'
-      - 'tests/integration/files/includes/'
-      - 'tests/integration/targets/folder/'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/folder/**'
 
 jobs:
 

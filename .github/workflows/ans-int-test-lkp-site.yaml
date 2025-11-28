@@ -29,8 +29,9 @@ on:
     paths:
       - '.github/workflows/ans-int-test-lkp-site.yaml'
       - 'plugins/lookup/site.py'
-      - 'tests/integration/files/includes/'
-      - 'tests/integration/targets/lookup_site/'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/lookup_site/**'
 
 jobs:
 

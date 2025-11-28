@@ -27,8 +27,9 @@ on:
     paths:
       - '.github/workflows/ans-int-test-lkp-folders.yaml'
       - 'plugins/lookup/folders.py'
-      - 'tests/integration/files/includes/'
-      - 'tests/integration/targets/lookup_folders/'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/lookup_folders/**'
 
 jobs:
 
