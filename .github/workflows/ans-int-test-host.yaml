@@ -29,8 +29,9 @@ on:
     paths:
       - '.github/workflows/ans-int-test-host.yaml'
       - 'plugins/modules/host.py'
-      - 'tests/integration/files/includes/'
-      - 'tests/integration/targets/host/'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/host/**'
 
 jobs:
 
