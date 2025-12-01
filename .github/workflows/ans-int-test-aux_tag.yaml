@@ -29,8 +29,9 @@ on:
     paths:
       - '.github/workflows/ans-int-test-aux_tag.yaml'
       - 'plugins/modules/aux_tag.py'
-      - 'tests/integration/files/includes/'
-      - 'tests/integration/targets/aux_tag/'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/aux_tag/**'
 
 jobs:
 
@@ -62,28 +63,28 @@ jobs:
           CMK_SITE_ID: "ancient_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cre:
-        image: checkmk/check-mk-raw:2.3.0p40
+        image: checkmk/check-mk-raw:2.3.0p41
         ports:
           - 5023:5000
         env:
           CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       old_cme:
-        image: checkmk/check-mk-managed:2.3.0p40
+        image: checkmk/check-mk-managed:2.3.0p41
         ports:
           - 5323:5000
         env:
           CMK_SITE_ID: "old_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cre:
-        image: checkmk/check-mk-raw:2.4.0p15
+        image: checkmk/check-mk-raw:2.4.0p16
         ports:
           - 5024:5000
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cme:
-        image: checkmk/check-mk-managed:2.4.0p15
+        image: checkmk/check-mk-managed:2.4.0p16
         ports:
           - 5324:5000
         env:
@@ -92,7 +93,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
