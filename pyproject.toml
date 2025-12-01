@@ -6,7 +6,7 @@ dependencies = [
     "ansible-core==2.19.4",
     "antsibull-changelog==0.34.0",
     "antsibull-docs==2.23.0",
-    "ansible-lint==25.11.0",
+    "ansible-lint==25.11.1",
     "jinja2==3.1.6",
     "molecule==25.11.0",
     "molecule-plugins[podman]==25.8.12",
