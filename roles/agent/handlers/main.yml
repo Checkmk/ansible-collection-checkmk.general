@@ -3,8 +3,8 @@
   checkmk.general.activation:
     server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
     site: "{{ checkmk_agent_site }}"
-    automation_user: "{{ checkmk_agent_user }}"
-    automation_secret: "{{ __checkmk_agent_auth }}"
+    api_user: "{{ checkmk_agent_user }}"
+    api_secret: "{{ __checkmk_agent_auth }}"
     force_foreign_changes: "{{ checkmk_agent_force_foreign_changes }}"
     redirect: true
     validate_certs: "{{ checkmk_agent_server_validate_certs }}"
