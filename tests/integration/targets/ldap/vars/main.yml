@@ -1,8 +1,21 @@
 ---
 checkmk_var_test_sites:
-  - version: "{{ checkmk_var_version | default('2.4.0p22') }}"
-    edition: "{{ checkmk_var_edition | default('cre') }}"
-    site: "testsite"
+  - version: "2.4.0p21"
+    edition: "cre"
+    site: "stable_cre"
+    port: "5004"
+  - version: "2.4.0p21"
+    edition: "cme"
+    site: "stable_cme"
+    port: "5104"
+  - version: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+    edition: "cre"
+    site: "beta_cre"
+    port: "5005"
+  - version: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+    edition: "cme"
+    site: "beta_cme"
+    port: "5105"
 
 checkmk_var_ldap_connections:
   - ldap_config:

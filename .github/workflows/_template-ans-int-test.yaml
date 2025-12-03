@@ -64,8 +64,6 @@ jobs:
         env:
           CMK_SITE_ID: "testsite_r_1"
           CMK_PASSWORD: "Sup3rSec4et!"
-          CMK_LIVESTATUS_TCP: "on"
-          CMK_RABBITMQ_PORT: 5671
 
     steps:
 
