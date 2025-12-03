@@ -49,13 +49,6 @@ jobs:
 # RabbitMQ: 3
 
     services:
-      old_cre:
-        image: checkmk/check-mk-raw:2.3.0p42
-        ports:
-          - 5003:5000  # Site Apache
-        env:
-          CMK_SITE_ID: "old_cre"
-          CMK_PASSWORD: "Sup3rSec4et!"
       old_cme:
         image: checkmk/check-mk-managed:2.3.0p42
         ports:
@@ -63,13 +56,18 @@ jobs:
         env:
           CMK_SITE_ID: "old_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
-      stable_cre:
-        image: checkmk/check-mk-raw:2.4.0p21
+      old-cme-r1:
+        image: checkmk/check-mk-managed:2.3.0p42
         ports:
-          - 5004:5000  # Site Apache
+          - 5113:5000  # Site Apache
+          - 6113:6557  # Livestatus
+          - 4113:6664  # Livestatus Proxy
+          - 3113:5671  # Message Broker
         env:
-          CMK_SITE_ID: "stable_cre"
+          CMK_SITE_ID: "old_cme_r1"
           CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
+          CMK_RABBITMQ_PORT: 5671
       stable_cme:
         image: checkmk/check-mk-managed:2.4.0p21
         ports:
@@ -77,13 +75,18 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
-      beta_cre:
-        image: "checkmk/check-mk-community:2.5.0-daily"
+      stable-cme-r1:
+        image: checkmk/check-mk-managed:2.4.0p21
         ports:
-          - 5005:5000  # Site Apache
+          - 5114:5000  # Site Apache
+          - 6114:6557  # Livestatus
+          - 4114:6664  # Livestatus Proxy
+          - 3114:5671  # Message Broker
         env:
-          CMK_SITE_ID: "beta_cre"
+          CMK_SITE_ID: "stable_cme_r1"
           CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
+          CMK_RABBITMQ_PORT: 5671
       beta_cme:
         image: "checkmk/check-mk-ultimatemt:2.5.0-daily"
         ports:
@@ -91,6 +94,18 @@ jobs:
         env:
           CMK_SITE_ID: "beta_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
+      beta-cme-r1:
+        image: "checkmk/check-mk-ultimatemt:2.5.0-daily"
+        ports:
+          - 5115:5000  # Site Apache
+          - 6115:6557  # Livestatus
+          - 4115:6664  # Livestatus Proxy
+          - 3115:5671  # Message Broker
+        env:
+          CMK_SITE_ID: "beta_cme_r1"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
+          CMK_RABBITMQ_PORT: 5671
 
     steps:
 

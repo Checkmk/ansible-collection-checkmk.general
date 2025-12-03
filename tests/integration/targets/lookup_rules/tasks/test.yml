@@ -3,6 +3,9 @@
   ansible.builtin.set_fact:
     checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
 
+- name: "Include Checkmk version specific Variables."
+  ansible.builtin.include_vars: "{{ outer_item.version | regex_search('^[0-9]+[.][0-9]+[.][0-9]+') }}.yml"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules."
   rule:
     server_url: "{{ checkmk_var_server_url }}"
@@ -31,7 +34,9 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - compare rules with ansible data."
   ansible.builtin.assert:
     # For each rule that we created, check, if the comment is identical
-    that: "'- Ansible managed' in __checkmk_var_rules_managed[0].extensions.properties.comment"
+    that: "'Managed by Ansible' in __checkmk_var_rules_managed[0].extensions.properties.comment"
+    fail_msg: "Expected string 'Managed by Ansible' in rule {{ item }}, but found {{ __checkmk_var_rules_managed[0].extensions.properties.comment }}!"
+    success_msg: "Expected string 'Managed by Ansible' in rule {{ item }} and found {{ __checkmk_var_rules_managed[0].extensions.properties.comment }}."
   vars:
     __checkmk_var_rules_managed: "{{ lookup('checkmk.general.rules',
                       ruleset=item,
@@ -59,12 +64,13 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - filter for certain rulesets and check the count."
   ansible.builtin.assert:
-    # Check the number of rules
     that: __checkmk_var_rules_filtered_count | length == 1
+    fail_msg: "Expected 1 rule in ruleset {{ item }}, but found {{ __checkmk_var_rules_filtered_count }}!"
+    success_msg: "Expected 1 rule in ruleset {{ item }} and found {{ __checkmk_var_rules_filtered_count }}."
   vars:
     __checkmk_var_rules_filtered_count: "{{ lookup('checkmk.general.rules',
                       ruleset=item,
-                      comment_regex='Ansible managed',
+                      comment_regex='Managed by Ansible',
                       server_url=checkmk_var_server_url,
                       site=outer_item.site,
                       validate_certs=False,
@@ -89,23 +95,24 @@
 
 # We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  when: outer_item.site == "stable_cme"
+  when: outer_item.site == "beta_cme"
   block:
     - name: "Set checkmk_var_server_url for isolated testing."
       ansible.builtin.set_fact:
-        checkmk_var_server_url: "http://127.0.0.1:5104/"
+        checkmk_var_server_url: "http://127.0.0.1:5105/"
 
-    - name: "Test plugin with variables from inventory for: rule."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test plugin with variables from inventory for: rule."
       ansible.builtin.debug:
         var: __checkmk_var_rule_module
       vars:
         __checkmk_var_rule_module: "{{ lookup('checkmk.general.rule', rule_id=item.id) }}"
       loop: "{{ __checkmk_var_cpu_load_ruleset.__checkmk_var_one_ruleset }}"
 
-    - name: "Test plugin with variables from inventory for: rules."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test plugin with variables from inventory for: rules."
       ansible.builtin.assert:
-        # Check the number of rules
         that: __checkmk_var_rules_module | length == 1
+        fail_msg: "Expected 1 rule in ruleset {{ item }}, but found {{ __checkmk_var_rules_module }}!"
+        success_msg: "Expected 1 rule in ruleset {{ item }} and found {{ __checkmk_var_rules_module }}."
       vars:
-        __checkmk_var_rules_module: "{{ lookup('checkmk.general.rules', ruleset=item, comment_regex='Ansible managed') }}"
+        __checkmk_var_rules_module: "{{ lookup('checkmk.general.rules', ruleset=item, comment_regex='Managed by Ansible') }}"
       loop: "{{ checkmk_var_rulesets }}"

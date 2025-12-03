@@ -26,13 +26,13 @@
 
 # We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  when: outer_item.site == "stable_cme"
+  when: outer_item.site == "beta_cme"
   block:
     - name: "Set checkmk_var_server_url for isolated testing."
       ansible.builtin.set_fact:
-        checkmk_var_server_url: "http://127.0.0.1:5104/"
+        checkmk_var_server_url: "http://127.0.0.1:5105/"
 
-    - name: "Test plugin with variables from inventory."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test plugin with variables from inventory."
       ansible.builtin.assert:
         that: ('finished' in __checkmk_var_result_bakery_internal) | bool or
               ('running' in __checkmk_var_result_bakery_internal) | bool or

@@ -33,10 +33,10 @@ __checkmk_server_edition_mapping: >-
 
 # This is a very hacky workaround, as it is not possible to assign variables
 # to other variables when using them in lookup modules.
-# checkmk_var_server_url: "http://127.0.0.1:5104/"  # see above
+# checkmk_var_server_url: "http://127.0.0.1:5105/"  # see above
 # The variable below is especially hacky.
 # All integration tests were adapted to run the specific task only on this site.
-checkmk_var_site: "stable_cme"
+checkmk_var_site: "beta_cme"
 
 __checkmk_var_testing_environment:
   CHECKMK_VAR_SERVER_URL: "{{ checkmk_var_server_url }}"
@@ -52,6 +52,11 @@ __checkmk_var_testing_environment:
 #     edition: "cme"
 #     site: "stable_cme"
 #     port: "5104"
+# checkmk_var_test_sites:
+#   - version: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+#     edition: "cme"
+#     site: "beta_cme"
+#     port: "5105"
 #     # Keep aligned with tests/integratin/targets/site/vars/main.yml
 #     remote_sites:
 #       - site_id: "stable_cme_r1"

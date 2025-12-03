@@ -29,8 +29,11 @@ on:
 
 jobs:
 
+  # This test uses a custom reusable workflow, as it only needs commercial editions.
+  # To keep load on the GitHub Runner sensible, we limited this reusable workflow
+  # to CME, but with remote sites for the tests who need them.
   integration:
     name: "Integration Test"
-    uses: ./.github/workflows/_template-ans-int-test.yaml
+    uses: ./.github/workflows/_template-ans-int-test-cme-remotes.yaml
     with:
       module: bakery

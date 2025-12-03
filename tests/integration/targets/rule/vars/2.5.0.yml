@@ -12,7 +12,7 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.5.0\n",
         "description": "",
         "disabled": false
       }
@@ -30,11 +30,11 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.5.0\n",
         "description": "",
         "disabled": false
       }
-      value_raw: "{'levels': (1.0, 2.0)}"
+      value_raw: "{'levels15': (1.0, 2.0)}"
 
   - name: "CPU utilization on Linux/UNIX - Multiple thresholds."
     ruleset: "checkgroup_parameters:cpu_iowait"
@@ -48,7 +48,7 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.5.0\n",
         "description": "",
         "disabled": false
       }
@@ -66,7 +66,7 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.5.0\n",
         "description": "",
         "disabled": false
       }
@@ -87,23 +87,50 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.5.0\n",
         "disabled": false,
       }
       value_raw: 'True'
 
-  - name: "Memory percentage used - Levels."
+  - name: "Memory percentage used - Combined host label conditions."
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
-        "host_labels": [],
+        "host_label_groups": [
+          {
+            operator: "and",
+            label_group: [
+              {
+                operator: "and",
+                label: "cmk/site:beta"
+              },
+              {
+                operator: "or",
+                label: "cmk/os_family:linux"
+              }
+            ],
+          },
+          {
+            operator: "or",
+            label_group: [
+              {
+                operator: "and",
+                label: "cmk/site:alpha"
+              },
+              {
+                operator: "or",
+                label: "cmk/os_family:windows"
+              }
+            ],
+          },
+        ],
         "host_tags": [],
         "service_labels": []
       }
       properties: {
-        "comment": "Warning at 80%\nCritical at 90%\n",
-        "description": "Allow higher memory usage",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.5.0\n",
+        "description": "Allow higher memory usage for certain host label conditions",
         "disabled": false,
         "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
       }
-      value_raw: "{'levels': (80.0, 90.0)}"
+      value_raw: "{'levels': ('fixed', (70.0, 80.0))}"

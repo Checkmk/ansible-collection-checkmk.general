@@ -317,6 +317,7 @@ class ModuleDocFragment(object):
                                         - setting. This parameter was introduced with werk 17998
                                         - (2.3.0p39, 2.4.0p14)
                                     type: bool
+                                    default: false
                                 message_broker_port:
                                     description:
                                         - The port used by the message broker to exchange messages.

@@ -12,7 +12,7 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.3.0\n",
         "description": "",
         "disabled": false
       }
@@ -30,7 +30,7 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.3.0\n",
         "description": "",
         "disabled": false
       }
@@ -48,7 +48,7 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.3.0\n",
         "description": "",
         "disabled": false
       }
@@ -66,7 +66,7 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.3.0\n",
         "description": "",
         "disabled": false
       }
@@ -87,26 +87,10 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.3.0\n",
         "disabled": false,
       }
       value_raw: 'True'
-
-  - name: "Memory percentage used - Levels."
-    ruleset: "checkgroup_parameters:memory_percentage_used"
-    rule:
-      conditions: {
-        "host_labels": [],
-        "host_tags": [],
-        "service_labels": []
-      }
-      properties: {
-        "comment": "Warning at 80%\nCritical at 90%\n",
-        "description": "Allow higher memory usage",
-        "disabled": false,
-        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"
-      }
-      value_raw: "{'levels': (80.0, 90.0)}"
 
   - name: "Memory percentage used - Combined host label conditions."
     ruleset: "checkgroup_parameters:memory_percentage_used"
@@ -144,7 +128,7 @@ checkmk_var_rules:
         "service_labels": []
       }
       properties: {
-        "comment": "Warning at 70%\nCritical at 80%\n",
+        "comment": "Managed by Ansible - Rule for Checkmk 2.3.0\n",
         "description": "Allow higher memory usage for certain host label conditions",
         "disabled": false,
         "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rules.py"

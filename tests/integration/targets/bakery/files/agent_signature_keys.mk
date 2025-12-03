@@ -1,4 +1,6 @@
 # Written by Checkmk store (actually Ansible)
+# Key IDs need were migrated to UUIDs starting with 2.5.0, e.g.: 41bbbe85-c69e-46cb-9440-d50855a95d93
+# This can be updated in here, as soon as 2.4.0 is EOL. 2.5.0 will be backwards-compatible with old IDs.
 
 agent_signature_keys.update({1: {'alias': 'ansible_collection',
      'certificate': '-----BEGIN CERTIFICATE-----\n'
@@ -51,4 +53,3 @@ agent_signature_keys.update({1: {'alias': 'ansible_collection',
                     'UAf69KPWfTH5awkmpM0Yz76qV+L4B/QczQKWPtUzlRJxvAeKGfHkD1UIPkMUPmQQ\n'
                     'fNw0rolGI0G47R2/78ouGbsySM+FPZNkMMI/YIEN0f4Y\n'
                     '-----END ENCRYPTED PRIVATE KEY-----\n'}})
-

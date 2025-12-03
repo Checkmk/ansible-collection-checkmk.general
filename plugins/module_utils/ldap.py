@@ -16,6 +16,7 @@ EXTEND_STATE = {
     "member_attribute": "attribute",
     "authentication_expiration": "attribute_to_sync",
     "disable_notifications": "attribute_to_sync",
+    "main_menu_icons": "attribute_to_sync",
     "mega_menu_icons": "attribute_to_sync",
     "navigation_bar_icons": "attribute_to_sync",
     "pager": "attribute_to_sync",

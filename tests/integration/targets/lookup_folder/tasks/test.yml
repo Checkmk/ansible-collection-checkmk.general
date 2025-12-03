@@ -30,13 +30,13 @@
   ansible.builtin.assert:
     that: "__checkmk_var_folder_list | length == (checkmk_var_folders | length + 1)"
     fail_msg: "Expected {{ checkmk_var_folders | length + 1 }} folders, but found {{ __checkmk_var_folder_list | length }}!"
-    success_msg: "Expected {{ checkmk_var_folders | length + 1 }} folders, and found {{ __checkmk_var_folder_list | length }}."
+    success_msg: "Expected {{ checkmk_var_folders | length + 1 }} folders and found {{ __checkmk_var_folder_list | length }}."
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify folder criticality."
   ansible.builtin.assert:
     that: "item.extensions.attributes.tag_criticality == (checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first)"
     fail_msg: "Expected {{ item.id }} tag_criticality to be {{ checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first }}, but found {{ item.extensions.attributes.tag_criticality }}!"
-    success_msg: "Expected {{ item.id }} tag_criticality to be {{ checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first }}, and found {{ item.extensions.attributes.tag_criticality }}."
+    success_msg: "Expected {{ item.id }} tag_criticality to be {{ checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first }} and found {{ item.extensions.attributes.tag_criticality }}."
   loop: "{{ __checkmk_var_folder_list }}"
   when: item.id != '~'
   loop_control:
@@ -46,7 +46,7 @@
   ansible.builtin.assert:
     that: "__checkmk_var_folder.extensions.attributes.tag_criticality == item.extensions.attributes.tag_criticality"
     fail_msg: "Expected {{ item.id }} tag_criticality to be {{ item.extensions.attributes.tag_criticality }}, but found {{ __checkmk_var_folder.extensions.attributes.tag_criticality }}!"
-    success_msg: "Expected {{ item.id }} tag_criticality to be {{ item.extensions.attributes.tag_criticality }}, and found {{ __checkmk_var_folder.extensions.attributes.tag_criticality }}."
+    success_msg: "Expected {{ item.id }} tag_criticality to be {{ item.extensions.attributes.tag_criticality }} and found {{ __checkmk_var_folder.extensions.attributes.tag_criticality }}."
   vars:
     __checkmk_var_folder: "{{ lookup('checkmk.general.folder',
                     item.id,
@@ -63,11 +63,11 @@
 
 # We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  when: outer_item.site == "stable_cme"
+  when: outer_item.site == "beta_cme"
   block:
     - name: "Set checkmk_var_server_url for isolated testing."
       ansible.builtin.set_fact:
-        checkmk_var_server_url: "http://127.0.0.1:5104/"
+        checkmk_var_server_url: "http://127.0.0.1:5105/"
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all folders."
       ansible.builtin.set_fact:
@@ -77,13 +77,13 @@
       ansible.builtin.assert:
         that: "__checkmk_var_folder_list | length == (checkmk_var_folders | length + 1)"
         fail_msg: "Expected {{ checkmk_var_folders | length + 1 }} folders, but found {{ __checkmk_var_folder_list | length }}!"
-        success_msg: "Expected {{ checkmk_var_folders | length + 1 }} folders, and found {{ __checkmk_var_folder_list | length }}."
+        success_msg: "Expected {{ checkmk_var_folders | length + 1 }} folders and found {{ __checkmk_var_folder_list | length }}."
 
     - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify folder criticality."
       ansible.builtin.assert:
         that: "item.extensions.attributes.tag_criticality == (checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first)"
         fail_msg: "Expected {{ item.id }} tag_criticality to be {{ checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first }}, but found {{ item.extensions.attributes.tag_criticality }}!"
-        success_msg: "Expected {{ item.id }} tag_criticality to be {{ checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first }}, and found {{ item.extensions.attributes.tag_criticality }}."
+        success_msg: "Expected {{ item.id }} tag_criticality to be {{ checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first }} and found {{ item.extensions.attributes.tag_criticality }}."
       loop: "{{ __checkmk_var_folder_list }}"
       when: item.id != '~'
       loop_control:
@@ -93,7 +93,7 @@
       ansible.builtin.assert:
         that: "__checkmk_var_folder.extensions.attributes.tag_criticality == item.extensions.attributes.tag_criticality"
         fail_msg: "Expected {{ item.id }} tag_criticality to be {{ item.extensions.attributes.tag_criticality }}, but found {{ __checkmk_var_folder.extensions.attributes.tag_criticality }}!"
-        success_msg: "Expected {{ item.id }} tag_criticality to be {{ item.extensions.attributes.tag_criticality }}, and found {{ __checkmk_var_folder.extensions.attributes.tag_criticality }}."
+        success_msg: "Expected {{ item.id }} tag_criticality to be {{ item.extensions.attributes.tag_criticality }} and found {{ __checkmk_var_folder.extensions.attributes.tag_criticality }}."
       vars:
         __checkmk_var_folder: "{{ lookup('checkmk.general.folder', item.id) }}"
       loop: "{{ __checkmk_var_folder_list }}"

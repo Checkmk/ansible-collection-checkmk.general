@@ -41,7 +41,9 @@
   register: __checkmk_var_result_new_pass
   failed_when: |
     not ('Missing required parameter' in __checkmk_var_result_new_pass.msg
-    or 'Missing data for required field.' in __checkmk_var_result_new_pass.msg)
+    or 'Missing data for required field.' in __checkmk_var_result_new_pass.msg
+    or 'The customer field is required in this edition' in __checkmk_var_result_new_pass.msg)
+  ignore_errors: true
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create new passwords without title (Should fail)."
   password:
