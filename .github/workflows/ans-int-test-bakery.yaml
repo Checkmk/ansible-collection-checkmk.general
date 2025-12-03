@@ -58,13 +58,6 @@ jobs:
             python: '3.11'
 
     services:
-      ancient_cce:
-        image: checkmk/check-mk-cloud:2.2.0p47
-        ports:
-          - 5222:5000
-        env:
-          CMK_SITE_ID: "ancient_cce"
-          CMK_PASSWORD: "Sup3rSec4et!"
       old_cme:
         image: checkmk/check-mk-managed:2.3.0p42
         ports:
@@ -86,6 +79,21 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
+      beta_cre:
+        image: "checkmk/check-mk-community:2.5.0-daily"
+        ports:
+          - 5025:5000
+        env:
+          CMK_SITE_ID: "beta_cre"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      beta_cme:
+        image: "checkmk/check-mk-ultimatemt:2.5.0-daily"
+        ports:
+          - 5325:5000
+        env:
+          CMK_SITE_ID: "beta_cme"
+          CMK_PASSWORD: "Sup3rSec4et!"
+
 
     steps:
       - name: Check out code
@@ -109,5 +117,5 @@ jobs:
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
       - name: Run integration test
-        run: uv run ansible-test integration ${{env.MODULE_NAME}} -v --color --continue-on-error --diff --python ${{ matrix.python }}
+        run: uv run ansible-test integration ${{env.MODULE_NAME}} -v --color --continue-on-error --diff --python ${{ matrix.python }} --retry-on-error --debug
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}

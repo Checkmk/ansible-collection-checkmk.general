@@ -136,3 +136,83 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_api_user }}"
           password: "{{ checkmk_var_api_secret }}"
+  - version: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+    edition: "cre"
+    site: "beta_cre"
+    port: "5005"
+    remote_sites:
+      - site_id: "beta_cre_r1"
+        site_config:
+          status_connection:
+            connection:
+              socket_type: "tcp"
+              port: 6015
+              encrypted: true
+              host: "localhost"
+              verify: true
+            proxy:
+              use_livestatus_daemon: "direct"
+            connect_timeout: 2
+            status_host:
+              status_host_set: "disabled"
+            url_prefix: "/beta_cre_r1/"
+          configuration_connection:
+            enable_replication: true
+            url_of_remote_site: "http://beta-cre-r1:5000/beta_cre_r1/check_mk/"
+            message_broker_port: 3015
+          basic_settings:
+            site_id: "beta_cre_r1"
+            alias: "beta_cre remote site"
+        authentication:
+          username: "{{ checkmk_var_api_user }}"
+          password: "{{ checkmk_var_api_secret }}"
+  - version: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+    edition: "cme"
+    site: "beta_cme"
+    port: "5105"
+    remote_sites:
+      - site_id: "beta_cme_r1"
+        site_config:
+          status_connection:
+            connection:
+              socket_type: "tcp"
+              port: 6115
+              encrypted: true
+              host: "localhost"
+              verify: false
+            proxy:
+              use_livestatus_daemon: "with_proxy"
+              global_settings: false
+              tcp:
+                port: 4115
+                only_from: []
+                tls: true
+              params:
+                channels: 6
+                heartbeat:
+                  interval: 10
+                  timeout: 4
+                channel_timeout: 6
+                query_timeout: 240
+                connect_retry: 5
+                cache: true
+            connect_timeout: 2
+            status_host:
+              status_host_set: "disabled"
+            url_prefix: "/beta_cme_r1/"
+          configuration_connection:
+            enable_replication: true
+            url_of_remote_site: "http://beta-cme-r1:5000/beta_cme_r1/check_mk/"
+            disable_remote_configuration: true
+            ignore_tls_errors: false
+            direct_login_to_web_gui_allowed: false
+            replicate_event_console: true
+            replicate_extensions: false
+            message_broker_port: 3115
+          basic_settings:
+            site_id: "beta_cme_r1"
+            customer: "provider"
+            alias: "beta_cme remote site 2"
+        authentication:
+          username: "{{ checkmk_var_api_user }}"
+          password: "{{ checkmk_var_api_secret }}"

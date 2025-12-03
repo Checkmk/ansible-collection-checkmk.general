@@ -26,7 +26,7 @@ options:
     signature_key_id:
         description: The id of the signing key
         required: false
-        type: int
+        type: str
 
     signature_key_passphrase:
         description: The passphrase of the signing key
@@ -59,8 +59,8 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    signature_key_id: 1
-    signature_key_passphrase: "my_key"
+    signature_key_id: 12abcd34-e56f-78gh-9101-i11213j14k15
+    signature_key_passphrase: "my_secret_passphrase"
     state: "signed"
 # Bake and sign all agents.
 - name: "Bake and sign all agents."
@@ -69,8 +69,8 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    signature_key_id: 1
-    signature_key_passphrase: "my_key"
+    signature_key_id: 12abcd34-e56f-78gh-9101-i11213j14k15
+    signature_key_passphrase: "my_secret_passphrase"
     state: "baked_signed"
 """
 
@@ -124,7 +124,7 @@ class BakeryAPI(CheckmkAPI):
 def run_module():
     argument_spec = base_argument_spec()
     argument_spec.update(
-        signature_key_id=dict(type="int", required=False),
+        signature_key_id=dict(type="str", required=False),
         signature_key_passphrase=dict(type="str", required=False, no_log=True),
         state=dict(
             type="str",
