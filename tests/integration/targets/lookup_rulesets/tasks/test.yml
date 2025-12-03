@@ -3,6 +3,9 @@
   ansible.builtin.set_fact:
     checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
 
+- name: "Include Checkmk version specific Variables."
+  ansible.builtin.include_vars: "{{ outer_item.version | regex_search('^[0-9]+[.][0-9]+[.][0-9]+') }}.yml"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules."
   rule:
     server_url: "{{ checkmk_var_server_url }}"
@@ -60,10 +63,12 @@
                   api_secret=checkmk_var_api_secret)
               }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules using lookup-ruleset."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules."
   ansible.builtin.assert:
     # For each rule that we created, check, if the number of rules in its ruleset is 1.
     that: "__checkmk_var_ruleset.number_of_rules == 1"
+    fail_msg: "Expected 1 rule in ruleset {{ item }}, but found {{ __checkmk_var_ruleset.number_of_rules }}!"
+    success_msg: "Expected 1 rule in ruleset {{ item }} and found {{ __checkmk_var_ruleset.number_of_rules }}."
   vars:
     __checkmk_var_ruleset: "{{ lookup('checkmk.general.ruleset',
                       ruleset=item,
@@ -76,44 +81,24 @@
   loop: "{{ checkmk_var_ruleset_regexes }}"
 
 # We need this hack to overwrite the colliding global variable
-- name: "Set fact: checkmk_var_server_url."
-  ansible.builtin.set_fact:
-    checkmk_var_server_url: "http://127.0.0.1:5104/"
-  when: outer_item.site == "stable_cme"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory: ruleset."
-  ansible.builtin.assert:
-    # For each rule that we created, check, if the number of rules in its ruleset is 1.
-    that: "__checkmk_var_ruleset.number_of_rules == 1"
-  vars:
-    __checkmk_var_ruleset: "{{ lookup('checkmk.general.ruleset', ruleset=item) }}"
-  loop: "{{ checkmk_var_ruleset_regexes }}"
-  when: outer_item.site == "stable_cme"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory: rulesets."
-  ansible.builtin.debug:
-    var: __checkmk_var_rulesets
-  vars:
-    __checkmk_var_rulesets: "{{ lookup('checkmk.general.rulesets', regex='file', rulesets_used=False, rulesets_deprecated=False) }}"
-  when: outer_item.site == "stable_cme"
-
-# We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  when: outer_item.site == "stable_cme"
+  when: outer_item.site == "beta_cme"
   block:
     - name: "Set checkmk_var_server_url for isolated testing."
       ansible.builtin.set_fact:
-        checkmk_var_server_url: "http://127.0.0.1:5104/"
+        checkmk_var_server_url: "http://127.0.0.1:5105/"
 
-    - name: "Test plugin with variables from inventory for: ruleset."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test plugin with variables from inventory for: ruleset."
       ansible.builtin.assert:
         # For each rule that we created, check, if the number of rules in its ruleset is 1.
         that: "__checkmk_var_ruleset.number_of_rules == 1"
+        fail_msg: "Expected 1 rule in ruleset {{ item }}, but found {{ __checkmk_var_ruleset.number_of_rules }}!"
+        success_msg: "Expected 1 rule in ruleset {{ item }} and found {{ __checkmk_var_ruleset.number_of_rules }}."
       vars:
         __checkmk_var_ruleset: "{{ lookup('checkmk.general.ruleset', ruleset=item) }}"
       loop: "{{ checkmk_var_ruleset_regexes }}"
 
-    - name: "Test plugin with variables from inventory for: rulesets."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test plugin with variables from inventory for: rulesets."
       ansible.builtin.debug:
         var: __checkmk_var_rulesets
       vars:

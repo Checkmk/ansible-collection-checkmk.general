@@ -31,35 +31,27 @@
 - name: "Inject a Key into the Sites when running outside of the Container."  # noqa no-changed-when
   ansible.builtin.shell: |
     if command -v docker &> /dev/null; then
-        echo "Docker found. Processing Docker containers..."
         for container in $(docker ps -q)
         do
           for site in $(docker exec $container ls /omd/sites/ 2>/dev/null)
           do
-            echo "  -> Copying to Docker container $container, site $site"
             docker cp targets/bakery/files/agent_signature_keys.mk $container:/omd/sites/$site/etc/check_mk/multisite.d/wato/agent_signature_keys.mk
           done
         done
-    else
-        echo "Docker not found. Skipping Docker loop."
     fi
 
     if command -v podman &> /dev/null; then
-        echo "Podman found. Processing Podman containers..."
-
         for container in $(podman ps -q)
         do
           for site in $(podman exec $container ls /omd/sites/ 2>/dev/null)
           do
-            echo "  -> Copying to Podman container $container, site $site"
             podman cp targets/bakery/files/agent_signature_keys.mk $container:/omd/sites/$site/etc/check_mk/multisite.d/wato/agent_signature_keys.mk
           done
         done
-    else
-        echo "Podman not found. Skipping Podman loop."
     fi
   args:
     executable: /bin/bash
+  when: ansible_facts['system_vendor'] == "Microsoft Corporation" and ansible_facts['product_name'] == "Virtual Machine" and ansible_facts['virtualization_type'] == "VirtualPC"
 
 - name: "Inject a Key into the Sites when running inside of the Container."
   ansible.builtin.copy:
