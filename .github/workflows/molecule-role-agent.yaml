@@ -17,10 +17,8 @@ on:
       - devel
     paths:
       - 'roles/agent/**'
+      - '.github/workflows/molecule-role-agent.yaml'
   push:
-    branches:
-      - main
-      - devel
     paths:
       - 'roles/agent/**'
       - '.github/workflows/molecule-role-agent.yaml'
