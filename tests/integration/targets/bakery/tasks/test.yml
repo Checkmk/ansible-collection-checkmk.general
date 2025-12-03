@@ -9,6 +9,9 @@
     checkmk_var_customer: null
   when: outer_item.edition != "cme"
 
+- name: "Include Checkmk version specific Variables."
+  ansible.builtin.include_vars: "{{ outer_item.version | regex_search('^[0-9]+[.][0-9]+[.][0-9]+') }}.yml"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"

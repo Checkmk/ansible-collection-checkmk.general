@@ -121,6 +121,44 @@ jobs:
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
           CMK_RABBITMQ_PORT: 5671
+      beta_cre:
+        image: "checkmk/check-mk-community:master-daily"
+        ports:
+          - 5005:5000  # Site Apache
+        env:
+          CMK_SITE_ID: "beta_cre"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      beta-cre-r1:
+        image: "checkmk/check-mk-community:master-daily"
+        ports:
+          - 5015:5000  # Site Apache
+          - 6015:6557  # Livestatus
+          - 4015:6664  # Livestatus Proxy
+          - 3015:5671  # Message Broker
+        env:
+          CMK_SITE_ID: "beta_cre_r1"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
+          CMK_RABBITMQ_PORT: 5671
+      beta_cme:
+        image: "checkmk/check-mk-ultimatemt:master-daily"
+        ports:
+          - 5105:5000  # Site Apache
+        env:
+          CMK_SITE_ID: "beta_cme"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      beta-cme-r1:
+        image: "checkmk/check-mk-ultimatemt:master-daily"
+        ports:
+          - 5115:5000  # Site Apache
+          - 6115:6557  # Livestatus
+          - 4115:6664  # Livestatus Proxy
+          - 3115:5671  # Message Broker
+        env:
+          CMK_SITE_ID: "beta_cme_r1"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
+          CMK_RABBITMQ_PORT: 5671
 
     steps:
       - name: Check out code
