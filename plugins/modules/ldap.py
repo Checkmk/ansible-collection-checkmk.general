@@ -322,6 +322,7 @@ options:
                             - time you can zoom in more quickly to a specific entry.
                         type: str
                         default: ""
+                        aliases: ["main_menu_icons"]
                     navigation_bar_icons:
                         description:
                             - With this option enabled you can define if icons in the navigation
@@ -680,6 +681,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
     exit_module,
 )
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
 
 logger = Logger()
 
@@ -724,6 +728,7 @@ class LDAPAPI(CheckmkAPI):
         super().__init__(module)
 
         self.desired_state = self.params.get("state")
+        self.version = self.getversion()
 
         error = self._verify_basic_parameters()
         if error:
@@ -748,10 +753,34 @@ class LDAPAPI(CheckmkAPI):
 
         self.desired = self.ldap_config.copy()
         if self.desired_state == "present":
+            self.desired = self._ensure_version_compatibility(self.desired)
             self.desired = self._set_defaults(self.desired)
             self.desired = self._extend_state_parameters(self.desired)
 
         self.differ = ConfigDiffer(self.desired, self.current)
+
+    def _ensure_version_compatibility(self, ldap_config):
+        """
+        Handle incompatibilities between Checkmk versions
+        """
+        sync_plugins = ldap_config.get("sync_plugins", {})
+        mmi = sync_plugins.get("main_menu_icons", sync_plugins.get("mega_menu_icons"))
+
+        if mmi is None:
+            return ldap_config
+
+        if self.version < CheckmkVersion("2.5.0"):
+            # remove main_menu_icons if present and replace with mega_menu_icons
+            if "main_menu_icons" in sync_plugins:
+                del ldap_config["sync_plugins"]["main_menu_icons"]
+                ldap_config["sync_plugins"]["mega_menu_icons"] = mmi
+        else:
+            # remove main_menu_icons if present and replace with mega_menu_icons
+            if "mega_menu_icons" in sync_plugins:
+                del ldap_config["sync_plugins"]["mega_menu_icons"]
+                ldap_config["sync_plugins"]["main_menu_icons"] = mmi
+
+        return ldap_config
 
     def _set_defaults(self, ldap_config):
         """
@@ -859,7 +888,9 @@ class LDAPAPI(CheckmkAPI):
             self.headers["If-Match"] = result.etag.replace('"', "")
             try:
                 current_raw = json.loads(result.content)
-                self.current = current_raw.get("extensions", {})
+                self.current = self._ensure_version_compatibility(
+                    current_raw.get("extensions", {})
+                )
                 self.current["id"] = current_raw.get("id")
 
             except json.JSONDecodeError:
@@ -1157,7 +1188,9 @@ def run_module():
                         "authentication_expiration": dict(type="str", default=""),
                         "disable_notifications": dict(type="str", default=""),
                         "email_address": dict(type="str", default=""),
-                        "mega_menu_icons": dict(type="str", default=""),
+                        "mega_menu_icons": dict(
+                            type="str", default="", aliases=["main_menu_icons"]
+                        ),
                         "navigation_bar_icons": dict(type="str", default=""),
                         "pager": dict(type="str", default=""),
                         "show_mode": dict(type="str", default=""),

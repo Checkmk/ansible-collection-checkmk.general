@@ -61,7 +61,8 @@
   register: __checkmk_var_result_login
   failed_when: __checkmk_var_result_login.changed | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update remote site."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update site connection."
+  when: "not '2.5.0' in outer_item.version"
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -79,7 +80,32 @@
   loop_control:
     label: "{{ item.site_id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update remote site again. "
+# ToDo: Just for Debugging!
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update site connection for 2.5."
+  when: "'2.5.0' in outer_item.version"
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    site_id: "{{ item.site_id }}"
+    site_connection:
+      site_config:
+        basic_settings:
+          alias: "{{ item.site_id }} with new alias"
+        configuration_connection:
+          enable_replication: false
+          disable_remote_configuration: true
+          direct_login_to_web_gui_allowed: true
+          replicate_event_console: false
+          message_broker_port: 6666
+        status_connection:
+    state: "present"
+  loop: "{{ outer_item.remote_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update site connection again. "
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"

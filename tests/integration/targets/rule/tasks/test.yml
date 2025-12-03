@@ -88,7 +88,7 @@
     state: "present"
   loop: "{{ lookup('checkmk.general.rules',
       ruleset='checkgroup_parameters:filesystem',
-      comment_regex='Ansible managed',
+      comment_regex='Managed by Ansible',
       server_url=checkmk_var_server_url,
       site=outer_item.site,
       api_user=checkmk_var_api_user,
