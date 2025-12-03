@@ -86,6 +86,21 @@ jobs:
         env:
           CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
+      beta_cre:
+        image: "checkmk/check-mk-community:master-daily"
+        ports:
+          - 5025:5000
+        env:
+          CMK_SITE_ID: "beta_cre"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      beta_cme:
+        image: "checkmk/check-mk-ultimatemt:master-daily"
+        ports:
+          - 5325:5000
+        env:
+          CMK_SITE_ID: "beta_cme"
+          CMK_PASSWORD: "Sup3rSec4et!"
+
 
     steps:
       - name: Check out code
