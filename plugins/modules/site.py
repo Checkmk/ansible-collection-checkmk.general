@@ -329,7 +329,11 @@ def run_module():
     existing_site_connection = SiteConnection.from_api(site_api.get(site_id))
 
     # Can be removed, once we no longer support Checkmk versions older than 2.3.0p25
-    if site_api.getversion() > CheckmkVersion("2.3.0p25") and not replication_enabled:
+    if (
+        existing_site_connection
+        and site_api.getversion() > CheckmkVersion("2.3.0p25")
+        and not replication_enabled
+    ):
         # Remove unneeded parameters from the existing site connection's config
         logger.debug("Cleaning parameters of existing connection")
         werk16722(existing_site_connection.site_config)
