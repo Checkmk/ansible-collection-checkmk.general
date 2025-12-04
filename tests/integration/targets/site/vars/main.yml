@@ -26,7 +26,7 @@ checkmk_var_test_sites:
               use_livestatus_daemon: "with_proxy"
               global_settings: false
               tcp:
-                port: 6663
+                port: 4013
                 only_from: []
                 tls: true
               params:

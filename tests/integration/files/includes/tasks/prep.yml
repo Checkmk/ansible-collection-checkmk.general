@@ -38,9 +38,25 @@
     creates: "/omd/sites/{{ item.site }}"
   loop: "{{ checkmk_var_test_sites }}"
 
-- name: "Configure Sites."  # noqa no-changed-when
-  ansible.builtin.command: omd config {{ item.site }} set APACHE_TCP_PORT {{ item.port }}
+- name: "Configure Checkmk Site Ports (Apache, Livestatus, Broker)"
+  ansible.builtin.shell:
+    cmd: |
+      # 1. Configure Apache Port
+      omd config {{ item.site }} set APACHE_TCP_PORT {{ item.port }}
+
+      # 2. Configure Livestatus (Enable TCP and set Port)
+      omd config {{ item.site }} set LIVESTATUS_TCP on
+      omd config {{ item.site }} set LIVESTATUS_TCP_PORT {{ item.remote_sites[0].site_config.status_connection.connection.port | default('6557') }}
+
+      # 3. Configure Message Broker (Only if defined in variables)
+      {% if item.remote_sites[0].site_config.configuration_connection.message_broker_port is defined %}
+      omd config {{ item.site }} set RABBITMQ_TCP_PORT {{ item.remote_sites[0].site_config.configuration_connection.message_broker_port | default('5671') }}
+      {% endif %}
   loop: "{{ checkmk_var_test_sites }}"
+  loop_control:
+    label: "{{ item.site }}"
+  # Suppress change reporting as 'omd config' is not natively idempotent
+  changed_when: false
 
 - name: "Start Apache2."
   ansible.builtin.service:
