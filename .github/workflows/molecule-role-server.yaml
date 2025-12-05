@@ -17,10 +17,8 @@ on:
       - devel
     paths:
       - 'roles/server/**'
+      - '.github/workflows/molecule-role-server.yaml'
   push:
-    branches:
-      - main
-      - devel
     paths:
       - 'roles/server/**'
       - '.github/workflows/molecule-role-server.yaml'
@@ -76,5 +74,5 @@ jobs:
       - name: "Run Molecule."
         run: |
           cd roles/server/
-          uv run molecule test -s ${{ matrix.checkmk }}
+          uv run molecule test --report -s ${{ matrix.checkmk }}
         working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}

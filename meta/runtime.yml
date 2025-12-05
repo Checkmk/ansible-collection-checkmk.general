@@ -1,8 +1,9 @@
-requires_ansible: '>=2.17.0'
+requires_ansible: '>=2.18.0'
 
 action_groups:
   checkmk:
     - activation
+    - aux_tag
     - bakery
     - contact_group
     - dcd

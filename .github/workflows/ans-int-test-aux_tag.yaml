@@ -8,13 +8,13 @@
 env:
   NAMESPACE: checkmk
   COLLECTION_NAME: general
-  MODULE_NAME: discovery
+  MODULE_NAME: aux_tag
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Ansible Integration Tests for Discovery Module
+name: Ansible Integration Tests for Aux Tag Module
 on:
   workflow_dispatch:
   schedule:
@@ -24,14 +24,14 @@ on:
       - main
       - devel
     paths:
-      - 'plugins/modules/discovery.py'
+      - 'plugins/modules/aux_tag.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-discovery.yaml'
-      - 'plugins/modules/discovery.py'
+      - '.github/workflows/ans-int-test-aux_tag.yaml'
+      - 'plugins/modules/aux_tag.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/files/includes/**'
-      - 'tests/integration/targets/discovery/**'
+      - 'tests/integration/targets/aux_tag/**'
 
 jobs:
 

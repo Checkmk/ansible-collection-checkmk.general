@@ -29,8 +29,9 @@ on:
     paths:
       - '.github/workflows/ans-int-test-service_group.yaml'
       - 'plugins/modules/service_group.py'
-      - 'tests/integration/files/includes/'
-      - 'tests/integration/targets/service_group/'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/service_group/**'
 
 jobs:
 
@@ -41,16 +42,19 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
-          - stable-2.17
           - stable-2.18
           - stable-2.19
+          - stable-2.20
           - devel
         python:
           - '3.11'
           - '3.12'
+          - '3.13'
         exclude:
           # Exclude unsupported sets.
           - ansible: devel
+            python: '3.11'
+          - ansible: stable-2.20
             python: '3.11'
 
     services:
@@ -76,14 +80,14 @@ jobs:
           CMK_SITE_ID: "old_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cre:
-        image: checkmk/check-mk-raw:2.4.0p16
+        image: checkmk/check-mk-raw:2.4.0p17
         ports:
           - 5024:5000
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cme:
-        image: checkmk/check-mk-managed:2.4.0p16
+        image: checkmk/check-mk-managed:2.4.0p17
         ports:
           - 5324:5000
         env:

@@ -131,7 +131,6 @@ Please do **not** consider it a concrete planning document!
   - Setup
     - Agents
     - Business Intelligence
-    - Dynamic host management (DCD)
     - Event Console
     - Notification Rules
 - OMD Module
