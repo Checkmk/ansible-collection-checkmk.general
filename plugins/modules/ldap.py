@@ -172,7 +172,7 @@ options:
                     user_id_attribute: ""
                     user_id_case: "dont_convert_to_lowercase"
                     umlauts_in_user_ids: "keep_umlauts"
-                    create_users: "on_login"
+                    create_users: "on_sync"
                 suboptions:
                     user_base_dn:
                         description:
