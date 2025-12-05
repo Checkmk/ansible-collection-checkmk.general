@@ -1,16 +1,24 @@
 ---
+# Ports Concept:
+# 1                   2       3              4
+# Usecase             Edition Remote Count   Checkmk Minor Version
+# Apache: 5           Raw: 0  0 - 2          3, 4, 5
+# Livestatus: 6       Managed: 1
+# Livestatusproxy: 4
+# RabbitMQ: 3
+
 checkmk_var_test_sites:
   - version: "2.3.0p41"
     edition: "cre"
     site: "old_cre"
-    port: "5023"
+    port: "5003"
     remote_sites:
       - site_id: "old_cre_r1"
         site_config:
           status_connection:
             connection:
               socket_type: "tcp"
-              port: 6565
+              port: 6013
               encrypted: true
               host: "localhost"
               verify: false
@@ -18,7 +26,7 @@ checkmk_var_test_sites:
               use_livestatus_daemon: "with_proxy"
               global_settings: false
               tcp:
-                port: 6664
+                port: 4013
                 only_from: []
                 tls: true
               params:
@@ -51,14 +59,14 @@ checkmk_var_test_sites:
   - version: "2.4.0p17"
     edition: "cre"
     site: "stable_cre"
-    port: "5024"
+    port: "5004"
     remote_sites:
       - site_id: "stable_cre_r1"
         site_config:
           status_connection:
             connection:
               socket_type: "tcp"
-              port: 6568
+              port: 6014
               encrypted: true
               host: "localhost"
               verify: true
@@ -71,7 +79,7 @@ checkmk_var_test_sites:
           configuration_connection:
             enable_replication: true
             url_of_remote_site: "http://stable-cre-r1:5000/stable_cre_r1/check_mk/"
-            message_broker_port: 5674
+            message_broker_port: 3014
           basic_settings:
             site_id: "stable_cre_r1"
             alias: "stable_cre remote site"
@@ -81,14 +89,14 @@ checkmk_var_test_sites:
   - version: "2.4.0p17"
     edition: "cme"
     site: "stable_cme"
-    port: "5323"
+    port: "5104"
     remote_sites:
       - site_id: "stable_cme_r1"
         site_config:
           status_connection:
             connection:
               socket_type: "tcp"
-              port: 6562
+              port: 6114
               encrypted: true
               host: "localhost"
               verify: false
@@ -96,7 +104,7 @@ checkmk_var_test_sites:
               use_livestatus_daemon: "with_proxy"
               global_settings: false
               tcp:
-                port: 6663
+                port: 4114
                 only_from: []
                 tls: true
               params:
@@ -120,7 +128,7 @@ checkmk_var_test_sites:
             direct_login_to_web_gui_allowed: false
             replicate_event_console: true
             replicate_extensions: false
-            message_broker_port: 5684
+            message_broker_port: 3114
           basic_settings:
             site_id: "stable_cme_r1"
             customer: "provider"
