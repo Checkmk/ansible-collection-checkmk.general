@@ -227,7 +227,7 @@ options:
                         choices:
                             - "on_login"
                             - "on_sync"
-                        default: "on_login"
+                        default: "on_sync"
             groups:
                 description: The LDAP group configuration.
                 type: dict
@@ -1070,7 +1070,7 @@ def run_module():
                         "user_id_attribute": "",
                         "user_id_case": "dont_convert_to_lowercase",
                         "umlauts_in_user_ids": "keep_umlauts",
-                        "create_users": "on_login",
+                        "create_users": "on_sync",
                     },
                     options={
                         "user_base_dn": dict(type="str", default=""),
@@ -1101,7 +1101,7 @@ def run_module():
                         ),
                         "create_users": dict(
                             type="str",
-                            default="on_login",
+                            default="on_sync",
                             choices=["on_login", "on_sync"],
                         ),
                     },

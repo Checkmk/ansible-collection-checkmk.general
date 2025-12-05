@@ -132,6 +132,8 @@ def extend_recursive(d):
                     elif k == "groups_to_roles":
                         if "handle_nested" in v:
                             d[k]["handle_nested"] = v.get("handle_nested")
+                        for role in v.get("roles_to_sync", []):
+                            d[k][role["role"]] = role["groups"]
         for key in to_be_deleted:
             del d[key]
 
