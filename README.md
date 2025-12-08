@@ -1,23 +1,27 @@
 # <img src="https://checkmk.com/favicon.ico" alt="drawing" height="25"/> Checkmk Ansible Collection
 
-Checkmk already provides the needed APIs to automate and configure your monitoring.
+Checkmk already provides the needed application programming interfaces (APIs) to automate and configure your monitoring.
 With this project we want to augment the experience and provide easy to use
 modules and roles for Ansible to both simplify your first steps with automating
 Checkmk and keep your daily operations smooth and efficient.
 
 ## :dragon_face: Here be dragons!
 
-This collection is provided AS IS and there is **no commercial support whatsoever.**
+This collection is provided **as is**, we can and will not guarantee that it works
+as intended, nor can we be accountable for any damage or misconfiguration done
+by it. Study the contents thoroughly before using it.
+There is **no commercial support whatsoever.**
 
-This is an open source endeavour, on which we collaborate with the community. All fixes and support are provided by individuals in their spare time. Please keep that in mind, when using the collection and interacting with this repository.
+This is an Open Source endeavour, on which we collaborate with the community. All fixes and support are provided by individuals in their spare time.
+Keep that in mind, when using the collection and interacting with this repository and the community.
 
 ## :wrench: Installing this collection
 
-Please refer to [INSTALL.md](INSTALL.md) for detailed installation instructions.
+Refer to [INSTALL.md](INSTALL.md) for detailed installation instructions.
 
 ## :construction_worker: Using this collection
 
-Please refer to [USAGE.md](USAGE.md) for detailed instructions on how to use this collection.
+Refer to [USAGE.md](USAGE.md) for detailed instructions on how to use this collection.
 
 ## :electric_plug: Dependencies
 
@@ -26,7 +30,7 @@ Please refer to [USAGE.md](USAGE.md) for detailed instructions on how to use thi
  - [ansible.windows](https://github.com/ansible-collections/ansible.windows)
  - [community.general](https://github.com/ansible-collections/community.general)
 
-Although the Ansible project notes, that collections should have no or very little dependencies, we want to make sure the  collection works for you out-of-the-box. Currently we only depend on very basic collections, which are most likely already installed in your environment. For version constraints, see [galaxy.yml](galaxy.yml).
+Although the Ansible project notes, that collections should have no or very little dependencies, we want to make sure the  collection works for you out of the box. Currently we only depend on very basic collections, which are most likely already installed in your environment. For version constraints, see [galaxy.yml](galaxy.yml).
 
 ## :bulb: Getting help
 
@@ -43,13 +47,13 @@ You can find playbooks, demonstrating the content of this collection in the fold
 
 [![Ansible Sanity Tests](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml)
 
-### :inbox_tray: Inventory plugins
+### :inbox_tray: Inventory plug-ins
 
 Name | Description | Tests
 --- | --- | ---
 [checkmk.general.checkmk](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/inventory/checkmk.py)|Dynamic Inventory Source for Checkmk. | [![Ansible Unit Test for Inventory Module.](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml)
 
-### :mag: Lookup plugins
+### :mag: Lookup plug-ins
 Click on the lookup plugin name below, to get detailed documentation about it.
 For more in-depth documentation, see [this README](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/README.md).
 
@@ -121,7 +125,7 @@ This collection uses [Semantic Versioning](https://semver.org/) for releases. Fr
 
 ## :truck: Roadmap
 This is merely a collection of possible additions to the collection.
-Please do **not** consider it a concrete planning document!
+Do **not** consider it a concrete planning document!
 
 - Modules
   - Monitoring
@@ -137,7 +141,7 @@ Please do **not** consider it a concrete planning document!
 
 ## :information_source: More information about Ansible
 
-- [Ansible Collection overview](https://github.com/ansible-collections/overview)
+- [Ansible Collections overview](https://github.com/ansible-collections/overview)
 - [Ansible User guide](https://docs.ansible.com/ansible/latest/user_guide/index.html)
 - [Ansible Developer guide](https://docs.ansible.com/ansible/latest/dev_guide/index.html)
 - [Ansible Community code of conduct](https://docs.ansible.com/ansible/latest/community/code_of_conduct.html)
@@ -145,8 +149,8 @@ Please do **not** consider it a concrete planning document!
 ## :information_source: More information about Checkmk
 
 * [Checkmk Website](https://checkmk.com)
-* [Checkmk Documentation](https://docs.checkmk.com/)
-* [Checkmk Community](https://forum.checkmk.com/)
+* [Checkmk User Guide](https://docs.checkmk.com/)
+* [Checkmk Forum](https://forum.checkmk.com/)
 
 ## :scroll: Licensing
 

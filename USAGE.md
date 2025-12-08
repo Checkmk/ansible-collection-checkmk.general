@@ -6,7 +6,7 @@ This document provides a comprehensive guide for new users on how to effectively
 
 We encourage you - in accordance with Ansible Best Practices - to always use **FQCNs (Fully Qualified Collection Names)** as seen below. This ensures that you always know which module is at play.
 
-*Please keep in mind the parameters `server_url` and `site` are concatenated to form the base URL of the Checkmk site.*
+*Keep in mind the parameters `server_url` and `site` are concatenated to form the base URL of the Checkmk site.*
 
 ```yaml
 ---
@@ -28,7 +28,7 @@ We encourage you - in accordance with Ansible Best Practices - to always use **F
 
 ## Specifying Common Parameters
 
-When using multiple modules from this collection, you'll often need to provide the same parameters (like `server_url`, `site`, `automation_user`, and `automation_secret`) repeatedly. Ansible offers several ways to avoid this repetition and keep your playbooks clean.
+When using multiple modules from this collection, you'll often need to provide the same parameters (like `server_url`, `site`, `automation_user`, and `automation_secret`) repeatedly. The following sections show several ways Ansible offers to avoid repetition and keep your playbooks clean.
 
 ### `module_defaults`
 
@@ -157,7 +157,7 @@ This example shows how to query the Checkmk site version and display it. This ca
 
 ## Inventory Plugin
 
-An inventory plugin allows Ansible to dynamically fetch its inventory from an external source. This collection includes an inventory plugin to use your Checkmk site as a dynamic source of hosts. This eliminates the need for a static `hosts` file if your Checkmk instance is your source of truth.
+An inventory plug-in allows Ansible to dynamically fetch its inventory from an external source. This collection includes an inventory plug-in to use your Checkmk site as a dynamic source of hosts. This eliminates the need for a static `hosts` file if your Checkmk site is your source of truth.
 
 ### Example: Using the Checkmk Inventory Plugin
 
@@ -179,4 +179,4 @@ You can then run your playbook by pointing to this inventory file with the `-i` 
 ansible-playbook -i checkmk.yml my_playbook.yml
 ```
 
-Ansible will now dynamically execute the playbook against the hosts monitored by your Checkmk instance.
+Ansible will now dynamically execute the playbook against the hosts monitored by your Checkmk site.

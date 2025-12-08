@@ -1,6 +1,6 @@
 # Installation Guide
 
-This guide provides instructions on how to install and manage the `checkmk.general` Ansible collection. For more detailed information, you can always refer to the [official Ansible documentation on installing collections](https://docs.ansible.com/ansible/latest/collections_guide/collections_installing.html).
+This guide provides instructions on how to install and manage the Checkmk Ansible Collection. For more detailed information, you can always refer to the [official Ansible documentation on installing collections](https://docs.ansible.com/ansible/latest/collections_guide/collections_installing.html).
 
 ## Standard Installation
 
@@ -12,7 +12,7 @@ ansible-galaxy collection install checkmk.general
 
 ## Updating the Collection
 
-The `install` command does not automatically update an existing collection. To upgrade to the latest version, use the `--force` flag.
+The `install` command does not automatically update an existing collection. To update to the latest version, use the `--force` flag.
 
 ```bash
 ansible-galaxy collection install checkmk.general --force
@@ -21,7 +21,7 @@ ansible-galaxy collection install checkmk.general --force
 To install a specific version, you can specify it with a version number:
 
 ```bash
-ansible-galaxy collection install checkmk.general:==2.0.0
+ansible-galaxy collection install checkmk.general:==6.0.0
 ```
 
 ## Troubleshooting 💡
