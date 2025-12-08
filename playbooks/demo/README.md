@@ -2,7 +2,7 @@
 
 ## About These Demos
 
-This directory contains a set of Ansible playbooks designed to demonstrate the functionality of each module in the `checkmk.general` collection.
+This directory contains a set of Ansible playbooks designed to demonstrate the functionality of each module in the Checkmk Ansible Collection.
 
 Each playbook is named after the module it demonstrates. For a comprehensive example, the `full.yml` playbook will run all other playbooks in this directory in a logical sequence.
 
@@ -17,17 +17,16 @@ Follow these steps to run the demo playbooks against a Checkmk site.
 Before you start, you need to provide connection details for a Checkmk site.
 
 1.  Open the authentication file: `../vars/auth.yml`.
-2.  Update the file with the URL, site name, and automation user credentials for your Checkmk instance.
+2.  Update the file with the URL, site name, and automation user credentials for your Checkmk site.
 
-> **Warning**
-> Please use a dedicated **non-production** Checkmk site for this demo. These playbooks will make changes to your Checkmk configuration.
+> **Warning**: Use a dedicated **non-production** Checkmk site for this demo. These playbooks will make changes to your Checkmk configuration.
 
 ### 2. Run the Playbook
 
 Once your `auth.yml` file is configured, you can run the full demo playbook. The command must be run from the **root directory** of this repository.
 
 ```bash
-ansible-playbook -i playbooks/hosts playbooks/demo/full.yml
+ansible-playbook -i playbooks/inventory/hosts.ini playbooks/demo/full.yml
 ```
 
 This command uses the predefined inventory file at `playbooks/hosts` to execute the `full.yml` playbook, which will demonstrate the collection's capabilities on your configured Checkmk site.
