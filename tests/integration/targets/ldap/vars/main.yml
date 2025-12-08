@@ -66,10 +66,10 @@ checkmk_var_ldap_connections:
         groups_to_custom_user_attributes:
           handle_nested: true
           groups_to_sync:
-            - group_cn: blibb
+            - group_cn: "cn=blibb,ou=basen.und.vettern"
               attribute_to_set: mega_menu_icons
               value: per_entry
-            - group_cn: blabb
+            - group_cn: "cn=blabb,ou=basen.und.vettern"
               attribute_to_set: mega_menu_icons
               value: per_entry
         groups_to_roles:
@@ -77,5 +77,5 @@ checkmk_var_ldap_connections:
           roles_to_sync:
             - role: admin
               groups:
-                - group_dn: blebb
+                - group_dn: "cn=bleb,ou=basen.und.vettern"
                   search_in: this_connection
