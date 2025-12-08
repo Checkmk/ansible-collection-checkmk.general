@@ -1,6 +1,6 @@
 # Contributing
 
-## Getting Started
+## Getting started
 
 General information about setting up your Python environment, testing modules,
 Ansible coding styles, and more can be found in the [Ansible Community Guide](
@@ -30,13 +30,13 @@ Everything helps, really!
 Not only issues and code, but also documentation and
 just spreading the word about this collection goes a long way!
 
-### Submitting Issues
+### Submitting issues
 
 If you encounter any bugs or have ideas for improvements feel free to open an [issue](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) or even better a [pull request](#Pull-Requests).
 Use the existing templates, especially for bug reports, as that helps you
 and us to gather the necessary information to tackle the issue efficiently.
 
-### Pull Requests
+### Pull requests
 
 Open a [pull request](https://github.com/Checkmk/ansible-collection-checkmk.general/pulls?q=is%3Apr+is%3Aopen)
 against the `devel` branch, if you have something to contribute. It does not matter, if that is
@@ -60,7 +60,7 @@ Module documentation is compiled during a release and stored as `docs/module.rst
 It also becomes available [in the Galaxy](https://galaxy.ansible.com/ui/repo/published/checkmk/general/docs/).
 Use the inline documentation as seen in the existing modules when creating additional modules.
 
-## Style Guide
+## Style guide
 
 ### Commit messages
 
@@ -73,7 +73,7 @@ Use the inline documentation as seen in the existing modules when creating addit
 
 In general, stick to Ansible coding best practices and look out for test gotchas.
 
-**Module Options**
+**Module options**
 
 There are different approaches to naming module options, depending on the nature of the module:
 
@@ -85,7 +85,7 @@ There are different approaches to naming module options, depending on the nature
 
 It is possible to implement an alias for a module option. This should be used rather carefully to not clutter the options. However, they can be an option, if one is uncertain how to name an option, or to deprecate an option, before actually removing it. If in doubt, feel free to ask for review in your PR.
 
-### Roles and Playbooks
+### Roles and playbooks
 
 The following are guidelines to keep in mind, when creating or changing roles and playbooks.
 - Variables
@@ -181,7 +181,7 @@ Some of these steps can already be checked and done with `scripts/release.sh`.
 This is a work in progress and should be used carefully.
 You should definitely check the resulting changes thoroughly before committing.
 
-## Code of Conduct
+## Code of conduct
 
 See [Code of Conduct](CODE_OF_CONDUCT.md).
 

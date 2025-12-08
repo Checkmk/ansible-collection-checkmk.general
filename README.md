@@ -47,13 +47,13 @@ You can find playbooks, demonstrating the content of this collection in the fold
 
 [![Ansible Sanity Tests](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ansible-sanity-tests.yaml)
 
-### :inbox_tray: Inventory plug-ins
+### :inbox_tray: Inventory plugins
 
 Name | Description | Tests
 --- | --- | ---
 [checkmk.general.checkmk](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/inventory/checkmk.py)|Dynamic Inventory Source for Checkmk. | [![Ansible Unit Test for Inventory Module.](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml/badge.svg)](https://github.com/Checkmk/ansible-collection-checkmk.general/actions/workflows/ans-unit-test-inventory.yaml)
 
-### :mag: Lookup plug-ins
+### :mag: Lookup plugins
 Click on the lookup plugin name below, to get detailed documentation about it.
 For more in-depth documentation, see [this README](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/lookup/README.md).
 
@@ -105,7 +105,7 @@ Name | Description | Tests
 We love to see the community build things on top of this collection.
 Check out [COMMUNITY.md](COMMUNITY.md) for a listing of interesting projects that build upon this collection in some way.
 
-## :green_heart: Getting Involved
+## :green_heart: Getting involved
 
 See [CONTRIBUTING](CONTRIBUTING.md).
 

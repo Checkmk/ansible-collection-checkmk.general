@@ -11,9 +11,11 @@ It can be installed as easy as running:
 
     ansible-galaxy collection install checkmk.general
 
-## Distribution Support
+Refer to [INSTALL.md](../../INSTALL.md) for detailed installation instructions.
 
-This roles includes explicit distribution support.
+## Distribution support
+
+This role includes explicit distribution support.
 That means, that even if the role might run on other distributions,
 we can only verify, that it works on the ones listed in `defaults/main.yml` in the variable `checkmk_server_server_stable_os`.
 
@@ -23,27 +25,27 @@ automated tests, that continuously test this role against a subset of distributi
 
 To learn about the distributions used in automated tests, inspect the corresponding `molecule/*/molecule.yml`.
 
-## Role Variables
+## Role variables
 
-### Basic Configuration
+### Basic configuration
 
     checkmk_server_version: "2.4.0p17"
 
-The global Checkmk version. This is used for installing Checkmk.
-To manage sites and their version, see `checkmk_server_sites`.
+The main Checkmk version. This is used for installing Checkmk.
+To manage sites and their version, see `checkmk_server_sites` below.
 
     checkmk_server_edition: 'cre'
 
 The edition you are using. Valid values are `cre`, `cee`, `cce` and `cme`.
 
-- `cre`: Raw Edition, fully open source.
-- `cee`: Enterprise Edition, full enterprise features.
-- `cce`: Cloud Edition, for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
-- `cme`: Managed Edition, for service providers.
+- `cre`: Checkmk Raw, fully Open Source.
+- `cee`: Checkmk Enterprise, full enterprise features.
+- `cce`: Checkmk Cloud (Self-hosted), for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
+- `cme`: Checkmk MSP, for service providers.
 
 For details about the editions see: https://checkmk.com/product/editions
 
-Note, that you need credentials, to download the `cee` edition.
+> Note, that you need credentials, to download the `cee` edition.
 See below variables, to set those.
 
     checkmk_server_download_user: []
@@ -72,8 +74,8 @@ Uninstall unused Checkmk versions on the server.
 
     checkmk_server_no_log: true
 
-Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default.
-Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
+Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting.
+> **Warning**: Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
     checkmk_server_configure_firewall: true
 
@@ -89,14 +91,13 @@ For elaborate firewall configuration, use your own firewall management!
 
 The TCP ports to open automatically. Adapt this to the specific requirements of your site.
 
-### Site Management
+### Site management
 
     checkmk_server_sites:
       - name: 'mysite'
         version: "{{ checkmk_server_version }}"
         edition: "{{ checkmk_server_edition }}"
         update_conflict_resolution: 'abort'
-        state: 'started'
         admin_pw: 'mypass'
         omd_auto_restart: 'false'
         omd_config:
@@ -105,13 +106,14 @@ The TCP ports to open automatically. Adapt this to the specific requirements of 
         mkp_packages:
           - name: 'mypackage'
             version: 1.0.0
-            src: '/path/to/my.mkp'
+            # src: '/path/to/my.mkp'
             url: 'https://exchange.checkmk.com/packages/mypackage/4711/mypackage-1.0.0.mkp'
             checksum: 'md5:mychecksum'
             installed: true
             enabled: true
+        state: 'started'
 
-A dictionary of sites, containing the desired version, admin password, site configuration options, extension packages and state.
+A dictionary of sites, containing the site name, desired version and edition, admin password, site configuration options, extension packages and state.
 The more advanced settings will be outlined below.
 
 Valid values for `state` are:
@@ -122,39 +124,38 @@ Valid values for `state` are:
 - `present`: The site is stopped and disabled for autostart on system boot.
 - `absent`: The site is removed from the system entirely.
 
-If a higher version is specified for an existing site, a config update resolution method must first be given to update it.
+If a higher version is specified for an existing site, an `update_conflict_resolution` method must first be given to update it.
 Valid choices include `install`, `keepold` and `abort`.
 
-#### Site Configuration
+#### Site configuration
 Site configuration can be passed with the `omd_config` keyword.
-The format can be seen above, for a list of variables run `omd show`
-on an existing site.
-**Pay special attention to the `omd_auto_restart` variable!** As site configuration needs the site to be stopped, this needs to be handled. By default the variable is set to `false` to avoid unexpected restarting. However, no configuration will be performed if the site is started.
+The format can be seen above, for a list of variables run `omd config show` on an existing site.
+> **Pay special attention to the `omd_auto_restart` variable!** As site configuration can only be performed on a stopped site, you can configure the role to stop and start the site automatically. By default the variable is set to `false` to avoid unexpected restarts. However, configuration will be skipped, if the site is not (automatically) stopped.
 
-#### MKP Management
-Extension packages can also be listed to be installed on the specific central site. Remote sites will get extension packages replicated upon change activation. A source path can be set on the Ansible controller. Alternatively a URL can be specified to download the MKP package from directly. These options are mutually exclusive.
+#### MKP management
+Extension packages can also be listed to be installed on the specific central site. Remote sites will get extension packages replicated upon change activation. The `src:` option can be set on the Ansible controller. Alternatively a URL can be specified to download the MKP package directly. These options are mutually exclusive.
 
-**Attention!** If you are connecting to the remote host via an unprivileged user, you will run into permission issues explained [here](https://docs.ansible.com/ansible-core/2.18/playbook_guide/playbooks_privilege_escalation.html#risks-of-becoming-an-unprivileged-user). The easiest fix will probably be to install your distribution's `acl` package. But the right solution for your environment is entirely up to you.
+> **Attention!** If you are connecting to the remote host via an unprivileged user, you will run into permission issues explained [here](https://docs.ansible.com/ansible-core/2.18/playbook_guide/playbooks_privilege_escalation.html#risks-of-becoming-an-unprivileged-user). The easiest fix will probably be to install your distribution's `acl` package. But the right solution for your environment is entirely up to you.
 
-#### HTTP Proxy
+#### HTTP proxy
 
     checkmk_server_download_proxy: ''
 
-The HTTP proxy used for downloading the Checkmk Server Setup.
+The HTTP proxy used for downloading the Checkmk server software.
 
     checkmk_server_gpg_download_proxy: "{{ checkmk_server_download_proxy }}"
 
 The HTTP proxy used for downloading the Checkmk GPG Key.
 
-### Site Updates
+### Site updates
 
     checkmk_server_backup_on_update: true
 
-Whether to back up sites when updating between versions. Only disable this if you plan on taking manual backups.
+Whether to back up sites when updating to another versions. Only disable this if you plan on taking manual backups.
 
     checkmk_server_backup_dir: '/tmp'
 
-Directory to backup sites to when updating between versions.
+Directory to backup sites to when updating to other versions.
 Of course `/tmp/` is not a sane backup location, so change it!
 
     checkmk_server_backup_opts: '--no-past'
@@ -163,18 +164,18 @@ Backup options to use. By default no historic data is backed up, in order to cre
 
     checkmk_server_allow_downgrades: 'false'
 
-Whether to allow downgrading a site's version.
-Note: this is not a recommended procedure, and will not be supported for enterprise customers.
+Whether to allow 'updating' the site to a lower version.
+Note, that the 'update' to a lower version is not a recommended procedure, and will not be supported for customers of commercial Checkmk editions.
 
 ### Delegation
 
     checkmk_server_delegate_download: "{{ inventory_hostname }}"
 
-Configure the host to which Checkmk Server Setup downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download itself.
+Configure the host to which Checkmk Server Setup downloads are delegated to. After download the files are transferred to the managed host, when the managed host did not perform the download itself.
 
     checkmk_server_gpg_delegate_download: "{{ checkmk_server_delegate_download }}"
 
-Configure the host to which Checkmk GPG Key downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download itself.
+Configure the host to which Checkmk GPG Key downloads are delegated to. After download the files are transferred to the managed host, when the managed host didn't perform the download itself.
 
 ## Tags
 
@@ -206,7 +207,7 @@ You can use Ansible to skip tasks, or only run certain tasks by using these tags
 
 None.
 
-## Example Playbook
+## Example playbook
 
     - hosts: all
       roles:
@@ -218,7 +219,7 @@ See [CONTRIBUTING](../../CONTRIBUTING).
 
 ## Disclaimer
 
-This role is provided AS IS and we can and will not guarantee that the role works
+This role is provided **as is** and we can and will not guarantee that the role works
 as intended, nor can we be accountable for any damage or misconfiguration done
 by this role. Study the role thoroughly before using it.
 
@@ -226,6 +227,6 @@ by this role. Study the role thoroughly before using it.
 
 See [LICENSE](../../LICENSE).
 
-## Author Information
+## Author information
 
 Robin Gierse (@robin-checkmk)

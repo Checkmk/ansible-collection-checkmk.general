@@ -1,4 +1,4 @@
-# Use Cases Example Playbooks
+# Use cases example playbooks
 
 This directory contains Ansible playbooks that demonstrate specific, real-world use cases and advanced scenarios for automating Checkmk.
 

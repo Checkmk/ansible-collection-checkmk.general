@@ -1,4 +1,4 @@
-# Usage Guide
+# Usage guide
 
 This document provides a comprehensive guide for new users on how to effectively use this collection.
 
@@ -26,7 +26,7 @@ We encourage you - in accordance with Ansible Best Practices - to always use **F
 
 -----
 
-## Specifying Common Parameters
+## Specifying common parameters
 
 When using multiple modules from this collection, you'll often need to provide the same parameters (like `server_url`, `site`, `automation_user`, and `automation_secret`) repeatedly. The following sections show several ways Ansible offers to avoid repetition and keep your playbooks clean.
 
@@ -52,7 +52,7 @@ You can set default values for module parameters at the play level. These defaul
           - "mysite"
 ```
 
-### Environment Variables
+### Environment variables
 
 You can also define these parameters as environment variables. Ansible will automatically pick them up. This is particularly useful for sensitive information like secrets.
 
@@ -63,7 +63,7 @@ export CHECKMK_AUTOMATION_USER="myuser"
 export CHECKMK_AUTOMATION_SECRET="mysecret"
 ```
 
-### INI-style Variables
+### INI-style variables
 
 Ansible can read variables from an INI file (e.g., `ansible.cfg` or a custom file). This allows you to centralize your configuration.
 
@@ -77,11 +77,11 @@ automation_secret = mysecret
 
 -----
 
-## Invoking Roles
+## Invoking roles
 
 This collection provides roles for common tasks. Here's how to use them:
 
-### Example: Installing the Checkmk Agent
+### Example: Installing the Checkmk agent
 
 To install the Checkmk agent on your hosts, you can use the `checkmk.general.agent` role.
 
@@ -99,11 +99,11 @@ It's important to know that this role comes with predefined default values locat
 
 -----
 
-## Invoking Modules
+## Invoking modules
 
 Modules are used for executing specific tasks within a playbook.
 
-### Example: Managing a Host
+### Example: Managing a host
 
 This example demonstrates how to create or update a host in Checkmk:
 
@@ -125,7 +125,7 @@ This example demonstrates how to create or update a host in Checkmk:
 
 -----
 
-## Lookup Modules
+## Lookup modules
 
 Lookup modules allow you to fetch data from external sources within your playbooks. This collection for example includes a `version` lookup to retrieve the running version of a Checkmk site.
 
@@ -155,11 +155,11 @@ This example shows how to query the Checkmk site version and display it. This ca
 
 -----
 
-## Inventory Plugin
+## Inventory plugin
 
-An inventory plug-in allows Ansible to dynamically fetch its inventory from an external source. This collection includes an inventory plug-in to use your Checkmk site as a dynamic source of hosts. This eliminates the need for a static `hosts` file if your Checkmk site is your source of truth.
+An inventory plugin allows Ansible to dynamically fetch its inventory from an external source. This collection includes an inventory plugin to use your Checkmk site as a dynamic source of hosts. This eliminates the need for a static `hosts` file if your Checkmk site is your source of truth.
 
-### Example: Using the Checkmk Inventory Plugin
+### Example: Using the Checkmk inventory plugin
 
 To use the plugin, create a YAML file (e.g., `checkmk.yml`) with the following content. This file will define the connection to your Checkmk site and instruct Ansible to use the `checkmk.general.checkmk` inventory plugin.
 

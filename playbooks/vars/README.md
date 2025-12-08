@@ -1,4 +1,4 @@
-# Playbook Variables
+# Playbook variables
 
 This directory contains variable files used by the playbooks in the `demo` and `usecases` directories.
 
