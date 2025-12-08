@@ -21,6 +21,7 @@ on:
   push:
     paths:
       - 'roles/server/**'
+      - '!roles/**/*.md'
       - '.github/workflows/molecule-role-server.yaml'
 
 jobs:

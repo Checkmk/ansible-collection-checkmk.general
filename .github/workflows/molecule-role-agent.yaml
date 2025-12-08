@@ -21,6 +21,7 @@ on:
   push:
     paths:
       - 'roles/agent/**'
+      - '!roles/**/*.md'
       - '.github/workflows/molecule-role-agent.yaml'
 
 
