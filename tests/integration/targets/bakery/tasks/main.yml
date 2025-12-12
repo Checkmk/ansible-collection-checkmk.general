@@ -12,7 +12,7 @@
 
 - name: "Print Identifier."
   ansible.builtin.debug:
-    msg: "{{ ansible_facts.system_vendor }} {{ ansible_facts.product_name }} running {{ ansible_facts.virtualization_type }}"
+    msg: "{{ ansible_facts['system_vendor'] }} {{ ansible_facts['product_name'] }} running {{ ansible_facts['virtualization_type'] }}"
 
 - name: "Run preparations."
   ansible.builtin.include_tasks: "{{ lookup('ansible.builtin.first_found', checkmk_var_params) }}"
@@ -25,8 +25,8 @@
         - /root/ansible_collections/checkmk/general/tests/integration/files/includes/tasks/
         - tests/integration/files/includes/tasks/
   when: |
-    (ansible_facts.system_vendor == "Dell Inc." and 'Latitude' in ansible_facts.product_name and ansible_facts.virtualization_type == "container")
-    or (ansible_facts.system_vendor == "QEMU" and 'Ubuntu' in ansible_facts.product_name and ansible_facts.virtualization_type == "container")
+    (ansible_facts['system_vendor'] == "Dell Inc." and 'Latitude' in ansible_facts['product_name'] and ansible_facts['virtualization_type'] == "container")
+    or (ansible_facts['system_vendor'] == "QEMU" and 'Ubuntu' in ansible_facts['product_name'] and ansible_facts['virtualization_type'] == "container")
 
 - name: "Inject a Key into the Sites when running outside of the Container."  # noqa no-changed-when
   ansible.builtin.shell: |
@@ -80,8 +80,8 @@
   loop_control:
     loop_var: outer_item
   when: |
-    (ansible_facts.system_vendor == "Dell Inc." and 'Latitude' in ansible_facts.product_name and ansible_facts.virtualization_type == "container")
-    or (ansible_facts.system_vendor == "QEMU" and 'Ubuntu' in ansible_facts.product_name and ansible_facts.virtualization_type == "container")
+    (ansible_facts['system_vendor'] == "Dell Inc." and 'Latitude' in ansible_facts['product_name'] and ansible_facts['virtualization_type'] == "container")
+    or (ansible_facts['system_vendor'] == "QEMU" and 'Ubuntu' in ansible_facts['product_name'] and ansible_facts['virtualization_type'] == "container")
 
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml
