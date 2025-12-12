@@ -1,6 +1,6 @@
 # Contributing
 
-## Getting Started
+## Getting started
 
 General information about setting up your Python environment, testing modules,
 Ansible coding styles, and more can be found in the [Ansible Community Guide](
@@ -9,11 +9,11 @@ See [Contributing to Ansible-maintained collections](https://docs.ansible.com/an
 
 ## A word of warning
 
-While we want the community to engage in developing this collection, please be
-aware, that we also want to ensure a certain level of quality and scope.
+While we want the community to engage in developing this collection,
+be aware, that we also want to ensure a certain level of quality and scope.
 Additionally, this is purely a side project of a few people, which means
 the time available is limited. We will try to be as transparent as possible
-about what we will include but please do not feel discouraged, if an idea
+about what we will include but do not feel discouraged, if an idea
 or proposal gets rejected. Instead go on and create something yourself,
 if you think your approach is viable! There is already a lot of great content
 out there and we love seeing you add to that plethora!
@@ -30,25 +30,25 @@ Everything helps, really!
 Not only issues and code, but also documentation and
 just spreading the word about this collection goes a long way!
 
-### Submitting Issues
+### Submitting issues
 
 If you encounter any bugs or have ideas for improvements feel free to open an [issue](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) or even better a [pull request](#Pull-Requests).
-Please use the existing templates, especially for bug reports, as that helps you
+Use the existing templates, especially for bug reports, as that helps you
 and us to gather the necessary information to tackle the issue efficiently.
 
-### Pull Requests
+### Pull requests
 
-Please open a [pull request](https://github.com/Checkmk/ansible-collection-checkmk.general/pulls?q=is%3Apr+is%3Aopen)
+Open a [pull request](https://github.com/Checkmk/ansible-collection-checkmk.general/pulls?q=is%3Apr+is%3Aopen)
 against the `devel` branch, if you have something to contribute. It does not matter, if that is
 a cool new feature, a bug fix or documentation, we appreciate everything you want to contribute!
 On pull request creation, checks will run and tell you, if your changes work with the collection.
-If errors are detected, please try to fix them and update your pull request accordingly.
+If errors are detected, try to fix them and update your pull request accordingly.
 If you need help, do ask for it.
 After submitting a PR, follow the instructions to sign the [CLA](https://github.com/Checkmk/checkmk/blob/master/doc/cla/cla_readme.md) as asked by the bot.
 
 ### Changelog
 
-When changing this collection, please make sure to write a log of what you did.
+When changing this collection, make sure to write a log of what you did.
 To do so, create a `.yml` file in the folder `changelogs/fragments/`.
 The name does not matter, as the changelog is compiled of all fragments
 during build-time. For reference regarding the file format, take a look
@@ -58,9 +58,9 @@ at the file `changelogs/template.yml`.
 
 Module documentation is compiled during a release and stored as `docs/module.rst`.
 It also becomes available [in the Galaxy](https://galaxy.ansible.com/ui/repo/published/checkmk/general/docs/).
-Please use the inline documentation as seen in the existing modules when creating additional modules.
+Use the inline documentation as seen in the existing modules when creating additional modules.
 
-## Style Guide
+## Style guide
 
 ### Commit messages
 
@@ -73,19 +73,19 @@ Please use the inline documentation as seen in the existing modules when creatin
 
 In general, stick to Ansible coding best practices and look out for test gotchas.
 
-**Module Options**
+**Module options**
 
-There are different approaches to the module options, depending on the nature of the module:
+There are different approaches to naming module options, depending on the nature of the module:
 
-**Approach 1**: The module only interacts with one class of objects. For example the `host_group` module only ever interacts with host groups. Hence the module options should stay as simple as possible, e.g. `name` instead of `host_group_name` for the name of the host group.
+**Approach 1**: The module only interacts with one class of objects. For example the `host_group` module only ever interacts with host groups. Hence the module options should stay as simple as possible, e.g. use `name` instead of `host_group_name` for the name of the host group.
 
-**Approach 2**: The module interacts with more than one class of objects. For example the `downtime` module can interact both with hosts and with services. Hence the module options need to be more precise than in *Approach 1*. For example `host_name` and `service_description` instead of just `name`, as that would not make clear with which class ob objects we are interacting.
+**Approach 2**: The module interacts with more than one class of objects. For example the `downtime` module can interact both with hosts and with services. Hence the module options need to be more precise than in *Approach 1*. For example use `host_name` and `service_description` instead of just `name`, as that would not make clear with which class of objects we are interacting.
 
 **Aliases**
 
 It is possible to implement an alias for a module option. This should be used rather carefully to not clutter the options. However, they can be an option, if one is uncertain how to name an option, or to deprecate an option, before actually removing it. If in doubt, feel free to ask for review in your PR.
 
-### Roles and Playbooks
+### Roles and playbooks
 
 The following are guidelines to keep in mind, when creating or changing roles and playbooks.
 - Variables
@@ -103,14 +103,15 @@ The following are guidelines to keep in mind, when creating or changing roles an
 We strive to provide the best possible quality with this collection, hence we have implemented tests, that verify different aspects of code quality.
 We urge you to run the following tests locally as applicable, so the turnaround on your pull request is as low as possible.
 
-If you are developing a plugin or module yourself, please try to create
-unit and integration tests for them as well. You can refer to existing tests as inspiration.
+If you are developing a plugin or module yourself, try to create unit and integration tests for them as well.
+You can refer to existing tests as inspiration.
 
 ### Sanity
 
 [Ansible Sanity Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html) enforce Ansible coding standards and requirements facilitating static code analysis. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
 We recommend using the `--docker` option, so you get the best results, as that uses a Docker image crafted and maintained by the Ansible project.
-**Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
+
+> **Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
 
 To run the tests locally, use the following command in the project root:
 
@@ -124,13 +125,14 @@ You can also run a subset by mentioning them as follows. See `ansible-test sanit
 
 [Ansible Integration Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html) run test cases created by the maintainers of the respective modules, to ensure the collection actually does what is intended. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
 We strongly recommend using the `--docker` option, so you do not modify your local system with these tests.
-**Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
+
+> **Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
 
 To run all tests locally, use the following command in the project root:
 
     ansible-test integration --docker
 
-You can also run a subset by mentioning them as follows. See `tests/integration/targets` for potential test targets).
+You can also run a subset by mentioning them as follows. See `tests/integration/targets` for potential test targets.
 
     ansible-test integration $TEST_CASE --docker
 
@@ -138,13 +140,14 @@ You can also run a subset by mentioning them as follows. See `tests/integration/
 
 [Ansible Unit Tests](https://docs.ansible.com/ansible/latest/dev_guide/testing_units.html) run unit tests created by the maintainers of the respective modules, to ensure the code works as intended. The `ansible-test` tool typically comes along with your Ansible installation (e.g. if you use the `requirements.txt` of this project).
 We strongly recommend using the `--docker` option, so you do not modify your local system with these tests.
-**Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
+
+> **Caution**: By default, Docker containers cannot be run as an unprivileged user! Depending on your setup you need to allow your user to run containers, or run `ansible-test` with `sudo`. Keep in mind, that with the latter you are running in another environment and might need to take care of installing the Python requirements for Ansible.
 
 To run all tests locally, use the following command in the project root:
 
     ansible-test units --docker
 
-You can also run a subset by mentioning them as follows. See `tests/unit/plugins` for potential test targets).
+You can also run a subset by mentioning them as follows. See `tests/unit/plugins` for potential test targets.
 
     ansible-test units --docker tests/unit/plugins/inventory/test_checkmk.py
 
@@ -159,8 +162,8 @@ To test our roles, we use [Molecule](https://www.jeffgeerling.com/blog/2018/test
 ## Releasing this collection
 
 Releasing this collection is automated using GitHub Actions.
-Before running the action `Release Collection` against the `main` branch, the
-following needs to be done:
+Before running the action `Release Collection` against the `main` branch,
+the following needs to be done:
 
 1. Create a pull request from `devel` into `main` with the following naming scheme: `Release X.Y.Z`.
 2. Choose and note which feature pull request you want to include in this release.
@@ -178,11 +181,11 @@ Some of these steps can already be checked and done with `scripts/release.sh`.
 This is a work in progress and should be used carefully.
 You should definitely check the resulting changes thoroughly before committing.
 
-## Code of Conduct
+## Code of conduct
 
 See [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Forum
 
 If you have questions, feedback and or simply no Github account feel free to
-reach out to our awesome [Checkmk Community (using the 'ansible' tag)](https://forum.checkmk.com/tag/ansible).
+reach out to our awesome [Checkmk Forum (using the 'ansible' tag)](https://forum.checkmk.com/tag/ansible).

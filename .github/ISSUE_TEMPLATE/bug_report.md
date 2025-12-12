@@ -1,38 +1,39 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Create a bug report to help fix things
 title: "[BUG]"
+type: bug
 labels: bug
 assignees: robin-checkmk
 
 ---
 
-Verify first that your issue is not already reported [here](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
-Where possible also test if the latest release and main branch are affected too.
-Complete all sections as described!
+> Verify first that your issue is not already reported [here](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
+Where possible also test if the latest release and main branch are affected too. Complete all sections as described!
 
 **Describe the bug**
-<!--  A clear and concise description of what the bug is. -->
+>  A clear and concise description of what the bug is.
 
 **Component Name**
-<!--  Write the short name of the module or plugin below, use your best guess if unsure. Keeping the below syntax helps us match the issues to labels. -->
-Component Name: activation
+>  Write the short name of the module or plugin below, use your best guess if unsure. Keeping the below syntax helps us match the issues to labels.
+
+Component Name: `activation`
 
 **Ansible Version**
-<!-- Paste verbatim output from `ansible --version` between triple backticks. -->
+> Paste verbatim output from `ansible --version` between triple backticks.
 ```console
 $ ansible --version
 
 ```
 
 **Checkmk Version and Edition**
-<!-- Paste the version string, that can be found in the 'Help' menu. Please make sure to include the edition!-->
+> Paste the version string, that can be found in the 'Help' menu within Checkmk. Please make sure to include the edition!
 ```console
 e.g. 2.X.YpZ (CRE)
 ```
 
 **Collection Version**
-<!-- Paste verbatim output from`ansible-galaxy collection list` between triple backticks. -->
+> Paste verbatim output from`ansible-galaxy collection list` between triple backticks.
 ```console
 $ ansible-galaxy collection list
 
@@ -46,16 +47,16 @@ Steps to reproduce the behavior:
 4. See error
 
 **Expected behavior**
-<!-- A clear and concise description of what you expected to happen. -->
+> A clear and concise description of what you expected to happen.
 
 **Actual behavior**
-<!-- A clear and concise description of what actually happens. -->
+> A clear and concise description of what actually happens.
 
 **Minimum reproduction example**
-<!-- If you can, please provide a minimum example of your configuration. This really helps us quickly understand the situation. -->
+> If you can, please provide a minimum example of your configuration. This really helps us quickly understand the situation.
 ```yaml
 
 ```
 
 **Additional context**
-<!-- Add any other context, e.g. OS information about control and managed node, screenshots or background information about the problem. -->
+> Add any other context, e.g. OS information about control and managed node, screenshots or background information about the problem.
