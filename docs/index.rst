@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 6.4.1
+Collection version 6.5.0
 
 .. contents::
    :local:
@@ -27,7 +27,7 @@ The official Checkmk Ansible collection \- brought to you by the Checkmk company
 
 **Supported ansible-core versions:**
 
-* 2.17.0 or newer
+* 2.18.0 or newer
 
 .. ansible-links::
 
@@ -57,6 +57,7 @@ Modules
 ~~~~~~~
 
 * :ansplugin:`activation module <checkmk.general.activation#module>` -- Activate changes in Checkmk.
+* :ansplugin:`aux_tag module <checkmk.general.aux_tag#module>` -- Manage auxiliary tags in Checkmk.
 * :ansplugin:`bakery module <checkmk.general.bakery#module>` -- Trigger baking and signing in the agent bakery.
 * :ansplugin:`contact_group module <checkmk.general.contact_group#module>` -- Manage contact groups in Checkmk (bulk version).
 * :ansplugin:`dcd module <checkmk.general.dcd#module>` -- Manage Dynamic Host Management.
@@ -78,6 +79,7 @@ Modules
     :hidden:
 
     activation_module
+    aux_tag_module
     bakery_module
     contact_group_module
     dcd_module

@@ -4,6 +4,31 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.5.0
+======
+
+Release Summary
+---------------
+
+The aux_tag module is here!
+
+Minor Changes
+-------------
+
+- Bump minimum `ansible-core` version to `2.18`, as that is the oldest version we test against. Chances are, that older versions of `ansible-core` still work, but we do not verify that. So you could manually change `meta/runtime.yml` to circumvent this limitation, but we do recommend using up-to-date `ansible-core` versions.
+- Bump project `ansible-core` to `2.20`. This is used for development and testing. We do recommend to use the latest stable `ansible-core` version, but that is up to you. The only limit we impose, is the minimum version in `meta/runtime.yml` but that can be circumvented as well.
+- aux_tag module - Add new module to manage auxiliary tags in Checkmk. Auxiliary tags can be created, updated, and deleted independently, making it easier to manage tag hierarchies and dependencies.
+
+Bugfixes
+--------
+
+- Site module - Fix the management of connections without configuration replication.
+
+New Modules
+-----------
+
+- checkmk.general.aux_tag - Manage auxiliary tags in Checkmk.
+
 v6.4.1
 ======
 

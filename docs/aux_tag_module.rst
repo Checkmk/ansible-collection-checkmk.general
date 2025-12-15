@@ -10,14 +10,14 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.contact_group_module:
+.. _ansible_collections.checkmk.general.aux_tag_module:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.contact_group module -- Manage contact groups in Checkmk (bulk version).
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.aux_tag module -- Manage auxiliary tags in Checkmk.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -29,13 +29,13 @@ checkmk.general.contact_group module -- Manage contact groups in Checkmk (bulk v
 
     To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.contact_group`.
+    To use it in a playbook, specify: :code:`checkmk.general.aux_tag`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 0.12.0
+New in checkmk.general 6.5.0
 
 .. contents::
    :local:
@@ -49,7 +49,7 @@ Synopsis
 
 .. Description
 
-- Manage contact groups in Checkmk.
+- Manage auxiliary tags in Checkmk.
 
 
 .. Aliases
@@ -83,7 +83,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_cookie"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-api_auth_cookie:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-api_auth_cookie:
 
       .. rst-class:: ansible-option-title
 
@@ -117,7 +117,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_type"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-api_auth_type:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-api_auth_type:
 
       .. rst-class:: ansible-option-title
 
@@ -160,7 +160,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -194,7 +194,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -226,17 +226,17 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-customer"></div>
+        <div class="ansibleOptionAnchor" id="parameter-help"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-customer:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-help:
 
       .. rst-class:: ansible-option-title
 
-      **customer**
+      **help**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-customer" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-help" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -250,46 +250,8 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+      Help text describing the auxiliary tag.
 
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-groups"></div>
-
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-groups:
-
-      .. rst-class:: ansible-option-title
-
-      **groups**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-groups" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`any`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      instead of 'name', 'title' a list of dicts with elements of contact group name and title (alias) to be created/modified/deleted. If title is omitted in entry, it defaults to the contact group name.
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`[]`
 
       .. raw:: html
 
@@ -299,8 +261,10 @@ Parameters
 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
+        <div class="ansibleOptionAnchor" id="parameter-id"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-name:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-id:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-name:
 
       .. rst-class:: ansible-option-title
 
@@ -312,7 +276,9 @@ Parameters
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-aliases:`aliases: id`
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -322,7 +288,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The name of the contact group to be created/modified/deleted.
+      The ID of the auxiliary tag.
 
 
       .. raw:: html
@@ -334,7 +300,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -368,7 +334,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-site:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -402,7 +368,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-state:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -414,7 +380,7 @@ Parameters
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
       .. raw:: html
 
@@ -424,14 +390,14 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The state of your contact group.
+      The desired state.
 
 
       .. rst-class:: ansible-option-line
 
       :ansible-option-choices:`Choices:`
 
-      - :ansible-option-choices-entry-default:`"present"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"present"`
       - :ansible-option-choices-entry:`"absent"`
 
 
@@ -444,7 +410,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-title"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-title:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-title:
 
       .. rst-class:: ansible-option-title
 
@@ -466,7 +432,41 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The title (alias) of your contact group. If omitted defaults to the name.
+      The title of the auxiliary tag.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-topic"></div>
+
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-topic:
+
+      .. rst-class:: ansible-option-title
+
+      **topic**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-topic" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The topic or category of the auxiliary tag.
 
 
       .. raw:: html
@@ -478,7 +478,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.aux_tag_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -500,7 +500,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Whether to validate the SSL certificate of the Checkmk server.
+      Whether to validate the SSL certificate of the Checkmk server. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_VALIDATE\_CERTS`.
 
 
       .. rst-class:: ansible-option-line
@@ -532,70 +532,39 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    # Create a single contact group.
-    - name: "Create a single contact group."
-      checkmk.general.contact_group:
+    # Create an auxiliary tag
+    - name: "Create auxiliary tag for HTTPS"
+      checkmk.general.aux_tag:
         server_url: "http://myserver/"
         site: "mysite"
         automation_user: "myuser"
         automation_secret: "mysecret"
-        name: "my_contact_group"
-        title: "My Contact Group"
-        customer: "provider"
+        name: https
+        title: Web Server HTTPS
+        topic: Services
+        help: "Host provides HTTPS services"
         state: "present"
 
-    # Create several contact groups.
-    - name: "Create several contact groups."
-      checkmk.general.contact_group:
+    # Update an auxiliary tag
+    - name: "Update auxiliary tag"
+      checkmk.general.aux_tag:
         server_url: "http://myserver/"
         site: "mysite"
         automation_user: "myuser"
         automation_secret: "mysecret"
-        customer: "provider"
-        groups:
-          - name: "my_contact_group_one"
-            title: "My Contact Group One"
-          - name: "my_contact_group_two"
-            title: "My Contact Group Two"
-          - name: "my_contact_group_test"
-            title: "My Test"
+        name: https
+        title: Web Server HTTPS/TLS
+        topic: Services
         state: "present"
 
-    # Create several contact groups.
-    - name: "Create several contact groups."
-      checkmk.general.contact_group:
+    # Delete an auxiliary tag
+    - name: "Delete auxiliary tag"
+      checkmk.general.aux_tag:
         server_url: "http://myserver/"
         site: "mysite"
         automation_user: "myuser"
         automation_secret: "mysecret"
-        customer: "provider"
-        groups:
-          - name: "my_contact_group_one"
-            title: "My Contact Group One"
-          - name: "my_contact_group_two"
-          - name: "my_contact_group_test"
-        state: "present"
-
-    # Delete a single contact group.
-    - name: "Create a single contact group."
-      checkmk.general.contact_group:
-        server_url: "http://myserver/"
-        site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
-        name: "my_contact_group"
-        state: "absent"
-
-    # Delete several contact groups.
-    - name: "Delete several contact groups."
-      checkmk.general.contact_group:
-        server_url: "http://myserver/"
-        site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
-        groups:
-          - name: "my_contact_group_one"
-          - name: "my_contact_group_two"
+        name: https
         state: "absent"
 
 
@@ -623,9 +592,54 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-http_code"></div>
+
+      .. _ansible_collections.checkmk.general.aux_tag_module__return-http_code:
+
+      .. rst-class:: ansible-option-title
+
+      **http_code**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-http_code" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The HTTP code the Checkmk API returns.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`200`
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-message"></div>
 
-      .. _ansible_collections.checkmk.general.contact_group_module__return-message:
+      .. _ansible_collections.checkmk.general.aux_tag_module__return-message:
 
       .. rst-class:: ansible-option-title
 
@@ -657,7 +671,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Contact group created."`
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Done."`
 
 
       .. raw:: html
@@ -674,7 +688,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- Michael Sekania (@msekania)
+- Nicolas Brainez (@nicoske)
 
 
 .. Extra links
