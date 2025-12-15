@@ -76,6 +76,11 @@ plugins:
       name: activation
       namespace: ''
       version_added: 0.0.1
+    aux_tag:
+      description: Manage auxiliary tags in Checkmk.
+      name: aux_tag
+      namespace: ''
+      version_added: 6.5.0
     bakery:
       description: Trigger baking and signing in the agent bakery.
       name: bakery
@@ -156,4 +161,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 6.4.1
+version: 6.5.0
