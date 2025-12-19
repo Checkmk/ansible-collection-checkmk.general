@@ -17,7 +17,7 @@ checkmk_var_test_sites:
     site: "stable_cme"
     port: "5324"
 
-checkmk_var_notification_rule_config:
+checkmk_var_notification_config:
   rule_properties:
     description: "Test notification rule"
     comment: "Created by Ansible integration test"
@@ -128,7 +128,7 @@ checkmk_var_notification_rule_config:
     event_console_alerts:
       state: "disabled"
 
-checkmk_var_notification_rule_config_updated:
+checkmk_var_notification_config_updated:
   rule_properties:
     description: "Updated test notification rule"
     comment: "Updated by Ansible integration test"
