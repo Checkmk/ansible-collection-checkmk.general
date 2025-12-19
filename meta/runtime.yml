@@ -12,7 +12,7 @@ action_groups:
     - folder
     - host_group
     - host
-    - notification_rule
+    - notification
     - password
     - rule
     - service_group

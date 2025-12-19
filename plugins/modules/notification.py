@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: notification_rule
+module: notification
 
 short_description: Manage notification rules in Checkmk.
 
@@ -165,7 +165,7 @@ author:
 EXAMPLES = r"""
 # Create an HTML email notification rule
 - name: "Create email notification rule"
-  checkmk.general.notification_rule:
+  checkmk.general.notification:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -289,7 +289,7 @@ EXAMPLES = r"""
 
 # Create a Slack notification rule
 - name: "Create Slack notification rule"
-  checkmk.general.notification_rule:
+  checkmk.general.notification:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -391,7 +391,7 @@ EXAMPLES = r"""
 
 # Create a Microsoft Teams notification rule
 - name: "Create Microsoft Teams notification rule"
-  checkmk.general.notification_rule:
+  checkmk.general.notification:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -505,7 +505,7 @@ EXAMPLES = r"""
 
 # Update an existing notification rule
 - name: "Update notification rule"
-  checkmk.general.notification_rule:
+  checkmk.general.notification:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
@@ -525,7 +525,7 @@ EXAMPLES = r"""
 
 # Delete a notification rule
 - name: "Delete notification rule"
-  checkmk.general.notification_rule:
+  checkmk.general.notification:
     server_url: "http://myserver/"
     site: "mysite"
     automation_user: "myuser"
