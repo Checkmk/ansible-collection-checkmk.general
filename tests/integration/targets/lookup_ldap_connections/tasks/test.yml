@@ -22,7 +22,7 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get a list of all LDAP connections."
   ansible.builtin.debug:
-    msg: "Alias of {{ item.id }} is {{ item.extensions.attributes.alias }}"
+    msg: "Description of {{ item.id }} is {{ item.extensions.general_properties.description }}"
   loop: "{{ lookup('checkmk.general.ldap_connections',
              server_url=checkmk_var_server_url,
              site=outer_item.site,
