@@ -45,17 +45,17 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    ldap_config: 
+    ldap_config:
       general_properties:
-        id: "{{ item.ldap_config.general_properties.id != None | ternary(item.ldap_config.general_properties.id, omit) }}"
-        rule_activation: "{{ item.ldap_config.general_properties.rule_activation != None | ternary(item.ldap_config.general_properties.rule_activation, omit) }}"
+        id: "{{ item.ldap_config.general_properties.id | ternary(item.ldap_config.general_properties.id, omit) }}"
+        rule_activation: "{{ item.ldap_config.general_properties.rule_activation | ternary(item.ldap_config.general_properties.rule_activation, omit) }}"
         comment: "New comment."
-        description: "{{ item.ldap_config.general_properties.description != None | ternary(item.ldap_config.general_properties.description, omit) }}"
-        documentation_url: "{{ item.ldap_config.general_properties.documentation_url != None | ternary(item.ldap_config.general_properties.documentation_url, omit) }}"
-      ldap_connection: "{{ item.ldap_config.ldap_connection != None | ternary(item.ldap_config.ldap_connection, omit) }}"
-      users: "{{ item.ldap_config.users != None | ternary(item.ldap_config.users, omit) }}"
-      groups: "{{ item.ldap_config.groups != None | ternary(item.ldap_config.groups, omit) }}"
-      sync_plugins: "{{ item.ldap_config.sync_plugins != None | ternary(item.ldap_config.sync_plugins, omit) }}"
+        description: "{{ item.ldap_config.general_properties.description | ternary(item.ldap_config.general_properties.description, omit) }}"
+        documentation_url: "{{ item.ldap_config.general_properties.documentation_url | ternary(item.ldap_config.general_properties.documentation_url, omit) }}"
+      ldap_connection: "{{ item.ldap_config.ldap_connection | ternary(item.ldap_config.ldap_connection, omit) }}"
+      users: "{{ item.ldap_config.users | ternary(item.ldap_config.users, omit) }}"
+      groups: "{{ item.ldap_config.groups | ternary(item.ldap_config.groups, omit) }}"
+      sync_plugins: "{{ item.ldap_config.sync_plugins | ternary(item.ldap_config.sync_plugins, omit) }}"
     state: "present"
   delegate_to: localhost
   loop: "{{ checkmk_var_ldap_connections }}"
@@ -71,7 +71,7 @@
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    ldap_config: 
+    ldap_config:
       general_properties:
         id: "{{ item.ldap_config.general_properties.id != None | ternary(item.ldap_config.general_properties.id, omit) }}"
         rule_activation: "{{ item.ldap_config.general_properties.rule_activation != None | ternary(item.ldap_config.general_properties.rule_activation, omit) }}"
