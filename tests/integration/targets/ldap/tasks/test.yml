@@ -39,69 +39,59 @@
   register: __checkmk_var_result_create
   failed_when: __checkmk_var_result_create.changed | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Lookup an LDAP connection."
-  ansible.builtin.set_fact:
-    checkmk_var_ldap_connection: "{{ checkmk_var_extensions }}"
-  vars:
-    checkmk_var_extensions: "{{
-                    lookup('checkmk.general.ldap_connection',
-                        checkmk_var_ldap_connections[0].ldap_config.general_properties.id,
-                        server_url=checkmk_var_server_url,
-                        site=outer_item.site,
-                        automation_user=checkmk_var_automation_user,
-                        automation_secret=checkmk_var_automation_secret,
-                        validate_certs=False)
-                 }}"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update LDAP connections."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update an LDAP connection."
   ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    ldap_config: "{{ item.extensions | combine(checkmk_var_comment_update, recursive=true) }}"
+    ldap_config:
+    ldap_config: 
+        general_properties:
+            id: "{{ item.ldap_config.general_properties.id != None | ternary(item.ldap_config.general_properties.id, omit) }}"
+            rule_activation: "{{ item.ldap_config.general_properties.rule_activation != None | ternary(item.ldap_config.general_properties.rule_activation, omit) }}"
+            comment: "New comment."
+            description: "{{ item.ldap_config.general_properties.description != None | ternary(item.ldap_config.general_properties.description, omit) }}"
+            documentation_url: "{{ item.ldap_config.general_properties.documentation_url != None | ternary(item.ldap_config.general_properties.documentation_url, omit) }}"
+        ldap_connection: "{{ item.ldap_config.ldap_connection != None | ternary(item.ldap_config.ldap_connection, omit) }}"
+        users: "{{ item.ldap_config.users != None | ternary(item.ldap_config.users, omit) }}"
+        groups: "{{ item.ldap_config.groups != None | ternary(item.ldap_config.groups, omit) }}"
+        sync_plugins: "{{ item.ldap_config.sync_plugins != None | ternary(item.ldap_config.sync_plugins, omit) }}"
     state: "present"
-  vars:
-    checkmk_var_comment_update:
-      general_properties:
-        comment: New comment
   delegate_to: localhost
-  loop: "{{ lookup('checkmk.general.ldap_connections',
-                        server_url=checkmk_var_server_url,
-                        site=outer_item.site,
-                        automation_user=checkmk_var_automation_user,
-                        automation_secret=checkmk_var_automation_secret,
-                        validate_certs=False)
-                 }}"
+  loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
-    label: "{{ item.extensions.general_properties.id }}"
+    label: "{{ item.ldap_config.general_properties.id }}"
   run_once: true  # noqa run-once[task]
+  register: __checkmk_var_result_create
+  failed_when: __checkmk_var_result_create.changed | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update LDAP connections. Again."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update an LDAP connection. Again."
   ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
     automation_secret: "{{ checkmk_var_automation_secret }}"
-    ldap_config: "{{ item.extensions | combine(checkmk_var_comment_update, recursive=true) }}"
+    ldap_config:
+    ldap_config: 
+        general_properties:
+            id: "{{ item.ldap_config.general_properties.id != None | ternary(item.ldap_config.general_properties.id, omit) }}"
+            rule_activation: "{{ item.ldap_config.general_properties.rule_activation != None | ternary(item.ldap_config.general_properties.rule_activation, omit) }}"
+            comment: "New comment."
+            description: "{{ item.ldap_config.general_properties.description != None | ternary(item.ldap_config.general_properties.description, omit) }}"
+            documentation_url: "{{ item.ldap_config.general_properties.documentation_url != None | ternary(item.ldap_config.general_properties.documentation_url, omit) }}"
+        ldap_connection: "{{ item.ldap_config.ldap_connection != None | ternary(item.ldap_config.ldap_connection, omit) }}"
+        users: "{{ item.ldap_config.users != None | ternary(item.ldap_config.users, omit) }}"
+        groups: "{{ item.ldap_config.groups != None | ternary(item.ldap_config.groups, omit) }}"
+        sync_plugins: "{{ item.ldap_config.sync_plugins != None | ternary(item.ldap_config.sync_plugins, omit) }}"
     state: "present"
-  vars:
-    checkmk_var_comment_update:
-      general_properties:
-        comment: New comment
   delegate_to: localhost
-  loop: "{{ lookup('checkmk.general.ldap_connections',
-                        server_url=checkmk_var_server_url,
-                        site=outer_item.site,
-                        automation_user=checkmk_var_automation_user,
-                        automation_secret=checkmk_var_automation_secret,
-                        validate_certs=False)
-                 }}"
+  loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
-    label: "{{ item.extensions.general_properties.id }}"
+    label: "{{ item.ldap_config.general_properties.id }}"
   run_once: true  # noqa run-once[task]
-  register: __checkmk_var_result_update
-  failed_when: __checkmk_var_result_update.changed | bool
+  register: __checkmk_var_result_create
+  failed_when: __checkmk_var_result_create.changed | bool
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete LDAP connection."
   ldap:
