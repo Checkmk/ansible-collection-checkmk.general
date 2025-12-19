@@ -10,7 +10,7 @@
   when: outer_item.edition != "cme"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create LDAP connection."
-  ldap_connection:
+  checkmk.general.ldap_connection:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     automation_user: "{{ checkmk_var_automation_user }}"
