@@ -37,7 +37,7 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of ldap_connections."
   ansible.builtin.assert:
-    that: "checkmk_var_ldap_connections | length == __checkmk_var_ldap_connections | length"
+    that: "checkmk_var_ldap_connection | length == __checkmk_var_ldap_connections | length"
   vars:
     __checkmk_var_ldap_connections: "{{ lookup('checkmk.general.ldap_connections',
                       server_url=checkmk_var_server_url,

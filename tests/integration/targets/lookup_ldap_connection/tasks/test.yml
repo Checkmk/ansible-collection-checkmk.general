@@ -20,9 +20,9 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "{{ outer_item.host }} - Get attributes of host."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} Get attributes of LDAP connection."
   ansible.builtin.debug:
-    msg: "Description of {{ checkmk_var_ldap_connection.ldap_config.general_properties.id }} is {{ __checkmk_var_ldap_connection.ldap_config.general_properties.description }}"
+    msg: "Description of {{ checkmk_var_ldap_connection.ldap_config.general_properties.id }} is {{ __checkmk_var_ldap_connection.general_properties.description }}"
   vars:
     __checkmk_var_ldap_connection: "{{ lookup('checkmk.general.ldap_connection',
                     checkmk_var_ldap_connection.ldap_config.general_properties.id,
@@ -37,7 +37,7 @@
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify LDAP connection description."
   ansible.builtin.assert:
-    that: "checkmk_var_ldap_connection.ldap_config.general_properties.description == __checkmk_var_ldap_connection.ldap_config.general_properties.description"
+    that: "checkmk_var_ldap_connection.ldap_config.general_properties.description == __checkmk_var_ldap_connection.general_properties.description"
   vars:
     __checkmk_var_ldap_connection: "{{ lookup('checkmk.general.ldap_connection',
                     checkmk_var_ldap_connection.ldap_config.general_properties.id,
