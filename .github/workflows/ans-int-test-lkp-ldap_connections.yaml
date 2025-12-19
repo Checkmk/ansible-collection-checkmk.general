@@ -1,0 +1,97 @@
+# README:
+# - When changing the module name, it needs to be changed in 'env:MODULE_NAME' and in 'on:pull_requests:path'!
+#
+# Resources:
+# - Template for this file: https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# - About Ansible integration tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
+
+env:
+  NAMESPACE: checkmk
+  COLLECTION_NAME: general
+  MODULE_NAME: lookup_ldap_connections
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+name: Ansible Integration Tests for LDAP Connections Lookup Module
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - devel
+    paths:
+      - 'plugins/lookup/ldap_connections.py'
+  push:
+    paths:
+      - '.github/workflows/ans-int-test-lkp-ldap_connections.yaml'
+      - 'plugins/lookup/ldap_connections.py'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/lookup_ldap_connections/**'
+
+jobs:
+
+  integration:
+    runs-on: ubuntu-24.04
+    name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible:
+          - stable-2.18
+          - stable-2.19
+          - stable-2.20
+          - devel
+        python:
+          - '3.11'
+          - '3.12'
+          - '3.13'
+        exclude:
+          # Exclude unsupported sets.
+          - ansible: devel
+            python: '3.11'
+          - ansible: stable-2.20
+            python: '3.11'
+
+    services:
+      stable_cre:
+        image: checkmk/check-mk-raw:2.4.0p17
+        ports:
+          - 5024:5000
+        env:
+          CMK_SITE_ID: "stable_cre"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      stable_cme:
+        image: checkmk/check-mk-managed:2.4.0p17
+        ports:
+          - 5324:5000
+        env:
+          CMK_SITE_ID: "stable_cme"
+          CMK_PASSWORD: "Sup3rSec4et!"
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: "Install uv and set the python version."
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: ${{ matrix.python }}
+          enable-cache: true
+          working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+
+      - name: "Setup uv venv."
+        run: uv venv
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+
+      - name: Run integration test
+        run: uv run ansible-test integration ${{env.MODULE_NAME}} -v --color --continue-on-error --diff --python ${{ matrix.python }}
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}

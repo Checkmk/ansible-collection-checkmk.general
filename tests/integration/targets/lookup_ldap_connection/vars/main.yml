@@ -1,4 +1,4 @@
-ldap_config---
+---
 checkmk_var_test_sites:
   - version: "2.2.0p47"
     edition: "cre"
