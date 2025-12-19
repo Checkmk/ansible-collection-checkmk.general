@@ -72,7 +72,7 @@ module:host_group:
 module:notification:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/notification_rule.py'
+          - any-glob-to-any-file: 'plugins/modules/notification.py'
 
 module:password:
   - any:
