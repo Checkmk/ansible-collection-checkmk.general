@@ -17,6 +17,8 @@ concurrency:
 name: Ansible Integration Tests for LDAP Connections Lookup Module
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
   pull_request:
     branches:
       - main
