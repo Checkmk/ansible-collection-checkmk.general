@@ -44,6 +44,9 @@ module:host:
 module:host_group:
   - 'Component Name: host_group'
 
+module:notification:
+  - 'Component Name: notification'
+
 module:password:
   - 'Component Name: password'
 
