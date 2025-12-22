@@ -28,9 +28,6 @@ on:
   push:
     paths:
       - '.github/workflows/ans-int-test-ldap.yaml'
-      - 'plugins/lookup/ldap_connection.py'
-      - 'plugins/lookup/ldap_connections.py'
-      - 'plugins/module_utils/ldap.py'
       - 'plugins/modules/ldap.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/files/includes/**'
@@ -78,7 +75,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
 
