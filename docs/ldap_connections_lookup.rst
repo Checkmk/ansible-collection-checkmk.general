@@ -10,14 +10,14 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.host_lookup:
+.. _ansible_collections.checkmk.general.ldap_connections_lookup:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.host lookup -- Get host attributes
-++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.ldap_connections lookup -- Get a list of all ldap\_connections
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -29,13 +29,13 @@ checkmk.general.host lookup -- Get host attributes
 
     To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.host`.
+    To use it in a playbook, specify: :code:`checkmk.general.ldap_connections`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 3.3.0
+New in checkmk.general 5.3.0
 
 .. contents::
    :local:
@@ -49,7 +49,7 @@ Synopsis
 
 .. Description
 
-- Returns the attributes of a host
+- Returns a list of all ldap\_connections and their configuration.
 
 
 .. Aliases
@@ -57,61 +57,6 @@ Synopsis
 
 .. Requirements
 
-
-
-
-.. Terms
-
-Terms
------
-
-.. tabularcolumns:: \X{1}{3}\X{2}{3}
-
-.. list-table::
-  :width: 100%
-  :widths: auto
-  :header-rows: 1
-  :class: longtable ansible-option-table
-
-  * - Parameter
-    - Comments
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-_terms"></div>
-
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-_terms:
-
-      .. rst-class:: ansible-option-title
-
-      **Terms**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-_terms" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string` / :ansible-option-required:`required`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      host name
-
-
-      .. raw:: html
-
-        </div>
 
 
 
@@ -123,7 +68,7 @@ Keyword parameters
 ------------------
 
 This describes keyword parameters of the lookup. These are the values ``key1=value1``, ``key2=value2`` and so on in the following
-examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.host', key1=value1, key2=value2, ...)``
+examples: ``lookup('checkmk.general.ldap_connections', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.ldap_connections', key1=value1, key2=value2, ...)``
 
 .. tabularcolumns:: \X{1}{3}\X{2}{3}
 
@@ -139,129 +84,9 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-api_auth_cookie"></div>
-
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-api_auth_cookie:
-
-      .. rst-class:: ansible-option-title
-
-      **api_auth_cookie**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-api_auth_cookie" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The authentication cookie value if using cookie\-based authentication.
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-configuration:`Configuration:`
-
-      - INI entry:
-
-        .. code-block:: ini
-
-          [checkmk_lookup]
-          automation_auth_cookie = VALUE
-
-
-      - Environment variable: :envvar:`CHECKMK\_VAR\_API\_AUTH\_COOKIE`
-
-      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_API\_AUTH\_COOKIE`
-
-      - Variable: checkmk\_var\_api\_auth\_cookie
-
-      - Variable: ansible\_lookup\_checkmk\_api\_auth\_cookie
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-api_auth_type"></div>
-
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-api_auth_type:
-
-      .. rst-class:: ansible-option-title
-
-      **api_auth_type**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-api_auth_type" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The authentication type to use ('bearer', 'basic', 'cookie').
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"bearer"`
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-configuration:`Configuration:`
-
-      - INI entry:
-
-        .. code-block:: ini
-
-          [checkmk_lookup]
-          api_auth_type = bearer
-
-
-      - Environment variable: :envvar:`CHECKMK\_VAR\_API\_AUTH\_TYPE`
-
-      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_API\_AUTH\_TYPE`
-
-      - Variable: checkmk\_var\_automation\_auth\_type
-
-      - Variable: ansible\_lookup\_checkmk\_automation\_auth\_type
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -273,7 +98,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
 
 
@@ -319,7 +144,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -331,7 +156,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
 
 
@@ -375,54 +200,9 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-effective_attributes"></div>
-
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-effective_attributes:
-
-      .. rst-class:: ansible-option-title
-
-      **effective_attributes**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-effective_attributes" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`boolean`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      show all effective attributes on hosts
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-choices:`Choices:`
-
-      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
-      - :ansible-option-choices-entry:`true`
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-server_url:
+      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -447,7 +227,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
         <div class="ansible-option-cell">
 
-      URL of the Checkmk server
+      URL of the Checkmk server.
 
 
       .. rst-class:: ansible-option-line
@@ -480,7 +260,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-site:
+      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -538,7 +318,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -563,7 +343,7 @@ examples: ``lookup('checkmk.general.host', key1=value1, key2=value2, ...)`` and 
 
         <div class="ansible-option-cell">
 
-      Whether to validate SSL certificates.
+      Whether or not to validate TLS certificates.
 
 
       .. rst-class:: ansible-option-line
@@ -616,8 +396,6 @@ Notes
 -----
 
 .. note::
-   - When keyword and positional parameters are used together, positional parameters must be listed before keyword parameters:
-     ``lookup('checkmk.general.host', term1, term2, key1=value1, key2=value2)`` and ``query('checkmk.general.host', term1, term2, key1=value1, key2=value2)``
    - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'. If you need to use different permissions, you must change the command or run Ansible as another user.
    - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
    - The directory of the play is used as the current working directory.
@@ -633,32 +411,20 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Get the attributes of host example.com
+    - name: Get all ldap_connections defined in the environment.
       ansible.builtin.debug:
-        msg: "Attributes of host example: {{ attributes }}"
-      vars:
-        attributes: "{{
-                        lookup('checkmk.general.host',
-                            'example.com',
-                            effective_attributes=True,
-                            server_url=my_server_url,
-                            site=mysite,
-                            automation_user=myuser,
-                            automation_secret=mysecret,
-                            validate_certs=False
-                            )
-                     }}"
-
-    - name: "Use variables from inventory."
-      ansible.builtin.debug:
-        msg: "Attributes of host example: {{ attributes }}"
-      vars:
-        checkmk_var_server_url: "http://myserver/"
-        checkmk_var_site: "mysite"
-        checkmk_var_automation_user: "myuser"
-        checkmk_var_automation_secret: "mysecret"
-        checkmk_var_validate_certs: false
-        attributes: "{{ lookup('checkmk.general.host', 'example.com', effective_attributes=True) }}"
+        msg: "Site: {{ item.extensions }}"
+      loop: "{{
+        lookup('checkmk.general.ldap_connections',
+            server_url=server_url,
+            site=site,
+            automation_user=automation_user,
+            automation_secret=automation_secret,
+            validate_certs=False
+            )
+        }}"
+      loop_control:
+        label: "{{ item.id }}"
 
 
 
@@ -686,7 +452,7 @@ Return Value
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-_list"></div>
 
-      .. _ansible_collections.checkmk.general.host_lookup__return-_list:
+      .. _ansible_collections.checkmk.general.ldap_connections_lookup__return-_list:
 
       .. rst-class:: ansible-option-title
 
@@ -708,7 +474,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A list of dicts of attributes of the host(s)
+      A list of all ldap\_connections
 
 
       .. rst-class:: ansible-option-line
