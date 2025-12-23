@@ -4,6 +4,27 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.6.0
+======
+
+Release Summary
+---------------
+
+Happy Holidays!
+
+Major Changes
+-------------
+
+- LDAP Connection lookup module - Add module to look up details of a single LDAP connection.
+- LDAP Connections lookup module - Add module to look up all LDAP connections and their details.
+- LDAP module - Add module for LDAP connections. Refer to the module documentation for further details.
+
+Minor Changes
+-------------
+
+- All roles and modules - Switch from deprecated ``ansible_*``-style variables to ``ansible_facts[foo]``- style. This should have no functional implications, it merely follows Ansible best practice.
+- Thanks to our very own knowledge team (the folks in charge of https://docs.checkmk.com), all READMEs and adjacent files have been reviewed and improved wherever necessary.
+
 v6.5.0
 ======
 
