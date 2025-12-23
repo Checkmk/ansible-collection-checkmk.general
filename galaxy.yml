@@ -10,7 +10,7 @@ name: general
 
 # The version of the collection. Must be compatible with semantic versioning
 
-version: 6.5.0
+version: 6.6.0
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -26,7 +26,7 @@ authors:
 ### OPTIONAL but strongly recommended
 
 # A short summary description of the collection
-description: "The official Checkmk Ansible collection - brought to you by the Checkmk company."
+description: "The official Checkmk Ansible Collection - brought to you by the Checkmk company."
 
 # Either a single license or a list of licenses for content inside of a collection. Ansible Galaxy currently only
 # accepts L(SPDX,https://spdx.org/licenses/) licenses. This key is mutually exclusive with 'license_file'

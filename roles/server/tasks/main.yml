@@ -1,10 +1,10 @@
 ---
 - name: "Preflight - Fail if target host is not stable for this Role."
   ansible.builtin.fail:
-    msg: "This role is not stable for the target operating system, {{ ansible_distribution }} {{ ansible_distribution_major_version }}."
-  when: (ansible_distribution is not defined) or
-        (ansible_distribution_version is not defined) or
-        (ansible_distribution + "-" + ansible_distribution_major_version not in checkmk_server_server_stable_os)
+    msg: "This role is not stable for the target operating system, {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }}."
+  when: (ansible_facts['distribution'] is not defined) or
+        (ansible_facts['distribution_version'] is not defined) or
+        (ansible_facts['distribution'] + "-" + ansible_facts['distribution_major_version'] not in checkmk_server_server_stable_os)
   tags:
     - always
 
@@ -15,40 +15,40 @@
   tags:
     - always
 
-- name: "{{ ansible_system }}: Include OS Family specific Variables."
-  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+- name: "{{ ansible_facts['system'] }}: Include OS Family specific Variables."
+  ansible.builtin.include_vars: "{{ ansible_facts['os_family'] }}.yml"
   tags:
     - include-os-family-vars
     - install-package
     - update-sites
 
-- name: "{{ ansible_system }}: Set Proxy Environment."
-  when: checkmk_server_download_proxy | length > 0
+- name: "{{ ansible_facts['system'] }}: Set Proxy Environment."
+  # when: checkmk_server_download_proxy | length > 0
   ansible.builtin.set_fact:
     __proxy_env:
       http_proxy: "{{ checkmk_server_download_proxy | default(omit) }}"
       https_proxy: "{{ checkmk_server_download_proxy | default(omit) }}"
 
-- name: "{{ ansible_system }}: Get RPM or APT package facts."
+- name: "{{ ansible_facts['system'] }}: Get RPM or APT package facts."
   ansible.builtin.package_facts:
     manager: "auto"
   tags:
     - install-package
     - install-prerequisites
 
-- name: "{{ ansible_system }}: Populate service facts."
+- name: "{{ ansible_facts['system'] }}: Populate service facts."
   ansible.builtin.service_facts:
 
-- name: "{{ ansible_os_family }} Derivatives: Update APT Cache."
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Update APT Cache."
   become: true
   ansible.builtin.package:
     update_cache: true
-  when: ansible_os_family == "Debian"
+  when: ansible_facts['os_family'] == "Debian"
   tags:
     - install-package
     - install-prerequisites
 
-- name: "{{ ansible_system }}: Install Checkmk Prerequisites."
+- name: "{{ ansible_facts['system'] }}: Install Checkmk Prerequisites."
   become: true
   ansible.builtin.package:
     name: "{{ item }}"
@@ -59,11 +59,11 @@
     - install-package
     - install-prerequisites
 
-- name: "{{ ansible_system }}: Downloads Management."
-  when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts.packages
+- name: "{{ ansible_facts['system'] }}: Downloads Management."
+  when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts['packages']
   block:
 
-    - name: "{{ ansible_system }}: Download Checkmk Server Setup."
+    - name: "{{ ansible_facts['system'] }}: Download Checkmk Server Setup."
       ansible.builtin.get_url:
         url: "{{ checkmk_server_download_url }}"
         dest: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
@@ -76,7 +76,7 @@
       tags:
         - download-package
 
-    - name: "{{ ansible_system }}: Download Checkmk GPG Key."
+    - name: "{{ ansible_facts['system'] }}: Download Checkmk GPG Key."
       when: checkmk_server_verify_setup | bool
       ansible.builtin.get_url:
         url: "{{ checkmk_server_gpg_download_url }}"
@@ -108,8 +108,8 @@
       tags:
         - download-gpg-key
 
-    - name: "{{ ansible_system }}: GPG Verification on Debian Derivatives."
-      when: checkmk_server_verify_setup | bool and ansible_os_family == "Debian"
+    - name: "{{ ansible_facts['system'] }}: GPG Verification on Debian Derivatives."
+      when: checkmk_server_verify_setup | bool and ansible_facts['os_family'] == "Debian"
       block:
         - name: "Import Checkmk GPG Key."
           ansible.builtin.command: "gpg --import {{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
@@ -119,7 +119,7 @@
           tags:
             - import-gpg-key
 
-        - name: "{{ ansible_system }}: Verify Checkmk Setup."
+        - name: "{{ ansible_facts['system'] }}: Verify Checkmk Setup."
           ansible.builtin.command: gpg --verify "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
           register: __checkmk_server_verify_state
           changed_when: false
@@ -128,27 +128,27 @@
             - download-package
             - install-package
 
-    - name: "{{ ansible_system }}: Import Checkmk GPG Key."
+    - name: "{{ ansible_facts['system'] }}: Import Checkmk GPG Key."
       become: true
       ansible.builtin.rpm_key:
         key: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
         state: present
-      when: checkmk_server_verify_setup | bool and ansible_os_family == "RedHat"
+      when: checkmk_server_verify_setup | bool and ansible_facts['os_family'] == "RedHat"
       tags:
         - import-gpg-key
 
-- name: "{{ ansible_system }}: Include OS Family specific Playbook."
-  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+- name: "{{ ansible_facts['system'] }}: Include OS Family specific Playbook."
+  ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"
   tags:
     - always
 
-- name: "{{ ansible_system }}: Include Site Management Playbook."
+- name: "{{ ansible_facts['system'] }}: Include Site Management Playbook."
   ansible.builtin.include_tasks: "sites.yml"
   when: checkmk_server_sites is defined
   tags:
     - always
 
-- name: "{{ ansible_system }}: Cleanup unused Checkmk Versions."
+- name: "{{ ansible_facts['system'] }}: Cleanup unused Checkmk Versions."
   become: true
   ansible.builtin.shell: |
     set -o pipefail
@@ -161,7 +161,7 @@
   tags:
     - cleanup
 
-- name: "{{ ansible_system }}: Cleanup Checkmk Server Setup."
+- name: "{{ ansible_facts['system'] }}: Cleanup Checkmk Server Setup."
   ansible.builtin.file:
     path: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
     state: absent

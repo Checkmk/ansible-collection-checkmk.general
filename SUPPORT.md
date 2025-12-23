@@ -1,13 +1,13 @@
 # Getting help
 
-Please be aware, that although the content in this repository is maintained and
-curated by Checkmk, it is fully open source and there is no commercial support whatsoever!
+Be advised, that although the content in this repository is maintained and
+curated by Checkmk, it is fully Open Source and there is no commercial support whatsoever!
 This is just a side project and we can only work on this on a **part time and best effort basis**.
 
-Of course you can reach out in the [Checkmk Community (using the 'ansible' tag)](https://forum.checkmk.com/tag/ansible)
+Of course you can reach out in the [Checkmk Forum (using the 'ansible' tag)](https://forum.checkmk.com/tag/ansible)
 or create [issues here](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
 
-# Compatibility Matrix
+# Compatibility matrix
 
 The following is a compatibility overview between this collection, Ansible and Checkmk.
 We always try to track the most recent Ansible and Checkmk versions.
@@ -81,3 +81,4 @@ Collection Version | Checkmk Versions | Ansible Versions | Remarks
 6.4.0 | 2.2.0p47, 2.3.0p40, 2.4.0p16 | 2.17, 2.18, 2.19 | None
 6.4.1 | 2.2.0p47, 2.3.0p41, 2.4.0p16 | 2.17, 2.18, 2.19 | None
 6.5.0 | 2.2.0p47, 2.3.0p41, 2.4.0p17 | 2.18, 2.19, 2.20 | None
+6.6.0 | 2.2.0p47, 2.3.0p41, 2.4.0p18 | 2.18, 2.19, 2.20 | None

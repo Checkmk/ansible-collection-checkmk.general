@@ -84,14 +84,14 @@ jobs:
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
       stable_cre:
-        image: checkmk/check-mk-raw:2.4.0p17
+        image: checkmk/check-mk-raw:2.4.0p18
         ports:
           - 5004:5000  # Site Apache
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable-cre-r1:
-        image: checkmk/check-mk-raw:2.4.0p17
+        image: checkmk/check-mk-raw:2.4.0p18
         ports:
           - 5014:5000  # Site Apache
           - 6014:6557  # Livestatus
@@ -103,14 +103,14 @@ jobs:
           CMK_LIVESTATUS_TCP: "on"
           CMK_RABBITMQ_PORT: 5671
       stable_cme:
-        image: checkmk/check-mk-managed:2.4.0p17
+        image: checkmk/check-mk-managed:2.4.0p18
         ports:
           - 5104:5000  # Site Apache
         env:
           CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable-cme-r1:
-        image: checkmk/check-mk-managed:2.4.0p17
+        image: checkmk/check-mk-managed:2.4.0p18
         ports:
           - 5114:5000  # Site Apache
           - 6114:6557  # Livestatus

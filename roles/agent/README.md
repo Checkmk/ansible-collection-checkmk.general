@@ -11,14 +11,16 @@ It can be installed as easy as running:
 
     ansible-galaxy collection install checkmk.general
 
+Refer to [INSTALL.md](../../INSTALL.md) for detailed installation instructions.
+
 Additionally, this role requires the Python module `netaddr` on the controller.
 Please make sure it is installed on your system and available for Ansible.
 
-## Role Variables
+## Role variables
 
-### Basic Configuration
+### Basic configuration
 
-    checkmk_agent_version: "2.4.0p17"
+    checkmk_agent_version: "2.4.0p18"
 
 The Checkmk version of the site your agents will talk to.
 
@@ -26,10 +28,10 @@ The Checkmk version of the site your agents will talk to.
 
 The edition you are using. Valid values are `cre`, `cee`, `cce` and `cme`.
 
-- `cre`: Raw Edition, fully open source.
-- `cee`: Enterprise Edition, full enterprise features.
-- `cce`: Cloud Edition, for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
-- `cme`: Managed Edition, for service providers.
+- `cre`: Checkmk Raw, fully Open Source.
+- `cee`: Checkmk Enterprise, full enterprise features.
+- `cce`: Checkmk Cloud (Self-hosted), for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
+- `cme`: Checkmk MSP, for service providers.
 
 For details about the editions see: https://checkmk.com/product/editions
 
@@ -58,16 +60,17 @@ The name of your Checkmk site.
 
     checkmk_agent_user: 'myuser'
 
-The user used to authenticate against your Checkmk site.
+The Checkmk user used to authenticate against your Checkmk site, both for API calls and agent updates.
+This can be a "normal" user (for interactive logins) or an automation user.
 
     checkmk_agent_pass: 'mypass'
 
-The password for the normal user used to authenticate against your Checkmk site, both for API calls and agent updates.
+The password for the normal user used to authenticate against your Checkmk site.
 This is mutually exclusive with `checkmk_agent_secret`.
 
     checkmk_agent_secret: 'mysecret'
 
-The secret for the automation user used to authenticate against your Checkmk site, both for API calls and agent updates.
+The secret for the automation user used to authenticate against your Checkmk site.
 This is mutually exclusive with `checkmk_agent_pass`.
 
 ### Registration
@@ -88,6 +91,10 @@ The site you want to use for registration tasks (Agent updates and TLS encryptio
 
 Enable automatic activation of changes on all sites.
 This is disabled by default, as it might be unexpected.
+
+    checkmk_agent_force_foreign_changes: 'false'
+
+Allow forcing foreign changes on activation.
 
     checkmk_agent_add_host: 'false'
 
@@ -122,18 +129,14 @@ Automatically discover services on the host where the agent was installed.
 If the value of this parameter is greater than zero, only the defined number of
 discovery tasks run at the same time in parallel.
 
-    checkmk_agent_force_foreign_changes: 'false'
-
-Allow forcing foreign changes on activation by handler.
-
-### Agent Configuration
+### Agent configuration
 
     checkmk_agent_mode: 'pull'
 
 The mode the agent operates in. For most deployments, this will be the `pull` mode.
 If you are uncertain, what you are using, this is most likely your mode.
 If you are using an alternative way to call the agent, e.g. SSH, you can set the variable to `ssh`, so the agent port check is skipped.
-If you are using the Checkmk Cloud Edition (CCE) with an agent in `push` mode, you want to set this to `push` to avoid the agent port check, as well as triggering an initial push of data.
+If you are using the Checkmk Cloud (Self-hosted) or Checkmk MSP with an agent in `push` mode, you want to set this to `push` to avoid the agent port check, as well as triggering an initial push of data.
 
     checkmk_agent_port: '6556'
 
@@ -147,13 +150,13 @@ See [this link](https://docs.checkmk.com/latest/en/agent_deployment.html) for mo
 
     checkmk_agent_tls: 'false'
 
-Register for TLS encryption. Make sure to have the server side prepared for automatic updates. Otherwise this will fail.
+Register for TLS encryption. Make sure to have the server side prepared for agent registration. Otherwise this will fail.
 See [this link](https://docs.checkmk.com/latest/en/agent_linux.html#registration) for more information on the preparations.
 
     checkmk_agent_force_install: 'false'
 
 Force the installation of the agent package, no matter the constraints.
-This means, downgrades become possible and unverified packages would be installed.
+This means that it will be possible to 'update' to a lower agent version or install unverified packages.
 
     checkmk_agent_prep_legacy: 'false'
 
@@ -163,7 +166,8 @@ Enable this to automatically install `xinetd` on hosts with systemd prior to ver
 
     checkmk_agent_no_log: true
 
-Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting. Be careful when changing this value in production, passwords may be leaked in operating system logs.
+Whether to log sensitive information like passwords, Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting.
+> **Warning**: Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
     checkmk_agent_configure_firewall: true
 
@@ -181,11 +185,11 @@ Typically this would be your Ansible host, hence the default `localhost`.
 
     checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 
-Configure the host to which downloads are delegated to. After download the files are transferred to the remote node, when the remote node didn't do the download itself.
+Configure the host to which downloads are delegated to. After download the files are transferred to the managed host, when the managed host didn't do the download itself.
 
     checkmk_agent_delegate_registration: 'false'
 
-Enable this to set up TLS encryption using a third host, which has the Checkmk agent installed already.
+Enable this to perform agent registration using a third host, which has the Checkmk agent installed already.
 `checkmk_agent_delegate_registration_target` defines this third host.
 This feature can be used in case a direct connection to the Checkmk site on the agent receiver port (8000+) is not possible from the monitored host.
 
@@ -193,7 +197,7 @@ This feature can be used in case a direct connection to the Checkmk site on the 
 
 Configure the target which is used to register the monitored host on the Checkmk server for TLS. The target needs to have a Checkmk agent installed.
 
-### Advanced Options
+### Advanced options
 
     checkmk_agent_download_timeout: "{% if ansible_system == 'Win32NT' %}30{% else %}10{% endif %}"
 
@@ -218,13 +222,13 @@ You can use Ansible to skip tasks, or only run certain tasks by using these tags
 
 None.
 
-## Example Playbook
+## Example playbook
 
     - hosts: all
       roles:
          - checkmk.general.agent
 
-## Use Cases
+## Use cases
 
 This is a brief collection of use cases, that outline how this role can be used.
 It should give you an idea of what is possible, but also what things to consider.
@@ -247,6 +251,6 @@ by this role. Study the role thoroughly before using it.
 
 See [LICENSE](../../LICENSE).
 
-## Author Information
+## Author information
 
 Robin Gierse (@robin-checkmk)

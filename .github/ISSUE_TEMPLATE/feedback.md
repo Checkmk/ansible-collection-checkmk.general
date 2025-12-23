@@ -2,39 +2,40 @@
 name: Feedback
 about: Give us any form of feedback
 title: "[FEED]"
+type: task
 labels: feedback
 assignees: robin-checkmk
 
 ---
 
-Please verify first that your feedback is not already reported [here](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+sort%3Aupdated-desc).
-If possible and useful provide additional information below. This is optional however.
+> Please verify first that your feedback is not already reported [here](https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+sort%3Aupdated-desc).
 
 **Provide your feedback**
-<!--  Provide your feedback here. -->
+>  Provide your feedback here.
 
 **Component Name**
-<!--  Write the short name of the module or plugin below, use your best guess if unsure. Keeping the below syntax helps us match the issues to labels. -->
-Component Name: activation
+>  Write the short name of the module or plugin below, use your best guess if unsure. Keeping the below syntax helps us match the issues to labels.
+
+Component Name: `activation`
 
 **Ansible Version**
-<!-- Paste verbatim output from `ansible --version` between triple backticks. -->
+> Paste verbatim output from `ansible --version` between triple backticks.
 ```console
 $ ansible --version
 
 ```
 
 **Collection Version**
-<!-- Paste verbatim output from`ansible-galaxy collection list` between triple backticks. -->
+> Paste verbatim output from`ansible-galaxy collection list` between triple backticks.
 ```console
 $ ansible-galaxy collection list
 
 ```
 **Environment**
-<!-- Provide all relevant information below, e.g. control node OS versions, Checkmk version, etc. -->
+> Provide all relevant information below, e.g. control node OS versions, Checkmk version, etc.
 
 **Screenshots**
-<!-- If applicable, add screenshots to help explain your problem. -->
+> If applicable, add screenshots to help explain your problem.
 
 **Additional context**
-<!-- Add any other context about the problem here. -->
+> Add any other context about the problem here.

@@ -16,7 +16,7 @@
     url_password: "{{ checkmk_var_download_pass | default(omit) }}"
   loop: "{{ checkmk_var_test_sites }}"
   when: |
-    not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
+    not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts['packages']
 
 - name: "Install Checkmk Versions."
   ansible.builtin.package:
@@ -24,7 +24,7 @@
     state: present
   loop: "{{ checkmk_var_test_sites }}"
   when: |
-    not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts.packages
+    not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts['packages']
 
 - name: "Create Sites."
   vars:

@@ -8,7 +8,7 @@
       ansible.builtin.package:
         update_cache: true
         cache_valid_time: 600
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts['os_family'] == 'Debian'
 
     - name: Install Prerequisites for Debian Derivatives.
       ansible.builtin.package:
@@ -18,7 +18,7 @@
         - apt-utils
         - man
         - ufw
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts['os_family'] == 'Debian'
 
     - name: Install Prerequisites for RedHat Derivatives.
       ansible.builtin.package:
@@ -26,7 +26,7 @@
         state: present
       loop:
         - firewalld
-      when: ansible_os_family == 'RedHat'
+      when: ansible_facts['os_family'] == 'RedHat'
 
     - name: "Create '/usr/share/man/man8/' on Ubuntu."
       ansible.builtin.file:
@@ -35,12 +35,12 @@
         mode: "0755"
         owner: root
         group: root
-      when: ansible_distribution == 'Ubuntu'
+      when: ansible_facts['distribution'] == 'Ubuntu'
 
     # See https://github.com/geerlingguy/docker-rockylinux9-ansible/issues/6
     - name: "Fix permissions on /etc/shadow for Rocky 9."  # noqa no-changed-when
       ansible.builtin.command: chmod 0400 /etc/shadow
-      when: ansible_distribution == 'Rocky' and ansible_distribution_major_version == '9'
+      when: ansible_facts['distribution'] == 'Rocky' and ansible_facts['distribution_major_version'] == '9'
 
   tasks:
 

@@ -11,6 +11,8 @@ concurrency:
 name: Molecule Tests for Server Role
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
   pull_request:
     branches:
       - main
@@ -21,6 +23,7 @@ on:
   push:
     paths:
       - 'roles/server/**'
+      - '!roles/**/*.md'
       - '.github/workflows/molecule-role-server.yaml'
 
 jobs:

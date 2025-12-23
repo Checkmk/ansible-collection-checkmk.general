@@ -1,0 +1,23 @@
+---
+checkmk_var_test_sites:
+  - version: "2.4.0p18"
+    edition: "cre"
+    site: "stable_cre"
+    port: "5024"
+  - version: "2.4.0p18"
+    edition: "cme"
+    site: "stable_cme"
+    port: "5324"
+
+checkmk_var_ldap_connection:
+  ldap_config:
+    general_properties:
+      id: "test_ldap_defaults"
+      rule_activation: activated
+      comment: "defaults"
+      description: "ois easy"
+      documentation_url: "www.checkmk.com"
+    ldap_connection:
+      directory_type:
+        type: "open_ldap"
+        ldap_server: "my.ldap.server.tld"
