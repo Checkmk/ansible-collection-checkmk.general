@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 6.5.0
+Collection version 6.6.0
 
 .. contents::
    :local:
@@ -16,7 +16,7 @@ Collection version 6.5.0
 Description
 -----------
 
-The official Checkmk Ansible collection \- brought to you by the Checkmk company.
+The official Checkmk Ansible Collection \- brought to you by the Checkmk company.
 
 **Authors:**
 
@@ -66,6 +66,7 @@ Modules
 * :ansplugin:`folder module <checkmk.general.folder#module>` -- Manage folders in Checkmk.
 * :ansplugin:`host module <checkmk.general.host#module>` -- Manage hosts in Checkmk.
 * :ansplugin:`host_group module <checkmk.general.host_group#module>` -- Manage host groups in Checkmk (bulk version).
+* :ansplugin:`ldap module <checkmk.general.ldap#module>` -- Manage LDAP connectors.
 * :ansplugin:`password module <checkmk.general.password#module>` -- Manage passwords in Checkmk.
 * :ansplugin:`rule module <checkmk.general.rule#module>` -- Manage rules in Checkmk.
 * :ansplugin:`service_group module <checkmk.general.service_group#module>` -- Manage service groups in Checkmk (bulk version).
@@ -88,6 +89,7 @@ Modules
     folder_module
     host_module
     host_group_module
+    ldap_module
     password_module
     rule_module
     service_group_module
@@ -119,6 +121,8 @@ Lookup Plugins
 * :ansplugin:`folders lookup <checkmk.general.folders#lookup>` -- Get various information about a folder
 * :ansplugin:`host lookup <checkmk.general.host#lookup>` -- Get host attributes
 * :ansplugin:`hosts lookup <checkmk.general.hosts#lookup>` -- Get various information about a host
+* :ansplugin:`ldap_connection lookup <checkmk.general.ldap_connection#lookup>` -- Show the configuration of an ldap connection
+* :ansplugin:`ldap_connections lookup <checkmk.general.ldap_connections#lookup>` -- Get a list of all ldap\_connections
 * :ansplugin:`rule lookup <checkmk.general.rule#lookup>` -- Show a rule
 * :ansplugin:`rules lookup <checkmk.general.rules#lookup>` -- Get a list rules
 * :ansplugin:`ruleset lookup <checkmk.general.ruleset#lookup>` -- Show a ruleset
@@ -136,6 +140,8 @@ Lookup Plugins
     folders_lookup
     host_lookup
     hosts_lookup
+    ldap_connection_lookup
+    ldap_connections_lookup
     rule_lookup
     rules_lookup
     ruleset_lookup
