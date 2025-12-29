@@ -1,0 +1,7 @@
+major_changes:
+  - Notification module - Add module to manage notification rules.
+
+known_issues:
+  - Notification module - Rule creation is not idempotent yet.
+  - Notification module - Before Checkmk 2.4.0p14, rule creation always creates new notification parameters.
+  - Notification module - Rule deletion is not idempotent yet, it relies on the notification rule ID.
