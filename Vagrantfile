@@ -37,6 +37,7 @@ Vagrant.configure("2") do |config|
     grep "alias ic=" /home/vagrant/.bashrc || echo "alias ic='LC_ALL=C.UTF-8 uv run ansible-galaxy collection build --force ~/ansible_collections/checkmk/general && LC_ALL=C.UTF-8 uv run ansible-galaxy collection install -f ./checkmk-general-*.tar.gz && rm ./checkmk-general-*.tar.gz'" >> /home/vagrant/.bashrc
     grep "alias ap=" /home/vagrant/.bashrc || echo "alias ap='LC_ALL=C.UTF-8 uv run ansible-playbook -i vagrant, '" >> /home/vagrant/.bashrc
     grep "export LC_ALL=C.UTF-8" /home/vagrant/.bashrc || echo "export LC_ALL=C.UTF-8" >> /home/vagrant/.bashrc
+    grep "export UV_PROJECT_ENVIRONMENT=.venv-vm" /home/vagrant/.bashrc || echo "export UV_PROJECT_ENVIRONMENT=.venv-vm" >> /home/vagrant/.bashrc
     hostnamectl set-hostname collection
     SCRIPT
     srv.vm.provision "shell", inline: $script
