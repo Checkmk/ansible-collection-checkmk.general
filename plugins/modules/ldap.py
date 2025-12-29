@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2025, Robin Gierse <robin.gierse@checkmk.com>
+# Copyright: (c) 2025, Lars Getwan <lars.getwan@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
@@ -10,11 +10,16 @@ __metaclass__ = type
 DOCUMENTATION = r"""
 ---
 module: ldap
+
 short_description: Manage LDAP connectors.
-version_added: "6.1.0"
+
+version_added: "6.6.0"
+
 description:
   - Manage LDAP connectors, including creation, updating, and deletion.
+
 extends_documentation_fragment: [checkmk.general.common]
+
 options:
     ldap_config:
         description: Configuration parameters for the LDAP.
@@ -517,6 +522,7 @@ options:
         - present
         - absent
         default: present
+
 author:
   - Lars Getwan (@lgetwan)
 """
