@@ -84,4 +84,37 @@ class ModuleDocFragment(object):
                   key: validate_certs
             type: bool
             default: True
+        proxy_url:
+            description: The URL of your proxy server.
+            required: False
+            vars:
+                - name: checkmk_var_proxy_url
+            env:
+                - name: CHECKMK_VAR_PROXY_URL
+            ini:
+                - section: checkmk_lookup
+                  key: proxy_url
+            type: str
+        proxy_user:
+            description: The username to authenticate against your proxy server.
+            required: False
+            vars:
+                - name: checkmk_var_proxy_user
+            env:
+                - name: CHECKMK_VAR_PROXY_USER
+            ini:
+                - section: checkmk_lookup
+                  key: proxy_user
+            type: str
+        proxy_pass:
+            description: The password to authenticate against your proxy server.
+            required: False
+            vars:
+                - name: checkmk_var_proxy_pass
+            env:
+                - name: CHECKMK_VAR_PROXY_PASS
+            ini:
+                - section: checkmk_lookup
+                  key: proxy_pass
+            type: str
     """

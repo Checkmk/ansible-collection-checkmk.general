@@ -12,6 +12,8 @@ __metaclass__ = type
 
 import base64
 import json
+import os
+from urllib.parse import urlparse
 
 from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
@@ -33,6 +35,20 @@ class CheckmkAPI:
         self.params = self.module.params
         server = self.params.get("server_url")
         site = self.params.get("site")
+        proxy_url = self.params.get("proxy_url")
+        if proxy_url:
+            proxy_uri = urlparse(proxy_url)
+            proxy_user = self.params.get("proxy_user")
+            proxy_pass = self.params.get("proxy_pass")
+            if proxy_user and proxy_pass:
+                proxy_uri = proxy_uri._replace(
+                    netloc="%s:%s@%s" % (proxy_user, proxy_pass, proxy_uri.netloc)
+                )
+            self._proxy_https = proxy_uri.geturl()
+            self._proxy_http = proxy_uri._replace(scheme="http").geturl()
+        else:
+            self._proxy_https = None
+            self._proxy_http = None
         self.url = "%s/%s/check_mk/api/1.0" % (server, site)
 
         self.headers = {
@@ -113,25 +129,41 @@ class CheckmkAPI:
         # TODO: If the REST API at some point actually cancels requests
         # properly, we can go back to the initial back-off mechanism.
 
+        _proxy_env_keys = ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY")
+        _saved_env = {}
+        if self._proxy_https:
+            _saved_env = {k: os.environ.get(k) for k in _proxy_env_keys}
+            os.environ["http_proxy"] = self._proxy_http
+            os.environ["https_proxy"] = self._proxy_https
+            os.environ["HTTP_PROXY"] = self._proxy_http
+            os.environ["HTTPS_PROXY"] = self._proxy_https
+
         num_of_retries = 1
         timeout = 60
-        for i in range(num_of_retries):
-            response, info = fetch_url(
-                module=self.module,
-                url="%s/%s" % (self.url, endpoint),
-                data=None if not data else self.module.jsonify(data),
-                headers=self.headers,
-                method=method,
-                use_proxy=None,
-                timeout=timeout,
-            )
+        try:
+            for i in range(num_of_retries):
+                response, info = fetch_url(
+                    module=self.module,
+                    url="%s/%s" % (self.url, endpoint),
+                    data=None if not data else self.module.jsonify(data),
+                    headers=self.headers,
+                    method=method,
+                    use_proxy=True,
+                    timeout=timeout,
+                )
 
-            http_code = info["status"]
+                http_code = info["status"]
 
-            if http_code != -1:
-                break
+                if http_code != -1:
+                    break
 
-            timeout *= 2
+                timeout *= 2
+        finally:
+            for k, v in _saved_env.items():
+                if v is None:
+                    os.environ.pop(k, None)
+                else:
+                    os.environ[k] = v
 
         (
             changed,
