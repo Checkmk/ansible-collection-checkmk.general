@@ -65,6 +65,12 @@ module:timeperiod:
 module:user:
   - 'Component Name: user'
 
+lookup:activation:
+  - 'Component Name: lookup_activation'
+
+lookup:activations:
+  - 'Component Name: lookup_activations'
+
 lookup:bakery:
   - 'Component Name: lookup_bakery'
 

@@ -104,6 +104,16 @@ module:user:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/user.py'
 
+lookup:activation:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/activation.py'
+
+lookup:activations:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/activations.py'
+
 lookup:bakery:
   - any:
       - changed-files:
