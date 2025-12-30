@@ -46,6 +46,10 @@ class CheckmkAPI:
         automation_secret = self.params.get("automation_secret")
         auth_cookie = self.params.get("auth_cookie")
 
+        # Enable mTLS
+        self.client_cert = self.params.get("api_client_cert")
+        self.client_key = self.params.get("api_client_key")
+
         if api_auth_type == "bearer":
             # Bearer Authentication
             if not automation_user or not automation_secret:
