@@ -8,7 +8,7 @@ build/
 tests/output
 playbooks/vars/config.yml
 playbooks/test*.yml
-*venv/
+*venv*/
 .direnv/
 .vscode/
 uv.lock
