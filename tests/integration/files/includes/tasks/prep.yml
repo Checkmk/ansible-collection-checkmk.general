@@ -33,7 +33,7 @@
         ( (item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
         | ternary(item.edition, __checkmk_server_edition_mapping[item.edition])
       }}
-  ansible.builtin.command: "omd -V {{ item.version }}.{{ __checkmk_var_edition_id }} create --no-tmpfs --admin-password {{ checkmk_var_automation_secret }} {{ item.site }}"
+  ansible.builtin.command: "omd -V {{ item.version }}.{{ __checkmk_var_edition_id }} create --no-tmpfs --admin-password {{ checkmk_var_api_secret }} {{ item.site }}"
   args:
     creates: "/omd/sites/{{ item.site }}"
   loop: "{{ checkmk_var_test_sites }}"

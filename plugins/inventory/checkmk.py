@@ -44,8 +44,8 @@ EXAMPLES = """
 plugin: checkmk.general.checkmk
 server_url: "http://hostname/"
 site: "sitename"
-automation_user: "cmkadmin"
-automation_secret: "******"
+api_user: "cmkadmin"
+api_secret: "******"
 validate_certs: false
 groupsources: ["hosttags", "sites"]
 want_ipv4: False
@@ -144,8 +144,8 @@ class InventoryModule(BaseInventoryPlugin):
             self.plugin = self.get_option("plugin")
             self.server_url = self.get_option("server_url")
             self.site = self.get_option("site")
-            self.user = self.get_option("automation_user")
-            self.secret = self.get_option("automation_secret")
+            self.user = self.get_option("api_user")
+            self.secret = self.get_option("api_secret")
             self.validate_certs = self.get_option("validate_certs")
             self.want_ipv4 = self.get_option("want_ipv4")
             self.groupsources = self.get_option("groupsources")
@@ -154,8 +154,8 @@ class InventoryModule(BaseInventoryPlugin):
 
         api = CheckMKLookupAPI(
             site_url=self.get_option("server_url") + "/" + self.get_option("site"),
-            automation_user=self.get_option("automation_user"),
-            automation_secret=self.get_option("automation_secret"),
+            api_user=self.get_option("api_user"),
+            api_secret=self.get_option("api_secret"),
             validate_certs=self.get_option("validate_certs"),
         )
 

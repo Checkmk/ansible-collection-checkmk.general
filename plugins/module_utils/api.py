@@ -42,38 +42,38 @@ class CheckmkAPI:
 
         # Determine authentication type
         api_auth_type = self.params.get("api_auth_type", "bearer")
-        automation_user = self.params.get("automation_user")
-        automation_secret = self.params.get("automation_secret")
-        auth_cookie = self.params.get("auth_cookie")
+        api_user = self.params.get("api_user")
+        api_secret = self.params.get("api_secret")
+        api_auth_cookie = self.params.get("api_auth_cookie")
 
         if api_auth_type == "bearer":
             # Bearer Authentication
-            if not automation_user or not automation_secret:
+            if not api_user or not api_secret:
                 self.module.fail_json(
-                    msg="`automation_user` and `automation_secret` are required for bearer authentication."
+                    msg="`api_user` and `api_secret` are required for bearer authentication."
                 )
             self.headers["Authorization"] = "Bearer %s %s" % (
-                automation_user,
-                automation_secret,
+                api_user,
+                api_secret,
             )
 
         elif api_auth_type == "basic":
             # Basic Authentication
-            if not automation_user or not automation_secret:
+            if not api_user or not api_secret:
                 self.module.fail_json(
-                    msg="`automation_user` and `automation_secret` are required for basic authentication."
+                    msg="`api_user` and `api_secret` are required for basic authentication."
                 )
-                auth_str = "%s:%s" % (automation_user, automation_secret)
+                auth_str = "%s:%s" % (api_user, api_secret)
             auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
             self.headers["Authorization"] = "Basic %s" % auth_b64
 
         elif api_auth_type == "cookie":
             # Cookie Authentication
-            if not auth_cookie:
+            if not api_auth_cookie:
                 self.module.fail_json(
-                    msg="`auth_cookie` is required for cookie authentication."
+                    msg="`api_auth_cookie` is required for cookie authentication."
                 )
-            self.cookies["auth_cmk"] = auth_cookie
+            self.cookies["auth_cmk"] = api_auth_cookie
 
         else:
             self.module.fail_json(msg="Unsupported `api_auth_type`: %s" % api_auth_type)

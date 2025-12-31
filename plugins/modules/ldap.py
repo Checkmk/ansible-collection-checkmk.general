@@ -532,9 +532,9 @@ EXAMPLES = r"""
   checkmk.general.ldap:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_auth_type: "bearer"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_auth_type: "bearer"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ldap_config:
       general_properties:
         id: "test_ldap_defaults"
@@ -548,9 +548,9 @@ EXAMPLES = r"""
   checkmk.general.ldap:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_auth_type: "bearer"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_auth_type: "bearer"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ldap_config:
       id: "test_ldap_defaults"
     state: "absent"
@@ -559,9 +559,9 @@ EXAMPLES = r"""
   checkmk.general.ldap:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_auth_type: "bearer"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_auth_type: "bearer"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ldap_config:
       general_properties:
         id: "test_ldap_complex"
@@ -622,9 +622,9 @@ EXAMPLES = r"""
   checkmk.general.ldap:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_auth_type: "bearer"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_auth_type: "bearer"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ldap_config: "{{ item.extensions | combine(checkmk_var_comment_update, recursive=true) }}"
     state: "present"
   vars:
@@ -634,8 +634,8 @@ EXAMPLES = r"""
   loop: "{{ lookup('checkmk.general.ldap_connections',
                         server_url='http://myserver/',
                         site='mysite',
-                        automation_user='myuser',
-                        automation_secret='mysecret',
+                        api_user='myuser',
+                        api_secret='mysecret',
                         )
                  }}"
   loop_control:
@@ -1242,8 +1242,8 @@ def run_module():
     )
 
     required_if = [
-        ("api_auth_type", "bearer", ["automation_user", "automation_secret"]),
-        ("api_auth_type", "basic", ["automation_user", "automation_secret"]),
+        ("api_auth_type", "bearer", ["api_user", "api_secret"]),
+        ("api_auth_type", "basic", ["api_user", "api_secret"]),
         ("api_auth_type", "cookie", ["api_auth_cookie"]),
     ]
 

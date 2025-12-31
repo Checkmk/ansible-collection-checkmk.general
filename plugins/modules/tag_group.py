@@ -86,8 +86,8 @@ EXAMPLES = r"""
   checkmk.general.tag_group:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: datacenter
     title: Datacenter
     topic: Tags
@@ -110,8 +110,8 @@ EXAMPLES = r"""
   checkmk.general.tag_group:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: datacenter
     state: "absent"
 """
