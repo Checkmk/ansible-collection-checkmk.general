@@ -1,0 +1,63 @@
+---
+- name: "Showcase notification module."
+  hosts: test
+  strategy: linear
+  gather_facts: false
+  vars_files:
+    - ../vars/auth.yml      # This vars file provides details about your site
+    - ../vars/notifications.yml   # This vars file contains the folders to manage
+  tasks:
+    - name: "Create notification rules."
+      notification:
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ checkmk_var_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
+        rule_config: "{{ item }}"
+        state: "present"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_var_notification_rules }}"
+
+    - name: "Activate changes on site."  # noqa name[unique]
+      activation:
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ checkmk_var_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
+        force_foreign_changes: true
+        sites:
+          - "{{ checkmk_var_site }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    - name: "Pause to review changes."  # noqa name[unique]
+      ansible.builtin.pause:
+        prompt: |
+          "Feel free to review the changes in your Checkmk site: {{ checkmk_var_site }}."
+          "Press <Enter> to continue."
+      when: not checkmk_var_run_unattended | bool
+
+    - name: "Delete notification rules."
+      notification:
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ checkmk_var_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
+        rule_config: "{{ item }}"
+        state: "absent"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+      loop: "{{ checkmk_var_notification_rules }}"
+
+    - name: "Activate changes on site."  # noqa name[unique]
+      activation:
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ checkmk_var_site }}"
+        automation_user: "{{ checkmk_var_automation_user }}"
+        automation_secret: "{{ checkmk_var_automation_secret }}"
+        force_foreign_changes: true
+        sites:
+          - "{{ checkmk_var_site }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
