@@ -23,7 +23,6 @@
     - update-sites
 
 - name: "{{ ansible_facts['system'] }}: Set Proxy Environment."
-  # when: checkmk_server_download_proxy | length > 0
   ansible.builtin.set_fact:
     __proxy_env:
       http_proxy: "{{ checkmk_server_download_proxy | default(omit) }}"
