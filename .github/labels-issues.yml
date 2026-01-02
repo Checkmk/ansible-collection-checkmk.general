@@ -70,20 +70,14 @@ lookup:bakery:
 
 lookup:folder:
   - 'Component Name: lookup_folder'
-
-lookup:folders:
   - 'Component Name: lookup_folders'
 
 lookup:host:
   - 'Component Name: lookup_host'
-
-lookup:hosts:
   - 'Component Name: lookup_hosts'
 
 lookup:ldap_connection:
   - 'Component Name: lookup_ldap_connection'
-
-lookup:ldap_connections:
   - 'Component Name: lookup_ldap_connections'
 
 lookup:rule:
