@@ -30,16 +30,17 @@
   run_once: true  # noqa run-once[task]
 
 # We need this hack to overwrite the colliding global variable
-- name: "Set fact: checkmk_var_server_url."
-  ansible.builtin.set_fact:
-    checkmk_var_server_url: "http://127.0.0.1:5324/"
-  when: outer_item.site == "stable_cme"
-
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  ansible.builtin.assert:
-    that: "__checkmk_var_site.status_connection.connection.socket_type == 'local'"
-  vars:
-    __checkmk_var_site: "{{ lookup('checkmk.general.site', outer_item.site) }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   when: outer_item.site == "stable_cme"
+  block:
+    - name: "Set checkmk_var_server_url for isolated testing."
+      ansible.builtin.set_fact:
+        checkmk_var_server_url: "http://127.0.0.1:5324/"
+
+    - name: "Test plugin with variables from inventory."
+      ansible.builtin.assert:
+        that: "__checkmk_var_site.status_connection.connection.socket_type == 'local'"
+      vars:
+        __checkmk_var_site: "{{ lookup('checkmk.general.site', outer_item.site) }}"
