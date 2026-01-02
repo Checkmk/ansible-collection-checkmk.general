@@ -8,7 +8,7 @@
 env:
   NAMESPACE: checkmk
   COLLECTION_NAME: general
-  MODULE_NAME: lookup_rules
+  MODULE_NAME: lookup_rule
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -33,7 +33,7 @@ on:
       - 'plugins/lookup/rules.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/files/includes/**'
-      - 'tests/integration/targets/lookup_rules/**'
+      - 'tests/integration/targets/lookup_rule/**'
 
 jobs:
 
