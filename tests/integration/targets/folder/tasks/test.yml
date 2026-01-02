@@ -2,15 +2,9 @@
 # Take this from playbooks/test-full.yml to ensure full coverage!
 # Be sure to remove header!
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "provider"
-  when: outer_item.edition == "cme"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
-  ansible.builtin.set_fact:
-    checkmk_var_customer: null
-  when: outer_item.edition != "cme"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
 
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folders."
