@@ -1,14 +1,10 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.2.0p47"
-    edition: "cce"
-    site: "ancient_cce"
-    port: "5222"
   - version: "2.3.0p42"
     edition: "cme"
     site: "old_cme"
-    port: "5323"
-  - version: "2.4.0p19"
+    port: "5103"
+  - version: "2.4.0p18"
     edition: "cme"
     site: "stable_cme"
-    port: "5324"
+    port: "5104"

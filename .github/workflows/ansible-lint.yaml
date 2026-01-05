@@ -36,54 +36,54 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v6
         with:
-          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+          path: ansible_collections/checkmk/general
 
       - name: "Install uv."
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
-          working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+          working-directory: ./ansible_collections/checkmk/general/
 
       - name: "Install Dependencies."
         run: uv sync
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+        working-directory: ./ansible_collections/checkmk/general/
         env:
           UV_SYSTEM_PYTHON: 1
 
       - name: "Install Checkmk Collection."
         run: uv run ansible-galaxy collection install ./
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+        working-directory: ./ansible_collections/checkmk/general/
 
       # Run the linting
       - name: "Run yamllint on roles."
         run:  uv run yamllint -c .yamllint ./roles/
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+        working-directory: ./ansible_collections/checkmk/general/
 
       - name: "Run yamllint on playbooks."
         run:  uv run yamllint -c .yamllint ./playbooks/
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+        working-directory: ./ansible_collections/checkmk/general/
 
       - name: "Run yamllint on tests."
         run:  uv run yamllint -c .yamllint ./tests/
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+        working-directory: ./ansible_collections/checkmk/general/
 
       - name: "Run ansible-lint on roles."
         run:  uv run ansible-lint -c .ansible-lint ./roles/
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+        working-directory: ./ansible_collections/checkmk/general/
         env:
           ANSIBLE_LIBRARY: "./plugins/modules"
           ANSIBLE_ROLES_PATH: "./roles"
 
       - name: "Run ansible-lint on tests."
         run:  uv run ansible-lint -c .ansible-lint ./tests/
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+        working-directory: ./ansible_collections/checkmk/general/
         env:
           ANSIBLE_LIBRARY: "./plugins/modules"
           ANSIBLE_ROLES_PATH: "./roles"
 
       - name: "Run ansible-lint on playbooks."
         run:  uv run ansible-lint -c .ansible-lint ./playbooks/
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
+        working-directory: ./ansible_collections/checkmk/general/
         env:
           ANSIBLE_LIBRARY: "./plugins/modules"
           ANSIBLE_ROLES_PATH: "./roles"
