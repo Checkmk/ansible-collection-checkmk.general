@@ -575,6 +575,73 @@ HTTP_CODES_GET = {
     404: (False, False, "Not Found: The requested object has not been found."),
 }
 
+DISABLED = {"state": "disabled"}
+
+DEFAULT_CONTACT_SELECTION = {
+    "all_contacts_of_the_notified_object": DISABLED,
+    "all_users": DISABLED,
+    "all_users_with_an_email_address": DISABLED,
+    "the_following_users": DISABLED,
+    "members_of_contact_groups": DISABLED,
+    "explicit_email_addresses": DISABLED,
+    "restrict_by_custom_macros": DISABLED,
+    "restrict_by_contact_groups": DISABLED,
+}
+
+DEFAULT_CONDITIONS = {
+    "match_sites": DISABLED,
+    "match_folder": DISABLED,
+    "match_host_tags": DISABLED,
+    "match_host_labels": DISABLED,
+    "match_host_groups": DISABLED,
+    "match_hosts": DISABLED,
+    "match_exclude_hosts": DISABLED,
+    "match_service_labels": DISABLED,
+    "match_service_groups": DISABLED,
+    "match_exclude_service_groups": DISABLED,
+    "match_service_groups_regex": DISABLED,
+    "match_exclude_service_groups_regex": DISABLED,
+    "match_services": DISABLED,
+    "match_exclude_services": DISABLED,
+    "match_check_types": DISABLED,
+    "match_plugin_output": DISABLED,
+    "match_contact_groups": DISABLED,
+    "match_service_levels": DISABLED,
+    "match_only_during_time_period": DISABLED,
+    "match_host_event_type": DISABLED,
+    "match_service_event_type": DISABLED,
+    "restrict_to_notification_numbers": DISABLED,
+    "throttle_periodic_notifications": DISABLED,
+    "match_notification_comment": DISABLED,
+    "event_console_alerts": DISABLED,
+}
+
+
+def merge_with_defaults(rule_config):
+    """Merge user-provided rule_config with defaults for missing fields."""
+    if not rule_config:
+        return rule_config
+
+    result = dict(rule_config)
+
+    # Merge contact_selection with defaults
+    if "contact_selection" in result:
+        merged_contacts = dict(DEFAULT_CONTACT_SELECTION)
+        merged_contacts.update(result["contact_selection"])
+        result["contact_selection"] = merged_contacts
+    else:
+        result["contact_selection"] = dict(DEFAULT_CONTACT_SELECTION)
+
+    # Merge conditions with defaults
+    if "conditions" in result:
+        merged_conditions = dict(DEFAULT_CONDITIONS)
+        merged_conditions.update(result["conditions"])
+        result["conditions"] = merged_conditions
+    else:
+        result["conditions"] = dict(DEFAULT_CONDITIONS)
+
+    return result
+
 
 class NotificationRuleAPI(CheckmkAPI):
     def __init__(self, module):
@@ -599,7 +666,8 @@ class NotificationRuleAPI(CheckmkAPI):
             )
 
     def post(self):
-        data = {"rule_config": self.params.get("rule_config")}
+        rule_config = merge_with_defaults(self.params.get("rule_config"))
+        data = {"rule_config": rule_config}
 
         return self._fetch(
             endpoint="/domain-types/notification_rule/collections/all",
@@ -609,7 +677,8 @@ class NotificationRuleAPI(CheckmkAPI):
 
     def put(self):
         self.headers["If-Match"] = self.current.etag
-        data = {"rule_config": self.params.get("rule_config")}
+        rule_config = merge_with_defaults(self.params.get("rule_config"))
+        data = {"rule_config": rule_config}
 
         return self._fetch(
             endpoint="/objects/notification_rule/%s" % self.rule_id,
@@ -629,7 +698,7 @@ class NotificationRuleAPI(CheckmkAPI):
 
 
 def changes_detected(module, current):
-    desired_config = module.params.get("rule_config")
+    desired_config = merge_with_defaults(module.params.get("rule_config"))
     if not desired_config:
         return False
 
