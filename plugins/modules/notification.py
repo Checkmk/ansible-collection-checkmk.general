@@ -558,7 +558,9 @@ def merge_with_defaults(rule_config):
                     merged_params.update(plugin_params)
                     result["notification_method"] = dict(notification_method)
                     result["notification_method"]["notify_plugin"] = dict(notify_plugin)
-                    result["notification_method"]["notify_plugin"]["plugin_params"] = merged_params
+                    result["notification_method"]["notify_plugin"][
+                        "plugin_params"
+                    ] = merged_params
 
     return result
 
