@@ -77,3 +77,33 @@
     state: "absent"
   register: __checkmk_var_notification_delete_again
   failed_when: __checkmk_var_notification_delete_again.changed
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create notification rule with minimal config."
+  notification:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    rule_config: "{{ checkmk_var_notification_config_minimal }}"
+    state: "present"
+  register: __checkmk_var_notification_minimal
+  failed_when: __checkmk_var_notification_minimal.failed
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify minimal notification rule created."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_notification_minimal.changed is true
+      - "'200 - OK: The operation was done successfully' in __checkmk_var_notification_minimal.msg"
+    fail_msg: "Minimal notification rule was not created successfully!"
+    success_msg: "Minimal notification rule created successfully."
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete minimal notification rule."
+  notification:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    automation_user: "{{ checkmk_var_automation_user }}"
+    automation_secret: "{{ checkmk_var_automation_secret }}"
+    rule_id: "{{ __checkmk_var_notification_minimal.content.id }}"
+    state: "absent"
+  register: __checkmk_var_notification_minimal_delete
+  failed_when: __checkmk_var_notification_minimal_delete.failed
