@@ -442,6 +442,46 @@ HTTP_CODES_GET = {
 
 DISABLED = {"state": "disabled"}
 
+DEFAULT_MAIL_PLUGIN_PARAMS = {
+    "from_details": DISABLED,
+    "reply_to": DISABLED,
+    "subject_for_host_notifications": DISABLED,
+    "subject_for_service_notifications": DISABLED,
+    "send_separate_notification_to_every_recipient": DISABLED,
+    "sort_order_for_bulk_notifications": DISABLED,
+    "info_to_be_displayed_in_the_email_body": DISABLED,
+    "insert_html_section_between_body_and_table": DISABLED,
+    "url_prefix_for_links_to_checkmk": DISABLED,
+    "display_graphs_among_each_other": DISABLED,
+    "enable_sync_smtp": DISABLED,
+    "graphs_per_notification": DISABLED,
+    "bulk_notifications_with_graphs": DISABLED,
+}
+
+DEFAULT_SLACK_PLUGIN_PARAMS = {
+    "url_prefix_for_links_to_checkmk": DISABLED,
+    "disable_ssl_cert_verification": DISABLED,
+    "http_proxy": DISABLED,
+}
+
+DEFAULT_MSTEAMS_PLUGIN_PARAMS = {
+    "host_title": DISABLED,
+    "service_title": DISABLED,
+    "host_summary": DISABLED,
+    "service_summary": DISABLED,
+    "host_details": DISABLED,
+    "service_details": DISABLED,
+    "affected_host_groups": DISABLED,
+    "url_prefix_for_links_to_checkmk": DISABLED,
+    "http_proxy": DISABLED,
+}
+
+PLUGIN_DEFAULTS = {
+    "mail": DEFAULT_MAIL_PLUGIN_PARAMS,
+    "slack": DEFAULT_SLACK_PLUGIN_PARAMS,
+    "msteams": DEFAULT_MSTEAMS_PLUGIN_PARAMS,
+}
+
 DEFAULT_CONTACT_SELECTION = {
     "all_contacts_of_the_notified_object": DISABLED,
     "all_users": DISABLED,
@@ -490,7 +530,7 @@ def merge_with_defaults(rule_config):
     result = dict(rule_config)
 
     # Merge contact_selection with defaults
-    if "contact_selection" in result:
+    if result.get("contact_selection"):
         merged_contacts = dict(DEFAULT_CONTACT_SELECTION)
         merged_contacts.update(result["contact_selection"])
         result["contact_selection"] = merged_contacts
@@ -498,12 +538,27 @@ def merge_with_defaults(rule_config):
         result["contact_selection"] = dict(DEFAULT_CONTACT_SELECTION)
 
     # Merge conditions with defaults
-    if "conditions" in result:
+    if result.get("conditions"):
         merged_conditions = dict(DEFAULT_CONDITIONS)
         merged_conditions.update(result["conditions"])
         result["conditions"] = merged_conditions
     else:
         result["conditions"] = dict(DEFAULT_CONDITIONS)
+
+    # Merge plugin_params with defaults based on plugin_name
+    notification_method = result.get("notification_method")
+    if notification_method:
+        notify_plugin = notification_method.get("notify_plugin")
+        if notify_plugin:
+            plugin_params = notify_plugin.get("plugin_params")
+            if plugin_params:
+                plugin_name = plugin_params.get("plugin_name")
+                if plugin_name in PLUGIN_DEFAULTS:
+                    merged_params = dict(PLUGIN_DEFAULTS[plugin_name])
+                    merged_params.update(plugin_params)
+                    result["notification_method"] = dict(notification_method)
+                    result["notification_method"]["notify_plugin"] = dict(notify_plugin)
+                    result["notification_method"]["notify_plugin"]["plugin_params"] = merged_params
 
     return result
 

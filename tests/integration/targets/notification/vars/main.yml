@@ -128,6 +128,26 @@ checkmk_var_notification_config:
     event_console_alerts:
       state: "disabled"
 
+checkmk_var_notification_config_minimal:
+  rule_properties:
+    description: "Test minimal notification rule"
+    comment: "Created with minimal config"
+    documentation_url: ""
+    do_not_apply_this_rule:
+      state: "disabled"
+    allow_users_to_deactivate:
+      state: "enabled"
+  notification_method:
+    notify_plugin:
+      option: "create_notification_with_the_following_parameters"
+      plugin_params:
+        plugin_name: "mail"
+    notification_bulking:
+      state: "disabled"
+  contact_selection:
+    all_contacts_of_the_notified_object:
+      state: "enabled"
+
 checkmk_var_notification_config_updated:
   rule_properties:
     description: "Updated test notification rule"
