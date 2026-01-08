@@ -1,13 +1,7 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "provider"
-  when: outer_item.edition == "cme"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
-  ansible.builtin.set_fact:
-    checkmk_var_customer: null
-  when: outer_item.edition != "cme"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get Checkmk bakery status."
   ansible.builtin.debug:
@@ -32,19 +26,21 @@
           ('exception' in __checkmk_var_result_bakery.msg) | bool
 
 # We need this hack to overwrite the colliding global variable
-- name: "Set fact: checkmk_var_server_url."
-  ansible.builtin.set_fact:
-    checkmk_var_server_url: "http://127.0.0.1:5324/"
-  when: outer_item.site == "stable_cme"
-
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  ansible.builtin.assert:
-    that: ('finished' in __checkmk_var_result_bakery_internal) | bool or
-          ('running' in __checkmk_var_result_bakery_internal) | bool or
-          ('initialized' in __checkmk_var_result_bakery_internal) | bool or
-          ('stopped' in __checkmk_var_result_bakery_internal) | bool or
-          ('exception' in __checkmk_var_result_bakery_internal) | bool
-  vars:
-    __checkmk_var_result_bakery_internal: "{{ lookup('checkmk.general.bakery') }}"
   delegate_to: localhost
+  run_once: true  # noqa run-once[task]
   when: outer_item.site == "stable_cme"
+  block:
+    - name: "Set checkmk_var_server_url for isolated testing."
+      ansible.builtin.set_fact:
+        checkmk_var_server_url: "http://127.0.0.1:5324/"
+
+    - name: "Test plugin with variables from inventory."
+      ansible.builtin.assert:
+        that: ('finished' in __checkmk_var_result_bakery_internal) | bool or
+              ('running' in __checkmk_var_result_bakery_internal) | bool or
+              ('initialized' in __checkmk_var_result_bakery_internal) | bool or
+              ('stopped' in __checkmk_var_result_bakery_internal) | bool or
+              ('exception' in __checkmk_var_result_bakery_internal) | bool
+      vars:
+        __checkmk_var_result_bakery_internal: "{{ lookup('checkmk.general.bakery') }}"

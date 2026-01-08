@@ -1,13 +1,7 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "provider"
-  when: outer_item.edition == "cme"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
-  ansible.builtin.set_fact:
-    checkmk_var_customer: null
-  when: outer_item.edition != "cme"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules."
   rule:
@@ -106,26 +100,26 @@
   loop: "{{ __checkmk_var_cpu_load_ruleset.__checkmk_var_one_ruleset }}"
 
 # We need this hack to overwrite the colliding global variable
-- name: "Set fact: checkmk_var_server_url."
-  ansible.builtin.set_fact:
-    checkmk_var_server_url: "http://127.0.0.1:5324/"
-  when: outer_item.site == "stable_cme"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory: rule."
-  ansible.builtin.debug:
-    var: __checkmk_var_rule_module
-  vars:
-    __checkmk_var_rule_module: "{{ lookup('checkmk.general.rule', rule_id=item.id) }}"
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
   delegate_to: localhost
-  loop: "{{ __checkmk_var_cpu_load_ruleset.__checkmk_var_one_ruleset }}"
+  run_once: true  # noqa run-once[task]
   when: outer_item.site == "stable_cme"
+  block:
+    - name: "Set checkmk_var_server_url for isolated testing."
+      ansible.builtin.set_fact:
+        checkmk_var_server_url: "http://127.0.0.1:5324/"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory: rules."
-  ansible.builtin.assert:
-    # Check the number of rules
-    that: __checkmk_var_rules_module | length == 1
-  vars:
-    __checkmk_var_rules_module: "{{ lookup('checkmk.general.rules', ruleset=item, comment_regex='Ansible managed') }}"
-  delegate_to: localhost
-  loop: "{{ checkmk_var_rulesets }}"
-  when: outer_item.site == "stable_cme"
+    - name: "Test plugin with variables from inventory for: rule."
+      ansible.builtin.debug:
+        var: __checkmk_var_rule_module
+      vars:
+        __checkmk_var_rule_module: "{{ lookup('checkmk.general.rule', rule_id=item.id) }}"
+      loop: "{{ __checkmk_var_cpu_load_ruleset.__checkmk_var_one_ruleset }}"
+
+    - name: "Test plugin with variables from inventory for: rules."
+      ansible.builtin.assert:
+        # Check the number of rules
+        that: __checkmk_var_rules_module | length == 1
+      vars:
+        __checkmk_var_rules_module: "{{ lookup('checkmk.general.rules', ruleset=item, comment_regex='Ansible managed') }}"
+      loop: "{{ checkmk_var_rulesets }}"

@@ -1,7 +1,7 @@
 ---
 - name: "Preflight - Fail if target host is not stable for this Role."
   ansible.builtin.fail:
-    msg: "This role is not stable for the target operating system, {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }}."
+    msg: "This role is not stable for the target operating system: {{ ansible_facts['distribution'] + '-' + ansible_facts['distribution_major_version'] }}."
   when: (ansible_facts['distribution'] is not defined) or
         (ansible_facts['distribution_version'] is not defined) or
         (ansible_facts['distribution'] + "-" + ansible_facts['distribution_major_version'] not in checkmk_server_server_stable_os)
@@ -23,7 +23,6 @@
     - update-sites
 
 - name: "{{ ansible_facts['system'] }}: Set Proxy Environment."
-  # when: checkmk_server_download_proxy | length > 0
   ansible.builtin.set_fact:
     __proxy_env:
       http_proxy: "{{ checkmk_server_download_proxy | default(omit) }}"

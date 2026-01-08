@@ -1,13 +1,7 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "provider"
-  when: outer_item.edition == "cme"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
-  ansible.builtin.set_fact:
-    checkmk_var_customer: null
-  when: outer_item.edition != "cme"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules."
   rule:
@@ -116,3 +110,27 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
   when: outer_item.site == "stable_cme"
+
+# We need this hack to overwrite the colliding global variable
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
+  delegate_to: localhost
+  run_once: true  # noqa run-once[task]
+  when: outer_item.site == "stable_cme"
+  block:
+    - name: "Set checkmk_var_server_url for isolated testing."
+      ansible.builtin.set_fact:
+        checkmk_var_server_url: "http://127.0.0.1:5324/"
+
+    - name: "Test plugin with variables from inventory for: ruleset."
+      ansible.builtin.assert:
+        # For each rule that we created, check, if the number of rules in its ruleset is 1.
+        that: "__checkmk_var_ruleset.number_of_rules == 1"
+      vars:
+        __checkmk_var_ruleset: "{{ lookup('checkmk.general.ruleset', ruleset=item) }}"
+      loop: "{{ checkmk_var_ruleset_regexes }}"
+
+    - name: "Test plugin with variables from inventory for: rulesets."
+      ansible.builtin.debug:
+        var: __checkmk_var_rulesets
+      vars:
+        __checkmk_var_rulesets: "{{ lookup('checkmk.general.rulesets', regex='file', rulesets_used=False, rulesets_deprecated=False) }}"

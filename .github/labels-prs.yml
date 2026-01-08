@@ -129,6 +129,16 @@ lookup:hosts:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/hosts.py'
 
+lookup:ldap_connection:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/ldap_connection.py'
+
+lookup:ldap_connections:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/lookup/ldap_connections.py'
+
 lookup:rule:
   - any:
       - changed-files:

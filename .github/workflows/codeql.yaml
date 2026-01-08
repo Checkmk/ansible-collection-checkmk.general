@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'python' ]
+        language: [ 'python', 'actions' ]
         # Learn more about CodeQL language support at https://git.io/codeql-language-support
 
     steps:
