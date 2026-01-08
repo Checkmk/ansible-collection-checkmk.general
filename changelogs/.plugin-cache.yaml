@@ -45,11 +45,11 @@ plugins:
     ldap_connection:
       description: Show the configuration of an ldap connection
       name: ldap_connection
-      version_added: 5.3.0
+      version_added: 6.6.0
     ldap_connections:
       description: Get a list of all ldap_connections
       name: ldap_connections
-      version_added: 5.3.0
+      version_added: 6.6.0
     rule:
       description: Show a rule
       name: rule
@@ -133,7 +133,7 @@ plugins:
       description: Manage LDAP connectors.
       name: ldap
       namespace: ''
-      version_added: 6.1.0
+      version_added: 6.6.0
     password:
       description: Manage passwords in Checkmk.
       name: password
@@ -174,4 +174,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 6.6.0
+version: 6.6.1

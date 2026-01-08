@@ -1,7 +1,7 @@
 :orphan:
 
 .. meta::
-  :antsibull-docs: 2.23.0
+  :antsibull-docs: 2.24.0
 
 .. _list_of_collection_env_vars:
 
@@ -21,6 +21,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
     :ansplugin:`checkmk.general.host lookup plugin <checkmk.general.host#lookup>`,
     :ansplugin:`checkmk.general.hosts lookup plugin <checkmk.general.hosts#lookup>`,
+    :ansplugin:`checkmk.general.ldap\_connection lookup plugin <checkmk.general.ldap_connection#lookup>`,
+    :ansplugin:`checkmk.general.ldap\_connections lookup plugin <checkmk.general.ldap_connections#lookup>`,
     :ansplugin:`checkmk.general.rule lookup plugin <checkmk.general.rule#lookup>`,
     :ansplugin:`checkmk.general.rules lookup plugin <checkmk.general.rules#lookup>`,
     :ansplugin:`checkmk.general.ruleset lookup plugin <checkmk.general.ruleset#lookup>`,
@@ -38,6 +40,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
     :ansplugin:`checkmk.general.host lookup plugin <checkmk.general.host#lookup>`,
     :ansplugin:`checkmk.general.hosts lookup plugin <checkmk.general.hosts#lookup>`,
+    :ansplugin:`checkmk.general.ldap\_connection lookup plugin <checkmk.general.ldap_connection#lookup>`,
+    :ansplugin:`checkmk.general.ldap\_connections lookup plugin <checkmk.general.ldap_connections#lookup>`,
     :ansplugin:`checkmk.general.rule lookup plugin <checkmk.general.rule#lookup>`,
     :ansplugin:`checkmk.general.rules lookup plugin <checkmk.general.rules#lookup>`,
     :ansplugin:`checkmk.general.ruleset lookup plugin <checkmk.general.ruleset#lookup>`,
@@ -85,7 +89,7 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.version lookup plugin <checkmk.general.version#lookup>`
 .. envvar:: ANSIBLE_LOOKUP_CHECKMK_SERVER_URL
 
-    See the documentations for the options where this environment variable is used.
+    URL of the Checkmk server
 
     *Used by:*
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
@@ -123,7 +127,7 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.version lookup plugin <checkmk.general.version#lookup>`
 .. envvar:: ANSIBLE_LOOKUP_CHECKMK_VALIDATE_CERTS
 
-    See the documentations for the options where this environment variable is used.
+    Whether to validate SSL certificates.
 
     *Used by:*
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
@@ -150,6 +154,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
     :ansplugin:`checkmk.general.host lookup plugin <checkmk.general.host#lookup>`,
     :ansplugin:`checkmk.general.hosts lookup plugin <checkmk.general.hosts#lookup>`,
+    :ansplugin:`checkmk.general.ldap\_connection lookup plugin <checkmk.general.ldap_connection#lookup>`,
+    :ansplugin:`checkmk.general.ldap\_connections lookup plugin <checkmk.general.ldap_connections#lookup>`,
     :ansplugin:`checkmk.general.rule lookup plugin <checkmk.general.rule#lookup>`,
     :ansplugin:`checkmk.general.rules lookup plugin <checkmk.general.rules#lookup>`,
     :ansplugin:`checkmk.general.ruleset lookup plugin <checkmk.general.ruleset#lookup>`,
@@ -167,6 +173,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
     :ansplugin:`checkmk.general.host lookup plugin <checkmk.general.host#lookup>`,
     :ansplugin:`checkmk.general.hosts lookup plugin <checkmk.general.hosts#lookup>`,
+    :ansplugin:`checkmk.general.ldap\_connection lookup plugin <checkmk.general.ldap_connection#lookup>`,
+    :ansplugin:`checkmk.general.ldap\_connections lookup plugin <checkmk.general.ldap_connections#lookup>`,
     :ansplugin:`checkmk.general.rule lookup plugin <checkmk.general.rule#lookup>`,
     :ansplugin:`checkmk.general.rules lookup plugin <checkmk.general.rules#lookup>`,
     :ansplugin:`checkmk.general.ruleset lookup plugin <checkmk.general.ruleset#lookup>`,
@@ -214,7 +222,7 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.version lookup plugin <checkmk.general.version#lookup>`
 .. envvar:: CHECKMK_VAR_SERVER_URL
 
-    See the documentations for the options where this environment variable is used.
+    URL of the Checkmk server
 
     *Used by:*
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
@@ -252,7 +260,7 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.version lookup plugin <checkmk.general.version#lookup>`
 .. envvar:: CHECKMK_VAR_VALIDATE_CERTS
 
-    See the documentations for the options where this environment variable is used.
+    Whether to validate SSL certificates.
 
     *Used by:*
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
