@@ -1463,3 +1463,15 @@ releases:
     - ldap.yml
     - release_summary.yml
     release_date: '2025-12-23'
+  6.6.1:
+    changes:
+      minor_changes:
+      - Bump some build-related dependencies and improve testing logic.
+      - Clean up some module meta data, playbooks and inventory.
+      - Server role - Minor change to the compatibility message, in case an OS is
+        not supported.
+      release_summary: New years cleaning.
+    fragments:
+    - cleanups.yml
+    - release_summary.yml
+    release_date: '2026-01-08'

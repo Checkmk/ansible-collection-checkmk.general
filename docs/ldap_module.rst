@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.23.0
+  :antsibull-docs: 2.24.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.ldap module -- Manage LDAP connectors.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.6.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.6.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -35,7 +35,7 @@ checkmk.general.ldap module -- Manage LDAP connectors.
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 6.1.0
+New in checkmk.general 6.6.0
 
 .. contents::
    :local:
