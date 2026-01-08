@@ -1,0 +1,19 @@
+name: "GitLeaks"
+
+on:
+  # pull_request:
+  # push:
+  workflow_dispatch:
+
+jobs:
+  scan:
+    name: gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+      - name: Run GitLeaks
+        run: podman run -v ./:/path ghcr.io/gitleaks/gitleaks:latest dir /path --verbose
+        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
