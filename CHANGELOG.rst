@@ -4,6 +4,21 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.6.1
+======
+
+Release Summary
+---------------
+
+New years cleaning.
+
+Minor Changes
+-------------
+
+- Bump some build-related dependencies and improve testing logic.
+- Clean up some module meta data, playbooks and inventory.
+- Server role - Minor change to the compatibility message, in case an OS is not supported.
+
 v6.6.0
 ======
 
