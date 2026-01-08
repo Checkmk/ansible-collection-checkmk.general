@@ -1,0 +1,4 @@
+minor_changes:
+  - Server role - Minor change to the compatibility message, in case an OS is not supported.
+  - Clean up some module meta data, playbooks and inventory.
+  - Bump some build-related dependencies and improve testing logic.
