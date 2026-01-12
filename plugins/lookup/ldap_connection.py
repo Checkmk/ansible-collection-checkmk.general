@@ -54,8 +54,8 @@ EXAMPLES = """
   vars:
     checkmk_var_server_url: "http://myserver/"
     checkmk_var_site: "mysite"
-    checkmk_var_automation_user: "myuser"
-    checkmk_var_automation_secret: "mysecret"
+    checkmk_var_api_user: "myuser"
+    checkmk_var_api_secret: "mysecret"
     checkmk_var_validate_certs: false
     attributes: "{{ lookup('checkmk.general.ldap_connection', 'my_ldap_connection') }}"
 """
