@@ -4,6 +4,14 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v6.7.0
+======
+
+Minor Changes
+-------------
+
+- All modules - Enable mTLS support for all modules. This is not a Checkmk feature, but one of Ansible and the respective web server. This collection only provides the means to use mTLS, we neither document how to implement it, nor will we provide support on top of enabling the basic functionality.
+
 v6.6.1
 ======
 

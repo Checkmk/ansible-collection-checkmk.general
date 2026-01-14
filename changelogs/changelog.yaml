@@ -1475,3 +1475,13 @@ releases:
     - cleanups.yml
     - release_summary.yml
     release_date: '2026-01-08'
+  6.7.0:
+    changes:
+      minor_changes:
+      - All modules - Enable mTLS support for all modules. This is not a Checkmk feature,
+        but one of Ansible and the respective web server. This collection only provides
+        the means to use mTLS, we neither document how to implement it, nor will we
+        provide support on top of enabling the basic functionality.
+    fragments:
+    - mtls.yml
+    release_date: '2026-01-14'
