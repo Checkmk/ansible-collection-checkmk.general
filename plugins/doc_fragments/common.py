@@ -43,6 +43,18 @@ class ModuleDocFragment(object):
             description: Authentication cookie for the Checkmk session.
             required: false
             type: str
+        client_cert:
+            description:
+                - Path to the client certificate file for authentication with the web server hosting Checkmk.
+                  This is not a Checkmk feature, but one of Ansible and the respective web server.
+            required: false
+            type: path
+        client_key:
+            description:
+                - Path to the client certificate key file for authentication with the web server hosting Checkmk.
+                  This is not a Checkmk feature, but one of Ansible and the respective web server.
+            required: false
+            type: path
         validate_certs:
             description:
                 - Whether to validate the SSL certificate of the Checkmk server.
