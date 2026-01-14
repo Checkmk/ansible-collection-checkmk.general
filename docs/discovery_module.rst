@@ -22,7 +22,7 @@ checkmk.general.discovery module -- Discover services in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.6.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.7.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -256,6 +256,74 @@ Parameters
       .. rst-class:: ansible-option-line
 
       :ansible-option-default-bold:`Default:` :ansible-option-default:`1`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-client_cert"></div>
+
+      .. _ansible_collections.checkmk.general.discovery_module__parameter-client_cert:
+
+      .. rst-class:: ansible-option-title
+
+      **client_cert**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-client_cert" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`path`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Path to the client certificate file for authentication with the web server hosting Checkmk. This is not a Checkmk feature, but one of Ansible and the respective web server.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-client_key"></div>
+
+      .. _ansible_collections.checkmk.general.discovery_module__parameter-client_key:
+
+      .. rst-class:: ansible-option-title
+
+      **client_key**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-client_key" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`path`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Path to the client certificate key file for authentication with the web server hosting Checkmk. This is not a Checkmk feature, but one of Ansible and the respective web server.
+
 
       .. raw:: html
 
