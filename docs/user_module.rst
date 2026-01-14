@@ -22,7 +22,7 @@ checkmk.general.user module -- Manage users in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.6.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.7.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -293,6 +293,74 @@ Parameters
         <div class="ansible-option-cell">
 
       The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_USER`.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-client_cert"></div>
+
+      .. _ansible_collections.checkmk.general.user_module__parameter-client_cert:
+
+      .. rst-class:: ansible-option-title
+
+      **client_cert**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-client_cert" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`path`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Path to the client certificate file for authentication with the web server hosting Checkmk. This is not a Checkmk feature, but one of Ansible and the respective web server.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-client_key"></div>
+
+      .. _ansible_collections.checkmk.general.user_module__parameter-client_key:
+
+      .. rst-class:: ansible-option-title
+
+      **client_key**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-client_key" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`path`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Path to the client certificate key file for authentication with the web server hosting Checkmk. This is not a Checkmk feature, but one of Ansible and the respective web server.
 
 
       .. raw:: html
@@ -1290,7 +1358,8 @@ Examples
         name: "krichards"
         fullname: "Keith Richards"
         email: "keith.richards@rollingstones.com"
-        password: "Open-G"
+        auth_type: "password"
+        password: "Open-G"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
         contactgroups:
           - "rolling_stones"
           - "glimmer_twins"
@@ -1323,7 +1392,8 @@ Examples
         fullname: "Keith Richards"
         email: "keith.richards@rollingstones.com"
         customer: "provider"
-        password: "Open-G"
+        auth_type: "password"
+        password: "Open-G"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
         contactgroups:
           - "rolling_stones"
           - "glimmer_twins"
@@ -1341,7 +1411,7 @@ Examples
         fullname: "Horst Schlämmer"
         customer: "provider"
         auth_type: "password"
-        password: "uschi"
+        password: "uschi"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
         enforce_password_change: true
         email: "checker@grevenbroich.de"
         fallback_contact: true
