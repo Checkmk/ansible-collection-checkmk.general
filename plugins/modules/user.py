@@ -143,7 +143,8 @@ EXAMPLES = r"""
     name: "krichards"
     fullname: "Keith Richards"
     email: "keith.richards@rollingstones.com"
-    password: "Open-G"
+    auth_type: "password"
+    password: "Open-G"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
     contactgroups:
       - "rolling_stones"
       - "glimmer_twins"
@@ -176,7 +177,8 @@ EXAMPLES = r"""
     fullname: "Keith Richards"
     email: "keith.richards@rollingstones.com"
     customer: "provider"
-    password: "Open-G"
+    auth_type: "password"
+    password: "Open-G"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
     contactgroups:
       - "rolling_stones"
       - "glimmer_twins"
@@ -194,7 +196,7 @@ EXAMPLES = r"""
     fullname: "Horst Schlämmer"
     customer: "provider"
     auth_type: "password"
-    password: "uschi"
+    password: "uschi"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
     enforce_password_change: true
     email: "checker@grevenbroich.de"
     fallback_contact: true
