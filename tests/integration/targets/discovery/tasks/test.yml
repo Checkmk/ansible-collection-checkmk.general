@@ -7,8 +7,8 @@
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     attributes:
@@ -25,8 +25,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         host_name: "{{ item.name }}"
         state: "refresh"
       delegate_to: localhost
@@ -37,8 +37,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         host_name: "{{ item.name }}"
         state: "only_host_labels"
       delegate_to: localhost
@@ -49,8 +49,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         host_name: "{{ item.name }}"
         state: "remove"
       delegate_to: localhost
@@ -61,8 +61,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         host_name: "{{ item.name }}"
         state: "new"
       delegate_to: localhost
@@ -73,8 +73,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         host_name: "{{ item.name }}"
         state: "only_service_labels"
       delegate_to: localhost
@@ -88,8 +88,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         host_name: "{{ item.name }}"
         state: "monitor_undecided_services"
       delegate_to: localhost
@@ -103,8 +103,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         host_name: "{{ item.name }}"
         state: "only_service_labels"
       delegate_to: localhost
@@ -116,8 +116,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         host_name: "{{ item.name }}"
         state: "monitor_undecided_services"
       delegate_to: localhost
@@ -131,8 +131,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         host_name: "{{ item.name }}"
         state: "tabula_rasa"
       delegate_to: localhost
@@ -144,8 +144,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         host_name: "{{ item.name }}"
         state: "fix_all"
       delegate_to: localhost
@@ -156,8 +156,8 @@
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
@@ -168,8 +168,8 @@
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     state: "absent"
@@ -181,8 +181,8 @@
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost
@@ -195,8 +195,8 @@
       host:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ item.name }}"
         folder: "{{ item.folder }}"
         attributes:
@@ -211,8 +211,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         hosts: "{{ checkmk_var_host_names }}"
         state: "refresh"
         bulk_size: 5
@@ -222,8 +222,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         hosts: "{{ checkmk_var_host_names }}"
         state: "only_host_labels"
         bulk_size: 5
@@ -233,8 +233,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         hosts: "{{ checkmk_var_host_names }}"
         state: "remove"
         bulk_size: 5
@@ -244,8 +244,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         hosts: "{{ checkmk_var_host_names }}"
         state: "only_service_labels"
         bulk_size: 5
@@ -258,8 +258,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         hosts: "{{ checkmk_var_host_names }}"
         state: "monitor_undecided_services"
         bulk_size: 5
@@ -272,8 +272,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         hosts: "{{ checkmk_var_host_names }}"
         state: "only_service_labels"
         bulk_size: 5
@@ -284,8 +284,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         hosts: "{{ checkmk_var_host_names }}"
         state: "monitor_undecided_services"
         bulk_size: 5
@@ -296,8 +296,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         hosts: "{{ checkmk_var_host_names }}"
         state: "new"
         bulk_size: 5
@@ -307,8 +307,8 @@
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         hosts: "{{ checkmk_var_host_names }}"
         state: "fix_all"
         bulk_size: 5
@@ -318,8 +318,8 @@
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         force_foreign_changes: true
         sites:
           - "{{ outer_item.site }}"
@@ -339,8 +339,8 @@
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     state: "absent"
@@ -352,8 +352,8 @@
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     sites:
       - "{{ outer_item.site }}"
   delegate_to: localhost

@@ -20,8 +20,8 @@ class CheckMKLookupAPI:
         site_url,
         api_auth_type="bearer",
         api_auth_cookie=None,
-        automation_user=None,
-        automation_secret=None,
+        api_user=None,
+        api_secret=None,
         validate_certs=True,
     ):
         self.headers = {
@@ -35,22 +35,22 @@ class CheckMKLookupAPI:
         self.validate_certs = validate_certs
         # Bearer Authentication: "Bearer USERNAME PASSWORD"
         if api_auth_type == "bearer":
-            if not automation_user or not automation_secret:
+            if not api_user or not api_secret:
                 raise ValueError(
-                    "`automation_user` and `automation_secret` are required for bearer authentication."
+                    "`api_user` and `api_secret` are required for bearer authentication."
                 )
             self.headers["Authorization"] = "Bearer %s %s" % (
-                automation_user,
-                automation_secret,
+                api_user,
+                api_secret,
             )
 
         # Basic Authentication
         elif api_auth_type == "basic":
-            if not automation_user or not automation_secret:
+            if not api_user or not api_secret:
                 raise ValueError(
-                    "`automation_user` and `automation_secret` are required for basic authentication."
+                    "`api_user` and `api_secret` are required for basic authentication."
                 )
-            auth_str = "%s:%s" % (automation_user, automation_secret)
+            auth_str = "%s:%s" % (api_user, api_secret)
             auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
             self.headers["Authorization"] = "Basic %s" % auth_b64
 
