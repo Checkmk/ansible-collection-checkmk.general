@@ -52,6 +52,18 @@ def base_argument_spec():
             no_log=True,
             fallback=(env_fallback, ["CHECKMK_VAR_API_AUTH_COOKIE"]),
         ),
+        client_cert=dict(
+            type="path",
+            required=False,
+            default=None,
+            fallback=(env_fallback, ["CHECKMK_VAR_CLIENT_CERT"]),
+        ),
+        client_key=dict(
+            type="path",
+            required=False,
+            default=None,
+            fallback=(env_fallback, ["CHECKMK_VAR_CLIENT_KEY"]),
+        ),
     )
 
 
