@@ -67,14 +67,14 @@ jobs:
 
     services:
       old_cre:
-        image: checkmk/check-mk-raw:2.3.0p41
+        image: checkmk/check-mk-raw:2.3.0p42
         ports:
           - 5003:5000  # Site Apache
         env:
           CMK_SITE_ID: "old_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       old-cre-r1:
-        image: checkmk/check-mk-raw:2.3.0p41
+        image: checkmk/check-mk-raw:2.3.0p42
         ports:
           - 5013:5000  # Site Apache
           - 6013:6557  # Livestatus

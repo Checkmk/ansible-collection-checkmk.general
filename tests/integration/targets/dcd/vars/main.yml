@@ -1,6 +1,6 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.3.0p41"
+  - version: "2.3.0p42"
     edition: "cme"
     site: "old_cme"
     port: "5323"

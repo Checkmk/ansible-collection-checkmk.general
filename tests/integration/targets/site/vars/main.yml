@@ -8,7 +8,7 @@
 # RabbitMQ: 3
 
 checkmk_var_test_sites:
-  - version: "2.3.0p41"
+  - version: "2.3.0p42"
     edition: "cre"
     site: "old_cre"
     port: "5003"
