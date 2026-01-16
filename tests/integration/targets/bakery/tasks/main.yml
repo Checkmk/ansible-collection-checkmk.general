@@ -24,9 +24,9 @@
         - /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/files/includes/tasks/
         - /root/ansible_collections/checkmk/general/tests/integration/files/includes/tasks/
         - tests/integration/files/includes/tasks/
-  when: |
-    (ansible_facts['system_vendor'] == "Dell Inc." and 'Latitude' in ansible_facts['product_name'] and ansible_facts['virtualization_type'] == "container")
-    or (ansible_facts['system_vendor'] == "QEMU" and 'Ubuntu' in ansible_facts['product_name'] and ansible_facts['virtualization_type'] == "container")
+  when:
+    - ansible_facts['virtualization_type'] in ['container', 'podman', 'docker']
+    - (ansible_facts['system_vendor'] == "Dell Inc." and 'Latitude' in ansible_facts['product_name']) or (ansible_facts['system_vendor'] == "QEMU" and 'Ubuntu' in ansible_facts['product_name'])
 
 - name: "Inject a Key into the Sites when running outside of the Container."  # noqa no-changed-when
   ansible.builtin.shell: |
@@ -79,9 +79,9 @@
   loop: "{{ checkmk_var_test_sites }}"
   loop_control:
     loop_var: outer_item
-  when: |
-    (ansible_facts['system_vendor'] == "Dell Inc." and 'Latitude' in ansible_facts['product_name'] and ansible_facts['virtualization_type'] == "container")
-    or (ansible_facts['system_vendor'] == "QEMU" and 'Ubuntu' in ansible_facts['product_name'] and ansible_facts['virtualization_type'] == "container")
+  when:
+    - ansible_facts['virtualization_type'] in ['container', 'podman', 'docker']
+    - (ansible_facts['system_vendor'] == "Dell Inc." and 'Latitude' in ansible_facts['product_name']) or (ansible_facts['system_vendor'] == "QEMU" and 'Ubuntu' in ansible_facts['product_name'])
 
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml
