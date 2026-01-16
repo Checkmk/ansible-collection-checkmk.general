@@ -8,8 +8,8 @@ This way, they do not need to be provided at task level.
 ```bash
 export CHECKMK_VAR_SERVER_URL="https://myserver"
 export CHECKMK_VAR_SITE=mysite
-export CHECKMK_VAR_AUTOMATION_USER=automation
-export CHECKMK_VAR_AUTOMATION_SECRET=mysecret
+export CHECKMK_VAR_API_USER=automation
+export CHECKMK_VAR_API_SECRET=mysecret
 export CHECKMK_VAR_VALIDATE_CERTS=False
 ```
 
@@ -18,8 +18,8 @@ export CHECKMK_VAR_VALIDATE_CERTS=False
 [checkmk_lookup]
 server_url = https://myserver
 site = mysite
-automation_user = automation
-automation_secret = mysecret
+api_user = automation
+api_secret = mysecret
 validate_certs = False
 
 ```
@@ -32,8 +32,8 @@ validate_certs = False
   vars:
     checkmk_var_server_url: "https://myserver"
     checkmk_var_site: "mysite"
-    checkmk_var_automation_user: "myuser"
-    checkmk_var_automation_secret: "mysecret"
+    checkmk_var_api_user: "myuser"
+    checkmk_var_api_secret: "mysecret"
     checkmk_var_validate_certs: false
 
   tasks:

@@ -4,7 +4,7 @@ checkmk_var_test_sites:
     edition: "cce"
     site: "ancient_cce"
     port: "5222"
-  - version: "2.3.0p41"
+  - version: "2.3.0p42"
     edition: "cme"
     site: "old_cme"
     port: "5323"
@@ -14,7 +14,7 @@ checkmk_var_test_sites:
     port: "5324"
 
 checkmk_var_signature_key_id: 1
-checkmk_var_signature_key_passphrase: "{{ checkmk_var_automation_secret }}"
+checkmk_var_signature_key_passphrase: "{{ checkmk_var_api_secret }}"
 
 checkmk_var_hosts:
   - name: test1.tld

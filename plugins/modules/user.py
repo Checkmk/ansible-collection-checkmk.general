@@ -138,8 +138,8 @@ EXAMPLES = r"""
   checkmk.general.user:
     server_url: "http://myserver/"
     site: "local"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: "krichards"
     fullname: "Keith Richards"
     email: "keith.richards@rollingstones.com"
@@ -156,8 +156,8 @@ EXAMPLES = r"""
   checkmk.general.user:
     server_url: "http://myserver/"
     site: "local"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: "registration"
     fullname: "Registration User"
     auth_type: "automation"
@@ -171,8 +171,8 @@ EXAMPLES = r"""
   checkmk.general.user:
     server_url: "http://myserver/"
     site: "local"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: "krichards"
     fullname: "Keith Richards"
     email: "keith.richards@rollingstones.com"
@@ -190,8 +190,8 @@ EXAMPLES = r"""
   checkmk.general.user:
     server_url: "http://myserver/"
     site: "local"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: "horst"
     fullname: "Horst Schlämmer"
     customer: "provider"
@@ -505,7 +505,7 @@ def run_module():
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
 
-    if module.params.get("automation_user") == module.params.get("name"):
+    if module.params.get("api_user") == module.params.get("name"):
         result = RESULT(
             http_code=0,
             msg="You cannot modify the user that is used for API authorization.",

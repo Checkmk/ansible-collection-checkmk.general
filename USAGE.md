@@ -17,8 +17,8 @@ We encourage you - in accordance with Ansible Best Practices - to always use **F
       checkmk.general.activation:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         force_foreign_changes: true
         sites:
           - "mysite"
@@ -28,7 +28,7 @@ We encourage you - in accordance with Ansible Best Practices - to always use **F
 
 ## Specifying common parameters
 
-When using multiple modules from this collection, you'll often need to provide the same parameters (like `server_url`, `site`, `automation_user`, and `automation_secret`) repeatedly. The following sections show several ways Ansible offers to avoid repetition and keep your playbooks clean.
+When using multiple modules from this collection, you'll often need to provide the same parameters (like `server_url`, `site`, `api_user`, and `api_secret`) repeatedly. The following sections show several ways Ansible offers to avoid repetition and keep your playbooks clean.
 
 ### `module_defaults`
 
@@ -41,8 +41,8 @@ You can set default values for module parameters at the play level. These defaul
     group/checkmk.general.checkmk:
       server_url: "http://myserver/"
       site: "mysite"
-      automation_user: "myuser"
-      automation_secret: "mysecret"
+      api_user: "myuser"
+      api_secret: "mysecret"
 
   tasks:
     - name: "Run activation."
@@ -71,8 +71,8 @@ Ansible can read variables from an INI file (e.g., `ansible.cfg` or a custom fil
 [checkmk]
 server_url = http://myserver/
 site = mysite
-automation_user = myuser
-automation_secret = mysecret
+api_user = myuser
+api_secret = mysecret
 ```
 
 -----
@@ -115,8 +115,8 @@ This example demonstrates how to create or update a host in Checkmk:
       checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         host_name: "myhost"
         folder: "/"
         attributes:
@@ -144,8 +144,8 @@ This example shows how to query the Checkmk site version and display it. This ca
                 server_url=my_url,
                 site=mysite,
                 validate_certs=False,
-                automation_user=myuser,
-                automation_secret=mysecret
+                api_user=myuser,
+                api_secret=mysecret
             )}}"
 
     - name: "Print Checkmk version."
@@ -167,8 +167,8 @@ To use the plugin, create a YAML file (e.g., `checkmk.yml`) with the following c
 plugin: checkmk.general.checkmk
 server_url: "http://myserver/"
 site: "mysite"
-automation_user: "myuser"
-automation_secret: "mysecret"
+api_user: "myuser"
+api_secret: "mysecret"
 # Group the hosts based on the following elements
 groupsources: ["hosttags", "sites"]
 ```

@@ -36,8 +36,8 @@
       checkmk.general.site:
         server_url: "http://localhost/"
         site: "central"
-        automation_user: "cmkadmin"
-        automation_secret: "{{ checkmk_server_admin_pass }}"
+        api_user: "cmkadmin"
+        api_secret: "{{ checkmk_server_admin_pass }}"
         site_id: "remote"
         site_connection:
           site_config:
@@ -65,8 +65,8 @@
       checkmk.general.site:
         server_url: "http://localhost/"
         site: "central"
-        automation_user: "cmkadmin"
-        automation_secret: "{{ checkmk_server_admin_pass }}"
+        api_user: "cmkadmin"
+        api_secret: "{{ checkmk_server_admin_pass }}"
         site_id: "remote"
         site_connection:
           authentication:
@@ -77,5 +77,5 @@
       checkmk.general.activation:
         server_url: "http://localhost/"
         site: "central"
-        automation_user: "cmkadmin"
-        automation_secret: "{{ checkmk_server_admin_pass }}"
+        api_user: "cmkadmin"
+        api_secret: "{{ checkmk_server_admin_pass }}"

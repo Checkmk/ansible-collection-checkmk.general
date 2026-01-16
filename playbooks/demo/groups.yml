@@ -19,8 +19,8 @@
       host_group:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ item.name }}"
         title: "{{ item.title | default(item.name) }}"
         state: "present"
@@ -32,8 +32,8 @@
       contact_group:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ item.name }}"
         title: "{{ item.title | default(item.name) }}"
         state: "present"
@@ -45,8 +45,8 @@
       tag_group:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         id: "{{ item.id }}"
         title: "{{ item.title | default(item.id) }}"
         topic: "{{ item.topic }}"
@@ -60,8 +60,8 @@
       service_group:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ item.name }}"
         title: "{{ item.title | default(item.name) }}"
         state: "present"
@@ -73,8 +73,8 @@
       rule:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         ruleset: "host_groups"
         rule:
           location:
@@ -95,8 +95,8 @@
       rule:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         ruleset: "host_contactgroups"
         rule:
           location:
@@ -117,8 +117,8 @@
       rule:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         ruleset: "service_groups"
         rule:
           location:
@@ -146,8 +146,8 @@
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         force_foreign_changes: true
         sites:
           - "{{ checkmk_var_site }}"
@@ -158,8 +158,8 @@
       rule:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         ruleset: "host_groups"
         rule:
           location:
@@ -180,8 +180,8 @@
       rule:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         ruleset: "host_contactgroups"
         rule:
           location:
@@ -202,8 +202,8 @@
       rule:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         ruleset: "service_groups"
         rule:
           location:
@@ -224,8 +224,8 @@
       service_group:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
@@ -236,8 +236,8 @@
       tag_group:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         id: "{{ item.id }}"
         state: "absent"
       delegate_to: localhost
@@ -248,8 +248,8 @@
       contact_group:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
@@ -260,8 +260,8 @@
       host_group:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         name: "{{ item.name }}"
         state: "absent"
       delegate_to: localhost
@@ -279,8 +279,8 @@
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         force_foreign_changes: true
         sites:
           - "{{ checkmk_var_site }}"
