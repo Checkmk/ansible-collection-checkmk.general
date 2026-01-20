@@ -121,19 +121,20 @@ EXAMPLES = r"""
       title: "Piggyback Configuration for Cluster1"
       comment: "Piggyback config for Cluster1 host"
       site: "mysite"
-      connector_type: "piggyback"
-      interval: 60
-      creation_rules:
-        - folder_path: "/cluster1"
-          delete_hosts: false
-          host_attributes:
-            tag_address_family: "no-ip"
-            tag_agent: "special-agents"
-            tag_piggyback: "piggyback"
-            tag_snmp_ds: "no-snmp"
-      discover_on_creation: true
-      restrict_source_hosts:
-        - "cluster1"
+      connector:
+        connector_type: "piggyback"
+        interval: 60
+        creation_rules:
+            - folder_path: "/cluster1"
+            delete_hosts: false
+            host_attributes:
+                tag_address_family: "no-ip"
+                tag_agent: "special-agents"
+                tag_piggyback: "piggyback"
+                tag_snmp_ds: "no-snmp"
+        discover_on_creation: true
+        restrict_source_hosts:
+            - "cluster1"
     state: "present"
 - name: Delete a DCD configuration
   checkmk.general.dcd:
