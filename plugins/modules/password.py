@@ -65,7 +65,7 @@ options:
 
     state:
         description: create/update or delete a password.
-        required: true
+        default: present
         choices: ["present", "absent"]
         type: str
 
@@ -217,11 +217,7 @@ def run_module():
         password=dict(type="str", required=False, no_log=True),
         owner=dict(type="str", required=False),
         shared=dict(type="raw", required=False),
-        state=dict(
-            type="str",
-            choices=["present", "absent"],
-            required=True,
-        ),
+        state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
