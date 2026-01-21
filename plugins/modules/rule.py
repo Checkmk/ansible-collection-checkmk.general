@@ -550,7 +550,7 @@ class RuleAPI(CheckmkAPI):
 
         if self.rule_id:
             # Get the current rule from the API and set some parameters
-            (self.current, self.state, self.result) = self._get_current()
+            self.current, self.state, self.result = self._get_current()
             if self.state == "present":
                 self._changed_items = self._detect_changes()
 
@@ -563,7 +563,7 @@ class RuleAPI(CheckmkAPI):
         neighbour_id = self.params.get("rule", {}).get("location", {}).get("neighbour")
 
         if neighbour_id:
-            (neighbour, state, result) = self._get_rule_by_id(neighbour_id)
+            neighbour, state, result = self._get_rule_by_id(neighbour_id)
 
             if state == "absent":
                 self.module.warn(

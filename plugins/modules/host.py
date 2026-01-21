@@ -477,7 +477,7 @@ class HostAPI(CheckmkAPI):
 
             if merged_attributes != current_attributes:
                 try:
-                    (c_m, m_c) = recursive_diff(current_attributes, merged_attributes)
+                    c_m, m_c = recursive_diff(current_attributes, merged_attributes)
                     changes.append("update attributes: %s" % json.dumps(m_c))
                 except Exception as e:
                     changes.append("update attributes")
@@ -498,20 +498,20 @@ class HostAPI(CheckmkAPI):
                         msg="ERROR: The parameter remove_attributes of dict type is not supported for the paramter extended_functionality: false!",
                     )
 
-                (tmp_remove, tmp_rest) = (current_attributes, {})
+                tmp_remove, tmp_rest = (current_attributes, {})
                 if current_attributes != tmp_remove_attributes:
                     try:
-                        (c_m, m_c) = recursive_diff(
+                        c_m, m_c = recursive_diff(
                             current_attributes, tmp_remove_attributes
                         )
 
                         if c_m:
                             # if nothing to remove
                             if current_attributes == c_m:
-                                (tmp_remove, tmp_rest) = ({}, current_attributes)
+                                tmp_remove, tmp_rest = ({}, current_attributes)
                             else:
-                                (c_c_m, c_m_c) = recursive_diff(current_attributes, c_m)
-                                (tmp_remove, tmp_rest) = (c_c_m, c_m)
+                                c_c_m, c_m_c = recursive_diff(current_attributes, c_m)
+                                tmp_remove, tmp_rest = (c_c_m, c_m)
                     except Exception as e:
                         self.module.fail_json(
                             msg="ERROR: incompatible parameter: remove_attributes!",
