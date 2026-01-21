@@ -126,8 +126,8 @@ EXAMPLES = r"""
         interval: 60
         creation_rules:
             - folder_path: "/cluster1"
-            delete_hosts: false
-            host_attributes:
+              delete_hosts: false
+              host_attributes:
                 tag_address_family: "no-ip"
                 tag_agent: "special-agents"
                 tag_piggyback: "piggyback"
