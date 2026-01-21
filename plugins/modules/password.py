@@ -30,7 +30,7 @@ options:
 
     title:
         description: A title for the password.
-        required: false
+        required: true
         type: str
 
     customer:
@@ -210,7 +210,7 @@ def run_module():
     argument_spec = base_argument_spec()
     argument_spec.update(
         name=dict(type="str", required=True),
-        title=dict(type="str", required=False),
+        title=dict(type="str", required=True),
         customer=dict(type="str", required=False),
         comment=dict(type="str", required=False),
         documentation_url=dict(type="str", required=False),
