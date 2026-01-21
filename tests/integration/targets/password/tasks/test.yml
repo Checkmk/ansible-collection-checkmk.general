@@ -22,7 +22,6 @@
   loop: "{{ checkmk_var_passwords_create }}"
   no_log: false
 
-# This should fail.
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create new passwords without customer(Should fail with CME)."
   password:
     server_url: "{{ checkmk_var_server_url }}"
@@ -45,6 +44,22 @@
   failed_when: |
     not ('Missing required parameter' in __checkmk_var_result_new_pass.msg
     or 'Missing data for required field.' in __checkmk_var_result_new_pass.msg)
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create new passwords without title (Should fail)."
+  password:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    state: "present"
+  delegate_to: localhost
+  loop: "{{ checkmk_var_passwords_create }}"
+  no_log: false
+  when: (outer_item.edition == "cme")
+  register: __checkmk_var_result_new_pass_no_title
+  failed_when: not 'missing required arguments' in __checkmk_var_result_new_pass_no_title.msg
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -89,7 +104,7 @@
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
-- name: "Delete a password."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete a password."
   password:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -97,6 +112,7 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
+    title: "{{ item.title }}"
     state: "absent"
   delegate_to: localhost
   loop: "{{ checkmk_var_passwords_delete }}"
@@ -117,6 +133,7 @@
   password:
     customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
+    title: "{{ item.title }}"
     state: "absent"
   loop: "{{ checkmk_var_passwords_delete }}"
   delegate_to: localhost

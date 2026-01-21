@@ -83,6 +83,7 @@ checkmk_var_passwords_update:
     comment: "Comment on PW 2 - New Info"
     documentation_url: "http://something.too/"
   - name: "pwtest3"
+    title: "Password Test 3"
     documentation_url: "http://localhost/"
   - name: "pwtest5"
     title: "Password Test 5"
@@ -96,4 +97,6 @@ checkmk_var_passwords_update:
 
 checkmk_var_passwords_delete:
   - name: "pwtest1"
+    title: "Password Test 1"
   - name: "pwtest4"
+    title: "Password Test 4"
