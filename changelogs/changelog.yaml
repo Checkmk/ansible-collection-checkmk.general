@@ -1482,8 +1482,26 @@ releases:
         but one of Ansible and the respective web server. This collection only provides
         the means to use mTLS, we neither document how to implement it, nor will we
         provide support on top of enabling the basic functionality.
-    release_summary: Introducing support for mTLS.
     fragments:
     - mtls.yml
     - release_summary.yml
     release_date: '2026-01-14'
+  7.0.0:
+    changes:
+      breaking_changes:
+      - Lookup modules - Remove obsolete ``ANSIBLE_LOOKUP_`` environment variables
+        and ``ansible_lookup_`` ansible variables. These were marked as obsolete already
+        in ``5.11.0``. If you used this naming, use the new ``checkmk_var_`` naming
+        instead, as the obsolete variable pattern is discouraged by the Ansible project.
+      - Rename authentication variables ``automation_user`` to ``api_user`` and ``automation_secret``
+        to ``api_secret``. This includes the internal variables ``checkmk_var_automation_user``
+        and ``checkmk_var_automation_secret`` as well. In all instances, ``automation_``
+        was renamed to ``api_``. Update your configuration accordingly. The old names
+        ``automation_user`` and ``automation_secret`` are retained as aliases for
+        a while. This is a temporary measure and is only supposed to ease the migration.
+        Do not rely on these aliases!
+      release_summary: Breaking in the new year with a breaking change.
+    fragments:
+    - auth_variables.yml
+    - release_summary.yml
+    release_date: '2026-01-22'

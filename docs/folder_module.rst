@@ -22,7 +22,7 @@ checkmk.general.folder module -- Manage folders in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.7.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -158,6 +158,82 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_secret"></div>
+        <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
+
+      .. _ansible_collections.checkmk.general.folder_module__parameter-api_secret:
+      .. _ansible_collections.checkmk.general.folder_module__parameter-automation_secret:
+
+      .. rst-class:: ansible-option-title
+
+      **api_secret**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_secret" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: automation_secret`
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_API\_SECRET`.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_user"></div>
+        <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
+
+      .. _ansible_collections.checkmk.general.folder_module__parameter-api_user:
+      .. _ansible_collections.checkmk.general.folder_module__parameter-automation_user:
+
+      .. rst-class:: ansible-option-title
+
+      **api_user**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_user" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: automation_user`
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_API\_USER`.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-attributes"></div>
 
       .. _ansible_collections.checkmk.general.folder_module__parameter-attributes:
@@ -183,74 +259,6 @@ Parameters
         <div class="ansible-option-cell">
 
       The attributes of your folder as described in the API documentation. :strong:`Attention! This option OVERWRITES all existing attributes!` As of Check MK v2.2.0p7 and v2.3.0b1, simultaneous use of :emphasis:`attributes`\ , :emphasis:`remove\_attributes`\ , and :emphasis:`update\_attributes` is no longer supported.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
-
-      .. _ansible_collections.checkmk.general.folder_module__parameter-automation_secret:
-
-      .. rst-class:: ansible-option-title
-
-      **automation_secret**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-automation_secret" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string` / :ansible-option-required:`required`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_SECRET`.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
-
-      .. _ansible_collections.checkmk.general.folder_module__parameter-automation_user:
-
-      .. rst-class:: ansible-option-title
-
-      **automation_user**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-automation_user" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string` / :ansible-option-required:`required`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_USER`.
 
 
       .. raw:: html
@@ -681,8 +689,8 @@ Examples
       checkmk.general.folder:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         path: "/my_folder"
         name: "My Folder"
         state: "present"
@@ -692,8 +700,8 @@ Examples
       checkmk.general.folder:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         path: "/my_remote_folder"
         name: "My Remote Folder"
         attributes:
@@ -705,8 +713,8 @@ Examples
       checkmk.general.folder:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         path: "/my_remote_folder"
         attributes:
           tag_criticality: "test"
@@ -718,8 +726,8 @@ Examples
       checkmk.general.folder:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         path: "/my_folder"
         update_attributes:
           tag_networking: "dmz"
@@ -730,8 +738,8 @@ Examples
       checkmk.general.folder:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         path: "/my_folder"
         remove_attributes:
           - tag_networking

@@ -22,7 +22,7 @@ checkmk.general.version lookup -- Get the version of a Checkmk server
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.7.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -123,16 +123,12 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
         .. code-block:: ini
 
           [checkmk_lookup]
-          automation_auth_cookie = VALUE
+          api_auth_cookie = VALUE
 
 
       - Environment variable: :envvar:`CHECKMK\_VAR\_API\_AUTH\_COOKIE`
 
-      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_API\_AUTH\_COOKIE`
-
       - Variable: checkmk\_var\_api\_auth\_cookie
-
-      - Variable: ansible\_lookup\_checkmk\_api\_auth\_cookie
 
 
       .. raw:: html
@@ -190,11 +186,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
       - Environment variable: :envvar:`CHECKMK\_VAR\_API\_AUTH\_TYPE`
 
-      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_API\_AUTH\_TYPE`
-
-      - Variable: checkmk\_var\_automation\_auth\_type
-
-      - Variable: ansible\_lookup\_checkmk\_automation\_auth\_type
+      - Variable: checkmk\_var\_api\_auth\_type
 
 
       .. raw:: html
@@ -204,19 +196,23 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_secret"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
+      .. _ansible_collections.checkmk.general.version_lookup__parameter-api_secret:
       .. _ansible_collections.checkmk.general.version_lookup__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
-      **automation_secret**
+      **api_secret**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-automation_secret" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-api_secret" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: automation_secret`
 
         :ansible-option-type:`string`
 
@@ -243,16 +239,12 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
         .. code-block:: ini
 
           [checkmk_lookup]
-          automation_secret = VALUE
+          api_secret = VALUE
 
 
-      - Environment variable: :envvar:`CHECKMK\_VAR\_AUTOMATION\_SECRET`
+      - Environment variable: :envvar:`CHECKMK\_VAR\_API\_SECRET`
 
-      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_AUTOMATION\_SECRET`
-
-      - Variable: checkmk\_var\_automation\_secret
-
-      - Variable: ansible\_lookup\_checkmk\_automation\_secret
+      - Variable: checkmk\_var\_api\_secret
 
 
       .. raw:: html
@@ -262,19 +254,23 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_user"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
+      .. _ansible_collections.checkmk.general.version_lookup__parameter-api_user:
       .. _ansible_collections.checkmk.general.version_lookup__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
-      **automation_user**
+      **api_user**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-automation_user" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-api_user" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: automation_user`
 
         :ansible-option-type:`string`
 
@@ -301,16 +297,12 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
         .. code-block:: ini
 
           [checkmk_lookup]
-          automation_user = VALUE
+          api_user = VALUE
 
 
-      - Environment variable: :envvar:`CHECKMK\_VAR\_AUTOMATION\_USER`
+      - Environment variable: :envvar:`CHECKMK\_VAR\_API\_USER`
 
-      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_AUTOMATION\_USER`
-
-      - Variable: checkmk\_var\_automation\_user
-
-      - Variable: ansible\_lookup\_checkmk\_automation\_user
+      - Variable: checkmk\_var\_api\_user
 
 
       .. raw:: html
@@ -364,11 +356,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
       - Environment variable: :envvar:`CHECKMK\_VAR\_SERVER\_URL`
 
-      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_SERVER\_URL`
-
       - Variable: checkmk\_var\_server\_url
-
-      - Variable: ansible\_lookup\_checkmk\_server\_url
 
 
       .. raw:: html
@@ -422,11 +410,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
       - Environment variable: :envvar:`CHECKMK\_VAR\_SITE`
 
-      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_SITE`
-
       - Variable: checkmk\_var\_site
-
-      - Variable: ansible\_lookup\_checkmk\_site
 
 
       .. raw:: html
@@ -488,11 +472,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
 
       - Environment variable: :envvar:`CHECKMK\_VAR\_VALIDATE\_CERTS`
 
-      - Environment variable: :envvar:`ANSIBLE\_LOOKUP\_CHECKMK\_VALIDATE\_CERTS`
-
       - Variable: checkmk\_var\_validate\_certs
-
-      - Variable: ansible\_lookup\_checkmk\_validate\_certs
 
 
       .. raw:: html
@@ -539,8 +519,8 @@ Examples
                        server_url=my_url,
                        site=mysite,
                        validate_certs=False,
-                       automation_user=myuser,
-                       automation_secret=mysecret
+                       api_user=myuser,
+                       api_secret=mysecret
                    )}}"
 
     - name: "Use variables from inventory."
@@ -549,8 +529,8 @@ Examples
       vars:
         checkmk_var_server_url: "http://myserver/"
         checkmk_var_site: "mysite"
-        checkmk_var_automation_user: "myuser"
-        checkmk_var_automation_secret: "mysecret"
+        checkmk_var_api_user: "myuser"
+        checkmk_var_api_secret: "mysecret"
         checkmk_var_validate_certs: false
         attributes: "{{ lookup('checkmk.general.version') }}"
 
