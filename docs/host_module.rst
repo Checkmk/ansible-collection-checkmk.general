@@ -22,7 +22,7 @@ checkmk.general.host module -- Manage hosts in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.7.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -192,6 +192,82 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_secret"></div>
+        <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
+
+      .. _ansible_collections.checkmk.general.host_module__parameter-api_secret:
+      .. _ansible_collections.checkmk.general.host_module__parameter-automation_secret:
+
+      .. rst-class:: ansible-option-title
+
+      **api_secret**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_secret" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: automation_secret`
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_API\_SECRET`.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_user"></div>
+        <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
+
+      .. _ansible_collections.checkmk.general.host_module__parameter-api_user:
+      .. _ansible_collections.checkmk.general.host_module__parameter-automation_user:
+
+      .. rst-class:: ansible-option-title
+
+      **api_user**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-api_user" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: automation_user`
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_API\_USER`.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-attributes"></div>
 
       .. _ansible_collections.checkmk.general.host_module__parameter-attributes:
@@ -217,74 +293,6 @@ Parameters
         <div class="ansible-option-cell">
 
       The attributes of your host as described in the API documentation. :strong:`Attention! This option OVERWRITES all existing attributes!` :strong:`Attention! I(folder` should match the folder where host is residing) If you are using custom tags, make sure to prepend the attribute with :literal:`tag\_`.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
-
-      .. _ansible_collections.checkmk.general.host_module__parameter-automation_secret:
-
-      .. rst-class:: ansible-option-title
-
-      **automation_secret**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-automation_secret" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string` / :ansible-option-required:`required`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_SECRET`.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
-
-      .. _ansible_collections.checkmk.general.host_module__parameter-automation_user:
-
-      .. rst-class:: ansible-option-title
-
-      **automation_user**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-automation_user" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string` / :ansible-option-required:`required`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_USER`.
 
 
       .. raw:: html
@@ -779,8 +787,8 @@ Examples
       checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         name: "my_host"
         folder: "/"
         state: "present"
@@ -790,8 +798,8 @@ Examples
       checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         name: "my_host"
         attributes:
           alias: "My Host"
@@ -804,8 +812,8 @@ Examples
       checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         name: "my_host"
         attributes:
           site: "my_remote_site"
@@ -817,8 +825,8 @@ Examples
       checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         name: "my_cluster_host"
         folder: "/"
         nodes: ["cluster_node_1", "cluster_node_2", "cluster_node_3"]
@@ -829,8 +837,8 @@ Examples
       checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         name: "my_cluster_host"
         nodes:
           - "cluster_node_1"
@@ -847,8 +855,8 @@ Examples
       checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         name: "my_host"
         update_attributes:
           site: "my_remote_site"
@@ -859,8 +867,8 @@ Examples
       checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         name: "my_host"
         update_attributes:
           alias: "foo"
@@ -871,8 +879,8 @@ Examples
       checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         name: "my_host"
         remove_attributes:
           - alias
@@ -883,8 +891,8 @@ Examples
       checkmk.general.host:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         name: "my_host"
         update_attributes:
           - tag_my_tag_1: "Bar"

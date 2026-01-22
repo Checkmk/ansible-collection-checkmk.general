@@ -22,7 +22,7 @@ checkmk.general.rule module -- Manage rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.7.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -159,19 +159,23 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_secret"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
+      .. _ansible_collections.checkmk.general.rule_module__parameter-api_secret:
       .. _ansible_collections.checkmk.general.rule_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
-      **automation_secret**
+      **api_secret**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-automation_secret" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-api_secret" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: automation_secret`
 
         :ansible-option-type:`string` / :ansible-option-required:`required`
 
@@ -183,7 +187,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_SECRET`.
+      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_API\_SECRET`.
 
 
       .. raw:: html
@@ -193,19 +197,23 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_user"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
+      .. _ansible_collections.checkmk.general.rule_module__parameter-api_user:
       .. _ansible_collections.checkmk.general.rule_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
-      **automation_user**
+      **api_user**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-automation_user" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-api_user" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: automation_user`
 
         :ansible-option-type:`string` / :ansible-option-required:`required`
 
@@ -217,7 +225,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_USER`.
+      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_API\_USER`.
 
 
       .. raw:: html
@@ -920,8 +928,8 @@ Examples
       checkmk.general.rule:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           conditions: {
@@ -958,8 +966,8 @@ Examples
       checkmk.general.rule:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           conditions: {
@@ -1017,8 +1025,8 @@ Examples
       checkmk.general.rule:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           rule_id: "{{ response.content.id }}"
@@ -1029,8 +1037,8 @@ Examples
       checkmk.general.rule:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           conditions: {
@@ -1059,8 +1067,8 @@ Examples
       checkmk.general.rule:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_user: "myuser"
+        api_secret: "mysecret"
         ruleset: "checkgroup_parameters:memory_percentage_used"
         rule:
           rule_id: "{{ item.id }}"
@@ -1071,8 +1079,8 @@ Examples
                  comment_regex='Ansible managed',
                  server_url=server_url,
                  site=site,
-                 automation_user=automation_user,
-                 automation_secret=automation_secret,
+                 api_user=api_user,
+                 api_secret=api_secret,
                  validate_certs=False
                  )
              }}"
