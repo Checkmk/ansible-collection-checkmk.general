@@ -1,8 +1,8 @@
 plugin: checkmk.general.checkmk
 server_url: "http://myserver/"
 site: "mysite"
-automation_user: "myuser"
-automation_secret: "mysecret"
+api_user: "myuser"
+api_secret: "mysecret"
 validate_certs: false
 groupsources: ["hosttags", "sites"]
 want_ipv4: false

@@ -30,7 +30,7 @@ options:
 
     title:
         description: A title for the password.
-        required: false
+        required: true
         type: str
 
     customer:
@@ -65,7 +65,7 @@ options:
 
     state:
         description: create/update or delete a password.
-        required: true
+        default: present
         choices: ["present", "absent"]
         type: str
 
@@ -80,8 +80,8 @@ EXAMPLES = r"""
   checkmk.general.password:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: "mypassword"
     title: "My Password"
     customer: "provider"
@@ -98,8 +98,8 @@ EXAMPLES = r"""
   checkmk.general.password:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     name: "mypassword"
     state: "absent"
 """
@@ -210,18 +210,14 @@ def run_module():
     argument_spec = base_argument_spec()
     argument_spec.update(
         name=dict(type="str", required=True),
-        title=dict(type="str", required=False),
+        title=dict(type="str", required=True),
         customer=dict(type="str", required=False),
         comment=dict(type="str", required=False),
         documentation_url=dict(type="str", required=False),
         password=dict(type="str", required=False, no_log=True),
         owner=dict(type="str", required=False),
         shared=dict(type="raw", required=False),
-        state=dict(
-            type="str",
-            choices=["present", "absent"],
-            required=True,
-        ),
+        state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)

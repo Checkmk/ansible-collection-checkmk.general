@@ -1,21 +1,21 @@
 [project]
 name = "checkmk_ansible_collection"
-version = "6.7.0"
+version = "7.0.0"
 requires-python = ">=3.11"
 dependencies = [
     "antsibull-changelog==0.35.0",
     "antsibull-docs==2.24.0",
-    "ansible-lint==25.12.2",
+    "ansible-lint==26.1.1",
     "jinja2==3.1.6",
     "molecule==25.12.0",
     "molecule-plugins[podman]==25.8.12",
     "pywinrm==0.5.0",
-    "yamllint==1.37.1",
+    "yamllint==1.38.0",
 ]
 
 [dependency-groups]
 dev = [
-    "black==25.12.0",
+    "black==26.1.0",
     "click==8.3.1",
     "isort==7.0.0",
     "mypy-extensions==1.1.0",

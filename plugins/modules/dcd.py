@@ -113,35 +113,36 @@ EXAMPLES = r"""
   checkmk.general.dcd:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_auth_type: "bearer"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_auth_type: "bearer"
+    api_user: "myuser"
+    api_secret: "mysecret"
     dcd_config:
       dcd_id: "PiggybackCluster1"
       title: "Piggyback Configuration for Cluster1"
       comment: "Piggyback config for Cluster1 host"
       site: "mysite"
-      connector_type: "piggyback"
-      interval: 60
-      creation_rules:
-        - folder_path: "/cluster1"
-          delete_hosts: false
-          host_attributes:
-            tag_address_family: "no-ip"
-            tag_agent: "special-agents"
-            tag_piggyback: "piggyback"
-            tag_snmp_ds: "no-snmp"
-      discover_on_creation: true
-      restrict_source_hosts:
-        - "cluster1"
+      connector:
+        connector_type: "piggyback"
+        interval: 60
+        creation_rules:
+            - folder_path: "/cluster1"
+              delete_hosts: false
+              host_attributes:
+                tag_address_family: "no-ip"
+                tag_agent: "special-agents"
+                tag_piggyback: "piggyback"
+                tag_snmp_ds: "no-snmp"
+        discover_on_creation: true
+        restrict_source_hosts:
+            - "cluster1"
     state: "present"
 - name: Delete a DCD configuration
   checkmk.general.dcd:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_auth_type: "bearer"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_auth_type: "bearer"
+    api_user: "myuser"
+    api_secret: "mysecret"
     dcd_config:
       dcd_id: "PiggybackCluster1"
       site: "mysite"
@@ -460,8 +461,8 @@ def run_module():
     )
 
     required_if = [
-        ("api_auth_type", "bearer", ["automation_user", "automation_secret"]),
-        ("api_auth_type", "basic", ["automation_user", "automation_secret"]),
+        ("api_auth_type", "bearer", ["api_user", "api_secret"]),
+        ("api_auth_type", "basic", ["api_user", "api_secret"]),
         ("api_auth_type", "cookie", ["api_auth_cookie"]),
     ]
 

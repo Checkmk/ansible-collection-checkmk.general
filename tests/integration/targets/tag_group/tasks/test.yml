@@ -3,8 +3,8 @@
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     title: "{{ item.title }}"
     topic: "{{ item.topic }}"
@@ -20,8 +20,8 @@
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
@@ -29,8 +29,8 @@
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     title: "{{ item.title }}"
     topic: "{{ item.topic }}"
@@ -46,8 +46,8 @@
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "repairtest"
     attributes:
       tag_Datacenter: "datacenter_1"
@@ -58,8 +58,8 @@
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     title: "{{ item.title }}"
     topic: "{{ item.topic }}"
@@ -75,8 +75,8 @@
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     title: "{{ item.title }}"
     topic: "{{ item.topic }}"
@@ -91,8 +91,8 @@
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
@@ -100,8 +100,8 @@
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     repair: "{{ item.repair | default(omit) }}"
     state: "absent"
@@ -114,8 +114,8 @@
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
   delegate_to: localhost
   run_once: true  # noqa run-once[task]
 
@@ -123,8 +123,8 @@
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     repair: "{{ item.repair | default(omit) }}"
     state: "absent"
@@ -139,7 +139,7 @@
     method: POST
     validate_certs: false
     headers:
-      Authorization: Bearer {{ checkmk_var_automation_user }} {{ checkmk_var_automation_secret }}
+      Authorization: Bearer {{ checkmk_var_api_user }} {{ checkmk_var_api_secret }}
       Accept: application/json
       Content-Type: application/json
     body_format: json
@@ -155,8 +155,8 @@
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     title: "{{ item.title }}"
     topic: "{{ item.topic }}"
@@ -172,8 +172,8 @@
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     title: "{{ item.title }}"
     topic: "{{ item.topic }}"

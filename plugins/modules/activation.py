@@ -48,16 +48,16 @@ EXAMPLES = r"""
   checkmk.general.activation:
       server_url: "http://myserver/"
       site: "mysite"
-      automation_user: "myuser"
-      automation_secret: "mysecret"
+      api_user: "myuser"
+      api_secret: "mysecret"
   run_once: true
 
 - name: "Start activation on a specific site."
   checkmk.general.activation:
       server_url: "http://myserver/"
       site: "mysite"
-      automation_user: "myuser"
-      automation_secret: "mysecret"
+      api_user: "myuser"
+      api_secret: "mysecret"
       sites:
           - "mysite"
   run_once: true
@@ -66,8 +66,8 @@ EXAMPLES = r"""
   checkmk.general.activation:
       server_url: "http://myserver/"
       site: "mysite"
-      automation_user: "myuser"
-      automation_secret: "mysecret"
+      api_user: "myuser"
+      api_secret: "mysecret"
       force_foreign_changes: true
   run_once: true
 
@@ -75,8 +75,8 @@ EXAMPLES = r"""
   checkmk.general.activation:
       server_url: "http://localhost/"
       site: "mysite"
-      automation_user: "myuser"
-      automation_secret: "$SECRET"
+      api_user: "myuser"
+      api_secret: "$SECRET"
       redirect: true
       force_foreign_changes: true
   run_once: true

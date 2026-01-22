@@ -111,8 +111,8 @@ EXAMPLES = r"""
   checkmk.general.rule:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -149,8 +149,8 @@ EXAMPLES = r"""
   checkmk.general.rule:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -208,8 +208,8 @@ EXAMPLES = r"""
   checkmk.general.rule:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       rule_id: "{{ response.content.id }}"
@@ -220,8 +220,8 @@ EXAMPLES = r"""
   checkmk.general.rule:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       conditions: {
@@ -250,8 +250,8 @@ EXAMPLES = r"""
   checkmk.general.rule:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
       rule_id: "{{ item.id }}"
@@ -262,8 +262,8 @@ EXAMPLES = r"""
              comment_regex='Ansible managed',
              server_url=server_url,
              site=site,
-             automation_user=automation_user,
-             automation_secret=automation_secret,
+             api_user=api_user,
+             api_secret=api_secret,
              validate_certs=False
              )
          }}"
@@ -550,7 +550,7 @@ class RuleAPI(CheckmkAPI):
 
         if self.rule_id:
             # Get the current rule from the API and set some parameters
-            (self.current, self.state, self.result) = self._get_current()
+            self.current, self.state, self.result = self._get_current()
             if self.state == "present":
                 self._changed_items = self._detect_changes()
 
@@ -563,7 +563,7 @@ class RuleAPI(CheckmkAPI):
         neighbour_id = self.params.get("rule", {}).get("location", {}).get("neighbour")
 
         if neighbour_id:
-            (neighbour, state, result) = self._get_rule_by_id(neighbour_id)
+            neighbour, state, result = self._get_rule_by_id(neighbour_id)
 
             if state == "absent":
                 self.module.warn(

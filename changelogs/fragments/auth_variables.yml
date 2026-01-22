@@ -1,0 +1,10 @@
+breaking_changes:
+  - Rename authentication variables ``automation_user`` to ``api_user`` and ``automation_secret`` to ``api_secret``.
+    This includes the internal variables ``checkmk_var_automation_user`` and ``checkmk_var_automation_secret`` as well.
+    In all instances, ``automation_`` was renamed to ``api_``.
+    Update your configuration accordingly.
+    The old names ``automation_user`` and ``automation_secret`` are retained as aliases for a while.
+    This is a temporary measure and is only supposed to ease the migration. Do not rely on these aliases!
+  - Lookup modules - Remove obsolete ``ANSIBLE_LOOKUP_`` environment variables and ``ansible_lookup_`` ansible variables.
+    These were marked as obsolete already in ``5.11.0``. If you used this naming,
+    use the new ``checkmk_var_`` naming instead, as the obsolete variable pattern is discouraged by the Ansible project.
