@@ -22,7 +22,7 @@ checkmk.general.dcd module -- Manage Dynamic Host Management.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 6.7.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -158,19 +158,23 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_secret"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
+      .. _ansible_collections.checkmk.general.dcd_module__parameter-api_secret:
       .. _ansible_collections.checkmk.general.dcd_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
-      **automation_secret**
+      **api_secret**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-automation_secret" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-api_secret" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: automation_secret`
 
         :ansible-option-type:`string` / :ansible-option-required:`required`
 
@@ -182,7 +186,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_SECRET`.
+      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_API\_SECRET`.
 
 
       .. raw:: html
@@ -192,19 +196,23 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-api_user"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
+      .. _ansible_collections.checkmk.general.dcd_module__parameter-api_user:
       .. _ansible_collections.checkmk.general.dcd_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
-      **automation_user**
+      **api_user**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-automation_user" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-api_user" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: automation_user`
 
         :ansible-option-type:`string` / :ansible-option-required:`required`
 
@@ -216,7 +224,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_AUTOMATION\_USER`.
+      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_API\_USER`.
 
 
       .. raw:: html
@@ -1263,35 +1271,36 @@ Examples
       checkmk.general.dcd:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_auth_type: "bearer"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_auth_type: "bearer"
+        api_user: "myuser"
+        api_secret: "mysecret"
         dcd_config:
           dcd_id: "PiggybackCluster1"
           title: "Piggyback Configuration for Cluster1"
           comment: "Piggyback config for Cluster1 host"
           site: "mysite"
-          connector_type: "piggyback"
-          interval: 60
-          creation_rules:
-            - folder_path: "/cluster1"
-              delete_hosts: false
-              host_attributes:
-                tag_address_family: "no-ip"
-                tag_agent: "special-agents"
-                tag_piggyback: "piggyback"
-                tag_snmp_ds: "no-snmp"
-          discover_on_creation: true
-          restrict_source_hosts:
-            - "cluster1"
+          connector:
+            connector_type: "piggyback"
+            interval: 60
+            creation_rules:
+                - folder_path: "/cluster1"
+                  delete_hosts: false
+                  host_attributes:
+                    tag_address_family: "no-ip"
+                    tag_agent: "special-agents"
+                    tag_piggyback: "piggyback"
+                    tag_snmp_ds: "no-snmp"
+            discover_on_creation: true
+            restrict_source_hosts:
+                - "cluster1"
         state: "present"
     - name: Delete a DCD configuration
       checkmk.general.dcd:
         server_url: "http://myserver/"
         site: "mysite"
-        automation_auth_type: "bearer"
-        automation_user: "myuser"
-        automation_secret: "mysecret"
+        api_auth_type: "bearer"
+        api_user: "myuser"
+        api_secret: "mysecret"
         dcd_config:
           dcd_id: "PiggybackCluster1"
           site: "mysite"
