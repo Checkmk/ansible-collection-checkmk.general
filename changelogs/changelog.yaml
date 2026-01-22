@@ -1482,6 +1482,7 @@ releases:
         but one of Ansible and the respective web server. This collection only provides
         the means to use mTLS, we neither document how to implement it, nor will we
         provide support on top of enabling the basic functionality.
+      release_summary: Introducing support for mTLS.
     fragments:
     - mtls.yml
     - release_summary.yml
