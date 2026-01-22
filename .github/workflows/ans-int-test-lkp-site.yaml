@@ -14,7 +14,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Ansible Integration Tests for Site Lookup Module
+name: Ansible Integration Tests for Site Lookup Modules
 on:
   workflow_dispatch:
   schedule:
@@ -25,10 +25,12 @@ on:
       - devel
     paths:
       - 'plugins/lookup/site.py'
+      - 'plugins/lookup/sites.py'
   push:
     paths:
       - '.github/workflows/ans-int-test-lkp-site.yaml'
       - 'plugins/lookup/site.py'
+      - 'plugins/lookup/sites.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/files/includes/**'
       - 'tests/integration/targets/lookup_site/**'
