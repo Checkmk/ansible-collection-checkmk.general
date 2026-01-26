@@ -8,25 +8,21 @@ platforms:
     image: docker.io/geerlingguy/docker-ubuntu2204-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     pre_build_image: true
-    privileged: true
     systemd: always
   - name: ubuntu2404
     image: docker.io/geerlingguy/docker-ubuntu2404-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     pre_build_image: true
-    privileged: true
     systemd: always
   - name: debian12
     image: docker.io/geerlingguy/docker-debian12-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     pre_build_image: true
-    privileged: true
     systemd: always
   - name: debian13
     image: docker.io/geerlingguy/docker-debian13-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     pre_build_image: true
-    privileged: true
     systemd: always
   - name: rockylinux9
     image: docker.io/geerlingguy/docker-rockylinux9-ansible
