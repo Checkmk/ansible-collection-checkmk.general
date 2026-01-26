@@ -21,6 +21,11 @@ Breaking Changes / Porting Guide
 v6.7.0
 ======
 
+Release Summary
+---------------
+
+Introducing support for mTLS.
+
 Minor Changes
 -------------
 
