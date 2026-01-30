@@ -1,14 +1,10 @@
 # https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
 
-env:
-  NAMESPACE: checkmk
-  COLLECTION_NAME: general
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Molecule Tests for Server Role
+name: Role Server
 on:
   workflow_dispatch:
   schedule:
@@ -27,55 +23,9 @@ on:
       - '.github/workflows/molecule-role-server.yaml'
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04
-    name: Checkmk ${{ matrix.checkmk }}
-    strategy:
-      fail-fast: false
-      matrix:
-        checkmk:
-          - '2.2.0'
-          - '2.3.0'
-          - '2.4.0'
 
-    steps:
-
-      # This was necessary at some point to avoid random failure.
-      # Disabling on 20250826 to check, if it is still necessary.
-      # Re-enabling on 20251124 as it still seems necessary.
-      - name: "Free Disk Space."
-        uses: jlumbroso/free-disk-space@main
-        with:
-          # this might remove tools that are actually needed,
-          # if set to "true" but frees about 6 GB
-          tool-cache: false
-
-      - name: "Add swap file to avoid memory shortage."
-        run: |
-          sudo fallocate -l 12G /mnt/swap
-          sudo chmod 600 /mnt/swap
-          sudo mkswap /mnt/swap
-          sudo swapon /mnt/swap
-          free -h
-          swapon --show
-
-      - name: "Check out code."
-        uses: actions/checkout@v6
-        with:
-          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-
-      - name: "Install uv."
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-          working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}/
-
-      - name: "Install Dependencies."
-        run: uv sync
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-
-      - name: "Run Molecule."
-        run: |
-          cd roles/server/
-          uv run molecule test --report -s ${{ matrix.checkmk }}
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+  integration:
+    name: "Molecule"
+    uses: ./.github/workflows/_template-molecule-test.yaml
+    with:
+      role: server
