@@ -33,7 +33,7 @@ __checkmk_server_edition_mapping: >-
 
 # This is a very hacky workaround, as it is not possible to assign variables
 # to other variables when using them in lookup modules.
-# checkmk_var_server_url: "http://127.0.0.1:5324/"  # see above
+# checkmk_var_server_url: "http://127.0.0.1:5104/"  # see above
 # The variable below is especially hacky.
 # All integration tests were adapted to run the specific task only on this site.
 checkmk_var_site: "stable_cme"
@@ -51,4 +51,4 @@ __checkmk_var_testing_environment:
 #   - version: "2.4.0p19"
 #     edition: "cme"
 #     site: "stable_cme"
-#     port: "5324"
+#     port: "5104"
