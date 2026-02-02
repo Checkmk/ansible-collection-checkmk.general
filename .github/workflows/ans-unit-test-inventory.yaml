@@ -1,16 +1,8 @@
-# https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
-
-env:
-  NAMESPACE: checkmk
-  COLLECTION_NAME: general
-  MODULE_NAME: checkmk
-  TESTPATH: tests/unit/plugins/inventory/test_checkmk.py
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Ansible Unit Test for Inventory Module
+name: Module Inventory
 on:
   workflow_dispatch:
   schedule:
@@ -30,48 +22,8 @@ on:
 
 jobs:
 
-  units:
-    runs-on: ubuntu-24.04
-    name: Units (Ⓐ${{ matrix.ansible }}+${{ matrix.python }})
-    strategy:
-      fail-fast: false
-      matrix:
-        ansible:
-          - stable-2.18
-          - stable-2.19
-          - stable-2.20
-          - devel
-        python:
-          - '3.11'
-          - '3.12'
-          - '3.13'
-        exclude:
-          # Exclude unsupported sets.
-          - ansible: devel
-            python: '3.11'
-          - ansible: stable-2.20
-            python: '3.11'
-
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v6
-        with:
-          path: ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-
-      - name: "Install uv and set the python version."
-        uses: astral-sh/setup-uv@v7
-        with:
-          python-version: ${{ matrix.python }}
-          enable-cache: true
-
-      - name: "Create uv venv."
-        run: uv venv
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-
-      - name: Install ansible-base (${{ matrix.ansible }})
-        run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
-
-      - name: Run unit test
-        run: uv run ansible-test units ${{env.TESTPATH}} -v --color --python ${{ matrix.python }} --docker default
-        working-directory: ./ansible_collections/${{env.NAMESPACE}}/${{env.COLLECTION_NAME}}
+  integration:
+    name: "Unit Tests"
+    uses: ./.github/workflows/_template-ans-unit-test.yaml
+    with:
+      testpath: tests/unit/plugins/inventory/test_checkmk.py

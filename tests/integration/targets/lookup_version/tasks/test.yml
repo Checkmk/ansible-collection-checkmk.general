@@ -24,7 +24,7 @@
   block:
     - name: "Set checkmk_var_server_url for isolated testing."
       ansible.builtin.set_fact:
-        checkmk_var_server_url: "http://127.0.0.1:5324/"
+        checkmk_var_server_url: "http://127.0.0.1:5104/"
 
     - name: "Test plugin with variables from inventory."
       ansible.builtin.assert:
