@@ -3,59 +3,74 @@
   ansible.builtin.set_fact:
     checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create LDAP connection."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create LDAP connections."
   ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    ldap_config: "{{ checkmk_var_ldap_connection.ldap_config }}"
+    ldap_config: "{{ item.ldap_config }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_var_ldap_connections }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} Get attributes of LDAP connection."
-  ansible.builtin.debug:
-    msg: "Description of {{ checkmk_var_ldap_connection.ldap_config.general_properties.id }} is {{ __checkmk_var_ldap_connection.general_properties.description }}"
-  vars:
-    __checkmk_var_ldap_connection: "{{ lookup('checkmk.general.ldap_connection',
-                    checkmk_var_ldap_connection.ldap_config.general_properties.id,
-                    server_url=checkmk_var_server_url,
-                    site=outer_item.site,
-                    validate_certs=False,
-                    api_user=checkmk_var_api_user,
-                    api_secret=checkmk_var_api_secret)
-              }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all LDAP connections."
+  ansible.builtin.set_fact:
+    __checkmk_var_ldap_connections: "{{ lookup('checkmk.general.ldap_connections',
+                         server_url=checkmk_var_server_url,
+                         site=outer_item.site,
+                         validate_certs=False,
+                         api_user=checkmk_var_api_user,
+                         api_secret=checkmk_var_api_secret) }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify LDAP connection description."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of LDAP connections."
   ansible.builtin.assert:
-    that: "checkmk_var_ldap_connection.ldap_config.general_properties.description == __checkmk_var_ldap_connection.general_properties.description"
+    that: "checkmk_var_ldap_connections | length == __checkmk_var_ldap_connections | length"
+    fail_msg: "Expected {{ checkmk_var_ldap_connections | length }} connections, but found {{ __checkmk_var_ldap_connections | length }}!"
+    success_msg: "Expected {{ checkmk_var_ldap_connections | length }} connections, and found {{ __checkmk_var_ldap_connections | length }}."
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify LDAP connection descriptions."
+  ansible.builtin.assert:
+    that: "__checkmk_var_ldap_connection.general_properties.description == (checkmk_var_ldap_connections | selectattr('ldap_config.general_properties.id', 'equalto', item.id) | map(attribute='ldap_config.general_properties.description') | first)"
+    fail_msg: "Expected {{ item.id }} description to be {{ checkmk_var_ldap_connections | selectattr('ldap_config.general_properties.id', 'equalto', item.id) | map(attribute='ldap_config.general_properties.description') | first }}, but found {{ __checkmk_var_ldap_connection.general_properties.description }}!"
+    success_msg: "Expected {{ item.id }} description to be {{ checkmk_var_ldap_connections | selectattr('ldap_config.general_properties.id', 'equalto', item.id) | map(attribute='ldap_config.general_properties.description') | first }}, and found {{ __checkmk_var_ldap_connection.general_properties.description }}."
   vars:
     __checkmk_var_ldap_connection: "{{ lookup('checkmk.general.ldap_connection',
-                    checkmk_var_ldap_connection.ldap_config.general_properties.id,
+                    item.id,
                     server_url=checkmk_var_server_url,
                     site=outer_item.site,
                     validate_certs=False,
                     api_user=checkmk_var_api_user,
                     api_secret=checkmk_var_api_secret)
               }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  loop: "{{ __checkmk_var_ldap_connections }}"
+  loop_control:
+    label: "{{ item.id }}"
 
 # We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   when: outer_item.site == "stable_cme"
   block:
-    - name: "Set checkmk_var_server_url for isolated testing."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set checkmk_var_server_url for isolated testing."
       ansible.builtin.set_fact:
         checkmk_var_server_url: "http://127.0.0.1:5104/"
 
-    - name: "Test plugin with variables from inventory."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all LDAP connections."
+      ansible.builtin.set_fact:
+        __checkmk_var_ldap_connections: "{{ lookup('checkmk.general.ldap_connections') }}"
+
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of LDAP connections."
       ansible.builtin.assert:
-        that: "checkmk_var_ldap_connection.ldap_config.general_properties.description == __checkmk_var_ldap_connection.general_properties.description"
+        that: "checkmk_var_ldap_connections | length == __checkmk_var_ldap_connections | length"
+        fail_msg: "Expected {{ checkmk_var_ldap_connections | length }} connections, but found {{ __checkmk_var_ldap_connections | length }}!"
+        success_msg: "Expected {{ checkmk_var_ldap_connections | length }} connections, and found {{ __checkmk_var_ldap_connections | length }}."
+
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify LDAP connection descriptions."
+      ansible.builtin.assert:
+        that: "__checkmk_var_ldap_connection.general_properties.description == (checkmk_var_ldap_connections | selectattr('ldap_config.general_properties.id', 'equalto', item.id) | map(attribute='ldap_config.general_properties.description') | first)"
+        fail_msg: "Expected {{ item.id }} description to be {{ checkmk_var_ldap_connections | selectattr('ldap_config.general_properties.id', 'equalto', item.id) | map(attribute='ldap_config.general_properties.description') | first }}, but found {{ __checkmk_var_ldap_connection.general_properties.description }}!"
+        success_msg: "Expected {{ item.id }} description to be {{ checkmk_var_ldap_connections | selectattr('ldap_config.general_properties.id', 'equalto', item.id) | map(attribute='ldap_config.general_properties.description') | first }}, and found {{ __checkmk_var_ldap_connection.general_properties.description }}."
       vars:
-        __checkmk_var_ldap_connection: "{{ lookup('checkmk.general.ldap_connection', checkmk_var_ldap_connection.ldap_config.general_properties.id) }}"
+        __checkmk_var_ldap_connection: "{{ lookup('checkmk.general.ldap_connection', item.id) }}"
+      loop: "{{ __checkmk_var_ldap_connections }}"
+      loop_control:
+        label: "{{ item.id }}"

@@ -3,77 +3,100 @@
   ansible.builtin.set_fact:
     checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folder."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folders."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    name: "{{ checkmk_var_folder.name }}"
-    path: "{{ checkmk_var_folder.path }}"
-    attributes:
-      tag_criticality: "{{ checkmk_var_folder.criticality }}"
+    name: "{{ item.name }}"
+    path: "{{ item.path }}"
+    update_attributes:
+      tag_criticality: "{{ item.criticality }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  loop: "{{ checkmk_var_folders }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all folders."
-  ansible.builtin.debug:
-    var: __checkmk_var_folders
-  vars:
-    __checkmk_var_folders: "{{ lookup('checkmk.general.folders',
-                    '/',
-                    server_url=checkmk_var_server_url,
-                    site=outer_item.site,
-                    validate_certs=False,
-                    api_user=checkmk_var_api_user,
-                    api_secret=checkmk_var_api_secret)
-              }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  ansible.builtin.set_fact:
+    __checkmk_var_folder_list: "{{ lookup('checkmk.general.folders', '/',
+                           recursive=True,
+                           server_url=checkmk_var_server_url,
+                           site=outer_item.site,
+                           validate_certs=False,
+                           api_user=checkmk_var_api_user,
+                           api_secret=checkmk_var_api_secret) }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get attributes of folder."
-  ansible.builtin.debug:
-    msg: "Criticality of {{ checkmk_var_folder.name }} is {{ __checkmk_var_folder.extensions.attributes.tag_criticality }}"
-  vars:
-    __checkmk_var_folder: "{{ lookup('checkmk.general.folder',
-                    checkmk_var_folder.path,
-                    server_url=checkmk_var_server_url,
-                    site=outer_item.site,
-                    validate_certs=False,
-                    api_user=checkmk_var_api_user,
-                    api_secret=checkmk_var_api_secret)
-              }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify folder count."
+  ansible.builtin.assert:
+    that: "__checkmk_var_folder_list | length == (checkmk_var_folders | length + 1)"
+    fail_msg: "Expected {{ checkmk_var_folders | length + 1 }} folders, but found {{ __checkmk_var_folder_list | length }}!"
+    success_msg: "Expected {{ checkmk_var_folders | length + 1 }} folders, and found {{ __checkmk_var_folder_list | length }}."
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify folder criticality."
   ansible.builtin.assert:
-    that: "__checkmk_var_folder.extensions.attributes.tag_criticality == checkmk_var_folder.criticality"
+    that: "item.extensions.attributes.tag_criticality == (checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first)"
+    fail_msg: "Expected {{ item.id }} tag_criticality to be {{ checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first }}, but found {{ item.extensions.attributes.tag_criticality }}!"
+    success_msg: "Expected {{ item.id }} tag_criticality to be {{ checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first }}, and found {{ item.extensions.attributes.tag_criticality }}."
+  loop: "{{ __checkmk_var_folder_list }}"
+  when: item.id != '~'
+  loop_control:
+    label: "{{ item.id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify folder criticality per host."
+  ansible.builtin.assert:
+    that: "__checkmk_var_folder.extensions.attributes.tag_criticality == item.extensions.attributes.tag_criticality"
+    fail_msg: "Expected {{ item.id }} tag_criticality to be {{ item.extensions.attributes.tag_criticality }}, but found {{ __checkmk_var_folder.extensions.attributes.tag_criticality }}!"
+    success_msg: "Expected {{ item.id }} tag_criticality to be {{ item.extensions.attributes.tag_criticality }}, and found {{ __checkmk_var_folder.extensions.attributes.tag_criticality }}."
   vars:
     __checkmk_var_folder: "{{ lookup('checkmk.general.folder',
-                    checkmk_var_folder.path,
+                    item.id,
                     server_url=checkmk_var_server_url,
                     site=outer_item.site,
                     validate_certs=False,
                     api_user=checkmk_var_api_user,
                     api_secret=checkmk_var_api_secret)
               }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+  loop: "{{ __checkmk_var_folder_list }}"
+  when: item.id != '~'
+  loop_control:
+    label: "{{ item.id }}"
 
 # We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   when: outer_item.site == "stable_cme"
   block:
     - name: "Set checkmk_var_server_url for isolated testing."
       ansible.builtin.set_fact:
         checkmk_var_server_url: "http://127.0.0.1:5104/"
 
-    - name: "Test plugin with variables from inventory."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all folders."
+      ansible.builtin.set_fact:
+        __checkmk_var_folder_list: "{{ lookup('checkmk.general.folders', '/', recursive=True) }}"
+
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify folder count."
       ansible.builtin.assert:
-        that: "__checkmk_var_folder.extensions.attributes.tag_criticality == checkmk_var_folder.criticality"
+        that: "__checkmk_var_folder_list | length == (checkmk_var_folders | length + 1)"
+        fail_msg: "Expected {{ checkmk_var_folders | length + 1 }} folders, but found {{ __checkmk_var_folder_list | length }}!"
+        success_msg: "Expected {{ checkmk_var_folders | length + 1 }} folders, and found {{ __checkmk_var_folder_list | length }}."
+
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify folder criticality."
+      ansible.builtin.assert:
+        that: "item.extensions.attributes.tag_criticality == (checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first)"
+        fail_msg: "Expected {{ item.id }} tag_criticality to be {{ checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first }}, but found {{ item.extensions.attributes.tag_criticality }}!"
+        success_msg: "Expected {{ item.id }} tag_criticality to be {{ checkmk_var_folders | selectattr('path', 'equalto', item.extensions.path) | map(attribute='criticality') | first }}, and found {{ item.extensions.attributes.tag_criticality }}."
+      loop: "{{ __checkmk_var_folder_list }}"
+      when: item.id != '~'
+      loop_control:
+        label: "{{ item.id }}"
+
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify folder criticality per host."
+      ansible.builtin.assert:
+        that: "__checkmk_var_folder.extensions.attributes.tag_criticality == item.extensions.attributes.tag_criticality"
+        fail_msg: "Expected {{ item.id }} tag_criticality to be {{ item.extensions.attributes.tag_criticality }}, but found {{ __checkmk_var_folder.extensions.attributes.tag_criticality }}!"
+        success_msg: "Expected {{ item.id }} tag_criticality to be {{ item.extensions.attributes.tag_criticality }}, and found {{ __checkmk_var_folder.extensions.attributes.tag_criticality }}."
       vars:
-        __checkmk_var_folder: "{{ lookup('checkmk.general.folder', checkmk_var_folder.path) }}"
+        __checkmk_var_folder: "{{ lookup('checkmk.general.folder', item.id) }}"
+      loop: "{{ __checkmk_var_folder_list }}"
+      when: item.id != '~'
+      loop_control:
+        label: "{{ item.id }}"

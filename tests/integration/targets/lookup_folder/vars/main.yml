@@ -17,7 +17,16 @@ checkmk_var_test_sites:
     site: "stable_cme"
     port: "5104"
 
-checkmk_var_folder:
-  name: "Folder 1"
-  path: "/folder1"
-  criticality: "test"
+checkmk_var_folders:
+  - name: "Folder 1"
+    path: "/folder1"
+    criticality: "test"
+  - name: "Folder 2"
+    path: "/folder2"
+    criticality: "test"
+  - name: "Folder 3"
+    path: "/folder3"
+    criticality: "test"
+  - name: "Folder 3a"
+    path: "/folder3/a"
+    criticality: "prod"
