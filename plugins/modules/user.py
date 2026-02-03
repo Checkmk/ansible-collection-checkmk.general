@@ -514,7 +514,9 @@ def run_module():
         interface_theme=dict(type="str", choices=["default", "dark", "light"]),
         sidebar_position=dict(type="str", choices=["left", "right"]),
         navigation_bar_icons=dict(type="str", choices=["hide", "show"]),
-        main_menu_icons=dict(type="str", choices=["topic", "entry"], aliases=["mega_menu_icons"]),
+        main_menu_icons=dict(
+            type="str", choices=["topic", "entry"], aliases=["mega_menu_icons"]
+        ),
         show_mode=dict(
             type="str",
             choices=[
@@ -544,7 +546,6 @@ def run_module():
             changed=False,
         )
         exit_module(module, result=result, logger=logger)
-
 
     # Use the parameters to initialize some common api variables
     user = UserAPI(module)
