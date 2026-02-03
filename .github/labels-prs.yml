@@ -113,60 +113,36 @@ lookup:folder:
   - any:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/folder.py'
-
-lookup:folders:
-  - any:
-      - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/folders.py'
 
 lookup:host:
   - any:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/host.py'
-
-lookup:hosts:
-  - any:
-      - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/hosts.py'
 
 lookup:ldap_connection:
   - any:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/ldap_connection.py'
-
-lookup:ldap_connections:
-  - any:
-      - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/ldap_connections.py'
 
 lookup:rule:
   - any:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/rule.py'
-
-lookup:rules:
-  - any:
-      - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/rules.py'
 
 lookup:ruleset:
   - any:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/ruleset.py'
-
-lookup:rulesets:
-  - any:
-      - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/rulesets.py'
 
 lookup:site:
   - any:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/site.py'
-
-lookup:sites:
-  - any:
-      - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/sites.py'
 
 lookup:version:

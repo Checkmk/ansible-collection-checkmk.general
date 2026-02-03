@@ -13,10 +13,12 @@ on:
       - devel
     paths:
       - 'plugins/lookup/host.py'
+      - 'plugins/lookup/hosts.py'
   push:
     paths:
       - '.github/workflows/ans-int-test-lkp-host.yaml'
       - 'plugins/lookup/host.py'
+      - 'plugins/lookup/hosts.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/files/includes/**'
       - 'tests/integration/targets/lookup_host/**'

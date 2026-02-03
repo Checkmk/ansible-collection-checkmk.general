@@ -13,10 +13,12 @@ on:
       - devel
     paths:
       - 'plugins/lookup/folder.py'
+      - 'plugins/lookup/folders.py'
   push:
     paths:
       - '.github/workflows/ans-int-test-lkp-folder.yaml'
       - 'plugins/lookup/folder.py'
+      - 'plugins/lookup/folders.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/files/includes/**'
       - 'tests/integration/targets/lookup_folder/**'
