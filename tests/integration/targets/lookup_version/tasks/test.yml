@@ -6,6 +6,8 @@
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify Checkmk version."
   ansible.builtin.assert:
     that: "outer_item.version in __checkmk_var_result_version"
+    fail_msg: "Expected version {{ outer_item.version }}.{{ outer_item.edition }}, but got {{ __checkmk_var_result_version }}!"
+    success_msg: "Expected version {{ outer_item.version }}.{{ outer_item.edition }}, and found {{ __checkmk_var_result_version }}."
   vars:
     __checkmk_var_result_version: "{{ lookup('checkmk.general.version',
                     server_url=checkmk_var_server_url,
@@ -29,5 +31,7 @@
     - name: "Test plugin with variables from inventory."
       ansible.builtin.assert:
         that: "outer_item.version in __checkmk_var_result_internal"
+        fail_msg: "Expected version {{ outer_item.version }}.{{ outer_item.edition }}, but got {{ __checkmk_var_result_internal }}!"
+        success_msg: "Expected version {{ outer_item.version }}.{{ outer_item.edition }}, and found {{ __checkmk_var_result_internal }}."
       vars:
         __checkmk_var_result_internal: "{{ lookup('checkmk.general.version') }}"
