@@ -13,6 +13,8 @@ on:
     branches:
       - main
       - devel
+    types:
+      - opened
     paths:
       - 'roles/server/**'
       - '.github/workflows/molecule-role-server.yaml'

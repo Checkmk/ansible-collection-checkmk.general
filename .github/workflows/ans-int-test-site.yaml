@@ -11,6 +11,8 @@ on:
     branches:
       - main
       - devel
+    types:
+      - opened
     paths:
       - 'plugins/modules/site.py'
   push:

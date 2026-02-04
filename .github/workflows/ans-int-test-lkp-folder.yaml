@@ -11,6 +11,8 @@ on:
     branches:
       - main
       - devel
+    types:
+      - opened
     paths:
       - 'plugins/lookup/folder.py'
       - 'plugins/lookup/folders.py'

@@ -11,6 +11,8 @@ on:
     branches:
       - main
       - devel
+    types:
+      - opened
     paths:
       - 'plugins/lookup/site.py'
       - 'plugins/lookup/sites.py'
