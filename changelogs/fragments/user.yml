@@ -1,0 +1,4 @@
+minor_changes:
+  - User module - Make `auth_type` required.
+    This was already true before and the module would fail if the parameter was omitted.
+    Now the module will fail with a proper message stating the missing parameter.

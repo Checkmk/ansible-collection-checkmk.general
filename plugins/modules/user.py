@@ -29,6 +29,7 @@ options:
         description:
             - The authentication type.
               Setting this to C(password) will create a normal user, C(automation) will create an automation user.
+        required: true
         type: str
         choices: [password, automation]
     authorized_sites:
@@ -491,12 +492,12 @@ class UserAPI(CheckmkAPI):
 def run_module():
     argument_spec = base_argument_spec()
     argument_spec.update(
-        name=dict(required=True, type="str"),
+        name=dict(type="str", required=True),
         fullname=dict(type="str"),
         customer=dict(type="str", required=False),
         password=dict(type="str", no_log=True),
         enforce_password_change=dict(type="bool", no_log=False),
-        auth_type=dict(type="str", choices=["password", "automation"]),
+        auth_type=dict(type="str", required=True, choices=["password", "automation"]),
         disable_login=dict(type="bool"),
         email=dict(type="str"),
         fallback_contact=dict(type="bool"),
