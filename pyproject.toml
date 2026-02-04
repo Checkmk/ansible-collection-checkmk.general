@@ -1,6 +1,6 @@
 [project]
 name = "checkmk_ansible_collection"
-version = "7.0.0"
+version = "7.0.1"
 requires-python = ">=3.11"
 dependencies = [
     "antsibull-changelog==0.35.0",
