@@ -4,7 +4,7 @@ checkmk_var_test_sites:
     edition: "cme"
     site: "old_cme"
     port: "5103"
-  - version: "2.4.0p18"
+  - version: "2.4.0p20"
     edition: "cme"
     site: "stable_cme"
     port: "5104"

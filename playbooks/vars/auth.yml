@@ -7,7 +7,7 @@ checkmk_var_api_secret: "mysecret"
 checkmk_agent_user: "{{ checkmk_var_api_user }}"
 checkmk_agent_pass: "{{ checkmk_var_api_secret }}"
 
-checkmk_var_version: "2.4.0p19"
+checkmk_var_version: "2.4.0p20"
 checkmk_var_edition: "cre"
 #############################################################
 
