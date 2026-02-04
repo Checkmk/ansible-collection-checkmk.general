@@ -6,28 +6,29 @@ env:
   NAMESPACE: checkmk
   COLLECTION_NAME: general
 
-name: Ansible Linting
+name: Ansible Tests
 on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * 0'
-  pull_request:
-    paths:
-      - 'roles/**'
-      - 'playbooks/**'
-      - 'tests/**'
+
   push:
     paths:
       - 'roles/**'
       - 'playbooks/**'
       - 'tests/**'
       - '.github/workflows/ansible-lint.yaml'
+  pull_request:
+    paths:
+      - 'roles/**'
+      - 'playbooks/**'
+      - 'tests/**'
 
 jobs:
 
-  integration:
+  linting:
     runs-on: ubuntu-24.04
-    name: Ansible Linting
+    name: Linting
 
     steps:
       - name: Check out code

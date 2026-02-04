@@ -7,9 +7,11 @@ env:
   NAMESPACE: checkmk
   COLLECTION_NAME: general
 
-name: Ansible Sanity Tests
+name: Ansible Tests
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
   push:
     paths-ignore:
       - '.github/ISSUE_TEMPLATE/*'
