@@ -121,7 +121,6 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
-    auth_type: "{{ item.auth_type }}"
     email: "{{ item.email | default(omit) }}"
     disable_notifications: "{{ item.disable_notifications | default(omit) }}"
     disable_notifications_timerange: "{{ item.disable_notifications_timerange | default(omit) }}"
@@ -150,7 +149,6 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     name: "{{ checkmk_var_api_user }}"
-    auth_type: "automation"
     show_mode: "enforce_show_more"
     state: "present"
   delegate_to: localhost
@@ -201,6 +199,37 @@
   delegate_to: localhost
   run_once: true # noqa run-once[task]
 
+# This test ensures, that the parameter 'mega_menu_icons' works up until Checkmk 2.5.0,
+# as the name was changed in 2.5.0, but an alias still allows the old name.
+# ToDo: The alias will be removed in a future release, the tests need to be adapted to that state then.
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify 'mega_menu_icons' works up until Checkmk 2.5.0."
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    name: "{{ item.name }}"
+    mega_menu_icons: "{{ item.mega_menu_icons | default(omit) }}"
+    state: "present"
+  loop: "{{ checkmk_var_users_create }}"
+  when: outer_item.version | regex_replace('p.*', '') is version('2.5', '<=')
+
+# This test ensures, that the parameter 'main_menu_icons' works from Checkmk 2.5.0 onwards, as the name was changed in 2.5.0.
+# ToDo: The alias `mega_menu_icons` will be removed in a future release, the tests need to be adapted to that state then.
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify 'main_menu_icons' works from Checkmk 2.5.0 onwards."
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    name: "{{ item.name }}"
+    main_menu_icons: "{{ item.mega_menu_icons | default(omit) }}"
+    state: "present"
+  loop: "{{ checkmk_var_users_create }}"
+  when: outer_item.version | regex_replace('p.*', '') is version('2.5', '>=')
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
@@ -208,7 +237,6 @@
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
-    auth_type: "{{ item.auth_type }}"
     state: "absent"
   delegate_to: localhost
   run_once: true # noqa run-once[task]
@@ -243,45 +271,9 @@
   loop: "{{ checkmk_var_users_create }}"
   failed_when: __checkmk_var_result_users_redelete.changed
 
-# This test ensures, that the parameter 'mega_menu_icons' works up until Checkmk 2.5.0,
-# as the name was changed in 2.5.0, but an alias still allows the old name.
-# ToDo: The alias will be removed in a future release, the tests need to be adapted to that state then.
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify 'mega_menu_icons' works up until Checkmk 2.5.0."
-  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
-    name: "{{ item.name }}"
-    auth_type: "{{ item.auth_type }}"
-    password: "{{ item.password }}"
-    mega_menu_icons: "{{ item.mega_menu_icons | default(omit) }}"
-    state: "present"
-  loop: "{{ checkmk_var_users_create }}"
-  when: outer_item.version | regex_replace('p.*', '') is version('2.5', '<=')
-
-# This test ensures, that the parameter 'main_menu_icons' works from Checkmk 2.5.0 onwards, as the name was changed in 2.5.0.
-# ToDo: The alias `mega_menu_icons` will be removed in a future release, the tests need to be adapted to that state then.
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - erify 'main_menu_icons' works from Checkmk 2.5.0 onwards."
-  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
-    name: "{{ item.name }}"
-    auth_type: "{{ item.auth_type }}"
-    password: "{{ item.password }}"
-    main_menu_icons: "{{ item.mega_menu_icons | default(omit) }}"
-    state: "present"
-  loop: "{{ checkmk_var_users_create }}"
-  when: outer_item.version | regex_replace('p.*', '') is version('2.5', '>=')
-
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     name: "{{ item.name }}"
-    auth_type: "{{ item.auth_type }}"
     state: "absent"
   loop: "{{ checkmk_var_users_create }}"
   delegate_to: localhost
