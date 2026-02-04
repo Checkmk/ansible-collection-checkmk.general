@@ -113,6 +113,7 @@ checkmk_var_users_edit:
   - name: admin1
     fullname: Admin Eins
     email: 123@company.com
+    auth_type: password
     contactgroups: []
     roles:
       - admin
