@@ -85,12 +85,13 @@ options:
               Omitting this will configure the default language.
         type: str
         choices: [default, en, de]
-    mega_menu_icons:
+    main_menu_icons:
         description:
           - This option decides if colored icons should be shown for every entry in the mega menus
             or only for the headlines (the 'topics').
         type: str
         choices: [topic, entry]
+        aliases: ["mega_menu_icons"]
     name:
         description: The user you want to manage.
         required: true
@@ -234,11 +235,17 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
-    result_as_dict,
+    exit_module,
 )
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
+
+logger = Logger()
 
 USER = (
     "username",
@@ -262,8 +269,9 @@ USER = (
     "interface_theme",
     "sidebar_position",
     "navigation_bar_icons",
-    "mega_menu_icons",
     "show_mode",
+    "main_menu_icons",
+    "mega_menu_icons",
 )
 
 
@@ -285,6 +293,27 @@ class UserEndpoints:
 
 
 class UserAPI(CheckmkAPI):
+    def __init__(self, module):
+        super().__init__(module)
+
+        self.module = module
+        # Get Checkmk-version
+        self.version = self.getversion()
+
+        for key in USER:
+            if key == "username":
+                self.required[key] = self.params["name"]
+                continue
+            if self.params.get(key) is None:
+                continue
+            if key in ["main_menu_icons", "mega_menu_icons"] and self.params.get(key):
+                if self.version < CheckmkVersion("2.5.0"):
+                    self.required["mega_menu_icons"] = self.params.get(key)
+                else:
+                    self.required["main_menu_icons"] = self.params.get(key)
+                continue
+            self.required[key] = self.params[key]
+
     def _build_user_data(self):
         user = {}
 
@@ -344,10 +373,15 @@ class UserAPI(CheckmkAPI):
                 "interface_theme",
                 "sidebar_position",
                 "navigation_bar_icons",
-                "mega_menu_icons",
                 "show_mode",
             ):
                 user["interface_options"][key] = value
+
+            if key in ["main_menu_icons", "mega_menu_icons"]:
+                if self.version < CheckmkVersion("2.5.0"):
+                    user["interface_options"]["mega_menu_icons"] = value
+                else:
+                    user["interface_options"]["main_menu_icons"] = value
 
         return user
 
@@ -382,8 +416,9 @@ class UserAPI(CheckmkAPI):
                     "interface_theme",
                     "sidebar_position",
                     "navigation_bar_icons",
-                    "mega_menu_icons",
                     "show_mode",
+                    "main_menu_icons",
+                    "mega_menu_icons",
                 )
                 and key in content["interface_options"]
             ):
@@ -392,20 +427,11 @@ class UserAPI(CheckmkAPI):
     def _build_default_endpoint(self):
         return "%s/%s" % (UserEndpoints.default, self.params.get("name"))
 
-    def build_required(self):
-        # A flat hierarchy allows an easy comparison of differences
-        for key in USER:
-            if key == "username":
-                self.required[key] = self.params["name"]
-                continue
-            if self.params.get(key) is None:
-                continue
-            self.required[key] = self.params[key]
-
     def needs_editing(self):
         black_list = ("username", "password", "auth_type", "authorized_sites")
         for key, value in self.required.items():
             if key not in black_list and self.current.get(key) != value:
+                logger.debug("Difference: %s != %s" % (key, value))
                 return True
         return False
 
@@ -428,6 +454,7 @@ class UserAPI(CheckmkAPI):
         # It's allowed in Ansible to skip the fullname, but it's not allowed
         # in the Checkmk API...
         data.setdefault("fullname", data["username"])
+        logger.debug("POST data: %s" % str(data))
 
         result = self._fetch(
             code_mapping=UserHTTPCodes.create,
@@ -440,6 +467,7 @@ class UserAPI(CheckmkAPI):
     def edit(self, etag):
         data = self._build_user_data()
         self.headers["if-Match"] = etag
+        logger.debug("PUT data: %s" % str(data))
 
         result = self._fetch(
             code_mapping=UserHTTPCodes.edit,
@@ -486,7 +514,9 @@ def run_module():
         interface_theme=dict(type="str", choices=["default", "dark", "light"]),
         sidebar_position=dict(type="str", choices=["left", "right"]),
         navigation_bar_icons=dict(type="str", choices=["hide", "show"]),
-        mega_menu_icons=dict(type="str", choices=["topic", "entry"]),
+        main_menu_icons=dict(
+            type="str", choices=["topic", "entry"], aliases=["mega_menu_icons"]
+        ),
         show_mode=dict(
             type="str",
             choices=[
@@ -504,6 +534,7 @@ def run_module():
     )
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
+    logger.set_loglevel(module._verbosity)
 
     if module.params.get("api_user") == module.params.get("name"):
         result = RESULT(
@@ -514,12 +545,11 @@ def run_module():
             failed=True,
             changed=False,
         )
-        module.exit_json(**result_as_dict(result))
+        exit_module(module, result=result, logger=logger)
 
     # Use the parameters to initialize some common api variables
     user = UserAPI(module)
 
-    user.build_required()
     result = user.get()
     etag = result.etag
 
@@ -546,7 +576,7 @@ def run_module():
                 changed=False,
             )
 
-    module.exit_json(**result_as_dict(result))
+    exit_module(module, result=result, logger=logger)
 
 
 def main():
