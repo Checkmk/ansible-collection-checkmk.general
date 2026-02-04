@@ -15,7 +15,6 @@
     exceptions: "{{ item.exceptions | default(omit) }}"
     exclude: "{{ item.exclude | default(omit) }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_timeperiods_create }}"
   no_log: false
 
@@ -28,8 +27,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update time periods."
   timeperiod:
@@ -43,7 +40,6 @@
     exceptions: "{{ item.exceptions | default(omit) }}"
     exclude: "{{ item.exclude | default(omit) }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_timeperiods_update }}"
   no_log: false
 
@@ -60,7 +56,6 @@
     exceptions: "{{ item.exceptions | default(omit) }}"
     exclude: "{{ item.exclude | default(omit) }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_timeperiods_noupdate }}"
   no_log: false
 
@@ -73,8 +68,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 # This should fail.
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test that a timeperiod which is still in use cannot be deleted."
@@ -85,7 +78,6 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     state: "absent"
-  delegate_to: localhost
   loop: "{{ checkmk_var_timeperiods_faildelete }}"
   register: __checkmk_var_result_used
   failed_when: "'The time period is still in use' not in __checkmk_var_result_used.msg"
@@ -98,7 +90,6 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     state: "absent"
-  delegate_to: localhost
   loop: "{{ checkmk_var_timeperiods_deletefirst }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete a time period."
@@ -109,7 +100,6 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     state: "absent"
-  delegate_to: localhost
   loop: "{{ checkmk_var_timeperiods_delete }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -121,14 +111,10 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
   timeperiod:
     name: "{{ item.name }}"
     state: "absent"
   loop: "{{ checkmk_var_timeperiods_delete }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   environment: "{{ __checkmk_var_testing_environment }}"

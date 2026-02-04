@@ -13,8 +13,6 @@
     name: "{{ item.name }}"
     title: "{{ item.title | default(item.name) }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_host_groups_create }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for mutually exclusive module args: 'groups|name'."
@@ -28,8 +26,6 @@
     title: "{{ item.title | default(item.name) }}"
     groups: checkmk_var_host_groups_create
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_host_groups_create }}"
   register: __checkmk_var_result_mutex_loop
   failed_when: "'parameters are mutually exclusive: groups|name' not in __checkmk_var_result_mutex_loop.msg"
@@ -43,8 +39,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify part of host groups (also checks for idempotency!)."
   host_group:
@@ -56,8 +50,6 @@
     name: "{{ item.name | default(item.name) }}"
     title: "{{ item.title }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_host_groups_modify }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -69,8 +61,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host groups."
   host_group:
@@ -81,8 +71,6 @@
     customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_host_groups_delete }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -94,8 +82,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host groups that were created at the beginning (also check for idempotency)."
   host_group:
@@ -106,8 +92,6 @@
     customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     name: "{{ item.name }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_host_groups_create }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -119,8 +103,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk create host groups."
   host_group:
@@ -131,8 +113,6 @@
     customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_var_host_groups_create }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test for mutually exclusive module args: 'groups|name'."
   host_group:
@@ -144,8 +124,6 @@
     groups: "{{ checkmk_var_host_groups_create }}"
     name: "test"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_mutex_single
   failed_when: "'parameters are mutually exclusive: groups|name' not in __checkmk_var_result_mutex_single.msg"
 
@@ -159,8 +137,6 @@
     groups: "{{ checkmk_var_host_groups_create }}"
     title: "Test"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_ineffective
   failed_when: |
     "'title' has only effect when 'name' is defined and not 'groups'" not in __checkmk_var_result_ineffective.msg
@@ -174,8 +150,6 @@
     customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_var_host_groups_modify }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk delete host groups."
   host_group:
@@ -186,8 +160,6 @@
     customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_var_host_groups_delete }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk delete host groups that were created at the beginning (also check for idempotency)."
   host_group:
@@ -198,8 +170,6 @@
     customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
     groups: "{{ checkmk_var_host_groups_create }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -210,5 +180,3 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]

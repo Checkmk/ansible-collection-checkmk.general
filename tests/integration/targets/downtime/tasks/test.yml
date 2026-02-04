@@ -15,8 +15,6 @@
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Discover hosts."
@@ -27,8 +25,6 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
     state: "fix_all"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run activation."
@@ -39,8 +35,6 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     force_foreign_changes: true
     redirect: true
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for the activation to finish."
   ansible.builtin.wait_for:
@@ -331,8 +325,6 @@
     name: "{{ item.name }}"
     folder: "{{ item.folder }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run activation."
@@ -342,8 +334,6 @@
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     force_foreign_changes: true
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
   downtime:
@@ -352,6 +342,5 @@
     service_descriptions:
       - "Check_MK"
     state: absent
-  delegate_to: localhost
   loop: "{{ checkmk_var_hosts }}"
   environment: "{{ __checkmk_var_testing_environment }}"

@@ -12,8 +12,6 @@
     path: "{{ item.path }}"
     name: "{{ item.name }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_folders }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
@@ -28,8 +26,6 @@
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -41,8 +37,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify host folder."
   ansible.builtin.assert:
@@ -56,8 +50,6 @@
                     api_user=checkmk_var_api_user,
                     api_secret=checkmk_var_api_secret)
               }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
@@ -69,8 +61,6 @@
     name: "{{ item.name }}"
     folder: "{{ item.folder | default(omit) }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -82,8 +72,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create host with update_attributes without folder."
   host:
@@ -99,8 +87,6 @@
         foo: bar
       alias: test
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency on update_attributes for only a subset of attributes."
@@ -115,8 +101,6 @@
         foo: bar
       alias: test
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove Attributes of host."
@@ -129,8 +113,6 @@
     remove_attributes:
       - alias
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency on remove_attributes."
@@ -143,8 +125,6 @@
     remove_attributes:
       - alias
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
@@ -156,8 +136,6 @@
     name: "{{ item.name }}"
     folder: "{{ item.folder | default(omit) }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -169,8 +147,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 ### Cluster Host Tests
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
@@ -185,8 +161,6 @@
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -198,8 +172,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create cluster hosts."
   host:
@@ -214,8 +186,6 @@
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -227,8 +197,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of create cluster hosts."
   host:
@@ -243,8 +211,6 @@
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify nodes in cluster host."
@@ -260,8 +226,6 @@
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   vars:
     __checkmk_var_first: "{{ checkmk_var_cluster_hosts[0] }}"
     __checkmk_var_second: "{{ checkmk_var_cluster_hosts[1] }}"
@@ -275,8 +239,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency, Modify nodes in cluster host."
   host:
@@ -291,8 +253,6 @@
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   vars:
     __checkmk_var_first: "{{ checkmk_var_cluster_hosts[0] }}"
     __checkmk_var_second: "{{ checkmk_var_cluster_hosts[1] }}"
@@ -310,8 +270,6 @@
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts_add_nodes }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -323,8 +281,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of Add nodes to cluster hosts."
   host:
@@ -339,8 +295,6 @@
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts_add_nodes }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -352,8 +306,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove nodes from cluster hosts."
   host:
@@ -368,8 +320,6 @@
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts_remove_nodes }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -381,8 +331,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of nodes removal from cluster hosts."
   host:
@@ -397,8 +345,6 @@
       site: "{{ outer_item.site }}"
       ipaddress: 127.0.0.1
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts_remove_nodes }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -410,8 +356,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 ###
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete cluster hosts."
@@ -423,8 +367,6 @@
     name: "{{ item.name }}"
     folder: "{{ item.folder | default(omit) }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -436,8 +378,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of delete cluster hosts."
   host:
@@ -448,8 +388,6 @@
     name: "{{ item.name }}"
     folder: "{{ item.folder | default(omit) }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create cluster host with update_attributes without folder."
@@ -467,8 +405,6 @@
         foo: bar
       alias: test
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency on update_attributes for only a subset of attributes."
@@ -484,8 +420,6 @@
         foo: bar
       alias: test
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove Attributes of cluster host."
@@ -499,8 +433,6 @@
     remove_attributes:
       - alias
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency on remove_attributes."
@@ -514,8 +446,6 @@
     remove_attributes:
       - alias
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete cluster hosts."
@@ -528,8 +458,6 @@
     nodes: "{{ item.nodes }}"
     folder: "{{ item.folder | default(omit) }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_cluster_hosts }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
@@ -541,8 +469,6 @@
     name: "{{ item.name }}"
     folder: "{{ item.folder | default(omit) }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_hosts }}"
 
 ###
@@ -555,8 +481,6 @@
     path: "{{ item.path }}"
     name: "{{ item.name }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_folders }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -568,8 +492,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
   host:
@@ -577,6 +499,4 @@
     folder: "{{ item.folder | default(omit) }}"
     state: "absent"
   loop: "{{ checkmk_var_hosts }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   environment: "{{ __checkmk_var_testing_environment }}"

@@ -30,7 +30,6 @@
         restrict_source_hosts:
           - "boar"
     state: "present"
-  delegate_to: localhost
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create a DCD conf.  Again!"
   dcd:
@@ -59,7 +58,6 @@
         restrict_source_hosts:
           - "boar"
     state: "present"
-  delegate_to: localhost
   register: __checkmk_var_result_dcd_create
   failed_when: __checkmk_var_result_dcd_create.changed
 
@@ -74,4 +72,3 @@
       dcd_id: "PiggybackBoar"
       site: "{{ outer_item.site }}"
     state: "absent"
-  delegate_to: localhost

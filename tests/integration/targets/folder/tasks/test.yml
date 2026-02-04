@@ -16,8 +16,6 @@
     path: "{{ item.path }}"
     name: "{{ item.name }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_folders }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -29,8 +27,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete folders."
   folder:
@@ -41,8 +37,6 @@
     path: "{{ item.path }}"
     name: "{{ item.name }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_folders }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -54,8 +48,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folders for attributes test."
   folder:
@@ -67,8 +59,6 @@
     name: "{{ checkmk_var_folder_attr_test.name }}"
     attributes: "{{ checkmk_var_folder_attr_test.attributes }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update folder attributes without specifying title (name)."
   folder:
@@ -81,8 +71,6 @@
     update_attributes:
       tag_criticality: "test"
       tag_networking: "wan"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check the idempotency of Update attributes."
   folder:
@@ -94,8 +82,6 @@
     update_attributes:
       tag_criticality: "test"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_update_attributes
   failed_when: __checkmk_var_result_update_attributes.changed | bool
 
@@ -108,8 +94,6 @@
     path: "{{ checkmk_var_folder_attr_test.path }}"
     name: "{{ checkmk_var_folder_attr_test.name }} Modified"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove folder attributes without specifying title (name)."
   folder:
@@ -121,8 +105,6 @@
     state: "present"
     remove_attributes:
       - "tag_networking"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check the idempotency of Remove attributes."
   folder:
@@ -134,8 +116,6 @@
     remove_attributes:
       - "tag_networking"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_remove_attributes
   failed_when: __checkmk_var_result_remove_attributes.changed | bool
 
@@ -148,8 +128,6 @@
     path: "{{ item.path }}"
     name: "{{ item.name }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_folders }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -161,8 +139,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folders for defaults test."
   folder:
@@ -174,8 +150,6 @@
     name: "{{ item.name | default(omit) }}"
     state: "present"
   loop: "{{ checkmk_var_folders_defaults_test }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -186,8 +160,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Print created folders."
   ansible.builtin.debug:
@@ -202,8 +174,6 @@
                     api_secret=checkmk_var_api_secret)
               }}"
     __checkmk_var_folder_title: "{{ dict((__checkmk_var_result_print | map(attribute='id') | map('regex_replace', '~', '/')) | zip(__checkmk_var_result_print | map(attribute='title'))) }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify created folders."
   ansible.builtin.assert:
@@ -219,8 +189,6 @@
               }}"
     __checkmk_var_folder_title: "{{ dict((__checkmk_var_result_verify | map(attribute='id') | map('regex_replace', '~', '/')) | zip(__checkmk_var_result_verify | map(attribute='title'))) }}"
   loop: "{{ checkmk_var_folders_defaults_test }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete folders."
   folder:
@@ -232,8 +200,6 @@
     name: "{{ item.name | default(omit) }}"
     state: "absent"
   loop: "{{ checkmk_var_folders_defaults_test }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
   activation:
@@ -244,8 +210,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
   folder:
@@ -253,6 +217,4 @@
     name: "{{ item.name | default(omit) }}"
     state: "absent"
   loop: "{{ checkmk_var_folders_defaults_test }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   environment: "{{ __checkmk_var_testing_environment }}"
