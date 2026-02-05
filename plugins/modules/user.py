@@ -497,7 +497,9 @@ def run_module():
         customer=dict(type="str", required=False),
         password=dict(type="str", no_log=True),
         enforce_password_change=dict(type="bool", no_log=False),
-        auth_type=dict(type="str", default="password", choices=["password", "automation"]),
+        auth_type=dict(
+            type="str", default="password", choices=["password", "automation"]
+        ),
         disable_login=dict(type="bool"),
         email=dict(type="str"),
         fallback_contact=dict(type="bool"),
