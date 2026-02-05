@@ -22,7 +22,7 @@ checkmk.general.user module -- Manage users in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.0.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.0.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -265,7 +265,7 @@ Parameters
 
       :ansible-option-choices:`Choices:`
 
-      - :ansible-option-choices-entry:`"password"`
+      - :ansible-option-choices-entry-default:`"password"` :ansible-option-choices-default-mark:`← (default)`
       - :ansible-option-choices-entry:`"automation"`
 
 
@@ -879,19 +879,23 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main_menu_icons"></div>
         <div class="ansibleOptionAnchor" id="parameter-mega_menu_icons"></div>
 
+      .. _ansible_collections.checkmk.general.user_module__parameter-main_menu_icons:
       .. _ansible_collections.checkmk.general.user_module__parameter-mega_menu_icons:
 
       .. rst-class:: ansible-option-title
 
-      **mega_menu_icons**
+      **main_menu_icons**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-mega_menu_icons" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-main_menu_icons" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: mega_menu_icons`
 
         :ansible-option-type:`string`
 
