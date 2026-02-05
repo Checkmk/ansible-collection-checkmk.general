@@ -18,7 +18,6 @@
     owner: "{{ item.owner }}"
     shared: "{{ item.shared }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_passwords_create }}"
   no_log: false
 
@@ -36,7 +35,6 @@
     owner: "{{ item.owner }}"
     shared: "{{ item.shared }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_passwords_create_cme }}"
   no_log: false
   when: (outer_item.edition == "cme")
@@ -54,7 +52,6 @@
     name: "{{ item.name }}"
     password: "{{ item.password }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_passwords_create }}"
   no_log: false
   when: (outer_item.edition == "cme")
@@ -70,8 +67,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update passwords."
   password:
@@ -88,7 +83,6 @@
     owner: "{{ item.owner | default(omit) }}"
     shared: "{{ item.shared | default(omit) }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_passwords_update }}"
   no_log: false
 
@@ -101,8 +95,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete a password."
   password:
@@ -114,7 +106,6 @@
     name: "{{ item.name }}"
     title: "{{ item.title }}"
     state: "absent"
-  delegate_to: localhost
   loop: "{{ checkmk_var_passwords_delete }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -126,8 +117,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
   password:
@@ -136,6 +125,4 @@
     title: "{{ item.title }}"
     state: "absent"
   loop: "{{ checkmk_var_passwords_delete }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   environment: "{{ __checkmk_var_testing_environment }}"

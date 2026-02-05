@@ -11,7 +11,6 @@
     help: "{{ item.help }}"
     tags: "{{ item.tags }}"
     state: "present"
-  delegate_to: localhost
   register: __checkmk_var_result_tag_group_create
   loop: "{{ checkmk_var_tag_groups_create }}"
   failed_when: not __checkmk_var_result_tag_group_create.changed
@@ -22,8 +21,6 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create tag_group again."
   tag_group:
@@ -37,7 +34,6 @@
     help: "{{ item.help }}"
     tags: "{{ item.tags }}"
     state: "present"
-  delegate_to: localhost
   register: __checkmk_var_result_tag_group_recreate
   loop: "{{ checkmk_var_tag_groups_create }}"
   failed_when: __checkmk_var_result_tag_group_recreate.changed
@@ -66,7 +62,6 @@
     help: "{{ item.help }}"
     tags: "{{ item.tags }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_tag_groups_update }}"
   register: __checkmk_var_result_tag_group_update
   failed_when: "'You must authorize Checkmk to update the relevant instances using the repair parameter' not in __checkmk_var_result_tag_group_update.msg"
@@ -84,7 +79,6 @@
     tags: "{{ item.tags }}"
     repair: "{{ item.repair | default(omit) }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_tag_groups_update }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
@@ -93,8 +87,6 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete tag_groups."
   tag_group:
@@ -105,7 +97,6 @@
     name: "{{ item.name }}"
     repair: "{{ item.repair | default(omit) }}"
     state: "absent"
-  delegate_to: localhost
   register: __checkmk_var_result_tag_group_delete
   loop: "{{ checkmk_var_tag_groups_delete }}"
   failed_when: not __checkmk_var_result_tag_group_delete.changed
@@ -116,8 +107,6 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete tag_groups again."
   tag_group:
@@ -128,7 +117,6 @@
     name: "{{ item.name }}"
     repair: "{{ item.repair | default(omit) }}"
     state: "absent"
-  delegate_to: localhost
   register: __checkmk_var_result_tag_group_redelete
   loop: "{{ checkmk_var_tag_groups_delete }}"
   failed_when: __checkmk_var_result_tag_group_redelete.changed
@@ -148,7 +136,6 @@
       topic: "{{ item.topic }}"
       title: "{{ item.title }}"
       help: "{{ item.help }}"
-  delegate_to: localhost
   loop: "{{ checkmk_var_aux_tags_create }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create tag_group with aux_tags."
@@ -163,7 +150,6 @@
     help: "{{ item.help }}"
     tags: "{{ item.tags }}"
     state: "present"
-  delegate_to: localhost
   register: __checkmk_var_result_tag_group_with_aux_tags_create
   loop: "{{ checkmk_var_tag_groups_with_aux_tags_create }}"
   failed_when: not __checkmk_var_result_tag_group_with_aux_tags_create.changed
@@ -181,7 +167,6 @@
     tags: "{{ item.tags }}"
     repair: "{{ item.repair | default(omit) }}"
     state: "present"
-  delegate_to: localhost
   register: __checkmk_var_result_tag_group_with_aux_tags_update
   loop: "{{ checkmk_var_tag_groups_with_aux_tags_update }}"
   failed_when: not __checkmk_var_result_tag_group_with_aux_tags_update.changed
@@ -196,6 +181,4 @@
     repair: "{{ item.repair | default(omit) }}"
     state: "present"
   loop: "{{ checkmk_var_tag_groups_with_aux_tags_update }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   environment: "{{ __checkmk_var_testing_environment }}"

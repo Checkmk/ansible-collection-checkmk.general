@@ -14,7 +14,6 @@
                     api_user=checkmk_var_api_user,
                     api_secret=checkmk_var_api_secret)
               }}"
-  delegate_to: localhost
   register: __checkmk_var_result_bakery
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify bakery status."
@@ -27,8 +26,6 @@
 
 # We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   when: outer_item.site == "stable_cme"
   block:
     - name: "Set checkmk_var_server_url for isolated testing."

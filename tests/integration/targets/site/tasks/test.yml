@@ -13,11 +13,9 @@
     site_connection:
       site_config: "{{ item.site_config }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create site connection again."
   site:
@@ -29,11 +27,9 @@
     site_connection:
       site_config: "{{ item.site_config }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log in to remote site."
   site:
@@ -45,11 +41,9 @@
     site_connection:
       authentication: "{{ item.authentication }}"
     state: "login"
-  delegate_to: localhost
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log in to remote site again."
   site:
@@ -61,11 +55,9 @@
     site_connection:
       authentication: "{{ item.authentication }}"
     state: "login"
-  delegate_to: localhost
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_login
   # failed_when: __checkmk_var_result_login.changed | bool  # TODO: Temporarily disabled. See #899.
 
@@ -83,11 +75,9 @@
         configuration_connection:
         status_connection:
     state: "present"
-  delegate_to: localhost
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update remote site again. "
   site:
@@ -101,11 +91,9 @@
         basic_settings:
           alias: "{{ item.site_id }} with new alias"
     state: "present"
-  delegate_to: localhost
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_update
   failed_when: __checkmk_var_result_update.changed | bool
 
@@ -117,11 +105,9 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     site_id: "{{ item.site_id }}"
     state: "logout"
-  delegate_to: localhost
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log out from remote site again."
   site:
@@ -131,11 +117,9 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     site_id: "{{ item.site_id }}"
     state: "logout"
-  delegate_to: localhost
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_logout
   failed_when: __checkmk_var_result_logout.changed | bool
 
@@ -147,11 +131,9 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     site_id: "{{ item.site_id }}"
     state: "absent"
-  delegate_to: localhost
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete remote site again."
   site:
@@ -161,11 +143,9 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     site_id: "{{ item.site_id }}"
     state: "absent"
-  delegate_to: localhost
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_delete
   failed_when: __checkmk_var_result_delete.changed | bool
 
@@ -176,7 +156,6 @@
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
     label: "{{ item.site_id }}"
-  delegate_to: localhost
   environment: "{{ __checkmk_var_testing_environment }}"
   register: __checkmk_var_result_environment
   failed_when: __checkmk_var_result_environment.changed | bool

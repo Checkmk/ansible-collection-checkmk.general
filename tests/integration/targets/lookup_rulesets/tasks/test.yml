@@ -12,8 +12,6 @@
     ruleset: "{{ item.ruleset }}"
     rule: "{{ item.rule }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rules }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all rulesets."
@@ -30,8 +28,6 @@
                   api_user=checkmk_var_api_user,
                   api_secret=checkmk_var_api_secret)
               }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get list of all rulesets."
   ansible.builtin.debug:
@@ -46,8 +42,6 @@
              api_user=checkmk_var_api_user,
              api_secret=checkmk_var_api_secret)
          }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop_control:
     label: "{{ item.id }}"
 
@@ -65,8 +59,6 @@
                   api_user=checkmk_var_api_user,
                   api_secret=checkmk_var_api_secret)
               }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify number of rules using lookup-ruleset."
   ansible.builtin.assert:
@@ -81,8 +73,6 @@
                       api_user=checkmk_var_api_user,
                       api_secret=checkmk_var_api_secret)
                   }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_ruleset_regexes }}"
 
 # We need this hack to overwrite the colliding global variable
@@ -97,8 +87,6 @@
     that: "__checkmk_var_ruleset.number_of_rules == 1"
   vars:
     __checkmk_var_ruleset: "{{ lookup('checkmk.general.ruleset', ruleset=item) }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_ruleset_regexes }}"
   when: outer_item.site == "stable_cme"
 
@@ -107,14 +95,10 @@
     var: __checkmk_var_rulesets
   vars:
     __checkmk_var_rulesets: "{{ lookup('checkmk.general.rulesets', regex='file', rulesets_used=False, rulesets_deprecated=False) }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   when: outer_item.site == "stable_cme"
 
 # We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   when: outer_item.site == "stable_cme"
   block:
     - name: "Set checkmk_var_server_url for isolated testing."
