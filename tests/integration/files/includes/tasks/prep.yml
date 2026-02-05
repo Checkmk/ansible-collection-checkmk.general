@@ -1,4 +1,13 @@
 ---
+# This is a little hack to take some load off the main Ubuntu servers
+# (also their archive.ubuntu.com was not accessible at some point)
+# The URL can of course easily be changed to something else, if it makes sense.
+# - name: "Change default repositories in Test Container."
+#   ansible.builtin.lineinfile:
+#     path: /etc/apt/sources.list.d/ubuntu.sources
+#     regex: 'URIs: http://archive.ubuntu.com/ubuntu/'
+#     line: 'URIs: http://mirror.netcologne.de/ubuntu/'
+
 - name: "Install dependencies."
   ansible.builtin.package:
     name: python3-apt

@@ -13,8 +13,6 @@
     name: "{{ item }}"
     title: "{{ item }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_contact_groups }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
@@ -27,8 +25,6 @@
     redirect: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
@@ -59,8 +55,6 @@
     authorized_sites:
       - "{{ outer_item.site }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
   register: __checkmk_var_result_users_create
   loop: "{{ checkmk_var_users_create }}"
   failed_when: not __checkmk_var_result_users_create.changed
@@ -75,8 +69,6 @@
     redirect: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create same users again."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
@@ -107,8 +99,6 @@
     authorized_sites:
       - "{{ outer_item.site }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
   register: __checkmk_var_result_users_recreate
   loop: "{{ checkmk_var_users_create }}"
   failed_when: __checkmk_var_result_users_recreate.changed
@@ -137,8 +127,6 @@
     show_mode: "{{ item.show_mode | default(omit) }}"
     roles: "{{ item.roles | default(omit) }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_users_edit }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Don't edit auth user."
@@ -151,8 +139,6 @@
     name: "{{ checkmk_var_api_user }}"
     show_mode: "enforce_show_more"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_dont_edit
   failed_when: "'You cannot modify the user that is used for API' not in __checkmk_var_result_dont_edit.msg"
 
@@ -166,8 +152,6 @@
     redirect: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Change PW of users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
@@ -180,8 +164,6 @@
     password: "{{ item.password }}"
     auth_type: "{{ item.auth_type }}"
     state: "reset_password"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
   register: __checkmk_var_result_users_pw_change
   loop: "{{ checkmk_var_users_newpw }}"
   failed_when: not __checkmk_var_result_users_pw_change.changed
@@ -196,8 +178,37 @@
     redirect: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
+
+# This test ensures, that the parameter 'mega_menu_icons' works up until Checkmk 2.5.0,
+# as the name was changed in 2.5.0, but an alias still allows the old name.
+# ToDo: The alias will be removed in a future release, the tests need to be adapted to that state then.
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify 'mega_menu_icons' works up until Checkmk 2.5.0."
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    name: "{{ item.name }}"
+    mega_menu_icons: "{{ item.mega_menu_icons | default(omit) }}"
+    state: "present"
+  loop: "{{ checkmk_var_users_create }}"
+  when: outer_item.version | regex_replace('p.*', '') is version('2.5', '<=')
+
+# This test ensures, that the parameter 'main_menu_icons' works from Checkmk 2.5.0 onwards, as the name was changed in 2.5.0.
+# ToDo: The alias `mega_menu_icons` will be removed in a future release, the tests need to be adapted to that state then.
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify 'main_menu_icons' works from Checkmk 2.5.0 onwards."
+  user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    name: "{{ item.name }}"
+    main_menu_icons: "{{ item.mega_menu_icons | default(omit) }}"
+    state: "present"
+  loop: "{{ checkmk_var_users_create }}"
+  when: outer_item.version | regex_replace('p.*', '') is version('2.5', '>=')
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
@@ -207,8 +218,6 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
   register: __checkmk_var_result_users_delete
   loop: "{{ checkmk_var_users_create }}"
   failed_when: not __checkmk_var_result_users_delete.changed
@@ -223,8 +232,6 @@
     redirect: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete same users again."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
@@ -234,8 +241,6 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     name: "{{ item.name }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true # noqa run-once[task]
   register: __checkmk_var_result_users_redelete
   loop: "{{ checkmk_var_users_create }}"
   failed_when: __checkmk_var_result_users_redelete.changed
@@ -245,6 +250,4 @@
     name: "{{ item.name }}"
     state: "absent"
   loop: "{{ checkmk_var_users_create }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   environment: "{{ __checkmk_var_testing_environment }}"

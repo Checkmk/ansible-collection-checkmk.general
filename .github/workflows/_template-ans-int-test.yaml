@@ -1,0 +1,133 @@
+# Resources:
+# - About reusable workflows: https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows
+# - Template for this file: https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
+# - About Ansible integration tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
+
+name: Template for Ansible Integration Tests
+on:
+  workflow_call:
+    inputs:
+      module:
+        required: true
+        type: string
+
+jobs:
+
+  integration:
+    runs-on: ubuntu-24.04
+    name: Ⓐ${{ matrix.ansible }}+py${{ matrix.python }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible:
+          - stable-2.18
+          - stable-2.19
+          - stable-2.20
+          - devel
+        python:
+          - '3.11'
+          - '3.12'
+          - '3.13'
+        exclude:
+          # Exclude unsupported sets.
+          - ansible: devel
+            python: '3.11'
+          - ansible: stable-2.20
+            python: '3.11'
+
+# Ports Concept:
+# 1                   2       3              4
+# Usecase             Edition Remote Count   Checkmk Minor Version
+# Apache: 5           Raw: 0  0 - 2          3, 4, 5
+# Livestatus: 6       Managed: 1
+# Livestatusproxy: 4
+# RabbitMQ: 3
+
+    services:
+      old_cre:
+        image: checkmk/check-mk-raw:2.3.0p42
+        ports:
+          - 5003:5000  # Site Apache
+        env:
+          CMK_SITE_ID: "old_cre"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      old-cre-r1:
+        image: checkmk/check-mk-raw:2.3.0p42
+        ports:
+          - 5013:5000  # Site Apache
+          - 6013:6557  # Livestatus
+          - 4013:6663  # Livestatus Proxy
+        env:
+          CMK_SITE_ID: "old_cre_r1"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
+      old_cme:
+        image: checkmk/check-mk-managed:2.3.0p42
+        ports:
+          - 5103:5000  # Site Apache
+        env:
+          CMK_SITE_ID: "old_cme"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      stable_cre:
+        image: checkmk/check-mk-raw:2.4.0p20
+        ports:
+          - 5004:5000  # Site Apache
+        env:
+          CMK_SITE_ID: "stable_cre"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      stable-cre-r1:
+        image: checkmk/check-mk-raw:2.4.0p20
+        ports:
+          - 5014:5000  # Site Apache
+          - 6014:6557  # Livestatus
+          - 4014:6664  # Livestatus Proxy
+          - 3014:5671  # Message Broker
+        env:
+          CMK_SITE_ID: "stable_cre_r1"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
+          CMK_RABBITMQ_PORT: 5671
+      stable_cme:
+        image: checkmk/check-mk-managed:2.4.0p20
+        ports:
+          - 5104:5000  # Site Apache
+        env:
+          CMK_SITE_ID: "stable_cme"
+          CMK_PASSWORD: "Sup3rSec4et!"
+      stable-cme-r1:
+        image: checkmk/check-mk-managed:2.4.0p20
+        ports:
+          - 5114:5000  # Site Apache
+          - 6114:6557  # Livestatus
+          - 4114:6664  # Livestatus Proxy
+          - 3114:5671  # Message Broker
+        env:
+          CMK_SITE_ID: "stable_cme_r1"
+          CMK_PASSWORD: "Sup3rSec4et!"
+          CMK_LIVESTATUS_TCP: "on"
+          CMK_RABBITMQ_PORT: 5671
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          path: ansible_collections/checkmk/general
+
+      - name: "Install uv and set the python version."
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: ${{ matrix.python }}
+          enable-cache: true
+          working-directory: ./ansible_collections/checkmk/general/
+
+      - name: "Setup uv venv."
+        run: uv venv
+        working-directory: ./ansible_collections/checkmk/general
+
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
+        working-directory: ./ansible_collections/checkmk/general
+
+      - name: Run integration test
+        run: uv run ansible-test integration ${{ inputs.module }} -v --color --continue-on-error --diff --python ${{ matrix.python }}
+        working-directory: ./ansible_collections/checkmk/general

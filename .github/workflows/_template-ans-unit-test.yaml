@@ -1,39 +1,21 @@
-# README:
 # Resources:
+# - About reusable workflows: https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows
 # - Template for this file: https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
-# - About Ansible sanity tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
+# - About Ansible integration tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
-env:
-  NAMESPACE: checkmk
-  COLLECTION_NAME: general
-
-name: Ansible Tests
+name: Template for Ansible Unit Tests
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0'
-  push:
-    paths-ignore:
-      - '.github/ISSUE_TEMPLATE/*'
-      - 'docs/**'
-      - 'changelogs/**'
-      - '**.md'
-      - '**.rst'
-      - 'roles/**'
-  pull_request:
-    paths-ignore:
-      - '.github/ISSUE_TEMPLATE/*'
-      - 'docs/**'
-      - 'changelogs/**'
-      - '**.md'
-      - '**.rst'
-      - 'roles/**'
+  workflow_call:
+    inputs:
+      testpath:
+        required: true
+        type: string
 
 jobs:
 
-  sanity:
+  units:
     runs-on: ubuntu-24.04
-    name: Sanity (Ⓐ${{ matrix.ansible }})
+    name: Units (Ⓐ${{ matrix.ansible }}+${{ matrix.python }})
     strategy:
       fail-fast: false
       matrix:
@@ -42,19 +24,28 @@ jobs:
           - stable-2.19
           - stable-2.20
           - devel
+        python:
+          - '3.11'
+          - '3.12'
+          - '3.13'
+        exclude:
+          # Exclude unsupported sets.
+          - ansible: devel
+            python: '3.11'
+          - ansible: stable-2.20
+            python: '3.11'
 
     steps:
-
       - name: Check out code
         uses: actions/checkout@v6
         with:
           path: ansible_collections/checkmk/general
 
-      - name: "Install uv."
+      - name: "Install uv and set the python version."
         uses: astral-sh/setup-uv@v7
         with:
+          python-version: ${{ matrix.python }}
           enable-cache: true
-          working-directory: ./ansible_collections/checkmk/general/
 
       - name: "Create uv venv."
         run: uv venv
@@ -64,6 +55,6 @@ jobs:
         run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
         working-directory: ./ansible_collections/checkmk/general
 
-      - name: Run sanity tests
-        run: uv run ansible-test sanity --docker -v --color --coverage
+      - name: Run unit test
+        run: uv run ansible-test units ${{ inputs.testpath}} -v --color --python ${{ matrix.python }} --docker default
         working-directory: ./ansible_collections/checkmk/general

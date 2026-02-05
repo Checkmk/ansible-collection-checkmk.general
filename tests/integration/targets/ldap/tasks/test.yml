@@ -11,11 +11,9 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     ldap_config: "{{ item.ldap_config }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create an LDAP connection. Again."
   ldap:
@@ -25,11 +23,9 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     ldap_config: "{{ item.ldap_config }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_create
   failed_when: __checkmk_var_result_create.changed | bool
 
@@ -51,11 +47,9 @@
       groups: "{{ item.ldap_config.groups | default(omit) }}"
       sync_plugins: "{{ item.ldap_config.sync_plugins | default(omit) }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update an LDAP connection. Again."
   ldap:
@@ -75,11 +69,9 @@
       groups: "{{ item.ldap_config.groups | default(omit) }}"
       sync_plugins: "{{ item.ldap_config.sync_plugins | default(omit) }}"
     state: "present"
-  delegate_to: localhost
   loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_create
   failed_when: __checkmk_var_result_create.changed | bool
 
@@ -93,11 +85,9 @@
       general_properties:
         id: "{{ item.ldap_config.general_properties.id }}"
     state: "absent"
-  delegate_to: localhost
   loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete LDAP connection. Again."
   ldap:
@@ -109,10 +99,8 @@
       general_properties:
         id: "{{ item.ldap_config.general_properties.id }}"
     state: "absent"
-  delegate_to: localhost
   loop: "{{ checkmk_var_ldap_connections }}"
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
-  run_once: true  # noqa run-once[task]
   register: __checkmk_var_result_delete
   failed_when: __checkmk_var_result_delete.changed | bool

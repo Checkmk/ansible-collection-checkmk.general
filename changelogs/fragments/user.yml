@@ -1,0 +1,9 @@
+minor_changes:
+  - User module - Checkmk 2.5.0 renames the ``mega_menu_icons`` parameter of the user management REST API endpoints.
+    The new name ``main_menu_icons`` will be used by the user module for Checkmk 2.5.0, while the old name is used for earlier versions of Checkmk.
+    The old name remains as an alias in Checkmk 2.5.0, so that it should still work with older versions of this collection for now.
+
+major_changes:
+  - User module - The parameter ``auth_type`` now uses ``password`` as the default value.
+    In most situations omitting the parameter was no problem at all, but it could fail in certain scenarios.
+    Now the module will default to password authentication, if not defined otherwise.

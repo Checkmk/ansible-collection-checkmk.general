@@ -12,8 +12,6 @@
     ruleset: "{{ item.ruleset }}"
     rule: "{{ item.rule }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rules }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all rules of a ruleset."
@@ -29,8 +27,6 @@
                   api_secret=checkmk_var_api_secret)
               }}"
   register: __checkmk_var_cpu_load_ruleset
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - compare rules with ansible data."
   ansible.builtin.assert:
@@ -45,8 +41,6 @@
                       api_user=checkmk_var_api_user,
                       api_secret=checkmk_var_api_secret)
                   }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rulesets }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - filter for certain rulesets."
@@ -61,8 +55,6 @@
                       api_user=checkmk_var_api_user,
                       api_secret=checkmk_var_api_secret)
                   }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rulesets }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - filter for certain rulesets and check the count."
@@ -79,8 +71,6 @@
                       api_user=checkmk_var_api_user,
                       api_secret=checkmk_var_api_secret)
                   }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rulesets }}"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get each single rule of a ruleset."
@@ -95,19 +85,15 @@
                       api_user=checkmk_var_api_user,
                       api_secret=checkmk_var_api_secret)
                   }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ __checkmk_var_cpu_load_ruleset.__checkmk_var_one_ruleset }}"
 
 # We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   when: outer_item.site == "stable_cme"
   block:
     - name: "Set checkmk_var_server_url for isolated testing."
       ansible.builtin.set_fact:
-        checkmk_var_server_url: "http://127.0.0.1:5324/"
+        checkmk_var_server_url: "http://127.0.0.1:5104/"
 
     - name: "Test plugin with variables from inventory for: rule."
       ansible.builtin.debug:

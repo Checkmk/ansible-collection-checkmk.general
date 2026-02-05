@@ -15,8 +15,6 @@
     ruleset: "{{ item.ruleset }}"
     rule: "{{ item.rule }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rules }}"
   register: __checkmk_var_created_rules
 
@@ -29,8 +27,6 @@
     ruleset: "{{ item.ruleset }}"
     rule: "{{ item.rule }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ checkmk_var_rules }}"
   register: __checkmk_var_result_rules_create
   failed_when: __checkmk_var_result_rules_create.changed
@@ -50,8 +46,6 @@
         description: "New description"
       value_raw: "{{ item.content.extensions.value_raw | string }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ __checkmk_var_created_rules.results }}"
   loop_control:
     label: "{{ item.content.id }}"
@@ -71,8 +65,6 @@
         description: "New description"
       value_raw: "{{ item.content.extensions.value_raw | string }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ __checkmk_var_created_rules.results }}"
   loop_control:
     label: "{{ item.content.id }}"
@@ -94,8 +86,6 @@
         description: "Even newer description"
       value_raw: "{{ item.extensions.value_raw | string }}"
     state: "present"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ lookup('checkmk.general.rules',
       ruleset='checkgroup_parameters:filesystem',
       comment_regex='Ansible managed',
@@ -117,8 +107,6 @@
     rule:
       rule_id: "{{ item.content.id }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ __checkmk_var_created_rules.results }}"
   loop_control:
     label: "{{ item.content.id }}"
@@ -132,8 +120,6 @@
     force_foreign_changes: true
     sites:
       - "{{ outer_item.site }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete rules. Again."
   rule:
@@ -145,8 +131,6 @@
     rule:
       rule_id: "{{ item.content.id }}"
     state: "absent"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   loop: "{{ __checkmk_var_created_rules.results }}"
   loop_control:
     label: "{{ item.content.id }}"
@@ -162,6 +146,4 @@
   loop: "{{ __checkmk_var_created_rules.results }}"
   loop_control:
     label: "{{ item.content.id }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   environment: "{{ __checkmk_var_testing_environment }}"

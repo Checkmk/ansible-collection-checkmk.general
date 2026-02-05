@@ -1,46 +1,77 @@
 ---
-- name: " {{ outer_item.version }} - {{ outer_item.edition | upper }} - Get config of the site."
-  ansible.builtin.debug:
-    msg: "Config of site {{ __checkmk_var_site.basic_settings.site_id }}: {{ __checkmk_var_site }}"
-  vars:
-    __checkmk_var_site: "{{ lookup('checkmk.general.site',
-                    outer_item.site,
-                    server_url=checkmk_var_server_url,
-                    site=outer_item.site,
-                    validate_certs=False,
-                    api_user=checkmk_var_api_user,
-                    api_secret=checkmk_var_api_secret)
-              }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify local connection."
-  ansible.builtin.assert:
-    that: "__checkmk_var_site.status_connection.connection.socket_type == 'local'"
-  vars:
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all sites."
+  ansible.builtin.set_fact:
+    __checkmk_var_sites: "{{ lookup('checkmk.general.sites',
+                        server_url=checkmk_var_server_url,
+                        site=outer_item.site,
+                        validate_certs=False,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get single site."
+  ansible.builtin.set_fact:
     __checkmk_var_site: "{{ lookup('checkmk.general.site',
-                    outer_item.site,
-                    server_url=checkmk_var_server_url,
-                    site=outer_item.site,
-                    validate_certs=False,
-                    api_user=checkmk_var_api_user,
-                    api_secret=checkmk_var_api_secret)
-              }}"
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
+                        outer_item.site,
+                        server_url=checkmk_var_server_url,
+                        site=outer_item.site,
+                        validate_certs=False,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify configuration of '{{ __checkmk_var_site.basic_settings.site_id }}'."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_site.status_connection.connection.socket_type == 'local'"
+      - "__checkmk_var_site.status_connection.status_host.status_host_set == 'disabled'"
+      - "__checkmk_var_site.status_connection.proxy.use_livestatus_daemon == 'direct'"
+      - "__checkmk_var_site.configuration_connection.enable_replication == false"
+    success_msg: "All attributes as expected for {{ __checkmk_var_site.basic_settings.site_id }}."
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify configuration of {{ item.extensions.basic_settings.site_id }}."
+  ansible.builtin.assert:
+    that:
+      - "item.extensions.status_connection.connection.socket_type == 'local'"
+      - "item.extensions.status_connection.status_host.status_host_set == 'disabled'"
+      - "item.extensions.status_connection.proxy.use_livestatus_daemon == 'direct'"
+      - "item.extensions.configuration_connection.enable_replication == false"
+    success_msg: "All attributes as expected for {{ item.extensions.basic_settings.site_id }}."
+  loop: "{{ __checkmk_var_sites }}"
+  loop_control:
+    label: "{{ item.id }}"
 
 # We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  delegate_to: localhost
-  run_once: true  # noqa run-once[task]
   when: outer_item.site == "stable_cme"
   block:
     - name: "Set checkmk_var_server_url for isolated testing."
       ansible.builtin.set_fact:
-        checkmk_var_server_url: "http://127.0.0.1:5324/"
+        checkmk_var_server_url: "http://127.0.0.1:5104/"
 
-    - name: "Test plugin with variables from inventory."
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify configuration of '{{ __checkmk_var_site.basic_settings.site_id }}'."
       ansible.builtin.assert:
-        that: "__checkmk_var_site.status_connection.connection.socket_type == 'local'"
+        that:
+          - "__checkmk_var_site.status_connection.connection.socket_type == 'local'"
+          - "__checkmk_var_site.status_connection.status_host.status_host_set == 'disabled'"
+          - "__checkmk_var_site.status_connection.proxy.use_livestatus_daemon == 'direct'"
+          - "__checkmk_var_site.configuration_connection.enable_replication == false"
+        success_msg: "All attributes as expected for {{ __checkmk_var_site.basic_settings.site_id }}."
       vars:
         __checkmk_var_site: "{{ lookup('checkmk.general.site', outer_item.site) }}"
+
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify configuration of '{{ outer_item.site }}''."
+      ansible.builtin.assert:
+        that:
+          - "item.extensions.status_connection.connection.socket_type == 'local'"
+          - "item.extensions.status_connection.status_host.status_host_set == 'disabled'"
+          - "item.extensions.status_connection.proxy.use_livestatus_daemon == 'direct'"
+          - "item.extensions.configuration_connection.enable_replication == false"
+        success_msg: "All attributes as expected for {{ item.extensions.basic_settings.site_id }}."
+      vars:
+        __checkmk_var_sites: "{{ lookup('checkmk.general.sites') }}"
+      loop: "{{ __checkmk_var_sites }}"
+      loop_control:
+        label: "{{ item.id }}"
