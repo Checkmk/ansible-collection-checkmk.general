@@ -1,11 +1,12 @@
 name: "Label Issues."
-on:
-  issues:
-    types: [opened, edited]
 
 permissions:
   contents: read
   issues: write
+
+on:
+  issues:
+    types: [opened, edited]
 
 jobs:
   label:

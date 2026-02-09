@@ -4,6 +4,10 @@
 # - About Ansible integration tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
 name: Template for Ansible Integration Tests
+
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:

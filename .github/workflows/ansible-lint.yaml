@@ -7,6 +7,10 @@ env:
   COLLECTION_NAME: general
 
 name: Ansible Tests
+
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   schedule:
