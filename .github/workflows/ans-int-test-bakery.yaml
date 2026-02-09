@@ -3,6 +3,10 @@ concurrency:
   cancel-in-progress: true
 
 name: Module Bakery
+
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   schedule:

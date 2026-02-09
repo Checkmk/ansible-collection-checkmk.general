@@ -3,6 +3,10 @@ concurrency:
   cancel-in-progress: true
 
 name: Module Timeperiod
+
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   schedule:
