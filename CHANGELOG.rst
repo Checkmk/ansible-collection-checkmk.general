@@ -4,6 +4,26 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v7.1.0
+======
+
+Release Summary
+---------------
+
+Welcoming the chameleon to the family.
+
+Major Changes
+-------------
+
+- Server role - Introduce initial support for Suse derivatives. Observe the "Known Issues", as this support is experimental!
+
+Known Issues
+------------
+
+- Server role - SLES has dependencies, which cannot be managed by this role. Refer to the role README for details.
+- Server role - Suse support does not yet cover the new version scheme starting with SLES 16. As soon as Checkmk supports SLES 16, we will look into updating the role accordingly.
+- Server role - Suse support is currently tested only on openSUSE Leap 15. This means, that it is not tested on actual SLES. If you have any interest in this functionality and have a SLES 15 handy, we are happy to collaborate on this.
+
 v7.0.1
 ======
 
