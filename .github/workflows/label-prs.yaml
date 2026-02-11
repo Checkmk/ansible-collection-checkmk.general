@@ -1,4 +1,9 @@
 name: "Label Pull Requests."
+
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   pull_request_target:
     paths:
@@ -8,10 +13,6 @@ on:
       - 'docs/**'
       - 'plugins/**'
       - 'roles/**'
-
-permissions:
-  contents: read
-  pull-requests: write
 
 jobs:
   label:

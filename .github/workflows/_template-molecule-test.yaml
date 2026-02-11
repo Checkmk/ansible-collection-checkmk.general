@@ -4,6 +4,10 @@
 # - About Ansible integration tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
 name: Template for Ansible Molecule Tests
+
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:
@@ -13,7 +17,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     name: Checkmk ${{ matrix.checkmk }}
     strategy:
       fail-fast: false

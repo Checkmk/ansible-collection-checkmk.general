@@ -5,6 +5,11 @@
 # https://github.com/actions/stale
 name: Stale Bot
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 on:
   schedule:
   - cron: '38 3 * * *'

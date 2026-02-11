@@ -4,6 +4,10 @@
 # - About Ansible integration tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_integration.html
 
 name: Template for Ansible Integration Tests
+
+permissions:
+  contents: read
+
 on:
   workflow_call:
     inputs:
@@ -69,14 +73,14 @@ jobs:
           CMK_SITE_ID: "old_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable_cre:
-        image: checkmk/check-mk-raw:2.4.0p20
+        image: checkmk/check-mk-raw:2.4.0p21
         ports:
           - 5004:5000  # Site Apache
         env:
           CMK_SITE_ID: "stable_cre"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable-cre-r1:
-        image: checkmk/check-mk-raw:2.4.0p20
+        image: checkmk/check-mk-raw:2.4.0p21
         ports:
           - 5014:5000  # Site Apache
           - 6014:6557  # Livestatus
@@ -88,14 +92,14 @@ jobs:
           CMK_LIVESTATUS_TCP: "on"
           CMK_RABBITMQ_PORT: 5671
       stable_cme:
-        image: checkmk/check-mk-managed:2.4.0p20
+        image: checkmk/check-mk-managed:2.4.0p21
         ports:
           - 5104:5000  # Site Apache
         env:
           CMK_SITE_ID: "stable_cme"
           CMK_PASSWORD: "Sup3rSec4et!"
       stable-cme-r1:
-        image: checkmk/check-mk-managed:2.4.0p20
+        image: checkmk/check-mk-managed:2.4.0p21
         ports:
           - 5114:5000  # Site Apache
           - 6114:6557  # Livestatus

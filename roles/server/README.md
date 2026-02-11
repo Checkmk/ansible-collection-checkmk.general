@@ -13,6 +13,12 @@ It can be installed as easy as running:
 
 Refer to [INSTALL.md](../../INSTALL.md) for detailed installation instructions.
 
+### A note about SLES
+SLES has some special dependencies, which cannot be managed by this role
+directly. You can automate them yourself, but this role assumes,
+that the modules mentioned in [Section 1 of the official guide](https://docs.checkmk.com/latest/en/install_packages_sles.html)
+are already present on your system.
+
 ## Distribution support
 
 This role includes explicit distribution support.
@@ -29,7 +35,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ### Basic configuration
 
-    checkmk_server_version: "2.4.0p20"
+    checkmk_server_version: "2.4.0p21"
 
 The main Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see `checkmk_server_sites` below.
