@@ -22,7 +22,7 @@ checkmk.general.dcd module -- Manage Dynamic Host Management.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.0.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.1.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
