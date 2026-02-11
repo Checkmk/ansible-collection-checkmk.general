@@ -1,0 +1,34 @@
+---
+checkmk_var_test_sites:
+  - version: "2.2.0p47"
+    edition: "cre"
+    site: "ancient_cre"
+    port: "5022"
+  - version: "2.3.0p41"
+    edition: "cre"
+    site: "old_cre"
+    port: "5023"
+  - version: "2.3.0p41"
+    edition: "cme"
+    site: "old_cme"
+    port: "5323"
+  - version: "2.4.0p18"
+    edition: "cre"
+    site: "stable_cre"
+    port: "5024"
+  - version: "2.4.0p18"
+    edition: "cme"
+    site: "stable_cme"
+    port: "5324"
+
+checkmk_var_hosts:
+  - name: test1.tld
+    folder: "/"
+  - name: test2.tld
+    folder: "/"
+  - name: test3.tld
+    folder: "/"
+  - name: test4.tld
+    folder: "/"
+  - name: test5.tld
+    folder: "/"
