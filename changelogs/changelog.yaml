@@ -1522,3 +1522,22 @@ releases:
     fragments:
     - user.yml
     release_date: '2026-02-05'
+  7.1.0:
+    changes:
+      known_issues:
+      - Server role - SLES has dependencies, which cannot be managed by this role.
+        Refer to the role README for details.
+      - Server role - Suse support does not yet cover the new version scheme starting
+        with SLES 16. As soon as Checkmk supports SLES 16, we will look into updating
+        the role accordingly.
+      - Server role - Suse support is currently tested only on openSUSE Leap 15. This
+        means, that it is not tested on actual SLES. If you have any interest in this
+        functionality and have a SLES 15 handy, we are happy to collaborate on this.
+      major_changes:
+      - Server role - Introduce initial support for Suse derivatives. Observe the
+        "Known Issues", as this support is experimental!
+      release_summary: Welcoming the chameleon to the family.
+    fragments:
+    - release_summary.yml
+    - suse.yml
+    release_date: '2026-02-11'
