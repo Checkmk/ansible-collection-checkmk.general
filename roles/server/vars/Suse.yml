@@ -1,0 +1,18 @@
+---
+# The versioning scheme changes with SLES 16. We will look into this, once Checkmk supports SLES 16.
+# https://documentation.suse.com/sles/16.0/html/SLE-comparison/index.html#sle16-versioning
+__checkmk_server_setup_file: |-
+  check-mk-{{ __checkmk_server_edition_mapping[checkmk_server_edition | lower] }}-{{ checkmk_server_version }}-sles{{ ansible_facts['distribution_major_version'] }}sp{{ ansible_facts['distribution_release'] }}-38.x86_64.rpm
+
+__checkmk_server_prerequisites_per_distro:
+  SLES-15:
+    - firewalld
+    - python311-firewall
+    - python311-rpm
+  openSUSE Leap-15:
+    - firewalld
+    - python311-firewall
+    - python311-rpm
+
+__checkmk_server_prerequisites: "{{ __checkmk_server_prerequisites_per_distro[ansible_facts['distribution'] ~ '-' ~ ansible_facts['distribution_major_version']]
+  | default( __checkmk_server_prerequisites_per_distro[ ansible_facts['distribution_file_variety'] ]) }}"
