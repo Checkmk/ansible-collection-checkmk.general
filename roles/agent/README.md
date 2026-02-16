@@ -138,7 +138,7 @@ If you are uncertain, what you are using, this is most likely your mode.
 If you are using an alternative way to call the agent, e.g. SSH, you can set the variable to `ssh`, so the agent port check is skipped.
 If you are using the Checkmk Cloud (Self-hosted) or Checkmk MSP with an agent in `push` mode, you want to set this to `push` to avoid the agent port check, as well as triggering an initial push of data.
 
-    checkmk_agent_port: '6556'
+    checkmk_agent_port: 6556
 
 Configure the port the agent listens on. We recommend to stick to the default.
 **This does not change the agent configuration! It merely tells Ansible which port to talk to.**
