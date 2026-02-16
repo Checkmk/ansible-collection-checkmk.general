@@ -87,16 +87,16 @@ The protocol used to connect to the registration server. Defaults to `{{ checkmk
 
 The site you want to use for registration tasks (Agent updates and TLS encryption). Defaults to `{{ checkmk_agent_site }}`.
 
-    checkmk_agent_auto_activate: 'false'
+    checkmk_agent_auto_activate: false
 
 Enable automatic activation of changes on all sites.
 This is disabled by default, as it might be unexpected.
 
-    checkmk_agent_force_foreign_changes: 'false'
+    checkmk_agent_force_foreign_changes: false
 
 Allow forcing foreign changes on activation.
 
-    checkmk_agent_add_host: 'false'
+    checkmk_agent_add_host: false
 
 Automatically add the host where the agent was installed on to Checkmk.
 
@@ -120,7 +120,7 @@ Define attributes with which the host will be added to Checkmk.
 
 The folder into which the automatically created host will be placed.
 
-    checkmk_agent_discover: 'false'
+    checkmk_agent_discover: false
 
 Automatically discover services on the host where the agent was installed.
 
@@ -143,22 +143,22 @@ If you are using the Checkmk Cloud (Self-hosted) or Checkmk MSP with an agent in
 Configure the port the agent listens on. We recommend to stick to the default.
 **This does not change the agent configuration! It merely tells Ansible which port to talk to.**
 
-    checkmk_agent_update: 'false'
+    checkmk_agent_update: false
 
 Register host for automatic updates. Make sure to have the server side prepared for automatic updates. Otherwise this will fail.
 See [this link](https://docs.checkmk.com/latest/en/agent_deployment.html) for more information on the preparations.
 
-    checkmk_agent_tls: 'false'
+    checkmk_agent_tls: false
 
 Register for TLS encryption. Make sure to have the server side prepared for agent registration. Otherwise this will fail.
 See [this link](https://docs.checkmk.com/latest/en/agent_linux.html#registration) for more information on the preparations.
 
-    checkmk_agent_force_install: 'false'
+    checkmk_agent_force_install: false
 
 Force the installation of the agent package, no matter the constraints.
 This means that it will be possible to 'update' to a lower agent version or install unverified packages.
 
-    checkmk_agent_prep_legacy: 'false'
+    checkmk_agent_prep_legacy: false
 
 Enable this to automatically install `xinetd` on hosts with systemd prior to version 220.
 
@@ -187,7 +187,7 @@ Typically this would be your Ansible host, hence the default `localhost`.
 
 Configure the host to which downloads are delegated to. After download the files are transferred to the managed host, when the managed host didn't do the download itself.
 
-    checkmk_agent_delegate_registration: 'false'
+    checkmk_agent_delegate_registration: false
 
 Enable this to perform agent registration using a third host, which has the Checkmk agent installed already.
 `checkmk_agent_delegate_registration_target` defines this third host.

@@ -72,7 +72,7 @@ Optional authentication do download the GPG key from a non-default location.
 
 Cryptographically verify the downloaded epel-release package on RHEL 8.
 
-    checkmk_server_cleanup: 'false'
+    checkmk_server_cleanup: false
 
 Uninstall unused Checkmk versions on the server.
 
@@ -105,7 +105,7 @@ The TCP ports to open automatically. Adapt this to the specific requirements of 
         edition: "{{ checkmk_server_edition }}"
         update_conflict_resolution: 'abort'
         admin_pw: 'mypass'
-        omd_auto_restart: 'false'
+        omd_auto_restart: false
         omd_config:
           - var: AUTOSTART
             value: 'on'
@@ -168,7 +168,7 @@ Of course `/tmp/` is not a sane backup location, so change it!
 
 Backup options to use. By default no historic data is backed up, in order to create a small disaster recovery backup.
 
-    checkmk_server_allow_downgrades: 'false'
+    checkmk_server_allow_downgrades: false
 
 Whether to allow 'updating' the site to a lower version.
 Note, that the 'update' to a lower version is not a recommended procedure, and will not be supported for customers of commercial Checkmk editions.

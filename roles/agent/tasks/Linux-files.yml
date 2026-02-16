@@ -34,7 +34,7 @@
   become: false
   register: __checkmk_agent_host_download_state
   # This task may fail, as we fall back to the generic agent in that case
-  failed_when: 'false'
+  failed_when: false
   changed_when: __checkmk_agent_host_download_state.status is defined and __checkmk_agent_host_download_state.status == 200
   delegate_to: "{{ checkmk_agent_delegate_download }}"
   tags:
@@ -69,7 +69,7 @@
     and not checkmk_agent_host_specific | bool
   retries: 3
   # This task may fail, as we fall back to the generic agent in that case
-  failed_when: 'false'
+  failed_when: false
   changed_when: __checkmk_agent_folder_download_state.status is defined and __checkmk_agent_folder_download_state.status == 200
   delegate_to: "{{ checkmk_agent_delegate_download }}"
   tags:
