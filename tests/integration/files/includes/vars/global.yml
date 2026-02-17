@@ -52,3 +52,50 @@ __checkmk_var_testing_environment:
 #     edition: "cme"
 #     site: "stable_cme"
 #     port: "5104"
+#     # Keep aligned with tests/integratin/targets/site/vars/main.yml
+#     remote_sites:
+#       - site_id: "stable_cme_r1"
+#         site_config:
+#           status_connection:
+#             connection:
+#               socket_type: "tcp"
+#               port: 6115
+#               encrypted: true
+#               host: "localhost"
+#               verify: false
+#             proxy:
+#               use_livestatus_daemon: "with_proxy"
+#               global_settings: false
+#               tcp:
+#                 port: 4115
+#                 only_from: []
+#                 tls: true
+#               params:
+#                 channels: 6
+#                 heartbeat:
+#                   interval: 10
+#                   timeout: 4
+#                 channel_timeout: 6
+#                 query_timeout: 240
+#                 connect_retry: 5
+#                 cache: true
+#             connect_timeout: 2
+#             status_host:
+#               status_host_set: "disabled"
+#             url_prefix: "/stable_cme_r1/"
+#           configuration_connection:
+#             enable_replication: true
+#             url_of_remote_site: "http://127.0.0.1:7777/stable_cme_r1/check_mk/"  # Hardcoded ip:port for local testing
+#             disable_remote_configuration: true
+#             ignore_tls_errors: false
+#             direct_login_to_web_gui_allowed: false
+#             replicate_event_console: true
+#             replicate_extensions: false
+#             message_broker_port: 3115
+#           basic_settings:
+#             site_id: "stable_cme_r1"
+#             alias: "stable_cme remote site 1"
+#             customer: "provider"
+#         authentication:
+#           username: "{{ checkmk_var_api_user }}"
+#           password: "{{ checkmk_var_api_secret }}"

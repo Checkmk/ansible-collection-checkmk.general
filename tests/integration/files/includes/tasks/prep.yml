@@ -35,7 +35,7 @@
   when: |
     not 'check-mk-' + __checkmk_server_edition_mapping[item.edition] + '-' +item.version in ansible_facts['packages']
 
-- name: "Create Sites."
+- name: "Create Central Site."
   vars:
     __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
       {{
@@ -47,24 +47,57 @@
     creates: "/omd/sites/{{ item.site }}"
   loop: "{{ checkmk_var_test_sites }}"
 
-- name: "Configure Checkmk Site Ports (Apache, Livestatus, Broker)"
+- name: "Create Remote Sites."
+  vars:
+    __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
+      {{
+        ( (item.0.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        | ternary(
+            item.0.edition,
+            __checkmk_var_modern_edition_mapping[item.0.edition]
+          )
+      }}
+  ansible.builtin.command: "omd -V {{ item.0.version }}.{{ __checkmk_var_edition_id }} create --no-tmpfs --admin-password {{ checkmk_var_api_secret }} {{ item.1.site_config.basic_settings.site_id }}"
+  args:
+    creates: "/omd/sites/{{ item.1.site_config.basic_settings.site_id }}"
+  loop: "{{ checkmk_var_test_sites | subelements('remote_sites', skip_missing=True) }}"
+
+- name: "Configure Checkmk Site Ports (Apache, Livestatus, Broker) - Central Site."
   ansible.builtin.shell:
     cmd: |
       # 1. Configure Apache Port
-      omd config {{ item.site }} set APACHE_TCP_PORT {{ item.port }}
+      omd config {{ item.site }} set APACHE_TCP_PORT {{ item.port | default('5000') }}
 
-      # 2. Configure Livestatus (Enable TCP and set Port)
+      # 2. Configure Livestatus
       omd config {{ item.site }} set LIVESTATUS_TCP on
       omd config {{ item.site }} set LIVESTATUS_TCP_PORT {{ item.remote_sites[0].site_config.status_connection.connection.port | default('6557') }}
 
-      # 3. Configure Message Broker (Only if defined in variables)
+      # 3. Configure Message Broker
       {% if item.remote_sites[0].site_config.configuration_connection.message_broker_port is defined %}
       omd config {{ item.site }} set RABBITMQ_TCP_PORT {{ item.remote_sites[0].site_config.configuration_connection.message_broker_port | default('5671') }}
       {% endif %}
   loop: "{{ checkmk_var_test_sites }}"
   loop_control:
     label: "{{ item.site }}"
-  # Suppress change reporting as 'omd config' is not natively idempotent
+  changed_when: false
+
+- name: "Configure Checkmk Site Ports (Apache, Livestatus, Broker) - Remote Sites."
+  ansible.builtin.shell:
+    cmd: |
+      # 1. Configure Apache Port
+      omd config {{ item.1.site_config.basic_settings.site_id }} set APACHE_TCP_PORT 7777  # Hardcoded port for local testing
+
+      # 2. Configure Livestatus
+      omd config {{ item.1.site_config.basic_settings.site_id }} set LIVESTATUS_TCP on
+      omd config {{ item.1.site_config.basic_settings.site_id }} set LIVESTATUS_TCP_PORT {{ item.1.site_config.status_connection.proxy.tcp.port | default('6557') }}
+
+      # 3. Configure Message Broker
+      {% if item.1.site_config.configuration_connection.message_broker_port is defined %}
+      omd config {{ item.1.site_config.basic_settings.site_id }} set RABBITMQ_TCP_PORT {{ item.1.site_config.configuration_connection.message_broker_port | default('5671') }}
+      {% endif %}
+  loop: "{{ checkmk_var_test_sites | subelements('remote_sites', skip_missing=True) }}"
+  loop_control:
+    label: "{{ item.1.site_config.basic_settings.site_id }}"
   changed_when: false
 
 - name: "Start Apache2."
@@ -72,21 +105,40 @@
     name: apache2
     state: started
 
-- name: "Start Sites."
+- name: "Start Central Site."
   ansible.builtin.shell: "omd status -b {{ item.site }} || omd start {{ item.site }}"
-  register: __checkmk_var_site_status
-  changed_when: __checkmk_var_site_status.rc == "0"
+  register: __checkmk_var_site_central_status
+  changed_when: __checkmk_var_site_central_status.rc == "0"
   loop: "{{ checkmk_var_test_sites }}"
 
-- name: "Wait for Sites to be ready."
+- name: "Start Remote Sites."
+  ansible.builtin.shell: "omd status -b {{ item.1.site_config.basic_settings.site_id }} || omd start {{ item.1.site_config.basic_settings.site_id }}"
+  register: __checkmk_var_site_remote_status
+  changed_when: __checkmk_var_site_remote_status.rc == "0"
+  loop: "{{ checkmk_var_test_sites | subelements('remote_sites', skip_missing=True) }}"
+
+- name: "Wait for Central Site to be ready."
   ansible.builtin.uri:
     url: "http://127.0.0.1:{{ item.port }}/{{ item.site }}"
     return_content: true
     validate_certs: false
     status_code:
       - 200
-  until: __checkmk_var_site_status_online.status == 200
+  until: __checkmk_var_site_central_status_online.status == 200
   retries: 30
   delay: 5
-  register: __checkmk_var_site_status_online
+  register: __checkmk_var_site_central_status_online
   loop: "{{ checkmk_var_test_sites }}"
+
+- name: "Wait for Remote Sites to be ready."
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:7777/{{ item.1.site_config.basic_settings.site_id }}"  # Hardcoded ip:port for local testing
+    return_content: true
+    validate_certs: false
+    status_code:
+      - 200
+  until: __checkmk_var_site_remote_status_online.status == 200
+  retries: 30
+  delay: 5
+  register: __checkmk_var_site_remote_status_online
+  loop: "{{ checkmk_var_test_sites | subelements('remote_sites', skip_missing=True) }}"
