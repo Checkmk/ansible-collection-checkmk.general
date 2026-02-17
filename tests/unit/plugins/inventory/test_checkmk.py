@@ -6,14 +6,13 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 import pytest
-
+from ansible.inventory.data import InventoryData
 from ansible_collections.checkmk.general.plugins.inventory.checkmk import (
     InventoryModule,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
 )
-from ansible.inventory.data import InventoryData
 
 
 @pytest.fixture(scope="module")
