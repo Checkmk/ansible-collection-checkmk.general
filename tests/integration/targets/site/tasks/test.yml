@@ -59,7 +59,7 @@
   loop_control:
     label: "{{ item.site_id }}"
   register: __checkmk_var_result_login
-  # failed_when: __checkmk_var_result_login.changed | bool  # TODO: Temporarily disabled. See #899.
+  failed_when: __checkmk_var_result_login.changed | bool
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update remote site."
   site:
