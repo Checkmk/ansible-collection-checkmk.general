@@ -1,0 +1,109 @@
+---
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+  loop: "{{ checkmk_var_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    redirect: true
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "absent"
+  loop: "{{ checkmk_var_hosts }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    redirect: false
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all activations."
+  ansible.builtin.set_fact:
+    __checkmk_var_activations: "{{ lookup('checkmk.general.activations',
+        server_url=checkmk_var_server_url,
+        site=outer_item.site,
+        validate_certs=False,
+        api_user=checkmk_var_api_user,
+        api_secret=checkmk_var_api_secret)
+      }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - List all activations."
+  ansible.builtin.debug:
+    msg: "{{ item.title }} for {{ item.id }}"
+  loop: "{{ __checkmk_var_activations }}"
+  loop_control:
+    label: "{{ item.id }}"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Show each individual activation."
+  ansible.builtin.debug:
+    msg: "Activation {{ item.id }} started at {{ item.extensions.time_started }}."
+  vars:
+    __checkmk_var_activation: "{{ lookup('checkmk.general.activation',
+        item.id,
+        server_url=checkmk_var_server_url,
+        site=outer_item.site,
+        api_user=checkmk_var_api_user,
+        api_secret=checkmk_var_api_secret,
+        validate_certs=False)
+      }}"
+  loop: "{{ __checkmk_var_activations }}"
+  loop_control:
+    label: "{{ item.id }}"
+
+# We need this hack to overwrite the colliding global variable
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
+  when: outer_item.site == "stable_cme"
+  block:
+    - name: "Set checkmk_var_server_url for isolated testing."
+      ansible.builtin.set_fact:
+        checkmk_var_server_url: "http://127.0.0.1:5324/"
+
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all activations."
+      ansible.builtin.set_fact:
+        __checkmk_var_activations: "{{ lookup('checkmk.general.activations') }}"
+
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - List all activations."
+      ansible.builtin.debug:
+        msg: "{{ item.title }} for {{ item.id }}"
+      loop: "{{ __checkmk_var_activations }}"
+      loop_control:
+        label: "{{ item.id }}"
+
+    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Show each individual activation."
+      ansible.builtin.debug:
+        msg: "Activation {{ item.id }} started at {{ item.extensions.time_started }}."
+      vars:
+        __checkmk_var_activation: "{{ lookup('checkmk.general.activation', item.id) }}"
+      loop: "{{ __checkmk_var_activations }}"
+      loop_control:
+        label: "{{ item.id }}"
