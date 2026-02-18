@@ -30,6 +30,7 @@ checkmk_agent_host_attributes:
 # If that does not apply to your environment, you can configure the IP address below:
 # checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
 checkmk_agent_folder: "{{ checkmk_var_folder_path | default('/') }}"
+checkmk_agent_folder_create: 'false'
 checkmk_agent_discover: false
 checkmk_agent_discover_max_parallel_tasks: '0'
 checkmk_agent_force_foreign_changes: false
