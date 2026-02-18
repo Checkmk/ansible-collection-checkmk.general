@@ -5,7 +5,7 @@ permissions:
   contents: write
   pull-requests: write
 
-on: # yamllint disable-line rule:truthy
+on:
   workflow_dispatch:
 
 env:
@@ -17,53 +17,19 @@ env:
 jobs:
 
   #
-  # Run sanity checks prior to release.
+  # Run linting and sanity checks prior to release.
   #
 
-## If this works, do the same for ansible-lint.yaml
-  # sanity:
-  #   name: Sanity (Ⓐ${{ matrix.ansible }})
-  #   uses: ./.github/workflows/ansible-sanity-tests.yaml
+  linting:
+    name: Linting
+    uses: ./.github/workflows/ansible-lint.yaml
 
   sanity:
-    runs-on: ubuntu-24.04
-    name: Sanity (Ⓐ${{ matrix.ansible }})
-    strategy:
-      fail-fast: false
-      matrix:
-        ansible:
-          - stable-2.18
-          - stable-2.19
-          - stable-2.20
-          - devel
-
-    steps:
-
-      - name: Check out code
-        uses: actions/checkout@v6
-        with:
-          path: ansible_collections/checkmk/general
-
-      - name: "Install uv."
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-          working-directory: ./ansible_collections/checkmk/general/
-
-      - name: "Create uv venv."
-        run: uv venv
-        working-directory: ./ansible_collections/checkmk/general
-
-      - name: Install ansible-base (${{ matrix.ansible }})
-        run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
-        working-directory: ./ansible_collections/checkmk/general
-
-      - name: Run sanity tests
-        run: uv run ansible-test sanity --docker -v --color --coverage
-        working-directory: ./ansible_collections/checkmk/general
+    name: Sanity
+    uses: ./.github/workflows/ansible-sanity-tests.yaml
 
   release:
-    needs: sanity
+    needs: [linting, sanity]
     runs-on: ubuntu-24.04
 
     steps:

@@ -2,17 +2,14 @@
 # Resources:
 # - Template for this file: https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
 
-env:
-  NAMESPACE: checkmk
-  COLLECTION_NAME: general
-
-name: Ansible Tests
+name: Linting
 
 permissions:
   contents: read
 
 on:
   workflow_dispatch:
+  workflow_call:
   schedule:
     - cron: '0 0 * * 0'
 
@@ -30,9 +27,9 @@ on:
 
 jobs:
 
-  linting:
+  yaml:
     runs-on: ubuntu-24.04
-    name: Linting
+    name: YAML
 
     steps:
       - name: Check out code
@@ -46,15 +43,9 @@ jobs:
           enable-cache: true
           working-directory: ./ansible_collections/checkmk/general/
 
-      - name: "Install Dependencies."
-        run: uv sync
-        working-directory: ./ansible_collections/checkmk/general/
-        env:
-          UV_SYSTEM_PYTHON: 1
-
-      - name: "Install Checkmk Collection."
-        run: uv run ansible-galaxy collection install ./
-        working-directory: ./ansible_collections/checkmk/general/
+      - name: "Create uv venv."
+        run: uv venv
+        working-directory: ./ansible_collections/checkmk/general
 
       # Run the linting
       - name: "Run yamllint on roles."
@@ -69,6 +60,43 @@ jobs:
         run:  uv run yamllint -c .yamllint ./tests/
         working-directory: ./ansible_collections/checkmk/general/
 
+  ansible:
+    runs-on: ubuntu-24.04
+    name: Ansible (Ⓐ${{ matrix.ansible }})
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible:
+          - stable-2.18
+          - stable-2.19
+          - stable-2.20
+          - devel
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          path: ansible_collections/checkmk/general
+
+      - name: "Install uv."
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          working-directory: ./ansible_collections/checkmk/general/
+
+      - name: "Create uv venv."
+        run: uv venv
+        working-directory: ./ansible_collections/checkmk/general
+
+      - name: Install ansible-base (${{ matrix.ansible }})
+        run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
+        working-directory: ./ansible_collections/checkmk/general
+
+      - name: "Install Checkmk Collection."
+        run: uv run ansible-galaxy collection install ./
+        working-directory: ./ansible_collections/checkmk/general/
+
+      # Run the linting
       - name: "Run ansible-lint on roles."
         run:  uv run ansible-lint -c .ansible-lint ./roles/
         working-directory: ./ansible_collections/checkmk/general/
