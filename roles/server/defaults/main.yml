@@ -63,7 +63,9 @@ checkmk_server_sites: []
 #   edition: "{{ checkmk_server_edition }}"
 #   state: started
 #   admin_pw: "{{ checkmk_var_api_secret | default(omit) }}"
-#   update_conflict_resolution: abort
+#   update_conflict_resolution: 'abort'  # Deprecated as of Checkmk 2.5.0
+#   update_conflict_skeleton: 'abort'  # Available starting with Checkmk 2.5.0
+#   update_conflict_preflight: 'abort'  # Available starting with Checkmk 2.5.0
 #   omd_auto_restart: false
 #   omd_config:
 #     - var: LIVESTATUS_TCP

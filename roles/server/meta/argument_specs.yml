@@ -75,6 +75,15 @@ argument_specs:
           update_conflict_resolution:
             type: "str"
             description: "How to handle file conflicts during updates."
+            default: "abort"
+          update_conflict_skeleton:
+            type: "str"
+            description: "How to handle file conflicts during updates."
+            default: "abort"
+          update_conflict_preflight:
+            type: "str"
+            description: "How to handle configuration issues during updates."
+            default: "abort"
           omd_auto_restart:
             type: "bool"
             description: "Whether to automatically restart a site for configuration."

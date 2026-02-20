@@ -103,7 +103,9 @@ The TCP ports to open automatically. Adapt this to the specific requirements of 
       - name: 'mysite'
         version: "{{ checkmk_server_version }}"
         edition: "{{ checkmk_server_edition }}"
-        update_conflict_resolution: 'abort'
+        update_conflict_resolution: 'abort'  # Deprecated as of Checkmk 2.5.0
+        update_conflict_skeleton: 'abort'  # Available starting with Checkmk 2.5.0
+        update_conflict_preflight: 'abort'  # Available starting with Checkmk 2.5.0
         admin_pw: 'mypass'
         omd_auto_restart: false
         omd_config:
@@ -131,7 +133,17 @@ Valid values for `state` are:
 - `absent`: The site is removed from the system entirely.
 
 If a higher version is specified for an existing site, an `update_conflict_resolution` method must first be given to update it.
-Valid choices include `install`, `keepold` and `abort`.
+Valid choices include `install`, `keepold`, `ignore` and `abort`. `abort` is the default for all Checkmk versions.
+Starting with Checkmk 2.5 new parameters become available. Refer to `omd update --help` for details.
+
+Valid values for `update_conflict_preflight` are:
+- `ignore`
+- `abort`
+
+Valid values for `update_conflict_skeleton` are:
+- `install`
+- `keepold`
+- `abort`
 
 #### Site configuration
 Site configuration can be passed with the `omd_config` keyword.

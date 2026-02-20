@@ -1,12 +1,4 @@
 ---
-- name: "{{ item.item.name }}: Fail if update conflict resolution method is not given."
-  ansible.builtin.fail:
-    msg: |
-      variable `update_conflict_resolution` is not given. See `omd update --help` for more information.
-  when: item.item.update_conflict_resolution is undefined
-  tags:
-    - update-sites
-
 - name: "{{ item.item.name }}: Check if desired version is installed."
   vars:
     __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
@@ -89,17 +81,26 @@
   tags:
     - update-sites
 
-- name: "{{ item.item.name }}: Update Site."
+- name: "{{ item.item.name }}: Update Site for Checkmk < 2.5."
+  when: item.item.version | regex_replace('p.*', '') is version('2.5', '<')
   become: true
-  vars:
-    __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
-      {{
-        ( (item.item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
-        | ternary(item.item.edition, __checkmk_server_edition_mapping[item.item.edition])
-      }}
   ansible.builtin.shell: |
     omd stop {{ item.item.name }}
-    omd -f -V {{ item.item.version }}.{{ __checkmk_var_edition_id | lower }} update --conflict {{ item.item.update_conflict_resolution }} {{ item.item.name }}
+    omd -f -V {{ item.item.version }}.{{ item.item.edition | lower }} update --conflict {{ item.item.update_conflict_resolution | default('abort') }} {{ item.item.name }}
+  args:
+    executable: /bin/bash
+  register: __checkmk_server_sites_updated
+  changed_when: ("Finished update" in __checkmk_server_sites_updated.stdout)
+  tags:
+    - update-sites
+
+# https://checkmk.com/werk/18883
+- name: "{{ item.item.name }}: Update Site for Checkmk >= 2.5."
+  when: item.item.version | regex_replace('p.*', '') is version('2.5', '>=')
+  become: true
+  ansible.builtin.shell: |
+    omd stop {{ item.item.name }}
+    omd -f -V {{ item.item.version }}.{{ __checkmk_server_edition_mapping[item.item.edition] | lower }} update --pre-flight {{ item.item.update_conflict_preflight | default('abort')  }} --skeleton {{ item.item.update_conflict_skeleton | default('abort')  }} {{ item.item.name }}
   args:
     executable: /bin/bash
   register: __checkmk_server_sites_updated
