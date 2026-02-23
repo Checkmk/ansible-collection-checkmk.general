@@ -17,7 +17,7 @@ dependencies = [
 dev = [
     "black==26.1.0",
     "click==8.3.1",
-    "isort==7.0.0",
+    "isort==8.0.0",
     "mypy-extensions==1.1.0",
     "pathspec==1.0.4",
     "platformdirs==4.9.2",
