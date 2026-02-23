@@ -33,8 +33,8 @@ EXAMPLES = r"""
   checkmk.general.notification:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     rule_config:
       rule_properties:
         description: "Notify admins on critical issues"
@@ -157,8 +157,8 @@ EXAMPLES = r"""
   checkmk.general.notification:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     rule_config:
       rule_properties:
         description: "Slack notifications for critical alerts"
@@ -259,8 +259,8 @@ EXAMPLES = r"""
   checkmk.general.notification:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     rule_config:
       rule_properties:
         description: "Teams notifications for critical alerts"
@@ -373,8 +373,8 @@ EXAMPLES = r"""
   checkmk.general.notification:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     rule_id: "{{ notification_result.content.id }}"
     rule_config:
       rule_properties:
@@ -393,8 +393,8 @@ EXAMPLES = r"""
   checkmk.general.notification:
     server_url: "http://myserver/"
     site: "mysite"
-    automation_user: "myuser"
-    automation_secret: "mysecret"
+    api_user: "myuser"
+    api_secret: "mysecret"
     rule_id: "{{ notification_result.content.id }}"
     state: "absent"
 """

@@ -11,8 +11,8 @@
       notification:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         rule_config: "{{ item }}"
         state: "present"
       delegate_to: localhost
@@ -23,8 +23,8 @@
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         force_foreign_changes: true
         sites:
           - "{{ checkmk_var_site }}"
@@ -42,8 +42,8 @@
       notification:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         rule_config: "{{ item }}"
         state: "absent"
       delegate_to: localhost
@@ -54,8 +54,8 @@
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ checkmk_var_site }}"
-        automation_user: "{{ checkmk_var_automation_user }}"
-        automation_secret: "{{ checkmk_var_automation_secret }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
         force_foreign_changes: true
         sites:
           - "{{ checkmk_var_site }}"

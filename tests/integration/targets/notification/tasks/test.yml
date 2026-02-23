@@ -13,8 +13,8 @@
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     rule_config: "{{ checkmk_var_notification_config }}"
     state: "present"
   register: __checkmk_var_notification_create
@@ -32,8 +32,8 @@
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     rule_id: "{{ __checkmk_var_notification_create.content.id }}"
     rule_config: "{{ checkmk_var_notification_config_updated }}"
     state: "present"
@@ -52,8 +52,8 @@
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     rule_id: "{{ __checkmk_var_notification_create.content.id }}"
     state: "absent"
   register: __checkmk_var_notification_delete
@@ -71,8 +71,8 @@
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     rule_id: "{{ __checkmk_var_notification_create.content.id }}"
     state: "absent"
   register: __checkmk_var_notification_delete_again
@@ -82,8 +82,8 @@
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     rule_config: "{{ checkmk_var_notification_config_minimal }}"
     state: "present"
   register: __checkmk_var_notification_minimal
@@ -101,8 +101,8 @@
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
-    automation_user: "{{ checkmk_var_automation_user }}"
-    automation_secret: "{{ checkmk_var_automation_secret }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
     rule_id: "{{ __checkmk_var_notification_minimal.content.id }}"
     state: "absent"
   register: __checkmk_var_notification_minimal_delete
