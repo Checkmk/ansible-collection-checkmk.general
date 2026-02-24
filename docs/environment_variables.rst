@@ -16,6 +16,8 @@ Environment variables used by the ansible-core configuration are documented in :
     The authentication cookie value if using cookie\-based authentication.
 
     *Used by:*
+    :ansplugin:`checkmk.general.activation lookup plugin <checkmk.general.activation#lookup>`,
+    :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
@@ -35,6 +37,8 @@ Environment variables used by the ansible-core configuration are documented in :
     The authentication type to use ('bearer', 'basic', 'cookie').
 
     *Used by:*
+    :ansplugin:`checkmk.general.activation lookup plugin <checkmk.general.activation#lookup>`,
+    :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
@@ -54,6 +58,8 @@ Environment variables used by the ansible-core configuration are documented in :
     Automation secret for the REST API access.
 
     *Used by:*
+    :ansplugin:`checkmk.general.activation lookup plugin <checkmk.general.activation#lookup>`,
+    :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
@@ -73,6 +79,8 @@ Environment variables used by the ansible-core configuration are documented in :
     Automation user for the REST API access.
 
     *Used by:*
+    :ansplugin:`checkmk.general.activation lookup plugin <checkmk.general.activation#lookup>`,
+    :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
@@ -92,6 +100,8 @@ Environment variables used by the ansible-core configuration are documented in :
     URL of the Checkmk server
 
     *Used by:*
+    :ansplugin:`checkmk.general.activation lookup plugin <checkmk.general.activation#lookup>`,
+    :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
@@ -111,6 +121,8 @@ Environment variables used by the ansible-core configuration are documented in :
     Site name.
 
     *Used by:*
+    :ansplugin:`checkmk.general.activation lookup plugin <checkmk.general.activation#lookup>`,
+    :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
@@ -130,6 +142,8 @@ Environment variables used by the ansible-core configuration are documented in :
     Whether to validate SSL certificates.
 
     *Used by:*
+    :ansplugin:`checkmk.general.activation lookup plugin <checkmk.general.activation#lookup>`,
+    :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,

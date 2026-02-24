@@ -1541,3 +1541,21 @@ releases:
     - release_summary.yml
     - suse.yml
     release_date: '2026-02-11'
+  7.2.0:
+    changes:
+      major_changes:
+      - Activation lookup modules - Add modules to lookup activation processes.
+      release_summary: Adding lookup modules for activation processes. Yeah, I am
+        disappointed in my creativity as well.
+    fragments:
+    - lookup_activation.yml
+    - release_summary.yml
+    plugins:
+      lookup:
+      - description: Get the status of a single activation
+        name: activation
+        namespace: null
+      - description: Get all activations
+        name: activations
+        namespace: null
+    release_date: '2026-02-24'

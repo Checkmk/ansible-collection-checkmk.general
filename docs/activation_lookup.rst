@@ -10,14 +10,14 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.ldap_connection_lookup:
+.. _ansible_collections.checkmk.general.activation_lookup:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.ldap_connection lookup -- Show the configuration of an ldap connection
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.activation lookup -- Get the status of a single activation
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -29,13 +29,13 @@ checkmk.general.ldap_connection lookup -- Show the configuration of an ldap conn
 
     To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.ldap_connection`.
+    To use it in a playbook, specify: :code:`checkmk.general.activation`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 6.6.0
+New in checkmk.general 7.2.0
 
 .. contents::
    :local:
@@ -49,7 +49,7 @@ Synopsis
 
 .. Description
 
-- Returns the configuration of an ldap connection
+- Returns the status of a single activation
 
 
 .. Aliases
@@ -81,7 +81,7 @@ Terms
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-_terms"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connection_lookup__parameter-_terms:
+      .. _ansible_collections.checkmk.general.activation_lookup__parameter-_terms:
 
       .. rst-class:: ansible-option-title
 
@@ -106,7 +106,7 @@ Terms
 
         <div class="ansible-option-cell">
 
-      ldap connection ID
+      activation ID to look up
 
 
       .. raw:: html
@@ -123,7 +123,7 @@ Keyword parameters
 ------------------
 
 This describes keyword parameters of the lookup. These are the values ``key1=value1``, ``key2=value2`` and so on in the following
-examples: ``lookup('checkmk.general.ldap_connection', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.ldap_connection', key1=value1, key2=value2, ...)``
+examples: ``lookup('checkmk.general.activation', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.activation', key1=value1, key2=value2, ...)``
 
 .. tabularcolumns:: \X{1}{3}\X{2}{3}
 
@@ -141,7 +141,7 @@ examples: ``lookup('checkmk.general.ldap_connection', key1=value1, key2=value2, 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_cookie"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connection_lookup__parameter-api_auth_cookie:
+      .. _ansible_collections.checkmk.general.activation_lookup__parameter-api_auth_cookie:
 
       .. rst-class:: ansible-option-title
 
@@ -195,7 +195,7 @@ examples: ``lookup('checkmk.general.ldap_connection', key1=value1, key2=value2, 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_type"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connection_lookup__parameter-api_auth_type:
+      .. _ansible_collections.checkmk.general.activation_lookup__parameter-api_auth_type:
 
       .. rst-class:: ansible-option-title
 
@@ -254,8 +254,8 @@ examples: ``lookup('checkmk.general.ldap_connection', key1=value1, key2=value2, 
         <div class="ansibleOptionAnchor" id="parameter-api_secret"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connection_lookup__parameter-api_secret:
-      .. _ansible_collections.checkmk.general.ldap_connection_lookup__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.activation_lookup__parameter-api_secret:
+      .. _ansible_collections.checkmk.general.activation_lookup__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -312,8 +312,8 @@ examples: ``lookup('checkmk.general.ldap_connection', key1=value1, key2=value2, 
         <div class="ansibleOptionAnchor" id="parameter-api_user"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connection_lookup__parameter-api_user:
-      .. _ansible_collections.checkmk.general.ldap_connection_lookup__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.activation_lookup__parameter-api_user:
+      .. _ansible_collections.checkmk.general.activation_lookup__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -369,7 +369,7 @@ examples: ``lookup('checkmk.general.ldap_connection', key1=value1, key2=value2, 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connection_lookup__parameter-server_url:
+      .. _ansible_collections.checkmk.general.activation_lookup__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -423,7 +423,7 @@ examples: ``lookup('checkmk.general.ldap_connection', key1=value1, key2=value2, 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connection_lookup__parameter-site:
+      .. _ansible_collections.checkmk.general.activation_lookup__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -477,7 +477,7 @@ examples: ``lookup('checkmk.general.ldap_connection', key1=value1, key2=value2, 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connection_lookup__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.activation_lookup__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -552,7 +552,7 @@ Notes
 
 .. note::
    - When keyword and positional parameters are used together, positional parameters must be listed before keyword parameters:
-     ``lookup('checkmk.general.ldap_connection', term1, term2, key1=value1, key2=value2)`` and ``query('checkmk.general.ldap_connection', term1, term2, key1=value1, key2=value2)``
+     ``lookup('checkmk.general.activation', term1, term2, key1=value1, key2=value2)`` and ``query('checkmk.general.activation', term1, term2, key1=value1, key2=value2)``
    - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'. If you need to use different permissions, you must change the command or run Ansible as another user.
    - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
    - The directory of the play is used as the current working directory.
@@ -568,31 +568,29 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Get a site with a particular ldap connection id
+    - name: "Show activation status"
       ansible.builtin.debug:
-        msg: "ldap connection: {{ extensions }}"
+        msg: "Activation status is {{ activation }}"
       vars:
-        extensions: "{{
-          lookup('checkmk.general.ldap_connection',
-            'my_ldap_connection',
-            server_url=server_url,
-            site=site,
-            api_user=api_user,
-            api_secret=api_secret,
-            validate_certs=False
-          )
-        }}"
+        activation: "{{ lookup('checkmk.general.activation',
+                       my_activation_id
+                       server_url=http://myserver,
+                       site=mysite,
+                       validate_certs=False,
+                       api_user=api_user,
+                       api_secret=api_secret
+                   )}}"
 
     - name: "Use variables from inventory."
       ansible.builtin.debug:
-        msg: "ldap connection: {{ extensions }}"
+        msg: "Activation status is {{ activation }}"
       vars:
         checkmk_var_server_url: "http://myserver/"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"
         checkmk_var_validate_certs: false
-        attributes: "{{ lookup('checkmk.general.ldap_connection', 'my_ldap_connection') }}"
+        activation: "{{ lookup('checkmk.general.activation', my_activation_id) }}"
 
 
 
@@ -620,7 +618,7 @@ Return Value
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-_list"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connection_lookup__return-_list:
+      .. _ansible_collections.checkmk.general.activation_lookup__return-_list:
 
       .. rst-class:: ansible-option-title
 
@@ -642,7 +640,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      The details of a particular ldap connection
+      activation status
 
 
       .. rst-class:: ansible-option-line
@@ -664,7 +662,7 @@ Return Value
 Authors
 ~~~~~~~
 
-- Lars Getwan (@lgetwan)
+- Robin Gierse (@robin-checkmk)
 
 
 .. Extra links

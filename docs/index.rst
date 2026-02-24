@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 7.1.0
+Collection version 7.2.0
 
 .. contents::
    :local:
@@ -116,6 +116,8 @@ Inventory Plugins
 Lookup Plugins
 ~~~~~~~~~~~~~~
 
+* :ansplugin:`activation lookup <checkmk.general.activation#lookup>` -- Get the status of a single activation
+* :ansplugin:`activations lookup <checkmk.general.activations#lookup>` -- Get all activations
 * :ansplugin:`bakery lookup <checkmk.general.bakery#lookup>` -- Get the bakery status of a Checkmk server
 * :ansplugin:`folder lookup <checkmk.general.folder#lookup>` -- Get folder attributes
 * :ansplugin:`folders lookup <checkmk.general.folders#lookup>` -- Get various information about a folder
@@ -135,6 +137,8 @@ Lookup Plugins
     :maxdepth: 1
     :hidden:
 
+    activation_lookup
+    activations_lookup
     bakery_lookup
     folder_lookup
     folders_lookup

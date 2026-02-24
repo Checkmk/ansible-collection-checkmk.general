@@ -4,6 +4,28 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v7.2.0
+======
+
+Release Summary
+---------------
+
+Adding lookup modules for activation processes. Yeah, I am disappointed in my creativity as well.
+
+Major Changes
+-------------
+
+- Activation lookup modules - Add modules to lookup activation processes.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.activation - Get the status of a single activation
+- checkmk.general.activations - Get all activations
+
 v7.1.0
 ======
 
