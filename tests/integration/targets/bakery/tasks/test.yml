@@ -35,6 +35,21 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     state: "baked"
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for baking to finish."
+  ansible.builtin.debug:
+    msg: "Bakery status is {{ __checkmk_var_result_bakery }}"
+  vars:
+    __checkmk_var_result_bakery: "{{ lookup('checkmk.general.bakery',
+                    server_url=checkmk_var_server_url,
+                    site=outer_item.site,
+                    api_user=checkmk_var_api_user,
+                    api_secret=checkmk_var_api_secret)
+              }}"
+  register: __checkmk_var_result_bakery_bake
+  retries: 10
+  delay: 3
+  until: "'Bakery status is finished' in __checkmk_var_result_bakery_bake.msg"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Sign all agents."
   bakery:
     server_url: "{{ checkmk_var_server_url }}"
@@ -45,6 +60,21 @@
     signature_key_passphrase: "{{ checkmk_var_signature_key_passphrase }}"
     state: "signed"
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for signing to finish."
+  ansible.builtin.debug:
+    msg: "Bakery status is {{ __checkmk_var_result_bakery }}"
+  vars:
+    __checkmk_var_result_bakery: "{{ lookup('checkmk.general.bakery',
+                    server_url=checkmk_var_server_url,
+                    site=outer_item.site,
+                    api_user=checkmk_var_api_user,
+                    api_secret=checkmk_var_api_secret)
+              }}"
+  register: __checkmk_var_result_bakery_sign
+  retries: 10
+  delay: 3
+  until: "'Bakery status is finished' in __checkmk_var_result_bakery_sign.msg"
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bake and Sign all agents."
   bakery:
     server_url: "{{ checkmk_var_server_url }}"
@@ -54,6 +84,21 @@
     signature_key_id: "{{ checkmk_var_signature_key_id }}"
     signature_key_passphrase: "{{ checkmk_var_signature_key_passphrase }}"
     state: "baked_signed"
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for baking and signing to finish."
+  ansible.builtin.debug:
+    msg: "Bakery status is {{ __checkmk_var_result_bakery }}"
+  vars:
+    __checkmk_var_result_bakery: "{{ lookup('checkmk.general.bakery',
+                    server_url=checkmk_var_server_url,
+                    site=outer_item.site,
+                    api_user=checkmk_var_api_user,
+                    api_secret=checkmk_var_api_secret)
+              }}"
+  register: __checkmk_var_result_bakery_bake_sign
+  retries: 10
+  delay: 3
+  until: "'Bakery status is finished' in __checkmk_var_result_bakery_bake_sign.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
   host:

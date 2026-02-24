@@ -1,0 +1,38 @@
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+name: Lookup Module Activation
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+  pull_request:
+    branches:
+      - main
+      - devel
+    types:
+      - opened
+    paths:
+      - 'plugins/lookup/activation.py'
+      - 'plugins/lookup/activations.py'
+  push:
+    paths:
+      - '.github/workflows/ans-int-test-lkp-activation.yaml'
+      - 'plugins/lookup/activation.py'
+      - 'plugins/lookup/activations.py'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/lookup_activation/**'
+
+jobs:
+
+  integration:
+    name: "Integration Test"
+    uses: ./.github/workflows/_template-ans-int-test.yaml
+    with:
+      module: lookup_activation

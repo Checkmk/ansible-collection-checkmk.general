@@ -3,17 +3,14 @@
 # - Template for this file: https://github.com/ansible-collections/collection_template/blob/main/.github/workflows/ansible-test.yml
 # - About Ansible sanity tests: https://docs.ansible.com/ansible/latest/dev_guide/testing_sanity.html
 
-env:
-  NAMESPACE: checkmk
-  COLLECTION_NAME: general
-
-name: Ansible Tests
+name: Ansible Sanity
 
 permissions:
   contents: read
 
 on:
   workflow_dispatch:
+  workflow_call:
   schedule:
     - cron: '0 0 * * 0'
   push:
@@ -37,7 +34,7 @@ jobs:
 
   sanity:
     runs-on: ubuntu-24.04
-    name: Sanity (Ⓐ${{ matrix.ansible }})
+    name: (Ⓐ${{ matrix.ansible }})
     strategy:
       fail-fast: false
       matrix:

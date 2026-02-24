@@ -6,52 +6,69 @@ checkmk_var_checkmk_site: "mysite"
 checkmk_var_api_user: "cmkadmin"
 checkmk_var_api_secret: "mysecret"
 
-# Agent Role
+## Basic Configuration
 checkmk_agent_version: "{{ checkmk_var_version }}"
 checkmk_agent_edition: "{{ checkmk_var_edition }}"
 checkmk_agent_server_protocol: http
 checkmk_agent_server: 127.0.0.1
-checkmk_agent_site: "{{ checkmk_var_checkmk_site }}"
-checkmk_agent_registration_server_protocol: "{{ checkmk_agent_server_protocol }}"
-checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
-checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
-checkmk_agent_server_validate_certs: 'false'
-checkmk_agent_server_port: "{% if checkmk_agent_server_protocol == 'https' %}443{% else %}80{% endif %}"
-checkmk_agent_user: "{{ checkmk_var_api_user | default('automation') }}"
-checkmk_agent_port: 6556
 
+checkmk_agent_server_validate_certs: false
+checkmk_agent_server_port: "{% if checkmk_agent_server_protocol == 'https' %}443{% else %}80{% endif %}"
+checkmk_agent_site: "{{ checkmk_var_checkmk_site }}"
+
+## Authentication
+checkmk_agent_user: "{{ checkmk_var_api_user | default('automation') }}"
 # Depending on which user you will be using, set the password or secret:
 checkmk_agent_pass: "{{ checkmk_var_api_secret }}"
 # checkmk_agent_secret: "{{ checkmk_var_api_secret }}"
 
+## Registration
+checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
+checkmk_agent_registration_server_protocol: "{{ checkmk_agent_server_protocol }}"
+checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
 checkmk_agent_auto_activate: true
 checkmk_agent_add_host: true
-checkmk_agent_discover: true
-checkmk_agent_discover_max_parallel_tasks: 2
-checkmk_agent_update: 'false'
-checkmk_agent_tls: true
-checkmk_agent_configure_firewall: true
-checkmk_agent_force_install: 'false'
-checkmk_agent_prep_legacy: 'false'
-checkmk_agent_delegate_api_calls: "{{ inventory_hostname }}"
-checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 checkmk_agent_host_name: "{{ inventory_hostname }}"
-checkmk_agent_folder: "{{ checkmk_var_folder_path | default('/') }}"
-checkmk_agent_force_foreign_changes: 'false'
-checkmk_agent_host_attributes:
-  ipaddress: 127.0.0.1
-checkmk_agent_mode: pull
-checkmk_agent_no_log: 'false'
 
 # If you trust your local hostnames, you could also use the following
 # to use the local hostname instead of the inventory hostname:
 # checkmk_agent_host_name: "{{ hostvars[inventory_hostname]['ansible_facts['fqdn']'] }}"
+checkmk_agent_host_attributes:
+  ipaddress: 127.0.0.1
 # Checkmk does not need an IP address, as long as the hostname is DNS-resolvable
-
 # If that does not apply to your environment, you can configure the IP address below:
 # checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+checkmk_agent_folder: "{{ checkmk_var_folder_path | default('/') }}"
+checkmk_agent_discover: true
+checkmk_agent_discover_max_parallel_tasks: 2
+checkmk_agent_force_foreign_changes: false
 
-# Server Role
+## Agent Configuration
+checkmk_agent_mode: 'pull'
+checkmk_agent_port: 6556
+checkmk_agent_update: false
+checkmk_agent_tls: true
+checkmk_agent_force_install: false
+checkmk_agent_prep_legacy: false
+
+## Security
+checkmk_agent_no_log: false
+checkmk_agent_configure_firewall: true
+
+## Delegation
+checkmk_agent_delegate_api_calls: "{{ inventory_hostname }}"
+checkmk_agent_delegate_download: "{{ inventory_hostname }}"
+checkmk_agent_delegate_registration: false
+checkmk_agent_delegate_registration_target: "{{ inventory_hostname }}"
+
+## Advanced Options
+# The following setting can be used to increase the timeout for downloading
+# the Checkmk agent from the Checkmk server. Only use this, if you encounter
+# issues with the agent download. There is no role default, the module defaults
+# will be used. Value in seconds.
+# checkmk_agent_download_timeout: "{% if ansible_facts['system'] == 'Win32NT' %}30{% else %}10{% endif %}"
+
+# Server Role (needed for integrated testing)
 
 checkmk_server_edition: "{{ checkmk_var_edition }}"
 checkmk_server_version: "{{ checkmk_var_version }}"

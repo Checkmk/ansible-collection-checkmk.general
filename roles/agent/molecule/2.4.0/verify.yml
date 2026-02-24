@@ -15,10 +15,14 @@
     - name: "Verify Agent is present."
       ansible.builtin.assert:
         that: checkmk_agent_file.stat.exists | bool
+        fail_msg: "'/usr/bin/check_mk_agent' does not exist!"
+        success_msg: "Found '/usr/bin/check_mk_agent'."
 
     - name: "Test Agent Service is running."
       ansible.builtin.assert:
         that: "'check-mk-agent-async.service' in ansible_facts['services']"
+        fail_msg: "'check-mk-agent-async.service' not found ins systemd services!"
+        success_msg: "'check-mk-agent-async.service' found ins systemd services."
 
     - name: "Test that the Agent is listening on the default Port."
       ansible.builtin.wait_for:
@@ -29,3 +33,5 @@
     - name: "Test Agent Service is listening on port {{ checkmk_agent_port }}."
       ansible.builtin.assert:
         that: "(checkmk_agent_port_state.port == checkmk_agent_port) and (checkmk_agent_port_state.state == 'started')"
+        fail_msg: "Port {{ checkmk_agent_port }} should be in state started, but {{ checkmk_agent_port_state.port }} is {{ checkmk_agent_port_state.state }}!"
+        success_msg: "Port {{ checkmk_agent_port_state.port }} is {{ checkmk_agent_port_state.state }}."

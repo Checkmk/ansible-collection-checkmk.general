@@ -14,7 +14,7 @@
         - download-gpg-key
         - enable-repos
 
-    - name: "{{ ansible_facts['os_family'] }} Derivatives: Import Checkmk GPG Key on RHEL 8."
+    - name: "{{ ansible_facts['os_family'] }} Derivatives: Import EPEL GPG Key on CentOS & RHEL 8."
       become: true
       ansible.builtin.rpm_key:
         key: "{{ __checkmk_server_tmp_dir }}/EPEL-pubkey.gpg"
