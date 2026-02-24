@@ -22,6 +22,14 @@ plugins:
       name: checkmk
       version_added: null
   lookup:
+    activation:
+      description: Get the status of a single activation
+      name: activation
+      version_added: 7.2.0
+    activations:
+      description: Get all activations
+      name: activations
+      version_added: 7.2.0
     bakery:
       description: Get the bakery status of a Checkmk server
       name: bakery
@@ -174,4 +182,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 7.1.0
+version: 7.2.1

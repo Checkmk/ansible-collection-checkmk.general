@@ -10,14 +10,14 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.folder_lookup:
+.. _ansible_collections.checkmk.general.activations_lookup:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.folder lookup -- Get folder attributes
-++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.activations lookup -- Get all activations
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -29,13 +29,13 @@ checkmk.general.folder lookup -- Get folder attributes
 
     To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.folder`.
+    To use it in a playbook, specify: :code:`checkmk.general.activations`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 3.3.0
+New in checkmk.general 7.2.0
 
 .. contents::
    :local:
@@ -49,7 +49,7 @@ Synopsis
 
 .. Description
 
-- Returns the attributes of a folder
+- Returns a list of activations
 
 
 .. Aliases
@@ -57,61 +57,6 @@ Synopsis
 
 .. Requirements
 
-
-
-
-.. Terms
-
-Terms
------
-
-.. tabularcolumns:: \X{1}{3}\X{2}{3}
-
-.. list-table::
-  :width: 100%
-  :widths: auto
-  :header-rows: 1
-  :class: longtable ansible-option-table
-
-  * - Parameter
-    - Comments
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-_terms"></div>
-
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-_terms:
-
-      .. rst-class:: ansible-option-title
-
-      **Terms**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-_terms" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string` / :ansible-option-required:`required`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      complete folder path using tilde as a delimiter
-
-
-      .. raw:: html
-
-        </div>
 
 
 
@@ -123,7 +68,7 @@ Keyword parameters
 ------------------
 
 This describes keyword parameters of the lookup. These are the values ``key1=value1``, ``key2=value2`` and so on in the following
-examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.folder', key1=value1, key2=value2, ...)``
+examples: ``lookup('checkmk.general.activations', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.activations', key1=value1, key2=value2, ...)``
 
 .. tabularcolumns:: \X{1}{3}\X{2}{3}
 
@@ -141,7 +86,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_cookie"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-api_auth_cookie:
+      .. _ansible_collections.checkmk.general.activations_lookup__parameter-api_auth_cookie:
 
       .. rst-class:: ansible-option-title
 
@@ -195,7 +140,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_type"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-api_auth_type:
+      .. _ansible_collections.checkmk.general.activations_lookup__parameter-api_auth_type:
 
       .. rst-class:: ansible-option-title
 
@@ -254,8 +199,8 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansibleOptionAnchor" id="parameter-api_secret"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-api_secret:
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.activations_lookup__parameter-api_secret:
+      .. _ansible_collections.checkmk.general.activations_lookup__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -312,8 +257,8 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansibleOptionAnchor" id="parameter-api_user"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-api_user:
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.activations_lookup__parameter-api_user:
+      .. _ansible_collections.checkmk.general.activations_lookup__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -369,7 +314,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-server_url:
+      .. _ansible_collections.checkmk.general.activations_lookup__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -423,7 +368,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-site:
+      .. _ansible_collections.checkmk.general.activations_lookup__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -477,7 +422,7 @@ examples: ``lookup('checkmk.general.folder', key1=value1, key2=value2, ...)`` an
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.activations_lookup__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -551,8 +496,6 @@ Notes
 -----
 
 .. note::
-   - When keyword and positional parameters are used together, positional parameters must be listed before keyword parameters:
-     ``lookup('checkmk.general.folder', term1, term2, key1=value1, key2=value2)`` and ``query('checkmk.general.folder', term1, term2, key1=value1, key2=value2)``
    - Like all lookups, this runs on the Ansible controller and is unaffected by other keywords such as 'become'. If you need to use different permissions, you must change the command or run Ansible as another user.
    - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
    - The directory of the play is used as the current working directory.
@@ -568,30 +511,28 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Get the attributes of folders /tests and /snmp
+    - name: "Show activations status"
       ansible.builtin.debug:
-        msg: "Extended attributes of folder /network: {{ attributes.extensions }}"
-      loop: "{{
-               lookup('checkmk.general.folder',
-                      '~tests', '~snmp',
-                      server_url=my_server_url,
-                      site=mysite,
-                      api_user=myuser,
-                      api_secret=mysecret,
-                      validate_certs=False
-                      )
-             }}"
+        msg: "Activations status is {{ activations }}"
+      vars:
+        activations: "{{ lookup('checkmk.general.activations',
+                       server_url=http://myserver,
+                       site=mysite,
+                       validate_certs=False,
+                       api_user=api_user,
+                       api_secret=api_secret
+                   )}}"
 
     - name: "Use variables from inventory."
       ansible.builtin.debug:
-        msg: "Extended attributes of folder /network: {{ attributes.extensions }}"
+        msg: "Activations status is {{ activations }}"
       vars:
         checkmk_var_server_url: "http://myserver/"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"
         checkmk_var_validate_certs: false
-        attributes: "{{ lookup('checkmk.general.folder', '~tests') }}"
+        activations: "{{ lookup('checkmk.general.activations') }}"
 
 
 
@@ -619,7 +560,7 @@ Return Value
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-_list"></div>
 
-      .. _ansible_collections.checkmk.general.folder_lookup__return-_list:
+      .. _ansible_collections.checkmk.general.activations_lookup__return-_list:
 
       .. rst-class:: ansible-option-title
 
@@ -641,9 +582,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A dict of attributes of the folder if you query a single folder
-
-      A list of dicts of attributes of the folders if you query multiple folders
+      activations status
 
 
       .. rst-class:: ansible-option-line
@@ -665,7 +604,7 @@ Return Value
 Authors
 ~~~~~~~
 
-- Lars Getwan (@lgetwan)
+- Robin Gierse (@robin-checkmk)
 
 
 .. Extra links
