@@ -8,7 +8,7 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: activations
     author: Robin Gierse (@robin-checkmk)
-    version_added: "6.8.0"
+    version_added: "7.2.0"
 
     short_description: Get all activations
 
