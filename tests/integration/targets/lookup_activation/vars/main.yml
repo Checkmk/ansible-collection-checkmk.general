@@ -19,7 +19,7 @@ checkmk_var_test_sites:
   - version: "2.4.0p22"
     edition: "cme"
     site: "stable_cme"
-    port: "5324"
+    port: "5104"
 
 checkmk_var_hosts:
   - name: test1.tld
