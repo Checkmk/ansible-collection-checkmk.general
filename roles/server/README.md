@@ -23,7 +23,7 @@ are already present on your system.
 
 This role includes explicit distribution support.
 That means, that even if the role might run on other distributions,
-we can only verify, that it works on the ones listed in `defaults/main.yml` in the variable `checkmk_server_server_stable_os`.
+we can only verify, that it works on the ones listed in `defaults/main.yml` in the variable `__checkmk_server_stable_os`.
 
 To elaborate: We do **not** guarantee, that this role will work on them.
 But we do our best to stay as stable as possible on them. On top of that we have
