@@ -4,7 +4,7 @@
     msg: "This role is not stable for the target operating system: {{ ansible_facts['distribution'] + '-' + ansible_facts['distribution_major_version'] }}."
   when: (ansible_facts['distribution'] is not defined) or
         (ansible_facts['distribution_version'] is not defined) or
-        (ansible_facts['distribution'] + "-" + ansible_facts['distribution_major_version'] not in checkmk_server_server_stable_os)
+        (ansible_facts['distribution'] + "-" + ansible_facts['distribution_major_version'] not in __checkmk_server_stable_os)
   tags:
     - always
 

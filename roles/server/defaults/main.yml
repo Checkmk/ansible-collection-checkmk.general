@@ -5,7 +5,7 @@
 # modification of the role. This should be tested however, so this variable
 # actually provides value. That being said, this is a artificial limitation
 # and you are free to circumvent it at your own risk.
-checkmk_server_server_stable_os:
+__checkmk_server_stable_os:
   - AlmaLinux-8
   - AlmaLinux-9
   - AlmaLinux-10
