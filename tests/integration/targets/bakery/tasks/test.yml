@@ -46,7 +46,7 @@
                     api_secret=checkmk_var_api_secret)
               }}"
   register: __checkmk_var_result_bakery_bake
-  retries: 10
+  retries: 20
   delay: 3
   until: "'Bakery status is finished' in __checkmk_var_result_bakery_bake.msg"
 
@@ -71,7 +71,7 @@
                     api_secret=checkmk_var_api_secret)
               }}"
   register: __checkmk_var_result_bakery_sign
-  retries: 10
+  retries: 20
   delay: 3
   until: "'Bakery status is finished' in __checkmk_var_result_bakery_sign.msg"
 
@@ -96,7 +96,7 @@
                     api_secret=checkmk_var_api_secret)
               }}"
   register: __checkmk_var_result_bakery_bake_sign
-  retries: 10
+  retries: 20
   delay: 3
   until: "'Bakery status is finished' in __checkmk_var_result_bakery_bake_sign.msg"
 

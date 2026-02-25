@@ -1,29 +1,27 @@
-# checkmk.general.server
-
 This role installs Checkmk on servers and manages sites.
 
-## Requirements
+# Requirements
 
-The Checkmk Ansible Collection from which this role originates is needed to
-use it, as modules shipped by this collection are used in the role.
+This role is part of the Checkmk Ansible Collection and relies on modules
+shipped with it, so the collection must be installed before using this role.
 
-It can be installed as easy as running:
+Install it by running:
 
     ansible-galaxy collection install checkmk.general
 
 Refer to [INSTALL.md](../../INSTALL.md) for detailed installation instructions.
 
-### A note about SLES
+## A note about SLES
 SLES has some special dependencies, which cannot be managed by this role
 directly. You can automate them yourself, but this role assumes,
 that the modules mentioned in [Section 1 of the official guide](https://docs.checkmk.com/latest/en/install_packages_sles.html)
 are already present on your system.
 
-## Distribution support
+# Distribution support
 
 This role includes explicit distribution support.
 That means, that even if the role might run on other distributions,
-we can only verify, that it works on the ones listed in `defaults/main.yml` in the variable `checkmk_server_server_stable_os`.
+we can only verify, that it works on the ones listed in `defaults/main.yml` in the variable `__checkmk_server_stable_os`.
 
 To elaborate: We do **not** guarantee, that this role will work on them.
 But we do our best to stay as stable as possible on them. On top of that we have
@@ -31,14 +29,15 @@ automated tests, that continuously test this role against a subset of distributi
 
 To learn about the distributions used in automated tests, inspect the corresponding `molecule/*/molecule.yml`.
 
-## Role variables
+# Role variables
 
-### Basic configuration
+## Basic configuration
 
     checkmk_server_version: "2.4.0p22"
 
 The main Checkmk version. This is used for installing Checkmk.
-To manage sites and their version, see `checkmk_server_sites` below.
+To manage sites and their version, see [Site Management](#site_management) below.
+Updating sites is possible as well, see [Site updates](#site_updates) below.
 
     checkmk_server_edition: 'cre'
 
@@ -51,8 +50,7 @@ The edition you are using. Valid values are `cre`, `cee`, `cce` and `cme`.
 
 For details about the editions see: https://checkmk.com/product/editions
 
-> Note, that you need credentials, to download the `cee` edition.
-See below variables, to set those.
+> Note, that you need credentials, to download the `cee` edition. See below variables, to set those.
 
     checkmk_server_download_user: []
     checkmk_server_download_pass: []
@@ -76,28 +74,9 @@ Cryptographically verify the downloaded epel-release package on RHEL 8.
 
 Uninstall unused Checkmk versions on the server.
 
-### Security
+<a id="site_management"></a>
 
-    checkmk_server_no_log: true
-
-Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting.
-> **Warning**: Be careful when changing this value in production, passwords may be leaked in operating system logs.
-
-    checkmk_server_configure_firewall: true
-
-Automatically open necessary ports on the Checkmk server.
-This setting only has effect on systems, which are running `ufw` or `firewalld`.
-For elaborate firewall configuration, use your own firewall management!
-
-    checkmk_server_ports:
-    - 22
-    - 80
-    - 443
-    - 8000
-
-The TCP ports to open automatically. Adapt this to the specific requirements of your site.
-
-### Site management
+## Site management
 
     checkmk_server_sites:
       - name: 'mysite'
@@ -130,30 +109,18 @@ Valid values for `state` are:
 - `present`: The site is stopped and disabled for autostart on system boot.
 - `absent`: The site is removed from the system entirely.
 
-If a higher version is specified for an existing site, an `update_conflict_resolution` method must first be given to update it.
-Valid choices include `install`, `keepold` and `abort`.
-
-#### Site configuration
-Site configuration can be passed with the `omd_config` keyword.
-The format can be seen above, for a list of variables run `omd config show` on an existing site.
-> **Pay special attention to the `omd_auto_restart` variable!** As site configuration can only be performed on a stopped site, you can configure the role to stop and start the site automatically. By default the variable is set to `false` to avoid unexpected restarts. However, configuration will be skipped, if the site is not (automatically) stopped.
-
-#### MKP management
-Extension packages can also be listed to be installed on the specific central site. Remote sites will get extension packages replicated upon change activation. The `src:` option can be set on the Ansible controller. Alternatively a URL can be specified to download the MKP package directly. These options are mutually exclusive.
-
-> **Attention!** If you are connecting to the remote host via an unprivileged user, you will run into permission issues explained [here](https://docs.ansible.com/ansible-core/2.18/playbook_guide/playbooks_privilege_escalation.html#risks-of-becoming-an-unprivileged-user). The easiest fix will probably be to install your distribution's `acl` package. But the right solution for your environment is entirely up to you.
-
-#### HTTP proxy
-
-    checkmk_server_download_proxy: ''
-
-The HTTP proxy used for downloading the Checkmk server software.
-
-    checkmk_server_gpg_download_proxy: "{{ checkmk_server_download_proxy }}"
-
-The HTTP proxy used for downloading the Checkmk GPG Key.
+<a id="site_updates"></a>
 
 ### Site updates
+
+This role supports site updates.
+To perform an update, change the `version:` key in `checkmk_server_sites` to the desired version and run the role.
+Be advised, that you should understand the [update process](https://docs.checkmk.com/latest/en/update.html) ahead of automating it.
+
+To resolve issues during update automatically, an `update_conflict_resolution` method must be provided.
+Valid choices include `install`, `keepold` and `abort`.
+
+Below are options to safeguard the upgrade process as good as possible.
 
     checkmk_server_backup_on_update: true
 
@@ -173,7 +140,50 @@ Backup options to use. By default no historic data is backed up, in order to cre
 Whether to allow 'updating' the site to a lower version.
 Note, that the 'update' to a lower version is not a recommended procedure, and will not be supported for customers of commercial Checkmk editions.
 
-### Delegation
+### Site configuration
+
+Site configuration can be passed with the `omd_config` keyword.
+The format can be seen above, for a list of variables run `omd config show` on an existing site.
+> **Pay special attention to the `omd_auto_restart` variable!** As site configuration can only be performed on a stopped site, you can configure the role to stop and start the site automatically. By default the variable is set to `false` to avoid unexpected restarts. However, configuration will be skipped, if the site is not (automatically) stopped.
+
+### MKP management
+
+Extension packages can also be listed to be installed on the specific central site. Remote sites will get extension packages replicated upon change activation. The `src:` option can be set on the Ansible controller. Alternatively a URL can be specified to download the MKP package directly. These options are mutually exclusive.
+
+> **Attention!** If you are connecting to the remote host via an unprivileged user, you will run into permission issues explained [here](https://docs.ansible.com/ansible-core/2.18/playbook_guide/playbooks_privilege_escalation.html#risks-of-becoming-an-unprivileged-user). The easiest fix will probably be to install your distribution's `acl` package. But the right solution for your environment is entirely up to you.
+
+## Security
+
+    checkmk_server_no_log: true
+
+Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting.
+> **Warning**: Be careful when changing this value in production, passwords may be leaked in operating system logs.
+
+    checkmk_server_configure_firewall: true
+
+Automatically open necessary ports on the Checkmk server.
+This setting only has effect on systems, which are running `ufw` or `firewalld`.
+For elaborate firewall configuration, use your own firewall management!
+
+    checkmk_server_ports:
+    - 22
+    - 80
+    - 443
+    - 8000
+
+The TCP ports to open automatically. Adapt this to the specific requirements of your site.
+
+## HTTP proxy
+
+    checkmk_server_download_proxy: ''
+
+The HTTP proxy used for downloading the Checkmk server software.
+
+    checkmk_server_gpg_download_proxy: "{{ checkmk_server_download_proxy }}"
+
+The HTTP proxy used for downloading the Checkmk GPG Key.
+
+## Delegation
 
     checkmk_server_delegate_download: "{{ inventory_hostname }}"
 
@@ -183,7 +193,7 @@ Configure the host to which Checkmk Server Setup downloads are delegated to. Aft
 
 Configure the host to which Checkmk GPG Key downloads are delegated to. After download the files are transferred to the managed host, when the managed host didn't perform the download itself.
 
-## Tags
+# Tags
 
 Tasks are tagged with the following tags:
 | Tag | Purpose |
@@ -209,30 +219,30 @@ Tasks are tagged with the following tags:
 
 You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
 
-## Dependencies
+# Dependencies
 
 None.
 
-## Example playbook
+# Example playbook
 
     - hosts: all
       roles:
          - checkmk.general.server
 
-## Contributing
+# Contributing
 
 See [CONTRIBUTING](../../CONTRIBUTING).
 
-## Disclaimer
+# Disclaimer
 
 This role is provided **as is** and we can and will not guarantee that the role works
 as intended, nor can we be accountable for any damage or misconfiguration done
 by this role. Study the role thoroughly before using it.
 
-## License
+# License
 
 See [LICENSE](../../LICENSE).
 
-## Author information
+# Author information
 
 Robin Gierse (@robin-checkmk)
