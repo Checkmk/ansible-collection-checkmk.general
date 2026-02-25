@@ -34,6 +34,14 @@ jobs:
   # to CME, but with remote sites for the tests who need them.
   integration:
     name: "Integration Test"
-    uses: ./.github/workflows/_template-ans-int-test-cme-remotes.yaml
+    uses: ./.github/workflows/_template-ans-int-test.yaml
     with:
       module: site
+      checkmk: ${{ matrix.checkmk }}
+    strategy:
+      fail-fast: false
+      matrix:
+        checkmk:
+          - 2.3.0p42
+          - 2.4.0p22
+          # - 2.5.0-2025.02.24

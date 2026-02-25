@@ -1,21 +1,13 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.4.0p22"
+  - version: "{{ checkmk_var_version | default(checkmk_var_version_local) }}"
     edition: "cre"
-    site: "stable_cre"
-    port: "5004"
-  - version: "2.4.0p22"
+    site: "cre"
+    port: "5000"
+  - version: "{{ checkmk_var_version | default(checkmk_var_version_local) }}"
     edition: "cme"
-    site: "stable_cme"
-    port: "5104"
-  - version: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
-    edition: "cre"
-    site: "beta_cre"
-    port: "5005"
-  - version: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
-    edition: "cme"
-    site: "beta_cme"
-    port: "5105"
+    site: "cme"
+    port: "5100"
 
 checkmk_var_ldap_connections:
   - ldap_config:

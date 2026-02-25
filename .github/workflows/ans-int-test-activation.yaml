@@ -30,7 +30,15 @@ on:
 jobs:
 
   integration:
-    name: "Integration Test"
+    name: "Integration Test Checkmk ${{ matrix.checkmk }}"
     uses: ./.github/workflows/_template-ans-int-test.yaml
     with:
       module: activation
+      checkmk: ${{ matrix.checkmk }}
+    strategy:
+      fail-fast: false
+      matrix:
+        checkmk:
+          - 2.3.0p42
+          - 2.4.0p22
+          # - 2.5.0-2025.02.24
