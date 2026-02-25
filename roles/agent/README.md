@@ -1,13 +1,11 @@
-# checkmk.general.agent
-
 This role installs and manages Checkmk agents.
 
-## Requirements
+# Requirements
 
-The Checkmk Ansible Collection from which this role originates is needed to
-use it, as modules shipped by this collection are used in the role.
+This role is part of the Checkmk Ansible Collection and relies on modules
+shipped with it, so the collection must be installed before using this role.
 
-It can be installed as easy as running:
+Install it by running:
 
     ansible-galaxy collection install checkmk.general
 
@@ -16,9 +14,9 @@ Refer to [INSTALL.md](../../INSTALL.md) for detailed installation instructions.
 Additionally, this role requires the Python module `netaddr` on the controller.
 Please make sure it is installed on your system and available for Ansible.
 
-## Role variables
+# Role variables
 
-### Basic configuration
+## Basic configuration
 
     checkmk_agent_version: "2.4.0p22"
 
@@ -56,7 +54,7 @@ The port of the web interface of your Checkmk server. Defaults to port 80 for ht
 
 The name of your Checkmk site.
 
-### Authentication
+## Authentication
 
     checkmk_agent_user: 'myuser'
 
@@ -73,7 +71,7 @@ This is mutually exclusive with `checkmk_agent_secret`.
 The secret for the automation user used to authenticate against your Checkmk site.
 This is mutually exclusive with `checkmk_agent_pass`.
 
-### Registration
+## Registration
 
     checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
 
@@ -129,7 +127,7 @@ Automatically discover services on the host where the agent was installed.
 If the value of this parameter is greater than zero, only the defined number of
 discovery tasks run at the same time in parallel.
 
-### Agent configuration
+## Agent configuration
 
     checkmk_agent_mode: 'pull'
 
@@ -162,7 +160,7 @@ This means that it will be possible to 'update' to a lower agent version or inst
 
 Enable this to automatically install `xinetd` on hosts with systemd prior to version 220.
 
-### Security
+## Security
 
     checkmk_agent_no_log: true
 
@@ -176,7 +174,7 @@ This setting only has effect on systems, which are running `ufw` or `firewalld`.
 For elaborate firewall configuration, use your own firewall management!
 This setting only enables very basic firewall configuration.
 
-### Delegation
+## Delegation
 
     checkmk_agent_delegate_api_calls: 'localhost'
 
@@ -197,13 +195,13 @@ This feature can be used in case a direct connection to the Checkmk site on the 
 
 Configure the target which is used to register the monitored host on the Checkmk server for TLS. The target needs to have a Checkmk agent installed.
 
-### Advanced options
+## Advanced options
 
     checkmk_agent_download_timeout: "{% if ansible_system == 'Win32NT' %}30{% else %}10{% endif %}"
 
 This setting can be used to increase the timeout in seconds for downloading the Checkmk agent from the Checkmk server. Only use this, if you encounter issues with the agent download. There is no role default, the module defaults will be used.
 
-## Tags
+# Tags
 
 Tasks are tagged with the following tags:
 | Tag | Purpose |
@@ -218,39 +216,39 @@ Tasks are tagged with the following tags:
 
 You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
 
-## Dependencies
+# Dependencies
 
 None.
 
-## Example playbook
+# Example playbook
 
     - hosts: all
       roles:
          - checkmk.general.agent
 
-## Use cases
+# Use cases
 
 This is a brief collection of use cases, that outline how this role can be used.
 It should give you an idea of what is possible, but also what things to consider.
 
-### Agent registration against a remote site
+## Agent registration against a remote site
 
 See [remote-registration.yml](../../playbooks/usecases/remote-registration.yml).
 
-## Contributing
+# Contributing
 
 See [CONTRIBUTING](../../CONTRIBUTING).
 
-## Disclaimer
+# Disclaimer
 
 This role is provided AS IS and we can and will not guarantee that the role works
 as intended, nor can we be accountable for any damage or misconfiguration done
 by this role. Study the role thoroughly before using it.
 
-## License
+# License
 
 See [LICENSE](../../LICENSE).
 
-## Author information
+# Author information
 
 Robin Gierse (@robin-checkmk)
