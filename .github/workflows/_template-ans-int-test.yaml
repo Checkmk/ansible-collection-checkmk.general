@@ -14,7 +14,10 @@ on:
       module:
         required: true
         type: string
-      checkmk:
+      checkmk_version:
+        required: true
+        type: string
+      checkmk_edition:
         required: true
         type: string
 
@@ -43,59 +46,26 @@ jobs:
           - ansible: stable-2.20
             python: '3.11'
 
-# Ports Concept Old:
-# 1                   2       3              4
-# Usecase             Edition Remote Count   Checkmk Minor Version
-# Apache: 5           Raw: 0  0 - 2          3, 4, 5
-# Livestatus: 6       Managed: 1
-# Livestatusproxy: 4
-# RabbitMQ: 3
-
-# Ports Concept Simplified:
-# 1                   2       3              4
-# Usecase             Edition Remote Count   Blank
-# Apache: 5           Raw: 0  0 - 2          0
-# Livestatus: 6       Managed: 1
-# Livestatusproxy: 4
-# RabbitMQ: 3
-
     services:
-      cre:
-        image: checkmk/check-mk-raw:${{ inputs.checkmk }}
+      testsite:
+        image: checkmk/check-mk-${{ inputs.checkmk_edition }}:${{ inputs.checkmk_version }}
         ports:
           - 5000:5000  # Site Apache
         env:
-          CMK_SITE_ID: "cre"
+          CMK_SITE_ID: "testsite"
           CMK_PASSWORD: "Sup3rSec4et!"
-      cre-r1:
-        image: checkmk/check-mk-raw:${{ inputs.checkmk }}
+      testsite-r-1:
+        image: checkmk/check-mk-${{ inputs.checkmk_edition }}:${{ inputs.checkmk_version }}
         ports:
-          - 5010:5000  # Site Apache
-          - 6010:6557  # Livestatus
-          - 4010:6664  # Livestatus Proxy
-          - 3010:5671  # Message Broker
+          - 5001:5000  # Site Apache
+          - 6557:6557  # Livestatus
+          - 6664:6664  # Livestatus Proxy
+          - 5671:5671  # Message Broker
         env:
-          CMK_SITE_ID: "cre_r1"
+          CMK_SITE_ID: "testsite_r_1"
           CMK_PASSWORD: "Sup3rSec4et!"
           CMK_LIVESTATUS_TCP: "on"
           CMK_RABBITMQ_PORT: 5671
-      cme:
-        image: checkmk/check-mk-managed:${{ inputs.checkmk }}
-        ports:
-          - 5100:5000  # Site Apache
-        env:
-          CMK_SITE_ID: "cme"
-          CMK_PASSWORD: "Sup3rSec4et!"
-      cme-r1:
-        image: checkmk/check-mk-managed:${{ inputs.checkmk }}
-        ports:
-          - 5110:5000  # Site Apache
-          - 6110:6557  # Livestatus
-          - 4110:6664  # Livestatus Proxy
-          - 3110:5671  # Message Broker
-        env:
-          CMK_SITE_ID: "cme_r1"
-          CMK_PASSWORD: "Sup3rSec4et!"
 
     steps:
 
@@ -122,7 +92,8 @@ jobs:
       - name: "Inject variables into integration test."
         run: |
           cat > tests/integration/integration_config.yml <<EOF
-          checkmk_var_version: "${{ inputs.checkmk }}"
+          checkmk_var_version: "${{ inputs.checkmk_version }}"
+          checkmk_var_edition: "${{ inputs.checkmk_edition }}"
           EOF
         working-directory: ./ansible_collections/checkmk/general
 

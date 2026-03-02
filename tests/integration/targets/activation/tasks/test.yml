@@ -1,16 +1,16 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate without changes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate without changes."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -24,14 +24,14 @@
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate without explicit site."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate without explicit site."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -42,7 +42,7 @@
     state: "absent"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate forcing foreign changes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate forcing foreign changes."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -50,7 +50,7 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     force_foreign_changes: true
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -64,7 +64,7 @@
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate with explicit site."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate with explicit site."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -74,7 +74,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -85,7 +85,7 @@
     state: "absent"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate with explicit site and redirect."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate with explicit site and redirect."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -96,6 +96,6 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   activation:
   environment: "{{ __checkmk_var_testing_environment }}"

@@ -1,12 +1,12 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
 - name: "Include Checkmk version specific Variables."
   ansible.builtin.include_vars: "{{ outer_item.version | regex_search('^[0-9]+[.][0-9]+[.][0-9]+') }}.yml"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create rules."
   rule:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -18,7 +18,7 @@
   loop: "{{ checkmk_var_rules }}"
   register: __checkmk_var_created_rules
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create rules. Again"
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create rules. Again"
   rule:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -31,7 +31,7 @@
   register: __checkmk_var_result_rules_create
   failed_when: __checkmk_var_result_rules_create.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify rules."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Modify rules."
   rule:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -50,7 +50,7 @@
   loop_control:
     label: "{{ item.content.id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify rules. Again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Modify rules. Again."
   rule:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -71,7 +71,7 @@
   register: __checkmk_var_result_rules_modify
   failed_when: __checkmk_var_result_rules_modify.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify rules found by a lookup."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Modify rules found by a lookup."
   rule:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -97,7 +97,7 @@
   loop_control:
     label: "{{ item.id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete rules."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete rules."
   rule:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -111,7 +111,7 @@
   loop_control:
     label: "{{ item.content.id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -121,7 +121,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete rules. Again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete rules. Again."
   rule:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -137,7 +137,7 @@
   register: __checkmk_var_result_rules_delete
   failed_when: __checkmk_var_result_rules_delete.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   rule:
     ruleset: "{{ item.content.extensions.ruleset }}"
     rule:
