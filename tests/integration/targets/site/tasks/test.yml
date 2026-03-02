@@ -1,9 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create site connection."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create site connection."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -17,7 +17,7 @@
   loop_control:
     label: "{{ item.site_id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create site connection again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create site connection again."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -31,7 +31,7 @@
   loop_control:
     label: "{{ item.site_id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log in to remote site."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Log in to remote site."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -45,7 +45,7 @@
   loop_control:
     label: "{{ item.site_id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log in to remote site again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Log in to remote site again."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -61,7 +61,7 @@
   register: __checkmk_var_result_login
   failed_when: __checkmk_var_result_login.changed | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update site connection."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update site connection."
   when: "not '2.5.0' in outer_item.version"
   site:
     server_url: "{{ checkmk_var_server_url }}"
@@ -81,7 +81,7 @@
     label: "{{ item.site_id }}"
 
 # ToDo: Just for Debugging!
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update site connection for 2.5."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update site connection for 2.5."
   when: "'2.5.0' in outer_item.version"
   site:
     server_url: "{{ checkmk_var_server_url }}"
@@ -105,7 +105,7 @@
   loop_control:
     label: "{{ item.site_id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update site connection again. "
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update site connection again. "
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -123,7 +123,7 @@
   register: __checkmk_var_result_update
   failed_when: __checkmk_var_result_update.changed | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log out from remote site."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Log out from remote site."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -135,7 +135,7 @@
   loop_control:
     label: "{{ item.site_id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Log out from remote site again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Log out from remote site again."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -149,7 +149,7 @@
   register: __checkmk_var_result_logout
   failed_when: __checkmk_var_result_logout.changed | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete remote site."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete remote site."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -161,7 +161,7 @@
   loop_control:
     label: "{{ item.site_id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete remote site again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete remote site again."
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -175,7 +175,7 @@
   register: __checkmk_var_result_delete
   failed_when: __checkmk_var_result_delete.changed | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   site:
     site_id: "{{ item.site_id }}"
     state: "absent"

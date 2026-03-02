@@ -1,13 +1,9 @@
 ---
 checkmk_var_test_sites:
-  - version: "{{ checkmk_var_version | default(checkmk_var_version_local) }}"
-    edition: "cre"
-    site: "cre"
+  - version: "{{ checkmk_var_version | default('2.4.0p22') }}"
+    edition: "{{ checkmk_var_edition | default('cre') }}"
+    site: "testsite"
     port: "5000"
-  - version: "{{ checkmk_var_version | default(checkmk_var_version_local) }}"
-    edition: "cme"
-    site: "cme"
-    port: "5100"
 
 checkmk_var_contact_groups:
   - team1

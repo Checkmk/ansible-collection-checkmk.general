@@ -33,15 +33,18 @@ jobs:
   # To keep load on the GitHub Runner sensible, we limited this reusable workflow
   # to CME, but with remote sites for the tests who need them.
   integration:
-    name: "Integration Test"
+    name: "Integration Test ${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
     uses: ./.github/workflows/_template-ans-int-test.yaml
     with:
       module: lookup_bakery
-      checkmk: ${{ matrix.checkmk }}
+      checkmk_version: ${{ matrix.checkmk_version }}
+      checkmk_edition: ${{ matrix.checkmk_edition }}
     strategy:
       fail-fast: false
       matrix:
-        checkmk:
+        checkmk_version:
           - 2.3.0p42
           - 2.4.0p22
           # - 2.5.0-2025.02.24
+        checkmk_edition:
+          - managed

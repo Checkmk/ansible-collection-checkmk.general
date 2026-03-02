@@ -1,9 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
   checkmk.general.host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -18,7 +18,7 @@
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get all hosts."
   ansible.builtin.set_fact:
     __checkmk_var_hosts_list: "{{ lookup('checkmk.general.hosts',
                          server_url=checkmk_var_server_url,
@@ -27,13 +27,13 @@
                          api_user=checkmk_var_api_user,
                          api_secret=checkmk_var_api_secret) }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify host count."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify host count."
   ansible.builtin.assert:
     that: "__checkmk_var_hosts_list | length == checkmk_var_hosts | length"
     fail_msg: "Expected {{ checkmk_var_hosts | length }} hosts, but found {{ __checkmk_var_hosts_list | length }}!"
     success_msg: "Expected {{ checkmk_var_hosts | length }} hosts and found {{ __checkmk_var_hosts_list | length }}."
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify host aliases."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify host aliases."
   ansible.builtin.assert:
     that: "item.extensions.attributes.alias == (checkmk_var_hosts | selectattr('name', 'equalto', item.id) | map(attribute='alias') | first)"
     fail_msg: "Expected {{ item.id }} alias to be {{ checkmk_var_hosts | selectattr('name', 'equalto', item.id) | map(attribute='alias') | first }}, but found {{ item.extensions.attributes.alias }}!"
@@ -42,7 +42,7 @@
   loop_control:
     label: "{{ item.id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify host alias per host."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify host alias per host."
   ansible.builtin.assert:
     that: "item.extensions.attributes.alias == __checkmk_var_host.attributes.alias"
     fail_msg: "Expected {{ item.id }} alias to be {{ item.extensions.attributes.alias }}, but found {{ __checkmk_var_host.attributes.alias }}!"
@@ -59,24 +59,24 @@
   loop: "{{ __checkmk_var_hosts_list }}"
 
 # We need this hack to overwrite the colliding global variable
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Use variables from inventory."
   when: outer_item.site == "beta_cme"
   block:
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set checkmk_var_server_url for isolated testing."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set checkmk_var_server_url for isolated testing."
       ansible.builtin.set_fact:
         checkmk_var_server_url: "http://127.0.0.1:5105/"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get all hosts."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get all hosts."
       ansible.builtin.set_fact:
         __checkmk_var_hosts_list: "{{ lookup('checkmk.general.hosts') }}"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify host count."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify host count."
       ansible.builtin.assert:
         that: "__checkmk_var_hosts_list | length == checkmk_var_hosts | length"
         fail_msg: "Expected {{ checkmk_var_hosts | length }} folders, but found {{ __checkmk_var_hosts_list | length }}!"
         success_msg: "Expected {{ checkmk_var_hosts | length }} folders and found {{ __checkmk_var_hosts_list | length }}."
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify host aliases."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify host aliases."
       ansible.builtin.assert:
         that: "item.extensions.attributes.alias == (checkmk_var_hosts | selectattr('name', 'equalto', item.id) | map(attribute='alias') | first)"
         fail_msg: "Expected {{ item.id }} alias to be {{ checkmk_var_hosts | selectattr('name', 'equalto', item.id) | map(attribute='alias') | first }}, but found {{ item.extensions.attributes.alias }}!"
@@ -85,7 +85,7 @@
       loop_control:
         label: "{{ item.id }}"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify host alias per host."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify host alias per host."
       ansible.builtin.assert:
         that: "item.extensions.attributes.alias == __checkmk_var_host.attributes.alias"
         fail_msg: "Expected {{ item.id }} alias to be {{ item.extensions.attributes.alias }}, but found {{ __checkmk_var_host.attributes.alias }}!"
