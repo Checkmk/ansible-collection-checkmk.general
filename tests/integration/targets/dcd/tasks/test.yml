@@ -1,9 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create a DCD configuration."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a DCD configuration."
   dcd:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -31,7 +31,7 @@
           - "boar"
     state: "present"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create a DCD conf.  Again!"
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a DCD conf.  Again!"
   dcd:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -61,7 +61,7 @@
   register: __checkmk_var_result_dcd_create
   failed_when: __checkmk_var_result_dcd_create.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete a DCD configuration."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete a DCD configuration."
   dcd:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"

@@ -1,6 +1,6 @@
 ---
 checkmk_var_test_sites:
   - version: "{{ checkmk_var_version | default(checkmk_var_version_local) }}"
-    edition: "cme"
-    site: "cme"
-    port: "5100"
+    edition: "{{ checkmk_var_edition | default('cme') }}"
+    site: "testsite"
+    port: "5000"

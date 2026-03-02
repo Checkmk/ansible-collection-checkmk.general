@@ -1,9 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create an LDAP connection."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create an LDAP connection."
   ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -15,7 +15,7 @@
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create an LDAP connection. Again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create an LDAP connection. Again."
   ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -29,7 +29,7 @@
   register: __checkmk_var_result_create
   failed_when: __checkmk_var_result_create.changed | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update an LDAP connection."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update an LDAP connection."
   ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -51,7 +51,7 @@
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update an LDAP connection. Again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update an LDAP connection. Again."
   ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -75,7 +75,7 @@
   register: __checkmk_var_result_create
   failed_when: __checkmk_var_result_create.changed | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete LDAP connection."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete LDAP connection."
   ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -89,7 +89,7 @@
   loop_control:
     label: "{{ item.ldap_config.general_properties.id }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete LDAP connection. Again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete LDAP connection. Again."
   ldap:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"

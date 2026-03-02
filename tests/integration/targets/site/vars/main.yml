@@ -1,34 +1,16 @@
 ---
-# This file is the same as 2.5.0.yml, but the `message_broker_port` option is not available in 2.3.0, so the dedicated files mitigate that.
-
-# Ports Concept Old:
-# 1                   2       3              4
-# Usecase             Edition Remote Count   Checkmk Minor Version
-# Apache: 5           Raw: 0  0 - 2          3, 4, 5
-# Livestatus: 6       Managed: 1
-# Livestatusproxy: 4
-# RabbitMQ: 3
-
-# Ports Concept Simplified:
-# 1                   2       3              4
-# Usecase             Edition Remote Count   Blank
-# Apache: 5           Raw: 0  0 - 2          0
-# Livestatus: 6       Managed: 1
-# Livestatusproxy: 4
-# RabbitMQ: 3
-
 checkmk_var_test_sites:
   - version: "{{ checkmk_var_version | default(checkmk_var_version_local) }}"
-    edition: "cre"
-    site: "cre"
+    edition: "{{ checkmk_var_edition | default(checkmk_var_edition_local) }}"
+    site: "testsite"
     port: "5000"
     remote_sites:
-      - site_id: "cre_r1"
+      - site_id: "testsite_r_1"
         site_config:
           status_connection:
             connection:
               socket_type: "tcp"
-              port: 6115
+              port: 6557
               encrypted: true
               host: "localhost"
               verify: false
@@ -51,69 +33,20 @@ checkmk_var_test_sites:
             connect_timeout: 2
             status_host:
               status_host_set: "disabled"
-            url_prefix: "/cre_r1/"
+            url_prefix: "/testsite_r_1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://cre-r1:5000/cre_r1/check_mk/"
+            url_of_remote_site: "http://testsite-r-1:5000/testsite_r_1/check_mk/"
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false
             replicate_event_console: true
             replicate_extensions: false
-            message_broker_port: "{{ (checkmk_var_version | regex_replace('p.*', '') is version('2.4', '>=')) | ternary(3115, omit) }}"
+            message_broker_port: "{{ (checkmk_var_version | default(checkmk_var_version_local) | regex_replace('p.*', '') is version('2.4', '>=')) | ternary(5671, omit) }}"
           basic_settings:
-            site_id: "cre_r1"
-            alias: "cre remote site 1"
-        authentication:
-          username: "{{ checkmk_var_api_user }}"
-          password: "{{ checkmk_var_api_secret }}"
-  - version: "{{ checkmk_var_version | default(checkmk_var_version_local) }}"
-    edition: "cme"
-    site: "cme"
-    port: "5100"
-    remote_sites:
-      - site_id: "cme_r1"
-        site_config:
-          status_connection:
-            connection:
-              socket_type: "tcp"
-              port: 6115
-              encrypted: true
-              host: "localhost"
-              verify: false
-            proxy:
-              use_livestatus_daemon: "with_proxy"
-              global_settings: false
-              tcp:
-                port: 4115
-                only_from: []
-                tls: true
-              params:
-                channels: 6
-                heartbeat:
-                  interval: 10
-                  timeout: 4
-                channel_timeout: 6
-                query_timeout: 240
-                connect_retry: 5
-                cache: true
-            connect_timeout: 2
-            status_host:
-              status_host_set: "disabled"
-            url_prefix: "/cme_r1/"
-          configuration_connection:
-            enable_replication: true
-            url_of_remote_site: "http://cme-r1:5000/cme_r1/check_mk/"
-            disable_remote_configuration: true
-            ignore_tls_errors: false
-            direct_login_to_web_gui_allowed: false
-            replicate_event_console: true
-            replicate_extensions: false
-            message_broker_port: "{{ (checkmk_var_version | regex_replace('p.*', '') is version('2.4', '>=')) | ternary(3115, omit) }}"
-          basic_settings:
-            site_id: "cme_r1"
-            alias: "cme remote site 1"
-            customer: "provider"
+            site_id: "testsite_r_1"
+            alias: "remote test site 1"
+            customer: "{{ (checkmk_var_edition_local == 'managed' | bool) | ternary('provider', omit) }}"
         authentication:
           username: "{{ checkmk_var_api_user }}"
           password: "{{ checkmk_var_api_secret }}"
