@@ -185,130 +185,6 @@ HTTP_CODES_GET = {
     404: (False, False, "Not Found: The requested object has not been found."),
 }
 
-DISABLED = {"state": "disabled"}
-
-DEFAULT_MAIL_PLUGIN_PARAMS = {
-    "from_details": DISABLED,
-    "reply_to": DISABLED,
-    "subject_for_host_notifications": DISABLED,
-    "subject_for_service_notifications": DISABLED,
-    "send_separate_notification_to_every_recipient": DISABLED,
-    "sort_order_for_bulk_notifications": DISABLED,
-    "info_to_be_displayed_in_the_email_body": DISABLED,
-    "insert_html_section_between_body_and_table": DISABLED,
-    "url_prefix_for_links_to_checkmk": DISABLED,
-    "display_graphs_among_each_other": DISABLED,
-    "enable_sync_smtp": DISABLED,
-    "graphs_per_notification": DISABLED,
-    "bulk_notifications_with_graphs": DISABLED,
-}
-
-DEFAULT_SLACK_PLUGIN_PARAMS = {
-    "url_prefix_for_links_to_checkmk": DISABLED,
-    "disable_ssl_cert_verification": DISABLED,
-    "http_proxy": DISABLED,
-}
-
-DEFAULT_MSTEAMS_PLUGIN_PARAMS = {
-    "host_title": DISABLED,
-    "service_title": DISABLED,
-    "host_summary": DISABLED,
-    "service_summary": DISABLED,
-    "host_details": DISABLED,
-    "service_details": DISABLED,
-    "affected_host_groups": DISABLED,
-    "url_prefix_for_links_to_checkmk": DISABLED,
-    "http_proxy": DISABLED,
-}
-
-PLUGIN_DEFAULTS = {
-    "mail": DEFAULT_MAIL_PLUGIN_PARAMS,
-    "slack": DEFAULT_SLACK_PLUGIN_PARAMS,
-    "msteams": DEFAULT_MSTEAMS_PLUGIN_PARAMS,
-}
-
-DEFAULT_CONTACT_SELECTION = {
-    "all_contacts_of_the_notified_object": DISABLED,
-    "all_users": DISABLED,
-    "all_users_with_an_email_address": DISABLED,
-    "the_following_users": DISABLED,
-    "members_of_contact_groups": DISABLED,
-    "explicit_email_addresses": DISABLED,
-    "restrict_by_custom_macros": DISABLED,
-    "restrict_by_contact_groups": DISABLED,
-}
-
-DEFAULT_CONDITIONS = {
-    "match_sites": DISABLED,
-    "match_folder": DISABLED,
-    "match_host_tags": DISABLED,
-    "match_host_labels": DISABLED,
-    "match_host_groups": DISABLED,
-    "match_hosts": DISABLED,
-    "match_exclude_hosts": DISABLED,
-    "match_service_labels": DISABLED,
-    "match_service_groups": DISABLED,
-    "match_exclude_service_groups": DISABLED,
-    "match_service_groups_regex": DISABLED,
-    "match_exclude_service_groups_regex": DISABLED,
-    "match_services": DISABLED,
-    "match_exclude_services": DISABLED,
-    "match_check_types": DISABLED,
-    "match_plugin_output": DISABLED,
-    "match_contact_groups": DISABLED,
-    "match_service_levels": DISABLED,
-    "match_only_during_time_period": DISABLED,
-    "match_host_event_type": DISABLED,
-    "match_service_event_type": DISABLED,
-    "restrict_to_notification_numbers": DISABLED,
-    "throttle_periodic_notifications": DISABLED,
-    "match_notification_comment": DISABLED,
-    "event_console_alerts": DISABLED,
-}
-
-
-def merge_with_defaults(rule_config):
-    """Merge user-provided rule_config with defaults for missing fields."""
-    if not rule_config:
-        return rule_config
-
-    result = dict(rule_config)
-
-    # Merge contact_selection with defaults
-    if result.get("contact_selection"):
-        merged_contacts = dict(DEFAULT_CONTACT_SELECTION)
-        merged_contacts.update(result["contact_selection"])
-        result["contact_selection"] = merged_contacts
-    else:
-        result["contact_selection"] = dict(DEFAULT_CONTACT_SELECTION)
-
-    # Merge conditions with defaults
-    if result.get("conditions"):
-        merged_conditions = dict(DEFAULT_CONDITIONS)
-        merged_conditions.update(result["conditions"])
-        result["conditions"] = merged_conditions
-    else:
-        result["conditions"] = dict(DEFAULT_CONDITIONS)
-
-    # Merge plugin_params with defaults based on plugin_name
-    notification_method = result.get("notification_method")
-    if notification_method:
-        notify_plugin = notification_method.get("notify_plugin")
-        if notify_plugin:
-            plugin_params = notify_plugin.get("plugin_params")
-            if plugin_params:
-                plugin_name = plugin_params.get("plugin_name")
-                if plugin_name in PLUGIN_DEFAULTS:
-                    merged_params = dict(PLUGIN_DEFAULTS[plugin_name])
-                    merged_params.update(plugin_params)
-                    result["notification_method"] = dict(notification_method)
-                    result["notification_method"]["notify_plugin"] = dict(notify_plugin)
-                    result["notification_method"]["notify_plugin"][
-                        "plugin_params"
-                    ] = merged_params
-
-    return result
-
 
 class NotificationRuleAPI(CheckmkAPI):
     def __init__(self, module):
@@ -383,8 +259,7 @@ class NotificationRuleAPI(CheckmkAPI):
         return None
 
     def post(self):
-        rule_config = merge_with_defaults(self.params.get("rule_config"))
-        data = {"rule_config": rule_config}
+        data = {"rule_config": self.params.get("rule_config")}
 
         return self._fetch(
             endpoint="/domain-types/notification_rule/collections/all",
@@ -394,8 +269,7 @@ class NotificationRuleAPI(CheckmkAPI):
 
     def put(self):
         self.headers["If-Match"] = self.current.etag
-        rule_config = merge_with_defaults(self.params.get("rule_config"))
-        data = {"rule_config": rule_config}
+        data = {"rule_config": self.params.get("rule_config")}
 
         return self._fetch(
             endpoint="/objects/notification_rule/%s" % self.rule_id,
