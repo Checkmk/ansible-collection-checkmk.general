@@ -13,11 +13,14 @@ module: notification
 
 short_description: Manage notification rules in Checkmk.
 
-version_added: "6.7.0"
+version_added: "7.2.0"
 
 description:
 - Manage notification rules in Checkmk.
 - Create, update, and delete notification rules for various notification methods.
+- When I(rule_id) is not provided, the module will try to find an existing rule
+  by matching the I(description) field in I(rule_properties).
+- Requires Checkmk >= 2.3.0p42 or >= 2.4.0p22 for minimal configuration support.
 
 extends_documentation_fragment:
     - checkmk.general.common
@@ -28,7 +31,7 @@ author:
 """
 
 EXAMPLES = r"""
-# Create an HTML email notification rule
+# Create an HTML email notification rule with minimal configuration
 - name: "Create email notification rule"
   checkmk.general.notification:
     server_url: "http://myserver/"
@@ -39,112 +42,14 @@ EXAMPLES = r"""
       rule_properties:
         description: "Notify admins on critical issues"
         comment: "Managed by Ansible"
-        documentation_url: ""
-        do_not_apply_this_rule:
-          state: "disabled"
-        allow_users_to_deactivate:
-          state: "enabled"
       notification_method:
         notify_plugin:
           option: "create_notification_with_the_following_parameters"
           plugin_params:
             plugin_name: "mail"
-            from_details:
-              state: "disabled"
-            reply_to:
-              state: "disabled"
-            subject_for_host_notifications:
-              state: "disabled"
-            subject_for_service_notifications:
-              state: "disabled"
-            sort_order_for_bulk_notifications:
-              state: "disabled"
-            send_separate_notification_to_every_recipient:
-              state: "disabled"
-            info_to_be_displayed_in_the_email_body:
-              state: "disabled"
-            insert_html_section_between_body_and_table:
-              state: "disabled"
-            url_prefix_for_links_to_checkmk:
-              state: "disabled"
-            enable_sync_smtp:
-              state: "disabled"
-            display_graphs_among_each_other:
-              state: "disabled"
-            graphs_per_notification:
-              state: "disabled"
-            bulk_notifications_with_graphs:
-              state: "disabled"
-        notification_bulking:
-          state: "disabled"
       contact_selection:
         all_contacts_of_the_notified_object:
           state: "enabled"
-        all_users:
-          state: "disabled"
-        all_users_with_an_email_address:
-          state: "disabled"
-        the_following_users:
-          state: "disabled"
-        members_of_contact_groups:
-          state: "disabled"
-        explicit_email_addresses:
-          state: "disabled"
-        restrict_by_custom_macros:
-          state: "disabled"
-        restrict_by_contact_groups:
-          state: "disabled"
-      conditions:
-        match_sites:
-          state: "disabled"
-        match_folder:
-          state: "disabled"
-        match_host_tags:
-          state: "disabled"
-        match_host_labels:
-          state: "disabled"
-        match_host_groups:
-          state: "disabled"
-        match_hosts:
-          state: "disabled"
-        match_exclude_hosts:
-          state: "disabled"
-        match_service_labels:
-          state: "disabled"
-        match_service_groups:
-          state: "disabled"
-        match_exclude_service_groups:
-          state: "disabled"
-        match_service_groups_regex:
-          state: "disabled"
-        match_exclude_service_groups_regex:
-          state: "disabled"
-        match_services:
-          state: "disabled"
-        match_exclude_services:
-          state: "disabled"
-        match_check_types:
-          state: "disabled"
-        match_plugin_output:
-          state: "disabled"
-        match_contact_groups:
-          state: "disabled"
-        match_service_levels:
-          state: "disabled"
-        match_only_during_time_period:
-          state: "disabled"
-        match_host_event_type:
-          state: "disabled"
-        match_service_event_type:
-          state: "disabled"
-        restrict_to_notification_numbers:
-          state: "disabled"
-        throttle_periodic_notifications:
-          state: "disabled"
-        match_notification_comment:
-          state: "disabled"
-        event_console_alerts:
-          state: "disabled"
     state: "present"
   register: notification_result
 
@@ -162,12 +67,6 @@ EXAMPLES = r"""
     rule_config:
       rule_properties:
         description: "Slack notifications for critical alerts"
-        comment: "Managed by Ansible"
-        documentation_url: ""
-        do_not_apply_this_rule:
-          state: "disabled"
-        allow_users_to_deactivate:
-          state: "enabled"
       notification_method:
         notify_plugin:
           option: "create_notification_with_the_following_parameters"
@@ -176,82 +75,9 @@ EXAMPLES = r"""
             webhook_url:
               option: "explicit"
               url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
-            url_prefix_for_links_to_checkmk:
-              state: "disabled"
-            disable_ssl_cert_verification:
-              state: "disabled"
-            http_proxy:
-              state: "disabled"
-        notification_bulking:
-          state: "disabled"
       contact_selection:
         all_contacts_of_the_notified_object:
           state: "enabled"
-        all_users:
-          state: "disabled"
-        all_users_with_an_email_address:
-          state: "disabled"
-        the_following_users:
-          state: "disabled"
-        members_of_contact_groups:
-          state: "disabled"
-        explicit_email_addresses:
-          state: "disabled"
-        restrict_by_custom_macros:
-          state: "disabled"
-        restrict_by_contact_groups:
-          state: "disabled"
-      conditions:
-        match_sites:
-          state: "disabled"
-        match_folder:
-          state: "disabled"
-        match_host_tags:
-          state: "disabled"
-        match_host_labels:
-          state: "disabled"
-        match_host_groups:
-          state: "disabled"
-        match_hosts:
-          state: "disabled"
-        match_exclude_hosts:
-          state: "disabled"
-        match_service_labels:
-          state: "disabled"
-        match_service_groups:
-          state: "disabled"
-        match_exclude_service_groups:
-          state: "disabled"
-        match_service_groups_regex:
-          state: "disabled"
-        match_exclude_service_groups_regex:
-          state: "disabled"
-        match_services:
-          state: "disabled"
-        match_exclude_services:
-          state: "disabled"
-        match_check_types:
-          state: "disabled"
-        match_plugin_output:
-          state: "disabled"
-        match_contact_groups:
-          state: "disabled"
-        match_service_levels:
-          state: "disabled"
-        match_only_during_time_period:
-          state: "disabled"
-        match_host_event_type:
-          state: "disabled"
-        match_service_event_type:
-          state: "disabled"
-        restrict_to_notification_numbers:
-          state: "disabled"
-        throttle_periodic_notifications:
-          state: "disabled"
-        match_notification_comment:
-          state: "disabled"
-        event_console_alerts:
-          state: "disabled"
     state: "present"
 
 # Create a Microsoft Teams notification rule
@@ -264,12 +90,6 @@ EXAMPLES = r"""
     rule_config:
       rule_properties:
         description: "Teams notifications for critical alerts"
-        comment: "Managed by Ansible"
-        documentation_url: ""
-        do_not_apply_this_rule:
-          state: "disabled"
-        allow_users_to_deactivate:
-          state: "enabled"
       notification_method:
         notify_plugin:
           option: "create_notification_with_the_following_parameters"
@@ -278,97 +98,12 @@ EXAMPLES = r"""
             webhook_url:
               option: "explicit"
               url: "https://outlook.office.com/webhook/YOUR/WEBHOOK/URL"
-            host_title:
-              state: "disabled"
-            service_title:
-              state: "disabled"
-            host_summary:
-              state: "disabled"
-            service_summary:
-              state: "disabled"
-            host_details:
-              state: "disabled"
-            service_details:
-              state: "disabled"
-            affected_host_groups:
-              state: "disabled"
-            url_prefix_for_links_to_checkmk:
-              state: "disabled"
-            http_proxy:
-              state: "disabled"
-        notification_bulking:
-          state: "disabled"
       contact_selection:
         all_contacts_of_the_notified_object:
           state: "enabled"
-        all_users:
-          state: "disabled"
-        all_users_with_an_email_address:
-          state: "disabled"
-        the_following_users:
-          state: "disabled"
-        members_of_contact_groups:
-          state: "disabled"
-        explicit_email_addresses:
-          state: "disabled"
-        restrict_by_custom_macros:
-          state: "disabled"
-        restrict_by_contact_groups:
-          state: "disabled"
-      conditions:
-        match_sites:
-          state: "disabled"
-        match_folder:
-          state: "disabled"
-        match_host_tags:
-          state: "disabled"
-        match_host_labels:
-          state: "disabled"
-        match_host_groups:
-          state: "disabled"
-        match_hosts:
-          state: "disabled"
-        match_exclude_hosts:
-          state: "disabled"
-        match_service_labels:
-          state: "disabled"
-        match_service_groups:
-          state: "disabled"
-        match_exclude_service_groups:
-          state: "disabled"
-        match_service_groups_regex:
-          state: "disabled"
-        match_exclude_service_groups_regex:
-          state: "disabled"
-        match_services:
-          state: "disabled"
-        match_exclude_services:
-          state: "disabled"
-        match_check_types:
-          state: "disabled"
-        match_plugin_output:
-          state: "disabled"
-        match_contact_groups:
-          state: "disabled"
-        match_service_levels:
-          state: "disabled"
-        match_only_during_time_period:
-          state: "disabled"
-        match_host_event_type:
-          state: "disabled"
-        match_service_event_type:
-          state: "disabled"
-        restrict_to_notification_numbers:
-          state: "disabled"
-        throttle_periodic_notifications:
-          state: "disabled"
-        match_notification_comment:
-          state: "disabled"
-        event_console_alerts:
-          state: "disabled"
     state: "present"
 
-# Update an existing notification rule
+# Update an existing notification rule by rule_id
 - name: "Update notification rule"
   checkmk.general.notification:
     server_url: "http://myserver/"
@@ -379,16 +114,14 @@ EXAMPLES = r"""
     rule_config:
       rule_properties:
         description: "Updated notification rule description"
-        comment: "Updated by Ansible"
-        documentation_url: ""
-        do_not_apply_this_rule:
-          state: "disabled"
-        allow_users_to_deactivate:
-          state: "enabled"
-      # ... rest of the configuration
+      notification_method:
+        notify_plugin:
+          option: "create_notification_with_the_following_parameters"
+          plugin_params:
+            plugin_name: "mail"
     state: "present"
 
-# Delete a notification rule
+# Delete a notification rule by rule_id
 - name: "Delete notification rule"
   checkmk.general.notification:
     server_url: "http://myserver/"
@@ -396,6 +129,18 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     rule_id: "{{ notification_result.content.id }}"
+    state: "absent"
+
+# Delete a notification rule by description (no rule_id needed)
+- name: "Delete notification rule by description"
+  checkmk.general.notification:
+    server_url: "http://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    rule_config:
+      rule_properties:
+        description: "Notify admins on critical issues"
     state: "absent"
 """
 
@@ -440,137 +185,24 @@ HTTP_CODES_GET = {
     404: (False, False, "Not Found: The requested object has not been found."),
 }
 
-DISABLED = {"state": "disabled"}
-
-DEFAULT_MAIL_PLUGIN_PARAMS = {
-    "from_details": DISABLED,
-    "reply_to": DISABLED,
-    "subject_for_host_notifications": DISABLED,
-    "subject_for_service_notifications": DISABLED,
-    "send_separate_notification_to_every_recipient": DISABLED,
-    "sort_order_for_bulk_notifications": DISABLED,
-    "info_to_be_displayed_in_the_email_body": DISABLED,
-    "insert_html_section_between_body_and_table": DISABLED,
-    "url_prefix_for_links_to_checkmk": DISABLED,
-    "display_graphs_among_each_other": DISABLED,
-    "enable_sync_smtp": DISABLED,
-    "graphs_per_notification": DISABLED,
-    "bulk_notifications_with_graphs": DISABLED,
-}
-
-DEFAULT_SLACK_PLUGIN_PARAMS = {
-    "url_prefix_for_links_to_checkmk": DISABLED,
-    "disable_ssl_cert_verification": DISABLED,
-    "http_proxy": DISABLED,
-}
-
-DEFAULT_MSTEAMS_PLUGIN_PARAMS = {
-    "host_title": DISABLED,
-    "service_title": DISABLED,
-    "host_summary": DISABLED,
-    "service_summary": DISABLED,
-    "host_details": DISABLED,
-    "service_details": DISABLED,
-    "affected_host_groups": DISABLED,
-    "url_prefix_for_links_to_checkmk": DISABLED,
-    "http_proxy": DISABLED,
-}
-
-PLUGIN_DEFAULTS = {
-    "mail": DEFAULT_MAIL_PLUGIN_PARAMS,
-    "slack": DEFAULT_SLACK_PLUGIN_PARAMS,
-    "msteams": DEFAULT_MSTEAMS_PLUGIN_PARAMS,
-}
-
-DEFAULT_CONTACT_SELECTION = {
-    "all_contacts_of_the_notified_object": DISABLED,
-    "all_users": DISABLED,
-    "all_users_with_an_email_address": DISABLED,
-    "the_following_users": DISABLED,
-    "members_of_contact_groups": DISABLED,
-    "explicit_email_addresses": DISABLED,
-    "restrict_by_custom_macros": DISABLED,
-    "restrict_by_contact_groups": DISABLED,
-}
-
-DEFAULT_CONDITIONS = {
-    "match_sites": DISABLED,
-    "match_folder": DISABLED,
-    "match_host_tags": DISABLED,
-    "match_host_labels": DISABLED,
-    "match_host_groups": DISABLED,
-    "match_hosts": DISABLED,
-    "match_exclude_hosts": DISABLED,
-    "match_service_labels": DISABLED,
-    "match_service_groups": DISABLED,
-    "match_exclude_service_groups": DISABLED,
-    "match_service_groups_regex": DISABLED,
-    "match_exclude_service_groups_regex": DISABLED,
-    "match_services": DISABLED,
-    "match_exclude_services": DISABLED,
-    "match_check_types": DISABLED,
-    "match_plugin_output": DISABLED,
-    "match_contact_groups": DISABLED,
-    "match_service_levels": DISABLED,
-    "match_only_during_time_period": DISABLED,
-    "match_host_event_type": DISABLED,
-    "match_service_event_type": DISABLED,
-    "restrict_to_notification_numbers": DISABLED,
-    "throttle_periodic_notifications": DISABLED,
-    "match_notification_comment": DISABLED,
-    "event_console_alerts": DISABLED,
-}
-
-
-def merge_with_defaults(rule_config):
-    """Merge user-provided rule_config with defaults for missing fields."""
-    if not rule_config:
-        return rule_config
-
-    result = dict(rule_config)
-
-    # Merge contact_selection with defaults
-    if result.get("contact_selection"):
-        merged_contacts = dict(DEFAULT_CONTACT_SELECTION)
-        merged_contacts.update(result["contact_selection"])
-        result["contact_selection"] = merged_contacts
-    else:
-        result["contact_selection"] = dict(DEFAULT_CONTACT_SELECTION)
-
-    # Merge conditions with defaults
-    if result.get("conditions"):
-        merged_conditions = dict(DEFAULT_CONDITIONS)
-        merged_conditions.update(result["conditions"])
-        result["conditions"] = merged_conditions
-    else:
-        result["conditions"] = dict(DEFAULT_CONDITIONS)
-
-    # Merge plugin_params with defaults based on plugin_name
-    notification_method = result.get("notification_method")
-    if notification_method:
-        notify_plugin = notification_method.get("notify_plugin")
-        if notify_plugin:
-            plugin_params = notify_plugin.get("plugin_params")
-            if plugin_params:
-                plugin_name = plugin_params.get("plugin_name")
-                if plugin_name in PLUGIN_DEFAULTS:
-                    merged_params = dict(PLUGIN_DEFAULTS[plugin_name])
-                    merged_params.update(plugin_params)
-                    result["notification_method"] = dict(notification_method)
-                    result["notification_method"]["notify_plugin"] = dict(notify_plugin)
-                    result["notification_method"]["notify_plugin"][
-                        "plugin_params"
-                    ] = merged_params
-
-    return result
-
 
 class NotificationRuleAPI(CheckmkAPI):
     def __init__(self, module):
         super().__init__(module)
         self.rule_id = self.params.get("rule_id")
+        self.description = None
 
-        # Get current notification rule if rule_id is provided
+        rule_config = self.params.get("rule_config")
+        if rule_config:
+            rule_properties = rule_config.get("rule_properties")
+            if rule_properties:
+                self.description = rule_properties.get("description")
+
+        # Resolve rule_id from description if not provided
+        if not self.rule_id and self.description:
+            self.rule_id = self._find_rule_by_description(self.description)
+
+        # Fetch current state
         if self.rule_id:
             self.current = self._fetch(
                 code_mapping=HTTP_CODES_GET,
@@ -580,16 +212,54 @@ class NotificationRuleAPI(CheckmkAPI):
         else:
             self.current = RESULT(
                 http_code=404,
-                msg="No rule_id provided",
+                msg="No rule found.",
                 content="",
                 etag="",
                 failed=False,
                 changed=False,
             )
 
+    def _find_rule_by_description(self, description):
+        """Find a notification rule by its description.
+        Returns the rule_id if exactly one match is found."""
+        result = self._fetch(
+            code_mapping=HTTP_CODES_GET,
+            endpoint="/domain-types/notification_rule/collections/all",
+            method="GET",
+        )
+
+        if result.http_code != 200 or not result.content:
+            return None
+
+        content = result.content
+        if isinstance(content, bytes):
+            content = content.decode("utf-8")
+
+        try:
+            data = json.loads(content)
+        except (json.JSONDecodeError, AttributeError):
+            return None
+
+        matches = [
+            rule for rule in data.get("value", []) if rule.get("title") == description
+        ]
+
+        if len(matches) == 1:
+            return matches[0]["id"]
+
+        if len(matches) > 1:
+            self.module.fail_json(
+                msg=(
+                    "Found %d notification rules with description '%s'. "
+                    "Please provide a unique rule_id."
+                )
+                % (len(matches), description),
+            )
+
+        return None
+
     def post(self):
-        rule_config = merge_with_defaults(self.params.get("rule_config"))
-        data = {"rule_config": rule_config}
+        data = {"rule_config": self.params.get("rule_config")}
 
         return self._fetch(
             endpoint="/domain-types/notification_rule/collections/all",
@@ -599,8 +269,7 @@ class NotificationRuleAPI(CheckmkAPI):
 
     def put(self):
         self.headers["If-Match"] = self.current.etag
-        rule_config = merge_with_defaults(self.params.get("rule_config"))
-        data = {"rule_config": rule_config}
+        data = {"rule_config": self.params.get("rule_config")}
 
         return self._fetch(
             endpoint="/objects/notification_rule/%s" % self.rule_id,
@@ -619,40 +288,33 @@ class NotificationRuleAPI(CheckmkAPI):
         )
 
 
+def _desired_subset_matches(desired, current):
+    """Recursively check if all keys in desired match in current.
+    Only compares keys that the user actually provided."""
+    if not isinstance(desired, dict) or not isinstance(current, dict):
+        return desired == current
+
+    for key, desired_value in desired.items():
+        current_value = current.get(key)
+        if isinstance(desired_value, dict) and isinstance(current_value, dict):
+            if not _desired_subset_matches(desired_value, current_value):
+                return False
+        elif desired_value != current_value:
+            return False
+
+    return True
+
+
 def changes_detected(module, current):
-    desired_config = merge_with_defaults(module.params.get("rule_config"))
+    """Compare desired rule_config against current state.
+    Only compares fields that the user provided."""
+    desired_config = module.params.get("rule_config")
     if not desired_config:
         return False
 
     current_config = current.get("extensions", {}).get("rule_config", {})
 
-    # Compare rule_properties
-    desired_props = desired_config.get("rule_properties", {})
-    current_props = current_config.get("rule_properties", {})
-    if desired_props.get("description") != current_props.get("description"):
-        return True
-    if desired_props.get("comment") != current_props.get("comment"):
-        return True
-
-    # Compare notification_method
-    desired_method = desired_config.get("notification_method", {})
-    current_method = current_config.get("notification_method", {})
-    if desired_method != current_method:
-        return True
-
-    # Compare contact_selection
-    desired_contacts = desired_config.get("contact_selection", {})
-    current_contacts = current_config.get("contact_selection", {})
-    if desired_contacts != current_contacts:
-        return True
-
-    # Compare conditions
-    desired_conditions = desired_config.get("conditions", {})
-    current_conditions = current_config.get("conditions", {})
-    if desired_conditions != current_conditions:
-        return True
-
-    return False
+    return not _desired_subset_matches(desired_config, current_config)
 
 
 def run_module():
@@ -672,7 +334,6 @@ def run_module():
         supports_check_mode=False,
         required_if=[
             ("state", "present", ("rule_config",)),
-            ("state", "absent", ("rule_id",)),
         ],
     )
 
@@ -710,7 +371,7 @@ def run_module():
                 changed=False,
             )
         else:
-            # No rule_id provided, create new rule
+            # No rule found, create new
             result = notification_rule.post()
 
     if module.params.get("state") == "absent":

@@ -28,6 +28,24 @@
     fail_msg: "Notification rule was not created successfully!"
     success_msg: "Notification rule created successfully."
 
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create same notification rule again (idempotency)."
+  notification:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    rule_config: "{{ checkmk_var_notification_config }}"
+    state: "present"
+  register: __checkmk_var_notification_create_again
+  failed_when: __checkmk_var_notification_create_again.changed
+
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify idempotency."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_notification_create_again.changed is false
+    fail_msg: "Notification rule creation is not idempotent!"
+    success_msg: "Notification rule creation is idempotent."
+
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update notification rule."
   notification:
     server_url: "{{ checkmk_var_server_url }}"
@@ -48,13 +66,15 @@
     fail_msg: "Notification rule was not updated successfully!"
     success_msg: "Notification rule updated successfully."
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete notification rule."
+- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete notification rule by description."
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    rule_id: "{{ __checkmk_var_notification_create.content.id }}"
+    rule_config:
+      rule_properties:
+        description: "Updated test notification rule"
     state: "absent"
   register: __checkmk_var_notification_delete
   failed_when: __checkmk_var_notification_delete.failed
@@ -73,7 +93,9 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    rule_id: "{{ __checkmk_var_notification_create.content.id }}"
+    rule_config:
+      rule_properties:
+        description: "Updated test notification rule"
     state: "absent"
   register: __checkmk_var_notification_delete_again
   failed_when: __checkmk_var_notification_delete_again.changed

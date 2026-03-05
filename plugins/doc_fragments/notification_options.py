@@ -9,16 +9,20 @@ class ModuleDocFragment(object):
         rule_id:
             description:
                 - The unique identifier of the notification rule.
-                - Required when updating or deleting an existing rule.
-                - If not provided when state is present, a new rule will be created.
+                - If not provided, the module will try to find an existing rule
+                  by matching the C(description) field in C(rule_properties).
+                - If multiple rules match the same description, the module will
+                  fail and ask for a unique C(rule_id).
             required: false
             type: str
 
         rule_config:
             description:
-                - The complete notification rule configuration.
-                - Required when state is present.
-                - This should match the structure returned by the Checkmk API.
+                - The notification rule configuration.
+                - Required when I(state=present).
+                - Only the fields you want to set need to be specified.
+                  The Checkmk API will fill in defaults for unspecified fields.
+                - This should match the structure expected by the Checkmk API.
             required: false
             type: dict
             suboptions:
