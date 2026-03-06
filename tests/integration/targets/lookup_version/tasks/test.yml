@@ -17,13 +17,8 @@
                     api_secret=checkmk_var_api_secret)
               }}"
 
-# We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Use variables from inventory."
-  when: outer_item.site == "beta_cme"
   block:
-    - name: "Set checkmk_var_server_url for isolated testing."
-      ansible.builtin.set_fact:
-        checkmk_var_server_url: "http://127.0.0.1:5105/"
 
     - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Test plugin with variables from inventory."
       ansible.builtin.assert:

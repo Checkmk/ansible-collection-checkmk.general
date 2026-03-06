@@ -1,6 +1,7 @@
 ---
 # Configure location and credentials for the Checkmk REST API
-checkmk_var_server_url: "http://127.0.0.1:{{ outer_item.port | default('5000') }}/"
+checkmk_var_server_url: "http://127.0.0.1:5000/"
+checkmk_var_site: "testsite"
 checkmk_var_validate_certs: false
 checkmk_var_api_user: "cmkadmin"
 checkmk_var_api_secret: "Sup3rSec4et!"
@@ -31,13 +32,7 @@ __checkmk_server_edition_mapping: >-
     | ternary(__checkmk_var_legacy_edition_mapping, __checkmk_var_modern_edition_mapping)
   }}
 
-# This is a very hacky workaround, as it is not possible to assign variables
-# to other variables when using them in lookup modules.
-# checkmk_var_server_url: "http://127.0.0.1:5000/"  # see above
-# The variable below is especially hacky.
-# All integration tests were adapted to run the specific task only on this site.
-checkmk_var_site: "testsite"
-
+# Dictionary for testing the modules with environment variables
 __checkmk_var_testing_environment:
   CHECKMK_VAR_SERVER_URL: "{{ checkmk_var_server_url }}"
   CHECKMK_VAR_SITE: "{{ outer_item.site }}"
@@ -56,7 +51,6 @@ __checkmk_var_testing_environment:
 #   - version: "{{ checkmk_var_version }}"
 #     edition: "{{ checkmk_var_edition }}"
 #     site: "testsite"
-#     port: "5000"
 #     # Keep aligned with tests/integratin/targets/site/vars/main.yml
 #     remote_sites:
 #       - site_id: "testsite_r_1"

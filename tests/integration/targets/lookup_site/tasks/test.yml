@@ -43,13 +43,8 @@
   loop_control:
     label: "{{ item.id }}"
 
-# We need this hack to overwrite the colliding global variable
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Use variables from inventory."
-  when: outer_item.site == "beta_cme"
   block:
-    - name: "Set checkmk_var_server_url for isolated testing."
-      ansible.builtin.set_fact:
-        checkmk_var_server_url: "http://127.0.0.1:5105/"
 
     - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify configuration of '{{ __checkmk_var_site.basic_settings.site_id }}'."
       ansible.builtin.assert:

@@ -3,7 +3,6 @@ checkmk_var_test_sites:
   - version: "{{ checkmk_var_version | default('2.4.0p22') }}"
     edition: "{{ checkmk_var_edition | default('cre') }}"
     site: "testsite"
-    port: "5000"
 
 checkmk_var_folders:
   - name: "Folder 1"

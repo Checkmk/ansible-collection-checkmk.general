@@ -3,4 +3,3 @@ checkmk_var_test_sites:
   - version: "{{ checkmk_var_version | default('2.4.0p22') }}"
     edition: "{{ checkmk_var_edition | default('cme') }}"
     site: "testsite"
-    port: "5000"

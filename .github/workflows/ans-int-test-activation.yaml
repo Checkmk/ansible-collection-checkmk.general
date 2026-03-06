@@ -30,7 +30,7 @@ on:
 jobs:
 
   integration:
-    name: "Integration Test ${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
+    name: "Integration ${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
     uses: ./.github/workflows/_template-ans-int-test.yaml
     with:
       module: activation
@@ -46,7 +46,3 @@ jobs:
         checkmk_edition:
           - raw
           - managed
-        # exclude:
-        #   # Exclude unsupported sets.
-        #   - checkmk_version: "2.5.0-2025.02.24"
-        #     checkmk_edition: "raw"
