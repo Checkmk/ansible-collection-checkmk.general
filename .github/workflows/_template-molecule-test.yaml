@@ -56,7 +56,10 @@ jobs:
       - name: "Install uv."
         uses: astral-sh/setup-uv@v7
         with:
+          github-token: ${{ github.token }}
           enable-cache: true
+          restore-cache: true
+          save-cache: true
           working-directory: ./ansible_collections/checkmk/general/
 
       - name: "Install Dependencies."
