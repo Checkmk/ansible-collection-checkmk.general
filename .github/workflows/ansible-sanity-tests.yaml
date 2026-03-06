@@ -55,6 +55,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
+          github-token: ${{ github.token }}
           working-directory: ./ansible_collections/checkmk/general/
 
       - name: "Create uv venv."

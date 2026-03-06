@@ -77,9 +77,10 @@ jobs:
       - name: "Install uv and set the python version."
         uses: astral-sh/setup-uv@v7
         with:
-          python-version: ${{ matrix.python }}
           enable-cache: true
+          github-token: ${{ github.token }}
           working-directory: ./ansible_collections/checkmk/general/
+          python-version: ${{ matrix.python }}
 
       - name: "Setup uv venv."
         run: uv venv
