@@ -1,6 +1,6 @@
 ---
 # Configure location and credentials for the Checkmk REST API
-checkmk_var_server_url: "http://127.0.0.1:{{ outer_item.port | default('80') }}/"
+checkmk_var_server_url: "http://127.0.0.1:{{ outer_item.port | default('5000') }}/"
 checkmk_var_validate_certs: false
 checkmk_var_api_user: "cmkadmin"
 checkmk_var_api_secret: "Sup3rSec4et!"
@@ -36,7 +36,7 @@ __checkmk_server_edition_mapping: >-
 # checkmk_var_server_url: "http://127.0.0.1:5105/"  # see above
 # The variable below is especially hacky.
 # All integration tests were adapted to run the specific task only on this site.
-checkmk_var_site: "beta_cme"
+checkmk_var_site: "cme"
 
 __checkmk_var_testing_environment:
   CHECKMK_VAR_SERVER_URL: "{{ checkmk_var_server_url }}"
@@ -46,20 +46,20 @@ __checkmk_var_testing_environment:
   CHECKMK_VAR_API_USER: "{{ checkmk_var_api_user }}"
   CHECKMK_VAR_API_SECRET: "{{ checkmk_var_api_secret }}"
 
+# Configure default version
+# checkmk_var_version_local: "2.3.0p42"
+checkmk_var_version_local: "2.4.0p22"
+# checkmk_var_version_local: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+
 # Use this to override the test-specific sites for local testing:
 # checkmk_var_test_sites:
-#   - version: "2.4.0p22"
+#   - version: "{{ checkmk_var_version_local }}"
 #     edition: "cme"
-#     site: "stable_cme"
-#     port: "5104"
-# checkmk_var_test_sites:
-#   - version: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
-#     edition: "cme"
-#     site: "beta_cme"
-#     port: "5105"
+#     site: "cme"
+#     port: "5100"
 #     # Keep aligned with tests/integratin/targets/site/vars/main.yml
 #     remote_sites:
-#       - site_id: "stable_cme_r1"
+#       - site_id: "cme_r1"
 #         site_config:
 #           status_connection:
 #             connection:
@@ -87,18 +87,18 @@ __checkmk_var_testing_environment:
 #             connect_timeout: 2
 #             status_host:
 #               status_host_set: "disabled"
-#             url_prefix: "/stable_cme_r1/"
+#             url_prefix: "/cme_r1/"
 #           configuration_connection:
 #             enable_replication: true
-#             url_of_remote_site: "http://127.0.0.1:7777/stable_cme_r1/check_mk/"  # Hardcoded ip:port for local testing
+#             url_of_remote_site: "http://127.0.0.1:5110/cme_r1/check_mk/"  # Hardcoded ip:port for local testing
 #             disable_remote_configuration: true
 #             ignore_tls_errors: false
 #             direct_login_to_web_gui_allowed: false
 #             replicate_event_console: true
 #             replicate_extensions: false
-#             message_broker_port: 3115
+#             message_broker_port: "{{ (checkmk_var_version_local | regex_replace('p.*', '') is version('2.4', '>=')) | ternary(3115, omit) }}"
 #           basic_settings:
-#             site_id: "stable_cme_r1"
+#             site_id: "cme_r1"
 #             alias: "stable_cme remote site 1"
 #             customer: "provider"
 #         authentication:

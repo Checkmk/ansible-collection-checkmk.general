@@ -46,8 +46,8 @@
                     api_secret=checkmk_var_api_secret)
               }}"
   register: __checkmk_var_result_bakery_bake
-  retries: 20
-  delay: 3
+  retries: 36
+  delay: 10
   until: "'Bakery status is finished' in __checkmk_var_result_bakery_bake.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Sign all agents."
@@ -71,8 +71,8 @@
                     api_secret=checkmk_var_api_secret)
               }}"
   register: __checkmk_var_result_bakery_sign
-  retries: 20
-  delay: 3
+  retries: 36
+  delay: 10
   until: "'Bakery status is finished' in __checkmk_var_result_bakery_sign.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bake and Sign all agents."
@@ -96,8 +96,8 @@
                     api_secret=checkmk_var_api_secret)
               }}"
   register: __checkmk_var_result_bakery_bake_sign
-  retries: 20
-  delay: 3
+  retries: 36
+  delay: 10
   until: "'Bakery status is finished' in __checkmk_var_result_bakery_bake_sign.msg"
 
 - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
