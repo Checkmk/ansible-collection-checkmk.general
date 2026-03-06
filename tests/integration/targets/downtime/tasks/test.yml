@@ -1,9 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -17,7 +17,7 @@
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Discover hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Discover hosts."
   discovery:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -27,7 +27,7 @@
     state: "fix_all"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run activation."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run activation."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -36,11 +36,11 @@
     force_foreign_changes: true
     redirect: true
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for the activation to finish."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the activation to finish."
   ansible.builtin.wait_for:
     timeout: 60
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host without comment."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host without comment."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -52,7 +52,7 @@
     state: present
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete downtime on host without comment."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete downtime on host without comment."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -64,7 +64,7 @@
     state: absent
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services with relative times."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on services with relative times."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -83,7 +83,7 @@
       - "Check_MK Discovery"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services with relative times in strings."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on services with relative times in strings."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -102,7 +102,7 @@
       - "Check_MK Discovery"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services with absolute timestamps."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on services with absolute timestamps."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -117,7 +117,7 @@
       - "Check_MK Discovery"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on services without timestamps."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on services without timestamps."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -132,7 +132,7 @@
       minutes: 1
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with relative times."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host with relative times."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -148,7 +148,7 @@
       minutes: 30
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with absolute timestamps."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host with absolute timestamps."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -160,7 +160,7 @@
     end_time: "2024-03-26T20:39:28Z"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with absolute timestamps. Again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host with absolute timestamps. Again."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -172,7 +172,7 @@
     end_time: "2024-03-26T20:39:28Z"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host with absolute timestamps. Again. With force."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host with absolute timestamps. Again. With force."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -185,7 +185,7 @@
     end_time: "2024-03-26T20:39:28Z"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime forcibly on host with absolute timestamps."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime forcibly on host with absolute timestamps."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -198,7 +198,7 @@
     force: true
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on host without timestamps."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host without timestamps."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -208,7 +208,7 @@
     comment: Schedule downtime on host without timestamps
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete service downtimes with comment."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete service downtimes with comment."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -222,7 +222,7 @@
     state: absent
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host downtimes with comment."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete host downtimes with comment."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -233,7 +233,7 @@
     state: absent
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete service downtimes with comment again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete service downtimes with comment again."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -247,7 +247,7 @@
     state: absent
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host downtimes with comment again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete host downtimes with comment again."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -258,7 +258,7 @@
     state: absent
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete service downtimes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete service downtimes."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -273,7 +273,7 @@
     state: absent
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete host downtimes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete host downtimes."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -283,7 +283,7 @@
     state: absent
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Schedule downtime on single service."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on single service."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -301,7 +301,7 @@
   ansible.builtin.pause:
     seconds: 5
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete downtime on single service."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete downtime on single service."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -316,7 +316,7 @@
   failed_when: not __checkmk_var_result_delete.changed | bool
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -327,7 +327,7 @@
     state: "absent"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run activation."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run activation."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -335,7 +335,7 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     force_foreign_changes: true
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   downtime:
     host_name: "{{ item.name }}"
     comment: Schedule downtime on single service

@@ -1,5 +1,5 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create tag_group."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create tag_group."
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -15,14 +15,14 @@
   loop: "{{ checkmk_var_tag_groups_create }}"
   failed_when: not __checkmk_var_result_tag_group_create.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate changes."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create tag_group again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create tag_group again."
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -38,7 +38,7 @@
   loop: "{{ checkmk_var_tag_groups_create }}"
   failed_when: __checkmk_var_result_tag_group_recreate.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create Host"
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create Host"
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -50,7 +50,7 @@
       tag_Supporter: "nobody"
     state: "present"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update tag_group without repair. (Should fail)"
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update tag_group without repair. (Should fail)"
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -66,7 +66,7 @@
   register: __checkmk_var_result_tag_group_update
   failed_when: "'You must authorize Checkmk to update the relevant instances using the repair parameter' not in __checkmk_var_result_tag_group_update.msg"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update tag_group."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update tag_group."
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -81,14 +81,14 @@
     state: "present"
   loop: "{{ checkmk_var_tag_groups_update }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate changes."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete tag_groups."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete tag_groups."
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -101,14 +101,14 @@
   loop: "{{ checkmk_var_tag_groups_delete }}"
   failed_when: not __checkmk_var_result_tag_group_delete.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate changes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate changes."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete tag_groups again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete tag_groups again."
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -121,7 +121,7 @@
   loop: "{{ checkmk_var_tag_groups_delete }}"
   failed_when: __checkmk_var_result_tag_group_redelete.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create aux_tags."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create aux_tags."
   ansible.builtin.uri:
     url: "{{ checkmk_var_server_url }}{{ outer_item.site }}/check_mk/api/1.0/domain-types/aux_tag/collections/all"
     method: POST
@@ -138,7 +138,7 @@
       help: "{{ item.help }}"
   loop: "{{ checkmk_var_aux_tags_create }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create tag_group with aux_tags."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create tag_group with aux_tags."
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -154,7 +154,7 @@
   loop: "{{ checkmk_var_tag_groups_with_aux_tags_create }}"
   failed_when: not __checkmk_var_result_tag_group_with_aux_tags_create.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update tag_group with aux_tags."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update tag_group with aux_tags."
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -171,7 +171,7 @@
   loop: "{{ checkmk_var_tag_groups_with_aux_tags_update }}"
   failed_when: not __checkmk_var_result_tag_group_with_aux_tags_update.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   tag_group:
     name: "{{ item.name }}"
     title: "{{ item.title }}"

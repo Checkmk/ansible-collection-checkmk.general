@@ -1,9 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create contact groups."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create contact groups."
   contact_group:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -15,7 +15,7 @@
     state: "present"
   loop: "{{ checkmk_var_contact_groups }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -26,7 +26,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create users."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -59,7 +59,7 @@
   loop: "{{ checkmk_var_users_create }}"
   failed_when: not __checkmk_var_result_users_create.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -70,7 +70,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create same users again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create same users again."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -103,7 +103,7 @@
   loop: "{{ checkmk_var_users_create }}"
   failed_when: __checkmk_var_result_users_recreate.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Edit users."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Edit users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -129,7 +129,7 @@
     state: "present"
   loop: "{{ checkmk_var_users_edit }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Don't edit auth user."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Don't edit auth user."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -142,7 +142,7 @@
   register: __checkmk_var_result_dont_edit
   failed_when: "'You cannot modify the user that is used for API' not in __checkmk_var_result_dont_edit.msg"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -153,7 +153,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Change PW of users."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Change PW of users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -168,7 +168,7 @@
   loop: "{{ checkmk_var_users_newpw }}"
   failed_when: not __checkmk_var_result_users_pw_change.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -182,7 +182,7 @@
 # This test ensures, that the parameter 'mega_menu_icons' works up until Checkmk 2.5.0,
 # as the name was changed in 2.5.0, but an alias still allows the old name.
 # ToDo: The alias will be removed in a future release, the tests need to be adapted to that state then.
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify 'mega_menu_icons' works up until Checkmk 2.5.0."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify 'mega_menu_icons' works up until Checkmk 2.5.0."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -197,7 +197,7 @@
 
 # This test ensures, that the parameter 'main_menu_icons' works from Checkmk 2.5.0 onwards, as the name was changed in 2.5.0.
 # ToDo: The alias `mega_menu_icons` will be removed in a future release, the tests need to be adapted to that state then.
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify 'main_menu_icons' works from Checkmk 2.5.0 onwards."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify 'main_menu_icons' works from Checkmk 2.5.0 onwards."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -210,7 +210,7 @@
   loop: "{{ checkmk_var_users_create }}"
   when: outer_item.version | regex_replace('p.*', '') is version('2.5', '>=')
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete users."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete users."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -222,7 +222,7 @@
   loop: "{{ checkmk_var_users_create }}"
   failed_when: not __checkmk_var_result_users_delete.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -233,7 +233,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete same users again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete same users again."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -245,7 +245,7 @@
   loop: "{{ checkmk_var_users_create }}"
   failed_when: __checkmk_var_result_users_redelete.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   user: # noqa fqcn[action-core] # The FQCN lint makes no sense here, as we want to test our local module
     name: "{{ item.name }}"
     state: "absent"

@@ -2,12 +2,12 @@
 # Take this from playbooks/test-full.yml to ensure full coverage!
 # Be sure to remove header!
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folders."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create folders."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -18,7 +18,7 @@
     state: "present"
   loop: "{{ checkmk_var_folders }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -28,7 +28,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete folders."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete folders."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -39,7 +39,7 @@
     state: "absent"
   loop: "{{ checkmk_var_folders }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -49,7 +49,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folders for attributes test."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create folders for attributes test."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -60,7 +60,7 @@
     attributes: "{{ checkmk_var_folder_attr_test.attributes }}"
     state: "present"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update folder attributes without specifying title (name)."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update folder attributes without specifying title (name)."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -72,7 +72,7 @@
       tag_criticality: "test"
       tag_networking: "wan"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check the idempotency of Update attributes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check the idempotency of Update attributes."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -85,7 +85,7 @@
   register: __checkmk_var_result_update_attributes
   failed_when: __checkmk_var_result_update_attributes.changed | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update folder title (name)."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update folder title (name)."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -95,7 +95,7 @@
     name: "{{ checkmk_var_folder_attr_test.name }} Modified"
     state: "present"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove folder attributes without specifying title (name)."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove folder attributes without specifying title (name)."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -106,7 +106,7 @@
     remove_attributes:
       - "tag_networking"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check the idempotency of Remove attributes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check the idempotency of Remove attributes."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -119,7 +119,7 @@
   register: __checkmk_var_result_remove_attributes
   failed_when: __checkmk_var_result_remove_attributes.changed | bool
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete folders."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete folders."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -130,7 +130,7 @@
     state: "absent"
   loop: "{{ checkmk_var_folders }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -140,7 +140,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folders for defaults test."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create folders for defaults test."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -151,7 +151,7 @@
     state: "present"
   loop: "{{ checkmk_var_folders_defaults_test }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -161,7 +161,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Print created folders."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Print created folders."
   ansible.builtin.debug:
     var: __checkmk_var_folder_title
   vars:
@@ -175,7 +175,7 @@
               }}"
     __checkmk_var_folder_title: "{{ dict((__checkmk_var_result_print | map(attribute='id') | map('regex_replace', '~', '/')) | zip(__checkmk_var_result_print | map(attribute='title'))) }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify created folders."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify created folders."
   ansible.builtin.assert:
     that: "__checkmk_var_folder_title[item.path | regex_replace('~', '/') ] == item.verify_name"
   vars:
@@ -190,7 +190,7 @@
     __checkmk_var_folder_title: "{{ dict((__checkmk_var_result_verify | map(attribute='id') | map('regex_replace', '~', '/')) | zip(__checkmk_var_result_verify | map(attribute='title'))) }}"
   loop: "{{ checkmk_var_folders_defaults_test }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete folders."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete folders."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -201,7 +201,7 @@
     state: "absent"
   loop: "{{ checkmk_var_folders_defaults_test }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -211,7 +211,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   folder:
     path: "{{ item.path }}"
     name: "{{ item.name | default(omit) }}"
