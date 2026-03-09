@@ -1,13 +1,8 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.4.0p22"
-    edition: "cre"
-    site: "stable_cre"
-    port: "5004"
-  - version: "2.4.0p22"
-    edition: "cme"
-    site: "stable_cme"
-    port: "5104"
+  - version: "{{ checkmk_var_version | default('2.4.0p22') }}"
+    edition: "{{ checkmk_var_edition | default('cre') }}"
+    site: "testsite"
 
 checkmk_var_ldap_connections:
   - ldap_config:

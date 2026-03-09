@@ -85,7 +85,7 @@
   ansible.builtin.shell:
     cmd: |
       # 1. Configure Apache Port
-      omd config {{ item.1.site_config.basic_settings.site_id }} set APACHE_TCP_PORT 7777  # Hardcoded port for local testing
+      omd config {{ item.1.site_config.basic_settings.site_id }} set APACHE_TCP_PORT 5001  # Hardcoded port for local testing
 
       # 2. Configure Livestatus
       omd config {{ item.1.site_config.basic_settings.site_id }} set LIVESTATUS_TCP on
@@ -130,9 +130,9 @@
   register: __checkmk_var_site_central_status_online
   loop: "{{ checkmk_var_test_sites }}"
 
-- name: "Wait for Remote Sites to be ready."
+- name: "Wait for Remote Site to be ready."
   ansible.builtin.uri:
-    url: "http://127.0.0.1:7777/{{ item.1.site_config.basic_settings.site_id }}"  # Hardcoded ip:port for local testing
+    url: "http://127.0.0.1:5001/{{ item.1.site_config.basic_settings.site_id }}"  # Hardcoded ip:port for local testing
     return_content: true
     validate_certs: false
     status_code:

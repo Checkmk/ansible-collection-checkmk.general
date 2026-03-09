@@ -1,9 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create new time periods."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create new time periods."
   timeperiod:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -18,7 +18,7 @@
   loop: "{{ checkmk_var_timeperiods_create }}"
   no_log: false
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -28,7 +28,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update time periods."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update time periods."
   timeperiod:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -44,7 +44,7 @@
   no_log: false
 
 # As this time period is equal to the existing one, no change should happen.
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update time equal periods."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update time equal periods."
   timeperiod:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -59,7 +59,7 @@
   loop: "{{ checkmk_var_timeperiods_noupdate }}"
   no_log: false
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -70,7 +70,7 @@
       - "{{ outer_item.site }}"
 
 # This should fail.
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Test that a timeperiod which is still in use cannot be deleted."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Test that a timeperiod which is still in use cannot be deleted."
   timeperiod:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -82,7 +82,7 @@
   register: __checkmk_var_result_used
   failed_when: "'The time period is still in use' not in __checkmk_var_result_used.msg"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete other time period first."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete other time period first."
   timeperiod:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -92,7 +92,7 @@
     state: "absent"
   loop: "{{ checkmk_var_timeperiods_deletefirst }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete a time period."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete a time period."
   timeperiod:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -102,7 +102,7 @@
     state: "absent"
   loop: "{{ checkmk_var_timeperiods_delete }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -112,7 +112,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   timeperiod:
     name: "{{ item.name }}"
     state: "absent"

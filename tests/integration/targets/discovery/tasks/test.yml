@@ -1,9 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -19,7 +19,7 @@
 
 - name: "Run Single Discoveries."
   block:
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Rescan services."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Rescan services."
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -29,7 +29,7 @@
         state: "refresh"
       loop: "{{ checkmk_var_hosts }}"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update host labels."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update host labels."
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -39,7 +39,7 @@
         state: "only_host_labels"
       loop: "{{ checkmk_var_hosts }}"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove vanished services."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove vanished services."
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -49,7 +49,7 @@
         state: "remove"
       loop: "{{ checkmk_var_hosts }}"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Add undecided services."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Add undecided services."
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -59,7 +59,7 @@
         state: "new"
       loop: "{{ checkmk_var_hosts }}"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update service labels. (Should fail < 2.3.0)"
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update service labels. (Should fail < 2.3.0)"
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -70,9 +70,9 @@
       loop: "{{ checkmk_var_hosts }}"
       register: __checkmk_var_result_labels
       failed_when: "'State only_service_labels is not supported with this Checkmk version' not in __checkmk_var_result_labels.msg"
-      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version"
+      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version and not '2.5.0' in outer_item.version"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Monitor undecided services. (Should fail < 2.3.0)"
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Monitor undecided services. (Should fail < 2.3.0)"
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -83,9 +83,9 @@
       loop: "{{ checkmk_var_hosts }}"
       register: __checkmk_var_result_undecided_pre_23
       failed_when: "'State monitor_undecided_services is not supported with this Checkmk version' not in __checkmk_var_result_undecided_pre_23.msg"
-      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version"
+      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version and not '2.5.0' in outer_item.version"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update service labels."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update service labels."
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -96,7 +96,7 @@
       loop: "{{ checkmk_var_hosts }}"
       when: "'2.3.0' in outer_item.version or '2.4.0' in outer_item.version"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Monitor undecided services. (Should fail in 2.3.0 and above)"
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Monitor undecided services. (Should fail in 2.3.0 and above)"
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -109,7 +109,7 @@
       failed_when: "'State monitor_undecided_services is only supported in bulk mode.' not in __checkmk_var_result_undecided_post_23.msg"
       when: "'2.3.0' in outer_item.version or '2.4.0' in outer_item.version"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Tabula Rasa. (New since 2.2)"
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Tabula Rasa. (New since 2.2)"
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -120,7 +120,7 @@
       loop: "{{ checkmk_var_hosts }}"
       when: "not '2.1' in outer_item.version"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Discover hosts (fix_all)."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Discover hosts (fix_all)."
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -130,7 +130,7 @@
         state: "fix_all"
       loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -140,7 +140,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -151,7 +151,7 @@
     state: "absent"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -163,7 +163,7 @@
 - name: "Run Bulk Discoveries."
   when: "not '2.0.0' in outer_item.version"
   block:
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
       host:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -177,7 +177,7 @@
         state: "present"
       loop: "{{ checkmk_var_hosts }}"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Refresh (tabula_rasa) services."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Refresh (tabula_rasa) services."
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -187,7 +187,7 @@
         state: "refresh"
         bulk_size: 5
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Update host labels."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Update host labels."
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -197,7 +197,7 @@
         state: "only_host_labels"
         bulk_size: 5
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Remove vanished services."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Remove vanished services."
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -207,7 +207,7 @@
         state: "remove"
         bulk_size: 5
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Update service labels. (Should fail < 2.3.0)"
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Update service labels. (Should fail < 2.3.0)"
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -218,9 +218,9 @@
         bulk_size: 5
       register: __checkmk_var_result_labels_pre_23
       failed_when: "'State only_service_labels is not supported with this Checkmk version.' not in __checkmk_var_result_labels_pre_23.msg"
-      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version"
+      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version and not '2.5.0' in outer_item.version"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Monitor undecided services. (Should fail < 2.3.0)"
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Monitor undecided services. (Should fail < 2.3.0)"
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -231,9 +231,9 @@
         bulk_size: 5
       register: __checkmk_var_result_labels_post_23
       failed_when: "'State monitor_undecided_services is not supported with this Checkmk version.' not in __checkmk_var_result_labels_post_23.msg"
-      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version"
+      when: "not '2.3.0' in outer_item.version and not '2.4.0' in outer_item.version and not '2.5.0' in outer_item.version"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Update service labels. (only 2.3)"
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Update service labels. (only 2.3)"
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -244,7 +244,7 @@
         bulk_size: 5
       when: "'2.3.0' in outer_item.version or '2.4.0' in outer_item.version"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Monitor undecided services. (only 2.3)"
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Monitor undecided services. (only 2.3)"
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -255,7 +255,7 @@
         bulk_size: 5
       when: "'2.3.0' in outer_item.version or '2.4.0' in outer_item.version"
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Add undecided services to monitoring."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Add undecided services to monitoring."
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -265,7 +265,7 @@
         state: "new"
         bulk_size: 5
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bulk: Discover hosts (fix_all)."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Discover hosts (fix_all)."
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -275,7 +275,7 @@
         state: "fix_all"
         bulk_size: 5
 
-    - name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
       activation:
         server_url: "{{ checkmk_var_server_url }}"
         site: "{{ outer_item.site }}"
@@ -285,14 +285,14 @@
         sites:
           - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   discovery:
     hosts: "{{ checkmk_var_host_names }}"
     state: "fix_all"
     bulk_size: 5
   environment: "{{ __checkmk_var_testing_environment }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -303,7 +303,7 @@
     state: "absent"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"

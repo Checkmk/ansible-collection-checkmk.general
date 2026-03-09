@@ -1,9 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -17,7 +17,7 @@
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -27,7 +27,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bake all agents."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bake all agents."
   bakery:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -35,7 +35,7 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     state: "baked"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for baking to finish."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for baking to finish."
   ansible.builtin.debug:
     msg: "Bakery status is {{ __checkmk_var_result_bakery }}"
   vars:
@@ -46,11 +46,11 @@
                     api_secret=checkmk_var_api_secret)
               }}"
   register: __checkmk_var_result_bakery_bake
-  retries: 20
-  delay: 3
+  retries: 36
+  delay: 10
   until: "'Bakery status is finished' in __checkmk_var_result_bakery_bake.msg"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Sign all agents."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Sign all agents."
   bakery:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -60,7 +60,7 @@
     signature_key_passphrase: "{{ checkmk_var_signature_key_passphrase }}"
     state: "signed"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for signing to finish."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for signing to finish."
   ansible.builtin.debug:
     msg: "Bakery status is {{ __checkmk_var_result_bakery }}"
   vars:
@@ -71,11 +71,11 @@
                     api_secret=checkmk_var_api_secret)
               }}"
   register: __checkmk_var_result_bakery_sign
-  retries: 20
-  delay: 3
+  retries: 36
+  delay: 10
   until: "'Bakery status is finished' in __checkmk_var_result_bakery_sign.msg"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Bake and Sign all agents."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bake and Sign all agents."
   bakery:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -85,7 +85,7 @@
     signature_key_passphrase: "{{ checkmk_var_signature_key_passphrase }}"
     state: "baked_signed"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Wait for baking and signing to finish."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for baking and signing to finish."
   ansible.builtin.debug:
     msg: "Bakery status is {{ __checkmk_var_result_bakery }}"
   vars:
@@ -96,11 +96,11 @@
                     api_secret=checkmk_var_api_secret)
               }}"
   register: __checkmk_var_result_bakery_bake_sign
-  retries: 20
-  delay: 3
+  retries: 36
+  delay: 10
   until: "'Bakery status is finished' in __checkmk_var_result_bakery_bake_sign.msg"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -111,7 +111,7 @@
     state: "absent"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -120,7 +120,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   bakery:
     state: "baked"
   environment: "{{ __checkmk_var_testing_environment }}"
