@@ -20,7 +20,7 @@ dev = [
     "isort==8.0.1",
     "mypy-extensions==1.1.0",
     "pathspec==1.0.4",
-    "platformdirs==4.9.2",
+    "platformdirs==4.9.4",
     "tomli==2.4.0",
     "typing-extensions==4.15.0",
 ]
