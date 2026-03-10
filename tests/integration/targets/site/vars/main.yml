@@ -1,6 +1,6 @@
 ---
 checkmk_var_test_sites:
-  - version: "{{ checkmk_var_version | default('2.4.0p22') }}"
+  - version: "{{ checkmk_var_version | default('2.4.0p23') }}"
     edition: "{{ checkmk_var_edition | default('cre') }}"
     site: "testsite"
     remote_sites:
@@ -41,7 +41,7 @@ checkmk_var_test_sites:
             direct_login_to_web_gui_allowed: false
             replicate_event_console: true
             replicate_extensions: false
-            message_broker_port: "{{ (checkmk_var_version | default('2.4.0p22') | regex_replace('p.*', '') is version('2.4', '>=')) | ternary(5671, omit) }}"
+            message_broker_port: "{{ (checkmk_var_version | default('2.4.0p23') }}"
           basic_settings:
             site_id: "testsite_r_1"
             alias: "remote test site 1"

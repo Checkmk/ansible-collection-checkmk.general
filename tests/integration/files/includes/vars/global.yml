@@ -43,7 +43,7 @@ __checkmk_var_testing_environment:
 
 # Configure default version and edition
 # checkmk_var_edition: "cre"
-# checkmk_var_version: "2.4.0p22"
+# checkmk_var_version: "2.4.0p23"
 # checkmk_var_version: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
 
 # Use this to override the test-specific sites for local testing:
