@@ -39,7 +39,7 @@
   vars:
     __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
       {{
-        ( (item.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        ( (item.version | regex_replace('p.*', '')) is version('2.5', '<') )
         | ternary(item.edition, __checkmk_server_edition_mapping[item.edition])
       }}
   ansible.builtin.command: "omd -V {{ item.version }}.{{ __checkmk_var_edition_id }} create --no-tmpfs --admin-password {{ checkmk_var_api_secret }} {{ item.site }}"
@@ -51,7 +51,7 @@
   vars:
     __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
       {{
-        ( (item.0.version | regex_replace('p.*', '')) is version('2.5.0', '<') )
+        ( (item.0.version | regex_replace('p.*', '')) is version('2.5', '<') )
         | ternary(
             item.0.edition,
             __checkmk_var_modern_edition_mapping[item.0.edition]
@@ -85,7 +85,7 @@
   ansible.builtin.shell:
     cmd: |
       # 1. Configure Apache Port
-      omd config {{ item.1.site_config.basic_settings.site_id }} set APACHE_TCP_PORT 7777  # Hardcoded port for local testing
+      omd config {{ item.1.site_config.basic_settings.site_id }} set APACHE_TCP_PORT 5001  # Hardcoded port for local testing
 
       # 2. Configure Livestatus
       omd config {{ item.1.site_config.basic_settings.site_id }} set LIVESTATUS_TCP on
@@ -130,9 +130,9 @@
   register: __checkmk_var_site_central_status_online
   loop: "{{ checkmk_var_test_sites }}"
 
-- name: "Wait for Remote Sites to be ready."
+- name: "Wait for Remote Site to be ready."
   ansible.builtin.uri:
-    url: "http://127.0.0.1:7777/{{ item.1.site_config.basic_settings.site_id }}"  # Hardcoded ip:port for local testing
+    url: "http://127.0.0.1:5001/{{ item.1.site_config.basic_settings.site_id }}"  # Hardcoded ip:port for local testing
     return_content: true
     validate_certs: false
     status_code:

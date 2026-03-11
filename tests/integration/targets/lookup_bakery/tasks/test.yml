@@ -1,9 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Get Checkmk bakery status."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get Checkmk bakery status."
   ansible.builtin.debug:
     msg: "Bakery status is {{ __checkmk_var_result_bakery }}"
   vars:
@@ -16,7 +16,7 @@
               }}"
   register: __checkmk_var_result_bakery
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify bakery status."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify bakery status."
   ansible.builtin.assert:
     that: ('finished' in __checkmk_var_result_bakery.msg) | bool or
           ('running' in __checkmk_var_result_bakery.msg) | bool or
@@ -24,15 +24,10 @@
           ('stopped' in __checkmk_var_result_bakery.msg) | bool or
           ('exception' in __checkmk_var_result_bakery.msg) | bool
 
-# We need this hack to overwrite the colliding global variable
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Use variables from inventory."
-  when: outer_item.site == "stable_cme"
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Use variables from inventory."
   block:
-    - name: "Set checkmk_var_server_url for isolated testing."
-      ansible.builtin.set_fact:
-        checkmk_var_server_url: "http://127.0.0.1:5104/"
 
-    - name: "Test plugin with variables from inventory."
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Test plugin with variables from inventory."
       ansible.builtin.assert:
         that: ('finished' in __checkmk_var_result_bakery_internal) | bool or
               ('running' in __checkmk_var_result_bakery_internal) | bool or

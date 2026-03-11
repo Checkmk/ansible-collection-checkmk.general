@@ -32,13 +32,15 @@
     attributes: "{{ checkmk_agent_host_attributes }}"
     state: "present"
   become: false
-  register: __checkmk_agent_create_result
+  register: __checkmk_agent_update_attributes_result
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_add_host | bool
   notify: "Activate changes"
 
 - name: "Ensure registration readyness."  # noqa no-handler
-  when: __checkmk_agent_create_result.changed | bool
+  when:
+    - (__checkmk_agent_create_result.changed | bool) or
+      (__checkmk_agent_update_attributes_result.changed | bool)
   block:
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers

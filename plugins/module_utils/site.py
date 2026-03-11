@@ -379,6 +379,7 @@ site_argument_spec = dict(
                                 type="bool",
                             ),
                             is_trusted=dict(
+                                default=False,
                                 type="bool",
                             ),
                             message_broker_port=dict(

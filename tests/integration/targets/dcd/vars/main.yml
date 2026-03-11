@@ -1,10 +1,5 @@
 ---
 checkmk_var_test_sites:
-  - version: "2.3.0p42"
-    edition: "cme"
-    site: "old_cme"
-    port: "5103"
-  - version: "2.4.0p22"
-    edition: "cme"
-    site: "stable_cme"
-    port: "5104"
+  - version: "{{ checkmk_var_version | default('2.4.0p23') }}"
+    edition: "{{ checkmk_var_edition | default('cme') }}"
+    site: "testsite"

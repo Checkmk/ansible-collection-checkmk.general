@@ -30,7 +30,19 @@ on:
 jobs:
 
   integration:
-    name: "Integration Test"
+    name: "Integration ${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
     uses: ./.github/workflows/_template-ans-int-test.yaml
     with:
       module: host_group
+      checkmk_version: ${{ matrix.checkmk_version }}
+      checkmk_edition: ${{ matrix.checkmk_edition }}
+    strategy:
+      fail-fast: false
+      matrix:
+        checkmk_version:
+          - 2.3.0p42
+          - 2.4.0p22
+          # - 2.5.0-2025.02.24
+        checkmk_edition:
+          - raw
+          - managed

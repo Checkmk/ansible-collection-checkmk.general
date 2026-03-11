@@ -1,9 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer attribute."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'cme' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create folders."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create folders."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -14,7 +14,7 @@
     state: "present"
   loop: "{{ checkmk_var_folders }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -28,7 +28,7 @@
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -38,7 +38,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify host folder."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify host folder."
   ansible.builtin.assert:
     that: "(item.folder | default('/')) == __checkmk_var_result_host_folder.folder"
   vars:
@@ -52,7 +52,7 @@
               }}"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -63,7 +63,7 @@
     state: "absent"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -73,7 +73,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create host with update_attributes without folder."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create host with update_attributes without folder."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -89,7 +89,7 @@
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency on update_attributes for only a subset of attributes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check idempotency on update_attributes for only a subset of attributes."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -103,7 +103,7 @@
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove Attributes of host."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove Attributes of host."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -115,7 +115,7 @@
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency on remove_attributes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check idempotency on remove_attributes."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -127,7 +127,7 @@
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -138,7 +138,7 @@
     state: "absent"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -149,7 +149,7 @@
       - "{{ outer_item.site }}"
 
 ### Cluster Host Tests
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -163,7 +163,7 @@
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -173,7 +173,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create cluster hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create cluster hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -188,7 +188,7 @@
     state: "present"
   loop: "{{ checkmk_var_cluster_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -198,7 +198,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of create cluster hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check idempotency of create cluster hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -213,7 +213,7 @@
     state: "present"
   loop: "{{ checkmk_var_cluster_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Modify nodes in cluster host."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Modify nodes in cluster host."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -230,7 +230,7 @@
     __checkmk_var_first: "{{ checkmk_var_cluster_hosts[0] }}"
     __checkmk_var_second: "{{ checkmk_var_cluster_hosts[1] }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -240,7 +240,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency, Modify nodes in cluster host."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check idempotency, Modify nodes in cluster host."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -257,7 +257,7 @@
     __checkmk_var_first: "{{ checkmk_var_cluster_hosts[0] }}"
     __checkmk_var_second: "{{ checkmk_var_cluster_hosts[1] }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Add nodes to cluster hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Add nodes to cluster hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -272,7 +272,7 @@
     state: "present"
   loop: "{{ checkmk_var_cluster_hosts_add_nodes }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -282,7 +282,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of Add nodes to cluster hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check idempotency of Add nodes to cluster hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -297,7 +297,7 @@
     state: "present"
   loop: "{{ checkmk_var_cluster_hosts_add_nodes }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -307,7 +307,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove nodes from cluster hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove nodes from cluster hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -322,7 +322,7 @@
     state: "present"
   loop: "{{ checkmk_var_cluster_hosts_remove_nodes }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -332,7 +332,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of nodes removal from cluster hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check idempotency of nodes removal from cluster hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -347,7 +347,7 @@
     state: "present"
   loop: "{{ checkmk_var_cluster_hosts_remove_nodes }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -358,7 +358,7 @@
       - "{{ outer_item.site }}"
 
 ###
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete cluster hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete cluster hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -369,7 +369,7 @@
     state: "absent"
   loop: "{{ checkmk_var_cluster_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -379,7 +379,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency of delete cluster hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check idempotency of delete cluster hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -390,7 +390,7 @@
     state: "absent"
   loop: "{{ checkmk_var_cluster_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create cluster host with update_attributes without folder."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create cluster host with update_attributes without folder."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -407,7 +407,7 @@
     state: "present"
   loop: "{{ checkmk_var_cluster_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency on update_attributes for only a subset of attributes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check idempotency on update_attributes for only a subset of attributes."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -422,7 +422,7 @@
     state: "present"
   loop: "{{ checkmk_var_cluster_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Remove Attributes of cluster host."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove Attributes of cluster host."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -435,7 +435,7 @@
     state: "present"
   loop: "{{ checkmk_var_cluster_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Check idempotency on remove_attributes."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check idempotency on remove_attributes."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -448,7 +448,7 @@
     state: "present"
   loop: "{{ checkmk_var_cluster_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete cluster hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete cluster hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -460,7 +460,7 @@
     state: "absent"
   loop: "{{ checkmk_var_cluster_hosts }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete hosts."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
   host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -472,7 +472,7 @@
   loop: "{{ checkmk_var_hosts }}"
 
 ###
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete folders."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete folders."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -483,7 +483,7 @@
     state: "absent"
   loop: "{{ checkmk_var_folders }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Activate."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -493,7 +493,7 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   host:
     name: "{{ item.name }}"
     folder: "{{ item.folder | default(omit) }}"
