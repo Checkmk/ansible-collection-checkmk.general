@@ -1,2 +1,0 @@
-bugfixes:
-  - Folder module - Fix idempotency when using "attributes" parameter for creating a folder.

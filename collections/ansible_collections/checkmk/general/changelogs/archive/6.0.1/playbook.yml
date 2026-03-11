@@ -1,2 +1,0 @@
-minor_changes:
-- Playbooks - Add new use-case playbook, that shows how to derive environment variables from ini-style variables.

@@ -1,3 +1,0 @@
-bugfixes:
-  - Folder module - Fix issues with uppercase and lowercase names.
-  - Folder module - Fix issue where the `name` (alias `title`) was entirely ignored.

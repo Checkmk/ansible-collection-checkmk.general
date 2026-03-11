@@ -1,3 +1,0 @@
-minor_changes:
-  - Utils - Provide a class CheckmkVersion to simplify version comparison.
-  - Discovery module - Use the version comparison utils.

@@ -1,5 +1,0 @@
----
-bugfixes:
-  - Agent role - Fix agent registration failure due to omitted activation of changes.
-    In case a host was created by the agent role with a specific folder configured, activation of changes
-    was skipped due the duplicate usage of a conditional variable. This is fixed now.

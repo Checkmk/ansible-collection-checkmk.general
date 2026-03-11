@@ -1,3 +1,0 @@
-minor_changes:
-  - Agent role - Avoid logging passwords by default for extra security
-  - Server role - Avoid logging passwords by default for extra security

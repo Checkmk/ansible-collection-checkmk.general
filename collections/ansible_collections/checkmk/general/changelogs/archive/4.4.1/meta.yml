@@ -1,4 +1,0 @@
-minor_changes:
-  - Add 'ansible.utils' collection as an explicitely dependency.
-    We already had this dependency, but are now declaring it explicitely.
-  - Agent role - Add hint on depency for Python module 'netaddr' to role README.

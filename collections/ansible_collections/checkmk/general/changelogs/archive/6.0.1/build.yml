@@ -1,2 +1,0 @@
-minor_changes:
-- Build - Move development stack entirely from Docker to Podman. This has no imapact on collection users, but on developers.

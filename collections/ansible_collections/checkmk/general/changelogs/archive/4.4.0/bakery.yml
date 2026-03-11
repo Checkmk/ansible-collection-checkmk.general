@@ -1,2 +1,0 @@
-bugfixes:
-  - Bakery module - Fix failing integration test due to wrong key passphrase.

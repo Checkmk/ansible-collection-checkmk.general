@@ -1,2 +1,0 @@
-minor_changes:
-  - Discovery module - Add handling for 409 response.

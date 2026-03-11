@@ -1,3 +1,0 @@
-minor_changes:
-  - Agent role - Replace `ansible.builtin.yum` with the succeeding `ansible.builtin.dnf`.
-  - Server role - Replace `ansible.builtin.yum` with the succeeding `ansible.builtin.dnf`.

@@ -1,2 +1,0 @@
-bugfixes:
-  - Agent role - Fix activate changes handler failing with self-signed certificate

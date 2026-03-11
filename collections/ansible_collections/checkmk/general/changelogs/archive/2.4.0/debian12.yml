@@ -1,3 +1,0 @@
-minor_changes:
-  - Agent role - Ensure support for Debian 12.
-  - Server role - Ensure explicit support for Debian 12.

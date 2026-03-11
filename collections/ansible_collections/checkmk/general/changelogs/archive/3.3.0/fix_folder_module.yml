@@ -1,3 +1,0 @@
-bugfixes:
-  - Folder module - When creating a new folder with "attributes" parameter, the attributes were
-    ignored. This is now fixed.

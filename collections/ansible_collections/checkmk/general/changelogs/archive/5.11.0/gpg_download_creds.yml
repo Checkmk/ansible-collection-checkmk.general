@@ -1,2 +1,0 @@
-minor_changes:
-  - server role - Add support for optional GPG credentials in the download process.

@@ -1,2 +1,0 @@
-bugfixes:
-  - User role - No longer allow to modify the user that is used for API authorization.

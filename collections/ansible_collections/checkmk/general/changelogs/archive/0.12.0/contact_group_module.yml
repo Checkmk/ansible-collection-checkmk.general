@@ -1,4 +1,0 @@
-# https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
-
-major_changes:
-  - Add contact_group module.

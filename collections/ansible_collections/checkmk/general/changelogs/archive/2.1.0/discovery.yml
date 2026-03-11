@@ -1,2 +1,0 @@
-bugfixes:
-  - Discovery module - Properly handle redirects to wait for completion of background jobs.

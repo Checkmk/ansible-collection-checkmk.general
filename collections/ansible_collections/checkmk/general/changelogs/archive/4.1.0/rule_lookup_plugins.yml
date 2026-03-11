@@ -1,5 +1,0 @@
-major_changes:
- - Rulesets lookup plugin - Search rulesets.
- - Ruleset lookup plugin - Show a particular ruleset.
- - Rules lookup plugin - List the rules of a ruleset.
- - Rule lookup plugin - Show a particular rule.

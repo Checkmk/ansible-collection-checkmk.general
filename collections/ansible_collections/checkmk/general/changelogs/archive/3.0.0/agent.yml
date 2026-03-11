@@ -1,2 +1,0 @@
-minor_changes:
-  - Agent role - Allow throttling of discovery task to limit load on Checkmk server.

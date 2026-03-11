@@ -1,2 +1,0 @@
-minor_changes:
-  - Agent role - Re-align Windows with Linux file management. The two playbooks had diverted in the past and are now re-aligned again.

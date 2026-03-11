@@ -1,2 +1,0 @@
-bugfixes:
-  - Site module - Fix the management of connections without configuration replication.
