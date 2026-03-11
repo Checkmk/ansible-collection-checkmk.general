@@ -182,4 +182,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 7.2.1
+version: 7.2.2
