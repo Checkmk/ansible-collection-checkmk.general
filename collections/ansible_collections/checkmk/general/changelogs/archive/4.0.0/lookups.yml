@@ -1,0 +1,5 @@
+major_changes:
+  - Bakery lookup plugin - Get the status of the Checkmk Agent Bakery.
+
+minor_changes:
+  - Lookup API - Add improved error handling.

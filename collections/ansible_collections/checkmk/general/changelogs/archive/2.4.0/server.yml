@@ -1,0 +1,2 @@
+minor_changes:
+  - Server role - Add feature to clean up unused Checkmk versions on the server.

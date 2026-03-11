@@ -1,0 +1,10 @@
+major_changes:
+  - Server role - Introduce initial support for Suse derivatives.
+    Observe the "Known Issues", as this support is experimental!
+
+known_issues:
+  - Server role - Suse support is currently tested only on openSUSE Leap 15. This means, that it is not tested on actual SLES.
+    If you have any interest in this functionality and have a SLES 15 handy, we are happy to collaborate on this.
+  - Server role - SLES has dependencies, which cannot be managed by this role. Refer to the role README for details.
+  - Server role - Suse support does not yet cover the new version scheme starting with SLES 16.
+    As soon as Checkmk supports SLES 16, we will look into updating the role accordingly.

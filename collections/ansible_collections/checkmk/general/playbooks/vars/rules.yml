@@ -1,0 +1,20 @@
+---
+checkmk_var_rules:
+
+  - name: "Filesystem - Magic Factor."
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      location:
+        folder: "/"
+        position: "bottom"
+      conditions: {
+        "host_labels": [],
+        "host_tags": [],
+        "service_labels": []
+      }
+      properties: {
+        "comment": "{{ ansible_facts['date_time'].iso8601 }} - Ansible managed",
+        "description": "",
+        "disabled": false
+      }
+      value_raw: "{'magic': 0.8}"

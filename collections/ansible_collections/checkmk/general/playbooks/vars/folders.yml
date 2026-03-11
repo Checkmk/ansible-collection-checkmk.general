@@ -1,0 +1,14 @@
+---
+checkmk_var_folders:
+  - path: /test
+    name: Test
+  - path: /foo/
+    name: Foo
+  - path: /bar
+    name: Bar
+  - path: /foo/bar
+    name: Bar
+  - path: /bar/foo
+    name: Foo
+  - path: /foo/bar/treasure
+    name: Treasure

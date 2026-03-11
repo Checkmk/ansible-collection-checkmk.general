@@ -1,0 +1,185 @@
+objects:
+  role:
+    agent:
+      description: Install Checkmk agents
+      name: agent
+      version_added: null
+    server:
+      description: Install and manage Checkmk servers
+      name: server
+      version_added: null
+plugins:
+  become: {}
+  cache: {}
+  callback: {}
+  cliconf: {}
+  connection: {}
+  filter: {}
+  httpapi: {}
+  inventory:
+    checkmk:
+      description: Dynamic Inventory Source or Checkmk
+      name: checkmk
+      version_added: null
+  lookup:
+    activation:
+      description: Get the status of a single activation
+      name: activation
+      version_added: 7.2.0
+    activations:
+      description: Get all activations
+      name: activations
+      version_added: 7.2.0
+    bakery:
+      description: Get the bakery status of a Checkmk server
+      name: bakery
+      version_added: 4.0.0
+    folder:
+      description: Get folder attributes
+      name: folder
+      version_added: 3.3.0
+    folders:
+      description: Get various information about a folder
+      name: folders
+      version_added: 3.3.0
+    host:
+      description: Get host attributes
+      name: host
+      version_added: 3.3.0
+    hosts:
+      description: Get various information about a host
+      name: hosts
+      version_added: 3.3.0
+    ldap_connection:
+      description: Show the configuration of an ldap connection
+      name: ldap_connection
+      version_added: 6.6.0
+    ldap_connections:
+      description: Get a list of all ldap_connections
+      name: ldap_connections
+      version_added: 6.6.0
+    rule:
+      description: Show a rule
+      name: rule
+      version_added: 3.5.0
+    rules:
+      description: Get a list rules
+      name: rules
+      version_added: 3.5.0
+    ruleset:
+      description: Show a ruleset
+      name: ruleset
+      version_added: 3.5.0
+    rulesets:
+      description: Search rulesets
+      name: rulesets
+      version_added: 3.5.0
+    site:
+      description: Show the configuration of a site
+      name: site
+      version_added: 5.3.0
+    sites:
+      description: Get a list of all sites
+      name: sites
+      version_added: 5.3.0
+    version:
+      description: Get the version of a Checkmk server
+      name: version
+      version_added: 3.1.0
+  module:
+    activation:
+      description: Activate changes in Checkmk.
+      name: activation
+      namespace: ''
+      version_added: 0.0.1
+    aux_tag:
+      description: Manage auxiliary tags in Checkmk.
+      name: aux_tag
+      namespace: ''
+      version_added: 6.5.0
+    bakery:
+      description: Trigger baking and signing in the agent bakery.
+      name: bakery
+      namespace: ''
+      version_added: 0.21.0
+    contact_group:
+      description: Manage contact groups in Checkmk (bulk version).
+      name: contact_group
+      namespace: ''
+      version_added: 0.12.0
+    dcd:
+      description: Manage Dynamic Host Management.
+      name: dcd
+      namespace: ''
+      version_added: 6.3.0
+    discovery:
+      description: Discover services in Checkmk.
+      name: discovery
+      namespace: ''
+      version_added: 0.0.1
+    downtime:
+      description: Manage downtimes in Checkmk.
+      name: downtime
+      namespace: ''
+      version_added: 0.2.0
+    folder:
+      description: Manage folders in Checkmk.
+      name: folder
+      namespace: ''
+      version_added: 0.0.1
+    host:
+      description: Manage hosts in Checkmk.
+      name: host
+      namespace: ''
+      version_added: 0.0.1
+    host_group:
+      description: Manage host groups in Checkmk (bulk version).
+      name: host_group
+      namespace: ''
+      version_added: 0.11.0
+    ldap:
+      description: Manage LDAP connectors.
+      name: ldap
+      namespace: ''
+      version_added: 6.6.0
+    password:
+      description: Manage passwords in Checkmk.
+      name: password
+      namespace: ''
+      version_added: 2.3.0
+    rule:
+      description: Manage rules in Checkmk.
+      name: rule
+      namespace: ''
+      version_added: 0.10.0
+    service_group:
+      description: Manage service groups in Checkmk (bulk version).
+      name: service_group
+      namespace: ''
+      version_added: 0.12.0
+    site:
+      description: Manage distributed monitoring in Checkmk.
+      name: site
+      namespace: ''
+      version_added: 5.3.0
+    tag_group:
+      description: Manage tag groups in Checkmk.
+      name: tag_group
+      namespace: ''
+      version_added: 0.11.0
+    timeperiod:
+      description: Manage time periods in checkmk.
+      name: timeperiod
+      namespace: ''
+      version_added: 3.3.0
+    user:
+      description: Manage users in Checkmk.
+      name: user
+      namespace: ''
+      version_added: 0.18.0
+  netconf: {}
+  shell: {}
+  strategy: {}
+  test: {}
+  vars: {}
+version: 7.2.1

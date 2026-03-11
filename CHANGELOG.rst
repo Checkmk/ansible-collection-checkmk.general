@@ -4,6 +4,21 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v7.2.2
+======
+
+Minor Changes
+-------------
+
+- Bakery module - Checkmk 2.5 uses UUIDs instead of simple integers for key IDs. While this change is backwards-compatible, the collection needs to support both formats. With this change, both integer and UUID key IDs can be used.
+- Site module - Set default for ``configuration_connection.is_trusted`` to ``false``. This is also the default in Checkmk, but was not reflected in the collection yet. On rare occasion, this could cause failures. This is fixed now. Double-check your configuration and refer to the official user guide for details on the option.
+
+Bugfixes
+--------
+
+- Agent role - Fix agent registration failure due to omitted activation of changes. In case a host was created by the agent role with a specific folder configured, activation of changes was skipped due the duplicate usage of a conditional variable. This is fixed now.
+- LDAP module - Fix usage of ``mega_menu_icons`` and ``main_menu_icons`` for Checkmk 2.5.
+
 v7.2.1
 ======
 

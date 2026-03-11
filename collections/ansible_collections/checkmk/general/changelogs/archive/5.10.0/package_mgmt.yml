@@ -1,0 +1,3 @@
+minor_changes:
+  - Server role - Use the generic `ansible.builtin.package` module for all packaging related tasks.
+  - Agent role - Use the generic `ansible.builtin.package` module for all packaging related tasks.

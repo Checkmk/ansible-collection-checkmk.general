@@ -1,0 +1,4 @@
+# https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
+
+bugfixes:
+  - User module - Fix creation of automation users.

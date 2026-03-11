@@ -1,0 +1,6 @@
+minor_changes:
+  - Agent role - Allow registration on mixed protocol environments.
+    This means the central and remote site do not both have to use either HTTP or HTTPS.
+
+bugfixes:
+  - Agent role - Fix registration in cases where a prior registration failed.

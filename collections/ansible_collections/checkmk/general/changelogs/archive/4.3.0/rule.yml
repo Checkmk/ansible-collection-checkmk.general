@@ -1,0 +1,4 @@
+minor_changes:
+  - Rule module - Introduce rule_id to uniquely identify rules.
+    This ID can be retrieved e.g., using the lookup plugin.
+    Refer to the module documentation for further details.

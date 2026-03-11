@@ -1,0 +1,5 @@
+major_changes:
+  - LDAP module - Add module for LDAP connections.
+    Refer to the module documentation for further details.
+  - LDAP Connection lookup module - Add module to look up details of a single LDAP connection.
+  - LDAP Connections lookup module - Add module to look up all LDAP connections and their details.

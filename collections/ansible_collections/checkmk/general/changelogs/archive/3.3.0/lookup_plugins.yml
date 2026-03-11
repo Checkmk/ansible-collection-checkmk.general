@@ -1,0 +1,5 @@
+major_changes:
+ - Folder lookup plugin - Look up the configuration of a folder.
+ - Folders lookup plugin - Look up all folders.
+ - Host lookup plugin - Look up the configuration of a host.
+ - Hosts lookup plugin - Look up all hosts.

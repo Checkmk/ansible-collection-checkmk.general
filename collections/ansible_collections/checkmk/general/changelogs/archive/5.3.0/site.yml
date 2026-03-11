@@ -1,0 +1,12 @@
+major_changes:
+  - Site module - Add module for distributed monitoring.
+    Refer to the module documentation for further details.
+  - Site lookup module - Add module to lookup details of a single site.
+  - Sites lookup module - Add module to lookup all sites and their details
+    in a distributed monitoring setup.
+
+known_issues:
+  - Site module - To completely enable a site, the livestatus certificate
+    needs to be trusted. This cannot be done with the site module.
+    As of now, there is no automatic way to do this, so you need to log into
+    the site and add the certificate to the trusted certificates manually.

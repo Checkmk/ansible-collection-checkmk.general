@@ -1,0 +1,1553 @@
+ancestor: null
+releases:
+  0.0.1:
+    changes:
+      known_issues:
+      - Activation is not site aware yet. All sites will be activated.
+      - Discovery is not feature complete yet.
+      - This release is still in development and a heavy work in progress.
+      major_changes:
+      - Add activation module.
+      - Add discovery module.
+      - Add folder module.
+      - Add host module.
+      - Initial creation of collection structure and layout.
+    fragments:
+    - initial.yml
+    modules:
+    - description: Activate changes in Checkmk.
+      name: activation
+      namespace: ''
+    - description: discovery services in Checkmk.
+      name: discovery
+      namespace: ''
+    - description: Manage folders in Checkmk.
+      name: folder
+      namespace: ''
+    - description: Manage hosts in Checkmk.
+      name: host
+      namespace: ''
+    release_date: '2022-02-14'
+  0.0.2:
+    changes:
+      known_issues:
+      - Activation is not site aware yet. All sites will be activated.
+      - Discovery is not feature complete yet.
+      - This release is still in development and a heavy work in progress.
+      major_changes:
+      - Major overhaul of folder module.
+      - Major overhaul of host module.
+    fragments:
+    - v0.0.2.yml
+    release_date: '2022-03-17'
+  0.1.0:
+    changes:
+      known_issues:
+      - Discovery is not feature complete yet.
+      - This release is still in development and a heavy work in progress.
+      major_changes:
+      - First release to Ansible Galaxy.
+      minor_changes:
+      - Activation is now site aware.
+    fragments:
+    - v0.1.0.yml
+    release_date: '2022-03-18'
+  0.10.0:
+    changes:
+      bugfixes:
+      - Host module - Now correctly setting the default folder when getting the current
+        host state.
+      known_issues:
+      - Rule exports made with Checkmk API on server versions <2.1.0p10 will not import
+        correctly.
+      major_changes:
+      - Add rule module.
+    fragments:
+    - fix-150-default-folder.yml
+    - rule_module.yml
+    modules:
+    - description: Manage rules in Checkmk.
+      name: rule
+      namespace: ''
+    release_date: '2022-09-23'
+  0.11.0:
+    changes:
+      major_changes:
+      - Add host_group module.
+      - Add tag_group module.
+      minor_changes:
+      - Agent role - (Actually in v0.10.0) Fix authentication handling, where several
+        tasks would fail, when using a secret.
+      - Agent role - Add support for CME.
+    fragments:
+    - agent_role.yml
+    - host_group_module.yml
+    - tag_group_module.yml
+    modules:
+    - description: Manage host groups in Checkmk (bulk version).
+      name: host_group
+      namespace: ''
+    - description: Manage tag_group within Checkmk
+      name: tag_group
+      namespace: ''
+    release_date: '2022-10-10'
+  0.12.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix timeouts on tasks delegated_to localhost.
+      - Downtime module - A human-readable error message is now printed if there's
+        an API error.
+      major_changes:
+      - Add contact_group module.
+      minor_changes:
+      - Agent role - Add option to download agent setup to control node and then upload
+        to target.
+      - Downtime module - Improve readability of messages in case of API errors.
+    fragments:
+    - bugfixes.yml
+    - contact_group_module.yml
+    - fix-188-key-error.yml
+    modules:
+    - description: Manage contact groups in Checkmk (bulk version).
+      name: contact_group
+      namespace: ''
+    release_date: '2022-11-18'
+  0.13.0:
+    changes:
+      major_changes:
+      - Add service_group module.
+      minor_changes: []
+    fragments:
+    - new-passwd-hashing.yml
+    - service_group_module.yml
+    release_date: '2022-12-02'
+  0.14.0:
+    changes:
+      deprecated_features:
+      - host_group module - The module was released with the module options `host_group_name`
+        and `host_groups`. These have ben renamed to `name` and `groups` to align
+        with our standards. The old names will be removed in a future release.
+    fragments:
+    - host_group.yml
+    release_date: '2022-12-09'
+  0.15.0:
+    changes:
+      breaking_changes:
+      - Agent role - Remove host attribute `tag_agent` from the defaults. Should not
+        be a breaking change, but be aware of it.
+      major_changes:
+      - The folder module now uses `name` instead of `title`. The latter is retained
+        as an alias until further notice.
+      - The host module now uses `name` instead of `host_name`. The latter is retained
+        as an alias but will be removed with a future release.
+      minor_changes:
+      - Agent role - Respect the variable `checkmk_agent_host_name` when downloading
+        host specific agents.
+      - The playbooks shipped with the collection were cleaned up and update. Just
+        for awareness.
+    fragments:
+    - agent_role.yml
+    - module_options.yml
+    - playbooks.yml
+    release_date: '2023-01-11'
+  0.16.0:
+    changes:
+      bugfixes:
+      - Rule module - Now properly comparing the specified rule with the existing
+        ones to achieve idempotency.
+      known_issues:
+      - Rule module - comparing the specified rule with the existing ones leads to
+        additional changes in CMK's audit log
+      minor_changes:
+      - Agent role - Enable automatic activation of changes when needed for this role.
+        Refer to the README for details.
+      - Agent role - Enable registration for TLS and agent updates on remote sites.
+      - Agent role - RedHat - Only try to configure firewalld, if the systemd service
+        is present.
+      - Playbooks - Add use case playbook for registering agents on remote sites.
+      - Rule module - Now its possible to choose a position when creating a rule.
+        The ID of the created rule is returned in the task's response.
+    fragments:
+    - agent.yml
+    - bugfix_rule_module.yml
+    - playbooks.yml
+    - rule_module.yml
+    release_date: '2023-01-20'
+  0.16.1:
+    changes:
+      bugfixes:
+      - Agent role - Fix erroneous usage of "checkmk_agent_pass" in activation handler.
+    fragments:
+    - agent.yml
+    release_date: '2023-01-23'
+  0.16.2:
+    changes:
+      bugfixes:
+      - 'Agent role - Add explicit "become: false" to the "Discover services and labels
+        on host." task.'
+      - Downtime module - Fix handling of parameters start_after and end_after.
+      release_summary: Bugfix Release.
+    fragments:
+    - agent.yml
+    - downtime.yml
+    - summary.yml
+    release_date: '2023-02-03'
+  0.17.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix delegation of activation in handler.
+      minor_changes:
+      - Agent role - Make forcing of foreign changes on activation by handler configurable.
+      - Rule module - Improve rule comparison logic. No dummy rule is necessary for
+        comparison anymore.
+      - contact_group module - Fix Ansible Galaxy linting findings.
+      - discovery module - Fix Ansible Galaxy linting findings.
+      - downtime module - Fix Ansible Galaxy linting findings.
+      - host_group module - Fix Ansible Galaxy linting findings.
+      - rule module - Fix Ansible Galaxy linting findings.
+      - service_group module - Fix Ansible Galaxy linting findings.
+      release_summary: Collected bugfixes.
+    fragments:
+    - agent.yml
+    - release.yml
+    - rule.yml
+    release_date: '2023-02-10'
+  0.17.1:
+    changes:
+      minor_changes:
+      - Agent role - Add cloud edition support.
+    fragments:
+    - agent.yml
+    release_date: '2023-02-17'
+  0.18.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix support for CCE.
+      known_issues:
+      - User module - Currently no automation users can be created due to a mismatch
+        of 'auth_type'
+      - User module - The parameter "interface_options" is not yet usable
+      major_changes:
+      - Add user module.
+      - Rule module - Enable check mode.
+    fragments:
+    - agent.yml
+    - module-user.yml
+    - rule.yml
+    modules:
+    - description: Manage users in Checkmk.
+      name: user
+      namespace: ''
+    release_date: '2023-03-14'
+  0.19.0:
+    changes:
+      bugfixes:
+      - User module - Fix creation of automation users.
+      major_changes:
+      - We dropped support for Ansible 2.11 and Python 2 entirely. That means you
+        can still use this collection with older versions, we just do not test against
+        them anymore.
+      - module_utils - Introduce a centralized library to call the Checkmk API.
+      minor_changes:
+      - We added support for Ansible 2.14.
+      release_summary: Centralizing functions.
+    fragments:
+    - api.yml
+    - support.yml
+    - user.yml
+    release_date: '2023-04-03'
+  0.2.0:
+    changes:
+      known_issues:
+      - Discovery module is not feature complete yet.
+      - Downtime module is not fully idempotent yet. This affects service downtimes
+        and deletions.
+      - This release is still in development and a heavy work in progress.
+      - We might extract the API call handling into a separate Python module.
+      major_changes:
+      - Add downtime module. Kudos to Oliver Gaida (https://github.com/ogaida)!
+      minor_changes:
+      - The way how the API URL is being created is now more consistent. Thus, users
+        can now skip the trailing "/" in the "server_url" for all modules. Thanks
+        to Jan Petto (https://github.com/Edgxxar)!
+    fragments:
+    - 0.2.0.yml
+    - consistent_base_url.yml
+    modules:
+    - description: Manage downtimes in Checkmk.
+      name: downtime
+      namespace: ''
+    release_date: '2022-04-04'
+  0.2.1:
+    changes:
+      minor_changes:
+      - Add hint, that running the activation module is required only once and not
+        per host.
+      - Clean up variable assignments in activation module.
+      - Clean up variable assignments in discovery module.
+      - Improve construction of headers and base_url variables in activation module.
+      - Improve construction of headers and base_url variables in discovery module.
+      - Introduce quick fix for handling of HTTP 500 errors in discovery module.
+    fragments:
+    - activation.yml
+    - discovery.yml
+    release_date: '2022-04-22'
+  0.2.2:
+    changes:
+      minor_changes:
+      - The discovery module will now be more verbose in case of an API error and
+        print the actual error message from the API.
+    fragments:
+    - discovery.yml
+    release_date: '2022-05-11'
+  0.20.0:
+    changes:
+      bugfixes:
+      - Rule module - Fix crash, if the Checkmk REST API does not return a value for
+        the "disabled" property.
+      minor_changes:
+      - Agent role - Make firewall zone configurable on RedHat derivates.
+      - Host module - Enable update and removal of attributes in addition to fully
+        managing them. This is analogous to the Checkmk REST API. Additionally the
+        "folder" attribute has no default value anymore except on creation.
+    fragments:
+    - agent.yml
+    - host.yml
+    - rule.yml
+    release_date: '2023-04-12'
+  0.21.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix activate changes handler failing with self-signed certificate
+      major_changes:
+      - Add Bakery module
+      minor_changes:
+      - Server role - Added support for almalinux
+    fragments:
+    - agent.yml
+    - almalinux.yml
+    - bakery.yml
+    modules:
+    - description: Trigger baking and signing in the agent bakery.
+      name: bakery
+      namespace: ''
+    release_date: '2023-05-08'
+  0.22.0:
+    changes:
+      major_changes:
+      - module_utils - Extend centralization by providing types and further utils.
+      minor_changes:
+      - Playbooks - Reorganize and clean up playbooks. This is a constant work in
+        progress.
+      release_summary: Further centralizing.
+    fragments:
+    - playbooks.yml
+    - utils.yml
+    release_date: '2023-05-12'
+  0.23.0:
+    changes:
+      major_changes:
+      - folder module - Add support for 'update_attributes' and 'remove_attributes'.
+        Read the documentation for further details.
+      minor_changes:
+      - folder module - Add support for check mode.
+      - tag_group module - Code cleanup. Should have no effect on functionality, but
+        mentioning it here for transparency.
+    fragments:
+    - folder.yml
+    - tag_group.yml
+    release_date: '2023-06-07'
+  0.3.2:
+    changes:
+      minor_changes:
+      - Add agent role. Currently supports the vanilla agent.
+    fragments:
+    - role-agent.yml
+    release_date: '2022-05-23'
+  0.3.3:
+    changes:
+      bugfixes:
+      - The host module can now handle the trailing slash in the folder path returned
+        by the REST API.
+    fragments:
+    - trailing_slash.yml
+    release_date: '2022-05-30'
+  0.4.0:
+    changes:
+      bugfixes:
+      - Improved the exception handling of the discovery module.
+      minor_changes:
+      - Initial release of the Checkmk server role.
+      - The agent role now supports installing baked agents. It will try to install
+        the host-specific agent and fall back to the GENERIC agent.
+      - The agent role now supports registering hosts for automatic updates and TLS
+        encryption.
+    fragments:
+    - fix-51-exceptionhandling.yml
+    - role-agent-baked.yml
+    - role-server.yml
+    release_date: '2022-06-23'
+  0.5.0:
+    changes:
+      bugfixes:
+      - Handle hosts, where systemd version is below 220. It is now possible to automatically
+        install xinetd in those cases. This has to be enabled explicitely.
+      minor_changes:
+      - Add support for RedHat/CentOS 7 and 8 and compatible distributions to server
+        role.
+      - Enable agent role to automatically add hosts to Checkmk during agent installation.
+      - Enable firewall management of the host to allow instant access to the agent.
+      - Enable firewall management of the host to allow instant access to the web
+        interface of the server.
+      - Introduce ansible linting for roles and fix findings.
+    fragments:
+    - agent.yml
+    - linting.yml
+    - server.yml
+    release_date: '2022-07-08'
+  0.5.1:
+    changes:
+      bugfixes:
+      - Fix leakage of admin password in server role.
+      - Fix usage of 'automation_xxx' and 'checkmk_agent_xxx'. 'automation_xxx' variables
+        can still be used for API authentication, but the behavior is more consistent
+        now.
+    fragments:
+    - bugfix_admin_password_leak.yml
+    - bugfix_agent_role.yml
+    release_date: '2022-08-01'
+  0.5.2:
+    changes:
+      bugfixes:
+      - Fix usage of 'checkmk_agent_host_name'variable. Some tasks had 'inventory_hostname'
+        hardcoded, which is not the desired behavior. This is fixed now.
+      - Increase HTTP timeout for the discovery module, because the discovery can
+        take some time depending on the discovered device.
+    fragments:
+    - bugfix_agent_role.yml
+    - bugfix_discovery_http_timeout.yml
+    release_date: '2022-08-04'
+  0.6.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix SELinux handling on RedHat.
+      - Agent role - Fix firewall handling on RedHat.
+      major_changes:
+      - Server role - Add support for automatically updating Checkmk. Read the role's
+        README for important information!
+      release_summary: Introducing upgrade management for Checkmk sites!
+    fragments:
+    - bugfix_agent_role.yml
+    - release_summary.yml
+    - server_update_feature.yml
+    release_date: '2022-08-25'
+  0.7.0:
+    changes:
+      bugfixes:
+      - Activation module - Fix possible race condition. (#123).
+      - Activation module - Fix waiting for activation completion (#103).
+      - Agent role - Support CFE properly.
+      - Agent role - Support both normal and automation users properly.
+      minor_changes:
+      - Agent role - Check for agent updater and controller binaries. Skip registration
+        if respective binary is missing.
+      - Agent role - Host attributes can be fully customized now.
+      - Agent role - Label role. This enables skipping or running tasks exclusively.
+        See the README for a detailed list.
+      - Server role - Label role. This enables skipping or running tasks exclusively.
+        See the README for a detailed list.
+      release_summary: Lots of love for the agent role!
+    fragments:
+    - agent_role.yml
+    - bugfix_activation_module.yml
+    - release_summary.yml
+    - server_role.yml
+    release_date: '2022-08-26'
+  0.8.0:
+    changes:
+      minor_changes:
+      - Activation module - Make certificate validation of the Checkmk server configurable.
+      - Agent role - Add a boolean for whether to validate the SSL certificate of
+        the Checkmk server used to retrieve agent packages.
+      - Agent role - Enable forced agent installation, skipping all possible constraints,
+        like downgrades.
+      - Agent role - Make Checkmk server port for API calls configurable. By default
+        the ports 80 and 443 are used according to the configured protocol.
+      - Discovery module - Make certificate validation of the Checkmk server configurable.
+      - Downtime module - Make certificate validation of the Checkmk server configurable.
+      - Folder module - Make certificate validation of the Checkmk server configurable.
+      - Host module - Make certificate validation of the Checkmk server configurable.
+      - Server role - Fix setup file verification on Debian derivatives. Using gpg
+        instead of dpkg-sig now.
+    fragments:
+    - agent_role.yml
+    - modules.yml
+    - server_role.yml
+    release_date: '2022-09-01'
+  0.9.0:
+    changes:
+      bugfixes:
+      - Host module - Do not raise an error, if a host already exists, or on updating
+        a host's attributes while the hosts stays in the same folder.
+      - Server role - Fix and enhance additional repository handling on RedHat derivatives.
+      minor_changes:
+      - Server role - Improve OS support detection and enhance prerequisites installation.
+    fragments:
+    - host_module.yml
+    - server_role.yml
+    release_date: '2022-09-12'
+  1.0.0:
+    changes:
+      breaking_changes:
+      - 'This collection was renamed and module redirects have been activated. That
+        means, if you are using this release, you also need the new collection to
+        be installed. Otherwise things will break for you. In any way you should now
+        move to the new collection name: checkmk.general.'
+      release_summary: This collection was renamed to checkmk.general. Please use
+        the new name moving forward!
+    fragments:
+    - renaming_preparation.yml
+    release_date: '2023-06-07'
+  2.0.0:
+    changes:
+      breaking_changes:
+      - The renaming of the collection has concluded. If you are reading this, you
+        on the right release and repository and should be able to use the collection
+        just as you are used to. Make sure to double check, that you are using the
+        new FQCNs!
+      release_summary: Welcome to the new world!
+    fragments:
+    - renaming_complete.yml
+    release_date: '2023-06-07'
+  2.1.0:
+    changes:
+      bugfixes:
+      - Discovery module - Properly handle redirects to wait for completion of background
+        jobs.
+      - Downtime module - The module handles timezones properly now.
+      - Integration tests - A bug was fixed, where the integration tests did not use
+        the correct Checkmk version.
+      - Utils - With Checkmk 2.2.0p3 the activation introduces a breaking change,
+        which we need to handle. As a workaround we added the 'If-Match' header to
+        all API requests.
+      known_issues:
+      - Utils - All API calls send the 'If-Match' header. This is a workaround and
+        will be fixed in a future release.
+      major_changes:
+      - Bakery module - Migrated to use module_utils.
+      - Discovery module - Migrated to use module_utils.
+      - contact_group module - The module was not compatible with Checkmk 2.2. This
+        is fixed now.
+      - host_group module - The module was not compatible with Checkmk 2.2. This is
+        fixed now.
+      - service_group module - The module was not compatible with Checkmk 2.2. This
+        is fixed now.
+    fragments:
+    - activation.yml
+    - discovery.yml
+    - downtime.yml
+    - modules.yml
+    - tests.yml
+    release_date: '2023-06-15'
+  2.2.0:
+    changes:
+      bugfixes:
+      - Downtime module - The comment has a default value now
+      minor_changes:
+      - Activation module - Properly add If-Match header.
+      - Agent role - Add support for AlmaLinux and Rocky Linux, both versions 8 and
+        9.
+      - Agent role - Bump default Checkmk version to 2.2.0.
+      - Module utils - Remove workaround from version 2.1.0, where all modules were
+        passed the If-Match header.
+      - Server role - Add support for AlmaLinux and Rocky Linux, both versions 8 and
+        9.
+      - Server role - Bump default Checkmk version to 2.2.0.
+      release_summary: Extend OS support in roles and fix some minor issues in modules.
+    fragments:
+    - activation.yml
+    - downtime.yml
+    - roles.yml
+    - summary.yml
+    release_date: '2023-06-19'
+  2.3.0:
+    changes:
+      major_changes:
+      - Discovery module - Add support for bulk discoveries.
+      - Password module - Add password module.
+      minor_changes:
+      - Server role - Add support for RHEL and CentOS 9
+      - Utils - Introduce retries for API calls in case of timeouts.
+      release_summary: Features all over the place!
+    fragments:
+    - discovery.yml
+    - password.yml
+    - server.yml
+    - summary.yml
+    modules:
+    - description: Manage passwords in checkmk.
+      name: password
+      namespace: ''
+    release_date: '2023-06-30'
+  2.4.0:
+    changes:
+      known_issues:
+      - Discovery module - The module does not work on a controller host with Python
+        2.
+      minor_changes:
+      - Agent role - Ensure fresh data before adding services to host.
+      - Agent role - Ensure support for Debian 12.
+      - Discovery module - Improve resilience and stability.
+      - Server role - Add feature to clean up unused Checkmk versions on the server.
+      - Server role - Enable explicit support for Oracle Linux 8.
+      - Server role - Ensure explicit support for Debian 12.
+      release_summary: Enabling more operating systems!
+    fragments:
+    - agent.yml
+    - debian12.yml
+    - discovery.yml
+    - oraclelinux8.yml
+    - release.yml
+    - server.yml
+    release_date: '2023-07-31'
+  2.4.1:
+    changes:
+      minor_changes:
+      - Agent role - The activate changes handler was missing the server port. This
+        is fixed now.
+    fragments:
+    - agent.yml
+    release_date: '2023-08-03'
+  3.0.0:
+    changes:
+      breaking_changes:
+      - Folder module - The module options 'attributes', 'update_attributes' and 'remove_attributes'
+        are now mutually exclusive. Using more than one on a single task will cause
+        a warning or error.
+      - Host group module - Deprecated options 'host_group_name' and 'host_groups'
+        were removed. Use 'name' and 'groups' instead!
+      - Host module - Deprecated option 'host_name' was removed. Use 'name' instead!
+      - Rule module - Deprecated option 'folder' was removed. Use 'location' instead!
+      minor_changes:
+      - Agent role - Allow throttling of discovery task to limit load on Checkmk server.
+      - Folder module - Warn about mutually exclusive attribute options on older Checkmk
+        versions and fail on recent Checkmk versions. See 'Breaking Changes'.
+      release_summary: Removing deprecated module options and more cleaning.
+    fragments:
+    - agent.yml
+    - breaking.yml
+    - folder.yml
+    - release_summary.yml
+    release_date: '2023-08-11'
+  3.1.0:
+    changes:
+      major_changes:
+      - Agent role - Add support for Windows.
+      - Version lookup plugin - Add Version lookup plugin.
+      minor_changes:
+      - Discovery module - Add handling for 409 response.
+      release_summary: It is summer and you want to look outside, so we added Windows.
+    fragments:
+    - discovery.yml
+    - lookup.yml
+    - release_summary.yml
+    - windows.yml
+    plugins:
+      lookup:
+      - description: Get the version of a Checkmk server
+        name: version
+        namespace: null
+    release_date: '2023-08-22'
+  3.2.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix activation handler URL.
+      - Agent role - Fix agent and update registration on remote sites.
+      minor_changes:
+      - Agent role - Add preflight check for correct Checkmk edition.
+      - Agent role - Allow the role to download folder-specific agents.
+      - Server role - Add preflight check for correct Checkmk edition.
+    fragments:
+    - agent.yml
+    - server.yml
+    release_date: '2023-08-30'
+  3.3.0:
+    changes:
+      bugfixes:
+      - Agent role - Performing the agent registration on a remote would fail, if
+        the host was just created. This release introduces a workaround to enable
+        this.
+      - Folder module - When creating a new folder with "attributes" parameter, the
+        attributes were ignored. This is now fixed.
+      known_issues:
+      - Server role - Not having to provide an admin password introduces a problem
+        though, as users could create sites without knowing the randomly generated
+        password. A task is introduced to mitigate this, but the solution there could
+        be improved.
+      major_changes:
+      - Folder lookup plugin - Look up the configuration of a folder.
+      - Folders lookup plugin - Look up all folders.
+      - Host lookup plugin - Look up the configuration of a host.
+      - Hosts lookup plugin - Look up all hosts.
+      - Timeperiod module - Add timeperiod module.
+      minor_changes:
+      - Agent role - Add support for firewall configuration on Debian derivates.
+      - Discovery module - Use the version comparison utils.
+      - Server role - Site management can now be done without specifying 'admin_pw'.
+      - Utils - Provide a class CheckmkVersion to simplify version comparison.
+      release_summary: 'This is the librarian release: We added some lookups.'
+    fragments:
+    - admin_pw.yml
+    - agent.yml
+    - fix_folder_module.yml
+    - lookup_plugins.yml
+    - release_summary.yml
+    - timeperiod.yml
+    - version_utils.yml
+    modules:
+    - description: Manage time periods in checkmk.
+      name: timeperiod
+      namespace: ''
+    plugins:
+      lookup:
+      - description: Get folder attributes
+        name: folder
+        namespace: null
+      - description: Get various information about a folder
+        name: folders
+        namespace: null
+      - description: Get host attributes
+        name: host
+        namespace: null
+      - description: Get various information about a host
+        name: hosts
+        namespace: null
+    release_date: '2023-11-02'
+  3.4.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix agent port check for agent modes other than "pull".
+      minor_changes:
+      - Agent role - Avoid logging passwords by default for extra security
+      - Agent role - Introduce variable to configure agent mode. Refer to the README.
+      - Contact group module - Add support for the Checkmk Managed Edition (CME).
+      - Host group module - Add support for the Checkmk Managed Edition (CME).
+      - Password module - Add support for the Checkmk Managed Edition (CME).
+      - Server role - Add new states "enabled" and "disabled" for site management.
+      - Server role - Avoid logging passwords by default for extra security
+      - Server role - Enable configuration of omd config values. Refer to the README
+        for details.
+      - Service group module - Add support for the Checkmk Managed Edition (CME).
+      - User module - Add support for the Checkmk Managed Edition (CME).
+      release_summary: Supporting managed service providers, admins and security.
+        All in one release.
+    fragments:
+    - agent_push.yml
+    - cme_support.yml
+    - no_log.yml
+    - release_summary.yml
+    - server-omd-config.yml
+    release_date: '2023-11-09'
+  4.0.0:
+    changes:
+      breaking_changes:
+      - Agent role - We restructured the agent. That entails a lot of changes, and
+        we tried to keep everything stable. However, we cannot guarantee stability
+        as we do not know all use-cases out there. Hence this change is also considered
+        breaking.
+      - Server role - It became necessary to make the way states are handled more
+        consistent. The most siginificant change is, that all sites not in state "started"
+        will be stopped. For all other states please consult the role's README.
+      - Variable names - We aligned the names of variables throughout the collection.
+        This can impact your existing configuration. Please review the variable names
+        and apapt your configuration accordingly. For more details see `CONTRIBUTING.md`.
+      major_changes:
+      - Bakery lookup plugin - Get the status of the Checkmk Agent Bakery.
+      minor_changes:
+      - Activation module - Implement proper support for `redirect` parameter. This
+        means, the activation module can now optionally wait for a completed activation
+        or just trigger it and move on.
+      - Discovery module - Print error message, when using state "tabula_rasa" in
+        bulk discovery mode, because that state is not supported by the API.
+      - Lookup API - Add improved error handling.
+      release_summary: Move fast, break things.
+    fragments:
+    - activation.yml
+    - breaking.yml
+    - discovery.yml
+    - lookups.yml
+    - release_summary.yml
+    plugins:
+      lookup:
+      - description: Get the bakery status of a Checkmk server
+        name: bakery
+        namespace: null
+    release_date: '2023-12-04'
+  4.0.1:
+    release_date: '2023-12-05'
+  4.1.0:
+    changes:
+      bugfixes:
+      - Password module - Fix non-required module options being wrongly required.
+      major_changes:
+      - Rule lookup plugin - Show a particular rule.
+      - Rules lookup plugin - List the rules of a ruleset.
+      - Ruleset lookup plugin - Show a particular ruleset.
+      - Rulesets lookup plugin - Search rulesets.
+      minor_changes:
+      - Password module - Improve error handling.
+      release_summary: Happy holidays, everyone!
+    fragments:
+    - password.yml
+    - release_summary.yml
+    - rule_lookup_plugins.yml
+    release_date: '2023-12-21'
+  4.2.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix `become` in handler, which could cause errors on delegation.
+      - Rule module - Fix idempotency for rule location relative to another rule_id,
+        by getting the target folder from neighbour rule.
+      major_changes:
+      - Tag_group module - Rewrite module and migrate to new collection API.
+      - User module - Rewrite module and migrate to new collection API.
+      minor_changes:
+      - Server role - Improve role speed by skipping downloads.
+      - Tag_group module - Enable `help` and `repair` options.
+      - User module - Enable several interface options.
+      release_summary: Happy New Year!
+    fragments:
+    - release_summary.yml
+    - roles.yml
+    - rule.yml
+    - tag_group.yml
+    - user.yml
+    release_date: '2024-01-23'
+  4.3.0:
+    changes:
+      bugfixes:
+      - Folder module - Fix idempotency when using "attributes" parameter for creating
+        a folder.
+      - Folder module - Parents will be parsed properly now. This means, that parents
+        given as a string will now be parsed as a list of one.
+      - Host module - Parents will be parsed properly now. This means, that parents
+        given as a string will now be parsed as a list of one.
+      - User module - Fix bug, where an absent user was created, if 'reset_password'
+        was used.
+      known_issues:
+      - Lookup modules - When using inventory variables to configure e.g., the server_url,
+        it is not possible to assign other variables to these variables. This is a
+        limitation of Ansible itself.
+      minor_changes:
+      - Folder module - Extend attribute management. Please refer to the module documentation
+        for more details.
+      - Lookup modules - Enable usage of ini files, environment and inventory variables
+        to configure basic settings for the lookup plugins, like e.g., the server_url
+        or site alongside the authentication options. Refer to the module documentation
+        for details.
+      - Rule module - Introduce rule_id to uniquely identify rules. This ID can be
+        retrieved e.g., using the lookup plugin. Refer to the module documentation
+        for further details.
+      release_summary: Reworking the CI, enhancing code quality and improving modules.
+    fragments:
+    - fix_folder_module_idempotency.yml
+    - folder.yml
+    - lookups.yml
+    - parents.yml
+    - release_summary.yml
+    - rule.yml
+    - user.yml
+    release_date: '2024-02-16'
+  4.3.1:
+    changes:
+      bugfixes:
+      - Rule module - Fix empty rule conditions.
+      release_summary: Bugfix Release.
+    fragments:
+    - fix_rule_conditions_missing.yml
+    - release_summary.yml
+    release_date: '2024-02-21'
+  4.4.0:
+    changes:
+      bugfixes:
+      - Bakery module - Fix failing integration test due to wrong key passphrase.
+      - Folder module - Fix issue where the `name` (alias `title`) was entirely ignored.
+      - Folder module - Fix issues with uppercase and lowercase names.
+      major_changes:
+      - Host module - Add support for cluster hosts.
+      - Host module - Enable check mode.
+      - Host module - Update attribute management behavior. Refer to the documentation
+        for details.
+      minor_changes:
+      - Host module - Migrate module to the new collection API.
+      release_summary: Spring is here! With a rewritten host module including check
+        mode and cluster support.
+    fragments:
+    - bakery.yml
+    - folder.yml
+    - host.yml
+    - release_summary.yml
+    release_date: '2024-04-17'
+  4.4.1:
+    changes:
+      bugfixes:
+      - Host module - Fix hosts always being created in the main directory.
+      minor_changes:
+      - Add 'ansible.utils' collection as an explicitely dependency. We already had
+        this dependency, but are now declaring it explicitely.
+      release_summary: Bugfix Release.
+    fragments:
+    - fix_host_initial_folder.yml
+    - meta.yml
+    - release_summary.yml
+    release_date: '2024-05-01'
+  5.0.0:
+    changes:
+      breaking_changes:
+      - Agent role - Not really a breaking change, but we removed the internal variable
+        `checkmk_agent_server_ip`. If you set this variable in your inventory, please
+        make sure to update your configuration accordingly!
+      - Folder lookup module - Return the complete folder information, not only the
+        extensions. To keep the current behavior in your playbooks, you want to use
+        `{{ my_lookup_result.extensions }}` instead of `{{ my_lookup_result }}`.
+      major_changes:
+      - Discovery module - The module now fully supports Checkmk 2.3.0. Additionally,
+        two new parameters were introduced, `update_service_labels` and `monitor_undecided_services`.
+        Refer to the module documentation for further details.
+      - Rule module - The complete module was rewritten to use the new module API.
+        Additionally, a parameter "rule_id" was introduced to modify existing rules.
+        Refer to the module documentation for further details.
+      minor_changes:
+      - Agent role - Add support to open firewall for a list of IPs.
+      - Agent role - Replace `ansible.builtin.yum` with the succeeding `ansible.builtin.dnf`.
+      - Server role - Replace `ansible.builtin.yum` with the succeeding `ansible.builtin.dnf`.
+      - Several modules - Remove unnecessary HTTP codes which get already imported
+        via utils.py.
+      - Testing - Add Ansible 2.17 to all tests. Be advised, that this Ansible release
+        drops support for Python 2.7 and 3.6.
+      - Testing - Add Ubuntu 24.04 to the Molecule tests.
+      - Testing - All tests now cover Checkmk 2.3.0.
+      - Testing - Remove Ansible 2.14 from all tests, as it is EOL.
+      - Testing - Remove Checkmk 2.0.0 from all tests, as it is EOL.
+      - Testing - The Molecule tests now run on Ubuntu 22.04.
+      release_summary: (Re)writing history with overhauled modules and updated Checkmk,
+        Ansible, Distribution and Python support.
+    fragments:
+    - agent.yml
+    - build.yml
+    - discovery.yml
+    - http.yml
+    - lookup_folder.yml
+    - release_summary.yml
+    - roles.yml
+    - rule.yml
+    release_date: '2024-06-07'
+  5.1.0:
+    changes:
+      bugfixes:
+      - Agent role - For Windows hosts the download of correct setup files was broken
+        due to a mixup in the modules used to fetch the files. The role would always
+        fall back to the GENERIC agent, even if a specific agent was available. This
+        is fixed now.
+      minor_changes:
+      - Agent role - All internal variables are now prefixed with a double underscore
+        (`__`). If you hooked into any variable, which is not in `defaults/main.yml`
+        you need to check your inventory. Be advised, that it is bad practice, to
+        use internal variables directly.
+      - Agent role - Improve idempotency by reading the registration states both for
+        Agent registration and Updater registration and skipping the registration
+        if it is not necessary.
+      - Server role - All internal variables are now prefixed with a double underscore
+        (`__`). If you hooked into any variable, which is not in `defaults/main.yml`
+        you need to check your inventory. Be advised, that it is bad practice, to
+        use internal variables directly.
+      - Testing - Testing against Python 3.8 was removed for all modules.
+      release_summary: Some love for the agent role.
+    fragments:
+    - agent.yml
+    - build.yml
+    - release_summary.yml
+    - variables.yml
+    release_date: '2024-06-17'
+  5.10.0:
+    changes:
+      bugfixes:
+      - Server role - The MKP management expects a boolean value for __mkp.installed
+        and __mkp.enabled but in README.md and defaults.yml the usage examples set
+        them as string. Changed README.md but also added "| bool" to force boolean
+        even if string is defined.
+      - Server role - The MKP management failed when try to install a MKP package
+        that already exists in the server. Added a conditional to validate stderr
+        and don't fail if "exists on the site" is found.
+      - Server role - The MKP management was using 'omd su site -c' to execute commands
+        as site user but it does not work in all flavors/versions so changed to become_user
+        instead.
+      minor_changes:
+      - Agent role - Use the generic `ansible.builtin.package` module for all packaging
+        related tasks.
+      - All modules - Move basic module parameters to utils. No functional changes.
+      - Dynamic Inventory Source - Add possibility to update ansible_host with ip
+        address from Checkmk
+      - Server role - Use the generic `ansible.builtin.package` module for all packaging
+        related tasks.
+      release_summary: Code cleaning and inventory organizing.
+    fragments:
+    - feature_ansible_host_for_inventory.yml
+    - fix-mkp-management.yml
+    - package_mgmt.yml
+    - release_summary.yml
+    - utils.yml
+    release_date: '2025-05-27'
+  5.10.1:
+    changes:
+      bugfixes:
+      - Server role - Fix accidental password logging in Ansible output, even if `no_log`
+        was enabled.
+      release_summary: Some more house keeping and a minor security fix.
+    fragments:
+    - release_summary.yml
+    - server.yml
+    release_date: '2025-06-16'
+  5.11.0:
+    changes:
+      bugfixes:
+      - Server role - Fix the server role tags. Some existing tags are added to additional
+        existing tasks, in order to make the run of certain tasks working when executing
+        playbook with tags.
+      major_changes:
+      - All lookup modules - Add new environment and inventory variables, which follow
+        the naming schemes `CHECKMK_VAR_` and `checkmk_var_` respectively. The existing
+        variables can still be used, but are deprecated and will be removed with a
+        later release. Refer to the module documentation for details.
+      - All normal modules - Add new environment variables, which follow the naming
+        scheme `CHECKMK_VAR_`. The existing variables can still be used, but are deprecated
+        and will be removed with a later release. Refer to the module documentation
+        for details.
+      minor_changes:
+      - server role - Add Checkmk version in the filename of site backup.
+      - server role - Add support for optional GPG credentials in the download process.
+    fragments:
+    - env_vars.yml
+    - fix_role_server_tags.yml
+    - gpg_download_creds.yml
+    - site_backup_filename.yml
+    release_date: '2025-07-02'
+  5.2.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix registration in cases where a prior registration failed.
+      - Downtime module - Downtimes are now correctly removed when only specifying
+        a single service.
+      minor_changes:
+      - Agent role - Allow registration on mixed protocol environments. This means
+        the central and remote site do not both have to use either HTTP or HTTPS.
+      - Tag_group module - Enable module for Checkmk 2.4.0 by using `id` instead of
+        `ident` to identify tag groups and their tags. See https://checkmk.com/werk/16364
+        for background information.
+      - Tag_group module - Migrate module to new collection API.
+      - The local development environment was cleaned up. We removed all traces of
+        VirtualBox and now exclusively use KVM/QEMU virtualization. This has no effect
+        on using the collection. It only affects you, if you develop for this collection
+        and used the `Vagrantfile` or `Makefile`.
+      release_summary: Some bug fixing and a module update.
+    fragments:
+    - agent.yaml
+    - build.yaml
+    - downtime.yaml
+    - release_summary.yaml
+    - tag_group.yaml
+    release_date: '2024-08-05'
+  5.2.1:
+    changes:
+      bugfixes:
+      - Folder module - Fix bug, where `update_attributes` failed on a folder with
+        the Network Scan enabled.
+      release_summary: Bugfix Release.
+    fragments:
+    - folder.yml
+    - release_summary.yml
+    release_date: '2024-08-14'
+  5.3.0:
+    changes:
+      bugfixes:
+      - Folder module - Fix an issue, where the folder module would create an uppercase
+        folder but would not be able to find said folder.
+      known_issues:
+      - Site module - To completely enable a site, the livestatus certificate needs
+        to be trusted. This cannot be done with the site module. As of now, there
+        is no automatic way to do this, so you need to log into the site and add the
+        certificate to the trusted certificates manually.
+      major_changes:
+      - Dynamic Inventory Source - Add dynamic inventory source for Checkmk.
+      - Site lookup module - Add module to lookup details of a single site.
+      - Site module - Add module for distributed monitoring. Refer to the module documentation
+        for further details.
+      - Sites lookup module - Add module to lookup all sites and their details in
+        a distributed monitoring setup.
+      minor_changes:
+      - Rule module - Return 'content' and 'http_code', which includes the 'rule_id'.
+    fragments:
+    - checkmk.yml
+    - folder.yml
+    - rule.yml
+    - site.yml
+    modules:
+    - description: Manage distributed monitoring in Checkmk.
+      name: site
+      namespace: ''
+    plugins:
+      lookup:
+      - description: Show the configuration of a site
+        name: site
+        namespace: null
+      - description: Get a list of all sites
+        name: sites
+        namespace: null
+    release_date: '2024-10-10'
+  5.3.1:
+    changes:
+      bugfixes:
+      - contact_group module - Fix the passing of the 'customer' attribute, when the
+        'groups' parameter is used.
+      - host_group module - Fix the passing of the 'customer' attribute, when the
+        'groups' parameter is used.
+      - rule module - Fix moving of existing rules to a different folder.
+      - service_group module - Fix the passing of the 'customer' attribute, when the
+        'groups' parameter is used.
+    fragments:
+    - groups.yml
+    - rule.yml
+    release_date: '2024-10-24'
+  5.3.2:
+    changes:
+      release_summary: Build related changes and documentation fixes for the holiday
+        season.
+    fragments:
+    - release.yml
+    release_date: '2024-12-24'
+  5.4.0:
+    changes:
+      minor_changes:
+      - Agent role - Add option to perform a proxy registration. Refer to the README
+        for details.
+      release_summary: Enabling proxy registration for the agent role.
+    fragments:
+    - agent.yml
+    - release_summary.yml
+    release_date: '2025-01-14'
+  5.5.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix permissions on vanilla agent setup file.
+      - Server role - Fix argument spec for checkmk_server_sites.edition.
+      minor_changes:
+      - Server role - Make tmp directory configurable.
+      release_summary: Make the server tmp directory configurable.
+    fragments:
+    - agent.yml
+    - release.yml
+    - server.yml
+    release_date: '2025-02-12'
+  5.6.0:
+    changes:
+      minor_changes:
+      - Server role - Enable management of MKP packages.
+      release_summary: Enable MKP management for the server role.
+    fragments:
+    - release_summary.yml
+    - server.yml
+    release_date: '2025-02-27'
+  5.7.0:
+    changes:
+      bugfixes:
+      - Agent role - Fix quoting of passwords for agent registration.
+      minor_changes:
+      - Agent role - Enable specifying a custom timeout for downloading the agent
+        setup from the server.
+      release_summary: Agent Smith approved.
+    fragments:
+    - agent.yml
+    - release_summary.yml
+    release_date: '2025-03-25'
+  5.8.0:
+    changes:
+      bugfixes:
+      - User role - No longer allow to modify the user that is used for API authorization.
+      major_changes:
+      - All modules and roles - Supporting Checkmk 2.4.0 from this version onwards.
+      - Discovery module - Rewrite the whole module for better support across Checkmk
+        versions.
+      minor_changes:
+      - All modules - Enable extended logging.
+      - Server role - Make GPG key download URL configurable.
+      - Site module - Support the new mandatory broker port parameter.
+      release_summary: Checkmk 2.4.0 support is here!
+    fragments:
+    - 2.4.0.yml
+    - gpg.yml
+    - release_summary.yml
+    - user.yml
+    release_date: '2025-04-09'
+  5.9.0:
+    changes:
+      known_issues:
+      - tag_group module - The "aux_tags" suboption introduced in this version enables
+        assigning existing "aux_tags" to tag groups. It does not enable management
+        of "aux_tags" themselves. See issue 771 for progress on that module.
+      minor_changes:
+      - Development - Many clean-ups and fixes in various places. No functional changes.
+      - Development - The main Vagrant box which supports development of this collection
+        was moved to Debian 10, Podman and uv. This change does not affect the contents
+        of the collection. It should also be mostly transparent for contributors,
+        developing content for the collection. But be advised, if something feels
+        off, these changes might be relevant.
+      - Discovery module - Support the latest development version of Checkmk. This
+        is a work in progress, but should enable using the collection with daily builds
+        of Checkmk.
+      - tag_group module - Add "aux_tags" suboption for tags in tag_group module.
+      release_summary: Spring cleaning. Some module maintenance and some quality of
+        life improvements for developing the collection.
+    fragments:
+    - build.yml
+    - discovery.yml
+    - release_summary.yml
+    - tag_group.yml
+    release_date: '2025-05-13'
+  6.0.0:
+    changes:
+      breaking_changes:
+      - Agent role - Remove advanced firewall configuration options and revert to
+        basic firewall management. If you used the `checkmk_agent_server_ips` or `checkmk_agent_configure_firewall_zone`
+        option, you need to take action. Refer to the README for details. If you need
+        elaborate firewall management, use a dedicated role!
+      major_changes:
+      - Server role - Harmonize firewall management accross distributions and simplify
+        configuration. Refer to the README for details! If you need elaborate firewall
+        management, use a dedicated role!
+      release_summary: Remove sub-par firewall management.
+    fragments:
+    - firewall-agent.yml
+    - firewall-server.yml
+    - release_summary.yml
+    release_date: '2025-07-14'
+  6.0.1:
+    changes:
+      minor_changes:
+      - Build - Move development stack entirely from Docker to Podman. This has no
+        imapact on collection users, but on developers.
+      - Playbooks - Add new use-case playbook, that shows how to derive environment
+        variables from ini-style variables.
+      - Roles - Restructure role default variables to improve accessibility.
+      release_summary: Build related changes and minor useability improvements.
+    fragments:
+    - build.yml
+    - playbook.yml
+    - release_summary.yml
+    - roles.yml
+    release_date: '2025-07-23'
+  6.1.0:
+    changes:
+      bugfixes:
+      - Agent role - The agent role now properly moves hosts based on the ``checkmk_agent_folder``
+        variable. Before, there were two possible behaviors. Either the host was in
+        the expected folder and its atrributes were updated if set. Or the agent role
+        would fail, if the host was in a different folder than defined in ``checkmk_agent_folder``
+        and had attributes set. While the new behavior now actually is idempotent,
+        it might be surprising, that hosts would be moved in the folder structure,
+        if the ``checkmk_agent_folder`` variable does not match the current folder
+        of the host. So while this is a bug fix by definition, please take note and
+        check your configuration!
+      minor_changes:
+      - All modules - Change API call timeout to 60 seconds and retry to 1 to avoid
+        server overload. This is a temporary measure, as currently repeating the same
+        expensive query on an already overloaded server several times does actually
+        worsen the situation. As soon as this is fixed upstream, we will re-establish
+        the original back-off mechanism.
+    fragments:
+    - agent.yml
+    - api.yml
+    release_date: '2025-08-08'
+  6.2.0:
+    changes:
+      bugfixes:
+      - Server role - Fix permissions on MKP files after transfer or download.
+      minor_changes:
+      - Agent role - Re-align Windows with Linux file management. The two playbooks
+        had diverted in the past and are now re-aligned again.
+      - Roles - Clean up setup files after successfull role execution.
+    fragments:
+    - mkp.yml
+    - setups.yml
+    - windows.yml
+    release_date: '2025-08-12'
+  6.2.1:
+    changes:
+      bugfixes:
+      - Password module - Ensure GET and DELETE requests are sent without an HTTP
+        body.
+      - Rule module - The `rule` module used a function called `safe_eval` from the
+        Ansible utils, which provided a safer `eval` function especially for older
+        Python versions. The function is deprecated, as in recent Python versions
+        (all currently supported), there is `literal_eval`, which has the same security
+        features. This function is used now.
+      - Server role - Checkmk edition handling was inconsistent in the site management
+        playbooks. This is fixed now, but in case you have not used the `edition:`
+        key per site as suggested in `defaults/main.yml`, you need to add it now.
+      - Timeperiod module - Ensure GET and DELETE requests are sent without an HTTP
+        body.
+      - tag_group module - Ensure GET and DELETE requests are sent without an HTTP
+        body.
+    fragments:
+    - http_body.yml
+    - rule.yml
+    - server.yml
+    release_date: '2025-08-19'
+  6.2.2:
+    changes:
+      bugfixes:
+      - Server role - Document permission issues for MKP management, when using an
+        unprivileged user to connect to remote host. See the role README for more
+        details.
+      - Server role - Fix edition handling for site updates.
+      minor_changes:
+      - The collection dependencies were updated. The `ansible.windows` collection
+        was missing and for the existing collections the minimum version was raised.
+        This should not have any effect for users, as the constraints are still rather
+        wide.
+      release_summary: Bugfix release.
+    fragments:
+    - bugfixes.yml
+    - dependencies.yml
+    - release_summary.yml
+    release_date: '2025-09-01'
+  6.2.3:
+    changes:
+      bugfixes:
+      - Make implicit boolean conversion in filters explicit. This should have no
+        functional impact but makes for a clear format.
+      - Quoted truthy values are now proper truthy values. This should have no functional
+        impact but makes for a clear format.
+      - Rule module - The rule module supports a check mode, but the corresponding
+        flag was set to 'false'. This is fixed now.
+      minor_changes:
+      - Bump minimum `ansible-core` version to `2.17`, as that is the oldest version
+        we test against. Chances are, that older versions of `ansible-core` still
+        work, but we do not verify that. So you could manually change `meta/runtime.yml`
+        to circumvent this limitation, but we do recommend using up-to-date `ansible-core`
+        versions.
+      - Bump project `ansible-core` to `2.19`. This is used for development and testing.
+        We do recommend to use the latest stable `ansible-core` version, but that
+        is up to you. The only limit we impose, is the minimum version in `meta/runtime.yml`
+        but that can be circumvented as well.
+      release_summary: Housekeeping.
+    fragments:
+    - ansible_version.yml
+    - release_summary.yml
+    - truthy.yml
+    release_date: '2025-10-17'
+  6.3.0:
+    changes:
+      bugfixes:
+      - Site module - Fix idempotency.
+      major_changes:
+      - DCD module - Add DCD module. Thanks to Atruvia AG (https://atruvia.de/) for
+        donating the initial code!
+      minor_changes:
+      - Authentication - Thanks to Atruvia AG (https://atruvia.de/), all modules now
+        support two more modes of authentication. In addition to ``bearer``, you can
+        now use both ``basic`` and ``cookie`` authentication. Refer to the respective
+        module documentation for details.
+      - Idempotency - Differences in the desired and current state are currently computed
+        in each module separately. Thanks to Atruvia AG (https://atruvia.de/) there
+        now is a ``ConfigDiffer`` class, which can be used for this moving forward.
+      - Server role - Add support for optional use of a HTTP proxy for downloading
+        the Checkmk Server Setup and GPG Key.
+      release_summary: Introducing the long-awaited module for dynamic host management
+        (also known as the DCD)!
+    fragments:
+    - api.yml
+    - bugfixes.yml
+    - dcd.yml
+    - http_proxy.yml
+    - release_summary.yml
+    modules:
+    - description: Manage Dynamic Host Management.
+      name: dcd
+      namespace: ''
+    release_date: '2025-11-12'
+  6.3.1:
+    changes:
+      bugfixes:
+      - All roles - Update edition name mapping to compensate future naming changes.
+      - Downtime module - Bug fix documentation example, where the time stamps were
+        not quoted correctly.
+      - Inventory plugin - Update CheckMKLookupAPI arguments in Inventory.
+      release_summary: Bugfix release.
+    fragments:
+    - 923-update-inventory-args.yml
+    - bugfixes.yml
+    - release_summary.yml
+    release_date: '2025-11-17'
+  6.4.0:
+    changes:
+      bugfixes:
+      - Agent role - Replace misplaced ``checkmk_server_version`` variable with correct
+        ``checkmk_agent_version``.
+      minor_changes:
+      - Agent role - Add support for Debian 13 and RedHat 10.
+      - Server role - Add support for Debian 13 and RedHat 10. Server setups are available
+        from Checkmk 2.4.0p16 onwards.
+      - Server role - Add support for delegation of downloading the Checkmk Server
+        Setup and GPG Key.
+      release_summary: 'Update Operating System support for ``agent`` and ``server``
+        role: Debian 13 and RedHat 10 are here!'
+    fragments:
+    - download_delegation.yml
+    - release_summary.yml
+    - roles.yml
+    release_date: '2025-11-24'
+  6.4.1:
+    changes:
+      minor_changes:
+      - Server role - Fix support for Oracle Linux.
+    fragments:
+    - server.yml
+    release_date: '2025-11-28'
+  6.5.0:
+    changes:
+      bugfixes:
+      - Site module - Fix the management of connections without configuration replication.
+      minor_changes:
+      - Bump minimum `ansible-core` version to `2.18`, as that is the oldest version
+        we test against. Chances are, that older versions of `ansible-core` still
+        work, but we do not verify that. So you could manually change `meta/runtime.yml`
+        to circumvent this limitation, but we do recommend using up-to-date `ansible-core`
+        versions.
+      - Bump project `ansible-core` to `2.20`. This is used for development and testing.
+        We do recommend to use the latest stable `ansible-core` version, but that
+        is up to you. The only limit we impose, is the minimum version in `meta/runtime.yml`
+        but that can be circumvented as well.
+      - aux_tag module - Add new module to manage auxiliary tags in Checkmk. Auxiliary
+        tags can be created, updated, and deleted independently, making it easier
+        to manage tag hierarchies and dependencies.
+      release_summary: The aux_tag module is here!
+    fragments:
+    - ansible_version.yml
+    - aux_tag_module.yml
+    - release_summary.yml
+    - site.yml
+    modules:
+    - description: Manage auxiliary tags in Checkmk.
+      name: aux_tag
+      namespace: ''
+    release_date: '2025-12-15'
+  6.6.0:
+    changes:
+      major_changes:
+      - LDAP Connection lookup module - Add module to look up details of a single
+        LDAP connection.
+      - LDAP Connections lookup module - Add module to look up all LDAP connections
+        and their details.
+      - LDAP module - Add module for LDAP connections. Refer to the module documentation
+        for further details.
+      minor_changes:
+      - All roles and modules - Switch from deprecated ``ansible_*``-style variables
+        to ``ansible_facts[foo]``- style. This should have no functional implications,
+        it merely follows Ansible best practice.
+      - Thanks to our very own knowledge team (the folks in charge of https://docs.checkmk.com),
+        all READMEs and adjacent files have been reviewed and improved wherever necessary.
+      release_summary: Happy Holidays!
+    fragments:
+    - build.yml
+    - docs.yml
+    - ldap.yml
+    - release_summary.yml
+    release_date: '2025-12-23'
+  6.6.1:
+    changes:
+      minor_changes:
+      - Bump some build-related dependencies and improve testing logic.
+      - Clean up some module meta data, playbooks and inventory.
+      - Server role - Minor change to the compatibility message, in case an OS is
+        not supported.
+      release_summary: New years cleaning.
+    fragments:
+    - cleanups.yml
+    - release_summary.yml
+    release_date: '2026-01-08'
+  6.7.0:
+    changes:
+      minor_changes:
+      - All modules - Enable mTLS support for all modules. This is not a Checkmk feature,
+        but one of Ansible and the respective web server. This collection only provides
+        the means to use mTLS, we neither document how to implement it, nor will we
+        provide support on top of enabling the basic functionality.
+      release_summary: Introducing support for mTLS.
+    fragments:
+    - mtls.yml
+    - release_summary.yml
+    release_date: '2026-01-14'
+  7.0.0:
+    changes:
+      breaking_changes:
+      - Lookup modules - Remove obsolete ``ANSIBLE_LOOKUP_`` environment variables
+        and ``ansible_lookup_`` ansible variables. These were marked as obsolete already
+        in ``5.11.0``. If you used this naming, use the new ``checkmk_var_`` naming
+        instead, as the obsolete variable pattern is discouraged by the Ansible project.
+      - Rename authentication variables ``automation_user`` to ``api_user`` and ``automation_secret``
+        to ``api_secret``. This includes the internal variables ``checkmk_var_automation_user``
+        and ``checkmk_var_automation_secret`` as well. In all instances, ``automation_``
+        was renamed to ``api_``. Update your configuration accordingly. The old names
+        ``automation_user`` and ``automation_secret`` are retained as aliases for
+        a while. This is a temporary measure and is only supposed to ease the migration.
+        Do not rely on these aliases!
+      release_summary: Breaking in the new year with a breaking change.
+    fragments:
+    - auth_variables.yml
+    - release_summary.yml
+    release_date: '2026-01-22'
+  7.0.1:
+    changes:
+      major_changes:
+      - User module - The parameter ``auth_type`` now uses ``password`` as the default
+        value. In most situations omitting the parameter was no problem at all, but
+        it could fail in certain scenarios. Now the module will default to password
+        authentication, if not defined otherwise.
+      minor_changes:
+      - User module - Checkmk 2.5.0 renames the ``mega_menu_icons`` parameter of the
+        user management REST API endpoints. The new name ``main_menu_icons`` will
+        be used by the user module for Checkmk 2.5.0, while the old name is used for
+        earlier versions of Checkmk. The old name remains as an alias in Checkmk 2.5.0,
+        so that it should still work with older versions of this collection for now.
+    fragments:
+    - user.yml
+    release_date: '2026-02-05'
+  7.1.0:
+    changes:
+      known_issues:
+      - Server role - SLES has dependencies, which cannot be managed by this role.
+        Refer to the role README for details.
+      - Server role - Suse support does not yet cover the new version scheme starting
+        with SLES 16. As soon as Checkmk supports SLES 16, we will look into updating
+        the role accordingly.
+      - Server role - Suse support is currently tested only on openSUSE Leap 15. This
+        means, that it is not tested on actual SLES. If you have any interest in this
+        functionality and have a SLES 15 handy, we are happy to collaborate on this.
+      major_changes:
+      - Server role - Introduce initial support for Suse derivatives. Observe the
+        "Known Issues", as this support is experimental!
+      release_summary: Welcoming the chameleon to the family.
+    fragments:
+    - release_summary.yml
+    - suse.yml
+    release_date: '2026-02-11'
+  7.2.1:
+    changes:
+      major_changes:
+      - Activation lookup modules - Add modules to lookup activation processes.
+      release_summary: Adding lookup modules for activation processes. Yeah, I am
+        disappointed in my creativity as well.
+    fragments:
+    - lookup_activation.yml
+    - release_summary.yml
+    release_date: '2026-02-24'

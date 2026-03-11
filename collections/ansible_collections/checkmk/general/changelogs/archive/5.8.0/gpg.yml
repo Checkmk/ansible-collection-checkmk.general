@@ -1,0 +1,2 @@
+minor_changes:
+  - Server role - Make GPG key download URL configurable.

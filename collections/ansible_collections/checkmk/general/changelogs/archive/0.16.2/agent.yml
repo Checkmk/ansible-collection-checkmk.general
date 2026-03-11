@@ -1,0 +1,2 @@
+bugfixes:
+  - 'Agent role - Add explicit "become: false" to the "Discover services and labels on host." task.'

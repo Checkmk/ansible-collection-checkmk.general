@@ -1,0 +1,2 @@
+minor_changes:
+  - Testing - Testing against Python 3.8 was removed for all modules.

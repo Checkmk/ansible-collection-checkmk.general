@@ -22,7 +22,7 @@ checkmk.general.ldap module -- Manage LDAP connectors.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.2.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.2.2).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -2985,11 +2985,13 @@ Parameters
 
         <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-ldap_config/sync_plugins/mega_menu_icons"></div>
+        <div class="ansibleOptionAnchor" id="parameter-ldap_config/sync_plugins/main_menu_icons"></div>
 
       .. raw:: latex
 
         \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
 
+      .. _ansible_collections.checkmk.general.ldap_module__parameter-ldap_config/sync_plugins/main_menu_icons:
       .. _ansible_collections.checkmk.general.ldap_module__parameter-ldap_config/sync_plugins/mega_menu_icons:
 
       .. rst-class:: ansible-option-title
@@ -3001,6 +3003,8 @@ Parameters
         <a class="ansibleOptionLink" href="#parameter-ldap_config/sync_plugins/mega_menu_icons" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: main_menu_icons`
 
         :ansible-option-type:`string`
 

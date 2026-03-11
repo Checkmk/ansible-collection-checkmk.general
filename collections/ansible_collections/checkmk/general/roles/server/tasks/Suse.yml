@@ -1,0 +1,41 @@
+---
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Install Checkmk Server."
+  when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts['packages']
+  become: true
+  community.general.zypper:
+    name: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
+    state: present
+    disable_gpg_check: "{{ not checkmk_server_verify_setup | bool }}"
+    force_resolution: true
+    simple_errors: true
+  notify: Start httpd
+  tags:
+    - install-package
+
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Enable httpd can network connect selinux boolean."
+  become: true
+  ansible.posix.seboolean:
+    name: httpd_can_network_connect
+    state: true
+    persistent: true
+  when: ansible_facts['selinux']['status'] == 'enabled'
+  tags:
+    - set-selinux-boolean
+
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Make sure firewalld is started and enabled."
+  become: true
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+    enabled: true
+  when: checkmk_server_configure_firewall | bool
+
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Open Firewall Ports for the Checkmk Server."
+  when: checkmk_server_configure_firewall | bool and "firewalld.service" in ansible_facts['services']
+  ansible.posix.firewalld:
+    permanent: true
+    immediate: "{% if ansible_facts['services']['firewalld.service']['state'] == 'running' %}true{% else %}false{% endif %}"
+    port: "{{ item }}/tcp"
+    state: "enabled"
+  become: true
+  loop: "{{ checkmk_server_ports }}"

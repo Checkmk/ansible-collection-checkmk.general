@@ -1,0 +1,2 @@
+bugfixes:
+  - rule module - Fix moving of existing rules to a different folder.

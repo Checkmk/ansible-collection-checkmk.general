@@ -1,0 +1,3 @@
+bugfixes:
+  - Server role - Fix the server role tags.
+    Some existing tags are added to additional existing tasks, in order to make the run of certain tasks working when executing playbook with tags.

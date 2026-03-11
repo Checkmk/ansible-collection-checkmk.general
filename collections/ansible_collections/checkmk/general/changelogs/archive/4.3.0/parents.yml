@@ -1,0 +1,5 @@
+bugfixes:
+  - Host module - Parents will be parsed properly now.
+    This means, that parents given as a string will now be parsed as a list of one.
+  - Folder module - Parents will be parsed properly now.
+    This means, that parents given as a string will now be parsed as a list of one.

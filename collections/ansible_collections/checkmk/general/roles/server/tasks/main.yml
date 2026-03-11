@@ -1,0 +1,174 @@
+---
+- name: "Preflight - Fail if target host is not stable for this Role."
+  ansible.builtin.fail:
+    msg: "This role is not stable for the target operating system: {{ ansible_facts['distribution'] + '-' + ansible_facts['distribution_major_version'] }}."
+  when: (ansible_facts['distribution'] is not defined) or
+        (ansible_facts['distribution_version'] is not defined) or
+        (ansible_facts['distribution'] + "-" + ansible_facts['distribution_major_version'] not in __checkmk_server_stable_os)
+  tags:
+    - always
+
+- name: "Preflight - Fail if Checkmk Edition is incorrect."
+  ansible.builtin.fail:
+    msg: "The provided Checkmk Edition '{{ checkmk_server_edition | lower }}' does  not exist or is not supported by this role."
+  when: checkmk_server_edition | lower not in __checkmk_server_edition_mapping
+  tags:
+    - always
+
+- name: "{{ ansible_facts['system'] }}: Include OS Family specific Variables."
+  ansible.builtin.include_vars: "{{ ansible_facts['os_family'] }}.yml"
+  tags:
+    - include-os-family-vars
+    - install-package
+    - update-sites
+
+- name: "{{ ansible_facts['system'] }}: Set Proxy Environment."
+  ansible.builtin.set_fact:
+    __proxy_env:
+      http_proxy: "{{ checkmk_server_download_proxy | default(omit) }}"
+      https_proxy: "{{ checkmk_server_download_proxy | default(omit) }}"
+
+- name: "{{ ansible_facts['system'] }}: Get RPM or APT package facts."
+  ansible.builtin.package_facts:
+    manager: "auto"
+  tags:
+    - install-package
+    - install-prerequisites
+
+- name: "{{ ansible_facts['system'] }}: Populate service facts."
+  ansible.builtin.service_facts:
+
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Update APT Cache."
+  become: true
+  ansible.builtin.package:
+    update_cache: true
+  when: ansible_facts['os_family'] == "Debian"
+  tags:
+    - install-package
+    - install-prerequisites
+
+- name: "{{ ansible_facts['system'] }}: Install Checkmk Prerequisites."
+  become: true
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "{{ __checkmk_server_prerequisites }}"
+  tags:
+    - install-package
+    - install-prerequisites
+
+- name: "{{ ansible_facts['system'] }}: Downloads Management."
+  when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts['packages']
+  block:
+
+    - name: "{{ ansible_facts['system'] }}: Download Checkmk Server Setup."
+      ansible.builtin.get_url:
+        url: "{{ checkmk_server_download_url }}"
+        dest: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
+        mode: "0640"
+        url_username: "{{ checkmk_server_download_user | default(omit) }}"
+        url_password: "{{ checkmk_server_download_pass | default(omit) }}"
+      environment: "{{ __proxy_env | default(omit) }}"
+      retries: 3
+      delegate_to: "{{ checkmk_server_delegate_download }}"
+      tags:
+        - download-package
+
+    - name: "{{ ansible_facts['system'] }}: Download Checkmk GPG Key."
+      when: checkmk_server_verify_setup | bool
+      ansible.builtin.get_url:
+        url: "{{ checkmk_server_gpg_download_url }}"
+        dest: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
+        mode: "0640"
+        url_username: "{{ checkmk_server_gpg_download_user | default(omit) }}"
+        url_password: "{{ checkmk_server_gpg_download_pass | default(omit) }}"
+      environment: "{{ __proxy_env | default(omit) }}"
+      retries: 3
+      delegate_to: "{{ checkmk_server_gpg_delegate_download }}"
+      tags:
+        - download-gpg-key
+
+    - name: "Transfer Checkmk Server Setup."
+      ansible.builtin.copy:
+        src: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
+        dest: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
+        mode: "0644"
+      when: checkmk_server_delegate_download != inventory_hostname
+      tags:
+        - download-package
+
+    - name: "Transfer Checkmk GPG Key."
+      ansible.builtin.copy:
+        src: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
+        dest: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
+        mode: "0644"
+      when: checkmk_server_gpg_delegate_download != inventory_hostname
+      tags:
+        - download-gpg-key
+
+    - name: "{{ ansible_facts['system'] }}: GPG Verification on Debian Derivatives."
+      when: checkmk_server_verify_setup | bool and ansible_facts['os_family'] == "Debian"
+      block:
+        - name: "Import Checkmk GPG Key."
+          ansible.builtin.command: "gpg --import {{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
+          register: __checkmk_server_gpg_import
+          when: checkmk_server_verify_setup | bool
+          changed_when: "'imported: 1' in __checkmk_server_gpg_import"
+          tags:
+            - import-gpg-key
+
+        - name: "{{ ansible_facts['system'] }}: Verify Checkmk Setup."
+          ansible.builtin.command: gpg --verify "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
+          register: __checkmk_server_verify_state
+          changed_when: false
+          failed_when: "'Bad signature' in __checkmk_server_verify_state.stderr"
+          tags:
+            - download-package
+            - install-package
+
+    - name: "{{ ansible_facts['system'] }}: Import Checkmk GPG Key."
+      become: true
+      ansible.builtin.rpm_key:
+        key: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
+        state: present
+      when: checkmk_server_verify_setup | bool and not ansible_facts['os_family'] == "Debian"
+      tags:
+        - import-gpg-key
+
+- name: "{{ ansible_facts['system'] }}: Include OS Family specific Playbook."
+  ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"
+  tags:
+    - always
+
+- name: "{{ ansible_facts['system'] }}: Include Site Management Playbook."
+  ansible.builtin.include_tasks: "sites.yml"
+  when: checkmk_server_sites is defined
+  tags:
+    - always
+
+- name: "{{ ansible_facts['system'] }}: Cleanup unused Checkmk Versions."
+  become: true
+  ansible.builtin.shell: |
+    set -o pipefail
+    omd cleanup
+  args:
+    executable: /bin/bash
+  changed_when: "'Uninstalling' in __checkmk_server_cleanup_state.stdout"
+  register: __checkmk_server_cleanup_state
+  when: checkmk_server_cleanup | bool
+  tags:
+    - cleanup
+
+- name: "{{ ansible_facts['system'] }}: Cleanup Checkmk Server Setup."
+  ansible.builtin.file:
+    path: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
+    state: absent
+  tags:
+    - download-package
+
+- name: "Flush Handlers."
+  ansible.builtin.meta:
+    flush_handlers
+  tags:
+    - always

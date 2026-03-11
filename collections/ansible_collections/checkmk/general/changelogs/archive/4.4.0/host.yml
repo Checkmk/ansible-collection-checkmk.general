@@ -1,0 +1,7 @@
+major_changes:
+  - Host module - Enable check mode.
+  - Host module - Add support for cluster hosts.
+  - Host module - Update attribute management behavior. Refer to the documentation for details.
+
+minor_changes:
+  - Host module - Migrate module to the new collection API.

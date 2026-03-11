@@ -1,0 +1,141 @@
+---
+- name: "Showcase Lookup Plugins."
+  hosts: test
+  strategy: linear
+  gather_facts: false
+  vars_files:
+    - ../vars/auth.yml      # This vars file provides details about your checkmk_var_site
+
+  tasks:
+
+    - name: "Get Checkmk version."
+      ansible.builtin.debug:
+        msg: "Version is {{ checkmk_var_version }}"
+      vars:
+        checkmk_var_version: "{{ lookup('checkmk.general.version',
+                       server_url=checkmk_var_server_url,
+                       site=checkmk_var_site,
+                       api_user=checkmk_var_api_user,
+                       api_secret=checkmk_var_api_secret,
+                       validate_certs=False)
+                   }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    - name: "Get the attributes of the main folder."
+      ansible.builtin.debug:
+        msg: "Attributes of main folder: {{ checkmk_var_attributes }}"
+      vars:
+        checkmk_var_attributes: "{{
+                    lookup('checkmk.general.folder',
+                        '~',
+                        server_url=checkmk_var_server_url,
+                        site=checkmk_var_site,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret,
+                        validate_certs=False)
+                    }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    - name: "Get all subfolders of the main folder recursively"
+      ansible.builtin.debug:
+        msg: "Folder tree: {{ item.id }}"
+      loop: "{{
+        lookup('checkmk.general.folders',
+            '~',
+            show_hosts=False,
+            recursive=True,
+            server_url=checkmk_var_server_url,
+            site=checkmk_var_site,
+            api_user=checkmk_var_api_user,
+            api_secret=checkmk_var_api_secret,
+            validate_certs=False)
+        }}"
+      loop_control:
+        label: "{{ item.id }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    - name: "Get all hosts of the main directory recursively."
+      ansible.builtin.debug:
+        msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
+      vars:
+        checkmk_var_looping: "{{
+                    lookup('checkmk.general.folders',
+                        '~',
+                        show_hosts=True,
+                        recursive=True,
+                        server_url=checkmk_var_server_url,
+                        site=checkmk_var_site,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret,
+                        validate_certs=False)
+                  }}"
+      loop: "{{ checkmk_var_looping | subelements('members.hosts.value') }}"
+      loop_control:
+        label: "{{ item.0.id }}"
+      delegate_to: localhost
+      run_once: true  # noqa run-once[task]
+
+    ## TODO: @lgetwan: Please take a look at these tasks and beautify/fix them. Bonus: Add the new lookup modules. :)
+
+    # - name: "Get all Checkmk Sites."
+    #   ansible.builtin.debug:
+    #     msg: "Sites found: {{ checkmk_var_sites }}"
+    #   vars:
+    #     checkmk_var_sites: "{{ lookup('checkmk.general.sites',
+    #                    server_url=checkmk_var_server_url,
+    #                    site=checkmk_var_site,
+    #                    api_user=checkmk_var_api_user,
+    #                    api_secret=checkmk_var_api_secret,
+    #                    validate_certs=False)
+    #                }}"
+    #   delegate_to: localhost
+    #   run_once: true  # noqa run-once[task]
+
+    # - name: "Get a single site."
+    #   ansible.builtin.debug:
+    #     msg: "Site: {{ checkmk_var_looping }}"
+    #   vars:
+    #     checkmk_var_looping: "{{
+    #                 lookup('checkmk.general.site',
+    #                     'mysite',
+    #                     show_hosts=True,
+    #                     recursive=True,
+    #                     server_url=checkmk_var_server_url,
+    #                     site=checkmk_var_site,
+    #                     api_user=checkmk_var_api_user,
+    #                     api_secret=checkmk_var_api_secret,
+    #                     validate_certs=False)
+    #               }}"
+    #   delegate_to: localhost
+    #   run_once: true  # noqa run-once[task]
+
+    # - name: "Get all sites recursively."
+    #   ansible.builtin.debug:
+    #     msg: "Site ID {{ item.0.id }}: {{ item.1.title }}"
+    #   vars:
+    #     checkmk_var_sites: "{{ lookup('checkmk.general.sites',
+    #                    server_url=checkmk_var_server_url,
+    #                    site=checkmk_var_site,
+    #                    api_user=checkmk_var_api_user,
+    #                    api_secret=checkmk_var_api_secret,
+    #                    validate_certs=False)
+    #                }}"
+    #     checkmk_var_looping: "{{
+    #                 lookup('checkmk.general.site',
+    #                     item.0.id,
+    #                     show_hosts=True,
+    #                     recursive=True,
+    #                     server_url=checkmk_var_server_url,
+    #                     site=checkmk_var_site,
+    #                     api_user=checkmk_var_api_user,
+    #                     api_secret=checkmk_var_api_secret,
+    #                     validate_certs=False)
+    #               }}"
+    #   loop: "{{ checkmk_var_sites }}"
+    #   loop_control:
+    #     label: "{{ item.0.id }}"
+    #   delegate_to: localhost
+    #   run_once: true  # noqa run-once[task]

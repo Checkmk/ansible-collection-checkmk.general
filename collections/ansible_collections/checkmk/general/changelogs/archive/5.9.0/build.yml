@@ -1,0 +1,5 @@
+minor_changes:
+  - Development - The main Vagrant box which supports development of this collection was moved to Debian 10, Podman and uv.
+    This change does not affect the contents of the collection. It should also be mostly transparent for contributors, developing content for the collection.
+    But be advised, if something feels off, these changes might be relevant.
+  - Development - Many clean-ups and fixes in various places. No functional changes.

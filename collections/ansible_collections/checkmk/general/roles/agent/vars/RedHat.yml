@@ -1,0 +1,11 @@
+---
+__checkmk_agent_host_tmp_dir: "/tmp"
+
+__checkmk_agent_agent:
+  url:
+    cre: "{{ __checkmk_agent_site_url }}/check_mk/agents/check-mk-agent-{{ checkmk_agent_version }}-1.noarch.rpm"
+    cee: "{{ __checkmk_agent_site_url }}/check_mk/api/1.0/domain-types/agent/actions/download_by_host/invoke"
+  file:
+    cre: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-vanilla.rpm"
+    cee: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-generic.rpm"
+    host: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-{{ inventory_hostname }}.rpm"

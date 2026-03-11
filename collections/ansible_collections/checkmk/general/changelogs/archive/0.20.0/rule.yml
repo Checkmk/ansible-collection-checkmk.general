@@ -1,0 +1,2 @@
+bugfixes:
+  - Rule module - Fix crash, if the Checkmk REST API does not return a value for the "disabled" property.

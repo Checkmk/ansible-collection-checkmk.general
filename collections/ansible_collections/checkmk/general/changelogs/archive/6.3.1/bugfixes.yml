@@ -1,0 +1,3 @@
+bugfixes:
+  - Downtime module - Bug fix documentation example, where the time stamps were not quoted correctly.
+  - All roles - Update edition name mapping to compensate future naming changes.

@@ -1,0 +1,50 @@
+{
+ "collection_info": {
+  "namespace": "checkmk",
+  "name": "general",
+  "version": "7.2.2",
+  "authors": [
+   "Marcel Arentz (https://github.com/godspeed-you)",
+   "Robin Gierse (https://github.com/robin-checkmk)",
+   "Lars Getwan (https://github.com/lgetwan)",
+   "Max Sickora (https://github.com/Max-checkmk)"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "checkmk",
+   "monitoring",
+   "check_mk",
+   "check",
+   "discovery",
+   "ubuntu",
+   "debian",
+   "sles",
+   "rhel",
+   "rocky",
+   "rockylinux",
+   "oraclelinux",
+   "windows"
+  ],
+  "description": "The official Checkmk Ansible Collection - brought to you by the Checkmk company.",
+  "license": [],
+  "license_file": "LICENSE",
+  "dependencies": {
+   "community.general": ">=6.0.0",
+   "ansible.posix": ">=1.5.0",
+   "ansible.utils": ">=2.0.0",
+   "ansible.windows": ">=2.0.0"
+  },
+  "repository": "https://github.com/Checkmk/ansible-collection-checkmk.general",
+  "documentation": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/README.md",
+  "homepage": "https://github.com/Checkmk/ansible-collection-checkmk.general",
+  "issues": "https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "a9554bb167dc83c236682b72dee5bf1fdaa715f80691e342347b3101a01ff2b8",
+  "format": 1
+ },
+ "format": 1
+}

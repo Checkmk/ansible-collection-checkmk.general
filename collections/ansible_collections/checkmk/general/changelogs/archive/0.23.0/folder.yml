@@ -1,0 +1,5 @@
+major_changes:
+  - folder module - Add support for 'update_attributes' and 'remove_attributes'. Read the documentation for further details.
+
+minor_changes:
+  - folder module - Add support for check mode.

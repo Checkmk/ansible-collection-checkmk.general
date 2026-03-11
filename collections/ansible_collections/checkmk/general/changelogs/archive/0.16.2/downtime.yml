@@ -1,0 +1,4 @@
+# https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
+
+bugfixes:
+  - Downtime module - Fix handling of parameters start_after and end_after. 

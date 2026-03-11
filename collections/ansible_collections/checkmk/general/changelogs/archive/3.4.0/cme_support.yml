@@ -1,0 +1,6 @@
+minor_changes:
+  - User module - Add support for the Checkmk Managed Edition (CME).
+  - Service group module - Add support for the Checkmk Managed Edition (CME).
+  - Password module - Add support for the Checkmk Managed Edition (CME).
+  - Host group module - Add support for the Checkmk Managed Edition (CME).
+  - Contact group module - Add support for the Checkmk Managed Edition (CME).

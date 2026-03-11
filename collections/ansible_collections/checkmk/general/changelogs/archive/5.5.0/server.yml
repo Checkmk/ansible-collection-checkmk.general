@@ -1,0 +1,5 @@
+bugfixes:
+  - Server role - Fix argument spec for checkmk_server_sites.edition.
+
+minor_changes:
+  - Server role - Make tmp directory configurable.

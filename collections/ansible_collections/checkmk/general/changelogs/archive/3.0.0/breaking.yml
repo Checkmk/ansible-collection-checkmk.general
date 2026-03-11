@@ -1,0 +1,5 @@
+breaking_changes:
+  - Folder module - The module options 'attributes', 'update_attributes' and 'remove_attributes' are now mutually exclusive. Using more than one on a single task will cause a warning or error.
+  - Host module - Deprecated option 'host_name' was removed. Use 'name' instead!
+  - Host group module - Deprecated options 'host_group_name' and 'host_groups' were removed. Use 'name' and 'groups' instead!
+  - Rule module - Deprecated option 'folder' was removed. Use 'location' instead!

@@ -1,0 +1,6 @@
+# https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
+
+major_changes:
+  - module_utils - Introduce a centralized library to call the Checkmk API.
+
+release_summary: "Centralizing functions."

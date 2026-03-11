@@ -1,0 +1,256 @@
+---
+- name: "{{ ansible_facts['system'] }}: Get RPM or APT package facts."
+  ansible.builtin.package_facts:
+    manager: "auto"
+  tags:
+    - get-package-facts
+
+- name: "{{ ansible_facts['system'] }}: Populate service facts."
+  ansible.builtin.service_facts:
+
+- name: "{{ ansible_facts['system'] }}: Run Legacy agent tasks."
+  when: |
+    checkmk_agent_prep_legacy | bool
+    and ansible_facts['packages']['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
+  block:
+    - name: "{{ ansible_facts['system'] }}: Install xinetd"
+      become: true
+      ansible.builtin.package:
+        name: xinetd
+        state: present
+      tags:
+        - install-package
+        - install-prerequisites
+
+    - name: "{{ ansible_facts['system'] }}: Enable xinetd"
+      become: true
+      ansible.builtin.service:
+        name: xinetd
+        state: started
+        enabled: true
+      tags:
+        - enable-xinetd
+
+- name: "{{ ansible_facts['system'] }}: Download Vanilla agent."
+  ansible.builtin.get_url:
+    url: "{{ __checkmk_agent_agent.url.cre }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    dest: "{{ __checkmk_agent_agent.file.cre }}"
+    mode: '0640'
+    timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
+  when: checkmk_agent_edition | lower == "cre"
+  register: __checkmk_agent_download_state
+  retries: 3
+  delay: 10
+  until: "not __checkmk_agent_download_state.failed | bool"
+  delegate_to: "{{ checkmk_agent_delegate_download }}"
+  tags:
+    - download-package
+
+- name: "{{ ansible_facts['os_family'] }}: Run OS Family specific tasks."
+  ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"
+  tags:
+    - include-os-family-tasks
+
+- name: "{{ ansible_facts['system'] }}: Ensure Host is present in the correct Folder."
+  checkmk.general.host:
+    server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
+    site: "{{ checkmk_agent_site }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    api_user: "{{ checkmk_agent_user }}"
+    api_secret: "{{ __checkmk_agent_auth }}"
+    folder: "{{ checkmk_agent_folder }}"
+    name: "{{ checkmk_agent_host_name }}"
+    state: "present"
+  become: false
+  register: __checkmk_agent_create_result
+  delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
+  when: checkmk_agent_add_host | bool
+  notify: "Activate changes"
+
+- name: "{{ ansible_facts['system'] }}: Update Host Attributes."
+  checkmk.general.host:
+    server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"
+    site: "{{ checkmk_agent_site }}"
+    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
+    api_user: "{{ checkmk_agent_user }}"
+    api_secret: "{{ __checkmk_agent_auth }}"
+    name: "{{ checkmk_agent_host_name }}"
+    attributes: "{{ checkmk_agent_host_attributes }}"
+    state: "present"
+  become: false
+  register: __checkmk_agent_update_attributes_result
+  delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
+  when: checkmk_agent_add_host | bool
+  notify: "Activate changes"
+
+- name: "Ensure registration readyness."  # noqa no-handler
+  when:
+    - (__checkmk_agent_create_result.changed | bool) or
+      (__checkmk_agent_update_attributes_result.changed | bool)
+  block:
+    - name: "Trigger activation of changes."
+      ansible.builtin.meta: flush_handlers
+
+- name: "{{ ansible_facts['system'] }}: Check for Agent Updater Binary."
+  ansible.builtin.stat:
+    path: /usr/bin/cmk-update-agent
+  register: __checkmk_agent_updater_binary
+
+- name: "{{ ansible_facts['system'] }}: Check for Agent Controller Binary."
+  ansible.builtin.stat:
+    path: /usr/bin/cmk-agent-ctl
+  register: __checkmk_agent_controller_binary
+
+- name: "{{ ansible_facts['system'] }}: Read Updater State."
+  become: true
+  ansible.builtin.command: cat /var/lib/check_mk_agent/cache/plugins_cmk-update-agent.cache
+  register: __checkmk_agent_updater_state
+  changed_when: false
+  failed_when: |
+    not __checkmk_agent_updater_state.rc == 0
+    and not __checkmk_agent_updater_state.rc == 1
+
+- name: "{{ ansible_facts['system'] }}: Read Agent Controller State."
+  become: true
+  ansible.builtin.command: cat /var/lib/cmk-agent/registered_connections.json
+  register: __checkmk_agent_registered_connections
+  changed_when: false
+  failed_when: |
+    not __checkmk_agent_registered_connections.rc == 0
+    and not __checkmk_agent_registered_connections.rc == 1
+
+- name: "{{ ansible_facts['system'] }}: Register Agent for automatic Updates using User Password."
+  become: true
+  ansible.builtin.shell: |
+    cmk-update-agent register -H {{ checkmk_agent_host_name }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_registration_server_protocol }} \
+    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth | ansible.builtin.quote }}
+  no_log: "{{ checkmk_agent_no_log | bool }}"
+  register: __checkmk_agent_update_state
+  when: |
+    checkmk_agent_edition | lower != "cre"
+    and __checkmk_agent_updater_binary.stat.exists | bool
+    and checkmk_agent_update | bool
+    and (checkmk_agent_pass is defined and checkmk_agent_pass | length > 0)
+    and (checkmk_agent_secret is not defined)
+    and not ((checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_updater_state.stdout)
+    and ('"error": null' in __checkmk_agent_updater_state.stdout) )
+  changed_when: "'Successfully registered agent of host' in __checkmk_agent_update_state.stderr"
+
+- name: "{{ ansible_facts['system'] }}: Register Agent for automatic Updates using Automation Secret."
+  become: true
+  ansible.builtin.shell: |
+    cmk-update-agent register -H {{ checkmk_agent_host_name }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} -p {{ checkmk_agent_registration_server_protocol }} \
+    -U {{ checkmk_agent_user }} -S {{ __checkmk_agent_auth | ansible.builtin.quote }}
+  no_log: "{{ checkmk_agent_no_log | bool }}"
+  register: __checkmk_agent_update_state
+  when: |
+    checkmk_agent_edition | lower != "cre"
+    and __checkmk_agent_updater_binary.stat.exists | bool
+    and checkmk_agent_update | bool
+    and (checkmk_agent_secret is defined and checkmk_agent_secret | length > 0)
+    and not ((checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_updater_state.stdout)
+    and ('"error": null' in __checkmk_agent_updater_state.stdout) )
+  changed_when: "'Successfully registered agent of host' in __checkmk_agent_update_state.stderr"
+
+- name: "{{ ansible_facts['system'] }}: Register Agent for TLS directly."
+  become: true
+  ansible.builtin.shell: |
+    cmk-agent-ctl register -H {{ checkmk_agent_host_name }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
+    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth | ansible.builtin.quote }} --trust-cert
+  no_log: "{{ checkmk_agent_no_log | bool }}"
+  register: __checkmk_agent_tls_state
+  when: |
+    __checkmk_agent_controller_binary.stat.exists | bool
+    and checkmk_agent_tls | bool
+    and not checkmk_agent_delegate_registration | bool
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length > 0)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
+  changed_when: "'Registration complete' in __checkmk_agent_tls_state.stdout"
+
+- name: "{{ ansible_facts['system'] }}: Register Agent for TLS with proxy-register."
+  become: true
+  ansible.builtin.shell: |
+    cmk-agent-ctl proxy-register -H {{ checkmk_agent_host_name }} \
+    -s {{ checkmk_agent_registration_server }} -i {{ checkmk_agent_registration_site }} \
+    -U {{ checkmk_agent_user }} -P {{ __checkmk_agent_auth | ansible.builtin.quote }} --trust-cert
+  no_log: "{{ checkmk_agent_no_log | bool }}"
+  register: __checkmk_agent_proxy_registration_state
+  when: |
+    __checkmk_agent_controller_binary.stat.exists | bool
+    and checkmk_agent_tls | bool
+    and checkmk_agent_delegate_registration | bool
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length > 0)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
+  delegate_to: "{{ checkmk_agent_delegate_registration_target }}"
+  changed_when: "'-----BEGIN PRIVATE KEY-----' in __checkmk_agent_proxy_registration_state.stdout"
+
+- name: "{{ ansible_facts['system'] }}: Create temporary proxy-register file."
+  become: true
+  ansible.builtin.copy:
+    dest: "{{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
+    mode: u=r,g=,o=
+    owner: cmk-agent
+    group: cmk-agent
+    content: "{{ __checkmk_agent_proxy_registration_state.stdout }}"
+  no_log: "{{ checkmk_agent_no_log | bool }}"
+  when: |
+    __checkmk_agent_controller_binary.stat.exists | bool
+    and checkmk_agent_tls | bool
+    and checkmk_agent_delegate_registration | bool
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length > 0)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
+    and __checkmk_agent_proxy_registration_state is defined
+
+- name: "{{ ansible_facts['system'] }}: Import proxy-register file."
+  become: true
+  ansible.builtin.command: "cmk-agent-ctl import {{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
+  no_log: "{{ checkmk_agent_no_log | bool }}"
+  register: __checkmk_agent_import_result
+  when: |
+    __checkmk_agent_controller_binary.stat.exists | bool
+    and checkmk_agent_tls | bool
+    and checkmk_agent_delegate_registration | bool
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length > 0)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
+    and __checkmk_agent_proxy_registration_state is defined
+  changed_when: __checkmk_agent_import_result.rc == 0
+
+- name: "{{ ansible_facts['system'] }}: Clean-up proxy-register temporary file."
+  become: true
+  ansible.builtin.file:
+    path: "{{ __checkmk_agent_host_tmp_dir }}/checkmk-import"
+    state: absent
+  no_log: "{{ checkmk_agent_no_log | bool }}"
+  when: |
+    __checkmk_agent_controller_binary.stat.exists | bool
+    and checkmk_agent_tls | bool
+    and checkmk_agent_delegate_registration | bool
+    and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length > 0)
+    and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
+    and __checkmk_agent_proxy_registration_state is defined
+
+- name: "{{ ansible_facts['system'] }}: Verify Checkmk Agent Port is open."
+  ansible.builtin.wait_for:
+    port: "{{ checkmk_agent_port }}"
+    timeout: 60
+  when: checkmk_agent_mode == 'pull'
+
+- name: "{{ ansible_facts['system'] }}: Initial push of data for push agent"  # noqa no-changed-when
+  become: true
+  ansible.builtin.command: cmk-agent-ctl push
+  when: checkmk_agent_mode == 'push'
+
+- name: "Cleanup Checkmk Agent Setups."
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ __checkmk_agent_agent.file.cre }}"
+    - "{{ __checkmk_agent_agent.file.cee }}"
+    - "{{ __checkmk_agent_agent.file.host }}"
+  tags:
+    - download-package

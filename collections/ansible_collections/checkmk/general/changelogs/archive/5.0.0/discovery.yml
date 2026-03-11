@@ -1,0 +1,4 @@
+major_changes:
+  - Discovery module - The module now fully supports Checkmk 2.3.0.
+    Additionally, two new parameters were introduced, `update_service_labels` and `monitor_undecided_services`.
+    Refer to the module documentation for further details.

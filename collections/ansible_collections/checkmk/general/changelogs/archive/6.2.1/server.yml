@@ -1,0 +1,4 @@
+bugfixes:
+  - Server role - Checkmk edition handling was inconsistent in the site management playbooks.
+    This is fixed now, but in case you have not used the `edition:` key per site as suggested
+    in `defaults/main.yml`, you need to add it now.

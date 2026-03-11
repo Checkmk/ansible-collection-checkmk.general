@@ -1,0 +1,3 @@
+minor_changes:
+  - All roles and modules - Switch from deprecated ``ansible_*``-style variables to ``ansible_facts[foo]``- style.
+    This should have no functional implications, it merely follows Ansible best practice.
