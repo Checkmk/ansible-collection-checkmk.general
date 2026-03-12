@@ -102,7 +102,7 @@ Automatically add the host where the agent was installed on to Checkmk.
 
 Define the hostname which will be used to add the host to Checkmk.
 
-    checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+    checkmk_agent_host_ip: "{{ hostvars[inventory_hostname]['ansible_facts']['default_ipv4']['address'] }}"
 
 Define an IP address which will be added to the host in Checkmk. This is optional, as long as the hostname is DNS-resolvable.
 
