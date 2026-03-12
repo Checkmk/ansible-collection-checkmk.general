@@ -1,0 +1,423 @@
+---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else None }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a custom role based on user."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_custom_role"
+    title: "Test Custom Role"
+    based_on: "user"
+    state: "present"
+  register: __checkmk_var_role_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify role creation."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_create.changed == true
+      - "'Role created.' in __checkmk_var_role_create.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create the same custom role again (idempotency)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_custom_role"
+    title: "Test Custom Role"
+    based_on: "user"
+    state: "present"
+  register: __checkmk_var_role_create_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify idempotency."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_create_again.changed == false
+      - __checkmk_var_role_create_again.msg == "Role already exists with desired state."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a custom role with permissions."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_role_with_perms"
+    title: "Test Role With Permissions"
+    based_on: "user"
+    permissions:
+      general.edit_notifications: "no"
+      wato.all_folders: "yes"
+    state: "present"
+  register: __checkmk_var_role_create_with_perms
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify role creation with permissions."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_create_with_perms.changed == true
+      - "'Role created.' in __checkmk_var_role_create_with_perms.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create the same role with permissions again (idempotency)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_role_with_perms"
+    title: "Test Role With Permissions"
+    permissions:
+      general.edit_notifications: "no"
+      wato.all_folders: "yes"
+    state: "present"
+  register: __checkmk_var_role_create_with_perms_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify idempotency with permissions."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_create_with_perms_again.changed == false
+      - __checkmk_var_role_create_with_perms_again.msg == "Role already exists with desired state."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set a permission to default on a custom role."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_role_with_perms"
+    permissions:
+      wato.all_folders: "default"
+    state: "present"
+  register: __checkmk_var_role_set_default_perm
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify setting permission to default changes role."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_set_default_perm.changed == true
+      - "'Role updated.' in __checkmk_var_role_set_default_perm.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set the same permission to default again (idempotency)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_role_with_perms"
+    permissions:
+      wato.all_folders: "default"
+    state: "present"
+  register: __checkmk_var_role_set_default_perm_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify default permission is idempotent."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_set_default_perm_again.changed == false
+      - __checkmk_var_role_set_default_perm_again.msg == "Role already exists with desired state."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update the title of an existing custom role."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_custom_role"
+    title: "Updated Custom Role Title"
+    state: "present"
+  register: __checkmk_var_role_update_title
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify title update."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_update_title.changed == true
+      - "'Role updated.' in __checkmk_var_role_update_title.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update permissions on an existing custom role."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_role_with_perms"
+    permissions:
+      general.edit_notifications: "yes"
+    state: "present"
+  register: __checkmk_var_role_update_perms
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify permissions update."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_update_perms.changed == true
+      - "'Role updated.' in __checkmk_var_role_update_perms.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Modify permissions on the built-in guest role."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "guest"
+    permissions:
+      general.csv_export: "no"
+    state: "present"
+  register: __checkmk_var_role_builtin_modify
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify built-in role modification."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_builtin_modify.changed == true
+      - "'Role updated.' in __checkmk_var_role_builtin_modify.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Revert built-in guest role permissions (cleanup)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "guest"
+    permissions:
+      general.csv_export: "yes"
+    state: "present"
+  register: __checkmk_var_role_revert_guest
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify guest role was reverted."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_revert_guest.changed == true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Try to delete a built-in role (should fail)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "guest"
+    state: "absent"
+  register: __checkmk_var_role_delete_builtin
+  ignore_errors: true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify built-in role deletion fails."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_delete_builtin.failed == true
+      - "'cannot be deleted' in __checkmk_var_role_delete_builtin.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Try to create a custom role without based_on (should fail)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "nonexistent_role"
+    title: "This Should Fail"
+    state: "present"
+  register: __checkmk_var_role_create_no_basedon
+  ignore_errors: true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify creation without based_on fails."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_create_no_basedon.failed == true
+      - "'based_on' in __checkmk_var_role_create_no_basedon.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete a custom role."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_custom_role"
+    state: "absent"
+  register: __checkmk_var_role_delete
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify role deletion."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_delete.changed == true
+      - "'Role deleted.' in __checkmk_var_role_delete.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the same custom role again (idempotency)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_custom_role"
+    state: "absent"
+  register: __checkmk_var_role_delete_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify deletion idempotency."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_delete_again.changed == false
+      - __checkmk_var_role_delete_again.msg == "Role already absent."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the role with permissions (cleanup)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_role_with_perms"
+    state: "absent"
+  register: __checkmk_var_role_cleanup
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify cleanup deletion."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_cleanup.changed == true
+      - "'Role deleted.' in __checkmk_var_role_cleanup.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a custom role based on admin."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_admin_role"
+    title: "Custom Admin Role"
+    based_on: "admin"
+    state: "present"
+  register: __checkmk_var_role_create_admin
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify admin-based role creation."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_create_admin.changed == true
+      - "'Role created.' in __checkmk_var_role_create_admin.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the admin-based custom role (cleanup)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_admin_role"
+    state: "absent"
+  register: __checkmk_var_role_delete_admin
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify admin-based role was deleted."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_delete_admin.changed == true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Test check_mode for role creation."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_checkmode_role"
+    title: "Check Mode Role"
+    based_on: "user"
+    state: "present"
+  check_mode: true
+  register: __checkmk_var_role_checkmode_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify check_mode for creation."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_checkmode_create.changed == true
+      - __checkmk_var_role_checkmode_create.msg == "Role would be created."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify role was not actually created in check_mode."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_checkmode_role"
+    state: "absent"
+  register: __checkmk_var_role_verify_checkmode_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify role does not exist after check_mode."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_verify_checkmode_create.changed == false
+      - __checkmk_var_role_verify_checkmode_create.msg == "Role already absent."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a role for check_mode update and delete tests."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_checkmode_ops"
+    title: "Check Mode Ops Role"
+    based_on: "user"
+    state: "present"
+  register: __checkmk_var_role_create_checkmode_ops
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify check_mode ops role was created."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_create_checkmode_ops.changed == true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Test check_mode for role update."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_checkmode_ops"
+    title: "Would Be Updated Title"
+    state: "present"
+  check_mode: true
+  register: __checkmk_var_role_checkmode_update
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify check_mode for update."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_checkmode_update.changed == true
+      - __checkmk_var_role_checkmode_update.msg == "Role would be updated."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify role was not actually updated in check_mode."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_checkmode_ops"
+    title: "Check Mode Ops Role"
+    state: "present"
+  register: __checkmk_var_role_verify_checkmode_update
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify title unchanged after check_mode update."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_verify_checkmode_update.changed == false
+      - __checkmk_var_role_verify_checkmode_update.msg == "Role already exists with desired state."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Test check_mode for role deletion."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_checkmode_ops"
+    state: "absent"
+  check_mode: true
+  register: __checkmk_var_role_checkmode_delete
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify check_mode for deletion."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_checkmode_delete.changed == true
+      - __checkmk_var_role_checkmode_delete.msg == "Role would be deleted."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete check_mode ops role (cleanup)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_checkmode_ops"
+    state: "absent"
+  register: __checkmk_var_role_cleanup_checkmode
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify role existed after check_mode delete."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_cleanup_checkmode.changed == true
+      - "'Role deleted.' in __checkmk_var_role_cleanup_checkmode.msg"
