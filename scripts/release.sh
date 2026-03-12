@@ -53,14 +53,11 @@ echo "# Changes:"
 sed -i "s/version: ${source_version}/version: ${target_version}/g" "${collection_dir}/galaxy.yml" && echo "Updated Collection version in 'galaxy.yml' from ${source_version} to ${target_version}."
 # The following is quite hacky, but it works well enough. If you want to tame the sed monster, have at it. Otherwise be careful with changes here.
 ## Integration tests
-find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.4.0p\d+/${checkmk_stable}/g" {} \; && echo "Updated Checkmk Stable version for integration tests to ${checkmk_stable}."
-find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.3.0p\d+/${checkmk_oldstable}/g" {} \; && echo "Updated Checkmk Oldstable version for integration tests to ${checkmk_oldstable}."
-find "${collection_dir}/tests/integration/targets/" -type f -name main.yml -exec sed -i "s/2.2.0p\d+/${checkmk_ancient}/g" {} \; && echo "Updated Checkmk Ancient version for integration tests to ${checkmk_ancient}."
 find "${collection_dir}/tests/integration/files/includes/vars/" -type f -name global.yml -exec sed -i "s/2.4.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated Checkmk Stable version for integration tests includes to ${checkmk_stable}."
 ## GitHub Workflows
-sed -i "s/2.4.0.*/${checkmk_stable}/g" "${collection_dir}/.github/workflows/_template-ans-int-test.yaml" && echo "Updated Checkmk Stable version for GitHub Workflows to ${checkmk_stable}."
-sed -i "s/2.3.0.*/${checkmk_oldstable}/g" "${collection_dir}/.github/workflows/_template-ans-int-test.yaml" && echo "Updated Checkmk Oldstable version for GitHub Workflows to ${checkmk_oldstable}."
-sed -i "s/2.2.0.*/${checkmk_ancient}/g" "${collection_dir}/.github/workflows/_template-ans-int-test.yaml" && echo "Updated Checkmk Ancient version for GitHub Workflows to ${checkmk_ancient}."
+find "${collection_dir}/.github/workflows/" -type f -name "ans-int-test-*.yaml" -exec sed -i "s/2.4.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated Checkmk Stable version for GitHub Workflows to ${checkmk_stable}."
+find "${collection_dir}/.github/workflows/" -type f -name "ans-int-test-*.yaml" -exec sed -i "s/2.3.0.*/${checkmk_oldstable}\"/g" {} \; && echo "Updated Checkmk Stable version for GitHub Workflows to ${checkmk_oldstable}."
+find "${collection_dir}/.github/workflows/" -type f -name "ans-int-test-*.yaml" -exec sed -i "s/2.2.0.*/${checkmk_ancient}\"/g" {} \; && echo "Updated Checkmk Stable version for GitHub Workflows to ${checkmk_ancient}."
 ## Molecule tests
 find "${collection_dir}/roles/" -type f -name all.yml -exec sed -i "s/2.4.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated Checkmk Stable version for molecule tests to ${checkmk_stable}."
 find "${collection_dir}/roles/" -type f -name all.yml -exec sed -i "s/2.3.0.*/${checkmk_oldstable}\"/g" {} \; && echo "Updated Checkmk Oldstable version for molecule tests to ${checkmk_oldstable}."
