@@ -42,7 +42,7 @@ jobs:
       fail-fast: false
       matrix:
         checkmk_version:
-          - 2.4.0p22
-          - 2.5.0-2025.03.12
+          - 2.4.0p23
+          - 2.5.0-2026.03.13
         checkmk_edition:
           - managed
