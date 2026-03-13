@@ -4,6 +4,14 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v7.2.3
+======
+
+Bugfixes
+--------
+
+- Agent role - Fix the minimal firewall management the agent role does. Due to a peculiarity in how the ``ufw`` module works, it was possible, that the firewall would become active, locking out users connected via SSH or disrupting other connections. Specifically the ``state`` attribute is removed from the specific task.
+
 v7.2.2
 ======
 
