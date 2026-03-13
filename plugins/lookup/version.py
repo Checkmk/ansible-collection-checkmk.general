@@ -102,4 +102,5 @@ class LookupModule(LookupBase):
                 )
             )
 
+
         return [response.get("versions", {}).get("checkmk")]
