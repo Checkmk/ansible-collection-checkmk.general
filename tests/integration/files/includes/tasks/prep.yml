@@ -119,7 +119,7 @@
 
 - name: "Wait for Central Site to be ready."
   ansible.builtin.uri:
-    url: "http://127.0.0.1:{{ item.port }}/{{ item.site }}"
+    url: "http://127.0.0.1:5000/{{ item.site }}"
     return_content: true
     validate_certs: false
     status_code:

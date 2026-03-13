@@ -51,5 +51,4 @@
     proto: tcp
     port: "{{ checkmk_agent_port }}"
     comment: "Allow Checkmk Agent access from anywhere."
-    state: "enabled"
   become: true
