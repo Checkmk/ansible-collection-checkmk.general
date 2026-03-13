@@ -48,3 +48,18 @@ jobs:
         checkmk_edition:
           - raw
           - managed
+          - community
+          - ultimatemt
+        exclude:
+          - checkmk_version: 2.3.0p44
+            checkmk_edition: community
+          - checkmk_version: 2.3.0p44
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.4.0p23
+            checkmk_edition: community
+          - checkmk_version: 2.4.0p23
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.5.0-2026.03.13
+            checkmk_edition: raw
+          - checkmk_version: 2.5.0-2026.03.13
+            checkmk_edition: managed
