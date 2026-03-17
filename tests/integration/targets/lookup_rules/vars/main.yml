@@ -1,7 +1,7 @@
 ---
 checkmk_var_test_sites:
-  - version: "{{ checkmk_var_version | default('2.4.0p23') }}"
-    edition: "{{ checkmk_var_edition | default('cre') }}"
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
     site: "testsite"
 
 checkmk_var_rulesets:
