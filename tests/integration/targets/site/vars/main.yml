@@ -45,7 +45,7 @@ checkmk_var_test_sites:
           basic_settings:
             site_id: "testsite_r_1"
             alias: "remote test site 1"
-            customer: "{{ ('managed' in checkmk_var_edition) | ternary('provider', None) }}"
+            customer: "{{ (checkmk_var_edition in ['managed', 'ultimatemt']) | ternary('provider', None) }}"
         authentication:
           username: "{{ checkmk_var_api_user }}"
           password: "{{ checkmk_var_api_secret }}"
