@@ -1,7 +1,7 @@
 ---
 checkmk_var_test_sites:
   - version: "{{ checkmk_var_version }}"
-    edition: "{{ checkmk_var_edition | default('cre') }}"
+    edition: "{{ checkmk_var_edition }}"
     site: "testsite"
 
 checkmk_var_tag_groups_create:
