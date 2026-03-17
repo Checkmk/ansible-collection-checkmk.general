@@ -182,7 +182,20 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
 
 HTTP_CODES_GET = {
     # http_code: (changed, failed, "Message")
+    200: (False, False, "Rule found, nothing changed"),
     404: (False, False, "Not Found: The requested object has not been found."),
+}
+
+HTTP_CODES_POST = {
+    200: (True, False, "OK: The operation was done successfully"),
+}
+
+HTTP_CODES_PUT = {
+    200: (True, False, "OK: The operation was done successfully"),
+}
+
+HTTP_CODES_DELETE = {
+    204: (True, False, "Operation done successfully. No further output."),
 }
 
 
@@ -197,6 +210,11 @@ class NotificationRuleAPI(CheckmkAPI):
             rule_properties = rule_config.get("rule_properties")
             if rule_properties:
                 self.description = rule_properties.get("description")
+
+        # Verify parameters
+        error = self._verify_parameters()
+        if error:
+            self.module.fail_json(msg=error)
 
         # Resolve rule_id from description if not provided
         if not self.rule_id and self.description:
@@ -217,6 +235,19 @@ class NotificationRuleAPI(CheckmkAPI):
                 etag="",
                 failed=False,
                 changed=False,
+            )
+
+    def _verify_parameters(self):
+        """Verify that mandatory parameters are present."""
+        if (
+            self.module.params.get("state") == "absent"
+            and not self.rule_id
+            and not self.description
+        ):
+            return (
+                "Missing parameter 'rule_id' or "
+                "'rule_config.rule_properties.description' "
+                "to identify the notification rule to delete."
             )
 
     def _find_rule_by_description(self, description):
@@ -262,6 +293,7 @@ class NotificationRuleAPI(CheckmkAPI):
         data = {"rule_config": self.params.get("rule_config")}
 
         return self._fetch(
+            code_mapping=HTTP_CODES_POST,
             endpoint="/domain-types/notification_rule/collections/all",
             data=data,
             method="POST",
@@ -272,6 +304,7 @@ class NotificationRuleAPI(CheckmkAPI):
         data = {"rule_config": self.params.get("rule_config")}
 
         return self._fetch(
+            code_mapping=HTTP_CODES_PUT,
             endpoint="/objects/notification_rule/%s" % self.rule_id,
             data=data,
             method="PUT",
@@ -281,6 +314,7 @@ class NotificationRuleAPI(CheckmkAPI):
         self.headers["If-Match"] = self.current.etag
 
         return self._fetch(
+            code_mapping=HTTP_CODES_DELETE,
             endpoint="/objects/notification_rule/%s/actions/delete/invoke"
             % self.rule_id,
             data={},
@@ -334,6 +368,7 @@ def run_module():
         supports_check_mode=False,
         required_if=[
             ("state", "present", ("rule_config",)),
+            ("state", "absent", ("rule_id", "rule_config"), True),
         ],
     )
 
@@ -351,9 +386,10 @@ def run_module():
     if module.params.get("state") == "present":
         if notification_rule.rule_id and notification_rule.current.http_code == 200:
             # Rule exists, check if update is needed
-            if changes_detected(
-                module, json.loads(notification_rule.current.content.decode("utf-8"))
-            ):
+            content = notification_rule.current.content
+            if isinstance(content, bytes):
+                content = content.decode("utf-8")
+            if changes_detected(module, json.loads(content)):
                 result = notification_rule.put()
             else:
                 result = notification_rule.current._replace(
