@@ -41,6 +41,14 @@ jobs:
       matrix:
         checkmk_version:
           - 2.4.0p23
-          # - 2.5.0-2025.02.24  # This change is not based on the 25-support branch.
+          - 2.5.0-2026.03.14
         checkmk_edition:
           - managed
+          - ultimatemt
+        exclude:
+          - checkmk_version: 2.3.0p44
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.4.0p23
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.5.0-2026.03.14
+            checkmk_edition: managed
