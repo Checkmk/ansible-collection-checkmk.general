@@ -1,15 +1,9 @@
 ---
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Set customer when needed."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "provider"
-  when: outer_item.edition == "cme"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else None }}"
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Unset customer when needed."
-  ansible.builtin.set_fact:
-    checkmk_var_customer: null
-  when: outer_item.edition != "cme"
-
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create notification rule."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create notification rule."
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -20,7 +14,7 @@
   register: __checkmk_var_notification_create
   failed_when: __checkmk_var_notification_create.failed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify notification rule created."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify notification rule created."
   ansible.builtin.assert:
     that:
       - __checkmk_var_notification_create.changed is true
@@ -28,7 +22,7 @@
     fail_msg: "Notification rule was not created successfully!"
     success_msg: "Notification rule created successfully."
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create same notification rule again (idempotency)."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create same notification rule again (idempotency)."
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -39,14 +33,14 @@
   register: __checkmk_var_notification_create_again
   failed_when: __checkmk_var_notification_create_again.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify idempotency."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify idempotency."
   ansible.builtin.assert:
     that:
       - __checkmk_var_notification_create_again.changed is false
     fail_msg: "Notification rule creation is not idempotent!"
     success_msg: "Notification rule creation is idempotent."
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Update notification rule."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update notification rule."
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -58,7 +52,7 @@
   register: __checkmk_var_notification_update
   failed_when: __checkmk_var_notification_update.failed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify notification rule updated."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify notification rule updated."
   ansible.builtin.assert:
     that:
       - __checkmk_var_notification_update.changed is true
@@ -66,7 +60,26 @@
     fail_msg: "Notification rule was not updated successfully!"
     success_msg: "Notification rule updated successfully."
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete notification rule by description."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update same notification rule again (idempotency)."
+  notification:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    rule_id: "{{ __checkmk_var_notification_create.content.id }}"
+    rule_config: "{{ checkmk_var_notification_config_updated }}"
+    state: "present"
+  register: __checkmk_var_notification_update_again
+  failed_when: __checkmk_var_notification_update_again.failed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify idempotency."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_notification_update_again.changed is false
+    fail_msg: "Notification rule creation is not idempotent!"
+    success_msg: "Notification rule creation is idempotent."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete notification rule by description."
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -79,7 +92,7 @@
   register: __checkmk_var_notification_delete
   failed_when: __checkmk_var_notification_delete.failed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify notification rule deleted."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify notification rule deleted."
   ansible.builtin.assert:
     that:
       - __checkmk_var_notification_delete.changed is true
@@ -87,7 +100,7 @@
     fail_msg: "Notification rule was not deleted successfully!"
     success_msg: "Notification rule deleted successfully."
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete notification rule again (idempotency)."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete notification rule again (idempotency)."
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -100,7 +113,7 @@
   register: __checkmk_var_notification_delete_again
   failed_when: __checkmk_var_notification_delete_again.changed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Create notification rule with minimal config."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create notification rule with minimal config."
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -111,7 +124,7 @@
   register: __checkmk_var_notification_minimal
   failed_when: __checkmk_var_notification_minimal.failed
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Verify minimal notification rule created."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify minimal notification rule created."
   ansible.builtin.assert:
     that:
       - __checkmk_var_notification_minimal.changed is true
@@ -119,7 +132,7 @@
     fail_msg: "Minimal notification rule was not created successfully!"
     success_msg: "Minimal notification rule created successfully."
 
-- name: "{{ outer_item.version }} - {{ outer_item.edition | upper }} - Delete minimal notification rule."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete minimal notification rule."
   notification:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
