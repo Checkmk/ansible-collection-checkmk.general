@@ -1,7 +1,7 @@
 ---
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition == 'managed' else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else None }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
   host:

@@ -1,4 +1,8 @@
 ---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else None }}"
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create tag_group."
   tag_group:
     server_url: "{{ checkmk_var_server_url }}"
