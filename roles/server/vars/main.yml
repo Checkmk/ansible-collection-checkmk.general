@@ -11,7 +11,7 @@ __checkmk_var_legacy_edition_mapping:
   cce: cloud
   cme: managed
 
-# Due to renaming of editions starting with 2.5.0, we normalize them here for convenience. Again.
+# Due to renaming of editions starting with 2.5, we normalize them here for convenience. Again.
 __checkmk_var_modern_edition_mapping:
   cre: community
   cee: pro
