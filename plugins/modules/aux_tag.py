@@ -53,40 +53,74 @@ author:
 """
 
 EXAMPLES = r"""
-# Create an auxiliary tag
-- name: "Create auxiliary tag for HTTPS"
+# ---------------------------------------------------------------------------
+# Create and update auxiliary tags
+# ---------------------------------------------------------------------------
+
+- name: "Create an auxiliary tag."
   checkmk.general.aux_tag:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: https
-    title: Web Server HTTPS
-    topic: Services
-    help: "Host provides HTTPS services"
+    name: "https"
+    title: "Web Server HTTPS"
     state: "present"
 
-# Update an auxiliary tag
-- name: "Update auxiliary tag"
+- name: "Create an auxiliary tag with a topic and help text."
   checkmk.general.aux_tag:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: https
-    title: Web Server HTTPS/TLS
-    topic: Services
+    name: "https"
+    title: "Web Server HTTPS"
+    topic: "Network Services"
+    help: "Host provides HTTPS services on port 443."
     state: "present"
 
-# Delete an auxiliary tag
-- name: "Delete auxiliary tag"
+- name: "Update the title of an existing auxiliary tag."
   checkmk.general.aux_tag:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: https
+    name: "https"
+    title: "Web Server HTTPS/TLS"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Delete auxiliary tags
+# ---------------------------------------------------------------------------
+
+- name: "Delete an auxiliary tag."
+  checkmk.general.aux_tag:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "https"
     state: "absent"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create an auxiliary tag using environment variables for authentication."
+  checkmk.general.aux_tag:
+    name: "https"
+    title: "Web Server HTTPS"
+    state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""

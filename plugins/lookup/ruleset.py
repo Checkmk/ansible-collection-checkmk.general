@@ -33,31 +33,40 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get a particular ruleset
+- name: "Get the details of a ruleset."
   ansible.builtin.debug:
-    msg: "Ruleset: {{ extensions }}"
+    msg: "Ruleset host_groups has {{ ruleset.number_of_rules }} rules."
   vars:
-    extensions: "{{
+    ruleset: "{{
       lookup('checkmk.general.ruleset',
         ruleset='host_groups',
-        server_url=server_url,
-        site=site,
-        api_user=api_user,
-        api_secret=api_secret,
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
         validate_certs=False
         )
     }}"
 
-- name: "Use variables from inventory."
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get ruleset details using inventory variables."
   ansible.builtin.debug:
-    msg: "Ruleset: {{ extensions }}"
+    msg: "Ruleset host_groups has {{ ruleset.number_of_rules }} rules."
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
     checkmk_var_validate_certs: false
-    extensions: "{{ lookup('checkmk.general.ruleset', ruleset='host_groups') }}"
+    ruleset: "{{ lookup('checkmk.general.ruleset', ruleset='host_groups') }}"
 """
 
 RETURN = """
