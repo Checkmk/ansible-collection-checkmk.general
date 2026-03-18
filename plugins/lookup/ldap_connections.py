@@ -27,18 +27,40 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get all ldap_connections defined in the environment.
+- name: "Get all LDAP connections."
   ansible.builtin.debug:
-    msg: "Site: {{ item.extensions }}"
+    msg: "LDAP connection {{ item.id }}: {{ item.extensions }}"
   loop: "{{
     lookup('checkmk.general.ldap_connections',
-        server_url=server_url,
-        site=site,
-        api_user=api_user,
-        api_secret=api_secret,
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
         validate_certs=False
         )
     }}"
+  loop_control:
+    label: "{{ item.id }}"
+
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get all LDAP connections using inventory variables."
+  ansible.builtin.debug:
+    msg: "LDAP connection {{ item.id }}: {{ item.extensions }}"
+  vars:
+    checkmk_var_server_url: "https://myserver/"
+    checkmk_var_site: "mysite"
+    checkmk_var_api_user: "myuser"
+    checkmk_var_api_secret: "mysecret"
+    checkmk_var_validate_certs: false
+  loop: "{{ lookup('checkmk.general.ldap_connections') }}"
   loop_control:
     label: "{{ item.id }}"
 """

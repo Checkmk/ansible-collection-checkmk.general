@@ -105,150 +105,144 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a rule in checkgroup_parameters:memory_percentage_used
-# at the top of the main folder.
-- name: "Create a rule in checkgroup_parameters:memory_percentage_used."
+# ---------------------------------------------------------------------------
+# Create and delete rules
+# ---------------------------------------------------------------------------
+
+- name: "Create a rule at the top of the main folder."
   checkmk.general.rule:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-      conditions: {
-        "host_labels": [],
-        "host_name": {
-          "match_on": [
-            "test1.tld"
-          ],
-          "operator": "one_of"
-        },
-        "host_tags": [],
-        "service_labels": []
-      }
-      properties: {
-        "comment": "Ansible managed",
-        "description": "Allow higher memory usage",
-        "disabled": false,
-        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rule.py"
-      }
+      conditions:
+        host_name:
+          match_on:
+            - "myhost01"
+          operator: "one_of"
+        host_tags: []
+        host_labels: []
+        service_labels: []
+      properties:
+        description: "Allow higher memory usage on myhost01"
+        comment: "Created by Ansible"
+        disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
       location:
         folder: "/"
         position: "top"
     state: "present"
-  register: response
+  register: rule_result
 
-- name: Show the ID of the new rule
+- name: "Show the ID of the new rule."
   ansible.builtin.debug:
-    msg: "RULE ID : {{ response.content.id }}"
+    msg: "Rule ID: {{ rule_result.content.id }}"
 
-# Create another rule with the new label conditions (> 2.3.0)
-# in checkgroup_parameters:memory_percentage_used and put it after the rule created above.
-- name: "Create a rule in checkgroup_parameters:memory_percentage_used."
+- name: "Delete a rule by ID."
   checkmk.general.rule:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-      conditions: {
-        "host_label_groups": [
-          {
-            operator: "and",
-            label_group: [
-              {
-                operator: "and",
-                label: "cmk/site:beta"
-              },
-              {
-                operator: "or",
-                label: "cmk/os_family:linux"
-              }
-            ],
-          },
-          {
-            operator: "or",
-            label_group: [
-              {
-                operator: "and",
-                label: "cmk/site:alpha"
-              },
-              {
-                operator: "or",
-                label: "cmk/os_family:windows"
-              }
-            ],
-          },
-        ],
-        "host_name": {
-          "match_on": [
-            "test2.tld"
-          ],
-          "operator": "one_of"
-        },
-        "host_tags": [],
-        "service_labels": []
-      }
-      properties: {
-        "comment": "Ansible managed",
-        "description": "Allow even higher memory usage",
-        "disabled": false,
-        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rule.py"
-      }
+      rule_id: "{{ rule_result.content.id }}"
+    state: "absent"
+
+# ---------------------------------------------------------------------------
+# Rule placement
+# ---------------------------------------------------------------------------
+
+- name: "Create a rule and place it after an existing rule."
+  checkmk.general.rule:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      conditions:
+        host_name:
+          match_on:
+            - "myhost02"
+          operator: "one_of"
+        host_tags: []
+        host_labels: []
+        service_labels: []
+      properties:
+        description: "Allow even higher memory usage on myhost02"
+        comment: "Created by Ansible"
+        disabled: false
       value_raw: "{'levels': (85.0, 99.0)}"
       location:
         position: "after"
-        neighbour: "{{ response.content.id }}"
+        neighbour: "{{ rule_result.content.id }}"
     state: "present"
 
-# Delete the first rule.
-- name: "Delete a rule."
-  checkmk.general.rule:
-    server_url: "http://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
-    rule:
-      rule_id: "{{ response.content.id }}"
-    state: "absent"
+# ---------------------------------------------------------------------------
+# Rules with label conditions (Checkmk >= 2.3.0)
+# ---------------------------------------------------------------------------
 
-# Create a rule rule matching a host label
-- name: "Create a rule matching a label."
+- name: "Create a rule matching a host label."
   checkmk.general.rule:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     ruleset: "checkgroup_parameters:memory_percentage_used"
     rule:
-      conditions: {
-        "host_labels": [
-          {
-            "key": "cmk/check_mk_server",
-            "operator": "is",
-            "value": "yes"
-          }
-        ],
-      }
-      properties: {
-        "comment": "Ansible managed",
-        "description": "Allow higher memory usage",
-        "disabled": false,
-        "documentation_url": "https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/plugins/modules/rule.py"
-      }
+      conditions:
+        host_labels:
+          - key: "cmk/check_mk_server"
+            operator: "is"
+            value: "yes"
+      properties:
+        description: "Allow higher memory usage on Checkmk servers"
+        comment: "Created by Ansible"
+        disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
       location:
         folder: "/"
         position: "top"
     state: "present"
 
-# Delete all rules in a ruleset that match a certain comment.
+- name: "Create a rule with combined label group conditions (Checkmk >= 2.3.0)."
+  checkmk.general.rule:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      conditions:
+        host_label_groups:
+          - operator: "and"
+            label_group:
+              - operator: "and"
+                label: "cmk/site:mysite"
+              - operator: "or"
+                label: "cmk/os_family:linux"
+        host_tags: []
+        service_label_groups: []
+      properties:
+        description: "Allow higher memory usage on Linux hosts in mysite"
+        comment: "Created by Ansible"
+        disabled: false
+      value_raw: "{'levels': (80.0, 90.0)}"
+      location:
+        folder: "/"
+        position: "bottom"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Bulk delete rules using a lookup
+# ---------------------------------------------------------------------------
+
 - name: "Delete all rules in a ruleset that match a certain comment."
   checkmk.general.rule:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -259,16 +253,38 @@ EXAMPLES = r"""
   loop: "{{
            lookup('checkmk.general.rules',
              ruleset='checkgroup_parameters:memory_percentage_used',
-             comment_regex='Ansible managed',
-             server_url=server_url,
-             site=site,
-             api_user=api_user,
-             api_secret=api_secret,
-             validate_certs=False
+             comment_regex='Created by Ansible',
+             server_url='https://myserver/',
+             site='mysite',
+             api_user='myuser',
+             api_secret='mysecret',
              )
          }}"
   loop_control:
     label: "{{ item.id }}"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a rule using environment variables for authentication."
+  checkmk.general.rule:
+    ruleset: "checkgroup_parameters:memory_percentage_used"
+    rule:
+      properties:
+        description: "Allow higher memory usage"
+        comment: "Created by Ansible"
+        disabled: false
+      value_raw: "{'levels': (80.0, 90.0)}"
+      location:
+        folder: "/"
+        position: "bottom"
+    state: "present"
 """
 
 RETURN = r"""
