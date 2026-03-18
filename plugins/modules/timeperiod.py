@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: timeperiod
 
-short_description: Manage time periods in checkmk.
+short_description: Manage time periods in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -179,6 +179,12 @@ EXAMPLES = r"""
           - start: "08:00"
             end: "17:00"
     state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "false"
 """
 
 RETURN = r"""
@@ -187,7 +193,7 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always
