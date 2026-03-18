@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: host
 
-short_description: Manage hosts in Checkmk.
+short_description: Manage hosts in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -19,6 +19,8 @@ version_added: "0.0.1"
 
 description:
     - Manage hosts within Checkmk.
+    - Hosts can be placed into folders, given tags and custom attributes.
+      There is a special cluster host object, which can be managed by this module as well.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -34,6 +36,7 @@ options:
               B(For existing host, host is moved to the specified folder if different
               and this procedue is mutualy exclusive with specified
               I(attributes), I(update_attributes), and I(remove_attributes)).
+        required: false
         type: str
     attributes:
         description:
@@ -66,11 +69,13 @@ options:
         required: false
     state:
         description: The state of your host.
+        required: false
         type: str
         default: present
         choices: [present, absent]
     extended_functionality:
         description: Allow extended functionality instead of the expected REST API behavior.
+        required: false
         type: bool
         default: true
     # new_name:
@@ -80,7 +85,7 @@ options:
     nodes:
         description:
             - Nodes, members of the cluster host provided in name.
-              B(Mutualy exclusive with I(add_nodes) and I(remove_nodes).)
+              B(Mutually exclusive with I(add_nodes) and I(remove_nodes).)
         required: false
         type: list
         elements: str
@@ -88,17 +93,29 @@ options:
         description:
             - List of nodes to be added as members of the cluster host provided in name.
               Works only if the existing host was already a cluster host, or entirely new is created.
-              B(Mutualy exclusive with I(nodes) and I(remove_nodes).)
+              B(Mutually exclusive with I(nodes) and I(remove_nodes).)
         required: false
         type: list
         elements: str
     remove_nodes:
         description:
             - List of nodes to be removes from the cluster host provided in name.
-              B(Mutualy exclusive with I(nodes) and I(add_nodes).)
+              B(Mutually exclusive with I(nodes) and I(add_nodes).)
         required: false
         type: list
         elements: str
+
+notes:
+    - When specifying C(attributes), the entire attributes dict replaces any existing host
+      attributes. Use C(update_attributes) to merge with existing attributes instead.
+
+seealso:
+    - plugin: checkmk.general.host
+      plugin_type: lookup
+    - plugin: checkmk.general.hosts
+      plugin_type: lookup
+    - module: checkmk.general.folder
+    - module: checkmk.general.discovery
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -274,10 +291,11 @@ EXAMPLES = r"""
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates. Contains the API response details in case of an error.
     type: str
     returned: always

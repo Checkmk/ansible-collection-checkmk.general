@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: site
 
-short_description: Manage distributed monitoring in Checkmk.
+short_description: Manage distributed monitoring in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -20,9 +20,13 @@ version_added: "5.3.0"
 description:
     - Manage distributed monitoring within Checkmk.
 
-extends_documentation_fragment:
-    - checkmk.general.common
-    - checkmk.general.site_options
+extends_documentation_fragment: [checkmk.general.common, checkmk.general.site_options]
+
+seealso:
+    - plugin: checkmk.general.site
+      plugin_type: lookup
+    - plugin: checkmk.general.sites
+      plugin_type: lookup
 
 author:
     - Lars Getwan (@lgetwan)
@@ -116,10 +120,11 @@ EXAMPLES = r"""
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates. Contains the API response details in case of an error.
     type: str
     returned: always

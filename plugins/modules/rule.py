@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: rule
 
-short_description: Manage rules in Checkmk.
+short_description: Manage rules in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -35,18 +35,21 @@ options:
                     - If omitted, we try to find an equal rule based on C(properties),
                       C(conditions), C(folder) and C(value_raw).
                     - Please mind the additional notes below.
+                required: false
                 type: str
             location:
                 description:
                     - Location of the rule within a folder.
                     - By default rules are created at the bottom of the "/" folder.
+                required: false
                 type: dict
                 suboptions:
                     position:
                         description:
                             - Position of the rule in the folder.
                             - Has no effect when I(state=absent).
-                            - For new rule C(any) wil be equivalent to C(bottom)
+                            - For new rule C(any) wil be equivalent to C(bottom).
+                        required: false
                         type: str
                         choices:
                             - "top"
@@ -60,6 +63,7 @@ options:
                             - Put the rule C(before) or C(after) this rule_id.
                             - Required when I(position) is C(before) or C(after).
                             - Mutually exclusive with I(folder).
+                        required: false
                         type: str
                         aliases: [rule_id]
                     folder:
@@ -68,18 +72,22 @@ options:
                             - Required when I(position) is C(top), C(bottom), or (any).
                             - Required when I(state=absent).
                             - Mutually exclusive with I(neighbour).
+                        required: false
                         default: "/"
                         type: str
             conditions:
                 description: Conditions of the rule.
+                required: false
                 type: dict
             properties:
                 description: Properties of the rule.
+                required: false
                 type: dict
             value_raw:
                 description:
                     - Rule values as exported from the web interface.
                     - Required when I(state) is C(present).
+                required: false
                 type: str
     ruleset:
         description: Name of the ruleset to manage.
@@ -87,7 +95,8 @@ options:
         type: str
     state:
         description: State of the rule.
-        choices: [present, absent]
+        required: false
+        choices: ["present", "absent"]
         default: present
         type: str
 notes:
@@ -96,6 +105,16 @@ notes:
       module not being idempotent or to rules being created over and over again.
     - If rule_id is provided, for the same reason, it might happen, that tasks changing a rule
       again and again, even if it already meets the expectations.
+
+seealso:
+    - plugin: checkmk.general.rule
+      plugin_type: lookup
+    - plugin: checkmk.general.rules
+      plugin_type: lookup
+    - plugin: checkmk.general.ruleset
+      plugin_type: lookup
+    - plugin: checkmk.general.rulesets
+      plugin_type: lookup
 
 author:
     - Lars Getwan (@lgetwan)
@@ -290,6 +309,7 @@ EXAMPLES = r"""
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""

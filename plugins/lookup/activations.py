@@ -24,6 +24,11 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.activation
+      - plugin: checkmk.general.activation
+        plugin_type: lookup
 """
 
 EXAMPLES = """
@@ -63,9 +68,9 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - activations status
+      - A list of activation objects.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json

@@ -12,7 +12,7 @@ DOCUMENTATION = r"""
 ---
 module: service_group
 
-short_description: Manage service groups in Checkmk (bulk version).
+short_description: Manage service groups in Checkmk (bulk version)
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -20,15 +20,19 @@ version_added: "0.12.0"
 
 description:
 - Manage service groups in Checkmk.
+- Service groups can be used to group services by type or function.
+  Supports both single-group and bulk (multiple-group) operations in a single task.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
         description: The name of the service group to be created/modified/deleted.
+        required: false
         type: str
     title:
         description: The title (alias) of your service group. If omitted defaults to the name.
+        required: false
         type: str
     customer:
         description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
@@ -38,17 +42,28 @@ options:
         description:
             - instead of 'name', 'title' a list of dicts with elements of service group name and title (alias) to be created/modified/deleted.
               If title is omitted in entry, it defaults to the service group name.
+        required: false
         default: []
         type: raw
     state:
         description: The state of your service group.
+        required: false
         type: str
         default: present
-        choices: [present, absent]
+        choices: ["present", "absent"]
     validate_certs:
         description: Whether to validate the SSL certificate of the Checkmk server.
+        required: false
         default: true
         type: bool
+
+notes:
+    - When using the I(groups) parameter for bulk operations, the module validates that
+      no two entries share the same name and will fail if duplicates are detected.
+
+seealso:
+    - module: checkmk.general.host_group
+    - module: checkmk.general.contact_group
 
 author:
     - Michael Sekania (@msekania)
@@ -142,10 +157,11 @@ EXAMPLES = r"""
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always
