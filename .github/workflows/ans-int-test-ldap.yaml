@@ -41,7 +41,7 @@ jobs:
       matrix:
         checkmk_version:
           - 2.4.0p23
-          - 2.5.0-2026.03.14
+          - 2.5.0-2026.03.18
         checkmk_edition:
           - managed
           - ultimatemt
@@ -50,5 +50,5 @@ jobs:
             checkmk_edition: ultimatemt
           - checkmk_version: 2.4.0p23
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.5.0-2026.03.14
+          - checkmk_version: 2.5.0-2026.03.18
             checkmk_edition: managed
