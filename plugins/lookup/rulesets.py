@@ -52,46 +52,55 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get all used rulesets with 'file' in their name
+- name: "Get all used rulesets whose name contains 'file'."
   ansible.builtin.debug:
-    msg: "Ruleset: {{ item.extensions.name }} has {{ item.extensions.number_of_rules }} rules."
+    msg: "Ruleset {{ item.extensions.name }} has {{ item.extensions.number_of_rules }} rules."
   loop: "{{
     lookup('checkmk.general.rulesets',
       regex='file',
       rulesets_used=True,
-      server_url=server_url,
-      site=site,
-      api_user=api_user,
-      api_secret=api_secret,
+      server_url='https://myserver/',
+      site='mysite',
+      api_user='myuser',
+      api_secret='mysecret',
       validate_certs=False
       )
     }}"
   loop_control:
     label: "{{ item.id }}"
 
-- name: Get all used deprecated rulesets
+- name: "Get all deprecated rulesets."
   ansible.builtin.debug:
-    msg: "Ruleset {{ item.extension.name }} is deprecated."
+    msg: "Ruleset {{ item.extensions.name }} is deprecated."
   loop: "{{
     lookup('checkmk.general.rulesets',
       regex='',
       rulesets_deprecated=True,
       rulesets_used=True,
-      server_url=server_url,
-      site=site,
-      api_user=api_user,
-      api_secret=api_secret,
+      server_url='https://myserver/',
+      site='mysite',
+      api_user='myuser',
+      api_secret='mysecret',
       validate_certs=False
       )
     }}"
   loop_control:
-    label: "{{ item.0.id }}"
+    label: "{{ item.id }}"
 
-- name: "Use variables from inventory."
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get all deprecated rulesets using inventory variables."
   ansible.builtin.debug:
-    msg: "Ruleset {{ item.extension.name }} is deprecated."
+    msg: "Ruleset {{ item.extensions.name }} is deprecated."
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
@@ -99,7 +108,7 @@ EXAMPLES = """
   loop: "{{
     lookup('checkmk.general.rulesets', regex='', rulesets_deprecated=True, rulesets_used=True) }}"
   loop_control:
-    label: "{{ item.0.id }}"
+    label: "{{ item.id }}"
 """
 
 RETURN = """

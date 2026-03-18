@@ -81,39 +81,94 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a tag group
-- name: "Create tag group"
+# ---------------------------------------------------------------------------
+# Create and delete tag groups
+# ---------------------------------------------------------------------------
+
+- name: "Create a tag group."
   checkmk.general.tag_group:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: datacenter
-    title: Datacenter
-    topic: Tags
+    name: "datacenter"
+    title: "Datacenter"
+    topic: "Infrastructure"
     help: "The datacenter this host resides in."
     tags:
-      - id: datacenter_none
-        title: No Datacenter
-      - id: datacenter_1
-        title: Datacenter 1
-        aux_tags: ["support_a","support_b"]
-      - id: datacenter_2
-        title: Datacenter 2
-        aux_tags: ["support_c"]
-      - id: datacenter_3
-        title: Datacenter 3
-    state: present
+      - id: "datacenter_1"
+        title: "Datacenter 1"
+      - id: "datacenter_2"
+        title: "Datacenter 2"
+      - id: "datacenter_3"
+        title: "Datacenter 3"
+    state: "present"
 
-# Delete a tag group
-- name: "Delete tag group."
+- name: "Create a tag group with auxiliary tags assigned to its values."
   checkmk.general.tag_group:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: datacenter
+    name: "datacenter"
+    title: "Datacenter"
+    topic: "Infrastructure"
+    tags:
+      - id: "datacenter_none"
+        title: "No Datacenter"
+      - id: "datacenter_1"
+        title: "Datacenter 1"
+        aux_tags:
+          - "support_a"
+          - "support_b"
+      - id: "datacenter_2"
+        title: "Datacenter 2"
+        aux_tags:
+          - "support_c"
+    state: "present"
+
+- name: "Delete a tag group."
+  checkmk.general.tag_group:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "datacenter"
     state: "absent"
+
+# ---------------------------------------------------------------------------
+# Delete a tag group that is still in use
+# ---------------------------------------------------------------------------
+# The 'repair' option automatically updates or removes the tag from all
+# hosts that use it. Use with caution!
+
+- name: "Delete a tag group and repair affected hosts automatically."
+  checkmk.general.tag_group:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "datacenter"
+    repair: true
+    state: "absent"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a tag group using environment variables for authentication."
+  checkmk.general.tag_group:
+    name: "datacenter"
+    title: "Datacenter"
+    tags:
+      - id: "datacenter_1"
+        title: "Datacenter 1"
+    state: "present"
 """
 
 RETURN = r"""
