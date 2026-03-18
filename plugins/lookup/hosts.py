@@ -36,35 +36,58 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get all hosts
+- name: "Get all hosts."
   ansible.builtin.debug:
-    msg: "Host: {{ item.id }} in folder {{ item.extensions.folder }}, IP: {{ item.extensions.effective_attributes.ipaddress }}"
+    msg: "Host {{ item.id }} is in folder {{ item.extensions.folder }}"
   loop: "{{
     lookup('checkmk.general.hosts',
-        effective_attributes=True,
-        server_url=my_server_url,
-        site=mysite,
-        api_user=myuser,
-        api_secret=mysecret,
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
         validate_certs=False
         )
     }}"
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 
-- name: "Use variables from inventory."
+- name: "Get all hosts including their effective (inherited) attributes."
   ansible.builtin.debug:
-    msg: "Host: {{ item.id }} in folder {{ item.extensions.folder }}, IP: {{ item.extensions.effective_attributes.ipaddress }}"
+    msg: "Host {{ item.id }} has IP {{ item.extensions.effective_attributes.ipaddress }}"
+  loop: "{{
+    lookup('checkmk.general.hosts',
+        effective_attributes=True,
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
+        validate_certs=False
+        )
+    }}"
+  loop_control:
+    label: "{{ item.id }}"
+
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get all hosts using inventory variables."
+  ansible.builtin.debug:
+    msg: "Host {{ item.id }} is in folder {{ item.extensions.folder }}"
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
     checkmk_var_validate_certs: false
-  loop: "{{
-    lookup('checkmk.general.hosts', effective_attributes=True) }}"
+  loop: "{{ lookup('checkmk.general.hosts') }}"
   loop_control:
-      label: "{{ item.id }}"
+    label: "{{ item.id }}"
 """
 
 RETURN = """
