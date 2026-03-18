@@ -12,7 +12,7 @@ DOCUMENTATION = r"""
 ---
 module: contact_group
 
-short_description: Manage contact groups in Checkmk (bulk version).
+short_description: Manage contact groups in Checkmk (bulk version)
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -20,15 +20,19 @@ version_added: "0.12.0"
 
 description:
 - Manage contact groups in Checkmk.
+- Contact groups control which users receive notifications for hosts and services.
+  Supports both single-group and bulk (multiple-group) operations in a single task.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
         description: The name of the contact group to be created/modified/deleted.
+        required: false
         type: str
     title:
         description: The title (alias) of your contact group. If omitted defaults to the name.
+        required: false
         type: str
     customer:
         description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
@@ -38,17 +42,23 @@ options:
         description:
             - instead of 'name', 'title' a list of dicts with elements of contact group name and title (alias) to be created/modified/deleted.
               If title is omitted in entry, it defaults to the contact group name.
+        required: false
         default: []
         type: raw
     state:
         description: The state of your contact group.
+        required: false
         type: str
         default: present
         choices: [present, absent]
     validate_certs:
         description: Whether to validate the SSL certificate of the Checkmk server.
+        required: false
         default: true
         type: bool
+
+seealso:
+    - module: checkmk.general.user
 
 author:
     - Michael Sekania (@msekania)
@@ -175,7 +185,7 @@ EXAMPLES = r"""
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

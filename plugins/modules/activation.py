@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: activation
 
-short_description: Activate changes in Checkmk.
+short_description: Activate changes in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -28,16 +28,30 @@ options:
         description:
           - If set to C(true), wait for the activation to complete.
             If set to C(false), start the activation, but do not wait for it to finish.
+        required: false
         default: false
         type: bool
     sites:
         description: The sites that should be activated. Omitting this option activates all sites.
+        required: false
         default: []
         type: raw
     force_foreign_changes:
         description: Whether to active foreign changes.
+        required: false
         default: false
         type: bool
+
+notes:
+    - This module always triggers an activation when there are pending changes.
+      It is not idempotent in the usual Ansible sense.
+    - Use C(run_once: true) to avoid activating once per host in a play.
+
+seealso:
+    - plugin: checkmk.general.activation
+      plugin_type: lookup
+    - plugin: checkmk.general.activations
+      plugin_type: lookup
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -140,7 +154,7 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

@@ -12,7 +12,7 @@ DOCUMENTATION = r"""
 ---
 module: host_group
 
-short_description: Manage host groups in Checkmk (bulk version).
+short_description: Manage host groups in Checkmk (bulk version)
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -20,15 +20,19 @@ version_added: "0.11.0"
 
 description:
 - Manage host groups in Checkmk.
+- Host groups can be used in rules and views to group hosts by function or location.
+  Supports both single-group and bulk (multiple-group) operations in a single task.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
         description: The name of the host group to be created/modified/deleted.
+        required: false
         type: str
     title:
         description: The title (alias) of your host group. If omitted defaults to the name.
+        required: false
         type: str
     customer:
         description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
@@ -38,13 +42,18 @@ options:
         description:
             - instead of 'name', 'title' a list of dicts with elements of host group name and title (alias) to be created/modified/deleted.
               If title is omitted in entry, it defaults to the host group name.
+        required: false
         default: []
         type: raw
     state:
         description: The state of your host group.
+        required: false
         type: str
         default: present
         choices: [present, absent]
+
+seealso:
+    - module: checkmk.general.host
 
 author:
     - Michael Sekania (@msekania)
@@ -136,7 +145,7 @@ EXAMPLES = r"""
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

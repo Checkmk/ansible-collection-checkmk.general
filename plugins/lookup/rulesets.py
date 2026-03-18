@@ -20,6 +20,7 @@ DOCUMENTATION = """
       regex:
         description: A regex of the ruleset name.
         required: True
+        type: str
 
       rulesets_folder:
         description:
@@ -27,16 +28,17 @@ DOCUMENTATION = """
           - Path delimiters can be either ~ or /.
         required: False
         default: "/"
+        type: str
 
       rulesets_deprecated:
-        description: Only show deprecated rulesets. Defaults to False.
-        type: boolean
+        description: Only show deprecated rulesets.
+        type: bool
         required: False
         default: False
 
       rulesets_used:
-        description: Only show used rulesets. Defaults to True.
-        type: boolean
+        description: Only show used rulesets.
+        type: bool
         required: False
         default: True
 
@@ -49,6 +51,15 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.rule
+      - plugin: checkmk.general.rule
+        plugin_type: lookup
+      - plugin: checkmk.general.rules
+        plugin_type: lookup
+      - plugin: checkmk.general.ruleset
+        plugin_type: lookup
 """
 
 EXAMPLES = """
@@ -114,9 +125,9 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of rulesets
+      - A list of rulesets matching the search criteria.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json

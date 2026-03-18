@@ -11,12 +11,14 @@ DOCUMENTATION = r"""
 ---
 module: aux_tag
 
-short_description: Manage auxiliary tags in Checkmk.
+short_description: Manage auxiliary tags in Checkmk
 
 version_added: "6.5.0"
 
 description:
 - Manage auxiliary tags in Checkmk.
+- Auxiliary tags can be assigned to tag group values and are used to group hosts
+  for rule matching without exposing the underlying tag structure to the user.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -129,7 +131,7 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

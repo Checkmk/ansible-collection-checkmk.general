@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: folder
 
-short_description: Manage folders in Checkmk.
+short_description: Manage folders in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -19,6 +19,8 @@ version_added: "0.0.1"
 
 description:
     - Manage folders within Checkmk.
+    - Folders are used to organize hosts and can carry attributes that are inherited
+      by all hosts within them.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -33,6 +35,7 @@ options:
         type: str
     name:
         description: The name (title) of your folder. If omitted defaults to the string after the last C(/) in I(path).
+        required: false
         type: str
         aliases: [title]
     attributes:
@@ -64,13 +67,22 @@ options:
         required: false
     state:
         description: The state of your folder.
+        required: false
         type: str
         default: present
         choices: [present, absent]
     extended_functionality:
         description: Allow extended functionality instead of the expected REST API behavior.
+        required: false
         type: bool
         default: true
+
+seealso:
+    - plugin: checkmk.general.folder
+      plugin_type: lookup
+    - plugin: checkmk.general.folders
+      plugin_type: lookup
+    - module: checkmk.general.host
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -203,7 +215,7 @@ EXAMPLES = r"""
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates. Contains the API response details in case of an error.
     type: str
     returned: always

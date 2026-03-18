@@ -15,7 +15,7 @@ __metaclass__ = type
 DOCUMENTATION = r"""
 ---
 module: dcd
-short_description: Manage Dynamic Host Management.
+short_description: Manage Dynamic Host Management
 version_added: "6.3.0"
 description:
   - Manage Dynamic Host Management (DCD), including creation, updating, and deletion.
@@ -36,6 +36,7 @@ options:
                 required: false
             comment:
                 description: Description or comment for the DCD.
+                required: false
                 type: str
                 default: ""
             site:
@@ -49,14 +50,17 @@ options:
                 suboptions:
                     connector_type:
                         description: Type of connector (e.g., "piggyback").
+                        required: false
                         type: str
                         default: piggyback
                     interval:
                         description: Interval in seconds for DCD polling.
+                        required: false
                         type: int
                         default: 60
                     creation_rules:
                         description: Rules for creating hosts.
+                        required: false
                         type: list
                         elements: dict
                         suboptions:
@@ -66,39 +70,48 @@ options:
                                 required: true
                             delete_hosts:
                                 description: Whether to delete hosts that no longer exist.
+                                required: false
                                 type: bool
                                 default: false
                             matching_hosts:
                                 description: Restrict host creation using regular expressions.
+                                required: false
                                 type: list
                                 elements: str
                                 default: []
                             host_attributes:
                                 description: Additional host attributes to set on created hosts.
+                                required: false
                                 type: dict
                     discover_on_creation:
                         description: Discover services on host creation.
+                        required: false
                         type: bool
                         default: true
                     restrict_source_hosts:
                         description: List of hosts to consider as piggyback sources for the DCD connection.
+                        required: false
                         type: list
                         elements: str
                         default: []
                     no_deletion_time_after_init:
                         description: Seconds to prevent host deletion after site startup.
+                        required: false
                         type: int
                         default: 600
                     max_cache_age:
                         description: Seconds to keep hosts when piggyback source only sends piggyback data for other hosts.
+                        required: false
                         type: int
                         default: 3600
                     validity_period:
                         description: Seconds before piggyback data is considered outdated.
+                        required: false
                         type: int
                         default: 60
     state:
         description: Desired state of the DCD connection.
+        required: false
         type: str
         choices:
         - present
