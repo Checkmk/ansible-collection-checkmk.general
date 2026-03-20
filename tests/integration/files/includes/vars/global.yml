@@ -17,7 +17,7 @@ __checkmk_var_legacy_edition_mapping:
   cce: cloud
   cme: managed
 
-# Due to renaming of editions starting with 2.5.0, we normalize them here for convenience. Again.
+# Due to renaming of editions starting with 2.5, we normalize them here for convenience. Again.
 __checkmk_var_modern_edition_mapping:
   cre: community
   cee: pro
@@ -43,8 +43,8 @@ __checkmk_var_testing_environment:
 
 # Configure default version and edition
 # checkmk_var_edition: "cre"
-# checkmk_var_version: "2.4.0p23"
-# checkmk_var_version: "2.5.0-{{ ansible_date_time.year }}.{{ ansible_date_time.month }}.{{ ansible_date_time.day }}"
+# checkmk_var_version: "2.4.0p24"
+# checkmk_var_version: "2.5.0-2026.03.18"
 
 # Use this to override the test-specific sites for local testing:
 # checkmk_var_test_sites:

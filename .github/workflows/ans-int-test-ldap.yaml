@@ -40,7 +40,15 @@ jobs:
       fail-fast: false
       matrix:
         checkmk_version:
-          - 2.4.0p23
-          # - 2.5.0-2025.02.24  # This change is not based on the 25-support branch.
+          - 2.4.0p24
+          - 2.5.0-2026.03.18
         checkmk_edition:
           - managed
+          - ultimatemt
+        exclude:
+          - checkmk_version: 2.3.0p45
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.4.0p24
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.5.0-2026.03.18
+            checkmk_edition: managed

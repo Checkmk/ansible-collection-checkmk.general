@@ -36,15 +36,8 @@ jobs:
           - stable-2.20
           - devel
         python:
-          - '3.11'
           - '3.12'
           - '3.13'
-        exclude:
-          # Exclude unsupported sets.
-          - ansible: devel
-            python: '3.11'
-          - ansible: stable-2.20
-            python: '3.11'
 
     services:
       testsite:
