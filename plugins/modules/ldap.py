@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: ldap
 
-short_description: Manage LDAP connectors.
+short_description: Manage LDAP connectors
 
 version_added: "6.6.0"
 
@@ -37,20 +37,24 @@ options:
                         required: true
                     description:
                         description: Add a title or describe this rule.
+                        required: false
                         default: ""
                         type: str
                     comment:
                         description: An optional comment to explain the purpose.
+                        required: false
                         default: ""
                         type: str
                     documentation_url:
                         description: Add a documentation URL for this rule.
+                        required: false
                         default: ""
                         type: str
                     rule_activation:
                         description:
                             - Selecting 'deactivated' will disable the rule, but it will
                             - remain in the configuration.
+                        required: false
                         type: str
                         default: activated
                         choices:
@@ -58,6 +62,7 @@ options:
                             - deactivated
             ldap_connection:
                 description: The LDAP connection configuration.
+                required: false
                 type: dict
                 default: {}
                 suboptions:
@@ -69,10 +74,12 @@ options:
                             - connect/bind is allowed, in this case you don't have to configure
                             - anything here.It must be possible to list all needed user and group
                             - objects from the directory.
+                        required: false
                         type: dict
                         suboptions:
                             type:
                                 description: Select the software the LDAP directory is based on.
+                                required: false
                                 type: str
                                 choices:
                                     - "active_directory_manual"
@@ -84,6 +91,7 @@ options:
                                 description:
                                     - Set the host address of the LDAP server. Might be an IP
                                     - address or resolvable host name.
+                                required: false
                                 type: str
                             failover_servers:
                                 description:
@@ -93,6 +101,7 @@ options:
                                     - instead of the server configured above. If you use persistent
                                     - connections (default), the connection is being used until the
                                     - LDAP is not reachable or the local webserver is restarted.
+                                required: false
                                 type: list
                                 elements: str
                             domain:
@@ -100,15 +109,18 @@ options:
                                     - Configure the DNS domain name of your Active directory domain
                                     - here, Checkmk will then query this domain for it's closest
                                     - domain controller to communicate with.
+                                required: false
                                 type: str
                     bind_credentials:
                         description: The credentials used to connect to the LDAP server.
+                        required: false
                         type: dict
                         suboptions:
                             type:
                                 description:
                                     - Whether to take the password from the password store or to
                                     - provide it explicitly.
+                                required: false
                                 type: str
                                 choices:
                                     - "explicit"
@@ -119,18 +131,22 @@ options:
                                     - The distinguished name of the user account which is used to
                                     - bind to the LDAP server. This user account must have read
                                     - access to the LDAP directory.
+                                required: false
                                 type: str
                             password_store_id:
                                 description: The ID of the password inside the password store.
+                                required: false
                                 type: str
                             explicit_password:
                                 description: The explicit password.
+                                required: false
                                 type: str
                     ssl_encryption:
                         description:
                             - Connect to the LDAP server with a SSL encrypted connection. The
                             - trusted certificates authorities configured in Checkmk will be used
                             - to validate the certificate provided by the LDAP server.
+                        required: false
                         type: str
                         choices:
                             - "disable_ssl"
@@ -138,15 +154,18 @@ options:
                         default: "disable_ssl"
                     tcp_port:
                         description: The TCP port to be used to connect to the LDAP server.
+                        required: false
                         type: int
                     connect_timeout:
                         description:
                             - Timeout for the initial connection to the LDAP server in seconds.
+                        required: false
                         type: float
                     ldap_version:
                         description:
                             - The selected LDAP version the LDAP server is serving. Most modern
                             - servers use LDAP version 3.
+                        required: false
                         type: int
                         choices:
                             - 2
@@ -156,18 +175,22 @@ options:
                             - LDAP searches can be performed in paginated mode, for example to
                             - improve the performance. This enables pagination and configures the
                             - size of the pages.
+                        required: false
                         type: int
                     response_timeout:
                         description: Timeout for the reply coming from the LDAP server in seconds.
+                        required: false
                         type: int
                     connection_suffix:
                         description:
                             - The LDAP connection suffix can be used to distinguish equal named
                             - objects (name conflicts), for example user accounts, from different
                             - LDAP connections.
+                        required: false
                         type: str
             users:
                 description: The LDAP user configuration.
+                required: false
                 type: dict
                 default:
                     user_base_dn: ""
@@ -183,10 +206,12 @@ options:
                         description:
                             - Give a base distinguished name here. All user accounts to
                             - synchronize must be located below this one.
+                        required: false
                         type: str
                         default: ""
                     search_scope:
                         description: Scope to be used in LDAP searches.
+                        required: false
                         type: str
                         choices:
                             - "search_whole_subtree"
@@ -195,20 +220,24 @@ options:
                         default: "search_whole_subtree"
                     search_filter:
                         description: Optional LDAP filter.
+                        required: false
                         type: str
                         default: ""
                     filter_group:
                         description: DN of a group object which is used to filter the users.
+                        required: false
                         type: str
                         default: ""
                     user_id_attribute:
                         description: User ID attribute.
+                        required: false
                         type: str
                         default: ""
                     user_id_case:
                         description:
                             - Convert imported User-IDs to lower case during synchronization or
                             - leave as is.
+                        required: false
                         type: str
                         choices:
                             - "dont_convert_to_lowercase"
@@ -221,6 +250,7 @@ options:
                             - had the choice to replace umlauts with other characters. This option
                             - is still available for backward compatibility, but you are advised
                             - to use the 'keep_umlauts' option for new installations.
+                        required: false
                         type: str
                         choices:
                             - "keep_umlauts"
@@ -228,6 +258,7 @@ options:
                         default: "keep_umlauts"
                     create_users:
                         description: Create user accounts during sync or on the first login.
+                        required: false
                         type: str
                         choices:
                             - "on_login"
@@ -235,6 +266,7 @@ options:
                         default: "on_sync"
             groups:
                 description: The LDAP group configuration.
+                required: false
                 type: dict
                 default:
                     group_base_dn: ""
@@ -246,10 +278,12 @@ options:
                         description:
                             - Give a base distinguished name here. All group accounts to
                             - synchronize must be located below this one.
+                        required: false
                         type: str
                         default: ""
                     search_scope:
                         description: Scope to be used in LDAP searches.
+                        required: false
                         type: str
                         choices:
                             - "search_whole_subtree"
@@ -261,13 +295,16 @@ options:
                             - Define an optional LDAP filter which is used during group related
                             - LDAP searches. It can be used to only handle a subset of the groups
                             - below the given group base DN.
+                        required: false
                         type: str
                         default: ""
                     member_attribute:
                         description: Member attribute.
+                        required: false
                         type: str
             sync_plugins:
                 description: The LDAP sync plug-ins configuration.
+                required: false
                 type: dict
                 default:
                     alias: ""
@@ -289,6 +326,7 @@ options:
                             - Enables and populates the alias attribute of the Setup user by
                             - synchronizing an attribute from the LDAP user account. By default
                             - the LDAP attribute cn is used.
+                        required: false
                         type: str
                         default: ""
                     authentication_expiration:
@@ -297,6 +335,7 @@ options:
                             - check whether or not an already authenticated user should be
                             - deauthenticated, e.g. because the password has changed in LDAP or
                             - the account has been locked.
+                        required: false
                         type: str
                         default: ""
                     disable_notifications:
@@ -306,12 +345,14 @@ options:
                             - notification settings and rules, so make sure that you know what
                             - you do. Moreover you can specify a time range where no notifications
                             - are generated.
+                        required: false
                         type: str
                         default: ""
                     email_address:
                         description:
                             - Synchronizes the email of the LDAP user account into Checkmk when
                             - enabled
+                        required: false
                         type: str
                         default: ""
                     mega_menu_icons:
@@ -320,6 +361,7 @@ options:
                             - options. Have a green icon only for the headlines – the 'topics' –
                             - for lean design. Or have a colored icon for every entry so that over
                             - time you can zoom in more quickly to a specific entry.
+                        required: false
                         type: str
                         default: ""
                         aliases: ["main_menu_icons"]
@@ -328,6 +370,7 @@ options:
                             - With this option enabled you can define if icons in the navigation
                             - bar should show a title or not. This gives you the possibility to
                             - save some space in the UI.
+                        required: false
                         type: str
                         default: ""
                     pager:
@@ -336,6 +379,7 @@ options:
                             - account to the pager attribute of the Setup user accounts, which is
                             - then forwarded to the monitoring core and can be used for
                             - notifications. By default the LDAP attribute mobile is used.
+                        required: false
                         type: str
                         default: ""
                     show_mode:
@@ -345,24 +389,29 @@ options:
                             - entries. With this option you can set a default mode for unvisited
                             - menus. Alternatively, you can enforce to show more, so that the
                             - round button with the three dots is not shown at all.
+                        required: false
                         type: str
                         default: ""
                     ui_sidebar_position:
-                        description: The sidebar position
+                        description: The sidebar position.
+                        required: false
                         type: str
                         default: ""
                     start_url:
                         description: The start URL to display in main frame.
+                        required: false
                         type: str
                         default: ""
                     temperature_unit:
                         description:
                             - Set the temperature unit used for graphs and perfometers. The default
                             - unit can be configured here.
+                        required: false
                         type: str
                         default: ""
                     ui_theme:
-                        description: The user interface theme
+                        description: The user interface theme.
+                        required: false
                         type: str
                         default: ""
                     visibility_of_hosts_or_services:
@@ -370,6 +419,7 @@ options:
                             - When this option is checked, the status GUI will only display hosts
                             - and services that the user is a contact for - even they have the
                             - permission for seeing all objects.
+                        required: false
                         type: str
                         default: ""
                     contact_group_membership:
@@ -484,15 +534,16 @@ options:
                                         type: str
                                         required: false
                                     attribute_to_set:
-                                        description: The attribute to set
+                                        description: The attribute to set.
                                         type: str
                                         required: false
                                     value:
-                                        description: The value to set
+                                        description: The value to set.
                                         type: str
                                         required: false
             other:
                 description: Other config options for the LDAP connection.
+                required: false
                 type: dict
                 default: {}
                 suboptions:
@@ -501,28 +552,39 @@ options:
                             - This option defines the interval of the LDAP synchronization.
                             - This setting is only used by sites which have the automatic user
                             - synchronization enabled.
+                        required: false
                         type: dict
                         default: {}
                         suboptions:
                             days:
-                                description: The sync interval in days
+                                description: The sync interval in days.
+                                required: false
                                 type: int
                                 default: 0
                             hours:
-                                description: The sync interval in hours
+                                description: The sync interval in hours.
+                                required: false
                                 type: int
                                 default: 0
                             minutes:
-                                description: The sync interval in minutes
+                                description: The sync interval in minutes.
+                                required: false
                                 type: int
                                 default: 5
     state:
         description: Desired state of the LDAP.
+        required: false
         type: str
         choices:
         - present
         - absent
         default: present
+
+seealso:
+    - plugin: checkmk.general.ldap_connection
+      plugin_type: lookup
+    - plugin: checkmk.general.ldap_connections
+      plugin_type: lookup
 
 author:
   - Lars Getwan (@lgetwan)

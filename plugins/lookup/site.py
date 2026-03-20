@@ -30,6 +30,11 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.site
+      - plugin: checkmk.general.sites
+        plugin_type: lookup
 """
 
 EXAMPLES = """
@@ -72,9 +77,9 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - The details of a particular site
+      - The configuration of a particular site.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json

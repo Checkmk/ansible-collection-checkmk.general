@@ -16,7 +16,7 @@ DOCUMENTATION = r"""
 ---
 module: discovery
 
-short_description: Discover services in Checkmk.
+short_description: Discover services in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -47,36 +47,52 @@ options:
             - Check the ReDoc documentation in your site for details.
             - In versions 2.4.0 and newer, the modes tabula_rasa and refresh are no longer available,
             - in that case, we perform a add/remove all services and labels, instead.
+        required: false
         type: str
         default: new
         choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels, only_service_labels, monitor_undecided_services]
     do_full_scan:
         description: The option whether to perform a full scan or not. (Bulk mode only).
+        required: false
         type: bool
         default: True
     bulk_size:
         description: The number of hosts to be handled at once. (Bulk mode only).
+        required: false
         type: int
         default: 1
     ignore_errors:
         description: The option whether to ignore errors in single check plugins. (Bulk mode only).
+        required: false
         type: bool
         default: True
     wait_for_completion:
         description: If true, wait for the discovery to finish.
+        required: false
         type: bool
         default: True
     wait_for_previous:
         description: If true, wait for previously running discovery jobs to finish.
+        required: false
         type: bool
         default: True
     wait_timeout:
         description:
             - The time in seconds to wait for (previous/current) completion.
             - Default is -1, which means infinite.
+        required: false
         type: int
         default: -1
 
+
+notes:
+    - Discovery does not automatically activate changes. Run C(checkmk.general.activation)
+      after discovery to apply the discovered services.
+    - When using C(hosts) (bulk mode), hosts are processed in batches controlled by C(bulk_size).
+      A larger C(bulk_size) is faster but may put more load on the Checkmk server.
+
+seealso:
+    - module: checkmk.general.host
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -236,11 +252,11 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always
-    sample: 'Host created.'
+    sample: 'Discovery started.'
 """
 
 from ansible.module_utils.basic import AnsibleModule

@@ -13,7 +13,7 @@ DOCUMENTATION = r"""
 ---
 module: tag_group
 
-short_description: Manage tag groups in Checkmk.
+short_description: Manage tag groups in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -21,12 +21,15 @@ version_added: "0.11.0"
 
 description:
 - Manage tag groups in Checkmk.
+- Tag groups define sets of mutually exclusive host tags. Tags are used in rules to
+  target specific hosts, and can also be used in views and reports.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
     help:
         description: The help text for the tag group.
+        required: false
         default: ""
         type: str
     name:
@@ -38,42 +41,50 @@ options:
         description:
             - Give permission to update or remove the tag on hosts using it automatically.
               B(Use with caution!)
+        required: false
         default: False
         type: bool
     state:
         description: The desired state.
+        required: false
         default: "present"
         choices: ["present", "absent"]
         type: str
     tags:
         description: A list of the tag groups to be created.
+        required: false
         default: []
         type: list
         elements: dict
         aliases: ["choices"]
         suboptions:
             id:
-                description: The id of the tag
+                description: The id of the tag.
                 required: true
                 type: str
             title:
-                description: The title of the tag
+                description: The title of the tag.
                 required: true
                 type: str
             aux_tags:
-                description: The list of aux_tags
+                description: The list of aux_tags.
                 default: []
                 required: false
                 type: list
                 elements: str
     title:
         description: The title of the tag group.
+        required: false
         default: ""
         type: str
     topic:
         description: The topic of the tag group.
+        required: false
         default: ""
         type: str
+
+seealso:
+    - module: checkmk.general.host
 
 author:
     - Max Sickora (@Max-checkmk)
@@ -177,7 +188,7 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

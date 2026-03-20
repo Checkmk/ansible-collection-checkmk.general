@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: timeperiod
 
-short_description: Manage time periods in checkmk.
+short_description: Manage time periods in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -187,7 +187,7 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always
