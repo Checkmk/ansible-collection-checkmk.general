@@ -28,24 +28,26 @@ notes:
   by matching the I(description) field in I(rule_properties).
   If multiple rules match the same description, the module will fail and ask for a unique C(rule_id).
 - Requires Checkmk >= 2.3.0p42 or >= 2.4.0p22 for minimal configuration support.
-- When a key is not explicitely provided, it will not be managed. That means if you set a certain key
-  at some point and later remove it from your Ansible configuration, it will not be remove in the rule.
+- When a key is not explicitly provided, it will not be managed. That means if you set a certain key
+  at some point and later remove it from your Ansible configuration, it will not be removed in the rule.
 
 author:
     - Nicolas Brainez (@nicoske)
 """
 
 EXAMPLES = r"""
-# Create an HTML email notification rule with minimal configuration
-- name: "Create email notification rule"
+# ---
+# Create
+
+- name: "Create an email notification rule"
   checkmk.general.notification:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     rule_config:
       rule_properties:
-        description: "Notify admins on critical issues"
+        description: "Notify all contacts on critical issues"
         comment: "Managed by Ansible"
       notification_method:
         notify_plugin:
@@ -58,20 +60,20 @@ EXAMPLES = r"""
     state: "present"
   register: notification_result
 
-- name: Show the ID of the new notification rule
+- name: "Show the ID of the new notification rule"
   ansible.builtin.debug:
-    msg: "RULE ID: {{ notification_result.content.id }}"
+    msg: "Rule ID: {{ notification_result.content.id }}"
 
-# Create a Slack notification rule
-- name: "Create Slack notification rule"
+- name: "Create a Slack notification rule"
   checkmk.general.notification:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     rule_config:
       rule_properties:
         description: "Slack notifications for critical alerts"
+        comment: "Managed by Ansible"
       notification_method:
         notify_plugin:
           option: "create_notification_with_the_following_parameters"
@@ -85,16 +87,16 @@ EXAMPLES = r"""
           state: "enabled"
     state: "present"
 
-# Create a Microsoft Teams notification rule
-- name: "Create Microsoft Teams notification rule"
+- name: "Create a Microsoft Teams notification rule"
   checkmk.general.notification:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     rule_config:
       rule_properties:
-        description: "Teams notifications for critical alerts"
+        description: "Microsoft Teams notifications for critical alerts"
+        comment: "Managed by Ansible"
       notification_method:
         notify_plugin:
           option: "create_notification_with_the_following_parameters"
@@ -108,17 +110,21 @@ EXAMPLES = r"""
           state: "enabled"
     state: "present"
 
-# Update an existing notification rule by rule_id
-- name: "Update notification rule"
+# ---
+# Update
+
+# Note: Only keys explicitly provided are compared and updated.
+#       Keys absent from rule_config will not be modified in the existing rule.
+- name: "Update a notification rule"
   checkmk.general.notification:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    rule_id: "{{ notification_result.content.id }}"
+    rule_id: "e83e6ed6-a4cc-47ed-900b-65d7ae1dbb3d"
     rule_config:
       rule_properties:
-        description: "Updated notification rule description"
+        description: "Notify all contacts on critical issues"
       notification_method:
         notify_plugin:
           option: "create_notification_with_the_following_parameters"
@@ -126,27 +132,54 @@ EXAMPLES = r"""
             plugin_name: "mail"
     state: "present"
 
-# Delete a notification rule by rule_id
-- name: "Delete notification rule"
+# ---
+# Delete
+
+- name: "Delete a notification rule by rule_id"
   checkmk.general.notification:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    rule_id: "{{ notification_result.content.id }}"
+    rule_id: "e83e6ed6-a4cc-47ed-900b-65d7ae1dbb3d"
     state: "absent"
 
-# Delete a notification rule by description (no rule_id needed)
-- name: "Delete notification rule by description"
+# Note: If multiple rules share the same description, deletion by description will fail.
+#       Use rule_id for unambiguous deletion.
+- name: "Delete a notification rule by description"
   checkmk.general.notification:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     rule_config:
       rule_properties:
-        description: "Notify admins on critical issues"
+        description: "Notify all contacts on critical issues"
     state: "absent"
+
+# ---
+# Authentication with environment variables
+
+- name: "Create a notification rule using environment variables for authentication"
+  checkmk.general.notification:
+    server_url: "{{ lookup('ansible.builtin.env', 'CHECKMK_VAR_SERVER_URL') }}"
+    site: "{{ lookup('ansible.builtin.env', 'CHECKMK_VAR_SITE') }}"
+    api_user: "{{ lookup('ansible.builtin.env', 'CHECKMK_VAR_API_USER') }}"
+    api_secret: "{{ lookup('ansible.builtin.env', 'CHECKMK_VAR_API_SECRET') }}"
+    validate_certs: "{{ lookup('ansible.builtin.env', 'CHECKMK_VAR_VALIDATE_CERTS') }}"
+    rule_config:
+      rule_properties:
+        description: "Notify all contacts on critical issues"
+        comment: "Managed by Ansible"
+      notification_method:
+        notify_plugin:
+          option: "create_notification_with_the_following_parameters"
+          plugin_params:
+            plugin_name: "mail"
+      contact_selection:
+        all_contacts_of_the_notified_object:
+          state: "enabled"
+    state: "present"
 """
 
 RETURN = r"""

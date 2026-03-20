@@ -20,14 +20,19 @@ class ModuleDocFragment(object):
             description:
                 - The notification rule configuration.
                 - Required when I(state=present).
-                - Only the fields you want to set need to be specified.
-                  The Checkmk API will fill in defaults for unspecified fields.
+                - Only the fields you want to configure need to be specified.
+                - On creation, the Checkmk API fills in defaults for unspecified fields.
+                - On update, only the specified fields are compared and updated.
+                  Unspecified fields in the existing rule are left unchanged.
                 - This should match the structure expected by the Checkmk API.
             required: false
             type: dict
             suboptions:
                 rule_properties:
-                    description: Properties of the notification rule.
+                    description:
+                        - Properties of the notification rule.
+                        - The C(description) field is used to identify the rule
+                          when I(rule_id) is not provided.
                     type: dict
                 notification_method:
                     description: The notification method configuration including plugin and bulking settings.
