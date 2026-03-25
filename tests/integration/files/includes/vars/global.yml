@@ -44,7 +44,7 @@ __checkmk_var_testing_environment:
 # Configure default version and edition
 # checkmk_var_edition: "cre"
 # checkmk_var_version: "2.4.0p24"
-# checkmk_var_version: "2.5.0-2026.03.18"
+# checkmk_var_version: "2.5.0b1"
 
 # Use this to override the test-specific sites for local testing:
 # checkmk_var_test_sites:
