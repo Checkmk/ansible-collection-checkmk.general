@@ -33,25 +33,51 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get the attributes of folders /tests and /snmp
+- name: "Get the attributes of a single folder."
   ansible.builtin.debug:
-    msg: "Extended attributes of folder /network: {{ attributes.extensions }}"
+    msg: "Extended attributes of folder /tests: {{ attributes.extensions }}"
+  vars:
+    attributes: "{{
+      lookup('checkmk.general.folder',
+             '~tests',
+             server_url='https://myserver/',
+             site='mysite',
+             api_user='myuser',
+             api_secret='mysecret',
+             validate_certs=False
+             )
+    }}"
+
+- name: "Iterate over multiple folders."
+  ansible.builtin.debug:
+    msg: "Folder {{ item.id }} has attributes: {{ item.extensions }}"
   loop: "{{
            lookup('checkmk.general.folder',
                   '~tests', '~snmp',
-                  server_url=my_server_url,
-                  site=mysite,
-                  api_user=myuser,
-                  api_secret=mysecret,
+                  server_url='https://myserver/',
+                  site='mysite',
+                  api_user='myuser',
+                  api_secret='mysecret',
                   validate_certs=False
                   )
          }}"
+  loop_control:
+    label: "{{ item.id }}"
 
-- name: "Use variables from inventory."
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get folder attributes using inventory variables."
   ansible.builtin.debug:
-    msg: "Extended attributes of folder /network: {{ attributes.extensions }}"
+    msg: "Extended attributes of folder /tests: {{ attributes.extensions }}"
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"

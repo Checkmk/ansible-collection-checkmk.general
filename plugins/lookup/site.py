@@ -33,31 +33,40 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get a site with a particular site id
+- name: "Get the configuration of a remote site."
   ansible.builtin.debug:
-    msg: "site: {{ extensions }}"
+    msg: "Site myremotesite: {{ site_config }}"
   vars:
-    extensions: "{{
+    site_config: "{{
       lookup('checkmk.general.site',
-        'my_remote_site',
-        server_url=server_url,
-        site=site,
-        api_user=api_user,
-        api_secret=api_secret,
+        'myremotesite',
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
         validate_certs=False
       )
     }}"
 
-- name: "Use variables from inventory."
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get a remote site configuration using inventory variables."
   ansible.builtin.debug:
-    msg: "site: {{ extensions }}"
+    msg: "Site myremotesite: {{ site_config }}"
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
     checkmk_var_validate_certs: false
-    attributes: "{{ lookup('checkmk.general.site', 'my_remote_site') }}"
+    site_config: "{{ lookup('checkmk.general.site', 'myremotesite') }}"
 """
 
 RETURN = """

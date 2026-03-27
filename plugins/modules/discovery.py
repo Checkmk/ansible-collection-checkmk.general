@@ -86,50 +86,148 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a single host.
-- name: "Add newly discovered services on host."
+# ---------------------------------------------------------------------------
+# Single host discovery
+# ---------------------------------------------------------------------------
+
+- name: "Add newly discovered services on a host."
   checkmk.general.discovery:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    host_name: "my_host"
+    host_name: "myhost"
     state: "new"
-- name: "Add newly discovered services, update labels and remove vanished services on host."
+
+- name: "Add newly discovered services, update labels, and remove vanished services on a host."
   checkmk.general.discovery:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    host_name: "my_host"
+    host_name: "myhost"
     state: "fix_all"
-- name: "Add newly discovered services on hosts and wait up to 30s for finishing. (Bulk)"
+
+- name: "Remove all vanished services from a host."
   checkmk.general.discovery:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    hosts: ["my_host_0", "my_host_1"]
-    wait_timeout: 30
+    host_name: "myhost"
+    state: "remove"
+
+- name: "Discover only host labels on a host."
+  checkmk.general.discovery:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    state: "only_host_labels"
+
+- name: "Discover only service labels on a host."
+  checkmk.general.discovery:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    state: "only_service_labels"
+
+- name: "Move all undecided services to monitored on a host."
+  checkmk.general.discovery:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    state: "monitor_undecided_services"
+
+# ---------------------------------------------------------------------------
+# Bulk discovery
+# ---------------------------------------------------------------------------
+
+- name: "Add newly discovered services on multiple hosts."
+  checkmk.general.discovery:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    hosts:
+      - "myhost01"
+      - "myhost02"
     state: "new"
-- name: "Tabula rasa, the bulk way."
+
+- name: "Add newly discovered services, update labels, and remove vanished services on multiple hosts."
   checkmk.general.discovery:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    hosts: ["my_host_0", "my_host_1"]
-    wait_for_completion: false
-    state: "tabula_rasa"
-- name: "Add newly discovered services, update labels and remove vanished services on host; 3 at once (Bulk)"
+    hosts:
+      - "myhost01"
+      - "myhost02"
+    state: "fix_all"
+
+- name: "Bulk discovery with a timeout of 30 seconds."
   checkmk.general.discovery:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    hosts: ["my_host_0", "my_host_1", "my_host_2", "my_host_3", "my_host_4", "my_host_5"]
+    hosts:
+      - "myhost01"
+      - "myhost02"
+    state: "new"
+    wait_timeout: 30
+
+- name: "Bulk discovery processing 3 hosts at a time."
+  checkmk.general.discovery:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    hosts:
+      - "myhost01"
+      - "myhost02"
+      - "myhost03"
+      - "myhost04"
+      - "myhost05"
+      - "myhost06"
     state: "fix_all"
     bulk_size: 3
+
+- name: "Start bulk discovery without waiting for completion."
+  checkmk.general.discovery:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    hosts:
+      - "myhost01"
+      - "myhost02"
+    state: "fix_all"
+    wait_for_completion: false
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Add newly discovered services using environment variables for authentication."
+  checkmk.general.discovery:
+    host_name: "myhost"
+    state: "new"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""

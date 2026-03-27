@@ -27,28 +27,37 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: "Show Checkmk version"
-  debug:
-    msg: "Server version is {{ version }}"
-  vars:
-    version: "{{ lookup('checkmk.general.version',
-                   server_url=my_url,
-                   site=mysite,
-                   validate_certs=False,
-                   api_user=myuser,
-                   api_secret=mysecret
-               )}}"
-
-- name: "Use variables from inventory."
+- name: "Get the Checkmk server version."
   ansible.builtin.debug:
     msg: "Server version is {{ version }}"
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    version: "{{ lookup('checkmk.general.version',
+                   server_url='https://myserver/',
+                   site='mysite',
+                   api_user='myuser',
+                   api_secret='mysecret',
+                   validate_certs=False
+               )}}"
+
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get the Checkmk server version using inventory variables."
+  ansible.builtin.debug:
+    msg: "Server version is {{ version }}"
+  vars:
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
     checkmk_var_validate_certs: false
-    attributes: "{{ lookup('checkmk.general.version') }}"
+    version: "{{ lookup('checkmk.general.version') }}"
 """
 
 RETURN = """
