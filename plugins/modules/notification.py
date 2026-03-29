@@ -285,7 +285,7 @@ class NotificationRuleAPI(CheckmkAPI):
             return (
                 "Missing parameter 'rule_id' or "
                 "'rule_config.rule_properties.description' "
-                "to identify the notification rule to delete."
+                "to identify the notification rule."
             )
 
     def _find_rule_by_description(self, description):
