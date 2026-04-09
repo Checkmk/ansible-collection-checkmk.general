@@ -27,7 +27,7 @@ notes:
 - When I(rule_id) is not provided, the module will try to find an existing rule
   by matching the I(description) field in I(rule_properties).
   If multiple rules match the same description, the module will fail and ask for a unique C(rule_id).
-- Requires Checkmk >= 2.3.0p42 or >= 2.4.0p22 for minimal configuration support.
+- Requires Checkmk >= 2.4.0p22 to enable minimal configuration input. Older version will need all options set, not only relevant ones.
 - When a key is not explicitly provided, it will not be managed. That means if you set a certain key
   at some point and later remove it from your Ansible configuration, it will not be removed in the rule.
 
