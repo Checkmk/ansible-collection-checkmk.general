@@ -147,7 +147,7 @@ EXAMPLES = r"""
     folder: "/"
     attributes:
       alias: "My Host"
-      ipaddress: "192.168.1.10"
+      ipaddress: "127.0.0.1"
     state: "present"
 
 - name: "Create a host pinned to a specific monitoring site."
@@ -269,6 +269,11 @@ EXAMPLES = r"""
     name: "myhost"
     folder: "/"
     state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""

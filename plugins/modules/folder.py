@@ -155,7 +155,7 @@ EXAMPLES = r"""
     api_secret: "mysecret"
     path: "/myfolder"
     update_attributes:
-      tag_networking: "dmz"
+      tag_networking: "wan"
     state: "present"
 
 - name: "Remove specific attributes from a folder."

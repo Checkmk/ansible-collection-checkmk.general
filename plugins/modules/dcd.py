@@ -124,7 +124,7 @@ EXAMPLES = r"""
     api_secret: "mysecret"
     dcd_config:
       dcd_id: "mypiggyback"
-      title: "My Piggyback DCD"
+      title: "My Piggyback Connection"
       site: "mysite"
       connector:
         connector_type: "piggyback"
@@ -145,7 +145,7 @@ EXAMPLES = r"""
     api_secret: "mysecret"
     dcd_config:
       dcd_id: "mypiggyback"
-      title: "My Piggyback DCD"
+      title: "My Piggyback Connection"
       site: "mysite"
       connector:
         connector_type: "piggyback"
@@ -171,7 +171,7 @@ EXAMPLES = r"""
     api_secret: "mysecret"
     dcd_config:
       dcd_id: "mypiggyback"
-      title: "My Piggyback DCD"
+      title: "My Piggyback Connection"
       comment: "Full configuration with custom timing and host pattern matching."
       site: "mysite"
       connector:

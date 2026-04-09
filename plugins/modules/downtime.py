@@ -29,7 +29,7 @@ options:
               default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
               a host or host/service will be removed.
         type: str
-        default: Created by Ansible
+        default: Managed by Ansible
     duration:
         description:
             - Duration in minutes. When set, the downtime does not begin automatically at a nominated time,
@@ -112,7 +112,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Created by Ansible"
+    comment: "Managed by Ansible"
     end_after:
       hours: 2
 
@@ -123,7 +123,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Created by Ansible"
+    comment: "Managed by Ansible"
     start_time: "2024-03-25T22:00:00Z"
     end_time: "2024-03-26T02:00:00Z"
 
@@ -134,7 +134,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Created by Ansible"
+    comment: "Managed by Ansible"
     start_after:
       minutes: 30
     end_after:
@@ -160,7 +160,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Created by Ansible"
+    comment: "Managed by Ansible"
     state: "absent"
 
 # ---------------------------------------------------------------------------
@@ -174,7 +174,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Created by Ansible"
+    comment: "Managed by Ansible"
     service_descriptions:
       - "Filesystem /"
     end_after:
@@ -187,7 +187,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Created by Ansible"
+    comment: "Managed by Ansible"
     start_time: "2024-03-25T22:00:00Z"
     end_time: "2024-03-26T02:00:00Z"
     service_descriptions:
@@ -217,7 +217,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Created by Ansible"
+    comment: "Managed by Ansible"
     service_descriptions:
       - "CPU utilization"
       - "Memory"
@@ -234,7 +234,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "{{ item }}"
-    comment: "Created by Ansible"
+    comment: "Managed by Ansible"
     start_time: "2024-03-25T22:00:00Z"
     end_time: "2024-03-26T02:00:00Z"
   loop:
@@ -249,7 +249,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "{{ item }}"
-    comment: "Created by Ansible"
+    comment: "Managed by Ansible"
     state: "absent"
   loop:
     - "myhost01"
@@ -314,10 +314,10 @@ EXAMPLES = r"""
     end_after:
       hours: 2
   environment:
-    CHECKMK_VAR_server_url: "https://myserver/"
-    CHECKMK_VAR_site: "mysite"
-    CHECKMK_VAR_api_user: "myuser"
-    CHECKMK_VAR_api_secret: "mysecret"
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""
@@ -597,7 +597,7 @@ def run_module():
     argument_spec = base_argument_spec()
     argument_spec.update(
         host_name=dict(type="str", required=True),
-        comment=dict(type="str", default="Created by Ansible"),
+        comment=dict(type="str", default="Managed by Ansible"),
         duration=dict(type="int", default=0),
         start_after=dict(type="dict", default={}),
         start_time=dict(type="str", default=""),

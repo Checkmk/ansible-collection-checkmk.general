@@ -39,7 +39,7 @@ EXAMPLES = """
   vars:
     ldap_config: "{{
       lookup('checkmk.general.ldap_connection',
-        'my_ldap',
+        'my_ldap_connection',
         server_url='https://myserver/',
         site='mysite',
         api_user='myuser',
@@ -66,7 +66,7 @@ EXAMPLES = """
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
     checkmk_var_validate_certs: false
-    ldap_config: "{{ lookup('checkmk.general.ldap_connection', 'my_ldap') }}"
+    ldap_config: "{{ lookup('checkmk.general.ldap_connection', 'my_ldap_connection') }}"
 """
 
 RETURN = """

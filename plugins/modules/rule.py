@@ -127,7 +127,7 @@ EXAMPLES = r"""
         service_labels: []
       properties:
         description: "Allow higher memory usage on myhost01"
-        comment: "Created by Ansible"
+        comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
       location:
@@ -173,7 +173,7 @@ EXAMPLES = r"""
         service_labels: []
       properties:
         description: "Allow even higher memory usage on myhost02"
-        comment: "Created by Ansible"
+        comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (85.0, 99.0)}"
       location:
@@ -200,7 +200,7 @@ EXAMPLES = r"""
             value: "yes"
       properties:
         description: "Allow higher memory usage on Checkmk servers"
-        comment: "Created by Ansible"
+        comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
       location:
@@ -228,7 +228,7 @@ EXAMPLES = r"""
         service_label_groups: []
       properties:
         description: "Allow higher memory usage on Linux hosts in mysite"
-        comment: "Created by Ansible"
+        comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
       location:
@@ -253,7 +253,7 @@ EXAMPLES = r"""
   loop: "{{
            lookup('checkmk.general.rules',
              ruleset='checkgroup_parameters:memory_percentage_used',
-             comment_regex='Created by Ansible',
+             comment_regex='Managed by Ansible',
              server_url='https://myserver/',
              site='mysite',
              api_user='myuser',
@@ -278,13 +278,18 @@ EXAMPLES = r"""
     rule:
       properties:
         description: "Allow higher memory usage"
-        comment: "Created by Ansible"
+        comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
       location:
         folder: "/"
         position: "bottom"
     state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""

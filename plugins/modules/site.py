@@ -47,7 +47,7 @@ EXAMPLES = r"""
             socket_type: "tcp"
             port: 6557
             encrypted: true
-            host: "remote.example.com"
+            host: "myremotesite.example.com"
             verify: true
           proxy:
             use_livestatus_daemon: "direct"
@@ -57,7 +57,7 @@ EXAMPLES = r"""
           url_prefix: "/myremotesite/"
         configuration_connection:
           enable_replication: true
-          url_of_remote_site: "https://remote.example.com/myremotesite/check_mk/"
+          url_of_remote_site: "https://myremotesite.example.com/myremotesite/check_mk/"
         basic_settings:
           site_id: "myremotesite"
           alias: "My Remote Site"
@@ -111,6 +111,11 @@ EXAMPLES = r"""
   checkmk.general.site:
     site_id: "myremotesite"
     state: "absent"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""

@@ -62,7 +62,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    signature_key_id: 1
+    signature_key_id: 12abcd34-e56f-78gh-9101-i11213j14k15
     signature_key_passphrase: "mypassphrase"
     state: "signed"
 
@@ -72,7 +72,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    signature_key_id: 1
+    signature_key_id: 12abcd34-e56f-78gh-9101-i11213j14k15
     signature_key_passphrase: "mypassphrase"
     state: "baked_signed"
 

@@ -11,12 +11,12 @@ DOCUMENTATION = r"""
 ---
 module: ldap
 
-short_description: Manage LDAP connectors.
+short_description: Manage LDAP connections.
 
 version_added: "6.6.0"
 
 description:
-  - Manage LDAP connectors, including creation, updating, and deletion.
+  - Manage LDAP connections, including creation, updating, and deletion.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -530,10 +530,10 @@ author:
 
 EXAMPLES = r"""
 # ---------------------------------------------------------------------------
-# Create and delete LDAP connectors
+# Create and delete LDAP connections
 # ---------------------------------------------------------------------------
 
-- name: "Create an LDAP connector with minimal configuration."
+- name: "Create an LDAP connection with minimal configuration."
   checkmk.general.ldap:
     server_url: "https://myserver/"
     site: "mysite"
@@ -543,14 +543,14 @@ EXAMPLES = r"""
       general_properties:
         id: "my_ldap"
         description: "My LDAP connection"
-        comment: "Created by Ansible"
+        comment: "Managed by Ansible"
       ldap_connection:
         directory_type:
-          type: "active_directory_manual"
+          type: "open_ldap"
           ldap_server: "ldap.example.com"
     state: "present"
 
-- name: "Delete an LDAP connector."
+- name: "Delete an LDAP connection."
   checkmk.general.ldap:
     server_url: "https://myserver/"
     site: "mysite"
@@ -562,10 +562,10 @@ EXAMPLES = r"""
     state: "absent"
 
 # ---------------------------------------------------------------------------
-# Create a fully configured LDAP connector
+# Create a fully configured LDAP connection
 # ---------------------------------------------------------------------------
 
-- name: "Create a fully configured LDAP connector."
+- name: "Create a fully configured LDAP connection."
   checkmk.general.ldap:
     server_url: "https://myserver/"
     site: "mysite"
@@ -575,7 +575,7 @@ EXAMPLES = r"""
       general_properties:
         id: "my_ldap"
         description: "Corporate Active Directory"
-        comment: "Created by Ansible"
+        comment: "Managed by Ansible"
         rule_activation: "activated"
       ldap_connection:
         directory_type:
@@ -620,10 +620,10 @@ EXAMPLES = r"""
     state: "present"
 
 # ---------------------------------------------------------------------------
-# Update all existing LDAP connectors using a lookup
+# Update all existing LDAP connections using a lookup
 # ---------------------------------------------------------------------------
 
-- name: "Update the comment on all existing LDAP connectors."
+- name: "Update the comment on all existing LDAP connections."
   checkmk.general.ldap:
     server_url: "https://myserver/"
     site: "mysite"
@@ -654,18 +654,23 @@ EXAMPLES = r"""
 #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
 #   CHECKMK_VAR_VALIDATE_CERTS
 
-- name: "Create an LDAP connector using environment variables for authentication."
+- name: "Create an LDAP connection using environment variables for authentication."
   checkmk.general.ldap:
     ldap_config:
       general_properties:
         id: "my_ldap"
         description: "My LDAP connection"
-        comment: "Created by Ansible"
+        comment: "Managed by Ansible"
       ldap_connection:
         directory_type:
           type: "active_directory_manual"
           ldap_server: "ldap.example.com"
     state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""

@@ -149,7 +149,7 @@ EXAMPLES = r"""
     fullname: "John Smith"
     email: "john.smith@example.com"
     auth_type: "password"
-    password: "initial_password"  # Must meet the Checkmk password policy
+    password: "initial_password"
     roles:
       - "user"
     state: "present"
@@ -278,6 +278,11 @@ EXAMPLES = r"""
     auth_type: "password"
     password: "initial_password"
     state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""

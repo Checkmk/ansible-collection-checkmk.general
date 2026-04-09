@@ -88,7 +88,7 @@ EXAMPLES = """
     lookup('checkmk.general.rules',
         ruleset='active_checks:http',
         description_regex='myservice.*',
-        comment_regex='Created by Ansible',
+        comment_regex='Managed by Ansible',
         server_url='https://myserver/',
         site='mysite',
         api_user='myuser',
