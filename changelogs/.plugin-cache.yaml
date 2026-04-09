@@ -142,6 +142,11 @@ plugins:
       name: ldap
       namespace: ''
       version_added: 6.6.0
+    notification:
+      description: Manage notification rules in Checkmk.
+      name: notification
+      namespace: ''
+      version_added: 7.3.0
     password:
       description: Manage passwords in Checkmk.
       name: password
@@ -182,4 +187,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 7.2.3
+version: 7.3.0
