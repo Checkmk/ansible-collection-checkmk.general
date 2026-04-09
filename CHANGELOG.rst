@@ -4,6 +4,31 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v7.3.0
+======
+
+Release Summary
+---------------
+
+Time to wake up for spring - The notification module is here!
+
+Major Changes
+-------------
+
+- Notification module - Add module to manage notification rules.
+
+Known Issues
+------------
+
+- Notification module - Before Checkmk 2.4.0p14, rule creation always creates new notification parameters.
+- Notification module - Idempotency relies on the notification rule ID and falls back to the description. If none is provided, the module will fail.
+- Notification module - The module is not tested against Checkmk 2.3 due to a shortcoming of the REST API. It should work, but configuration will be tedious, as all options need to be configured, not only relevant ones. We recommend upgrading your Checkmk.
+
+New Modules
+-----------
+
+- checkmk.general.notification - Manage notification rules in Checkmk.
+
 v7.2.3
 ======
 
