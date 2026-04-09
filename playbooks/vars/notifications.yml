@@ -1,0 +1,44 @@
+---
+checkmk_var_notification_rules:
+  # Mail
+  - rule_properties:
+      description: "Notify admins on critical issues"
+      comment: "Managed by Ansible"
+    notification_method:
+      notify_plugin:
+        option: "create_notification_with_the_following_parameters"
+        plugin_params:
+          plugin_name: "mail"
+    contact_selection:
+      all_contacts_of_the_notified_object:
+        state: "enabled"
+  # Slack
+  - rule_properties:
+      description: "Slack notifications for critical alerts"
+      comment: "Managed by Ansible"
+    notification_method:
+      notify_plugin:
+        option: "create_notification_with_the_following_parameters"
+        plugin_params:
+          plugin_name: "slack"
+          webhook_url:
+            option: "explicit"
+            url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+    contact_selection:
+      all_contacts_of_the_notified_object:
+        state: "enabled"
+  # Microsoft Teams
+  - rule_properties:
+      description: "Teams notifications for critical alerts"
+      comment: "Managed by Ansible"
+    notification_method:
+      notify_plugin:
+        option: "create_notification_with_the_following_parameters"
+        plugin_params:
+          plugin_name: "msteams"
+          webhook_url:
+            option: "explicit"
+            url: "https://outlook.office.com/webhook/YOUR/WEBHOOK/URL"
+    contact_selection:
+      all_contacts_of_the_notified_object:
+        state: "enabled"

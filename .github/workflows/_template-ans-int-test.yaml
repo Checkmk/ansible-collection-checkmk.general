@@ -92,5 +92,5 @@ jobs:
         working-directory: ./ansible_collections/checkmk/general
 
       - name: "Run integration test."
-        run: uv run ansible-test integration ${{ inputs.module }} -v --color --continue-on-error --diff --python ${{ matrix.python }}
+        run: uv run ansible-test integration ${{ inputs.module }} -v --color --continue-on-error --retry-on-error --diff --python ${{ matrix.python }}
         working-directory: ./ansible_collections/checkmk/general

@@ -69,6 +69,11 @@ module:host_group:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/host_group.py'
 
+module:notification:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/notification.py'
+
 module:password:
   - any:
       - changed-files:
