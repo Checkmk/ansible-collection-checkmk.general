@@ -33,31 +33,40 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: Get a site with a particular ldap connection id
+- name: "Get the configuration of an LDAP connection."
   ansible.builtin.debug:
-    msg: "ldap connection: {{ extensions }}"
+    msg: "LDAP connection: {{ ldap_config }}"
   vars:
-    extensions: "{{
+    ldap_config: "{{
       lookup('checkmk.general.ldap_connection',
         'my_ldap_connection',
-        server_url=server_url,
-        site=site,
-        api_user=api_user,
-        api_secret=api_secret,
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
         validate_certs=False
       )
     }}"
 
-- name: "Use variables from inventory."
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get an LDAP connection configuration using inventory variables."
   ansible.builtin.debug:
-    msg: "ldap connection: {{ extensions }}"
+    msg: "LDAP connection: {{ ldap_config }}"
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
     checkmk_var_validate_certs: false
-    attributes: "{{ lookup('checkmk.general.ldap_connection', 'my_ldap_connection') }}"
+    ldap_config: "{{ lookup('checkmk.general.ldap_connection', 'my_ldap_connection') }}"
 """
 
 RETURN = """

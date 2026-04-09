@@ -59,63 +59,131 @@ author:
 """
 
 EXAMPLES = r"""
-# Creating and Updating is the same.
-- name: "Create a new time period. (Attributes in one line)"
+# ---------------------------------------------------------------------------
+# Create and delete time periods
+# ---------------------------------------------------------------------------
+# Creating and updating use the same task structure.
+
+- name: "Create a time period covering business hours on weekdays."
   checkmk.general.timeperiod:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "worktime"
-    alias: "Worktime"
-    active_time_ranges: [{"day": "all", "time_ranges": [{"start": "09:00:00", "end": "17:00:00"}]}]
-    exceptions: [{"date": "2023-12-24", "time_ranges": [{"start": "10:00:00", "end": "12:00:00"}]}]
-    exclude: '[ "Lunchtime" ]'
+    name: "workhours"
+    alias: "Work Hours"
+    active_time_ranges:
+      - day: "monday"
+        time_ranges:
+          - start: "08:00"
+            end: "17:00"
+      - day: "tuesday"
+        time_ranges:
+          - start: "08:00"
+            end: "17:00"
+      - day: "wednesday"
+        time_ranges:
+          - start: "08:00"
+            end: "17:00"
+      - day: "thursday"
+        time_ranges:
+          - start: "08:00"
+            end: "17:00"
+      - day: "friday"
+        time_ranges:
+          - start: "08:00"
+            end: "17:00"
     state: "present"
 
-- name: "Create a new time period. (Attributes in multiple lines)"
+- name: "Create a time period using 'all' as a shorthand for every day."
   checkmk.general.timeperiod:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "worktime"
-    alias: "Worktime"
-    active_time_ranges: [
-      {
-        "day": "all",
-        "time_ranges": [
-          {
-            "start": "8:00",
-            "end": "17:00"
-          }
-        ]
-      },
-    ]
-    exceptions: [
-      {
-        "date": "2023-12-24",
-        "time_ranges": [
-          {
-            "start": "8:00",
-            "end": "12:00"
-          }
-        ]
-      },
-    ]
-    exclude: [
-      "Lunchtime"
-    ]
+    name: "always"
+    alias: "Always"
+    active_time_ranges:
+      - day: "all"
+        time_ranges:
+          - start: "00:00"
+            end: "24:00"
+    state: "present"
+
+- name: "Create a time period with holiday exceptions."
+  checkmk.general.timeperiod:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "workhours"
+    alias: "Work Hours"
+    active_time_ranges:
+      - day: "all"
+        time_ranges:
+          - start: "08:00"
+            end: "17:00"
+    exceptions:
+      - date: "2024-12-24"
+        time_ranges:
+          - start: "08:00"
+            end: "12:00"
+      - date: "2024-12-31"
+        time_ranges:
+          - start: "08:00"
+            end: "12:00"
+    state: "present"
+
+- name: "Create a time period that excludes another time period."
+  checkmk.general.timeperiod:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "workhours_no_lunch"
+    alias: "Work Hours (no lunch)"
+    active_time_ranges:
+      - day: "all"
+        time_ranges:
+          - start: "08:00"
+            end: "17:00"
+    exclude:
+      - "Lunchtime"
     state: "present"
 
 - name: "Delete a time period."
   checkmk.general.timeperiod:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "worktime"
+    name: "workhours"
     state: "absent"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a time period using environment variables for authentication."
+  checkmk.general.timeperiod:
+    name: "workhours"
+    alias: "Work Hours"
+    active_time_ranges:
+      - day: "all"
+        time_ranges:
+          - start: "08:00"
+            end: "17:00"
+    state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""

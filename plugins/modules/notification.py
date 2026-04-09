@@ -157,16 +157,17 @@ EXAMPLES = r"""
         description: "Notify all contacts on critical issues"
     state: "absent"
 
-# ---
-# Authentication with environment variables
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
 
-- name: "Create a notification rule using environment variables for authentication"
+- name: "Create a notification rule using environment variables for authentication."
   checkmk.general.notification:
-    server_url: "{{ lookup('ansible.builtin.env', 'CHECKMK_VAR_SERVER_URL') }}"
-    site: "{{ lookup('ansible.builtin.env', 'CHECKMK_VAR_SITE') }}"
-    api_user: "{{ lookup('ansible.builtin.env', 'CHECKMK_VAR_API_USER') }}"
-    api_secret: "{{ lookup('ansible.builtin.env', 'CHECKMK_VAR_API_SECRET') }}"
-    validate_certs: "{{ lookup('ansible.builtin.env', 'CHECKMK_VAR_VALIDATE_CERTS') }}"
     rule_config:
       rule_properties:
         description: "Notify all contacts on critical issues"
@@ -180,6 +181,11 @@ EXAMPLES = r"""
         all_contacts_of_the_notified_object:
           state: "enabled"
     state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""

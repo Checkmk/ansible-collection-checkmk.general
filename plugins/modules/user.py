@@ -135,91 +135,154 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a user.
-- name: "Create a user."
-  checkmk.general.user:
-    server_url: "http://myserver/"
-    site: "local"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    name: "krichards"
-    fullname: "Keith Richards"
-    email: "keith.richards@rollingstones.com"
-    auth_type: "password"
-    password: "Open-G"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
-    contactgroups:
-      - "rolling_stones"
-      - "glimmer_twins"
-      - "x-pensive_winos"
-      - "potc_cast"
+# ---------------------------------------------------------------------------
+# Create and delete users
+# ---------------------------------------------------------------------------
 
-# Create an automation user.
-- name: "Create an automation user."
+- name: "Create a standard user with password authentication."
   checkmk.general.user:
-    server_url: "http://myserver/"
-    site: "local"
+    server_url: "https://myserver/"
+    site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "registration"
-    fullname: "Registration User"
-    auth_type: "automation"
-    password: "ZGSDHUVDSKJHSDF"
-    roles:
-      - "registration"
-    state: "present"
-
-# Create a user with the Checkmk Managed Edition (CME), using the `customer` parameter.
-- name: "Create a user."
-  checkmk.general.user:
-    server_url: "http://myserver/"
-    site: "local"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    name: "krichards"
-    fullname: "Keith Richards"
-    email: "keith.richards@rollingstones.com"
-    customer: "provider"
+    name: "jsmith"
+    fullname: "John Smith"
+    email: "john.smith@example.com"
     auth_type: "password"
-    password: "Open-G"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
-    contactgroups:
-      - "rolling_stones"
-      - "glimmer_twins"
-      - "x-pensive_winos"
-      - "potc_cast"
-
-# Create a detailed user.
-- name: "Create a more complex user."
-  checkmk.general.user:
-    server_url: "http://myserver/"
-    site: "local"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    name: "horst"
-    fullname: "Horst Schlämmer"
-    customer: "provider"
-    auth_type: "password"
-    password: "uschi"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
-    enforce_password_change: true
-    email: "checker@grevenbroich.de"
-    fallback_contact: true
-    pager: 089-123456789
-    contactgroups:
-      - "sport"
-      - "vereinsgeschehen"
-      - "lokalpolitik"
-    disable_notifications: true
-    disable_notifications_timerange: { "start_time": "2023-02-23T15:06:48+00:00", "end_time": "2023-02-23T16:06:48+00:00"}
-    language: "de"
+    password: "initial_password"
     roles:
       - "user"
-    authorized_sites:
-      - "{{ mysite }}"
+    state: "present"
+
+- name: "Create an automation user for API access."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "automation_ansible"
+    fullname: "Ansible Automation User"
+    auth_type: "automation"
+    password: "mysecretautomationsecret"
+    roles:
+      - "admin"
+    state: "present"
+
+- name: "Delete a user."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "jsmith"
+    state: "absent"
+
+# ---------------------------------------------------------------------------
+# Create a user with contact groups and notification settings
+# ---------------------------------------------------------------------------
+
+- name: "Create a user assigned to contact groups."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "jsmith"
+    fullname: "John Smith"
+    email: "john.smith@example.com"
+    auth_type: "password"
+    password: "initial_password"
+    contactgroups:
+      - "linux_admins"
+      - "network_team"
+    roles:
+      - "user"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Create a fully configured user
+# ---------------------------------------------------------------------------
+
+- name: "Create a user with all available options."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "jsmith"
+    fullname: "John Smith"
+    auth_type: "password"
+    password: "initial_password"
+    enforce_password_change: true
+    email: "john.smith@example.com"
+    pager: "+49-89-123456789"
+    fallback_contact: false
+    contactgroups:
+      - "linux_admins"
+    roles:
+      - "user"
+    language: "en"
     interface_theme: "dark"
     sidebar_position: "right"
     navigation_bar_icons: "show"
-    mega_menu_icons: "entry"
+    main_menu_icons: "topic"
     show_mode: "default_show_more"
     state: "present"
+
+# ---------------------------------------------------------------------------
+# Reset a user's password
+# ---------------------------------------------------------------------------
+
+- name: "Reset a user's password."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "jsmith"
+    auth_type: "password"
+    password: "new_password"
+    state: "reset_password"
+
+# ---------------------------------------------------------------------------
+# Checkmk Managed Edition (CME)
+# ---------------------------------------------------------------------------
+
+- name: "Create a user and assign them to a customer (CME only)."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "jsmith"
+    fullname: "John Smith"
+    email: "john.smith@example.com"
+    customer: "provider"
+    auth_type: "password"
+    password: "initial_password"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a user using environment variables for authentication."
+  checkmk.general.user:
+    name: "jsmith"
+    fullname: "John Smith"
+    auth_type: "password"
+    password: "initial_password"
+    state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""

@@ -44,34 +44,55 @@ author:
 """
 
 EXAMPLES = r"""
-# Bake all agents without signing, as example in a fresh installation without a signature key.
+# ---------------------------------------------------------------------------
+# Baking and signing agents
+# ---------------------------------------------------------------------------
+
 - name: "Bake all agents without signing."
   checkmk.general.bakery:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     state: "baked"
-# Sign all agents.
-- name: "Sign all agents."
+
+- name: "Sign all agents with an existing signing key."
   checkmk.general.bakery:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     signature_key_id: 12abcd34-e56f-78gh-9101-i11213j14k15
-    signature_key_passphrase: "my_secret_passphrase"
+    signature_key_passphrase: "mypassphrase"
     state: "signed"
-# Bake and sign all agents.
-- name: "Bake and sign all agents."
+
+- name: "Bake and sign all agents in one step."
   checkmk.general.bakery:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     signature_key_id: 12abcd34-e56f-78gh-9101-i11213j14k15
-    signature_key_passphrase: "my_secret_passphrase"
+    signature_key_passphrase: "mypassphrase"
     state: "baked_signed"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Bake all agents using environment variables for authentication."
+  checkmk.general.bakery:
+    state: "baked"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""

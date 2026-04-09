@@ -29,7 +29,7 @@ options:
               default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
               a host or host/service will be removed.
         type: str
-        default: Created by Ansible
+        default: Managed by Ansible
     duration:
         description:
             - Duration in minutes. When set, the downtime does not begin automatically at a nominated time,
@@ -91,45 +91,233 @@ author:
 """
 
 EXAMPLES = r"""
-- name: "Schedule host downtime."
+# ---------------------------------------------------------------------------
+# Host downtimes - scheduling
+# ---------------------------------------------------------------------------
+
+- name: "Schedule a host downtime starting now, ending in 2 hours."
   checkmk.general.downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ mysite }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: my_host
-    start_after:
-      minutes: 5
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
     end_after:
-      days: 7
-      hours: 5
+      hours: 2
 
-- name: "Schedule service downtimes for two given services."
+- name: "Schedule a host downtime with a comment, starting now, ending in 2 hours."
   checkmk.general.downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ mysite }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: my_host
-    start_time: "2022-03-24T20:39:28Z"
-    end_time: "2022-03-24T20:40:28Z"
-    state: "present"
-    duration: 0
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    comment: "Managed by Ansible"
+    end_after:
+      hours: 2
+
+- name: "Schedule a host downtime using absolute start and end times."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    comment: "Managed by Ansible"
+    start_time: "2024-03-25T22:00:00Z"
+    end_time: "2024-03-26T02:00:00Z"
+
+- name: "Schedule a host downtime starting in 30 minutes and lasting 4 hours."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    comment: "Managed by Ansible"
+    start_after:
+      minutes: 30
+    end_after:
+      hours: 4
+
+# ---------------------------------------------------------------------------
+# Host downtimes - removal
+# ---------------------------------------------------------------------------
+
+- name: "Remove all downtimes from a host."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    state: "absent"
+
+- name: "Remove only host downtimes matching a specific comment."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    comment: "Managed by Ansible"
+    state: "absent"
+
+# ---------------------------------------------------------------------------
+# Service downtimes - scheduling
+# ---------------------------------------------------------------------------
+
+- name: "Schedule a downtime for a single service on a host."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    comment: "Managed by Ansible"
+    service_descriptions:
+      - "Filesystem /"
+    end_after:
+      hours: 1
+
+- name: "Schedule downtimes for multiple services on a host using absolute times."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    comment: "Managed by Ansible"
+    start_time: "2024-03-25T22:00:00Z"
+    end_time: "2024-03-26T02:00:00Z"
     service_descriptions:
       - "CPU utilization"
       - "Memory"
 
-- name: "Delete all service downtimes for two given services."
+# ---------------------------------------------------------------------------
+# Service downtimes - removal
+# ---------------------------------------------------------------------------
+
+- name: "Remove all downtimes for specific services on a host."
   checkmk.general.downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ mysite }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: my_host
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
     service_descriptions:
       - "CPU utilization"
       - "Memory"
-    state: absent
+    state: "absent"
+
+- name: "Remove service downtimes matching a specific comment."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    comment: "Managed by Ansible"
+    service_descriptions:
+      - "CPU utilization"
+      - "Memory"
+    state: "absent"
+
+# ---------------------------------------------------------------------------
+# Looping over multiple hosts
+# ---------------------------------------------------------------------------
+
+- name: "Schedule a host downtime for multiple hosts."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "{{ item }}"
+    comment: "Managed by Ansible"
+    start_time: "2024-03-25T22:00:00Z"
+    end_time: "2024-03-26T02:00:00Z"
+  loop:
+    - "myhost01"
+    - "myhost02"
+    - "myhost03"
+
+- name: "Remove host downtimes for multiple hosts."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "{{ item }}"
+    comment: "Managed by Ansible"
+    state: "absent"
+  loop:
+    - "myhost01"
+    - "myhost02"
+    - "myhost03"
+
+# ---------------------------------------------------------------------------
+# Flexible (triggered) downtime
+# ---------------------------------------------------------------------------
+# A flexible downtime does not start at a fixed time. Instead, it starts when
+# a non-OK state appears for the host or service within the configured time
+# window. The 'duration' parameter controls how long the downtime lasts once
+# triggered. 'start_time' and 'end_time' define the window during which the
+# trigger is active.
+# Refer to the official user guide for more details on the feature:
+# https://docs.checkmk.com/latest/en/basics_downtimes.html#advanced_options
+
+- name: "Schedule a flexible host downtime triggered by a non-OK state."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    comment: "Flexible downtime during maintenance window"
+    start_time: "2024-03-25T22:00:00Z"
+    end_time: "2024-03-26T02:00:00Z"
+    duration: 30
+
+# ---------------------------------------------------------------------------
+# Forcing a duplicate downtime
+# ---------------------------------------------------------------------------
+# By default, creating a downtime with the same host_name and comment combination
+# as an existing downtime is skipped for idempotency. Use 'force: true' to create a
+# duplicate downtime regardless.
+
+- name: "Force a new host downtime even if one with the same comment already exists."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    comment: "Repeated patching run"
+    end_after:
+      hours: 2
+    force: true
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Schedule a host downtime using environment variables for authentication."
+  checkmk.general.downtime:
+    host_name: "myhost"
+    comment: "Maintenance via env-based auth"
+    end_after:
+      hours: 2
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
 """
 
 RETURN = r"""
@@ -409,7 +597,7 @@ def run_module():
     argument_spec = base_argument_spec()
     argument_spec.update(
         host_name=dict(type="str", required=True),
-        comment=dict(type="str", default="Created by Ansible"),
+        comment=dict(type="str", default="Managed by Ansible"),
         duration=dict(type="int", default=0),
         start_after=dict(type="dict", default={}),
         start_time=dict(type="str", default=""),
