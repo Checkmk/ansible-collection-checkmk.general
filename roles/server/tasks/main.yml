@@ -1,4 +1,12 @@
 ---
+- name: "Normalize legacy edition identifier."
+  ansible.builtin.set_fact:
+    checkmk_server_edition: >-
+      {{ {'cre': 'community', 'cee': 'pro', 'cce': 'ultimate',
+          'cme': 'ultimatemt', 'cse': 'cloud'
+         }.get(checkmk_server_edition | lower, checkmk_server_edition | lower) }}
+  when: checkmk_server_edition | lower in ['cre', 'cee', 'cce', 'cme', 'cse']
+
 - name: "Preflight - Fail if target host is not stable for this Role."
   ansible.builtin.fail:
     msg: "This role is not stable for the target operating system: {{ ansible_facts['distribution'] + '-' + ansible_facts['distribution_major_version'] }}."

@@ -4,17 +4,24 @@ __checkmk_agent_site_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agen
 __checkmk_agent_auth: |-
   {% if checkmk_agent_secret is defined and checkmk_agent_secret | length > 0 %}{{ checkmk_agent_secret }}{% else %}{{ checkmk_agent_pass }}{% endif %}
 
-# Due to inconsistent naming of editions, we normalize them here for convenience
 # Due to inconsistent naming of editions, we normalize them here for convenience.
 __checkmk_var_legacy_edition_mapping:
+  community: raw
+  pro: enterprise
+  ultimate: cloud
+  ultimatemt: managed
   cre: raw
-  cfe: free
   cee: enterprise
   cce: cloud
   cme: managed
 
 # Due to renaming of editions starting with 2.5, we normalize them here for convenience. Again.
 __checkmk_var_modern_edition_mapping:
+  community: community
+  pro: pro
+  ultimate: ultimate
+  ultimatemt: ultimatemt
+  cloud: cloud
   cre: community
   cee: pro
   cce: ultimate

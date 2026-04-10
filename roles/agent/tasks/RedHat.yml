@@ -6,7 +6,7 @@
     state: present
     disable_gpg_check: true
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and checkmk_agent_host_specific | bool
   tags:
     - install-package
@@ -14,24 +14,22 @@
 - name: "{{ ansible_facts['os_family'] }} Derivatives: Install folder-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.package:
-    name: "{{ __checkmk_agent_agent.file.cee }}"
+    name: "{{ __checkmk_agent_agent.file.pro }}"
     state: present
     disable_gpg_check: true
   when: |
-    checkmk_agent_edition | lower != "cre"
-    and checkmk_agent_folder_specific | bool
+    checkmk_agent_edition | lower != "community"
+    and not checkmk_agent_host_specific | bool
   tags:
     - install-package
 
 - name: "{{ ansible_facts['os_family'] }} Derivatives: Install Vanilla agent."
   become: true
   ansible.builtin.package:
-    name: "{{ __checkmk_agent_agent.file.cre }}"
+    name: "{{ __checkmk_agent_agent.file.community }}"
     state: present
     disable_gpg_check: true
-  when: |
-    checkmk_agent_edition | lower == "cre"
-    or not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
+  when: checkmk_agent_edition | lower == "community"
   tags:
     - install-package
 

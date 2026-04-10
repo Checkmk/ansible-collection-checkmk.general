@@ -5,14 +5,22 @@ checkmk_server_gpg_download_url: "{{ __checkmk_server_base_url }}/Check_MK-pubke
 
 # Due to inconsistent naming of editions, we normalize them here for convenience.
 __checkmk_var_legacy_edition_mapping:
+  community: raw
+  pro: enterprise
+  ultimate: cloud
+  ultimatemt: managed
   cre: raw
-  cfe: free
   cee: enterprise
   cce: cloud
   cme: managed
 
 # Due to renaming of editions starting with 2.5, we normalize them here for convenience. Again.
 __checkmk_var_modern_edition_mapping:
+  community: community
+  pro: pro
+  ultimate: ultimate
+  ultimatemt: ultimatemt
+  cloud: cloud
   cre: community
   cee: pro
   cce: ultimate
@@ -25,5 +33,21 @@ __checkmk_server_edition_mapping: >-
     ( (checkmk_server_version | regex_replace('p.*', '')) is version('2.5', '<') )
     | ternary(__checkmk_var_legacy_edition_mapping, __checkmk_var_modern_edition_mapping)
   }}
+
+# Mapping of edition names to omd version-string identifiers for Checkmk < 2.5.
+# omd uses short codes (cre, cee, ...) in its version strings, not package-name
+# prefixes (raw, enterprise, ...) nor the new names (community, pro, ...).
+# This can be reverted, once 2.5.0 is the oldest supported version.
+__checkmk_server_omd_legacy_edition_ids:
+  community: cre
+  pro: cee
+  ultimate: cce
+  ultimatemt: cme
+  cloud: cse
+  cre: cre
+  cee: cee
+  cce: cce
+  cme: cme
+  cse: cse
 
 __checkmk_server_tmp_dir: "/tmp"

@@ -294,12 +294,12 @@ def run_module():
 
             checkmkversion = CheckmkVersion(str(passwordcreate.getversion()))
             if (
-                checkmkversion.edition == "cme"
+                checkmkversion.edition == "ultimatemt"
                 and module.params.get("customer") is None
             ):
                 result = RESULT(
                     http_code=0,
-                    msg="Missing required parameter 'customer' for CME",
+                    msg="Missing required parameter 'customer' for ultimatemt",
                     content="",
                     etag="",
                     failed=True,
