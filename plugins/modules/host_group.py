@@ -35,7 +35,7 @@ options:
         required: false
         type: str
     customer:
-        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        description: For Checkmk Ultimate with multi-tenancy (CME), you need to specify which customer ID this object belongs to.
         required: false
         type: str
     groups:
@@ -114,10 +114,10 @@ EXAMPLES = r"""
     state: "absent"
 
 # ---------------------------------------------------------------------------
-# Checkmk Managed Edition (CME)
+# Checkmk Ultimate with multi-tenancy (CME)
 # ---------------------------------------------------------------------------
 
-- name: "Create a host group and assign it to a customer (CME only)."
+- name: "Create a host group and assign it to a customer (Checkmk Ultimate with multi-tenancy (CME) only)."
   checkmk.general.host_group:
     server_url: "https://myserver/"
     site: "mysite"
