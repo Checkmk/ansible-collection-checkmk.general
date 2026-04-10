@@ -1,4 +1,12 @@
 ---
+- name: "Normalize legacy edition identifier."
+  ansible.builtin.set_fact:
+    checkmk_agent_edition: >-
+      {{ {'cre': 'community', 'cee': 'pro', 'cce': 'ultimate',
+          'cme': 'ultimatemt', 'cse': 'cloud'
+         }.get(checkmk_agent_edition | lower, checkmk_agent_edition | lower) }}
+  when: checkmk_agent_edition | lower in ['cre', 'cee', 'cce', 'cme', 'cse']
+
 - name: "Preflight - Fail if Checkmk Edition is incorrect."
   ansible.builtin.fail:
     msg: "The provided Checkmk Edition '{{ checkmk_agent_edition }}' does  not exist or is not supported by this role."

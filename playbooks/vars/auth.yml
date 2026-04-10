@@ -8,7 +8,7 @@ checkmk_agent_user: "{{ checkmk_var_api_user }}"
 checkmk_agent_pass: "{{ checkmk_var_api_secret }}"
 
 checkmk_var_version: "2.4.0p23"
-checkmk_var_edition: "cre"
+checkmk_var_edition: "community"
 #############################################################
 
 # Set to true, to skip the break points:

@@ -40,8 +40,8 @@ checkmk_var_passwords_create:
       "all"
     ]
 
-checkmk_var_passwords_create_cme:
-  - name: "pwtest1_cme"
+checkmk_var_passwords_create_ultimatemt:
+  - name: "pwtest1_ultimatemt"
     title: "Password Test 1"
     comment: "Comment on PW 1"
     documentation_url: "http://something/"
@@ -50,7 +50,7 @@ checkmk_var_passwords_create_cme:
     shared: [
       "all"
     ]
-  - name: "pwtest2_cme"
+  - name: "pwtest2_ultimatemt"
     title: "Password Test 2"
     comment: "Comment on PW 2"
     documentation_url: "http://something.too/"

@@ -1,7 +1,7 @@
 ---
 # General
 checkmk_var_version: "2.5.0b3"
-checkmk_var_edition: "cre"
+checkmk_var_edition: "community"
 checkmk_var_checkmk_site: "mysite"
 checkmk_var_api_user: "cmkadmin"
 checkmk_var_api_secret: "mysecret"
