@@ -11,12 +11,14 @@ DOCUMENTATION = r"""
 ---
 module: aux_tag
 
-short_description: Manage auxiliary tags in Checkmk.
+short_description: Manage auxiliary tags in Checkmk
 
 version_added: "6.5.0"
 
 description:
 - Manage auxiliary tags in Checkmk.
+- Auxiliary tags can be assigned to tag group values and are used to group hosts
+  for rule matching without exposing the underlying tag structure to the user.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -48,45 +50,87 @@ options:
         choices: ["present", "absent"]
         type: str
 
+notes:
+    - Only parameters that are explicitly provided are compared and potentially updated.
+      Omitting a parameter will not reset or change its current value on the server.
+
+seealso:
+    - module: checkmk.general.tag_group
+
 author:
     - Nicolas Brainez (@nicoske)
 """
 
 EXAMPLES = r"""
-# Create an auxiliary tag
-- name: "Create auxiliary tag for HTTPS"
+# ---------------------------------------------------------------------------
+# Create and update auxiliary tags
+# ---------------------------------------------------------------------------
+
+- name: "Create an auxiliary tag."
   checkmk.general.aux_tag:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: https
-    title: Web Server HTTPS
-    topic: Services
-    help: "Host provides HTTPS services"
+    name: "https"
+    title: "HTTPS"
     state: "present"
 
-# Update an auxiliary tag
-- name: "Update auxiliary tag"
+- name: "Create an auxiliary tag with a topic and help text."
   checkmk.general.aux_tag:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: https
-    title: Web Server HTTPS/TLS
-    topic: Services
+    name: "https"
+    title: "HTTPS"
+    topic: "Web Services"
+    help: "Host provides HTTPS services."
     state: "present"
 
-# Delete an auxiliary tag
-- name: "Delete auxiliary tag"
+- name: "Update the title of an existing auxiliary tag."
   checkmk.general.aux_tag:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: https
+    name: "https"
+    title: "HTTPS/TLS"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Delete auxiliary tags
+# ---------------------------------------------------------------------------
+
+- name: "Delete an auxiliary tag."
+  checkmk.general.aux_tag:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "https"
     state: "absent"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create an auxiliary tag using environment variables for authentication."
+  checkmk.general.aux_tag:
+    name: "https"
+    title: "HTTPS"
+    state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
@@ -95,7 +139,7 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

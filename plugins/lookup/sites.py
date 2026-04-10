@@ -24,21 +24,48 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.site
+      - plugin: checkmk.general.site
+        plugin_type: lookup
 """
 
 EXAMPLES = """
-- name: Get all sites defined in the environment.
+- name: "Get all configured sites."
   ansible.builtin.debug:
-    msg: "Site: {{ item.extensions }}"
+    msg: "Site {{ item.id }}: {{ item.extensions }}"
   loop: "{{
     lookup('checkmk.general.sites',
-        server_url=server_url,
-        site=site,
-        api_user=api_user,
-        api_secret=api_secret,
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
         validate_certs=False
         )
     }}"
+  loop_control:
+    label: "{{ item.id }}"
+
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get all configured sites using inventory variables."
+  ansible.builtin.debug:
+    msg: "Site {{ item.id }}: {{ item.extensions }}"
+  vars:
+    checkmk_var_server_url: "https://myserver/"
+    checkmk_var_site: "mysite"
+    checkmk_var_api_user: "myuser"
+    checkmk_var_api_secret: "mysecret"
+    checkmk_var_validate_certs: false
+  loop: "{{ lookup('checkmk.general.sites') }}"
   loop_control:
     label: "{{ item.id }}"
 """
@@ -46,9 +73,9 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of all sites
+      - A list of all sites and their configuration.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json

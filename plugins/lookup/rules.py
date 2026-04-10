@@ -20,21 +20,25 @@ DOCUMENTATION = """
       ruleset:
         description: The ruleset name.
         required: True
+        type: str
 
       description_regex:
         description: A regex to filter for certain descriptions.
         required: False
         default: ""
+        type: str
 
       comment_regex:
         description: A regex to filter for certain comment strings.
         required: False
         default: ""
+        type: str
 
       folder_regex:
         description: A regex to filter for certain folders.
         required: False
         default: ""
+        type: str
 
     extends_documentation_fragment: [checkmk.general.common_lookup]
 
@@ -45,71 +49,88 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.rule
+      - plugin: checkmk.general.rule
+        plugin_type: lookup
+      - plugin: checkmk.general.ruleset
+        plugin_type: lookup
+      - plugin: checkmk.general.rulesets
+        plugin_type: lookup
 """
 
 EXAMPLES = """
-- name: Get all rules of the ruleset host_groups
+- name: "Get all rules of the host_groups ruleset."
   ansible.builtin.debug:
-    msg: "Rule: {{ item.extensions }}"
+    msg: "Rule {{ item.id }}: {{ item.extensions }}"
   loop: "{{
     lookup('checkmk.general.rules',
         ruleset='host_groups',
-        server_url=server_url,
-        site=site,
-        api_user=api_user,
-        api_secret=api_secret,
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
         validate_certs=False
         )
     }}"
   loop_control:
     label: "{{ item.id }}"
 
-- name: Get all rules of the ruleset host_groups in folder /test
+- name: "Get all host_groups rules that apply to the /test folder."
   ansible.builtin.debug:
-    msg: "Rule: {{ item.extensions }}"
+    msg: "Rule {{ item.id }}: {{ item.extensions }}"
   loop: "{{
     lookup('checkmk.general.rules',
         ruleset='host_groups',
         folder_regex='^/test$',
-        server_url=server_url,
-        site=site,
-        api_user=api_user,
-        api_secret=api_secret,
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
         validate_certs=False
         )
     }}"
   loop_control:
     label: "{{ item.id }}"
 
-- name: active_checks:http rules that match a certain description AND comment
+- name: "Get HTTP check rules matching a description and comment pattern."
   ansible.builtin.debug:
-    msg: "Rule: {{ item.extensions }}"
+    msg: "Rule {{ item.id }}: {{ item.extensions }}"
   loop: "{{
     lookup('checkmk.general.rules',
         ruleset='active_checks:http',
-        description_regex='foo.*bar',
-        comment_regex='xmas-edition',
-        server_url=server_url,
-        site=site,
-        api_user=api_user,
-        api_secret=api_secret,
+        description_regex='myservice.*',
+        comment_regex='Managed by Ansible',
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
         validate_certs=False
         )
     }}"
   loop_control:
     label: "{{ item.id }}"
 
-- name: "Use variables from inventory."
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get all host_groups rules using inventory variables."
   ansible.builtin.debug:
-    msg: "Rule: {{ item.extensions }}"
+    msg: "Rule {{ item.id }}: {{ item.extensions }}"
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
     checkmk_var_validate_certs: false
-  loop: "{{
-    lookup('checkmk.general.rules', ruleset='host_groups') }}"
+  loop: "{{ lookup('checkmk.general.rules', ruleset='host_groups') }}"
   loop_control:
     label: "{{ item.id }}"
 """
@@ -117,9 +138,9 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of all rules of a particular ruleset
+      - A list of all rules of a particular ruleset.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json

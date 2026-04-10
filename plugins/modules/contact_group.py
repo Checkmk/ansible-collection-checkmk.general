@@ -12,7 +12,7 @@ DOCUMENTATION = r"""
 ---
 module: contact_group
 
-short_description: Manage contact groups in Checkmk (bulk version).
+short_description: Manage contact groups in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -20,15 +20,19 @@ version_added: "0.12.0"
 
 description:
 - Manage contact groups in Checkmk.
+- Contact groups control which users can interact with and receive notifications for hosts and services.
+  Supports both single-group and bulk (multiple-group) operations in a single task.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
         description: The name of the contact group to be created/modified/deleted.
+        required: false
         type: str
     title:
         description: The title (alias) of your contact group. If omitted defaults to the name.
+        required: false
         type: str
     customer:
         description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
@@ -38,92 +42,153 @@ options:
         description:
             - instead of 'name', 'title' a list of dicts with elements of contact group name and title (alias) to be created/modified/deleted.
               If title is omitted in entry, it defaults to the contact group name.
+        required: false
         default: []
         type: raw
     state:
         description: The state of your contact group.
+        required: false
         type: str
         default: present
         choices: [present, absent]
     validate_certs:
         description: Whether to validate the SSL certificate of the Checkmk server.
+        required: false
         default: true
         type: bool
+
+seealso:
+    - module: checkmk.general.user
+    - module: checkmk.general.host
+    - module: checkmk.general.notification
 
 author:
     - Michael Sekania (@msekania)
 """
 
 EXAMPLES = r"""
-# Create a single contact group.
+# ---------------------------------------------------------------------------
+# Single contact group
+# ---------------------------------------------------------------------------
+
 - name: "Create a single contact group."
   checkmk.general.contact_group:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     name: "my_contact_group"
     title: "My Contact Group"
-    customer: "provider"
     state: "present"
 
-# Create several contact groups.
-- name: "Create several contact groups."
+- name: "Update the title of a single contact group."
   checkmk.general.contact_group:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    customer: "provider"
-    groups:
-      - name: "my_contact_group_one"
-        title: "My Contact Group One"
-      - name: "my_contact_group_two"
-        title: "My Contact Group Two"
-      - name: "my_contact_group_test"
-        title: "My Test"
+    name: "my_contact_group"
+    title: "My Updated Contact Group"
     state: "present"
 
-# Create several contact groups.
-- name: "Create several contact groups."
+- name: "Delete a single contact group."
   checkmk.general.contact_group:
-    server_url: "http://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    customer: "provider"
-    groups:
-      - name: "my_contact_group_one"
-        title: "My Contact Group One"
-      - name: "my_contact_group_two"
-      - name: "my_contact_group_test"
-    state: "present"
-
-# Delete a single contact group.
-- name: "Create a single contact group."
-  checkmk.general.contact_group:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     name: "my_contact_group"
     state: "absent"
 
-# Delete several contact groups.
-- name: "Delete several contact groups."
+# ---------------------------------------------------------------------------
+# Multiple contact groups (bulk mode)
+# ---------------------------------------------------------------------------
+# Use 'groups' instead of 'name' to create, update, or delete multiple
+# contact groups in a single API call. 'name' and 'groups' are mutually
+# exclusive. If 'title' is omitted for an entry, it defaults to the name.
+
+- name: "Create multiple contact groups."
   checkmk.general.contact_group:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     groups:
-      - name: "my_contact_group_one"
-      - name: "my_contact_group_two"
+      - name: "linux_admins"
+        title: "Linux Administrators"
+      - name: "windows_admins"
+        title: "Windows Administrators"
+      - name: "network_ops"
+        title: "Network Operators"
+    state: "present"
+
+- name: "Delete multiple contact groups."
+  checkmk.general.contact_group:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    groups:
+      - name: "linux_admins"
+      - name: "windows_admins"
+      - name: "network_ops"
     state: "absent"
+
+# ---------------------------------------------------------------------------
+# Checkmk Managed Edition (CME) - assigning a customer
+# ---------------------------------------------------------------------------
+# When using Checkmk Ultimate MT, contact groups must be assigned
+# to a customer. Use the 'customer' parameter for this.
+
+- name: "Create a single contact group assigned to a customer."
+  checkmk.general.contact_group:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "my_contact_group"
+    title: "My Contact Group"
+    customer: "mycustomer"
+    state: "present"
+
+- name: "Create multiple contact groups assigned to a customer."
+  checkmk.general.contact_group:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    customer: "mycustomer"
+    groups:
+      - name: "linux_admins"
+        title: "Linux Administrators"
+      - name: "windows_admins"
+        title: "Windows Administrators"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a single contact group using environment variables for authentication."
+  checkmk.general.contact_group:
+    name: "my_contact_group"
+    title: "My Contact Group"
+    state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

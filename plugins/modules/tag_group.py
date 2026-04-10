@@ -13,7 +13,7 @@ DOCUMENTATION = r"""
 ---
 module: tag_group
 
-short_description: Manage tag groups in Checkmk.
+short_description: Manage tag groups in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -21,12 +21,15 @@ version_added: "0.11.0"
 
 description:
 - Manage tag groups in Checkmk.
+- Tag groups define sets of mutually exclusive host tags. Tags are used in rules to
+  target specific hosts, and can also be used in views and reports.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
     help:
         description: The help text for the tag group.
+        required: false
         default: ""
         type: str
     name:
@@ -38,42 +41,52 @@ options:
         description:
             - Give permission to update or remove the tag on hosts using it automatically.
               B(Use with caution!)
+        required: false
         default: False
         type: bool
     state:
         description: The desired state.
+        required: false
         default: "present"
         choices: ["present", "absent"]
         type: str
     tags:
         description: A list of the tag groups to be created.
+        required: false
         default: []
         type: list
         elements: dict
         aliases: ["choices"]
         suboptions:
             id:
-                description: The id of the tag
+                description: The id of the tag.
                 required: true
                 type: str
             title:
-                description: The title of the tag
+                description: The title of the tag.
                 required: true
                 type: str
             aux_tags:
-                description: The list of aux_tags
+                description: The list of aux_tags.
                 default: []
                 required: false
                 type: list
                 elements: str
     title:
         description: The title of the tag group.
+        required: false
         default: ""
         type: str
     topic:
         description: The topic of the tag group.
+        required: false
         default: ""
         type: str
+
+seealso:
+    - module: checkmk.general.aux_tag
+    - module: checkmk.general.folder
+    - module: checkmk.general.host
 
 author:
     - Max Sickora (@Max-checkmk)
@@ -81,39 +94,100 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a tag group
-- name: "Create tag group"
+# ---------------------------------------------------------------------------
+# Create and delete tag groups
+# ---------------------------------------------------------------------------
+
+- name: "Create a tag group."
   checkmk.general.tag_group:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: datacenter
-    title: Datacenter
-    topic: Tags
+    name: "datacenter"
+    title: "Datacenter"
+    topic: "Tags"
     help: "The datacenter this host resides in."
     tags:
-      - id: datacenter_none
-        title: No Datacenter
-      - id: datacenter_1
-        title: Datacenter 1
-        aux_tags: ["support_a","support_b"]
-      - id: datacenter_2
-        title: Datacenter 2
-        aux_tags: ["support_c"]
-      - id: datacenter_3
-        title: Datacenter 3
-    state: present
+      - id: "datacenter_1"
+        title: "Datacenter 1"
+      - id: "datacenter_2"
+        title: "Datacenter 2"
+      - id: "datacenter_3"
+        title: "Datacenter 3"
+    state: "present"
 
-# Delete a tag group
-- name: "Delete tag group."
+- name: "Create a tag group with auxiliary tags assigned to its values."
   checkmk.general.tag_group:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: datacenter
+    name: "datacenter"
+    title: "Datacenter"
+    topic: "Infrastructure"
+    tags:
+      - id: "datacenter_none"
+        title: "No Datacenter"
+      - id: "datacenter_1"
+        title: "Datacenter 1"
+        aux_tags:
+          - "support_a"
+          - "support_b"
+      - id: "datacenter_2"
+        title: "Datacenter 2"
+        aux_tags:
+          - "support_c"
+    state: "present"
+
+- name: "Delete a tag group."
+  checkmk.general.tag_group:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "datacenter"
     state: "absent"
+
+# ---------------------------------------------------------------------------
+# Delete a tag group that is still in use
+# ---------------------------------------------------------------------------
+# The 'repair' option automatically updates or removes the tag from all
+# hosts that use it. Use with caution!
+
+- name: "Delete a tag group and repair affected hosts automatically."
+  checkmk.general.tag_group:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "datacenter"
+    repair: true
+    state: "absent"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a tag group using environment variables for authentication."
+  checkmk.general.tag_group:
+    name: "datacenter"
+    title: "Datacenter"
+    tags:
+      - id: "datacenter_1"
+        title: "Datacenter 1"
+    state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
@@ -122,7 +196,7 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

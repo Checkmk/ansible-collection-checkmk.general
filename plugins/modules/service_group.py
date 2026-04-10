@@ -12,7 +12,7 @@ DOCUMENTATION = r"""
 ---
 module: service_group
 
-short_description: Manage service groups in Checkmk (bulk version).
+short_description: Manage service groups in Checkmk (bulk version)
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -20,15 +20,19 @@ version_added: "0.12.0"
 
 description:
 - Manage service groups in Checkmk.
+- Service groups can be used to group services by type or function.
+  Supports both single-group and bulk (multiple-group) operations in a single task.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
         description: The name of the service group to be created/modified/deleted.
+        required: false
         type: str
     title:
         description: The title (alias) of your service group. If omitted defaults to the name.
+        required: false
         type: str
     customer:
         description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
@@ -38,92 +42,126 @@ options:
         description:
             - instead of 'name', 'title' a list of dicts with elements of service group name and title (alias) to be created/modified/deleted.
               If title is omitted in entry, it defaults to the service group name.
+        required: false
         default: []
         type: raw
     state:
         description: The state of your service group.
+        required: false
         type: str
         default: present
-        choices: [present, absent]
+        choices: ["present", "absent"]
     validate_certs:
         description: Whether to validate the SSL certificate of the Checkmk server.
+        required: false
         default: true
         type: bool
+
+notes:
+    - When using the I(groups) parameter for bulk operations, the module validates that
+      no two entries share the same name and will fail if duplicates are detected.
+
+seealso:
+    - module: checkmk.general.host_group
+    - module: checkmk.general.contact_group
 
 author:
     - Michael Sekania (@msekania)
 """
 
 EXAMPLES = r"""
-# Create a single service group.
-- name: "Create a single service group."
+# ---------------------------------------------------------------------------
+# Create and delete a single service group
+# ---------------------------------------------------------------------------
+
+- name: "Create a service group."
   checkmk.general.service_group:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "my_service_group"
-    title: "My Service Group"
-    customer: "provider"
+    name: "web_services"
+    title: "Web Services"
     state: "present"
 
-# Create several service groups.
-- name: "Create several service groups."
+- name: "Delete a service group."
   checkmk.general.service_group:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    customer: "provider"
-    groups:
-      - name: "my_service_group_one"
-        title: "My Service Group One"
-      - name: "my_service_group_two"
-        title: "My Service Group Two"
-      - name: "my_service_group_test"
-        title: "My Test"
-    state: "present"
-
-# Create several service groups.
-- name: "Create several service groups."
-  checkmk.general.service_group:
-    server_url: "http://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    customer: "provider"
-    groups:
-      - name: "my_service_group_one"
-        title: "My Service Group One"
-      - name: "my_service_group_two"
-      - name: "my_service_group_test"
-    state: "present"
-
-# Delete a single service group.
-- name: "Create a single service group."
-  checkmk.general.service_group:
-    server_url: "http://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    name: "my_service_group"
+    name: "web_services"
     state: "absent"
 
-# Delete several service groups.
-- name: "Delete several service groups."
+# ---------------------------------------------------------------------------
+# Bulk create and delete service groups
+# ---------------------------------------------------------------------------
+
+- name: "Create several service groups at once."
   checkmk.general.service_group:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     groups:
-      - name: "my_service_group_one"
-      - name: "my_service_group_two"
+      - name: "web_services"
+        title: "Web Services"
+      - name: "database_services"
+        title: "Database Services"
+      - name: "backup_jobs"
+        title: "Backup Jobs"
+    state: "present"
+
+- name: "Delete several service groups at once."
+  checkmk.general.service_group:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    groups:
+      - name: "web_services"
+      - name: "database_services"
     state: "absent"
+
+# ---------------------------------------------------------------------------
+# Checkmk Managed Edition (CME)
+# ---------------------------------------------------------------------------
+
+- name: "Create a service group and assign it to a customer (CME only)."
+  checkmk.general.service_group:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "web_services"
+    title: "Web Services"
+    customer: "provider"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a service group using environment variables for authentication."
+  checkmk.general.service_group:
+    name: "web_services"
+    title: "Web Services"
+    state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

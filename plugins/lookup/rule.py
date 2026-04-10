@@ -30,42 +30,60 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.rule
+      - plugin: checkmk.general.rules
+        plugin_type: lookup
+      - plugin: checkmk.general.ruleset
+        plugin_type: lookup
+      - plugin: checkmk.general.rulesets
+        plugin_type: lookup
 """
 
 EXAMPLES = """
-- name: Get a rule with a particular rule id
+- name: "Get the details of a rule by its ID."
   ansible.builtin.debug:
-    msg: "Rule: {{ extensions }}"
+    msg: "Rule: {{ rule }}"
   vars:
-    extensions: "{{
+    rule: "{{
       lookup('checkmk.general.rule',
         rule_id='a9285bc1-dcaf-45e0-a3ba-ad398ef06a49',
-        server_url=server_url,
-        site=site,
-        api_user=api_user,
-        api_secret=api_secret,
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
         validate_certs=False
       )
     }}"
 
-- name: "Use variables from inventory."
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get rule details using inventory variables."
   ansible.builtin.debug:
-    msg: "Rule: {{ extensions }}"
+    msg: "Rule: {{ rule }}"
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
     checkmk_var_validate_certs: false
-    attributes: "{{ lookup('checkmk.general.rule', rule_id='a9285bc1-dcaf-45e0-a3ba-ad398ef06a49') }}"
+    rule: "{{ lookup('checkmk.general.rule', rule_id='a9285bc1-dcaf-45e0-a3ba-ad398ef06a49') }}"
 """
 
 RETURN = """
   _list:
     description:
-      - The details of a particular rule
+      - The details of a particular rule.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json

@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: host
 
-short_description: Manage hosts in Checkmk.
+short_description: Manage hosts in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -19,6 +19,8 @@ version_added: "0.0.1"
 
 description:
     - Manage hosts within Checkmk.
+    - Hosts can be placed into folders, given tags and custom attributes.
+      There is a special cluster host object, which can be managed by this module as well.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -34,6 +36,7 @@ options:
               B(For existing host, host is moved to the specified folder if different
               and this procedue is mutualy exclusive with specified
               I(attributes), I(update_attributes), and I(remove_attributes)).
+        required: false
         type: str
     attributes:
         description:
@@ -66,11 +69,13 @@ options:
         required: false
     state:
         description: The state of your host.
+        required: false
         type: str
         default: present
         choices: [present, absent]
     extended_functionality:
         description: Allow extended functionality instead of the expected REST API behavior.
+        required: false
         type: bool
         default: true
     # new_name:
@@ -80,7 +85,7 @@ options:
     nodes:
         description:
             - Nodes, members of the cluster host provided in name.
-              B(Mutualy exclusive with I(add_nodes) and I(remove_nodes).)
+              B(Mutually exclusive with I(add_nodes) and I(remove_nodes).)
         required: false
         type: list
         elements: str
@@ -88,17 +93,29 @@ options:
         description:
             - List of nodes to be added as members of the cluster host provided in name.
               Works only if the existing host was already a cluster host, or entirely new is created.
-              B(Mutualy exclusive with I(nodes) and I(remove_nodes).)
+              B(Mutually exclusive with I(nodes) and I(remove_nodes).)
         required: false
         type: list
         elements: str
     remove_nodes:
         description:
             - List of nodes to be removes from the cluster host provided in name.
-              B(Mutualy exclusive with I(nodes) and I(add_nodes).)
+              B(Mutually exclusive with I(nodes) and I(add_nodes).)
         required: false
         type: list
         elements: str
+
+notes:
+    - When specifying C(attributes), the entire attributes dict replaces any existing host
+      attributes. Use C(update_attributes) to merge with existing attributes instead.
+
+seealso:
+    - plugin: checkmk.general.host
+      plugin_type: lookup
+    - plugin: checkmk.general.hosts
+      plugin_type: lookup
+    - module: checkmk.general.folder
+    - module: checkmk.general.discovery
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -108,126 +125,177 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a host.
+# ---------------------------------------------------------------------------
+# Create and delete hosts
+# ---------------------------------------------------------------------------
+
 - name: "Create a host."
   checkmk.general.host:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "my_host"
+    name: "myhost"
     folder: "/"
     state: "present"
 
-# Create a host with IP.
-- name: "Create a host with IP address."
+- name: "Delete a host."
   checkmk.general.host:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "my_host"
+    name: "myhost"
+    state: "absent"
+
+# ---------------------------------------------------------------------------
+# Create hosts with attributes
+# ---------------------------------------------------------------------------
+# The 'attributes' option OVERWRITES all existing attributes on the host.
+# Use 'update_attributes' to only change specific attributes.
+
+- name: "Create a host with an IP address and alias."
+  checkmk.general.host:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "myhost"
+    folder: "/"
     attributes:
       alias: "My Host"
       ipaddress: "127.0.0.1"
-    folder: "/"
     state: "present"
 
-# Create a host which is monitored on a distinct site.
-- name: "Create a host which is monitored on a distinct site."
+- name: "Create a host pinned to a specific monitoring site."
   checkmk.general.host:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "my_host"
+    name: "myhost"
+    folder: "/"
     attributes:
-      site: "my_remote_site"
-    folder: "/"
+      site: "myremotesite"
     state: "present"
 
-# Create a cluster host.
-- name: "Create a cluster host."
+# ---------------------------------------------------------------------------
+# Update and remove attributes
+# ---------------------------------------------------------------------------
+
+- name: "Update specific attributes without touching others."
   checkmk.general.host:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "my_cluster_host"
-    folder: "/"
-    nodes: ["cluster_node_1", "cluster_node_2", "cluster_node_3"]
-    state: "present"
-
-# Create a cluster host with IP.
-- name: "Create a cluster host with IP address."
-  checkmk.general.host:
-    server_url: "http://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    name: "my_cluster_host"
-    nodes:
-      - "cluster_node_1"
-      - "cluster_node_2"
-      - "cluster_node_3"
-    attributes:
-      alias: "My Cluster Host"
-      ipaddress: "127.0.0.1"
-    folder: "/"
-    state: "present"
-
-# Create a host with update_attributes.
-- name: "Create a host which is monitored on a distinct site."
-  checkmk.general.host:
-    server_url: "http://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    name: "my_host"
+    name: "myhost"
     update_attributes:
-      site: "my_remote_site"
+      alias: "Updated Alias"
     state: "present"
 
-# Update only specified attributes
-- name: "Update only specified attributes"
+- name: "Set a custom tag on a host (note the 'tag_' prefix)."
   checkmk.general.host:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "my_host"
+    name: "myhost"
     update_attributes:
-      alias: "foo"
+      tag_my_tag: "myvalue"
     state: "present"
 
-# Remove specified attributes
-- name: "Remove specified attributes"
+- name: "Remove specific attributes from a host."
   checkmk.general.host:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "my_host"
+    name: "myhost"
     remove_attributes:
       - alias
     state: "present"
 
-# Add custom tags to a host (note the leading 'tag_')
-- name: "Remove specified attributes"
+# ---------------------------------------------------------------------------
+# Move a host to a different folder
+# ---------------------------------------------------------------------------
+# Moving is mutually exclusive with 'attributes', 'update_attributes', and
+# 'remove_attributes'. Specify only 'folder' to move a host.
+
+- name: "Move a host to a different folder."
   checkmk.general.host:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "my_host"
-    update_attributes:
-      - tag_my_tag_1: "Bar"
-      - tag_my_tag_2: "Foo"
+    name: "myhost"
+    folder: "/myfolder"
     state: "present"
+
+# ---------------------------------------------------------------------------
+# Cluster hosts
+# ---------------------------------------------------------------------------
+
+- name: "Create a cluster host."
+  checkmk.general.host:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "mycluster"
+    folder: "/"
+    nodes:
+      - "myhost01"
+      - "myhost02"
+      - "myhost03"
+    state: "present"
+
+- name: "Add a node to an existing cluster host."
+  checkmk.general.host:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "mycluster"
+    add_nodes:
+      - "myhost04"
+    state: "present"
+
+- name: "Remove a node from a cluster host."
+  checkmk.general.host:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "mycluster"
+    remove_nodes:
+      - "myhost03"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a host using environment variables for authentication."
+  checkmk.general.host:
+    name: "myhost"
+    folder: "/"
+    state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates. Contains the API response details in case of an error.
     type: str
     returned: always

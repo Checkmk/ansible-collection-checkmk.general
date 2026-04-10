@@ -24,26 +24,40 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.activation
+      - plugin: checkmk.general.activation
+        plugin_type: lookup
 """
 
 EXAMPLES = """
-- name: "Show activations status"
+- name: "Get all running activations."
   ansible.builtin.debug:
-    msg: "Activations status is {{ activations }}"
+    msg: "Activations: {{ activations }}"
   vars:
     activations: "{{ lookup('checkmk.general.activations',
-                   server_url=http://myserver,
-                   site=mysite,
-                   validate_certs=False,
-                   api_user=api_user,
-                   api_secret=api_secret
+                   server_url='https://myserver/',
+                   site='mysite',
+                   api_user='myuser',
+                   api_secret='mysecret',
+                   validate_certs=False
                )}}"
 
-- name: "Use variables from inventory."
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get all running activations using inventory variables."
   ansible.builtin.debug:
-    msg: "Activations status is {{ activations }}"
+    msg: "Activations: {{ activations }}"
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
@@ -54,9 +68,9 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - activations status
+      - A list of activation objects.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json
