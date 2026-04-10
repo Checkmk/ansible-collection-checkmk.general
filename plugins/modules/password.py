@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: password
 
-short_description: Manage passwords in Checkmk.
+short_description: Manage passwords in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -19,12 +19,14 @@ version_added: "2.3.0"
 
 description:
 - Manage passwords in Checkmk.
+- Passwords stored in the Checkmk password store can be referenced in rules and
+  special agents without exposing them in plain text in your configuration.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
-        description: An unique identifier for the password.
+        description: A unique identifier for the password.
         required: true
         type: str
 
@@ -65,6 +67,7 @@ options:
 
     state:
         description: create/update or delete a password.
+        required: false
         default: present
         choices: ["present", "absent"]
         type: str
@@ -145,6 +148,7 @@ EXAMPLES = r"""
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
@@ -153,7 +157,7 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

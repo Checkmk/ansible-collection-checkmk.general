@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: downtime
 
-short_description: Manage downtimes in Checkmk.
+short_description: Manage downtimes in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -28,41 +28,48 @@ options:
             - Remarks for the downtime. If omitted in combination with state = present, the
               default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
               a host or host/service will be removed.
+        required: false
         type: str
-        default: Managed by Ansible
+        default: "Managed by Ansible"
     duration:
         description:
             - Duration in minutes. When set, the downtime does not begin automatically at a nominated time,
               but when a non-OK status actually appears for the host.
               Consequently, the start_time and end_time is only the time window in which the scheduled downtime can occur.
+        required: false
         type: int
         default: 0
     end_after:
         description:
             - The timedelta between I(start_time) and I(end_time). If you want to use I(end_after) you have to omit I(end_time).
               For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
+        required: false
         type: dict
         default: {}
     end_time:
         description:
             - The end datetime of the downtime. The format has to conform to the ISO 8601 profile I(e.g. 2017-07-21T17:32:28Z).
               The built-in default is 30 minutes after now.
+        required: false
         type: str
         default: ''
     force:
         description: Force the creation of a downtime in case a hostname and comment combination already exists as a downtime.
+        required: false
         type: bool
         default: false
     start_after:
         description:
             - The timedelta between now and I(start_time). If you want to use I(start_after) you have to omit I(start_time).
               For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
+        required: false
         type: dict
         default: {}
     start_time:
         description:
             - The start datetime of the downtime. The format has to conform to the ISO 8601 profile I(e.g. 2017-07-21T17:32:28Z).
               The built-in default is now.
+        required: false
         type: str
         default: ''
     host_name:
@@ -71,14 +78,16 @@ options:
         type: str
     service_descriptions:
         description: Array of service descriptions. If set only service-downtimes will be set. If omitted a host downtime will be set.
+        required: false
         type: list
         elements: str
         default: []
     state:
         description: The state of this downtime. If absent, all matching host/service-downtimes of the given host will be deleted.
+        required: false
         type: str
         default: present
-        choices: [present, absent]
+        choices: ["present", "absent"]
 
 notes:
     - Idempotency for creation was made for host downtimes by only using the hostname and comment attributes.
@@ -318,10 +327,11 @@ EXAMPLES = r"""
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates. Contains the API response details in case of an error. No output in case of success.
     type: str
     returned: always

@@ -19,9 +19,7 @@ description:
 - Manage notification rules in Checkmk.
 - Create, update, and delete notification rules for various notification methods.
 
-extends_documentation_fragment:
-    - checkmk.general.common
-    - checkmk.general.notification_options
+extends_documentation_fragment: [checkmk.general.common, checkmk.general.notification_options]
 
 notes:
 - When I(rule_id) is not provided, the module will try to find an existing rule
@@ -30,6 +28,11 @@ notes:
 - Requires Checkmk >= 2.4.0p22 to enable minimal configuration input. Older version will need all options set, not only relevant ones.
 - When a key is not explicitly provided, it will not be managed. That means if you set a certain key
   at some point and later remove it from your Ansible configuration, it will not be removed in the rule.
+
+seealso:
+    - module: checkmk.general.contact_group
+    - module: checkmk.general.timeperiod
+    - module: checkmk.general.user
 
 author:
     - Nicolas Brainez (@nicoske)

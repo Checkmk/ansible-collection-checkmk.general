@@ -43,6 +43,11 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.folder
+      - plugin: checkmk.general.folder
+        plugin_type: lookup
 """
 
 EXAMPLES = """
@@ -113,9 +118,9 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of folders and, optionally, hosts of a folder
+      - A list of folders and, optionally, hosts of a folder.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json

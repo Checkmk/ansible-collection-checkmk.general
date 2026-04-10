@@ -20,21 +20,25 @@ DOCUMENTATION = """
       ruleset:
         description: The ruleset name.
         required: True
+        type: str
 
       description_regex:
         description: A regex to filter for certain descriptions.
         required: False
         default: ""
+        type: str
 
       comment_regex:
         description: A regex to filter for certain comment strings.
         required: False
         default: ""
+        type: str
 
       folder_regex:
         description: A regex to filter for certain folders.
         required: False
         default: ""
+        type: str
 
     extends_documentation_fragment: [checkmk.general.common_lookup]
 
@@ -45,6 +49,15 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.rule
+      - plugin: checkmk.general.rule
+        plugin_type: lookup
+      - plugin: checkmk.general.ruleset
+        plugin_type: lookup
+      - plugin: checkmk.general.rulesets
+        plugin_type: lookup
 """
 
 EXAMPLES = """
@@ -125,9 +138,9 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of all rules of a particular ruleset
+      - A list of all rules of a particular ruleset.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json
