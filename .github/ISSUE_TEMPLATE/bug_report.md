@@ -29,7 +29,7 @@ $ ansible --version
 **Checkmk Version and Edition**
 > Paste the version string, that can be found in the 'Help' menu within Checkmk. Please make sure to include the edition!
 ```console
-e.g. 2.X.YpZ (CRE)
+e.g. 2.X.YpZ (Community)
 ```
 
 **Collection Version**
