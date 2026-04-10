@@ -22,14 +22,17 @@ Please make sure it is installed on your system and available for Ansible.
 
 The Checkmk version of the site your agents will talk to.
 
-    checkmk_agent_edition: cre
+    checkmk_agent_edition: community
 
-The edition you are using. Valid values are `cre`, `cee`, `cce` and `cme`.
+The edition you are using. Valid values are `community`, `pro`, `ultimate`, `ultimatemt` and `cloud`.
 
-- `cre`: Checkmk Raw, fully Open Source.
-- `cee`: Checkmk Enterprise, full enterprise features.
-- `cce`: Checkmk Cloud (Self-hosted), for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
-- `cme`: Checkmk MSP, for service providers.
+- `community`: Checkmk Community, fully Open Source.
+- `pro`: Checkmk Pro, full enterprise features.
+- `ultimate`: Checkmk Ultimate, for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
+- `ultimatemt`: Checkmk Ultimate with multi-tenancy (CME), for service providers.
+- `cloud`: Checkmk Cloud (SaaS).
+
+The old short identifiers `cre`, `cee`, `cce`, `cme` and `cse` are still accepted for backward compatibility.
 
 For details about the editions see: https://checkmk.com/product/editions
 
@@ -134,7 +137,7 @@ discovery tasks run at the same time in parallel.
 The mode the agent operates in. For most deployments, this will be the `pull` mode.
 If you are uncertain, what you are using, this is most likely your mode.
 If you are using an alternative way to call the agent, e.g. SSH, you can set the variable to `ssh`, so the agent port check is skipped.
-If you are using the Checkmk Cloud (Self-hosted) or Checkmk MSP with an agent in `push` mode, you want to set this to `push` to avoid the agent port check, as well as triggering an initial push of data.
+If you are using Checkmk Ultimate or Checkmk Ultimate with multi-tenancy (CME) with an agent in `push` mode, you want to set this to `push` to avoid the agent port check, as well as triggering an initial push of data.
 
     checkmk_agent_port: 6556
 

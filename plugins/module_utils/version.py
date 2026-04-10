@@ -18,7 +18,7 @@ class CheckmkVersion:
 
     def __init__(self, version_raw):
         def _parse(version_raw):
-            _pattern = "([0-9])\\.([0-9])\\.([0-9])([abp])*([0-9]+)*\\.?([a-zA-Z]{3})*"
+            _pattern = "([0-9])\\.([0-9])\\.([0-9])([abp])*([0-9]+)*\\.?([a-zA-Z]+)?"
             r = re.match(_pattern, version_raw)
             return r
 

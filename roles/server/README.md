@@ -39,18 +39,21 @@ The main Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see [Site Management](#site_management) below.
 Updating sites is possible as well, see [Site updates](#site_updates) below.
 
-    checkmk_server_edition: 'cre'
+    checkmk_server_edition: 'community'
 
-The edition you are using. Valid values are `cre`, `cee`, `cce` and `cme`.
+The edition you are using. Valid values are `community`, `pro`, `ultimate`, `ultimatemt` and `cloud`.
 
-- `cre`: Checkmk Raw, fully Open Source.
-- `cee`: Checkmk Enterprise, full enterprise features.
-- `cce`: Checkmk Cloud (Self-hosted), for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
-- `cme`: Checkmk MSP, for service providers.
+- `community`: Checkmk Community, fully Open Source.
+- `pro`: Checkmk Pro, full enterprise features.
+- `ultimate`: Checkmk Ultimate, for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
+- `ultimatemt`: Checkmk Ultimate with multi-tenancy (CME), for service providers.
+- `cloud`: Checkmk Cloud (SaaS).
+
+The old short identifiers `cre`, `cee`, `cce`, `cme` and `cse` are still accepted for backward compatibility.
 
 For details about the editions see: https://checkmk.com/product/editions
 
-> Note, that you need credentials, to download the `cee` edition. See below variables, to set those.
+> Note, that you need credentials, to download any non-community edition. See below variables, to set those.
 
     checkmk_server_download_user: []
     checkmk_server_download_pass: []

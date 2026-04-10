@@ -17,7 +17,7 @@ argument_specs:
 
       checkmk_agent_edition:
         type: "str"
-        default: "cre"
+        default: "community"
         description:
           - Refer to the README for details.
 

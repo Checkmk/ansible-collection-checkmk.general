@@ -5,7 +5,7 @@
     __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
       {{
         ( (item.version | regex_replace('p.*', '')) is version('2.5', '<') )
-        | ternary(item.edition, __checkmk_server_edition_mapping[item.edition])
+        | ternary(__checkmk_server_omd_legacy_edition_ids[item.edition | lower], item.edition | lower)
       }}
   ansible.builtin.shell: |
     set -o pipefail
@@ -28,7 +28,7 @@
     __checkmk_var_edition_id: >-  # This can be reverted, once 2.5.0 is the oldest supported version
       {{
         ( (item.version | regex_replace('p.*', '')) is version('2.5', '<') )
-        | ternary(item.edition, __checkmk_server_edition_mapping[item.edition])
+        | ternary(__checkmk_server_omd_legacy_edition_ids[item.edition | lower], item.edition | lower)
       }}
   ansible.builtin.shell: |
     set -o pipefail
