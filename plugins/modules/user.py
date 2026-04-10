@@ -45,7 +45,7 @@ options:
         type: raw
     customer:
         description:
-            - For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+            - For Checkmk Ultimate with multi-tenancy (CME), you need to specify which customer ID this object belongs to.
         required: false
         type: str
     disable_notifications:
@@ -274,10 +274,10 @@ EXAMPLES = r"""
     state: "reset_password"
 
 # ---------------------------------------------------------------------------
-# Checkmk Managed Edition (CME)
+# Checkmk Ultimate with multi-tenancy (CME)
 # ---------------------------------------------------------------------------
 
-- name: "Create a user and assign them to a customer (CME only)."
+- name: "Create a user and assign them to a customer (Checkmk Ultimate with multi-tenancy (CME) only)."
   checkmk.general.user:
     server_url: "https://myserver/"
     site: "mysite"
