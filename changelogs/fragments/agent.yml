@@ -1,0 +1,4 @@
+minor_changes:
+  - Agent role - Enable automatically adding the folder a host will be put in.
+    With this feature enabled, the folder you want to put your host in will be created if it does not exist.
+    This is disabled by default, as it could clutter a folder structure.
