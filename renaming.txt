@@ -1,0 +1,388 @@
+# Checkmk Edition Renaming - Implementation Plan
+#
+# EDITION TITLE RENAMES:
+#   Checkmk Raw Edition              → Checkmk Community
+#   Checkmk Enterprise Edition       → Checkmk Pro
+#   Checkmk Cloud Edition            → Checkmk Ultimate
+#   Checkmk Cloud (SaaS)             → Checkmk Cloud
+#   Checkmk Managed Services Edition → Checkmk Ultimate with multi-tenancy (CME)
+#
+# LONG EDITION IDENTIFIER RENAMES (used in download URLs, API, package names):
+#   raw       → community
+#   enterprise→ pro
+#   cloud     → ultimate
+#   saas      → cloud
+#   managed   → ultimatemt
+#
+# SHORT EDITION IDENTIFIER RENAMES:
+# Short identifiers are replaced by the long edition identifiers above.
+# Old → New (as user-facing role variable values):
+#   cre → community
+#   cee → pro
+#   cce → ultimate
+#   cme → ultimatemt
+#   cse → cloud
+#   cfe → (gone entirely, no replacement)
+#
+# CHECKMK 2.5+ VERSION STRING FORMAT:
+# Version strings now use the long identifier as suffix:
+#   e.g.  2.5.0p1.community  (was: 2.4.0p31.cre)
+#         2.5.0p1.ultimatemt (was: 2.4.0p31.cme)
+#
+# BACKWARD COMPATIBILITY APPROACH:
+# Old short identifiers (cre/cee/cce/cme/cse) are supported via a
+# normalization step at the start of each role. Internally, all code
+# uses new long identifiers only.
+#
+# DO NOT CHANGE:
+# - CHANGELOG.rst and changelogs/ — historical records
+# - misc/openapi-swagger-ui-24.yaml — third-party file
+# - Version string examples like "2.1.0p31.cre" in plugin DOCUMENTATION —
+#   these document the historical format and should stay as-is
+# - Commented-out code in tests/ that references old identifiers
+
+==============================================================================
+SECTION 1: plugins/module_utils/version.py
+==============================================================================
+
+PROBLEM: The regex only captures 3-character edition suffixes via ([a-zA-Z]{3})*.
+New identifiers (community=9 chars, ultimatemt=10 chars) will be misread.
+Example: 2.5.0p1.community → self.edition would return "ity" (last 3-char group).
+
+FIX: Change the pattern at line 21:
+  Old: "([0-9])\\.([0-9])\\.([0-9])([abp])*([0-9]+)*\\.?([a-zA-Z]{3})*"
+  New: "([0-9])\\.([0-9])\\.([0-9])([abp])*([0-9]+)*\\.?([a-zA-Z]+)?"
+
+This makes group 6 match the full alphabetic suffix (any length, optional).
+
+Verify: all existing tests for CheckmkVersion still pass with the new regex.
+
+==============================================================================
+SECTION 2: plugins/modules/password.py
+==============================================================================
+
+Line 297 — code logic comparison (depends on Section 1 fix):
+  Old: checkmkversion.edition == "cme"
+  New: checkmkversion.edition == "ultimatemt"
+
+Line 302 — error message:
+  Old: msg="Missing required parameter 'customer' for CME"
+  New: msg="Missing required parameter 'customer' for ultimatemt"
+
+Line 39 — DOCUMENTATION string:
+  Old: "For the Checkmk Managed Edition (CME), you need to specify..."
+  New: "For Checkmk Ultimate with multi-tenancy (CME), you need to specify..."
+
+==============================================================================
+SECTION 3: Other module DOCUMENTATION / EXAMPLES blocks (prose only)
+==============================================================================
+
+These are display-name-only changes with no functional impact.
+
+FILE: plugins/modules/host_group.py
+  Line 38 (DOCUMENTATION):
+    "For the Checkmk Managed Edition (CME)..."
+    → "For Checkmk Ultimate with multi-tenancy (CME)..."
+  Line 117 (EXAMPLES comment):
+    "# Checkmk Managed Edition (CME)"
+    → "# Checkmk Ultimate with multi-tenancy (CME)"
+  Line 120 (EXAMPLES task name):
+    "...customer (CME only)."
+    → "...customer (ultimatemt only)."
+
+FILE: plugins/modules/contact_group.py
+  Line 38 (DOCUMENTATION):
+    "For the Checkmk Managed Edition (CME)..."
+    → "For Checkmk Ultimate with multi-tenancy (CME)..."
+  Line 136 (EXAMPLES comment):
+    "# Checkmk Managed Edition (CME) - assigning a customer"
+    → "# Checkmk Ultimate with multi-tenancy (CME) - assigning a customer"
+
+FILE: plugins/modules/service_group.py
+  Line 38 (DOCUMENTATION):
+    "For the Checkmk Managed Edition (CME)..."
+    → "For Checkmk Ultimate with multi-tenancy (CME)..."
+  Line 127 (EXAMPLES comment):
+    "# Checkmk Managed Edition (CME)"
+    → "# Checkmk Ultimate with multi-tenancy (CME)"
+  Line 130 (EXAMPLES task name):
+    "...customer (CME only)."
+    → "...customer (ultimatemt only)."
+
+FILE: plugins/modules/user.py
+  Line 48 (DOCUMENTATION):
+    "For the Checkmk Managed Edition (CME)..."
+    → "For Checkmk Ultimate with multi-tenancy (CME)..."
+  Line 276 (EXAMPLES comment):
+    "# Checkmk Managed Edition (CME)"
+    → "# Checkmk Ultimate with multi-tenancy (CME)"
+  Line 279 (EXAMPLES task name):
+    "...customer (CME only)."
+    → "...customer (ultimatemt only)."
+
+FILE: plugins/modules/bakery.py
+  Line 47 (DOCUMENTATION notes):
+    "This module will fail on Checkmk Raw (CRE)."
+    → "This module will fail on Checkmk Community."
+
+FILE: plugins/doc_fragments/site_options.py
+  Line 336 (DOCUMENTATION):
+    "The customer of the site (Managed Edition - CME only)."
+    → "The customer of the site (ultimatemt only)."
+
+==============================================================================
+SECTION 4: Role vars — edition mapping dictionaries
+==============================================================================
+
+Both roles share the same structure. Update all three files identically.
+The mapping dict KEYS change from old short identifiers to new long identifiers.
+The old short identifiers are kept as additional keys for backward compatibility.
+Remove cfe entirely (edition is gone).
+
+FILES:
+  roles/agent/vars/main.yml
+  roles/server/vars/main.yml
+  tests/integration/files/includes/vars/global.yml
+
+CHANGE __checkmk_var_legacy_edition_mapping (pre-2.5 Checkmk):
+  Remove:
+    cre: raw
+    cfe: free      ← remove entirely
+    cee: enterprise
+    cce: cloud
+    cme: managed
+  Replace with:
+    # New long identifiers (primary)
+    community: raw
+    pro: enterprise
+    ultimate: cloud
+    ultimatemt: managed
+    # Old short identifiers (backward compat)
+    cre: raw
+    cee: enterprise
+    cce: cloud
+    cme: managed
+
+CHANGE __checkmk_var_modern_edition_mapping (Checkmk 2.5+):
+  Remove:
+    cre: community
+    cee: pro
+    cce: ultimate
+    cme: ultimatemt
+    cse: cloud
+  Replace with:
+    # New long identifiers (primary)
+    community: community
+    pro: pro
+    ultimate: ultimate
+    ultimatemt: ultimatemt
+    cloud: cloud
+    # Old short identifiers (backward compat)
+    cre: community
+    cee: pro
+    cce: ultimate
+    cme: ultimatemt
+    cse: cloud
+
+NOTE: The variable names __checkmk_var_legacy_edition_mapping,
+__checkmk_var_modern_edition_mapping, and __checkmk_agent_edition_mapping /
+__checkmk_server_edition_mapping do NOT need to change — they are internal
+computed vars, not user-facing.
+
+==============================================================================
+SECTION 5: Role vars — OS-specific download URL/file mappings
+==============================================================================
+
+These files use only two keys representing the binary download distinction:
+  cre → vanilla agent (direct download, Community edition)
+  cee → custom agent (API download, all paid editions)
+
+Rename the keys to match the new long identifiers. Keep old keys as aliases
+pointing to the same values for backward compatibility.
+
+FILES: roles/agent/vars/Debian.yml
+       roles/agent/vars/RedHat.yml
+       roles/agent/vars/Suse.yml
+       roles/agent/vars/Windows.yml
+
+CHANGE the __checkmk_agent_agent dict:
+  Under url: and file: sections:
+    Add:  community: <same value as cre>
+    Add:  pro:       <same value as cee>
+    Keep: cre: <existing value>    ← backward compat
+    Keep: cee: <existing value>    ← backward compat
+
+NOTE: Keeping old keys means the normalization task (Section 6) is the
+primary mechanism, but if someone calls internal vars directly with old
+keys the lookup still works.
+
+==============================================================================
+SECTION 6: Role tasks — backward-compat normalization + task updates
+==============================================================================
+
+--- 6a: Add normalization task (new) ---
+
+Add a new task as the FIRST task in each role's main task entry point.
+This converts any old short identifier to the new long identifier so
+all downstream tasks only need to handle new identifiers.
+
+FILE: roles/agent/tasks/main.yml  (or whatever the entry task file is)
+FILE: roles/server/tasks/main.yml
+
+Add at the top:
+  - name: "Normalize legacy edition identifier."
+    ansible.builtin.set_fact:
+      checkmk_agent_edition: >-
+        {{ {'cre': 'community', 'cee': 'pro', 'cce': 'ultimate',
+            'cme': 'ultimatemt', 'cse': 'cloud'
+           }.get(checkmk_agent_edition | lower, checkmk_agent_edition | lower) }}
+    when: checkmk_agent_edition | lower in ['cre', 'cee', 'cce', 'cme', 'cse']
+
+(Use checkmk_server_edition for the server role.)
+
+--- 6b: Update when conditions in task files ---
+
+In all task files under roles/agent/tasks/:
+  Linux.yml, Linux-files.yml,
+  Debian.yml, RedHat.yml, Suse.yml,
+  Windows.yml, Win32NT.yml, Win32NT-files.yml
+
+  Old: when: checkmk_agent_edition | lower == "cre"
+  New: when: checkmk_agent_edition | lower == "community"
+
+  Old: when: checkmk_agent_edition | lower != "cre"
+  New: when: checkmk_agent_edition | lower != "community"
+
+--- 6c: Update Jinja2 dict key access in task files ---
+
+  Old: __checkmk_agent_agent.url.cre   → __checkmk_agent_agent.url.community
+  Old: __checkmk_agent_agent.url.cee   → __checkmk_agent_agent.url.pro
+  Old: __checkmk_agent_agent.file.cre  → __checkmk_agent_agent.file.community
+  Old: __checkmk_agent_agent.file.cee  → __checkmk_agent_agent.file.pro
+
+==============================================================================
+SECTION 7: Role defaults, argument specs, molecule, playbooks
+==============================================================================
+
+Default edition value changes (cre → community):
+
+FILE: roles/agent/defaults/main.yml
+  Line 4: checkmk_agent_edition: 'cre' → 'community'
+
+FILE: roles/server/defaults/main.yml
+  Line 39: checkmk_server_edition: 'cre' → 'community'
+
+FILE: roles/agent/meta/argument_specs.yml
+  Line 20: default: "cre" → "community"
+
+FILE: roles/server/meta/argument_specs.yml
+  Line 20: default: "cre" → "community"
+
+Molecule test group_vars (3 versions each role):
+  roles/agent/molecule/2.3.0/group_vars/all.yml  line 4: "cre" → "community"
+  roles/agent/molecule/2.4.0/group_vars/all.yml  line 4: "cre" → "community"
+  roles/agent/molecule/2.5.0/group_vars/all.yml  line 4: "cre" → "community"
+  roles/server/molecule/2.3.0/group_vars/all.yml line 4: "cre" → "community"
+  roles/server/molecule/2.4.0/group_vars/all.yml line 4: "cre" → "community"
+  roles/server/molecule/2.5.0/group_vars/all.yml line 4: "cre" → "community"
+
+Example playbooks:
+  playbooks/usecases/setup-distributed-monitoring.yml line 10: "cre" → "community"
+  playbooks/usecases/remote-registration.yml         line 13: "cre" → "community"
+  playbooks/vars/auth.yml                            line 11: "cre" → "community"
+  playbooks/vars/config.yml                          line  6: "cce" → "ultimate"
+
+==============================================================================
+SECTION 8: Role README files
+==============================================================================
+
+FILE: roles/agent/README.md
+  Line 27: Update "Valid values are `cre`, `cee`, `cce` and `cme`."
+           → "Valid values are `community`, `pro`, `ultimate`, `ultimatemt`
+              and `cloud`. The old identifiers `cre`, `cee`, `cce`, `cme`,
+              `cse` are still accepted for backward compatibility."
+  Line 29: "`cre`: Checkmk Raw, fully Open Source."
+           → "`community`: Checkmk Community, fully Open Source."
+  Line 30: "`cee`: Checkmk Enterprise, full enterprise features."
+           → "`pro`: Checkmk Pro, full enterprise features."
+  Line 31: "`cce`: Checkmk Cloud (Self-hosted), for cloud natives..."
+           → "`ultimate`: Checkmk Ultimate, for cloud natives..."
+  Line 32: "`cme`: Checkmk MSP, for service providers."
+           → "`ultimatemt`: Checkmk Ultimate with multi-tenancy (CME), for service providers."
+  Line 137: "...the Checkmk Cloud (Self-hosted) or Checkmk MSP..."
+            → "...Checkmk Ultimate or Checkmk Ultimate with multi-tenancy (CME)..."
+
+FILE: roles/server/README.md
+  Line 44: Same "Valid values" update as agent README above.
+  Line 46: "`cre`: Checkmk Raw, fully Open Source."
+           → "`community`: Checkmk Community, fully Open Source."
+  Line 47: "`cee`: Checkmk Enterprise, full enterprise features."
+           → "`pro`: Checkmk Pro, full enterprise features."
+  Line 48: "`cce`: Checkmk Cloud (Self-hosted), for cloud natives..."
+           → "`ultimate`: Checkmk Ultimate, for cloud natives..."
+  Line 49: "`cme`: Checkmk MSP, for service providers."
+           → "`ultimatemt`: Checkmk Ultimate with multi-tenancy (CME), for service providers."
+  Line 53: NOTE — "...download the `cee` edition" references the identifier the
+           user passes; update to `pro`.
+
+==============================================================================
+SECTION 9: Integration tests
+==============================================================================
+
+FILE: tests/integration/targets/password/tasks/test.yml
+  Line 38: loop var name "checkmk_var_passwords_create_cme" — rename if desired (cosmetic)
+  Line 40: when: (outer_item.edition == "cme") → == "ultimatemt"
+  Line 59: when: (outer_item.edition == "cme") → == "ultimatemt"
+
+FILE: tests/integration/targets/password/vars/main.yml
+  Line 43: checkmk_var_passwords_create_cme: → rename key (cosmetic)
+  Lines 44, 53: name values containing "_cme" — rename (cosmetic)
+
+FILE: tests/integration/targets/lookup_bakery/vars/main.yml
+  Line 4: default('cme') → default('ultimatemt')
+
+FILE: tests/integration/targets/dcd/vars/main.yml
+  Line 4: default('cme') → default('ultimatemt')
+
+FILE: tests/integration/targets/bakery/vars/main.yml
+  Line 4: default('cme') → default('ultimatemt')
+
+FILE: tests/integration/targets/notification/vars/main.yml
+  Line 4: default('cre') → default('community')
+
+FILE: tests/integration/files/includes/vars/global.yml
+  Lines 14–18 and 22–26: Update mapping keys (same as Section 4 above)
+  Line 45 (comment): # checkmk_var_edition: "cre" → "community"
+
+==============================================================================
+SECTION 10: GitHub issue template
+==============================================================================
+
+FILE: .github/ISSUE_TEMPLATE/bug_report.md
+  Line 32: "e.g. 2.X.YpZ (CRE)" → "e.g. 2.X.YpZ (community)"
+
+==============================================================================
+SECTION 11: Auto-generated RST docs (no manual changes needed)
+==============================================================================
+
+These are regenerated from module DOCUMENTATION blocks. After Section 2 and 3
+changes are applied, run `make docs` (or equivalent) to regenerate.
+
+  docs/password_module.rst
+  docs/user_module.rst
+  docs/host_group_module.rst
+  docs/contact_group_module.rst
+  docs/service_group_module.rst
+  docs/site_module.rst
+
+==============================================================================
+SECTION 12: DO NOT CHANGE
+==============================================================================
+
+- CHANGELOG.rst and changelogs/ — historical records, leave as-is
+- misc/openapi-swagger-ui-24.yaml — third-party generated file
+- Version string examples like "2.1.0p31.cre" in plugin DOCUMENTATION —
+  these document a historical version format; leave them intact
+- Commented-out test code referencing old identifiers (e.g. global.yml line 97)
+- The variable NAMES __checkmk_var_legacy_edition_mapping,
+  __checkmk_var_modern_edition_mapping — only the dict contents change

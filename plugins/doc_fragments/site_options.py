@@ -333,7 +333,7 @@ class ModuleDocFragment(object):
                                     type: str
                                 customer:
                                     description:
-                                        - The customer of the site (Managed Edition - CME only).
+                                        - The customer of the site (Ultimate with multi-tenancy only).
                                     type: str
                                 site_id:
                                     description:

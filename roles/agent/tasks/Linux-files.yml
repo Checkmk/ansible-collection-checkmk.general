@@ -1,12 +1,12 @@
 ---
 - name: "{{ ansible_facts['system'] }}: Download Vanilla {{ checkmk_agent_edition | upper }} agent."
   ansible.builtin.get_url:  # This has to be the `get_url` module, as the download works different than for the bakery-based tasks.
-    url: "{{ __checkmk_agent_agent.url.cre }}"
+    url: "{{ __checkmk_agent_agent.url.community }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
-    dest: "{{ __checkmk_agent_agent.file.cre }}"
+    dest: "{{ __checkmk_agent_agent.file.community }}"
     mode: '0644'
     timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
-  when: checkmk_agent_edition | lower == "cre"
+  when: checkmk_agent_edition | lower == "community"
   register: __checkmk_agent_vanilla_download_state
   retries: 3
   delay: 10
@@ -18,7 +18,7 @@
 - name: "{{ ansible_facts['system'] }}: Download host-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url:
-      "{{ __checkmk_agent_agent.url.cee }}?\
+      "{{ __checkmk_agent_agent.url.pro }}?\
       host_name={{ checkmk_agent_host_name }}&\
       os_type={{ __checkmk_agent_files_mapping[ansible_facts['os_family']] }}&\
       agent_type=host_name"
@@ -30,7 +30,7 @@
       Accept: "application/octet-stream"
     timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
   become: false
   register: __checkmk_agent_host_download_state
   # This task may fail, as we fall back to the generic agent in that case
@@ -50,12 +50,12 @@
 - name: "{{ ansible_facts['system'] }}: Download folder-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url:
-      "{{ __checkmk_agent_agent.url.cee }}?\
+      "{{ __checkmk_agent_agent.url.pro }}?\
       os_type={{ __checkmk_agent_files_mapping[ansible_facts['os_family']] }}&\
       folder_name={{ checkmk_agent_folder }}&\
       agent_type=generic"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
-    dest: "{{ __checkmk_agent_agent.file.cee }}"
+    dest: "{{ __checkmk_agent_agent.file.pro }}"
     method: GET
     headers:
       Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
@@ -64,7 +64,7 @@
   become: false
   register: __checkmk_agent_folder_download_state
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and checkmk_agent_folder is defined
     and not checkmk_agent_host_specific | bool
   retries: 3
@@ -85,11 +85,11 @@
 - name: "{{ ansible_facts['system'] }}: Download GENERIC {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.uri:
     url:
-      "{{ __checkmk_agent_agent.url.cee }}?\
+      "{{ __checkmk_agent_agent.url.pro }}?\
       os_type={{ __checkmk_agent_files_mapping[ansible_facts['os_family']] }}&\
       agent_type=generic"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
-    dest: "{{ __checkmk_agent_agent.file.cee }}"
+    dest: "{{ __checkmk_agent_agent.file.pro }}"
     method: GET
     headers:
       Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
@@ -97,7 +97,7 @@
     timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
   become: false
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
   retries: 3
   delegate_to: "{{ checkmk_agent_delegate_download }}"
@@ -110,7 +110,7 @@
     dest: "{{ __checkmk_agent_agent.file.host }}"
     mode: "0644"
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and checkmk_agent_host_specific | bool
     and checkmk_agent_delegate_download != inventory_hostname
   tags:
@@ -118,11 +118,11 @@
 
 - name: "{{ ansible_facts['system'] }}: Transfer GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
-    src: "{{ __checkmk_agent_agent.file.cee }}"
-    dest: "{{ __checkmk_agent_agent.file.cee }}"
+    src: "{{ __checkmk_agent_agent.file.pro }}"
+    dest: "{{ __checkmk_agent_agent.file.pro }}"
     mode: "0644"
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and not checkmk_agent_host_specific | bool
     and checkmk_agent_delegate_download != inventory_hostname
   tags:
@@ -130,11 +130,11 @@
 
 - name: "{{ ansible_facts['system'] }}: Transfer Vanilla {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.copy:
-    src: "{{ __checkmk_agent_agent.file.cre }}"
-    dest: "{{ __checkmk_agent_agent.file.cre }}"
+    src: "{{ __checkmk_agent_agent.file.community }}"
+    dest: "{{ __checkmk_agent_agent.file.community }}"
     mode: "0644"
   when: |
-    checkmk_agent_edition | lower == "cre"
+    checkmk_agent_edition | lower == "community"
     and checkmk_agent_delegate_download != inventory_hostname
   tags:
     - download-package

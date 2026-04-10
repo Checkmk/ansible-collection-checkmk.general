@@ -6,7 +6,7 @@
     state: present
     disable_gpg_check: true
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and checkmk_agent_host_specific | bool
   tags:
     - install-package
@@ -14,22 +14,22 @@
 - name: "{{ ansible_facts['os_family'] }} Derivatives: Install GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.package:
-    name: "{{ __checkmk_agent_agent.file.cee }}"
+    name: "{{ __checkmk_agent_agent.file.pro }}"
     state: present
     disable_gpg_check: true
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and not checkmk_agent_host_specific | bool
   tags:
     - install-package
 
 - name: "{{ ansible_facts['os_family'] }} Derivatives: Transfer Vanilla agent."
   ansible.builtin.copy:
-    src: "{{ __checkmk_agent_agent.file.cre }}"
-    dest: "{{ __checkmk_agent_agent.file.cre }}"
+    src: "{{ __checkmk_agent_agent.file.community }}"
+    dest: "{{ __checkmk_agent_agent.file.community }}"
     mode: "0644"
   when: |
-    checkmk_agent_edition | lower == "cre"
+    checkmk_agent_edition | lower == "community"
     and checkmk_agent_delegate_download != inventory_hostname
   tags:
     - download-package
@@ -37,10 +37,10 @@
 - name: "{{ ansible_facts['os_family'] }} Derivatives: Install Vanilla agent."
   become: true
   ansible.builtin.package:
-    name: "{{ __checkmk_agent_agent.file.cre }}"
+    name: "{{ __checkmk_agent_agent.file.community }}"
     state: present
     disable_gpg_check: true
-  when: checkmk_agent_edition | lower == "cre"
+  when: checkmk_agent_edition | lower == "community"
   tags:
     - install-package
 
