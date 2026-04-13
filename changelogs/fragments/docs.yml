@@ -1,4 +1,4 @@
-release_summary: "Continued spring clenaing: Polishing the documentation."
+release_summary: "Spring cleaning: Polishing the documentation."
 
 minor_changes:
   - All modules and lookup plugins - Overhaul ``EXAMPLES`` blocks with clearer section structure,
