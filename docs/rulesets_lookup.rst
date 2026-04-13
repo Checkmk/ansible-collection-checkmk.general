@@ -22,7 +22,7 @@ checkmk.general.rulesets lookup -- Search rulesets
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -376,7 +376,7 @@ examples: ``lookup('checkmk.general.rulesets', key1=value1, key2=value2, ...)`` 
 
         <div class="ansible-option-cell">
 
-      Only show deprecated rulesets. Defaults to False.
+      Only show deprecated rulesets.
 
 
       .. rst-class:: ansible-option-line
@@ -464,7 +464,7 @@ examples: ``lookup('checkmk.general.rulesets', key1=value1, key2=value2, ...)`` 
 
         <div class="ansible-option-cell">
 
-      Only show used rulesets. Defaults to True.
+      Only show used rulesets.
 
 
       .. rst-class:: ansible-option-line
@@ -673,6 +673,19 @@ Notes
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.rule <ansible_collections.checkmk.general.rule_module>`
+       Manage rules in Checkmk.
+   :ref:`checkmk.general.rule <ansible_collections.checkmk.general.rule_lookup>` lookup plugin
+       Show a rule.
+   :ref:`checkmk.general.rules <ansible_collections.checkmk.general.rules_lookup>` lookup plugin
+       Get a list rules.
+   :ref:`checkmk.general.ruleset <ansible_collections.checkmk.general.ruleset_lookup>` lookup plugin
+       Show a ruleset.
 
 .. Examples
 
@@ -681,46 +694,55 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Get all used rulesets with 'file' in their name
+    - name: "Get all used rulesets whose name contains 'file'."
       ansible.builtin.debug:
-        msg: "Ruleset: {{ item.extensions.name }} has {{ item.extensions.number_of_rules }} rules."
+        msg: "Ruleset {{ item.extensions.name }} has {{ item.extensions.number_of_rules }} rules."
       loop: "{{
         lookup('checkmk.general.rulesets',
           regex='file',
           rulesets_used=True,
-          server_url=server_url,
-          site=site,
-          api_user=api_user,
-          api_secret=api_secret,
+          server_url='https://myserver/',
+          site='mysite',
+          api_user='myuser',
+          api_secret='mysecret',
           validate_certs=False
           )
         }}"
       loop_control:
         label: "{{ item.id }}"
 
-    - name: Get all used deprecated rulesets
+    - name: "Get all deprecated rulesets."
       ansible.builtin.debug:
-        msg: "Ruleset {{ item.extension.name }} is deprecated."
+        msg: "Ruleset {{ item.extensions.name }} is deprecated."
       loop: "{{
         lookup('checkmk.general.rulesets',
           regex='',
           rulesets_deprecated=True,
           rulesets_used=True,
-          server_url=server_url,
-          site=site,
-          api_user=api_user,
-          api_secret=api_secret,
+          server_url='https://myserver/',
+          site='mysite',
+          api_user='myuser',
+          api_secret='mysecret',
           validate_certs=False
           )
         }}"
       loop_control:
-        label: "{{ item.0.id }}"
+        label: "{{ item.id }}"
 
-    - name: "Use variables from inventory."
+    # ---------------------------------------------------------------------------
+    # Using variables from inventory
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via inventory variables instead of
+    # lookup parameters. The supported variables are:
+    #   checkmk_var_server_url, checkmk_var_site,
+    #   checkmk_var_api_user, checkmk_var_api_secret,
+    #   checkmk_var_validate_certs
+
+    - name: "Get all deprecated rulesets using inventory variables."
       ansible.builtin.debug:
-        msg: "Ruleset {{ item.extension.name }} is deprecated."
+        msg: "Ruleset {{ item.extensions.name }} is deprecated."
       vars:
-        checkmk_var_server_url: "http://myserver/"
+        checkmk_var_server_url: "https://myserver/"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"
@@ -728,7 +750,7 @@ Examples
       loop: "{{
         lookup('checkmk.general.rulesets', regex='', rulesets_deprecated=True, rulesets_used=True) }}"
       loop_control:
-        label: "{{ item.0.id }}"
+        label: "{{ item.id }}"
 
 
 
@@ -768,7 +790,7 @@ Return Value
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
 
       .. raw:: html
 
@@ -778,7 +800,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A list of rulesets
+      A list of rulesets matching the search criteria.
 
 
       .. rst-class:: ansible-option-line

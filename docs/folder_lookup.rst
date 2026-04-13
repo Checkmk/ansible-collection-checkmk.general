@@ -22,7 +22,7 @@ checkmk.general.folder lookup -- Get folder attributes
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -560,6 +560,15 @@ Notes
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.folder <ansible_collections.checkmk.general.folder_module>`
+       Manage folders in Checkmk.
+   :ref:`checkmk.general.folders <ansible_collections.checkmk.general.folders_lookup>` lookup plugin
+       Get various information about a folder.
 
 .. Examples
 
@@ -568,25 +577,51 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Get the attributes of folders /tests and /snmp
+    - name: "Get the attributes of a single folder."
       ansible.builtin.debug:
-        msg: "Extended attributes of folder /network: {{ attributes.extensions }}"
+        msg: "Extended attributes of folder /tests: {{ attributes.extensions }}"
+      vars:
+        attributes: "{{
+          lookup('checkmk.general.folder',
+                 '~tests',
+                 server_url='https://myserver/',
+                 site='mysite',
+                 api_user='myuser',
+                 api_secret='mysecret',
+                 validate_certs=False
+                 )
+        }}"
+
+    - name: "Iterate over multiple folders."
+      ansible.builtin.debug:
+        msg: "Folder {{ item.id }} has attributes: {{ item.extensions }}"
       loop: "{{
                lookup('checkmk.general.folder',
                       '~tests', '~snmp',
-                      server_url=my_server_url,
-                      site=mysite,
-                      api_user=myuser,
-                      api_secret=mysecret,
+                      server_url='https://myserver/',
+                      site='mysite',
+                      api_user='myuser',
+                      api_secret='mysecret',
                       validate_certs=False
                       )
              }}"
+      loop_control:
+        label: "{{ item.id }}"
 
-    - name: "Use variables from inventory."
+    # ---------------------------------------------------------------------------
+    # Using variables from inventory
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via inventory variables instead of
+    # lookup parameters. The supported variables are:
+    #   checkmk_var_server_url, checkmk_var_site,
+    #   checkmk_var_api_user, checkmk_var_api_secret,
+    #   checkmk_var_validate_certs
+
+    - name: "Get folder attributes using inventory variables."
       ansible.builtin.debug:
-        msg: "Extended attributes of folder /network: {{ attributes.extensions }}"
+        msg: "Extended attributes of folder /tests: {{ attributes.extensions }}"
       vars:
-        checkmk_var_server_url: "http://myserver/"
+        checkmk_var_server_url: "https://myserver/"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"
@@ -631,7 +666,7 @@ Return Value
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
 
       .. raw:: html
 
@@ -641,9 +676,9 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A dict of attributes of the folder if you query a single folder
+      A dict of attributes of the folder if you query a single folder.
 
-      A list of dicts of attributes of the folders if you query multiple folders
+      A list of dicts of attributes of the folders if you query multiple folders.
 
 
       .. rst-class:: ansible-option-line

@@ -16,13 +16,13 @@
 
 .. Title
 
-checkmk.general.host_group module -- Manage host groups in Checkmk (bulk version).
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.host_group module -- Manage host groups in Checkmk (bulk version)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -50,6 +50,7 @@ Synopsis
 .. Description
 
 - Manage host groups in Checkmk.
+- Host groups can be used to group hosts by function or location. Supports both single\-group and bulk (multiple\-group) operations in a single task.
 
 
 .. Aliases
@@ -600,6 +601,13 @@ Parameters
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
+       Manage hosts in Checkmk.
 
 .. Examples
 
@@ -608,71 +616,94 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    # Create a single host group.
-    - name: "Create a single host group."
+    # ---------------------------------------------------------------------------
+    # Create and delete a single host group
+    # ---------------------------------------------------------------------------
+
+    - name: "Create a host group."
       checkmk.general.host_group:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        name: "my_host_group"
-        title: "My Host Group"
-        customer: "provider"
+        name: "linux_servers"
+        title: "Linux Servers"
         state: "present"
 
-    # Create several host groups.
-    - name: "Create several host groups."
+    - name: "Delete a host group."
       checkmk.general.host_group:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        customer: "provider"
-        groups:
-          - name: "my_host_group_one"
-            title: "My Host Group One"
-          - name: "my_host_group_two"
-            title: "My Host Group Two"
-          - name: "my_host_group_test"
-            title: "My Test"
-        state: "present"
-
-    # Create several host groups.
-    - name: "Create several host groups."
-      checkmk.general.host_group:
-        server_url: "http://myserver/"
-        site: "mysite"
-        api_user: "myuser"
-        api_secret: "mysecret"
-        customer: "provider"
-        groups:
-          - name: "my_host_group_one"
-            title: "My Host Group One"
-          - name: "my_host_group_two"
-          - name: "my_host_group_test"
-        state: "present"
-
-    # Delete a single host group.
-    - name: "Delete a single host group."
-      checkmk.general.host_group:
-        server_url: "http://myserver/"
-        site: "mysite"
-        api_user: "myuser"
-        api_secret: "mysecret"
-        name: "my_host_group"
+        name: "linux_servers"
         state: "absent"
 
-    # Delete several host groups.
-    - name: "Delete several host groups."
+    # ---------------------------------------------------------------------------
+    # Bulk create and delete host groups
+    # ---------------------------------------------------------------------------
+
+    - name: "Create several host groups at once."
       checkmk.general.host_group:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
         groups:
-          - name: "my_host_group_one"
-          - name: "my_host_group_two"
+          - name: "linux_servers"
+            title: "Linux Servers"
+          - name: "windows_servers"
+            title: "Windows Servers"
+          - name: "network_devices"
+            title: "Network Devices"
+        state: "present"
+
+    - name: "Delete several host groups at once."
+      checkmk.general.host_group:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        groups:
+          - name: "linux_servers"
+          - name: "windows_servers"
         state: "absent"
+
+    # ---------------------------------------------------------------------------
+    # Checkmk Managed Edition (CME)
+    # ---------------------------------------------------------------------------
+
+    - name: "Create a host group and assign it to a customer (CME only)."
+      checkmk.general.host_group:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        name: "linux_servers"
+        title: "Linux Servers"
+        customer: "provider"
+        state: "present"
+
+    # ---------------------------------------------------------------------------
+    # Using environment variables for authentication
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via environment variables instead of
+    # task parameters. The supported variables are:
+    #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+    #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+    #   CHECKMK_VAR_VALIDATE_CERTS
+
+    - name: "Create a host group using environment variables for authentication."
+      checkmk.general.host_group:
+        name: "linux_servers"
+        title: "Linux Servers"
+        state: "present"
+      environment:
+        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SITE: "mysite"
+        CHECKMK_VAR_API_USER: "myuser"
+        CHECKMK_VAR_API_SECRET: "mysecret"
+        CHECKMK_VAR_VALIDATE_CERTS: "true"
 
 
 
@@ -699,17 +730,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-message"></div>
+        <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.checkmk.general.host_group_module__return-message:
+      .. _ansible_collections.checkmk.general.host_group_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
-      **message**
+      **msg**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
+        <a class="ansibleOptionLink" href="#return-msg" title="Permalink to this return value"></a>
 
       .. ansible-option-type-line::
 

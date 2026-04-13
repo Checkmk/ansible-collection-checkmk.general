@@ -16,13 +16,13 @@
 
 .. Title
 
-checkmk.general.ldap module -- Manage LDAP connectors.
+checkmk.general.ldap module -- Manage LDAP connections
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -49,7 +49,7 @@ Synopsis
 
 .. Description
 
-- Manage LDAP connectors, including creation, updating, and deletion.
+- Manage LDAP connections, including creation, updating, and deletion.
 
 
 .. Aliases
@@ -1820,7 +1820,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The sync interval in days
+      The sync interval in days.
 
 
       .. rst-class:: ansible-option-line
@@ -1866,7 +1866,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The sync interval in hours
+      The sync interval in hours.
 
 
       .. rst-class:: ansible-option-line
@@ -1912,7 +1912,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The sync interval in minutes
+      The sync interval in minutes.
 
 
       .. rst-class:: ansible-option-line
@@ -2455,7 +2455,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The attribute to set
+      The attribute to set.
 
 
       .. raw:: html
@@ -2539,7 +2539,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The value to set
+      The value to set.
 
 
       .. raw:: html
@@ -3322,7 +3322,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The sidebar position
+      The sidebar position.
 
 
       .. rst-class:: ansible-option-line
@@ -3368,7 +3368,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The user interface theme
+      The user interface theme.
 
 
       .. rst-class:: ansible-option-line
@@ -4033,9 +4033,23 @@ Parameters
 
 .. Notes
 
+Notes
+-----
+
+.. note::
+   - Only keys explicitly provided in :emphasis:`ldap\_config` are compared and potentially updated. If you omit a key, its current value will not be changed.
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.ldap\_connection <ansible_collections.checkmk.general.ldap_connection_lookup>` lookup plugin
+       Show the configuration of an ldap connection.
+   :ref:`checkmk.general.ldap\_connections <ansible_collections.checkmk.general.ldap_connections_lookup>` lookup plugin
+       Get a list of all ldap\_connections.
 
 .. Examples
 
@@ -4044,101 +4058,104 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Create a LDAP configuration
+    # ---------------------------------------------------------------------------
+    # Create and delete LDAP connections
+    # ---------------------------------------------------------------------------
+
+    - name: "Create an LDAP connection with minimal configuration."
       checkmk.general.ldap:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
-        api_auth_type: "bearer"
         api_user: "myuser"
         api_secret: "mysecret"
         ldap_config:
           general_properties:
-            id: "test_ldap_defaults"
+            id: "my_ldap"
+            description: "My LDAP connection"
+            comment: "Managed by Ansible"
           ldap_connection:
             directory_type:
               type: "open_ldap"
-              ldap_server: "my.ldap.server.tld"
+              ldap_server: "ldap.example.com"
         state: "present"
 
-    - name: Delete a LDAP configuration
+    - name: "Delete an LDAP connection."
       checkmk.general.ldap:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
-        api_auth_type: "bearer"
-        api_user: "myuser"
-        api_secret: "mysecret"
-        ldap_config:
-          id: "test_ldap_defaults"
-        state: "absent"
-
-    - name: Create a complex LDAP connector
-      checkmk.general.ldap:
-        server_url: "http://myserver/"
-        site: "mysite"
-        api_auth_type: "bearer"
         api_user: "myuser"
         api_secret: "mysecret"
         ldap_config:
           general_properties:
-            id: "test_ldap_complex"
-            rule_activation: activated
-            comment: "This is a complex example."
-            description: "A complex example"
-            documentation_url: "www.example.com"
+            id: "my_ldap"
+        state: "absent"
+
+    # ---------------------------------------------------------------------------
+    # Create a fully configured LDAP connection
+    # ---------------------------------------------------------------------------
+
+    - name: "Create a fully configured LDAP connection."
+      checkmk.general.ldap:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        ldap_config:
+          general_properties:
+            id: "my_ldap"
+            description: "Corporate Active Directory"
+            comment: "Managed by Ansible"
+            rule_activation: "activated"
           ldap_connection:
             directory_type:
               type: "open_ldap"
-              ldap_server: "my.ldap.server.tld"
+              ldap_server: "ldap.example.com"
               failover_servers:
-                - my2nd.ldap.server.tld
-                - my3rd.ldap.server.tld
+                - "ldap2.example.com"
             bind_credentials:
-              bind_dn: "ldap-ro"
-              type: store
-              password_store_id: "ldap_ro"
-            ssl_encryption: enable_ssl
-            tcp_port: 663
-            connect_timeout: 3
+              type: "store"
+              bind_dn: "CN=ldap-ro,OU=ServiceAccounts,DC=example,DC=com"
+              password_store_id: "ldap_readonly"
+            ssl_encryption: "enable_ssl"
+            tcp_port: 636
             ldap_version: 3
-            page_size: 2000
+            connect_timeout: 3
             response_timeout: 8
+            page_size: 1000
           users:
             user_base_dn: "OU=Users,DC=example,DC=com"
-            search_scope: search_whole_subtree
+            search_scope: "search_whole_subtree"
             search_filter: "(objectclass=inetOrgPerson)"
-            user_id_attribute: uid
-            user_id_case: convert_to_lowercase
-            create_users: on_login
+            user_id_attribute: "uid"
+            user_id_case: "convert_to_lowercase"
+            create_users: "on_login"
           groups:
             group_base_dn: "OU=Groups,DC=example,DC=com"
-            search_scope: search_only_base_dn_entry
+            search_scope: "search_whole_subtree"
             search_filter: "(objectclass=posixGroup)"
             member_attribute: "uniquemember"
           sync_plugins:
-            alias: custom_user_alias
-            visibility_of_hosts_or_services: visibility
+            alias: "cn"
+            email_address: "mail"
             contact_group_membership:
               handle_nested: true
-            groups_to_custom_user_attributes:
-              handle_nested: true
-              groups_to_sync:
-                - group_cn: CN=megamenu,OU=Groups,DC=example,DC=com
-                  attribute_to_set: mega_menu_icons
-                  value: per_entry
             groups_to_roles:
               handle_nested: true
               roles_to_sync:
-                - role: admin
+                - role: "admin"
                   groups:
-                    - group_dn: CN=admins,OU=Groups,DC=example,DC=com
-                      search_in: this_connection
+                    - group_dn: "CN=checkmk-admins,OU=Groups,DC=example,DC=com"
+                      search_in: "this_connection"
         state: "present"
 
-    - name: Update all LDAP connectors
+    # ---------------------------------------------------------------------------
+    # Update all existing LDAP connections using a lookup
+    # ---------------------------------------------------------------------------
+
+    - name: "Update the comment on all existing LDAP connections."
       checkmk.general.ldap:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
-        api_auth_type: "bearer"
         api_user: "myuser"
         api_secret: "mysecret"
         ldap_config: "{{ item.extensions | combine(checkmk_var_comment_update, recursive=true) }}"
@@ -4146,9 +4163,9 @@ Examples
       vars:
         checkmk_var_comment_update:
           general_properties:
-            comment: New comment
+            comment: "Managed by Ansible"
       loop: "{{ lookup('checkmk.general.ldap_connections',
-                            server_url='http://myserver/',
+                            server_url='https://myserver/',
                             site='mysite',
                             api_user='myuser',
                             api_secret='mysecret',
@@ -4156,6 +4173,34 @@ Examples
                      }}"
       loop_control:
         label: "{{ item.extensions.general_properties.id }}"
+
+    # ---------------------------------------------------------------------------
+    # Using environment variables for authentication
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via environment variables instead of
+    # task parameters. The supported variables are:
+    #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+    #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+    #   CHECKMK_VAR_VALIDATE_CERTS
+
+    - name: "Create an LDAP connection using environment variables for authentication."
+      checkmk.general.ldap:
+        ldap_config:
+          general_properties:
+            id: "my_ldap"
+            description: "My LDAP connection"
+            comment: "Managed by Ansible"
+          ldap_connection:
+            directory_type:
+              type: "active_directory_manual"
+              ldap_server: "ldap.example.com"
+        state: "present"
+      environment:
+        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SITE: "mysite"
+        CHECKMK_VAR_API_USER: "myuser"
+        CHECKMK_VAR_API_SECRET: "mysecret"
+        CHECKMK_VAR_VALIDATE_CERTS: "true"
 
 
 

@@ -22,7 +22,7 @@ checkmk.general.site lookup -- Show the configuration of a site
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -560,6 +560,15 @@ Notes
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.site <ansible_collections.checkmk.general.site_module>`
+       Manage distributed monitoring in Checkmk.
+   :ref:`checkmk.general.sites <ansible_collections.checkmk.general.sites_lookup>` lookup plugin
+       Get a list of all sites.
 
 .. Examples
 
@@ -568,31 +577,40 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Get a site with a particular site id
+    - name: "Get the configuration of a remote site."
       ansible.builtin.debug:
-        msg: "site: {{ extensions }}"
+        msg: "Site myremotesite: {{ site_config }}"
       vars:
-        extensions: "{{
+        site_config: "{{
           lookup('checkmk.general.site',
-            'my_remote_site',
-            server_url=server_url,
-            site=site,
-            api_user=api_user,
-            api_secret=api_secret,
+            'myremotesite',
+            server_url='https://myserver/',
+            site='mysite',
+            api_user='myuser',
+            api_secret='mysecret',
             validate_certs=False
           )
         }}"
 
-    - name: "Use variables from inventory."
+    # ---------------------------------------------------------------------------
+    # Using variables from inventory
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via inventory variables instead of
+    # lookup parameters. The supported variables are:
+    #   checkmk_var_server_url, checkmk_var_site,
+    #   checkmk_var_api_user, checkmk_var_api_secret,
+    #   checkmk_var_validate_certs
+
+    - name: "Get a remote site configuration using inventory variables."
       ansible.builtin.debug:
-        msg: "site: {{ extensions }}"
+        msg: "Site myremotesite: {{ site_config }}"
       vars:
-        checkmk_var_server_url: "http://myserver/"
+        checkmk_var_server_url: "https://myserver/"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"
         checkmk_var_validate_certs: false
-        attributes: "{{ lookup('checkmk.general.site', 'my_remote_site') }}"
+        site_config: "{{ lookup('checkmk.general.site', 'myremotesite') }}"
 
 
 
@@ -632,7 +650,7 @@ Return Value
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
 
       .. raw:: html
 
@@ -642,7 +660,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      The details of a particular site
+      The configuration of a particular site.
 
 
       .. rst-class:: ansible-option-line

@@ -16,13 +16,13 @@
 
 .. Title
 
-checkmk.general.password module -- Manage passwords in Checkmk.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.password module -- Manage passwords in Checkmk
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -50,6 +50,7 @@ Synopsis
 .. Description
 
 - Manage passwords in Checkmk.
+- Passwords stored in the Checkmk password store can be referenced in rules and special agents without exposing them in plain text in your configuration.
 
 
 .. Aliases
@@ -428,7 +429,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      An unique identifier for the password.
+      A unique identifier for the password.
 
 
       .. raw:: html
@@ -740,34 +741,78 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    # Creating and Updating is the same.
-    # If passwords are configured, no_log should be set to true.
-    - name: "Create a new password."
+    # ---------------------------------------------------------------------------
+    # Create, update, and delete passwords
+    # ---------------------------------------------------------------------------
+    # Creating and updating use the same task structure.
+    # Always set 'no_log: true' when using this module to avoid logging secrets.
+
+    - name: "Create a password."
       checkmk.general.password:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        name: "mypassword"
+        title: "My Password"
+        comment: "Managed by Ansible"
+        password: "topsecret"
+        owner: "admin"
+        shared:
+          - "all"
+        state: "present"
+      no_log: true
+
+    - name: "Create a password with all optional fields."
+      checkmk.general.password:
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
         name: "mypassword"
         title: "My Password"
         customer: "provider"
-        comment: "Comment on my password"
-        documentation_url: "https://url.to.mypassword/"
+        comment: "Managed by Ansible"
+        documentation_url: "https://docs.example.com/mypassword"
         password: "topsecret"
         owner: "admin"
-        shared: [
-          "all"
-        ]
+        shared:
+          - "all"
         state: "present"
       no_log: true
+
     - name: "Delete a password."
       checkmk.general.password:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
         name: "mypassword"
+        title: "My Password"
         state: "absent"
+
+    # ---------------------------------------------------------------------------
+    # Using environment variables for authentication
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via environment variables instead of
+    # task parameters. The supported variables are:
+    #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+    #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+    #   CHECKMK_VAR_VALIDATE_CERTS
+
+    - name: "Create a password using environment variables for authentication."
+      checkmk.general.password:
+        name: "mypassword"
+        title: "My Password"
+        password: "topsecret"
+        state: "present"
+      no_log: true
+      environment:
+        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SITE: "mysite"
+        CHECKMK_VAR_API_USER: "myuser"
+        CHECKMK_VAR_API_SECRET: "mysecret"
+        CHECKMK_VAR_VALIDATE_CERTS: "true"
 
 
 
@@ -839,17 +884,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-message"></div>
+        <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__return-message:
+      .. _ansible_collections.checkmk.general.password_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
-      **message**
+      **msg**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
+        <a class="ansibleOptionLink" href="#return-msg" title="Permalink to this return value"></a>
 
       .. ansible-option-type-line::
 

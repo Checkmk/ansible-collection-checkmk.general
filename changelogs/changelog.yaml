@@ -1606,3 +1606,18 @@ releases:
       name: notification
       namespace: ''
     release_date: '2026-04-09'
+  7.3.1:
+    changes:
+      minor_changes:
+      - All modules - Rewrite environment variable authentication examples to use
+        the task-level ``environment:`` block rather than inline ``lookup('ansible.builtin.env',
+        ...)`` calls.
+      - All modules and lookup plugins - Add ``seealso:`` cross-references to related
+        modules and plugins in ``DOCUMENTATION`` blocks.
+      - All modules and lookup plugins - Overhaul ``EXAMPLES`` blocks with clearer
+        section structure, consistent quoting, realistic placeholder values, and expanded
+        use-case coverage.
+      release_summary: 'Spring cleaning: Polishing the documentation.'
+    fragments:
+    - docs.yml
+    release_date: '2026-04-13'
