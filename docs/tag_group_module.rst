@@ -16,13 +16,13 @@
 
 .. Title
 
-checkmk.general.tag_group module -- Manage tag groups in Checkmk.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.tag_group module -- Manage tag groups in Checkmk
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -50,6 +50,7 @@ Synopsis
 .. Description
 
 - Manage tag groups in Checkmk.
+- Tag groups define sets of mutually exclusive host tags. Tags are used in rules to target specific hosts, and can also be used in views and reports.
 
 
 .. Aliases
@@ -606,7 +607,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The list of aux\_tags
+      The list of aux\_tags.
 
 
       .. rst-class:: ansible-option-line
@@ -654,7 +655,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The id of the tag
+      The id of the tag.
 
 
       .. raw:: html
@@ -698,7 +699,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The title of the tag
+      The title of the tag.
 
 
       .. raw:: html
@@ -833,6 +834,17 @@ Parameters
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.aux\_tag <ansible_collections.checkmk.general.aux_tag_module>`
+       Manage auxiliary tags in Checkmk.
+   :ref:`checkmk.general.folder <ansible_collections.checkmk.general.folder_module>`
+       Manage folders in Checkmk.
+   :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
+       Manage hosts in Checkmk.
 
 .. Examples
 
@@ -841,39 +853,100 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    # Create a tag group
-    - name: "Create tag group"
+    # ---------------------------------------------------------------------------
+    # Create and delete tag groups
+    # ---------------------------------------------------------------------------
+
+    - name: "Create a tag group."
       checkmk.general.tag_group:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        name: datacenter
-        title: Datacenter
-        topic: Tags
+        name: "datacenter"
+        title: "Datacenter"
+        topic: "Tags"
         help: "The datacenter this host resides in."
         tags:
-          - id: datacenter_none
-            title: No Datacenter
-          - id: datacenter_1
-            title: Datacenter 1
-            aux_tags: ["support_a","support_b"]
-          - id: datacenter_2
-            title: Datacenter 2
-            aux_tags: ["support_c"]
-          - id: datacenter_3
-            title: Datacenter 3
-        state: present
+          - id: "datacenter_1"
+            title: "Datacenter 1"
+          - id: "datacenter_2"
+            title: "Datacenter 2"
+          - id: "datacenter_3"
+            title: "Datacenter 3"
+        state: "present"
 
-    # Delete a tag group
-    - name: "Delete tag group."
+    - name: "Create a tag group with auxiliary tags assigned to its values."
       checkmk.general.tag_group:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        name: datacenter
+        name: "datacenter"
+        title: "Datacenter"
+        topic: "Infrastructure"
+        tags:
+          - id: "datacenter_none"
+            title: "No Datacenter"
+          - id: "datacenter_1"
+            title: "Datacenter 1"
+            aux_tags:
+              - "support_a"
+              - "support_b"
+          - id: "datacenter_2"
+            title: "Datacenter 2"
+            aux_tags:
+              - "support_c"
+        state: "present"
+
+    - name: "Delete a tag group."
+      checkmk.general.tag_group:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        name: "datacenter"
         state: "absent"
+
+    # ---------------------------------------------------------------------------
+    # Delete a tag group that is still in use
+    # ---------------------------------------------------------------------------
+    # The 'repair' option automatically updates or removes the tag from all
+    # hosts that use it. Use with caution!
+
+    - name: "Delete a tag group and repair affected hosts automatically."
+      checkmk.general.tag_group:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        name: "datacenter"
+        repair: true
+        state: "absent"
+
+    # ---------------------------------------------------------------------------
+    # Using environment variables for authentication
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via environment variables instead of
+    # task parameters. The supported variables are:
+    #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+    #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+    #   CHECKMK_VAR_VALIDATE_CERTS
+
+    - name: "Create a tag group using environment variables for authentication."
+      checkmk.general.tag_group:
+        name: "datacenter"
+        title: "Datacenter"
+        tags:
+          - id: "datacenter_1"
+            title: "Datacenter 1"
+        state: "present"
+      environment:
+        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SITE: "mysite"
+        CHECKMK_VAR_API_USER: "myuser"
+        CHECKMK_VAR_API_SECRET: "mysecret"
+        CHECKMK_VAR_VALIDATE_CERTS: "true"
 
 
 
@@ -945,17 +1018,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-message"></div>
+        <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.checkmk.general.tag_group_module__return-message:
+      .. _ansible_collections.checkmk.general.tag_group_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
-      **message**
+      **msg**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
+        <a class="ansibleOptionLink" href="#return-msg" title="Permalink to this return value"></a>
 
       .. ansible-option-type-line::
 

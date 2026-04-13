@@ -16,13 +16,13 @@
 
 .. Title
 
-checkmk.general.activation module -- Activate changes in Checkmk.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.activation module -- Activate changes in Checkmk
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -538,9 +538,24 @@ Parameters
 
 .. Notes
 
+Notes
+-----
+
+.. note::
+   - This module always triggers an activation when there are pending changes. It is not idempotent in the usual Ansible sense.
+   - Use :literal:`run\_once: true` to avoid activating once per host in a play.
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.activation <ansible_collections.checkmk.general.activation_lookup>` lookup plugin
+       Get the status of a single activation.
+   :ref:`checkmk.general.activations <ansible_collections.checkmk.general.activations_lookup>` lookup plugin
+       Get all activations.
 
 .. Examples
 
@@ -549,42 +564,95 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: "Start activation on all sites."
+    # ---------------------------------------------------------------------------
+    # Basic activation
+    # ---------------------------------------------------------------------------
+
+    - name: "Activate changes on all sites."
       checkmk.general.activation:
-          server_url: "http://myserver/"
-          site: "mysite"
-          api_user: "myuser"
-          api_secret: "mysecret"
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
       run_once: true
 
-    - name: "Start activation on a specific site."
+    - name: "Activate changes on all sites and wait for completion."
       checkmk.general.activation:
-          server_url: "http://myserver/"
-          site: "mysite"
-          api_user: "myuser"
-          api_secret: "mysecret"
-          sites:
-              - "mysite"
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        redirect: true
       run_once: true
 
-    - name: "Start activation including foreign changes."
+    # ---------------------------------------------------------------------------
+    # Targeting specific sites
+    # ---------------------------------------------------------------------------
+
+    - name: "Activate changes on a specific site."
       checkmk.general.activation:
-          server_url: "http://myserver/"
-          site: "mysite"
-          api_user: "myuser"
-          api_secret: "mysecret"
-          force_foreign_changes: true
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        sites:
+          - "mysite"
+      run_once: true
+
+    - name: "Activate changes on multiple specific sites."
+      checkmk.general.activation:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        sites:
+          - "mysite"
+          - "myremotesite"
+      run_once: true
+
+    # ---------------------------------------------------------------------------
+    # Handling foreign changes
+    # ---------------------------------------------------------------------------
+    # By default, activating changes made by other users requires explicit
+    # permission. Use 'force_foreign_changes: true' to activate them regardless.
+
+    - name: "Activate changes including changes made by other users."
+      checkmk.general.activation:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        force_foreign_changes: true
       run_once: true
 
     - name: "Activate changes including foreign changes and wait for completion."
       checkmk.general.activation:
-          server_url: "http://localhost/"
-          site: "mysite"
-          api_user: "myuser"
-          api_secret: "$SECRET"
-          redirect: true
-          force_foreign_changes: true
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        redirect: true
+        force_foreign_changes: true
       run_once: true
+
+    # ---------------------------------------------------------------------------
+    # Using environment variables for authentication
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via environment variables instead of
+    # task parameters. The supported variables are:
+    #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+    #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+    #   CHECKMK_VAR_VALIDATE_CERTS
+
+    - name: "Activate changes using environment variables for authentication."
+      checkmk.general.activation:
+      run_once: true
+      environment:
+        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SITE: "mysite"
+        CHECKMK_VAR_API_USER: "myuser"
+        CHECKMK_VAR_API_SECRET: "mysecret"
+        CHECKMK_VAR_VALIDATE_CERTS: "true"
 
 
 
@@ -656,17 +724,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-message"></div>
+        <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.checkmk.general.activation_module__return-message:
+      .. _ansible_collections.checkmk.general.activation_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
-      **message**
+      **msg**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
+        <a class="ansibleOptionLink" href="#return-msg" title="Permalink to this return value"></a>
 
       .. ansible-option-type-line::
 

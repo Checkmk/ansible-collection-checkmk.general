@@ -16,13 +16,13 @@
 
 .. Title
 
-checkmk.general.aux_tag module -- Manage auxiliary tags in Checkmk.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.aux_tag module -- Manage auxiliary tags in Checkmk
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -50,6 +50,7 @@ Synopsis
 .. Description
 
 - Manage auxiliary tags in Checkmk.
+- Auxiliary tags can be assigned to tag group values and are used to group hosts for rule matching without exposing the underlying tag structure to the user.
 
 
 .. Aliases
@@ -597,9 +598,21 @@ Parameters
 
 .. Notes
 
+Notes
+-----
+
+.. note::
+   - Only parameters that are explicitly provided are compared and potentially updated. Omitting a parameter will not reset or change its current value on the server.
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.tag\_group <ansible_collections.checkmk.general.tag_group_module>`
+       Manage tag groups in Checkmk.
 
 .. Examples
 
@@ -608,40 +621,75 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    # Create an auxiliary tag
-    - name: "Create auxiliary tag for HTTPS"
+    # ---------------------------------------------------------------------------
+    # Create and update auxiliary tags
+    # ---------------------------------------------------------------------------
+
+    - name: "Create an auxiliary tag."
       checkmk.general.aux_tag:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        name: https
-        title: Web Server HTTPS
-        topic: Services
-        help: "Host provides HTTPS services"
+        name: "https"
+        title: "HTTPS"
         state: "present"
 
-    # Update an auxiliary tag
-    - name: "Update auxiliary tag"
+    - name: "Create an auxiliary tag with a topic and help text."
       checkmk.general.aux_tag:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        name: https
-        title: Web Server HTTPS/TLS
-        topic: Services
+        name: "https"
+        title: "HTTPS"
+        topic: "Web Services"
+        help: "Host provides HTTPS services."
         state: "present"
 
-    # Delete an auxiliary tag
-    - name: "Delete auxiliary tag"
+    - name: "Update the title of an existing auxiliary tag."
       checkmk.general.aux_tag:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        name: https
+        name: "https"
+        title: "HTTPS/TLS"
+        state: "present"
+
+    # ---------------------------------------------------------------------------
+    # Delete auxiliary tags
+    # ---------------------------------------------------------------------------
+
+    - name: "Delete an auxiliary tag."
+      checkmk.general.aux_tag:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        name: "https"
         state: "absent"
+
+    # ---------------------------------------------------------------------------
+    # Using environment variables for authentication
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via environment variables instead of
+    # task parameters. The supported variables are:
+    #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+    #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+    #   CHECKMK_VAR_VALIDATE_CERTS
+
+    - name: "Create an auxiliary tag using environment variables for authentication."
+      checkmk.general.aux_tag:
+        name: "https"
+        title: "HTTPS"
+        state: "present"
+      environment:
+        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SITE: "mysite"
+        CHECKMK_VAR_API_USER: "myuser"
+        CHECKMK_VAR_API_SECRET: "mysecret"
+        CHECKMK_VAR_VALIDATE_CERTS: "true"
 
 
 
@@ -713,17 +761,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-message"></div>
+        <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.checkmk.general.aux_tag_module__return-message:
+      .. _ansible_collections.checkmk.general.aux_tag_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
-      **message**
+      **msg**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
+        <a class="ansibleOptionLink" href="#return-msg" title="Permalink to this return value"></a>
 
       .. ansible-option-type-line::
 

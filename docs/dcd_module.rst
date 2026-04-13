@@ -16,13 +16,13 @@
 
 .. Title
 
-checkmk.general.dcd module -- Manage Dynamic Host Management.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.dcd module -- Manage Dynamic Host Management
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -49,7 +49,7 @@ Synopsis
 
 .. Description
 
-- Manage Dynamic Host Management (DCD), including creation, updating, and deletion.
+- Manage Dynamic Host Management (DCD), including creation and deletion.
 
 
 .. Aliases
@@ -1256,6 +1256,11 @@ Parameters
 
 .. Notes
 
+Notes
+-----
+
+.. note::
+   - Updating an existing DCD connection is currently not supported, as there is no REST API endpoint available for updates. If a DCD with the same :literal:`dcd\_id` already exists but differs from the desired state, the module will fail.
 
 .. Seealso
 
@@ -1267,44 +1272,130 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Create a DCD configuration
+    # ---------------------------------------------------------------------------
+    # Create a DCD connection
+    # ---------------------------------------------------------------------------
+    # Note: Updating an existing DCD connection is currently not supported,
+    # as there is no REST API endpoint available for updates. If a DCD with the
+    # same dcd_id exists but differs from the desired state, the module will fail.
+
+    - name: "Create a DCD connection with a creation rule."
       checkmk.general.dcd:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
-        api_auth_type: "bearer"
         api_user: "myuser"
         api_secret: "mysecret"
         dcd_config:
-          dcd_id: "PiggybackCluster1"
-          title: "Piggyback Configuration for Cluster1"
-          comment: "Piggyback config for Cluster1 host"
+          dcd_id: "mypiggyback"
+          title: "My Piggyback Connection"
           site: "mysite"
           connector:
             connector_type: "piggyback"
             interval: 60
             creation_rules:
-                - folder_path: "/cluster1"
-                  delete_hosts: false
-                  host_attributes:
-                    tag_address_family: "no-ip"
-                    tag_agent: "special-agents"
-                    tag_piggyback: "piggyback"
-                    tag_snmp_ds: "no-snmp"
+              - folder_path: "/"
+                delete_hosts: false
             discover_on_creation: true
             restrict_source_hosts:
-                - "cluster1"
+              - "myhost"
         state: "present"
-    - name: Delete a DCD configuration
+
+    - name: "Create a DCD connection with host attributes set on created hosts."
       checkmk.general.dcd:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
-        api_auth_type: "bearer"
         api_user: "myuser"
         api_secret: "mysecret"
         dcd_config:
-          dcd_id: "PiggybackCluster1"
+          dcd_id: "mypiggyback"
+          title: "My Piggyback Connection"
+          site: "mysite"
+          connector:
+            connector_type: "piggyback"
+            interval: 60
+            creation_rules:
+              - folder_path: "/"
+                delete_hosts: false
+                host_attributes:
+                  tag_address_family: "no-ip"
+                  tag_agent: "special-agents"
+                  tag_piggyback: "piggyback"
+                  tag_snmp_ds: "no-snmp"
+            discover_on_creation: true
+            restrict_source_hosts:
+              - "myhost"
+        state: "present"
+
+    - name: "Create a fully configured piggyback DCD with custom timing and host matching."
+      checkmk.general.dcd:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        dcd_config:
+          dcd_id: "mypiggyback"
+          title: "My Piggyback Connection"
+          comment: "Full configuration with custom timing and host pattern matching."
+          site: "mysite"
+          connector:
+            connector_type: "piggyback"
+            interval: 30
+            creation_rules:
+              - folder_path: "/myfolder"
+                delete_hosts: true
+                matching_hosts:
+                  - "myhost.*"
+                host_attributes:
+                  tag_address_family: "no-ip"
+                  tag_agent: "special-agents"
+                  tag_piggyback: "piggyback"
+                  tag_snmp_ds: "no-snmp"
+            discover_on_creation: true
+            restrict_source_hosts:
+              - "myhost01"
+              - "myhost02"
+            no_deletion_time_after_init: 300
+            max_cache_age: 7200
+            validity_period: 120
+        state: "present"
+
+    # ---------------------------------------------------------------------------
+    # Delete a DCD connection
+    # ---------------------------------------------------------------------------
+
+    - name: "Delete a DCD connection."
+      checkmk.general.dcd:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        dcd_config:
+          dcd_id: "mypiggyback"
           site: "mysite"
         state: "absent"
+
+    # ---------------------------------------------------------------------------
+    # Using environment variables for authentication
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via environment variables instead of
+    # task parameters. The supported variables are:
+    #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+    #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+    #   CHECKMK_VAR_VALIDATE_CERTS
+
+    - name: "Create a DCD connection using environment variables for authentication."
+      checkmk.general.dcd:
+        dcd_config:
+          dcd_id: "mypiggyback"
+          title: "My Piggyback DCD"
+          site: "mysite"
+        state: "present"
+      environment:
+        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SITE: "mysite"
+        CHECKMK_VAR_API_USER: "myuser"
+        CHECKMK_VAR_API_SECRET: "mysecret"
+        CHECKMK_VAR_VALIDATE_CERTS: "true"
 
 
 

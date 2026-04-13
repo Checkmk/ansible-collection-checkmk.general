@@ -16,13 +16,13 @@
 
 .. Title
 
-checkmk.general.bakery module -- Trigger baking and signing in the agent bakery.
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.bakery module -- Trigger baking and signing in the agent bakery
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -50,6 +50,8 @@ Synopsis
 .. Description
 
 - Trigger baking and signing in the agent bakery.
+- Baking compiles monitoring agents for all configured hosts. Signing applies a cryptographic signature so that agents can be verified before installation.
+- This module only works with the commercial Checkmk editions.
 
 
 .. Aliases
@@ -360,7 +362,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The id of the signing key
+      The id of the signing key.
 
 
       .. raw:: html
@@ -394,7 +396,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The passphrase of the signing key
+      The passphrase of the signing key.
 
 
       .. raw:: html
@@ -462,7 +464,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      State \- Baked, signed or baked and signed
+      State \- Baked, signed or baked and signed.
 
 
       .. rst-class:: ansible-option-line
@@ -526,9 +528,22 @@ Parameters
 
 .. Notes
 
+Notes
+-----
+
+.. note::
+   - The agent bakery is only available in the commercial editions of Checkmk. This module will fail on Checkmk Raw (CRE).
+   - Signing requires a signing key to be present in the bakery. Provide the key ID and passphrase when using :literal:`state=signed` or :literal:`state=baked\_signed`.
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.bakery <ansible_collections.checkmk.general.bakery_lookup>` lookup plugin
+       Get the bakery status of a Checkmk server.
 
 .. Examples
 
@@ -537,34 +552,56 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    # Bake all agents without signing, as example in a fresh installation without a signature key.
+    # ---------------------------------------------------------------------------
+    # Baking and signing agents
+    # ---------------------------------------------------------------------------
+
     - name: "Bake all agents without signing."
       checkmk.general.bakery:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
         state: "baked"
-    # Sign all agents.
-    - name: "Sign all agents."
+
+    - name: "Sign all agents with an existing signing key."
       checkmk.general.bakery:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
         signature_key_id: 12abcd34-e56f-78gh-9101-i11213j14k15
-        signature_key_passphrase: "my_secret_passphrase"
+        signature_key_passphrase: "mypassphrase"
         state: "signed"
-    # Bake and sign all agents.
-    - name: "Bake and sign all agents."
+
+    - name: "Bake and sign all agents in one step."
       checkmk.general.bakery:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
         signature_key_id: 12abcd34-e56f-78gh-9101-i11213j14k15
-        signature_key_passphrase: "my_secret_passphrase"
+        signature_key_passphrase: "mypassphrase"
         state: "baked_signed"
+
+    # ---------------------------------------------------------------------------
+    # Using environment variables for authentication
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via environment variables instead of
+    # task parameters. The supported variables are:
+    #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+    #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+    #   CHECKMK_VAR_VALIDATE_CERTS
+
+    - name: "Bake all agents using environment variables for authentication."
+      checkmk.general.bakery:
+        state: "baked"
+      environment:
+        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SITE: "mysite"
+        CHECKMK_VAR_API_USER: "myuser"
+        CHECKMK_VAR_API_SECRET: "mysecret"
+        CHECKMK_VAR_VALIDATE_CERTS: "true"
 
 
 
@@ -636,17 +673,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-message"></div>
+        <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.checkmk.general.bakery_module__return-message:
+      .. _ansible_collections.checkmk.general.bakery_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
-      **message**
+      **msg**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
+        <a class="ansibleOptionLink" href="#return-msg" title="Permalink to this return value"></a>
 
       .. ansible-option-type-line::
 
