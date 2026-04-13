@@ -16,13 +16,13 @@
 
 .. Title
 
-checkmk.general.folder module -- Manage folders in Checkmk.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.folder module -- Manage folders in Checkmk
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -50,6 +50,7 @@ Synopsis
 .. Description
 
 - Manage folders within Checkmk.
+- Folders are used to organize hosts and can carry attributes that are inherited by all hosts within them.
 
 
 .. Aliases
@@ -440,7 +441,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The full path to the folder you want to manage. Pay attention to the leading :literal:`/` and avoid trailing :literal:`/`. Special characters apart from :literal:`\_` are not allowed!
+      The full path to the folder you want to manage. Pay attention to the leading :literal:`/` and avoid trailing :literal:`/`. Special characters apart from :literal:`\_` are not allowed! Be aware, that the parent folder has to to exist.
 
 
       .. raw:: html
@@ -676,6 +677,17 @@ Parameters
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.folder <ansible_collections.checkmk.general.folder_lookup>` lookup plugin
+       Get folder attributes.
+   :ref:`checkmk.general.folders <ansible_collections.checkmk.general.folders_lookup>` lookup plugin
+       Get various information about a folder.
+   :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
+       Manage hosts in Checkmk.
 
 .. Examples
 
@@ -684,66 +696,128 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    # Create a single folder.
-    - name: "Create a single folder."
+    # ---------------------------------------------------------------------------
+    # Create and delete folders
+    # ---------------------------------------------------------------------------
+
+    - name: "Create a folder."
       checkmk.general.folder:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        path: "/my_folder"
+        path: "/myfolder"
         name: "My Folder"
         state: "present"
 
-    # Create a folder who's hosts should be hosted on a remote site.
-    - name: "Create a single folder."
+    - name: "Create a nested folder."  # Be advised, that the parent folder must exist
       checkmk.general.folder:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        path: "/my_remote_folder"
-        name: "My Remote Folder"
-        attributes:
-          site: "my_remote_site"
+        path: "/myfolder/mysubfolder"
+        name: "My Subfolder"
         state: "present"
 
-    # Create a folder with Criticality set to a Test system and Networking Segment WAN (high latency)"
-    - name: "Create a folder with tag_criticality test and tag_networking wan"
+    - name: "Delete a folder."
       checkmk.general.folder:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        path: "/my_remote_folder"
+        path: "/myfolder"
+        state: "absent"
+
+    # ---------------------------------------------------------------------------
+    # Create folders with attributes
+    # ---------------------------------------------------------------------------
+    # The 'attributes' option OVERWRITES all existing attributes on the folder.
+    # Use 'update_attributes' to only change specific attributes.
+
+    - name: "Create a folder and pin its hosts to a specific monitoring site."
+      checkmk.general.folder:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        path: "/myfolder"
+        name: "My Folder"
+        attributes:
+          site: "myremotesite"
+        state: "present"
+
+    - name: "Create a folder with host tags set."
+      checkmk.general.folder:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        path: "/myfolder"
+        name: "My Folder"
         attributes:
           tag_criticality: "test"
           tag_networking: "wan"
         state: "present"
 
-    # Update only specified attributes
-    - name: "Update only specified attributes"
+    # ---------------------------------------------------------------------------
+    # Update and remove attributes
+    # ---------------------------------------------------------------------------
+
+    - name: "Update specific attributes on a folder without touching others."
       checkmk.general.folder:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        path: "/my_folder"
+        path: "/myfolder"
         update_attributes:
-          tag_networking: "dmz"
+          tag_networking: "wan"
         state: "present"
 
-    # Remove specified attributes
-    - name: "Remove specified attributes"
+    - name: "Remove specific attributes from a folder."
       checkmk.general.folder:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        path: "/my_folder"
+        path: "/myfolder"
         remove_attributes:
           - tag_networking
         state: "present"
+
+    - name: "Remove multiple attributes from a folder."
+      checkmk.general.folder:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        path: "/myfolder"
+        remove_attributes:
+          - tag_networking
+          - tag_criticality
+        state: "present"
+
+    # ---------------------------------------------------------------------------
+    # Using environment variables for authentication
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via environment variables instead of
+    # task parameters. The supported variables are:
+    #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+    #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+    #   CHECKMK_VAR_VALIDATE_CERTS
+
+    - name: "Create a folder using environment variables for authentication."
+      checkmk.general.folder:
+        path: "/myfolder"
+        name: "My Folder"
+        state: "present"
+      environment:
+        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SITE: "mysite"
+        CHECKMK_VAR_API_USER: "myuser"
+        CHECKMK_VAR_API_SECRET: "mysecret"
+        CHECKMK_VAR_VALIDATE_CERTS: "true"
 
 
 
@@ -770,17 +844,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-message"></div>
+        <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.checkmk.general.folder_module__return-message:
+      .. _ansible_collections.checkmk.general.folder_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
-      **message**
+      **msg**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
+        <a class="ansibleOptionLink" href="#return-msg" title="Permalink to this return value"></a>
 
       .. ansible-option-type-line::
 

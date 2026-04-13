@@ -16,13 +16,13 @@
 
 .. Title
 
-checkmk.general.site module -- Manage distributed monitoring in Checkmk.
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.site module -- Manage distributed monitoring in Checkmk
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -3080,6 +3080,15 @@ Parameters
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.site <ansible_collections.checkmk.general.site_lookup>` lookup plugin
+       Show the configuration of a site.
+   :ref:`checkmk.general.sites <ansible_collections.checkmk.general.sites_lookup>` lookup plugin
+       Get a list of all sites.
 
 .. Examples
 
@@ -3088,9 +3097,13 @@ Examples
 
 .. code-block:: yaml+jinja
 
+    # ---------------------------------------------------------------------------
+    # Add and remove remote site connections
+    # ---------------------------------------------------------------------------
+
     - name: "Add a remote site with configuration replication."
       checkmk.general.site:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -3099,10 +3112,10 @@ Examples
           site_config:
             status_connection:
               connection:
-                socket_type: tcp
+                socket_type: "tcp"
                 port: 6557
                 encrypted: true
-                host: localhost
+                host: "myremotesite.example.com"
                 verify: true
               proxy:
                 use_livestatus_daemon: "direct"
@@ -3112,43 +3125,66 @@ Examples
               url_prefix: "/myremotesite/"
             configuration_connection:
               enable_replication: true
-              url_of_remote_site: "http://localhost/myremotesite/check_mk/"
+              url_of_remote_site: "https://myremotesite.example.com/myremotesite/check_mk/"
             basic_settings:
               site_id: "myremotesite"
-              customer: "provider"
               alias: "My Remote Site"
         state: "present"
 
-    - name: "Log into a remote site."
+    - name: "Delete a remote site connection."
       checkmk.general.site:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        site_id: "myremotesite"
+        state: "absent"
+
+    # ---------------------------------------------------------------------------
+    # Log in and out of remote sites
+    # ---------------------------------------------------------------------------
+
+    - name: "Log into a remote site to enable configuration replication."
+      checkmk.general.site:
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
         site_id: "myremotesite"
         site_connection:
           authentication:
-            username: "myremote_admin"
-            password: "highly_secret"
+            username: "cmkadmin"
+            password: "remote_admin_password"
         state: "login"
 
     - name: "Log out from a remote site."
       checkmk.general.site:
-        server_url: "http://myserver/"
+        server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
         site_id: "myremotesite"
         state: "logout"
 
-    - name: "Delete a remote site."
+    # ---------------------------------------------------------------------------
+    # Using environment variables for authentication
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via environment variables instead of
+    # task parameters. The supported variables are:
+    #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+    #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+    #   CHECKMK_VAR_VALIDATE_CERTS
+
+    - name: "Delete a remote site using environment variables for authentication."
       checkmk.general.site:
-        server_url: "http://myserver/"
-        site: "mysite"
-        api_user: "myuser"
-        api_secret: "mysecret"
         site_id: "myremotesite"
         state: "absent"
+      environment:
+        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SITE: "mysite"
+        CHECKMK_VAR_API_USER: "myuser"
+        CHECKMK_VAR_API_SECRET: "mysecret"
+        CHECKMK_VAR_VALIDATE_CERTS: "true"
 
 
 
@@ -3175,17 +3211,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="return-message"></div>
+        <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.checkmk.general.site_module__return-message:
+      .. _ansible_collections.checkmk.general.site_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
-      **message**
+      **msg**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#return-message" title="Permalink to this return value"></a>
+        <a class="ansibleOptionLink" href="#return-msg" title="Permalink to this return value"></a>
 
       .. ansible-option-type-line::
 

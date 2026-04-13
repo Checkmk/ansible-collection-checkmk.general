@@ -4,6 +4,21 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v7.3.1
+======
+
+Release Summary
+---------------
+
+Spring cleaning: Polishing the documentation.
+
+Minor Changes
+-------------
+
+- All modules - Rewrite environment variable authentication examples to use the task-level ``environment:`` block rather than inline ``lookup('ansible.builtin.env', ...)`` calls.
+- All modules and lookup plugins - Add ``seealso:`` cross-references to related modules and plugins in ``DOCUMENTATION`` blocks.
+- All modules and lookup plugins - Overhaul ``EXAMPLES`` blocks with clearer section structure, consistent quoting, realistic placeholder values, and expanded use-case coverage.
+
 v7.3.0
 ======
 

@@ -22,7 +22,7 @@ checkmk.general.rules lookup -- Get a list rules
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -663,6 +663,19 @@ Notes
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.rule <ansible_collections.checkmk.general.rule_module>`
+       Manage rules in Checkmk.
+   :ref:`checkmk.general.rule <ansible_collections.checkmk.general.rule_lookup>` lookup plugin
+       Show a rule.
+   :ref:`checkmk.general.ruleset <ansible_collections.checkmk.general.ruleset_lookup>` lookup plugin
+       Show a ruleset.
+   :ref:`checkmk.general.rulesets <ansible_collections.checkmk.general.rulesets_lookup>` lookup plugin
+       Search rulesets.
 
 .. Examples
 
@@ -671,68 +684,76 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Get all rules of the ruleset host_groups
+    - name: "Get all rules of the host_groups ruleset."
       ansible.builtin.debug:
-        msg: "Rule: {{ item.extensions }}"
+        msg: "Rule {{ item.id }}: {{ item.extensions }}"
       loop: "{{
         lookup('checkmk.general.rules',
             ruleset='host_groups',
-            server_url=server_url,
-            site=site,
-            api_user=api_user,
-            api_secret=api_secret,
+            server_url='https://myserver/',
+            site='mysite',
+            api_user='myuser',
+            api_secret='mysecret',
             validate_certs=False
             )
         }}"
       loop_control:
         label: "{{ item.id }}"
 
-    - name: Get all rules of the ruleset host_groups in folder /test
+    - name: "Get all host_groups rules that apply to the /test folder."
       ansible.builtin.debug:
-        msg: "Rule: {{ item.extensions }}"
+        msg: "Rule {{ item.id }}: {{ item.extensions }}"
       loop: "{{
         lookup('checkmk.general.rules',
             ruleset='host_groups',
             folder_regex='^/test$',
-            server_url=server_url,
-            site=site,
-            api_user=api_user,
-            api_secret=api_secret,
+            server_url='https://myserver/',
+            site='mysite',
+            api_user='myuser',
+            api_secret='mysecret',
             validate_certs=False
             )
         }}"
       loop_control:
         label: "{{ item.id }}"
 
-    - name: active_checks:http rules that match a certain description AND comment
+    - name: "Get HTTP check rules matching a description and comment pattern."
       ansible.builtin.debug:
-        msg: "Rule: {{ item.extensions }}"
+        msg: "Rule {{ item.id }}: {{ item.extensions }}"
       loop: "{{
         lookup('checkmk.general.rules',
             ruleset='active_checks:http',
-            description_regex='foo.*bar',
-            comment_regex='xmas-edition',
-            server_url=server_url,
-            site=site,
-            api_user=api_user,
-            api_secret=api_secret,
+            description_regex='myservice.*',
+            comment_regex='Managed by Ansible',
+            server_url='https://myserver/',
+            site='mysite',
+            api_user='myuser',
+            api_secret='mysecret',
             validate_certs=False
             )
         }}"
       loop_control:
         label: "{{ item.id }}"
 
-    - name: "Use variables from inventory."
+    # ---------------------------------------------------------------------------
+    # Using variables from inventory
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via inventory variables instead of
+    # lookup parameters. The supported variables are:
+    #   checkmk_var_server_url, checkmk_var_site,
+    #   checkmk_var_api_user, checkmk_var_api_secret,
+    #   checkmk_var_validate_certs
+
+    - name: "Get all host_groups rules using inventory variables."
       ansible.builtin.debug:
-        msg: "Rule: {{ item.extensions }}"
+        msg: "Rule {{ item.id }}: {{ item.extensions }}"
       vars:
-        checkmk_var_server_url: "http://myserver/"
+        checkmk_var_server_url: "https://myserver/"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"
         checkmk_var_validate_certs: false
-      loop: "{{
-        lookup('checkmk.general.rules', ruleset='host_groups') }}"
+      loop: "{{ lookup('checkmk.general.rules', ruleset='host_groups') }}"
       loop_control:
         label: "{{ item.id }}"
 
@@ -774,7 +795,7 @@ Return Value
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
 
       .. raw:: html
 
@@ -784,7 +805,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A list of all rules of a particular ruleset
+      A list of all rules of a particular ruleset.
 
 
       .. rst-class:: ansible-option-line

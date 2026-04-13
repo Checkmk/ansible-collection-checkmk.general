@@ -22,7 +22,7 @@ checkmk.general.hosts lookup -- Get various information about a host
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -549,6 +549,15 @@ Notes
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
+       Manage hosts in Checkmk.
+   :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_lookup>` lookup plugin
+       Get host attributes.
 
 .. Examples
 
@@ -557,35 +566,58 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Get all hosts
+    - name: "Get all hosts."
       ansible.builtin.debug:
-        msg: "Host: {{ item.id }} in folder {{ item.extensions.folder }}, IP: {{ item.extensions.effective_attributes.ipaddress }}"
+        msg: "Host {{ item.id }} is in folder {{ item.extensions.folder }}"
       loop: "{{
         lookup('checkmk.general.hosts',
-            effective_attributes=True,
-            server_url=my_server_url,
-            site=mysite,
-            api_user=myuser,
-            api_secret=mysecret,
+            server_url='https://myserver/',
+            site='mysite',
+            api_user='myuser',
+            api_secret='mysecret',
             validate_certs=False
             )
         }}"
       loop_control:
-          label: "{{ item.id }}"
+        label: "{{ item.id }}"
 
-    - name: "Use variables from inventory."
+    - name: "Get all hosts including their effective (inherited) attributes."
       ansible.builtin.debug:
-        msg: "Host: {{ item.id }} in folder {{ item.extensions.folder }}, IP: {{ item.extensions.effective_attributes.ipaddress }}"
+        msg: "Host {{ item.id }} has IP {{ item.extensions.effective_attributes.ipaddress }}"
+      loop: "{{
+        lookup('checkmk.general.hosts',
+            effective_attributes=True,
+            server_url='https://myserver/',
+            site='mysite',
+            api_user='myuser',
+            api_secret='mysecret',
+            validate_certs=False
+            )
+        }}"
+      loop_control:
+        label: "{{ item.id }}"
+
+    # ---------------------------------------------------------------------------
+    # Using variables from inventory
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via inventory variables instead of
+    # lookup parameters. The supported variables are:
+    #   checkmk_var_server_url, checkmk_var_site,
+    #   checkmk_var_api_user, checkmk_var_api_secret,
+    #   checkmk_var_validate_certs
+
+    - name: "Get all hosts using inventory variables."
+      ansible.builtin.debug:
+        msg: "Host {{ item.id }} is in folder {{ item.extensions.folder }}"
       vars:
-        checkmk_var_server_url: "http://myserver/"
+        checkmk_var_server_url: "https://myserver/"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"
         checkmk_var_validate_certs: false
-      loop: "{{
-        lookup('checkmk.general.hosts', effective_attributes=True) }}"
+      loop: "{{ lookup('checkmk.general.hosts') }}"
       loop_control:
-          label: "{{ item.id }}"
+        label: "{{ item.id }}"
 
 
 
@@ -625,7 +657,7 @@ Return Value
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
 
       .. raw:: html
 
@@ -635,7 +667,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A list of hosts and their attributes
+      A list of hosts and their attributes.
 
 
       .. rst-class:: ansible-option-line

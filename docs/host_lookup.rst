@@ -22,7 +22,7 @@ checkmk.general.host lookup -- Get host attributes
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -605,6 +605,15 @@ Notes
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
+       Manage hosts in Checkmk.
+   :ref:`checkmk.general.hosts <ansible_collections.checkmk.general.hosts_lookup>` lookup plugin
+       Get various information about a host.
 
 .. Examples
 
@@ -613,32 +622,56 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Get the attributes of host example.com
+    - name: "Get the attributes of a host."
       ansible.builtin.debug:
-        msg: "Attributes of host example: {{ attributes }}"
+        msg: "Attributes of myhost: {{ attributes }}"
       vars:
         attributes: "{{
                         lookup('checkmk.general.host',
-                            'example.com',
-                            effective_attributes=True,
-                            server_url=my_server_url,
-                            site=mysite,
-                            api_user=myuser,
-                            api_secret=mysecret,
+                            'myhost',
+                            server_url='https://myserver/',
+                            site='mysite',
+                            api_user='myuser',
+                            api_secret='mysecret',
                             validate_certs=False
                             )
                      }}"
 
-    - name: "Use variables from inventory."
+    - name: "Get all effective attributes of a host, including inherited folder attributes."
       ansible.builtin.debug:
-        msg: "Attributes of host example: {{ attributes }}"
+        msg: "Effective attributes of myhost: {{ attributes }}"
       vars:
-        checkmk_var_server_url: "http://myserver/"
+        attributes: "{{
+                        lookup('checkmk.general.host',
+                            'myhost',
+                            effective_attributes=True,
+                            server_url='https://myserver/',
+                            site='mysite',
+                            api_user='myuser',
+                            api_secret='mysecret',
+                            validate_certs=False
+                            )
+                     }}"
+
+    # ---------------------------------------------------------------------------
+    # Using variables from inventory
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via inventory variables instead of
+    # lookup parameters. The supported variables are:
+    #   checkmk_var_server_url, checkmk_var_site,
+    #   checkmk_var_api_user, checkmk_var_api_secret,
+    #   checkmk_var_validate_certs
+
+    - name: "Get host attributes using inventory variables."
+      ansible.builtin.debug:
+        msg: "Attributes of myhost: {{ attributes }}"
+      vars:
+        checkmk_var_server_url: "https://myserver/"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"
         checkmk_var_validate_certs: false
-        attributes: "{{ lookup('checkmk.general.host', 'example.com', effective_attributes=True) }}"
+        attributes: "{{ lookup('checkmk.general.host', 'myhost') }}"
 
 
 
@@ -678,7 +711,7 @@ Return Value
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
 
       .. raw:: html
 
@@ -688,7 +721,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A list of dicts of attributes of the host(s)
+      A list of dicts of attributes of the host(s).
 
 
       .. rst-class:: ansible-option-line

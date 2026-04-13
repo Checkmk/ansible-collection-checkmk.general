@@ -22,7 +22,7 @@ checkmk.general.ldap_connections lookup -- Get a list of all ldap\_connections
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -503,6 +503,15 @@ Notes
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.ldap <ansible_collections.checkmk.general.ldap_module>`
+       Manage LDAP connections.
+   :ref:`checkmk.general.ldap\_connection <ansible_collections.checkmk.general.ldap_connection_lookup>` lookup plugin
+       Show the configuration of an ldap connection.
 
 .. Examples
 
@@ -511,18 +520,40 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: Get all ldap_connections defined in the environment.
+    - name: "Get all LDAP connections."
       ansible.builtin.debug:
-        msg: "Site: {{ item.extensions }}"
+        msg: "LDAP connection {{ item.id }}: {{ item.extensions }}"
       loop: "{{
         lookup('checkmk.general.ldap_connections',
-            server_url=server_url,
-            site=site,
-            api_user=api_user,
-            api_secret=api_secret,
+            server_url='https://myserver/',
+            site='mysite',
+            api_user='myuser',
+            api_secret='mysecret',
             validate_certs=False
             )
         }}"
+      loop_control:
+        label: "{{ item.id }}"
+
+    # ---------------------------------------------------------------------------
+    # Using variables from inventory
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via inventory variables instead of
+    # lookup parameters. The supported variables are:
+    #   checkmk_var_server_url, checkmk_var_site,
+    #   checkmk_var_api_user, checkmk_var_api_secret,
+    #   checkmk_var_validate_certs
+
+    - name: "Get all LDAP connections using inventory variables."
+      ansible.builtin.debug:
+        msg: "LDAP connection {{ item.id }}: {{ item.extensions }}"
+      vars:
+        checkmk_var_server_url: "https://myserver/"
+        checkmk_var_site: "mysite"
+        checkmk_var_api_user: "myuser"
+        checkmk_var_api_secret: "mysecret"
+        checkmk_var_validate_certs: false
+      loop: "{{ lookup('checkmk.general.ldap_connections') }}"
       loop_control:
         label: "{{ item.id }}"
 
@@ -564,7 +595,7 @@ Return Value
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
 
       .. raw:: html
 
@@ -574,7 +605,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A list of all ldap\_connections
+      A list of all LDAP connections and their configuration.
 
 
       .. rst-class:: ansible-option-line
