@@ -1,0 +1,9 @@
+release_summary: "Spring cleaning: Polishing the documentation."
+
+minor_changes:
+  - All modules and lookup plugins - Overhaul ``EXAMPLES`` blocks with clearer section structure,
+    consistent quoting, realistic placeholder values, and expanded use-case coverage.
+  - All modules and lookup plugins - Add ``seealso:`` cross-references to related modules
+    and plugins in ``DOCUMENTATION`` blocks.
+  - All modules - Rewrite environment variable authentication examples to use the task-level
+    ``environment:`` block rather than inline ``lookup('ansible.builtin.env', ...)`` calls.

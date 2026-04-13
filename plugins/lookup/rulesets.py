@@ -20,6 +20,7 @@ DOCUMENTATION = """
       regex:
         description: A regex of the ruleset name.
         required: True
+        type: str
 
       rulesets_folder:
         description:
@@ -27,16 +28,17 @@ DOCUMENTATION = """
           - Path delimiters can be either ~ or /.
         required: False
         default: "/"
+        type: str
 
       rulesets_deprecated:
-        description: Only show deprecated rulesets. Defaults to False.
-        type: boolean
+        description: Only show deprecated rulesets.
+        type: bool
         required: False
         default: False
 
       rulesets_used:
-        description: Only show used rulesets. Defaults to True.
-        type: boolean
+        description: Only show used rulesets.
+        type: bool
         required: False
         default: True
 
@@ -49,49 +51,67 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.rule
+      - plugin: checkmk.general.rule
+        plugin_type: lookup
+      - plugin: checkmk.general.rules
+        plugin_type: lookup
+      - plugin: checkmk.general.ruleset
+        plugin_type: lookup
 """
 
 EXAMPLES = """
-- name: Get all used rulesets with 'file' in their name
+- name: "Get all used rulesets whose name contains 'file'."
   ansible.builtin.debug:
-    msg: "Ruleset: {{ item.extensions.name }} has {{ item.extensions.number_of_rules }} rules."
+    msg: "Ruleset {{ item.extensions.name }} has {{ item.extensions.number_of_rules }} rules."
   loop: "{{
     lookup('checkmk.general.rulesets',
       regex='file',
       rulesets_used=True,
-      server_url=server_url,
-      site=site,
-      api_user=api_user,
-      api_secret=api_secret,
+      server_url='https://myserver/',
+      site='mysite',
+      api_user='myuser',
+      api_secret='mysecret',
       validate_certs=False
       )
     }}"
   loop_control:
     label: "{{ item.id }}"
 
-- name: Get all used deprecated rulesets
+- name: "Get all deprecated rulesets."
   ansible.builtin.debug:
-    msg: "Ruleset {{ item.extension.name }} is deprecated."
+    msg: "Ruleset {{ item.extensions.name }} is deprecated."
   loop: "{{
     lookup('checkmk.general.rulesets',
       regex='',
       rulesets_deprecated=True,
       rulesets_used=True,
-      server_url=server_url,
-      site=site,
-      api_user=api_user,
-      api_secret=api_secret,
+      server_url='https://myserver/',
+      site='mysite',
+      api_user='myuser',
+      api_secret='mysecret',
       validate_certs=False
       )
     }}"
   loop_control:
-    label: "{{ item.0.id }}"
+    label: "{{ item.id }}"
 
-- name: "Use variables from inventory."
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get all deprecated rulesets using inventory variables."
   ansible.builtin.debug:
-    msg: "Ruleset {{ item.extension.name }} is deprecated."
+    msg: "Ruleset {{ item.extensions.name }} is deprecated."
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
@@ -99,15 +119,15 @@ EXAMPLES = """
   loop: "{{
     lookup('checkmk.general.rulesets', regex='', rulesets_deprecated=True, rulesets_used=True) }}"
   loop_control:
-    label: "{{ item.0.id }}"
+    label: "{{ item.id }}"
 """
 
 RETURN = """
   _list:
     description:
-      - A list of rulesets
+      - A list of rulesets matching the search criteria.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json

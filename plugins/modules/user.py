@@ -13,7 +13,7 @@ DOCUMENTATION = r"""
 ---
 module: user
 
-short_description: Manage users in Checkmk.
+short_description: Manage users in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -21,6 +21,8 @@ version_added: "0.18.0"
 
 description:
 - Manage users in Checkmk.
+- Users can be configured with local, LDAP or SAML authentication. This module only handles local users.
+  Users can be assigned roles and contact groups, and given personal settings such as language and notification rules.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -29,69 +31,85 @@ options:
         description:
             - The authentication type.
               Setting this to C(password) will create a normal user, C(automation) will create an automation user.
+        required: false
         default: password
         type: str
-        choices: [password, automation]
+        choices: ["password", "automation"]
     authorized_sites:
         description: The names of the sites the user is authorized to access.
+        required: false
         type: raw
     contactgroups:
         description: A list of contact groups assigned to the user.
+        required: false
         type: raw
     customer:
         description:
             - For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        required: false
         type: str
     disable_notifications:
         description: Temporarily disable B(all) notifications for this user.
+        required: false
         type: bool
     disable_login:
         description:
             - If set to C(true), the user cannot log in anymore, but will remain part of the site.
               Disabling a user does not affect notifications.
+        required: false
         type: bool
     disable_notifications_timerange:
         description: The duration, for how log notifications should be disabled, if C(disable_notifications) is set to C(true).
+        required: false
         type: dict
     email:
         description:
             - The mail address of the user. Required if the user is a monitoring contact and should receive notifications via mail.
+        required: false
         type: str
     enforce_password_change:
         description: If set to C(true), the user will be forced to change their password on the next login.
+        required: false
         type: bool
     fallback_contact:
         description:
             - This user will receive fallback notifications.
               This means, if no notification rules match a certain event, they are sent to the fallback contacts.
+        required: false
         type: bool
     fullname:
         description: A alias or the full name of the user.
+        required: false
         type: str
     idle_timeout_duration:
         description: The duration in seconds, if C(idle_timeout_option) is set to C(individual).
+        required: false
         type: int
     idle_timeout_option:
         description:
             - Specify, whether the idle timeout should use the global configuration, use an individual duration or be disabled entirely.
+        required: false
         type: str
-        choices: [global, disable, individual]
+        choices: ["global", "disable", "individual"]
     interface_theme:
         description: The theme of the user interface.
+        required: false
         type: str
-        choices: [default, dark, light]
+        choices: ["default", "dark", "light"]
     language:
         description:
             - Configure the language to be used by the user in the user interface.
               Omitting this will configure the default language.
+        required: false
         type: str
-        choices: [default, en, de]
+        choices: ["default", "en", "de"]
     main_menu_icons:
         description:
           - This option decides if colored icons should be shown for every entry in the mega menus
             or only for the headlines (the 'topics').
+        required: false
         type: str
-        choices: [topic, entry]
+        choices: ["topic", "entry"]
         aliases: ["mega_menu_icons"]
     name:
         description: The user you want to manage.
@@ -99,34 +117,45 @@ options:
         type: str
     navigation_bar_icons:
         description: This option decides if icons in the navigation bar should show/hide the respective titles.
+        required: false
         type: str
-        choices: [hide, show]
+        choices: ["hide", "show"]
     pager:
         description: A (mobile) phone number, used to receive e.g., SMS.
+        required: false
         type: str
         aliases: ["pager_address"]
     password:
         description:
             - The password or secret for login. Depending on the C(auth_type), this is interpreted as a password or secret.
+        required: false
         type: str
     roles:
         description: A list of roles assigned to the user.
+        required: false
         type: raw
     show_mode:
         description:
           - This option decides what show mode should be used for unvisited menus.
             Alternatively, this option can also be used to enforce show more removing the three dots for all menus.
+        required: false
         type: str
-        choices: [default, default_show_less, default_show_more, enforce_show_more]
+        choices: ["default", "default_show_less", "default_show_more", "enforce_show_more"]
     sidebar_position:
         description: The position of the sidebar.
+        required: false
         type: str
-        choices: [left, right]
+        choices: ["left", "right"]
     state:
         description: The desired state.
+        required: false
         type: str
         default: present
-        choices: [present, absent, reset_password]
+        choices: ["present", "absent", "reset_password"]
+
+seealso:
+    - module: checkmk.general.contact_group
+    - module: checkmk.general.ldap
 
 author:
     - Lars Getwan (@lgetwan)
@@ -135,96 +164,159 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a user.
-- name: "Create a user."
-  checkmk.general.user:
-    server_url: "http://myserver/"
-    site: "local"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    name: "krichards"
-    fullname: "Keith Richards"
-    email: "keith.richards@rollingstones.com"
-    auth_type: "password"
-    password: "Open-G"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
-    contactgroups:
-      - "rolling_stones"
-      - "glimmer_twins"
-      - "x-pensive_winos"
-      - "potc_cast"
+# ---------------------------------------------------------------------------
+# Create and delete users
+# ---------------------------------------------------------------------------
 
-# Create an automation user.
-- name: "Create an automation user."
+- name: "Create a standard user with password authentication."
   checkmk.general.user:
-    server_url: "http://myserver/"
-    site: "local"
+    server_url: "https://myserver/"
+    site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    name: "registration"
-    fullname: "Registration User"
-    auth_type: "automation"
-    password: "ZGSDHUVDSKJHSDF"
-    roles:
-      - "registration"
-    state: "present"
-
-# Create a user with the Checkmk Managed Edition (CME), using the `customer` parameter.
-- name: "Create a user."
-  checkmk.general.user:
-    server_url: "http://myserver/"
-    site: "local"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    name: "krichards"
-    fullname: "Keith Richards"
-    email: "keith.richards@rollingstones.com"
-    customer: "provider"
+    name: "jsmith"
+    fullname: "John Smith"
+    email: "john.smith@example.com"
     auth_type: "password"
-    password: "Open-G"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
-    contactgroups:
-      - "rolling_stones"
-      - "glimmer_twins"
-      - "x-pensive_winos"
-      - "potc_cast"
-
-# Create a detailed user.
-- name: "Create a more complex user."
-  checkmk.general.user:
-    server_url: "http://myserver/"
-    site: "local"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    name: "horst"
-    fullname: "Horst Schlämmer"
-    customer: "provider"
-    auth_type: "password"
-    password: "uschi"  # Password has to meet Checkmk Global Setting 'Password policy for local accounts'
-    enforce_password_change: true
-    email: "checker@grevenbroich.de"
-    fallback_contact: true
-    pager: 089-123456789
-    contactgroups:
-      - "sport"
-      - "vereinsgeschehen"
-      - "lokalpolitik"
-    disable_notifications: true
-    disable_notifications_timerange: { "start_time": "2023-02-23T15:06:48+00:00", "end_time": "2023-02-23T16:06:48+00:00"}
-    language: "de"
+    password: "initial_password"
     roles:
       - "user"
-    authorized_sites:
-      - "{{ mysite }}"
+    state: "present"
+
+- name: "Create an automation user for API access."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "automation_ansible"
+    fullname: "Ansible Automation User"
+    auth_type: "automation"
+    password: "mysecretautomationsecret"
+    roles:
+      - "admin"
+    state: "present"
+
+- name: "Delete a user."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "jsmith"
+    state: "absent"
+
+# ---------------------------------------------------------------------------
+# Create a user with contact groups and notification settings
+# ---------------------------------------------------------------------------
+
+- name: "Create a user assigned to contact groups."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "jsmith"
+    fullname: "John Smith"
+    email: "john.smith@example.com"
+    auth_type: "password"
+    password: "initial_password"
+    contactgroups:
+      - "linux_admins"
+      - "network_team"
+    roles:
+      - "user"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Create a fully configured user
+# ---------------------------------------------------------------------------
+
+- name: "Create a user with all available options."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "jsmith"
+    fullname: "John Smith"
+    auth_type: "password"
+    password: "initial_password"
+    enforce_password_change: true
+    email: "john.smith@example.com"
+    pager: "+49-89-123456789"
+    fallback_contact: false
+    contactgroups:
+      - "linux_admins"
+    roles:
+      - "user"
+    language: "en"
     interface_theme: "dark"
     sidebar_position: "right"
     navigation_bar_icons: "show"
-    mega_menu_icons: "entry"
+    main_menu_icons: "topic"
     show_mode: "default_show_more"
     state: "present"
+
+# ---------------------------------------------------------------------------
+# Reset a user's password
+# ---------------------------------------------------------------------------
+
+- name: "Reset a user's password."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "jsmith"
+    auth_type: "password"
+    password: "new_password"
+    state: "reset_password"
+
+# ---------------------------------------------------------------------------
+# Checkmk Managed Edition (CME)
+# ---------------------------------------------------------------------------
+
+- name: "Create a user and assign them to a customer (CME only)."
+  checkmk.general.user:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "jsmith"
+    fullname: "John Smith"
+    email: "john.smith@example.com"
+    customer: "provider"
+    auth_type: "password"
+    password: "initial_password"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a user using environment variables for authentication."
+  checkmk.general.user:
+    name: "jsmith"
+    fullname: "John Smith"
+    auth_type: "password"
+    password: "initial_password"
+    state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
-# These are examples of possible return values, and in general should use other names for return values.
-message:
+msg:
     description: The output message that the module generates. Contains the API response details in case of an error.
     type: str
     returned: always

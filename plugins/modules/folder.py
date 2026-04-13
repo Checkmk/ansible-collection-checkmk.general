@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: folder
 
-short_description: Manage folders in Checkmk.
+short_description: Manage folders in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -19,6 +19,8 @@ version_added: "0.0.1"
 
 description:
     - Manage folders within Checkmk.
+    - Folders are used to organize hosts and can carry attributes that are inherited
+      by all hosts within them.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -28,10 +30,12 @@ options:
             - The full path to the folder you want to manage.
               Pay attention to the leading C(/) and avoid trailing C(/).
               Special characters apart from C(_) are not allowed!
+              Be aware, that the parent folder has to to exist.
         required: true
         type: str
     name:
         description: The name (title) of your folder. If omitted defaults to the string after the last C(/) in I(path).
+        required: false
         type: str
         aliases: [title]
     attributes:
@@ -63,13 +67,22 @@ options:
         required: false
     state:
         description: The state of your folder.
+        required: false
         type: str
         default: present
-        choices: [present, absent]
+        choices: ["present", "absent"]
     extended_functionality:
         description: Allow extended functionality instead of the expected REST API behavior.
+        required: false
         type: bool
         default: true
+
+seealso:
+    - plugin: checkmk.general.folder
+      plugin_type: lookup
+    - plugin: checkmk.general.folders
+      plugin_type: lookup
+    - module: checkmk.general.host
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -78,70 +91,132 @@ author:
 """
 
 EXAMPLES = r"""
-# Create a single folder.
-- name: "Create a single folder."
+# ---------------------------------------------------------------------------
+# Create and delete folders
+# ---------------------------------------------------------------------------
+
+- name: "Create a folder."
   checkmk.general.folder:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    path: "/my_folder"
+    path: "/myfolder"
     name: "My Folder"
     state: "present"
 
-# Create a folder who's hosts should be hosted on a remote site.
-- name: "Create a single folder."
+- name: "Create a nested folder."  # Be advised, that the parent folder must exist
   checkmk.general.folder:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    path: "/my_remote_folder"
-    name: "My Remote Folder"
-    attributes:
-      site: "my_remote_site"
+    path: "/myfolder/mysubfolder"
+    name: "My Subfolder"
     state: "present"
 
-# Create a folder with Criticality set to a Test system and Networking Segment WAN (high latency)"
-- name: "Create a folder with tag_criticality test and tag_networking wan"
+- name: "Delete a folder."
   checkmk.general.folder:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    path: "/my_remote_folder"
+    path: "/myfolder"
+    state: "absent"
+
+# ---------------------------------------------------------------------------
+# Create folders with attributes
+# ---------------------------------------------------------------------------
+# The 'attributes' option OVERWRITES all existing attributes on the folder.
+# Use 'update_attributes' to only change specific attributes.
+
+- name: "Create a folder and pin its hosts to a specific monitoring site."
+  checkmk.general.folder:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    path: "/myfolder"
+    name: "My Folder"
+    attributes:
+      site: "myremotesite"
+    state: "present"
+
+- name: "Create a folder with host tags set."
+  checkmk.general.folder:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    path: "/myfolder"
+    name: "My Folder"
     attributes:
       tag_criticality: "test"
       tag_networking: "wan"
     state: "present"
 
-# Update only specified attributes
-- name: "Update only specified attributes"
+# ---------------------------------------------------------------------------
+# Update and remove attributes
+# ---------------------------------------------------------------------------
+
+- name: "Update specific attributes on a folder without touching others."
   checkmk.general.folder:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    path: "/my_folder"
+    path: "/myfolder"
     update_attributes:
-      tag_networking: "dmz"
+      tag_networking: "wan"
     state: "present"
 
-# Remove specified attributes
-- name: "Remove specified attributes"
+- name: "Remove specific attributes from a folder."
   checkmk.general.folder:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    path: "/my_folder"
+    path: "/myfolder"
     remove_attributes:
       - tag_networking
     state: "present"
+
+- name: "Remove multiple attributes from a folder."
+  checkmk.general.folder:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    path: "/myfolder"
+    remove_attributes:
+      - tag_networking
+      - tag_criticality
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a folder using environment variables for authentication."
+  checkmk.general.folder:
+    path: "/myfolder"
+    name: "My Folder"
+    state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates. Contains the API response details in case of an error.
     type: str
     returned: always

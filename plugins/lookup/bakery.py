@@ -24,26 +24,38 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.bakery
 """
 
 EXAMPLES = """
-- name: "Show bakery status"
+- name: "Get the bakery status."
   ansible.builtin.debug:
     msg: "Bakery status is {{ bakery }}"
   vars:
     bakery: "{{ lookup('checkmk.general.bakery',
-                   server_url=http://myserver,
-                   site=mysite,
-                   validate_certs=False,
-                   api_user=api_user,
-                   api_secret=api_secret
+                   server_url='https://myserver/',
+                   site='mysite',
+                   api_user='myuser',
+                   api_secret='mysecret',
+                   validate_certs=False
                )}}"
 
-- name: "Use variables from inventory."
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get the bakery status using inventory variables."
   ansible.builtin.debug:
     msg: "Bakery status is {{ bakery }}"
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"

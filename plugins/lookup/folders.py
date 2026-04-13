@@ -43,28 +43,32 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+
+    seealso:
+      - module: checkmk.general.folder
+      - plugin: checkmk.general.folder
+        plugin_type: lookup
 """
 
 EXAMPLES = """
-- name: Get all subfolders of the main folder recursively
+- name: "Get all subfolders of the root folder recursively."
   ansible.builtin.debug:
-    msg: "Folder tree: {{ item.id }}"
+    msg: "Folder: {{ item.id }}"
   loop: "{{
     lookup('checkmk.general.folders',
         '~',
-        show_hosts=False,
         recursive=True,
-        server_url=my_server_url,
-        site=mysite,
-        api_user=myuser,
-        api_secret=mysecret,
+        server_url='https://myserver/',
+        site='mysite',
+        api_user='myuser',
+        api_secret='mysecret',
         validate_certs=False
         )
     }}"
   loop_control:
     label: "{{ item.id }}"
 
-- name: Get all hosts of the folder /test recursively
+- name: "Get all hosts in the folder /tests and its subfolders."
   ansible.builtin.debug:
     msg: "Host found in {{ item.0.id }}: {{ item.1.title }}"
   vars:
@@ -73,10 +77,10 @@ EXAMPLES = """
                      '~tests',
                      show_hosts=True,
                      recursive=True,
-                     server_url=my_server_url,
-                     site=mysite,
-                     api_user=myuser,
-                     api_secret=mysecret,
+                     server_url='https://myserver/',
+                     site='mysite',
+                     api_user='myuser',
+                     api_secret='mysecret',
                      validate_certs=False
                      )
               }}"
@@ -84,11 +88,20 @@ EXAMPLES = """
   loop_control:
     label: "{{ item.0.id }}"
 
-- name: "Use variables from inventory."
+# ---------------------------------------------------------------------------
+# Using variables from inventory
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via inventory variables instead of
+# lookup parameters. The supported variables are:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs
+
+- name: "Get all subfolders using inventory variables."
   ansible.builtin.debug:
-    msg: "Folder tree: {{ item.id }}"
+    msg: "Folder: {{ item.id }}"
   vars:
-    checkmk_var_server_url: "http://myserver/"
+    checkmk_var_server_url: "https://myserver/"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
@@ -96,7 +109,6 @@ EXAMPLES = """
   loop: "{{
     lookup('checkmk.general.folders',
         '~',
-        show_hosts=False,
         recursive=True,
         ) }}"
   loop_control:
@@ -106,9 +118,9 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of folders and, optionally, hosts of a folder
+      - A list of folders and, optionally, hosts of a folder.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json

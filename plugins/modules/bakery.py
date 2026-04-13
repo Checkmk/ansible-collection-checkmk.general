@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: bakery
 
-short_description: Trigger baking and signing in the agent bakery.
+short_description: Trigger baking and signing in the agent bakery
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -19,59 +19,94 @@ version_added: "0.21.0"
 
 description:
 - Trigger baking and signing in the agent bakery.
+- Baking compiles monitoring agents for all configured hosts. Signing applies a
+  cryptographic signature so that agents can be verified before installation.
+- This module only works with the commercial Checkmk editions.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
     signature_key_id:
-        description: The id of the signing key
+        description: The id of the signing key.
         required: false
         type: str
 
     signature_key_passphrase:
-        description: The passphrase of the signing key
+        description: The passphrase of the signing key.
         required: false
         type: str
 
     state:
-        description: State - Baked, signed or baked and signed
+        description: State - Baked, signed or baked and signed.
         required: true
         choices: ["baked", "signed", "baked_signed"]
         type: str
+
+notes:
+    - The agent bakery is only available in the commercial editions of Checkmk.
+      This module will fail on Checkmk Raw (CRE).
+    - Signing requires a signing key to be present in the bakery. Provide the key ID and
+      passphrase when using C(state=signed) or C(state=baked_signed).
+
+seealso:
+    - plugin: checkmk.general.bakery
+      plugin_type: lookup
 
 author:
     - Max Sickora (@max-checkmk)
 """
 
 EXAMPLES = r"""
-# Bake all agents without signing, as example in a fresh installation without a signature key.
+# ---------------------------------------------------------------------------
+# Baking and signing agents
+# ---------------------------------------------------------------------------
+
 - name: "Bake all agents without signing."
   checkmk.general.bakery:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     state: "baked"
-# Sign all agents.
-- name: "Sign all agents."
+
+- name: "Sign all agents with an existing signing key."
   checkmk.general.bakery:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     signature_key_id: 12abcd34-e56f-78gh-9101-i11213j14k15
-    signature_key_passphrase: "my_secret_passphrase"
+    signature_key_passphrase: "mypassphrase"
     state: "signed"
-# Bake and sign all agents.
-- name: "Bake and sign all agents."
+
+- name: "Bake and sign all agents in one step."
   checkmk.general.bakery:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     signature_key_id: 12abcd34-e56f-78gh-9101-i11213j14k15
-    signature_key_passphrase: "my_secret_passphrase"
+    signature_key_passphrase: "mypassphrase"
     state: "baked_signed"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Bake all agents using environment variables for authentication."
+  checkmk.general.bakery:
+    state: "baked"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
@@ -80,7 +115,7 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

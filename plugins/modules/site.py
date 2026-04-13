@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: site
 
-short_description: Manage distributed monitoring in Checkmk.
+short_description: Manage distributed monitoring in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -20,18 +20,26 @@ version_added: "5.3.0"
 description:
     - Manage distributed monitoring within Checkmk.
 
-extends_documentation_fragment:
-    - checkmk.general.common
-    - checkmk.general.site_options
+extends_documentation_fragment: [checkmk.general.common, checkmk.general.site_options]
+
+seealso:
+    - plugin: checkmk.general.site
+      plugin_type: lookup
+    - plugin: checkmk.general.sites
+      plugin_type: lookup
 
 author:
     - Lars Getwan (@lgetwan)
 """
 
 EXAMPLES = r"""
+# ---------------------------------------------------------------------------
+# Add and remove remote site connections
+# ---------------------------------------------------------------------------
+
 - name: "Add a remote site with configuration replication."
   checkmk.general.site:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -40,10 +48,10 @@ EXAMPLES = r"""
       site_config:
         status_connection:
           connection:
-            socket_type: tcp
+            socket_type: "tcp"
             port: 6557
             encrypted: true
-            host: localhost
+            host: "myremotesite.example.com"
             verify: true
           proxy:
             use_livestatus_daemon: "direct"
@@ -53,47 +61,70 @@ EXAMPLES = r"""
           url_prefix: "/myremotesite/"
         configuration_connection:
           enable_replication: true
-          url_of_remote_site: "http://localhost/myremotesite/check_mk/"
+          url_of_remote_site: "https://myremotesite.example.com/myremotesite/check_mk/"
         basic_settings:
           site_id: "myremotesite"
-          customer: "provider"
           alias: "My Remote Site"
     state: "present"
 
-- name: "Log into a remote site."
+- name: "Delete a remote site connection."
   checkmk.general.site:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    site_id: "myremotesite"
+    state: "absent"
+
+# ---------------------------------------------------------------------------
+# Log in and out of remote sites
+# ---------------------------------------------------------------------------
+
+- name: "Log into a remote site to enable configuration replication."
+  checkmk.general.site:
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     site_id: "myremotesite"
     site_connection:
       authentication:
-        username: "myremote_admin"
-        password: "highly_secret"
+        username: "cmkadmin"
+        password: "remote_admin_password"
     state: "login"
 
 - name: "Log out from a remote site."
   checkmk.general.site:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     site_id: "myremotesite"
     state: "logout"
 
-- name: "Delete a remote site."
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Delete a remote site using environment variables for authentication."
   checkmk.general.site:
-    server_url: "http://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
     site_id: "myremotesite"
     state: "absent"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
-message:
+msg:
     description: The output message that the module generates. Contains the API response details in case of an error.
     type: str
     returned: always

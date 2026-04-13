@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: activation
 
-short_description: Activate changes in Checkmk.
+short_description: Activate changes in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -28,58 +28,125 @@ options:
         description:
           - If set to C(true), wait for the activation to complete.
             If set to C(false), start the activation, but do not wait for it to finish.
+        required: false
         default: false
         type: bool
     sites:
         description: The sites that should be activated. Omitting this option activates all sites.
+        required: false
         default: []
         type: raw
     force_foreign_changes:
         description: Whether to active foreign changes.
+        required: false
         default: false
         type: bool
+
+notes:
+    - This module always triggers an activation when there are pending changes.
+      It is not idempotent in the usual Ansible sense.
+    - 'Use C(run_once: true) to avoid activating once per host in a play.'
+
+seealso:
+    - plugin: checkmk.general.activation
+      plugin_type: lookup
+    - plugin: checkmk.general.activations
+      plugin_type: lookup
 
 author:
     - Robin Gierse (@robin-checkmk)
 """
 
 EXAMPLES = r"""
-- name: "Start activation on all sites."
+# ---------------------------------------------------------------------------
+# Basic activation
+# ---------------------------------------------------------------------------
+
+- name: "Activate changes on all sites."
   checkmk.general.activation:
-      server_url: "http://myserver/"
-      site: "mysite"
-      api_user: "myuser"
-      api_secret: "mysecret"
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
   run_once: true
 
-- name: "Start activation on a specific site."
+- name: "Activate changes on all sites and wait for completion."
   checkmk.general.activation:
-      server_url: "http://myserver/"
-      site: "mysite"
-      api_user: "myuser"
-      api_secret: "mysecret"
-      sites:
-          - "mysite"
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    redirect: true
   run_once: true
 
-- name: "Start activation including foreign changes."
+# ---------------------------------------------------------------------------
+# Targeting specific sites
+# ---------------------------------------------------------------------------
+
+- name: "Activate changes on a specific site."
   checkmk.general.activation:
-      server_url: "http://myserver/"
-      site: "mysite"
-      api_user: "myuser"
-      api_secret: "mysecret"
-      force_foreign_changes: true
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    sites:
+      - "mysite"
+  run_once: true
+
+- name: "Activate changes on multiple specific sites."
+  checkmk.general.activation:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    sites:
+      - "mysite"
+      - "myremotesite"
+  run_once: true
+
+# ---------------------------------------------------------------------------
+# Handling foreign changes
+# ---------------------------------------------------------------------------
+# By default, activating changes made by other users requires explicit
+# permission. Use 'force_foreign_changes: true' to activate them regardless.
+
+- name: "Activate changes including changes made by other users."
+  checkmk.general.activation:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    force_foreign_changes: true
   run_once: true
 
 - name: "Activate changes including foreign changes and wait for completion."
   checkmk.general.activation:
-      server_url: "http://localhost/"
-      site: "mysite"
-      api_user: "myuser"
-      api_secret: "$SECRET"
-      redirect: true
-      force_foreign_changes: true
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    redirect: true
+    force_foreign_changes: true
   run_once: true
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Activate changes using environment variables for authentication."
+  checkmk.general.activation:
+  run_once: true
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
@@ -88,7 +155,7 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always

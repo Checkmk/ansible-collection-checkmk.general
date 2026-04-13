@@ -11,7 +11,7 @@ DOCUMENTATION = r"""
 ---
 module: password
 
-short_description: Manage passwords in Checkmk.
+short_description: Manage passwords in Checkmk
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -19,12 +19,14 @@ version_added: "2.3.0"
 
 description:
 - Manage passwords in Checkmk.
+- Passwords stored in the Checkmk password store can be referenced in rules and
+  special agents without exposing them in plain text in your configuration.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
     name:
-        description: An unique identifier for the password.
+        description: A unique identifier for the password.
         required: true
         type: str
 
@@ -65,6 +67,7 @@ options:
 
     state:
         description: create/update or delete a password.
+        required: false
         default: present
         choices: ["present", "absent"]
         type: str
@@ -74,34 +77,78 @@ author:
 """
 
 EXAMPLES = r"""
-# Creating and Updating is the same.
-# If passwords are configured, no_log should be set to true.
-- name: "Create a new password."
+# ---------------------------------------------------------------------------
+# Create, update, and delete passwords
+# ---------------------------------------------------------------------------
+# Creating and updating use the same task structure.
+# Always set 'no_log: true' when using this module to avoid logging secrets.
+
+- name: "Create a password."
   checkmk.general.password:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "mypassword"
+    title: "My Password"
+    comment: "Managed by Ansible"
+    password: "topsecret"
+    owner: "admin"
+    shared:
+      - "all"
+    state: "present"
+  no_log: true
+
+- name: "Create a password with all optional fields."
+  checkmk.general.password:
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     name: "mypassword"
     title: "My Password"
     customer: "provider"
-    comment: "Comment on my password"
-    documentation_url: "https://url.to.mypassword/"
+    comment: "Managed by Ansible"
+    documentation_url: "https://docs.example.com/mypassword"
     password: "topsecret"
     owner: "admin"
-    shared: [
-      "all"
-    ]
+    shared:
+      - "all"
     state: "present"
   no_log: true
+
 - name: "Delete a password."
   checkmk.general.password:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     name: "mypassword"
+    title: "My Password"
     state: "absent"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a password using environment variables for authentication."
+  checkmk.general.password:
+    name: "mypassword"
+    title: "My Password"
+    password: "topsecret"
+    state: "present"
+  no_log: true
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
@@ -110,7 +157,7 @@ http_code:
     type: int
     returned: always
     sample: '200'
-message:
+msg:
     description: The output message that the module generates.
     type: str
     returned: always
