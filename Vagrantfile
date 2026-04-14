@@ -133,7 +133,7 @@ Vagrant.configure("2") do |config|
       libvirt.memorybacking :source, :type => 'memfd'
     end
     srv.vm.provision "shell",
-      inline: "zypper --quiet up -y"
+      inline: "zypper --quiet up -y && zypper --quiet in -y python311-rpm"
   end
 
   # Rocky
