@@ -42,6 +42,7 @@ jobs:
           - stable-2.18
           - stable-2.19
           - stable-2.20
+          - stable-2.21
           - devel
 
     steps:
