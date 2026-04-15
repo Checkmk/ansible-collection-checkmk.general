@@ -4,6 +4,14 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v7.3.2
+======
+
+Bugfixes
+--------
+
+- Agent role - Fix fallback download for commercial editions. It was discovered, that for a while the download of the appropriate agent package was broken in certain scenarios. This was due to a change in the Checkmk REST API, which needs a folder specified in order to download a generic agent. As this can fail in certain scenarios, the fallback now uses the vanilla agent.
+
 v7.3.1
 ======
 
