@@ -11,7 +11,7 @@
   tags:
     - install-package
 
-- name: "{{ ansible_facts['os_family'] }} Derivatives: Install GENERIC or folder-specific {{ checkmk_agent_edition | upper }} Agent."
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Install folder-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
   ansible.builtin.package:
     deb: "{{ __checkmk_agent_agent.file.cee }}"
@@ -19,20 +19,9 @@
     state: present
   when: |
     checkmk_agent_edition | lower != "cre"
-    and not checkmk_agent_host_specific | bool
+    and checkmk_agent_folder_specific | bool
   tags:
     - install-package
-
-- name: "{{ ansible_facts['os_family'] }} Derivatives: Transfer Vanilla agent."
-  ansible.builtin.copy:
-    src: "{{ __checkmk_agent_agent.file.cre }}"
-    dest: "{{ __checkmk_agent_agent.file.cre }}"
-    mode: "0644"
-  when: |
-    checkmk_agent_edition | lower == "cre"
-    and checkmk_agent_delegate_download != inventory_hostname
-  tags:
-    - download-package
 
 - name: "{{ ansible_facts['os_family'] }} Derivatives: Install Vanilla agent."
   become: true
@@ -40,7 +29,9 @@
     deb: "{{ __checkmk_agent_agent.file.cre }}"
     force: "{{ checkmk_agent_force_install | bool }}"
     state: present
-  when: checkmk_agent_edition | lower == "cre"
+  when: |
+    checkmk_agent_edition | lower == "cre"
+    or not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
   tags:
     - install-package
 

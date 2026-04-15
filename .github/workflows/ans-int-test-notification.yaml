@@ -41,7 +41,7 @@ jobs:
       matrix:
         checkmk_version:
           - 2.4.0p25
-          - 2.5.0b3
+          - 2.5.0b4
         checkmk_edition:
           - raw
           - managed
@@ -52,7 +52,7 @@ jobs:
             checkmk_edition: community
           - checkmk_version: 2.4.0p25
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.5.0b3
+          - checkmk_version: 2.5.0b4
             checkmk_edition: raw
-          - checkmk_version: 2.5.0b3
+          - checkmk_version: 2.5.0b4
             checkmk_edition: managed
