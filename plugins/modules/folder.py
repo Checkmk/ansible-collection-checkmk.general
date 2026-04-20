@@ -506,7 +506,7 @@ class FolderAPI(CheckmkAPI):
             method="GET",
         )
 
-        if result.http_code 200:
+        if result.http_code == 200:
             logger.debug("-> exists")
             return result
         else:
@@ -606,7 +606,9 @@ def _exit_if_missing_pathlib(module):
         # Needs: from ansible.module_utils.basic import missing_required_lib
         exit_module(
             module,
-            msg=missing_required_lib("pathlib2") + str(PATHLIB2_LIBRARY_IMPORT_ERROR) + "\n",
+            msg=missing_required_lib("pathlib2")
+            + str(PATHLIB2_LIBRARY_IMPORT_ERROR)
+            + "\n",
             failed=True,
             logger=logger,
         )
