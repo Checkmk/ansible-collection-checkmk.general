@@ -350,9 +350,9 @@ class FolderAPI(CheckmkAPI):
                     failed=True,
                     changed=False,
                 )
-                exit_module(self.module, msg=msg, logger=logger)
+                exit_module(self.module, result=result, logger=logger)
             else:
-                logger.warn(msg)
+                self.module.warn(msg)
 
     def _normalize_path(self, path):
         p = Path(path)
@@ -499,7 +499,6 @@ class FolderAPI(CheckmkAPI):
 
     def _ensure_parent_exists(self, parent):
         logger.debug("Ensure that path %s exists" % parent)
-        logger.debug("endpoint: %s" % self._build_default_endpoint(parent))
 
         result = self._fetch(
             code_mapping=FolderHTTPCodes.get,
@@ -507,26 +506,25 @@ class FolderAPI(CheckmkAPI):
             method="GET",
         )
 
-        if result.http_code == 200:
+        if result.http_code 200:
             logger.debug("-> exists")
             return result
         else:
             logger.debug("-> missing")
-            if parent not in ["/sub/subber/subbersten", "/sub/subber", "/sub"]:
-                exit_module(self.module, msg="_ensure_parent_exists()", logger=logger)
             grandparent, parent = self._normalize_path(parent)
             result = self._ensure_parent_exists(grandparent)
             if result.http_code != 200:
                 return result
 
-            # Create folder
-            logger.info("Creating parent folder %s" % parent)
-
+            logger.debug("Creating parent folder %s" % parent)
             data = {
                 "name": parent,
                 "title": parent,
                 "parent": grandparent,
             }
+
+            if self.module.check_mode:
+                return self._check_output("create parent")
 
             return self._fetch(
                 code_mapping=FolderHTTPCodes.create,
@@ -608,7 +606,8 @@ def _exit_if_missing_pathlib(module):
         # Needs: from ansible.module_utils.basic import missing_required_lib
         exit_module(
             module,
-            msg=missing_required_lib("pathlib2") + str(PATHLIB2_LIBRARY_IMPORT_ERROR),
+            msg=missing_required_lib("pathlib2") + str(PATHLIB2_LIBRARY_IMPORT_ERROR) + "\n",
+            failed=True,
             logger=logger,
         )
 
