@@ -30,7 +30,7 @@ options:
             - The full path to the folder you want to manage.
               Pay attention to the leading C(/) and avoid trailing C(/).
               Special characters apart from C(_) are not allowed!
-              Be aware, that the parent folder has to to exist.
+              Missing parent folders will be created.
         required: true
         type: str
     name:
@@ -105,7 +105,7 @@ EXAMPLES = r"""
     name: "My Folder"
     state: "present"
 
-- name: "Create a nested folder."  # Be advised, that the parent folder must exist
+- name: "Create a nested folder."
   checkmk.general.folder:
     server_url: "https://myserver/"
     site: "mysite"
@@ -232,14 +232,18 @@ from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.dict_transformations import dict_merge, recursive_diff
 from ansible.module_utils.common.validation import check_type_list
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
+    exit_module,
     result_as_dict,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )
+
+logger = Logger()
 
 PYTHON_VERSION = 3
 HAS_PATHLIB2_LIBRARY = True
@@ -347,9 +351,9 @@ class FolderAPI(CheckmkAPI):
                     failed=True,
                     changed=False,
                 )
-                self.module.exit_json(**result_as_dict(result))
+                exit_module(module, msg=msg, logger=logger)
             else:
-                self.module.warn(msg)
+               logger.warn(msg)
 
     def _normalize_path(self, path):
         p = Path(path)
@@ -360,11 +364,18 @@ class FolderAPI(CheckmkAPI):
     def _urlize_path(self, path):
         return path.replace("/", "~").replace("~~", "~")
 
-    def _build_default_endpoint(self):
-        return "%s/%s" % (
-            FolderEndpoints.default,
-            self._urlize_path("%s/%s" % (self.desired["parent"], self.desired["name"])),
-        )
+    def _build_default_endpoint(self, path=None):
+        if not path:
+            return "%s/%s" % (
+                FolderEndpoints.default,
+                self._urlize_path("%s/%s" % (self.desired["parent"], self.desired["name"])),
+            )
+        else:
+            return "%s/%s" % (
+                FolderEndpoints.default,
+                self._urlize_path(path),
+            )
+
 
     def _detect_changes(self):
         current_attributes = self.current.get("attributes", {})
@@ -471,6 +482,7 @@ class FolderAPI(CheckmkAPI):
 
         else:
             self.state = "absent"
+        logger.debug("state: %s" % self.state)
 
     def _check_output(self, mode):
         return RESULT(
@@ -485,8 +497,58 @@ class FolderAPI(CheckmkAPI):
     def needs_update(self):
         return len(self._changed_items) > 0
 
+    def _ensure_parent_exists(self, parent):
+        logger.debug("Ensure that path %s exists" % parent)
+        logger.debug("endpoint: %s" % self._build_default_endpoint(parent))
+
+        result = self._fetch(
+            code_mapping=FolderHTTPCodes.get,
+            endpoint=self._build_default_endpoint(parent),
+            method="GET",
+        )
+
+        if result.http_code == 200:
+            logger.debug("-> exists")
+            return result
+        else:
+            logger.debug("-> missing")
+            if parent not in ["/sub/subber/subbersten", "/sub/subber", "/sub"]:
+                exit_module(self.module, msg="_ensure_parent_exists()", logger=logger)
+            grandparent, parent = self._normalize_path(parent)
+            result = self._ensure_parent_exists(grandparent)
+            if result.http_code != 200:
+                return result
+
+            # Create folder
+            logger.info("Creating parent folder %s" % parent)
+
+            data = {
+                "name": parent,
+                "title": parent,
+                "parent": grandparent,
+            }
+
+            return self._fetch(
+                code_mapping=FolderHTTPCodes.create,
+                endpoint=FolderEndpoints.create,
+                data=data,
+                method="POST",
+            )
+
+
     def create(self):
+        logger.debug("Will create the folder")
         data = self.desired.copy()
+        result = self._ensure_parent_exists(data.get("parent"))
+        if result.http_code != 200:
+            exit_module(
+                self.module,
+                msg="Failed to create parent folder(s).",
+                content=result.content,
+                failed=True,
+                logger=logger,
+            )
+
         if data.get("attributes", {}) == {}:
             data["attributes"] = data.pop("update_attributes", {})
 
@@ -506,6 +568,8 @@ class FolderAPI(CheckmkAPI):
         return result
 
     def edit(self):
+        logger.debug("Will update the folder")
+        logger.debug("diff: %s" % str(self._changed_items))
         data = self.desired.copy()
         data.pop("name")
         data.pop("parent")
@@ -543,9 +607,10 @@ def _exit_if_missing_pathlib(module):
     # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
     if PYTHON_VERSION == 2 and not HAS_PATHLIB2_LIBRARY:
         # Needs: from ansible.module_utils.basic import missing_required_lib
-        module.fail_json(
-            msg=missing_required_lib("pathlib2"),
-            exception=PATHLIB2_LIBRARY_IMPORT_ERROR,
+        exit_module(
+            module,
+            msg=missing_required_lib("pathlib2") + str(PATHLIB2_LIBRARY_IMPORT_ERROR),
+            logger=logger,
         )
 
 
@@ -568,6 +633,9 @@ def run_module():
     )
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+
+    logger.set_loglevel(module._verbosity)
+    logger.set_loglevel(2)
 
     _exit_if_missing_pathlib(module)
 
@@ -597,7 +665,7 @@ def run_module():
         if desired_state in ("present"):
             result = current_folder.create()
 
-    module.exit_json(**result_as_dict(result))
+    exit_module(module, result=result, logger=logger)
 
 
 def main():
