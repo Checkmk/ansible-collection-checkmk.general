@@ -237,7 +237,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.types import RESUL
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
     exit_module,
-    result_as_dict,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
@@ -351,9 +350,9 @@ class FolderAPI(CheckmkAPI):
                     failed=True,
                     changed=False,
                 )
-                exit_module(module, msg=msg, logger=logger)
+                exit_module(self.module, msg=msg, logger=logger)
             else:
-               logger.warn(msg)
+                logger.warn(msg)
 
     def _normalize_path(self, path):
         p = Path(path)
@@ -368,14 +367,15 @@ class FolderAPI(CheckmkAPI):
         if not path:
             return "%s/%s" % (
                 FolderEndpoints.default,
-                self._urlize_path("%s/%s" % (self.desired["parent"], self.desired["name"])),
+                self._urlize_path(
+                    "%s/%s" % (self.desired["parent"], self.desired["name"])
+                ),
             )
         else:
             return "%s/%s" % (
                 FolderEndpoints.default,
                 self._urlize_path(path),
             )
-
 
     def _detect_changes(self):
         current_attributes = self.current.get("attributes", {})
@@ -534,7 +534,6 @@ class FolderAPI(CheckmkAPI):
                 data=data,
                 method="POST",
             )
-
 
     def create(self):
         logger.debug("Will create the folder")
