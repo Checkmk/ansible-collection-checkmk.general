@@ -20,6 +20,10 @@ checkmk_var_folders:
   - path: /foo/bar1
     name: Digital
 
+checkmk_var_folders_recursive:
+  - path: /the/folder/should/be/inside/this
+    name: Finally
+
 checkmk_var_folder_attr_test:
   path: /test
   name: Test

@@ -513,7 +513,7 @@ class FolderAPI(CheckmkAPI):
             logger.debug("-> missing")
             grandparent, parent = self._normalize_path(parent)
             result = self._ensure_parent_exists(grandparent)
-            if result.http_code != 200:
+            if not self.module.check_mode and result.http_code != 200:
                 return result
 
             logger.debug("Creating parent folder %s" % parent)
@@ -635,7 +635,6 @@ def run_module():
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     logger.set_loglevel(module._verbosity)
-    logger.set_loglevel(2)
 
     _exit_if_missing_pathlib(module)
 
