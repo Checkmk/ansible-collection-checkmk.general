@@ -221,6 +221,16 @@ msg:
     type: str
     returned: always
     sample: 'Folder created.'
+http_code:
+  description:
+    - HTTP code returned by the Checkmk API.
+  type: int
+  returned: always
+content:
+  description:
+    - Content of the folder object.
+  returned: when state is present and folder created or updated.
+  type: dict
 """
 
 import json
