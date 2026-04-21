@@ -513,7 +513,7 @@ class FolderAPI(CheckmkAPI):
             logger.debug("-> missing")
             grandparent, parent = self._normalize_path(parent)
             result = self._ensure_parent_exists(grandparent)
-            if not self.module.check_mode and result.http_code != 200:
+            if result.http_code != 200:
                 return result
 
             logger.debug("Creating parent folder %s" % parent)
@@ -537,7 +537,7 @@ class FolderAPI(CheckmkAPI):
         logger.debug("Will create the folder")
         data = self.desired.copy()
         result = self._ensure_parent_exists(data.get("parent"))
-        if result.http_code != 200:
+        if not self.module.check_mode and result.http_code != 200:
             exit_module(
                 self.module,
                 msg="Failed to create parent folder(s).",
