@@ -24,15 +24,14 @@ The Checkmk version of the site your agents will talk to.
 
     checkmk_agent_edition: community
 
-The edition you are using. Valid values are `community`, `pro`, `ultimate`, `ultimatemt` and `cloud`.
+The edition you are using. Valid values are `community`, `pro`, `ultimate` and `ultimatemt`.
 
 - `community`: Checkmk Community, fully Open Source.
 - `pro`: Checkmk Pro, full enterprise features.
 - `ultimate`: Checkmk Ultimate, for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
 - `ultimatemt`: Checkmk Ultimate with multi-tenancy (CME), for service providers.
-- `cloud`: Checkmk Cloud (SaaS).
 
-The old short identifiers `cre`, `cee`, `cce`, `cme` and `cse` are still accepted for backward compatibility.
+The old short identifiers `cre`, `cee`, `cce` and `cme` are still accepted for backward compatibility.
 
 For details about the editions see: https://checkmk.com/product/editions
 
