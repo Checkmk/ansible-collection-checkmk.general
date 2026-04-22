@@ -1,19 +1,4 @@
 ---
-- name: "{{ ansible_facts['system'] }}: Download Vanilla {{ checkmk_agent_edition | upper }} Agent."
-  ansible.windows.win_get_url:
-    url: "{{ __checkmk_agent_agent.url.community }}"
-    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
-    dest: "{{ __checkmk_agent_agent.file.community }}"
-    timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
-  when: checkmk_agent_edition | lower == "community"
-  register: __checkmk_agent_vanilla_download_state
-  retries: 3
-  delay: 10
-  until: "not __checkmk_agent_vanilla_download_state.failed | bool"
-  delegate_to: "{{ checkmk_agent_delegate_download }}"
-  tags:
-    - download-package
-
 - name: "{{ ansible_facts['system'] }}: Download host-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.windows.win_get_url:
     url:
@@ -83,20 +68,13 @@
 
 - name: "{{ ansible_facts['system'] }}: Download Vanilla {{ checkmk_agent_edition | upper }} Agent."
   ansible.windows.win_get_url:
-    url:
-      "{{ __checkmk_agent_agent.url.pro }}?\
-      os_type={{ __checkmk_agent_files_mapping[ansible_facts['os_family']] }}&\
-      agent_type=generic"
+    url: "{{ __checkmk_agent_agent.url.community }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
-    dest: "{{ __checkmk_agent_agent.file.pro }}"
-    method: GET
-    headers:
-      Authorization: "Bearer {{ checkmk_agent_user }} {{ __checkmk_agent_auth }}"
-      Accept: "application/octet-stream"
+    dest: "{{ __checkmk_agent_agent.file.community }}"
     timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
   when: |
-    checkmk_agent_edition | lower != "community"
-    and not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
+    checkmk_agent_edition | lower == "community"
+    or not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
   register: __checkmk_agent_vanilla_download_state
   retries: 3
   delay: 10
@@ -122,7 +100,7 @@
     dest: "{{ __checkmk_agent_agent.file.pro }}"
   when: |
     checkmk_agent_edition | lower != "community"
-    and not checkmk_agent_host_specific | bool
+    and checkmk_agent_folder_specific | bool
     and checkmk_agent_delegate_download != inventory_hostname
   tags:
     - download-package
@@ -132,7 +110,8 @@
     src: "{{ __checkmk_agent_agent.file.community }}"
     dest: "{{ __checkmk_agent_agent.file.community }}"
   when: |
-    checkmk_agent_edition | lower == "community"
-    and checkmk_agent_delegate_download != inventory_hostname
+    checkmk_agent_delegate_download != inventory_hostname
+    and (checkmk_agent_edition | lower == "community"
+    or not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool))
   tags:
     - download-package

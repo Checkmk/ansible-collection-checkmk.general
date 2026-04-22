@@ -15,7 +15,7 @@
     state: present
   when: |
     checkmk_agent_edition | lower != "community"
-    and not checkmk_agent_host_specific | bool
+    and checkmk_agent_folder_specific | bool
   tags:
     - install-package
 
@@ -23,7 +23,9 @@
   ansible.windows.win_package:
     path: "{{ __checkmk_agent_agent.file.community }}"
     state: present
-  when: checkmk_agent_edition | lower == "community"
+  when: |
+    checkmk_agent_edition | lower == "community"
+    or not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
   tags:
     - install-package
 
