@@ -19,7 +19,7 @@
     disable_gpg_check: true
   when: |
     checkmk_agent_edition | lower != "community"
-    and not checkmk_agent_host_specific | bool
+    and checkmk_agent_folder_specific | bool
   tags:
     - install-package
 
@@ -29,7 +29,9 @@
     name: "{{ __checkmk_agent_agent.file.community }}"
     state: present
     disable_gpg_check: true
-  when: checkmk_agent_edition | lower == "community"
+  when: |
+    checkmk_agent_edition | lower == "community"
+    or not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
   tags:
     - install-package
 
