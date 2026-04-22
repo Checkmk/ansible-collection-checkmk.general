@@ -4,29 +4,26 @@ __checkmk_agent_site_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agen
 __checkmk_agent_auth: |-
   {% if checkmk_agent_secret is defined and checkmk_agent_secret | length > 0 %}{{ checkmk_agent_secret }}{% else %}{{ checkmk_agent_pass }}{% endif %}
 
-# Due to inconsistent naming of editions, we normalize them here for convenience.
+# Single source of truth: legacy short codes to current edition identifiers.
+__checkmk_var_short_code_mapping:
+  cre: community
+  cee: pro
+  cce: ultimate
+  cme: ultimatemt
+
+# Maps current edition identifiers to download URL identifiers for Checkmk < 2.5.
 __checkmk_var_legacy_edition_mapping:
   community: raw
   pro: enterprise
   ultimate: cloud
   ultimatemt: managed
-  cre: raw
-  cee: enterprise
-  cce: cloud
-  cme: managed
 
-# Due to renaming of editions starting with 2.5, we normalize them here for convenience. Again.
+# Maps current edition identifiers to download URL identifiers for Checkmk >= 2.5.
 __checkmk_var_modern_edition_mapping:
   community: community
   pro: pro
   ultimate: ultimate
   ultimatemt: ultimatemt
-  cloud: cloud
-  cre: community
-  cee: pro
-  cce: ultimate
-  cme: ultimatemt
-  cse: cloud
 
 # Bringing the above two mappings back together.
 __checkmk_agent_edition_mapping: >-

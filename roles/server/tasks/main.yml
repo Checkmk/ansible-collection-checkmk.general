@@ -1,11 +1,15 @@
 ---
+- name: "Deprecation notice - Legacy edition identifier."
+  ansible.builtin.debug:
+    msg: >-
+      Edition '{{ checkmk_server_edition }}' is deprecated.
+      Use '{{ __checkmk_var_short_code_mapping[checkmk_server_edition | lower] }}' instead.
+  when: checkmk_server_edition | lower in __checkmk_var_short_code_mapping
+
 - name: "Normalize legacy edition identifier."
   ansible.builtin.set_fact:
-    checkmk_server_edition: >-
-      {{ {'cre': 'community', 'cee': 'pro', 'cce': 'ultimate',
-          'cme': 'ultimatemt', 'cse': 'cloud'
-         }.get(checkmk_server_edition | lower, checkmk_server_edition | lower) }}
-  when: checkmk_server_edition | lower in ['cre', 'cee', 'cce', 'cme', 'cse']
+    checkmk_server_edition: "{{ __checkmk_var_short_code_mapping[checkmk_server_edition | lower] }}"
+  when: checkmk_server_edition | lower in __checkmk_var_short_code_mapping
 
 - name: "Preflight - Fail if target host is not stable for this Role."
   ansible.builtin.fail:

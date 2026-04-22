@@ -3,29 +3,26 @@ __checkmk_server_base_url: "https://download.checkmk.com/checkmk"
 checkmk_server_download_url: "{{ __checkmk_server_base_url }}/{{ checkmk_server_version }}/{{ __checkmk_server_setup_file }}"
 checkmk_server_gpg_download_url: "{{ __checkmk_server_base_url }}/Check_MK-pubkey.gpg"
 
-# Due to inconsistent naming of editions, we normalize them here for convenience.
+# Single source of truth: legacy short codes to current edition identifiers.
+__checkmk_var_short_code_mapping:
+  cre: community
+  cee: pro
+  cce: ultimate
+  cme: ultimatemt
+
+# Maps current edition identifiers to download URL identifiers for Checkmk < 2.5.
 __checkmk_var_legacy_edition_mapping:
   community: raw
   pro: enterprise
   ultimate: cloud
   ultimatemt: managed
-  cre: raw
-  cee: enterprise
-  cce: cloud
-  cme: managed
 
-# Due to renaming of editions starting with 2.5, we normalize them here for convenience. Again.
+# Maps current edition identifiers to download URL identifiers for Checkmk >= 2.5.
 __checkmk_var_modern_edition_mapping:
   community: community
   pro: pro
   ultimate: ultimate
   ultimatemt: ultimatemt
-  cloud: cloud
-  cre: community
-  cee: pro
-  cce: ultimate
-  cme: ultimatemt
-  cse: cloud
 
 # Bringing the above two mappings back together.
 __checkmk_server_edition_mapping: >-
@@ -43,11 +40,5 @@ __checkmk_server_omd_legacy_edition_ids:
   pro: cee
   ultimate: cce
   ultimatemt: cme
-  cloud: cse
-  cre: cre
-  cee: cee
-  cce: cce
-  cme: cme
-  cse: cse
 
 __checkmk_server_tmp_dir: "/tmp"
