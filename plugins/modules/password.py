@@ -299,7 +299,7 @@ def run_module():
             ):
                 result = RESULT(
                     http_code=0,
-                    msg="Missing required parameter 'customer' for ultimatemt",
+                    msg="Missing required parameter 'customer' for Checkmk Ultimate with multi-tenancy",
                     content="",
                     etag="",
                     failed=True,

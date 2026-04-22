@@ -41,19 +41,18 @@ Updating sites is possible as well, see [Site updates](#site_updates) below.
 
     checkmk_server_edition: 'community'
 
-The edition you are using. Valid values are `community`, `pro`, `ultimate`, `ultimatemt` and `cloud`.
+The edition you are using. Valid values are `community`, `pro`, `ultimate` and `ultimatemt`.
 
 - `community`: Checkmk Community, fully Open Source.
 - `pro`: Checkmk Pro, full enterprise features.
 - `ultimate`: Checkmk Ultimate, for cloud natives. Includes all enterprise features, and a free tier for a limited number of services.
 - `ultimatemt`: Checkmk Ultimate with multi-tenancy (CME), for service providers.
-- `cloud`: Checkmk Cloud (SaaS).
 
-The old short identifiers `cre`, `cee`, `cce`, `cme` and `cse` are still accepted for backward compatibility.
+The old short identifiers `cre`, `cee`, `cce` and `cme` are still accepted for backward compatibility.
 
 For details about the editions see: https://checkmk.com/product/editions
 
-> Note, that you need credentials, to download any non-community edition. See below variables, to set those.
+> Note, that you need credentials, to download any commercial edition. See below variables, to set those.
 
     checkmk_server_download_user: []
     checkmk_server_download_pass: []
