@@ -294,7 +294,7 @@ def run_module():
 
             checkmkversion = CheckmkVersion(str(passwordcreate.getversion()))
             if (
-                checkmkversion.edition == "ultimatemt"
+                checkmkversion.edition in ("ultimatemt", "cme")
                 and module.params.get("customer") is None
             ):
                 result = RESULT(
