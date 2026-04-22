@@ -40,7 +40,7 @@ jobs:
       fail-fast: false
       matrix:
         checkmk_version:
-          - 2.4.0p25
+          - 2.4.0p26
           - 2.5.0b4
         checkmk_edition:
           - managed
@@ -48,7 +48,7 @@ jobs:
         exclude:
           - checkmk_version: 2.3.0p46
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.4.0p25
+          - checkmk_version: 2.4.0p26
             checkmk_edition: ultimatemt
           - checkmk_version: 2.5.0b4
             checkmk_edition: managed
