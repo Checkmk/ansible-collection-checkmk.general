@@ -11,6 +11,21 @@
     checkmk_server_edition: "{{ __checkmk_var_short_code_mapping[checkmk_server_edition | lower] }}"
   when: checkmk_server_edition | lower in __checkmk_var_short_code_mapping
 
+- name: "Normalize legacy edition identifiers in checkmk_server_sites."
+  ansible.builtin.set_fact:
+    checkmk_server_sites: "{{ __checkmk_var_normalized_sites }}"
+  vars:
+    __checkmk_var_normalized_sites: >-
+      {%- set result = [] -%}
+      {%- for site in checkmk_server_sites -%}
+        {%- set ed = site.edition | lower -%}
+        {%- set _ = result.append(site | combine({'edition':
+            __checkmk_var_short_code_mapping[ed] if ed in __checkmk_var_short_code_mapping else ed
+          })) -%}
+      {%- endfor -%}
+      {{ result }}
+  when: checkmk_server_sites is defined
+
 - name: "Preflight - Fail if target host is not stable for this Role."
   ansible.builtin.fail:
     msg: "This role is not stable for the target operating system: {{ ansible_facts['distribution'] + '-' + ansible_facts['distribution_major_version'] }}."
