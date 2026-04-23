@@ -30,7 +30,7 @@ options:
             - The full path to the folder you want to manage.
               Pay attention to the leading C(/) and avoid trailing C(/).
               Special characters apart from C(_) are not allowed!
-              Missing parent folders will be created with their titles taken from 
+              Missing parent folders will be created with their titles taken from
               the parts of the path parameter. If you want to use different titles,
               please create each folder in a separate task or in a loop.
         required: true
