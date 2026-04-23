@@ -151,7 +151,7 @@
     state: "present"
   loop: "{{ checkmk_var_folders_recursive }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create top level folders."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove top level folders."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
