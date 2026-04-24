@@ -4,6 +4,20 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v7.4.0
+======
+
+Release Summary
+---------------
+
+Mother's Day is still two weeks out, but we care about parents nevertheless.
+
+Minor Changes
+-------------
+
+- Agent role - Enable automatically adding the folder a host will be put in. This is disabled by default. With this feature enabled, the folder you want to put your host in will be created if it does not exist.
+- Folder module - Enable creating folders including their parents. This enables creating complex folder structures without having to create every single folder on their own.
+
 v7.3.2
 ======
 
