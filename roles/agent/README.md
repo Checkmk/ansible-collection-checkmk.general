@@ -118,6 +118,10 @@ Define attributes with which the host will be added to Checkmk.
 
 The folder into which the automatically created host will be placed.
 
+    checkmk_agent_folder_create: false
+
+Automatically create the folder the host will be put in.
+
     checkmk_agent_discover: false
 
 Automatically discover services on the host where the agent was installed.
