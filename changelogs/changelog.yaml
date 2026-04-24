@@ -1632,3 +1632,19 @@ releases:
     fragments:
     - agent.yml
     release_date: '2026-04-15'
+  7.4.0:
+    changes:
+      minor_changes:
+      - Agent role - Enable automatically adding the folder a host will be put in.
+        This is disabled by default. With this feature enabled, the folder you want
+        to put your host in will be created if it does not exist.
+      - Folder module - Enable creating folders including their parents. This enables
+        creating complex folder structures without having to create every single folder
+        on their own.
+      release_summary: Mother's Day is still two weeks out, but we care about parents
+        nevertheless.
+    fragments:
+    - agent.yml
+    - folder.yml
+    - release_summary.yml
+    release_date: '2026-04-24'

@@ -22,7 +22,7 @@ checkmk.general.folder module -- Manage folders in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.3.2).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -441,7 +441,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The full path to the folder you want to manage. Pay attention to the leading :literal:`/` and avoid trailing :literal:`/`. Special characters apart from :literal:`\_` are not allowed! Be aware, that the parent folder has to to exist.
+      The full path to the folder you want to manage. Pay attention to the leading :literal:`/` and avoid trailing :literal:`/`. Special characters apart from :literal:`\_` are not allowed! Missing parent folders will be created with their titles taken from the parts of the path parameter. If you want to use different titles, please create each folder in a separate task or in a loop.
 
 
       .. raw:: html
@@ -710,7 +710,7 @@ Examples
         name: "My Folder"
         state: "present"
 
-    - name: "Create a nested folder."  # Be advised, that the parent folder must exist
+    - name: "Create a nested folder."
       checkmk.general.folder:
         server_url: "https://myserver/"
         site: "mysite"
@@ -840,6 +840,86 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
   * - Key
     - Description
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-content"></div>
+
+      .. _ansible_collections.checkmk.general.folder_module__return-content:
+
+      .. rst-class:: ansible-option-title
+
+      **content**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-content" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`dictionary`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Content of the folder object.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` when state is present and folder created or updated.
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-http_code"></div>
+
+      .. _ansible_collections.checkmk.general.folder_module__return-http_code:
+
+      .. rst-class:: ansible-option-title
+
+      **http_code**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-http_code" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      HTTP code returned by the Checkmk API.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+
+      .. raw:: html
+
+        </div>
+
 
   * - .. raw:: html
 
