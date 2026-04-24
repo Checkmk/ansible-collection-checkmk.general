@@ -3,21 +3,26 @@ __checkmk_server_base_url: "https://download.checkmk.com/checkmk"
 checkmk_server_download_url: "{{ __checkmk_server_base_url }}/{{ checkmk_server_version }}/{{ __checkmk_server_setup_file }}"
 checkmk_server_gpg_download_url: "{{ __checkmk_server_base_url }}/Check_MK-pubkey.gpg"
 
-# Due to inconsistent naming of editions, we normalize them here for convenience.
-__checkmk_var_legacy_edition_mapping:
-  cre: raw
-  cfe: free
-  cee: enterprise
-  cce: cloud
-  cme: managed
-
-# Due to renaming of editions starting with 2.5, we normalize them here for convenience. Again.
-__checkmk_var_modern_edition_mapping:
+# Single source of truth: legacy short codes to current edition identifiers.
+__checkmk_var_short_code_mapping:
   cre: community
   cee: pro
   cce: ultimate
   cme: ultimatemt
-  cse: cloud
+
+# Maps current edition identifiers to download URL identifiers for Checkmk < 2.5.
+__checkmk_var_legacy_edition_mapping:
+  community: raw
+  pro: enterprise
+  ultimate: cloud
+  ultimatemt: managed
+
+# Maps current edition identifiers to download URL identifiers for Checkmk >= 2.5.
+__checkmk_var_modern_edition_mapping:
+  community: community
+  pro: pro
+  ultimate: ultimate
+  ultimatemt: ultimatemt
 
 # Bringing the above two mappings back together.
 __checkmk_server_edition_mapping: >-
@@ -25,5 +30,15 @@ __checkmk_server_edition_mapping: >-
     ( (checkmk_server_version | regex_replace('p.*', '')) is version('2.5', '<') )
     | ternary(__checkmk_var_legacy_edition_mapping, __checkmk_var_modern_edition_mapping)
   }}
+
+# Mapping of edition names to omd version-string identifiers for Checkmk < 2.5.
+# omd uses short codes (cre, cee, ...) in its version strings, not package-name
+# prefixes (raw, enterprise, ...) nor the new names (community, pro, ...).
+# This can be reverted, once 2.5.0 is the oldest supported version.
+__checkmk_server_omd_legacy_edition_ids:
+  community: cre
+  pro: cee
+  ultimate: cce
+  ultimatemt: cme
 
 __checkmk_server_tmp_dir: "/tmp"

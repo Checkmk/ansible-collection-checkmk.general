@@ -4,27 +4,27 @@
     path: "{{ __checkmk_agent_agent.file.host }}"
     state: present
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and checkmk_agent_host_specific | bool
   tags:
     - install-package
 
 - name: "{{ ansible_facts['os_family'] }}: Install folder-specific  {{ checkmk_agent_edition | upper }} Agent."
   ansible.windows.win_package:
-    path: "{{ __checkmk_agent_agent.file.cee }}"
+    path: "{{ __checkmk_agent_agent.file.pro }}"
     state: present
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and checkmk_agent_folder_specific | bool
   tags:
     - install-package
 
 - name: "{{ ansible_facts['os_family'] }}: Install Vanilla agent."
   ansible.windows.win_package:
-    path: "{{ __checkmk_agent_agent.file.cre }}"
+    path: "{{ __checkmk_agent_agent.file.community }}"
     state: present
   when: |
-    checkmk_agent_edition | lower == "cre"
+    checkmk_agent_edition | lower == "community"
     or not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
   tags:
     - install-package
@@ -34,8 +34,8 @@
     path: "{{ item }}"
     state: absent
   loop:
-    - "{{ __checkmk_agent_agent.file.cre }}"
-    - "{{ __checkmk_agent_agent.file.cee }}"
+    - "{{ __checkmk_agent_agent.file.community }}"
+    - "{{ __checkmk_agent_agent.file.pro }}"
     - "{{ __checkmk_agent_agent.file.host }}"
   tags:
     - download-package

@@ -44,7 +44,7 @@ options:
 
 notes:
     - The agent bakery is only available in the commercial editions of Checkmk.
-      This module will fail on Checkmk Raw (CRE).
+      This module will fail on Checkmk Community.
     - Signing requires a signing key to be present in the bakery. Provide the key ID and
       passphrase when using C(state=signed) or C(state=baked_signed).
 

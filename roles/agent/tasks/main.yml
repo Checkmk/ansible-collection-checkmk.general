@@ -1,4 +1,16 @@
 ---
+- name: "Deprecation notice - Legacy edition identifier."
+  ansible.builtin.debug:
+    msg: >-
+      Edition '{{ checkmk_agent_edition }}' is deprecated.
+      Use '{{ __checkmk_var_short_code_mapping[checkmk_agent_edition | lower] }}' instead.
+  when: checkmk_agent_edition | lower in __checkmk_var_short_code_mapping
+
+- name: "Normalize legacy edition identifier."
+  ansible.builtin.set_fact:
+    checkmk_agent_edition: "{{ __checkmk_var_short_code_mapping[checkmk_agent_edition | lower] }}"
+  when: checkmk_agent_edition | lower in __checkmk_var_short_code_mapping
+
 - name: "Preflight - Fail if Checkmk Edition is incorrect."
   ansible.builtin.fail:
     msg: "The provided Checkmk Edition '{{ checkmk_agent_edition }}' does  not exist or is not supported by this role."

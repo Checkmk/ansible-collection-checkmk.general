@@ -9,21 +9,19 @@ checkmk_var_api_secret: "Sup3rSec4et!"
 # Generate download URL and provide credentials to download Checkmk setups
 checkmk_var_download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ __checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_facts['distribution_release'] }}_amd64.deb"  # noqa yaml[line-length]
 
-# Due to inconsistent naming of editions, we normalize them here for convenience.
+# Maps current edition identifiers to download URL identifiers for Checkmk < 2.5.
 __checkmk_var_legacy_edition_mapping:
-  cre: raw
-  cfe: free
-  cee: enterprise
-  cce: cloud
-  cme: managed
+  community: raw
+  pro: enterprise
+  ultimate: cloud
+  ultimatemt: managed
 
-# Due to renaming of editions starting with 2.5, we normalize them here for convenience. Again.
+# Maps current edition identifiers to download URL identifiers for Checkmk >= 2.5.
 __checkmk_var_modern_edition_mapping:
-  cre: community
-  cee: pro
-  cce: ultimate
-  cme: ultimatemt
-  cse: cloud
+  community: community
+  pro: pro
+  ultimate: ultimate
+  ultimatemt: ultimatemt
 
 # Bringing the above two mappings back together.
 __checkmk_server_edition_mapping: >-

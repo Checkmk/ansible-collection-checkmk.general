@@ -10,7 +10,7 @@
     # Basic server and authentication information.
     # You have to provide the distributed setup yourself.
     checkmk_agent_version: "2.3.0p14"
-    checkmk_agent_edition: "cre"
+    checkmk_agent_edition: "community"
     checkmk_agent_user: "cmkadmin"
     checkmk_agent_pass: "password"
     # Here comes the part, where we get into remote registration
