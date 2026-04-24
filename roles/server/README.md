@@ -33,7 +33,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Basic configuration
 
-    checkmk_server_version: "2.4.0p23"
+    checkmk_server_version: "2.5.0b4"
 
 The main Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see [Site Management](#site_management) below.

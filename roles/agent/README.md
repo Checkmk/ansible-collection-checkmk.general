@@ -18,7 +18,7 @@ Please make sure it is installed on your system and available for Ansible.
 
 ## Basic configuration
 
-    checkmk_agent_version: "2.4.0p23"
+    checkmk_agent_version: "2.5.0b4"
 
 The Checkmk version of the site your agents will talk to.
 
@@ -117,6 +117,10 @@ Define attributes with which the host will be added to Checkmk.
     checkmk_agent_folder: '/'
 
 The folder into which the automatically created host will be placed.
+
+    checkmk_agent_folder_create: false
+
+Automatically create the folder the host will be put in.
 
     checkmk_agent_discover: false
 

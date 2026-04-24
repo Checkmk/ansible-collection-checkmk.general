@@ -140,6 +140,27 @@
     sites:
       - "{{ outer_item.site }}"
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create folders recursively."
+  folder:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    path: "{{ item.path }}"
+    name: "{{ item.name | default(omit) }}"
+    state: "present"
+  loop: "{{ checkmk_var_folders_recursive }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove top level folders."
+  folder:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    path: "{{ item.top }}"
+    state: "absent"
+  loop: "{{ checkmk_var_folders_recursive }}"
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create folders for defaults test."
   folder:
     server_url: "{{ checkmk_var_server_url }}"
