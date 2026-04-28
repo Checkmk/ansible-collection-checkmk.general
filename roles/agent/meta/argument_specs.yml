@@ -11,7 +11,7 @@ argument_specs:
 
       checkmk_agent_version:
         type: "str"
-        default: "2.5.0b4"
+        default: "2.5.0"
         description:
           - Refer to the README for details.
 
