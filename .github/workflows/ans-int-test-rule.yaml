@@ -2,7 +2,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Module Rule
+name: Module Rule Integration
 
 permissions:
   contents: read
@@ -30,7 +30,7 @@ on:
 jobs:
 
   integration:
-    name: "Integration ${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
+    name: "${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
     uses: ./.github/workflows/_template-ans-int-test.yaml
     with:
       module: rule
