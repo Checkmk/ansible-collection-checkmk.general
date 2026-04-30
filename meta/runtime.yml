@@ -14,6 +14,7 @@ action_groups:
     - host
     - notification
     - password
+    - role
     - rule
     - service_group
     - site

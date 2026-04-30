@@ -79,6 +79,11 @@ module:password:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/password.py'
 
+module:role:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/role.py'
+
 module:rule:
   - any:
       - changed-files:
