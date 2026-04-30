@@ -224,15 +224,15 @@ msg:
     returned: always
     sample: 'Folder created.'
 http_code:
-  description:
-    - HTTP code returned by the Checkmk API.
-  type: int
-  returned: always
+    description: The HTTP code the Checkmk API returns.
+    type: int
+    returned: always
+    sample: 200
 content:
-  description:
-    - Content of the folder object.
-  returned: when state is present and folder created or updated.
-  type: dict
+    description: Content of the folder object.
+    type: dict
+    returned: when state is present and folder created or updated
+    sample: {'id': '/my_folder', 'title': 'My Folder', 'extensions': {}}
 """
 
 import json

@@ -129,6 +129,20 @@ msg:
     type: str
     returned: always
     sample: 'Site connection created.'
+http_code:
+    description: The HTTP code the Checkmk API returns.
+    type: int
+    returned: always
+    sample: 200
+content:
+    description: Content of the site connection object.
+    type: dict
+    returned: when state is present and site created or updated
+etag:
+    description: The ETag of the site connection object.
+    type: str
+    returned: when state is present
+    sample: '"a14f9e5c3f1b..."'
 """
 
 import json

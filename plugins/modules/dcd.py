@@ -264,25 +264,25 @@ EXAMPLES = r"""
 
 RETURN = r"""
 msg:
-  description:
-    - The output message that the module generates.
-  type: str
-  returned: always
+    description: The output message that the module generates.
+    type: str
+    returned: always
+    sample: 'DCD configuration created.'
 http_code:
-  description:
-    - HTTP code returned by the Checkmk API.
-  type: int
-  returned: always
+    description: The HTTP code the Checkmk API returns.
+    type: int
+    returned: always
+    sample: 200
 content:
-  description:
-    - Content of the DCD object.
-  returned: when state is present and DCD created or updated.
-  type: dict
+    description: Content of the DCD connection object.
+    type: dict
+    returned: when state is present and DCD created or updated
+    sample: {'id': 'my_dcd', 'title': 'My DCD connection', 'extensions': {}}
 diff:
-  description:
-    - The diff between the current and desired state.
-  type: dict
-  returned: when differences are detected or in diff mode
+    description: The diff between the current and desired state.
+    type: dict
+    returned: when differences are detected or in diff mode
+    sample: {'before': {}, 'after': {'title': 'My DCD connection'}}
 """
 
 import json

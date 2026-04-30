@@ -154,7 +154,7 @@ http_code:
     description: The HTTP code the Checkmk API returns.
     type: int
     returned: always
-    sample: '200'
+    sample: 200
 msg:
     description: The output message that the module generates.
     type: str

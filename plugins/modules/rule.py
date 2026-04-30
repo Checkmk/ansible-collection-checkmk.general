@@ -322,7 +322,7 @@ http_code:
     description: The HTTP code the Checkmk API returns.
     type: int
     returned: always
-    sample: '200'
+    sample: 200
 etag:
     description: The etag of the rule.
     type: str
@@ -344,29 +344,35 @@ content:
             returned: when the rule is created or when it already exists
             contains:
                 conditions:
-                    description: The contitions of the rule.
-                    type: str
+                    description: The conditions of the rule.
+                    type: dict
                     returned: when the rule is created or when it already exists
+                    sample: {}
                 folder:
                     description: The folder of the rule.
                     type: str
                     returned: when the rule is created or when it already exists
+                    sample: '/'
                 folder_index:
                     description: The index of the rule inside the folder.
-                    type: str
+                    type: int
                     returned: when the rule is created or when it already exists
+                    sample: 0
                 properties:
                     description: The properties of the rule.
-                    type: str
+                    type: dict
                     returned: when the rule is created or when it already exists
+                    sample: {'disabled': false, 'description': ''}
                 ruleset:
                     description: The ruleset of the rule.
                     type: str
                     returned: when the rule is created or when it already exists
+                    sample: 'active_checks:ping'
                 value_raw:
-                    description: The actual value of the rule
+                    description: The actual value of the rule.
                     type: str
                     returned: when the rule is created or when it already exists
+                    sample: "{'levels': (200.0, 500.0)}"
 """
 
 import json

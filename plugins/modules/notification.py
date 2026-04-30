@@ -211,10 +211,12 @@ content:
             description: The title/description of the rule.
             type: str
             returned: when rule is created or updated
+            sample: 'My notification rule'
         extensions:
             description: The rule configuration details.
             type: dict
             returned: when rule is created or updated
+            sample: {'notify_plugin': ['mail', {}]}
 """
 
 import json
