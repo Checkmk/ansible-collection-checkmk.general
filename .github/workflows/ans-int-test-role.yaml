@@ -1,0 +1,63 @@
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+name: Module Role Integration
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+  pull_request:
+    branches:
+      - main
+      - devel
+    types:
+      - opened
+    paths:
+      - 'plugins/modules/role.py'
+  push:
+    paths:
+      - '.github/workflows/ans-int-test-role.yaml'
+      - 'plugins/modules/role.py'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/role/**'
+
+jobs:
+
+  integration:
+    name: "${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
+    uses: ./.github/workflows/_template-ans-int-test.yaml
+    with:
+      module: role
+      checkmk_version: ${{ matrix.checkmk_version }}
+      checkmk_edition: ${{ matrix.checkmk_edition }}
+    strategy:
+      fail-fast: false
+      matrix:
+        checkmk_version:
+          - 2.3.0p46
+          - 2.4.0p26
+          - 2.5.0
+        checkmk_edition:
+          - raw
+          - managed
+          - community
+          - ultimatemt
+        exclude:
+          - checkmk_version: 2.3.0p46
+            checkmk_edition: community
+          - checkmk_version: 2.3.0p46
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.4.0p26
+            checkmk_edition: community
+          - checkmk_version: 2.4.0p26
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.5.0
+            checkmk_edition: raw
+          - checkmk_version: 2.5.0
+            checkmk_edition: managed

@@ -50,6 +50,9 @@ module:notification:
 module:password:
   - 'Component Name: password'
 
+module:role:
+  - 'Component Name: role'
+
 module:rule:
   - 'Component Name: rule'
 
