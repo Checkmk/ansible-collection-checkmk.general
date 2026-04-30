@@ -2,7 +2,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Module Inventory
+name: Module Inventory Unit
 
 permissions:
   contents: read
@@ -22,12 +22,13 @@ on:
       - '.github/workflows/ans-unit-test-inventory.yaml'
       - 'plugins/inventory/checkmk.py'
       - 'plugins/module_utils/**'
+      - 'tests/unit/plugins/module_utils/**'
       - 'tests/unit/plugins/inventory/**'
 
 jobs:
 
   integration:
-    name: "Unit Tests"
+    name: "Tests"
     uses: ./.github/workflows/_template-ans-unit-test.yaml
     with:
       testpath: tests/unit/plugins/inventory/test_checkmk.py
