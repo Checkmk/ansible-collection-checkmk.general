@@ -171,7 +171,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
-    result_as_dict,
+    exit_module,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
@@ -305,7 +305,7 @@ def run_module():
                     failed=True,
                     changed=False,
                 )
-                module.fail_json(**result_as_dict(result))
+                exit_module(module, result=result)
 
             result = passwordcreate.post()
 
@@ -322,7 +322,7 @@ def run_module():
 
             time.sleep(3)
 
-    module.exit_json(**result_as_dict(result))
+    exit_module(module, result=result)
 
 
 def main():

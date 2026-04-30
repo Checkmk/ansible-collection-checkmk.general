@@ -168,7 +168,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
-    result_as_dict,
+    exit_module,
 )
 
 HTTP_CODES = {
@@ -219,7 +219,7 @@ def run_module():
 
     time.sleep(3)
 
-    module.exit_json(**result_as_dict(result))
+    exit_module(module, result=result)
 
 
 def main():
