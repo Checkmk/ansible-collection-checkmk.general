@@ -43,7 +43,7 @@ jobs:
       matrix:
         checkmk_version:
           - 2.3.0p46
-          - 2.4.0p27
+          - 2.4.0p28
           - 2.5.0p1
         checkmk_edition:
           - raw
@@ -55,9 +55,9 @@ jobs:
             checkmk_edition: community
           - checkmk_version: 2.3.0p46
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.4.0p27
+          - checkmk_version: 2.4.0p28
             checkmk_edition: community
-          - checkmk_version: 2.4.0p27
+          - checkmk_version: 2.4.0p28
             checkmk_edition: ultimatemt
           - checkmk_version: 2.5.0p1
             checkmk_edition: raw
