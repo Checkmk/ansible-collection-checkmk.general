@@ -1,17 +1,26 @@
 ---
-- name: "Deprecation notice - Legacy edition identifier."
+- name: "Preflight - Fail if target host is not stable for this Role."
+  ansible.builtin.fail:
+    msg: "This role is not stable for the target operating system: {{ ansible_facts['distribution'] + '-' + ansible_facts['distribution_major_version'] }}."
+  when: (ansible_facts['distribution'] is not defined) or
+        (ansible_facts['distribution_version'] is not defined) or
+        (ansible_facts['distribution'] + "-" + ansible_facts['distribution_major_version'] not in __checkmk_server_stable_os)
+  tags:
+    - always
+
+- name: "Preflight - Deprecation notice - Legacy edition identifier."
   ansible.builtin.debug:
     msg: >-
       Edition '{{ checkmk_server_edition }}' is deprecated.
       Use '{{ __checkmk_var_short_code_mapping[checkmk_server_edition | lower] }}' instead.
   when: checkmk_server_edition | lower in __checkmk_var_short_code_mapping
 
-- name: "Normalize legacy edition identifier."
+- name: "Preflight - Normalize legacy edition identifier."
   ansible.builtin.set_fact:
     checkmk_server_edition: "{{ __checkmk_var_short_code_mapping[checkmk_server_edition | lower] }}"
   when: checkmk_server_edition | lower in __checkmk_var_short_code_mapping
 
-- name: "Normalize legacy edition identifiers in checkmk_server_sites."
+- name: "Preflight - Normalize legacy edition identifiers in checkmk_server_sites."
   ansible.builtin.set_fact:
     checkmk_server_sites: "{{ __checkmk_var_normalized_sites }}"
   vars:
@@ -25,15 +34,6 @@
       {%- endfor -%}
       {{ result }}
   when: checkmk_server_sites is defined
-
-- name: "Preflight - Fail if target host is not stable for this Role."
-  ansible.builtin.fail:
-    msg: "This role is not stable for the target operating system: {{ ansible_facts['distribution'] + '-' + ansible_facts['distribution_major_version'] }}."
-  when: (ansible_facts['distribution'] is not defined) or
-        (ansible_facts['distribution_version'] is not defined) or
-        (ansible_facts['distribution'] + "-" + ansible_facts['distribution_major_version'] not in __checkmk_server_stable_os)
-  tags:
-    - always
 
 - name: "Preflight - Fail if Checkmk Edition is incorrect."
   ansible.builtin.fail:
