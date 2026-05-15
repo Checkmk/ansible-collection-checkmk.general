@@ -425,7 +425,9 @@ class DCDAPI(CheckmkAPI):
 
     def create(self):
         filtered_data = {k: v for k, v in self.desired.items() if v is not None}
-        return self._perform_action("create", "POST", HTTP_CODES_CREATE, data=filtered_data)
+        return self._perform_action(
+            "create", "POST", HTTP_CODES_CREATE, data=filtered_data
+        )
 
     def edit(self):
         filtered_data = {k: v for k, v in self.desired.items() if v is not None}
