@@ -36,7 +36,7 @@ options:
         type: str
 
     customer:
-        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        description: For Checkmk Ultimate with multi-tenancy (CME), you need to specify which customer ID this object belongs to.
         required: false
         type: str
 
@@ -294,12 +294,12 @@ def run_module():
 
             checkmkversion = CheckmkVersion(str(passwordcreate.getversion()))
             if (
-                checkmkversion.edition == "cme"
+                checkmkversion.edition in ("ultimatemt", "cme")
                 and module.params.get("customer") is None
             ):
                 result = RESULT(
                     http_code=0,
-                    msg="Missing required parameter 'customer' for CME",
+                    msg="Missing required parameter 'customer' for Checkmk Ultimate with multi-tenancy",
                     content="",
                     etag="",
                     failed=True,

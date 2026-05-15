@@ -33,12 +33,12 @@
 
 - name: "{{ ansible_facts['system'] }}: Download Vanilla agent."
   ansible.builtin.get_url:
-    url: "{{ __checkmk_agent_agent.url.cre }}"
+    url: "{{ __checkmk_agent_agent.url.community }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
-    dest: "{{ __checkmk_agent_agent.file.cre }}"
+    dest: "{{ __checkmk_agent_agent.file.community }}"
     mode: '0640'
     timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
-  when: checkmk_agent_edition | lower == "cre"
+  when: checkmk_agent_edition | lower == "community"
   register: __checkmk_agent_download_state
   retries: 3
   delay: 10
@@ -143,7 +143,7 @@
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_update_state
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and __checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length > 0)
@@ -161,7 +161,7 @@
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_update_state
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and __checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length > 0)
@@ -263,8 +263,8 @@
     path: "{{ item }}"
     state: absent
   loop:
-    - "{{ __checkmk_agent_agent.file.cre }}"
-    - "{{ __checkmk_agent_agent.file.cee }}"
+    - "{{ __checkmk_agent_agent.file.community }}"
+    - "{{ __checkmk_agent_agent.file.pro }}"
     - "{{ __checkmk_agent_agent.file.host }}"
   tags:
     - download-package
