@@ -42,7 +42,7 @@
   tags:
     - always
 
-- name: "{{ ansible_facts['system'] }}: Include OS Family specific Variables."
+- name: "{{ ansible_facts['system'] }}: Include OS Family specific variables."
   ansible.builtin.include_vars: "{{ ansible_facts['os_family'] }}.yml"
   tags:
     - include-os-family-vars
@@ -85,7 +85,7 @@
     - install-package
     - install-prerequisites
 
-- name: "{{ ansible_facts['system'] }}: Downloads Management."
+- name: "{{ ansible_facts['system'] }}: Download and verify Checkmk Server package."
   when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts['packages']
   block:
 
@@ -116,7 +116,7 @@
       tags:
         - download-gpg-key
 
-    - name: "Transfer Checkmk Server Setup."
+    - name: "{{ ansible_facts['system'] }}: Transfer Checkmk Server Setup."
       ansible.builtin.copy:
         src: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
         dest: "{{ __checkmk_server_tmp_dir }}/{{ __checkmk_server_setup_file }}"
@@ -125,7 +125,7 @@
       tags:
         - download-package
 
-    - name: "Transfer Checkmk GPG Key."
+    - name: "{{ ansible_facts['system'] }}: Transfer Checkmk GPG Key."
       ansible.builtin.copy:
         src: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
         dest: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
@@ -137,7 +137,7 @@
     - name: "{{ ansible_facts['system'] }}: GPG Verification on Debian Derivatives."
       when: checkmk_server_verify_setup | bool and ansible_facts['os_family'] == "Debian"
       block:
-        - name: "Import Checkmk GPG Key."
+        - name: "{{ ansible_facts['system'] }}: Import Checkmk GPG Key."
           ansible.builtin.command: "gpg --import {{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
           register: __checkmk_server_gpg_import
           when: checkmk_server_verify_setup | bool
@@ -163,12 +163,12 @@
       tags:
         - import-gpg-key
 
-- name: "{{ ansible_facts['system'] }}: Include OS Family specific Playbook."
+- name: "{{ ansible_facts['system'] }}: Include OS Family specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"
   tags:
     - always
 
-- name: "{{ ansible_facts['system'] }}: Include Site Management Playbook."
+- name: "{{ ansible_facts['system'] }}: Include Site Management tasks."
   ansible.builtin.include_tasks: "sites.yml"
   when: checkmk_server_sites is defined
   tags:

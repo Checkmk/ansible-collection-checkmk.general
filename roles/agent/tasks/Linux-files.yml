@@ -24,7 +24,7 @@
   tags:
     - download-package
 
-- name: "{{ ansible_facts['system'] }}: Set Fact: Agent State: host-specific."
+- name: "Record host-specific agent download result."
   ansible.builtin.set_fact:
     checkmk_agent_host_specific: >-
       {{ (__checkmk_agent_host_download_state.status is defined and __checkmk_agent_host_download_state.status == 200) | bool }}
@@ -59,14 +59,14 @@
   tags:
     - download-package
 
-- name: "{{ ansible_facts['system'] }}: Set Fact: Agent State: folder-specific."
+- name: "Record folder-specific agent download result."
   ansible.builtin.set_fact:
     checkmk_agent_folder_specific: >-
       {{ (__checkmk_agent_folder_download_state.status is defined and __checkmk_agent_folder_download_state.status == 200) | bool }}
   tags:
     - download-package
 
-- name: "{{ ansible_facts['system'] }}: Download Vanilla {{ checkmk_agent_edition | upper }} agent."
+- name: "{{ ansible_facts['system'] }}: Download Vanilla {{ checkmk_agent_edition | upper }} Agent."
   ansible.builtin.get_url:  # This has to be the `get_url` module, as the download works different than for the bakery-based tasks.
     url: "{{ __checkmk_agent_agent.url.community }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
