@@ -17,6 +17,22 @@ __metaclass__ = type
 import json
 
 
+def prune_to_shape(desired, current):
+    """Return a copy of ``current`` containing only the keys present in ``desired`` (recursive).
+
+    ``ConfigDiffer`` only drops API-added default fields at the top level; nested
+    dicts keep every key. Pre-pruning ``current`` to the shape of ``desired`` lets
+    callers compare nested structures without those defaults showing up as diffs.
+    """
+    if isinstance(desired, dict) and isinstance(current, dict):
+        return {
+            k: prune_to_shape(desired[k], current[k]) for k in desired if k in current
+        }
+    if isinstance(desired, list) and isinstance(current, list):
+        return [prune_to_shape(d, c) for d, c in zip(desired, current)]
+    return current
+
+
 class ConfigDiffer:
     """
     Handles the normalization and comparison of configuration dictionaries.
