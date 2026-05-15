@@ -1,0 +1,4 @@
+minor_changes:
+  - Finalize new edition naming in line with Checkmk 2.5.
+    All modules and roles now support the new edition naming.
+    Old names and identifiers continue to work but will now trigger a warning to start using the new names.
