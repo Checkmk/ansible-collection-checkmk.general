@@ -7,13 +7,16 @@ action_groups:
     - bakery
     - contact_group
     - dcd
+    - dcd_metricbackend
     - discovery
     - downtime
     - folder
     - host_group
     - host
     - ldap
+    - metricbackend
     - notification
+    - opentelemetry
     - password
     - role
     - rule

@@ -1,0 +1,51 @@
+---
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition | default('ultimatemt') }}"
+    site: "testsite"
+    prom_scrape:
+      id: "integration_test_prom_scrape"
+      title: "Integration Test Prometheus Scrape"
+      title_updated: "Integration Test Prometheus Scrape (Updated)"
+      comment: "Created by integration test"
+      configs:
+        - job_name: "test_service"
+          scrape_interval: 60
+          metrics_path: "/metrics"
+          targets:
+            - address: "127.0.0.1"
+              port: 9090
+          encryption: false
+      configs_updated:
+        - job_name: "test_service_updated"
+          scrape_interval: 120
+          metrics_path: "/metrics"
+          targets:
+            - address: "127.0.0.1"
+              port: 9091
+          encryption: false
+    receiver:
+      id: "integration_test_receiver"
+      title: "Integration Test Receiver"
+      title_updated: "Integration Test Receiver (Updated)"
+      comment: "Created by integration test"
+      protocol_grpc:
+        endpoint:
+          auth:
+            type: "none"
+          socket_address:
+            type: "default_ipv4"
+          event_console: null
+          encryption: false
+    receiver_http:
+      id: "integration_test_receiver_http"
+      title: "Integration Test Receiver (HTTP)"
+      comment: "Created by integration test"
+      protocol_http:
+        endpoint:
+          auth:
+            type: "none"
+          socket_address:
+            type: "default_ipv4"
+          event_console: null
+          encryption: false

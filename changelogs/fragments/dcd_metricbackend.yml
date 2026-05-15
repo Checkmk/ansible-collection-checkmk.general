@@ -1,0 +1,6 @@
+minor_changes:
+  - dcd_metricbackend module - Add new module to manage Dynamic Configuration Daemon (DCD) connections for the Metric Backend connector in Checkmk.
+
+known_issues:
+  - dcd_metricbackend module - Updating existing connections is not supported, as the Checkmk API provides no update endpoint.
+    If a connection exists but differs from the desired state, the module will fail with a diff.
