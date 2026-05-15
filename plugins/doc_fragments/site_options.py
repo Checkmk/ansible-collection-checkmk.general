@@ -333,7 +333,7 @@ class ModuleDocFragment(object):
                                     type: str
                                 customer:
                                     description:
-                                        - The customer of the site (Managed Edition - CME only).
+                                        - The customer of the site (Checkmk Ultimate with multi-tenancy (CME) only).
                                     type: str
                                 site_id:
                                     description:
