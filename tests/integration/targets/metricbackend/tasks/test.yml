@@ -1,0 +1,84 @@
+---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Enable the metric backend."
+  metricbackend:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    site_id: "{{ outer_item.site }}"
+    config:
+      type: "enabled"
+  register: __checkmk_var_result_mb_enable
+  failed_when: not __checkmk_var_result_mb_enable.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Enable the metric backend with custom ports."
+  metricbackend:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    site_id: "{{ outer_item.site }}"
+    config: "{{ checkmk_var_mb_config_enabled_ports }}"
+  register: __checkmk_var_result_mb_enable_ports
+  failed_when: not __checkmk_var_result_mb_enable_ports.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Disable the metric backend."
+  metricbackend:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    site_id: "{{ outer_item.site }}"
+    config:
+      type: "disabled"
+  register: __checkmk_var_result_mb_disable
+  failed_when: not __checkmk_var_result_mb_disable.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Disable the metric backend again (idempotency)."
+  metricbackend:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    site_id: "{{ outer_item.site }}"
+    config:
+      type: "disabled"
+  register: __checkmk_var_result_mb_disable_again
+  failed_when: __checkmk_var_result_mb_disable_again.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run module using environment variables."
+  metricbackend:
+    site_id: "{{ outer_item.site }}"
+    config:
+      type: "enabled"
+  environment: "{{ __checkmk_var_testing_environment }}"

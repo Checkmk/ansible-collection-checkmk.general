@@ -1,0 +1,12 @@
+---
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition | default('ultimatemt') }}"
+    site: "testsite"
+
+checkmk_var_mb_config_enabled_ports:
+  type: "enabled"
+  tls_port: 6790
+  https_port: 6791
+  http_port: 6792
+  relative_memory_limit_percentage: 50.0
