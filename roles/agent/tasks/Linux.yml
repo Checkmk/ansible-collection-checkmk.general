@@ -31,22 +31,6 @@
       tags:
         - enable-xinetd
 
-- name: "{{ ansible_facts['system'] }}: Download Vanilla agent."
-  ansible.builtin.get_url:
-    url: "{{ __checkmk_agent_agent.url.community }}"
-    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
-    dest: "{{ __checkmk_agent_agent.file.community }}"
-    mode: '0640'
-    timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
-  when: checkmk_agent_edition | lower == "community"
-  register: __checkmk_agent_download_state
-  retries: 3
-  delay: 10
-  until: "not __checkmk_agent_download_state.failed | bool"
-  delegate_to: "{{ checkmk_agent_delegate_download }}"
-  tags:
-    - download-package
-
 - name: "{{ ansible_facts['os_family'] }}: Run OS Family specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"
   tags:
