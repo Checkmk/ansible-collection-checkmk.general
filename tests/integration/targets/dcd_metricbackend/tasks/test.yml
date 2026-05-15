@@ -1,0 +1,91 @@
+---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a DCD metric backend connection."
+  dcd_metricbackend:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    dcd_config:
+      dcd_id: "{{ outer_item.dcd.id }}"
+      title: "{{ outer_item.dcd.title }}"
+      comment: "{{ outer_item.dcd.comment }}"
+      site: "{{ outer_item.site }}"
+      connector: "{{ outer_item.dcd.connector }}"
+    state: "present"
+  register: __checkmk_var_result_dcd_create
+  failed_when: not __checkmk_var_result_dcd_create.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create the same DCD connection again (idempotency)."
+  dcd_metricbackend:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    dcd_config:
+      dcd_id: "{{ outer_item.dcd.id }}"
+      title: "{{ outer_item.dcd.title }}"
+      comment: "{{ outer_item.dcd.comment }}"
+      site: "{{ outer_item.site }}"
+      connector: "{{ outer_item.dcd.connector }}"
+    state: "present"
+  register: __checkmk_var_result_dcd_recreate
+  failed_when: __checkmk_var_result_dcd_recreate.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Attempt to create with changed config (should fail: no update endpoint)."
+  dcd_metricbackend:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    dcd_config:
+      dcd_id: "{{ outer_item.dcd.id }}"
+      title: "{{ outer_item.dcd.title_changed }}"
+      site: "{{ outer_item.site }}"
+      connector: "{{ outer_item.dcd.connector_changed }}"
+    state: "present"
+  register: __checkmk_var_result_dcd_update_attempt
+  failed_when: not __checkmk_var_result_dcd_update_attempt.failed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run module using environment variables."
+  dcd_metricbackend:
+    dcd_config:
+      dcd_id: "{{ outer_item.dcd.id }}_env"
+      title: "{{ outer_item.dcd.title_env }}"
+      site: "{{ outer_item.site }}"
+      connector: "{{ outer_item.dcd.connector_minimal }}"
+    state: "present"
+  environment: "{{ __checkmk_var_testing_environment }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete a DCD metric backend connection."
+  dcd_metricbackend:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    dcd_config:
+      dcd_id: "{{ outer_item.dcd.id }}"
+    state: "absent"
+  register: __checkmk_var_result_dcd_delete
+  failed_when: not __checkmk_var_result_dcd_delete.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete a non-existent DCD metric backend connection (idempotency)."
+  dcd_metricbackend:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    dcd_config:
+      dcd_id: "{{ outer_item.dcd.id }}_nonexistent"
+    state: "absent"
+  register: __checkmk_var_result_dcd_delete_nonexistent
+  failed_when: __checkmk_var_result_dcd_delete_nonexistent.changed
