@@ -29,7 +29,7 @@
   tags:
     - install-package
 
-- name: "Cleanup Checkmk Agent Setups."
+- name: "{{ ansible_facts['os_family'] }}: Cleanup Checkmk Agent Setups."
   ansible.windows.win_file:
     path: "{{ item }}"
     state: absent

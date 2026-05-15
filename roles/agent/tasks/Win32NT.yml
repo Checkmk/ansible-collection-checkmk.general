@@ -58,7 +58,7 @@
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers
 
-- name: "Check for Agent Controller Binary."
+- name: "{{ ansible_facts['system'] }}: Check for Agent Controller Binary."
   ansible.windows.win_stat:
     path: "{{ __checkmk_agent_controller_binary_path }}"
   register: __checkmk_agent_controller_binary
