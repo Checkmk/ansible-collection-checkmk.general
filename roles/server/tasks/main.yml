@@ -58,7 +58,7 @@
     - install-package
     - install-prerequisites
 
-- name: "{{ ansible_facts['system'] }}: Downloads Management."
+- name: "{{ ansible_facts['system'] }}: Download and verify Checkmk Server package."
   when: not 'check-mk-' + __checkmk_server_edition_mapping[checkmk_server_edition] + '-' +checkmk_server_version in ansible_facts['packages']
   block:
 

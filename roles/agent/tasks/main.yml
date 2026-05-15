@@ -9,7 +9,7 @@
   tags:
     - include-os-family-vars
 
-- name: "{{ ansible_facts['system'] }}: Include File Management."
+- name: "{{ ansible_facts['system'] }}: Include agent package download tasks."
   ansible.builtin.include_tasks: "{{ ansible_facts['system'] }}-files.yml"
   tags:
     - include-system-tasks
@@ -20,7 +20,7 @@
   tags:
     - include-system-tasks
 
-- name: "Fetch fresh monitoring data from host."
+- name: "Trigger service data refresh on host."
   become: false
   checkmk.general.discovery:
     server_url: "{{ checkmk_agent_server_protocol }}://{{ checkmk_agent_server }}:{{ checkmk_agent_server_port }}/"

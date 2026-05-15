@@ -24,7 +24,7 @@
   tags:
     - download-package
 
-- name: "{{ ansible_facts['system'] }}: Set Fact: Agent State: host-specific."
+- name: "Record host-specific agent download result."
   ansible.builtin.set_fact:
     checkmk_agent_host_specific: >-
       {{ (__checkmk_agent_host_download_state.status_code is defined and __checkmk_agent_host_download_state.status_code == 200) | bool }}
@@ -59,7 +59,7 @@
   tags:
     - download-package
 
-- name: "{{ ansible_facts['system'] }}: Set Fact: Agent State: folder-specific."
+- name: "Record folder-specific agent download result."
   ansible.builtin.set_fact:
     checkmk_agent_folder_specific: >-
       {{ (__checkmk_agent_folder_download_state.status_code is defined and __checkmk_agent_folder_download_state.status_code == 200) | bool }}
