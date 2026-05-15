@@ -2,7 +2,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Module Timeperiod Integration Integration
+name: Module Timeperiod Integration
 
 permissions:
   contents: read

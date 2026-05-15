@@ -2,7 +2,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Module User Integration Integration
+name: Module User Integration
 
 permissions:
   contents: read
