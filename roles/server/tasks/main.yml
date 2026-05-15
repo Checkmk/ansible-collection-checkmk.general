@@ -15,7 +15,7 @@
   tags:
     - always
 
-- name: "{{ ansible_facts['system'] }}: Include OS Family specific Variables."
+- name: "{{ ansible_facts['system'] }}: Include OS Family specific variables."
   ansible.builtin.include_vars: "{{ ansible_facts['os_family'] }}.yml"
   tags:
     - include-os-family-vars
@@ -136,12 +136,12 @@
       tags:
         - import-gpg-key
 
-- name: "{{ ansible_facts['system'] }}: Include OS Family specific Playbook."
+- name: "{{ ansible_facts['system'] }}: Include OS Family specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"
   tags:
     - always
 
-- name: "{{ ansible_facts['system'] }}: Include Site Management Playbook."
+- name: "{{ ansible_facts['system'] }}: Include Site Management tasks."
   ansible.builtin.include_tasks: "sites.yml"
   when: checkmk_server_sites is defined
   tags:

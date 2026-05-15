@@ -31,7 +31,7 @@
       tags:
         - enable-xinetd
 
-- name: "{{ ansible_facts['system'] }}: Download Vanilla agent."
+- name: "{{ ansible_facts['system'] }}: Download Vanilla Agent."
   ansible.builtin.get_url:
     url: "{{ __checkmk_agent_agent.url.cre }}"
     validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
