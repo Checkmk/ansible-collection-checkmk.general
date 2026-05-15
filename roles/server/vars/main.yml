@@ -34,7 +34,7 @@ __checkmk_server_edition_mapping: >-
 # Mapping of edition names to omd version-string identifiers for Checkmk < 2.5.
 # omd uses short codes (cre, cee, ...) in its version strings, not package-name
 # prefixes (raw, enterprise, ...) nor the new names (community, pro, ...).
-# This can be reverted, once 2.5.0 is the oldest supported version.
+# This can be reverted, once 2.5 is the oldest supported version.
 __checkmk_server_omd_legacy_edition_ids:
   community: cre
   pro: cee
