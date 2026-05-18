@@ -10,9 +10,11 @@ on:
   push:
     paths:
       - '.github/workflows/python-qa.yaml'
+      - 'pyproject.toml'
       - '**.py'
   pull_request:
     paths:
+      - 'pyproject.toml'
       - '**.py'
 jobs:
   run-qa:
