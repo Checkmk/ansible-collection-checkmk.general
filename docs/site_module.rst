@@ -22,7 +22,7 @@ checkmk.general.site module -- Manage distributed monitoring in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.5.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -693,7 +693,7 @@ Parameters
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The customer of the site (Managed Edition \- CME only).
+      The customer of the site (Checkmk Ultimate with multi\-tenancy (CME) only).
 
 
       .. raw:: html

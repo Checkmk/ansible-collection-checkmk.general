@@ -22,7 +22,7 @@ checkmk.general.service_group module -- Manage service groups in Checkmk (bulk v
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.5.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -327,7 +327,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+      For Checkmk Ultimate with multi\-tenancy (CME), you need to specify which customer ID this object belongs to.
 
 
       .. raw:: html
@@ -677,10 +677,10 @@ Examples
         state: "absent"
 
     # ---------------------------------------------------------------------------
-    # Checkmk Managed Edition (CME)
+    # Checkmk Ultimate with multi-tenancy (CME)
     # ---------------------------------------------------------------------------
 
-    - name: "Create a service group and assign it to a customer (CME only)."
+    - name: "Create a service group and assign it to a customer (Checkmk Ultimate with multi-tenancy (CME) only)."
       checkmk.general.service_group:
         server_url: "https://myserver/"
         site: "mysite"

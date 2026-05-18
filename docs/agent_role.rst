@@ -20,7 +20,7 @@ checkmk.general.agent role -- Install Checkmk agents
 .. Collection note
 
 .. note::
-    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.4.0).
+    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.5.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -451,7 +451,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"cre"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"community"`
 
       .. raw:: html
 
@@ -1406,7 +1406,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"2.5.0b4"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"2.5.0p2"`
 
       .. raw:: html
 
