@@ -1,0 +1,5 @@
+minor_changes:
+  - Checkmk inventory plugin - Add support for environment variables (``CHECKMK_VAR_*``) and
+    Ansible variables (``checkmk_var_*``) for connection parameters.
+    This is consistent with how lookup plugins already handle credentials.
+    Also adds support for ``api_auth_type`` and ``api_auth_cookie`` parameters.

@@ -32,13 +32,13 @@ def base_argument_spec():
         ),
         api_user=dict(
             type="str",
-            required=True,
+            required=False,
             aliases=["automation_user"],
             fallback=(env_fallback, ["CHECKMK_VAR_API_USER"]),
         ),
         api_secret=dict(
             type="str",
-            required=True,
+            required=False,
             no_log=True,
             aliases=["automation_secret"],
             fallback=(env_fallback, ["CHECKMK_VAR_API_SECRET"]),
