@@ -4,6 +4,20 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v7.5.0
+======
+
+Release Summary
+---------------
+
+Finalizing the new Checkmk edition names.
+
+Minor Changes
+-------------
+
+- Both the agent and server role got some updated task titles. There are no functional changes, but the titles were aligned and improved for accessibility and readability.
+- Finalize new edition naming in line with Checkmk 2.5. All modules and roles now support the new edition naming. Old names and identifiers continue to work but will now trigger a warning to start using the new names.
+
 v7.4.0
 ======
 
