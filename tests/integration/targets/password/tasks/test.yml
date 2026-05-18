@@ -35,9 +35,9 @@
     owner: "{{ item.owner }}"
     shared: "{{ item.shared }}"
     state: "present"
-  loop: "{{ checkmk_var_passwords_create_cme }}"
+  loop: "{{ checkmk_var_passwords_create_ultimatemt }}"
   no_log: false
-  when: (outer_item.edition == "cme")
+  when: (outer_item.edition == "ultimatemt")
   register: __checkmk_var_result_new_pass
   failed_when: |
     not ('Missing required parameter' in __checkmk_var_result_new_pass.msg
@@ -56,7 +56,7 @@
     state: "present"
   loop: "{{ checkmk_var_passwords_create }}"
   no_log: false
-  when: (outer_item.edition == "cme")
+  when: (outer_item.edition == "ultimatemt")
   register: __checkmk_var_result_new_pass_no_title
   failed_when: not 'missing required arguments' in __checkmk_var_result_new_pass_no_title.msg
 

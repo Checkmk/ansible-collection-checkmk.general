@@ -2,7 +2,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Module Tag Group
+name: Module Tag Group Integration
 
 permissions:
   contents: read
@@ -30,7 +30,7 @@ on:
 jobs:
 
   integration:
-    name: "Integration ${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
+    name: "${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
     uses: ./.github/workflows/_template-ans-int-test.yaml
     with:
       module: tag_group
@@ -41,8 +41,8 @@ jobs:
       matrix:
         checkmk_version:
           - 2.3.0p46
-          - 2.4.0p26
-          - 2.5.0b4
+          - 2.4.0p29
+          - 2.5.0p2
         checkmk_edition:
           - raw
           - managed
@@ -53,11 +53,11 @@ jobs:
             checkmk_edition: community
           - checkmk_version: 2.3.0p46
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.4.0p26
+          - checkmk_version: 2.4.0p29
             checkmk_edition: community
-          - checkmk_version: 2.4.0p26
+          - checkmk_version: 2.4.0p29
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.5.0b4
+          - checkmk_version: 2.5.0p2
             checkmk_edition: raw
-          - checkmk_version: 2.5.0b4
+          - checkmk_version: 2.5.0p2
             checkmk_edition: managed

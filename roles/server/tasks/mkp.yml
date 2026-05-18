@@ -33,7 +33,7 @@
   tags:
     - manage-mkp-packages
 
-- name: "{{ __site.name }}: Install MKP packages."
+- name: "{{ __site.name }}: Install MKP Packages."
   become: true
   become_user: "{{ __site.name }}"
   ansible.builtin.command: "/bin/bash -l -c 'mkp add {{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp'"
@@ -47,7 +47,7 @@
   tags:
     - manage-mkp-packages
 
-- name: "{{ __site.name }}: Enable MKP packages."
+- name: "{{ __site.name }}: Enable MKP Packages."
   become: true
   become_user: "{{ __site.name }}"
   ansible.builtin.command: "/bin/bash -l -c 'mkp enable {{ __mkp.name }} {{ __mkp.version }}'"
@@ -60,7 +60,7 @@
   tags:
     - manage-mkp-packages
 
-- name: "{{ __site.name }}: Disable MKP packages."
+- name: "{{ __site.name }}: Disable MKP Packages."
   become: true
   become_user: "{{ __site.name }}"
   ansible.builtin.command: "/bin/bash -l -c 'mkp disable {{ __mkp.name }} {{ __mkp.version }}'"
@@ -73,7 +73,7 @@
   tags:
     - manage-mkp-packages
 
-- name: "{{ __site.name }}: Remove MKP packages."
+- name: "{{ __site.name }}: Remove MKP Packages."
   become: true
   become_user: "{{ __site.name }}"
   ansible.builtin.command: "/bin/bash -l -c 'mkp remove {{ __mkp.name }} {{ __mkp.version }}'"

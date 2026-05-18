@@ -35,7 +35,7 @@ options:
         required: false
         type: str
     customer:
-        description: For the Checkmk Managed Edition (CME), you need to specify which customer ID this object belongs to.
+        description: For Checkmk Ultimate with multi-tenancy (CME), you need to specify which customer ID this object belongs to.
         required: false
         type: str
     groups:
@@ -135,7 +135,7 @@ EXAMPLES = r"""
     state: "absent"
 
 # ---------------------------------------------------------------------------
-# Checkmk Managed Edition (CME) - assigning a customer
+# Checkmk Ultimate with multi-tenancy (CME) - assigning a customer
 # ---------------------------------------------------------------------------
 # When using Checkmk Ultimate MT, contact groups must be assigned
 # to a customer. Use the 'customer' parameter for this.

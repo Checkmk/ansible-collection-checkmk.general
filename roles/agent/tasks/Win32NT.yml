@@ -50,7 +50,7 @@
   when: checkmk_agent_add_host | bool
   notify: "Activate changes"
 
-- name: "Ensure registration readyness."  # noqa no-handler
+- name: "Ensure registration readiness."  # noqa no-handler
   when:
     - (__checkmk_agent_create_result.changed | bool) or
       (__checkmk_agent_update_attributes_result.changed | bool)
@@ -58,7 +58,7 @@
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers
 
-- name: "Check for Agent Controller Binary."
+- name: "{{ ansible_facts['system'] }}: Check for Agent Controller Binary."
   ansible.windows.win_stat:
     path: "{{ __checkmk_agent_controller_binary_path }}"
   register: __checkmk_agent_controller_binary
@@ -92,7 +92,7 @@
   args:
     chdir: "C:\\Program Files (x86)\\checkmk\\service\\"
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and __checkmk_agent_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length > 0)
@@ -111,7 +111,7 @@
   args:
     chdir: "C:\\Program Files (x86)\\checkmk\\service\\"
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and __checkmk_agent_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length > 0)
@@ -141,7 +141,7 @@
     timeout: 60
   when: checkmk_agent_mode == 'pull'
 
-- name: "{{ ansible_facts['system'] }}: Initial push of data for push agent"  # noqa no-changed-when
+- name: "{{ ansible_facts['system'] }}: Initial push of data for push agent."  # noqa no-changed-when
   become: true
   ansible.windows.win_command: cmk-agent-ctl.exe push
   when: checkmk_agent_mode == 'push'

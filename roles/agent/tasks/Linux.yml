@@ -8,12 +8,12 @@
 - name: "{{ ansible_facts['system'] }}: Populate service facts."
   ansible.builtin.service_facts:
 
-- name: "{{ ansible_facts['system'] }}: Run Legacy agent tasks."
+- name: "{{ ansible_facts['system'] }}: Prepare legacy agent support."
   when: |
     checkmk_agent_prep_legacy | bool
     and ansible_facts['packages']['systemd'][0]['version'] | regex_search('\d{1,}') | int < 220
   block:
-    - name: "{{ ansible_facts['system'] }}: Install xinetd"
+    - name: "{{ ansible_facts['system'] }}: Install xinetd."
       become: true
       ansible.builtin.package:
         name: xinetd
@@ -22,7 +22,7 @@
         - install-package
         - install-prerequisites
 
-    - name: "{{ ansible_facts['system'] }}: Enable xinetd"
+    - name: "{{ ansible_facts['system'] }}: Enable xinetd."
       become: true
       ansible.builtin.service:
         name: xinetd
@@ -30,22 +30,6 @@
         enabled: true
       tags:
         - enable-xinetd
-
-- name: "{{ ansible_facts['system'] }}: Download Vanilla agent."
-  ansible.builtin.get_url:
-    url: "{{ __checkmk_agent_agent.url.cre }}"
-    validate_certs: "{{ checkmk_agent_server_validate_certs | bool }}"
-    dest: "{{ __checkmk_agent_agent.file.cre }}"
-    mode: '0640'
-    timeout: "{{ checkmk_agent_download_timeout | default(omit) }}"
-  when: checkmk_agent_edition | lower == "cre"
-  register: __checkmk_agent_download_state
-  retries: 3
-  delay: 10
-  until: "not __checkmk_agent_download_state.failed | bool"
-  delegate_to: "{{ checkmk_agent_delegate_download }}"
-  tags:
-    - download-package
 
 - name: "{{ ansible_facts['os_family'] }}: Run OS Family specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"
@@ -98,7 +82,7 @@
   when: checkmk_agent_add_host | bool
   notify: "Activate changes"
 
-- name: "Ensure registration readyness."  # noqa no-handler
+- name: "Ensure registration readiness."  # noqa no-handler
   when:
     - (__checkmk_agent_create_result.changed | bool) or
       (__checkmk_agent_update_attributes_result.changed | bool)
@@ -143,7 +127,7 @@
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_update_state
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and __checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_pass is defined and checkmk_agent_pass | length > 0)
@@ -161,7 +145,7 @@
   no_log: "{{ checkmk_agent_no_log | bool }}"
   register: __checkmk_agent_update_state
   when: |
-    checkmk_agent_edition | lower != "cre"
+    checkmk_agent_edition | lower != "community"
     and __checkmk_agent_updater_binary.stat.exists | bool
     and checkmk_agent_update | bool
     and (checkmk_agent_secret is defined and checkmk_agent_secret | length > 0)
@@ -253,18 +237,18 @@
     timeout: 60
   when: checkmk_agent_mode == 'pull'
 
-- name: "{{ ansible_facts['system'] }}: Initial push of data for push agent"  # noqa no-changed-when
+- name: "{{ ansible_facts['system'] }}: Initial push of data for push agent."  # noqa no-changed-when
   become: true
   ansible.builtin.command: cmk-agent-ctl push
   when: checkmk_agent_mode == 'push'
 
-- name: "Cleanup Checkmk Agent Setups."
+- name: "{{ ansible_facts['system'] }}: Cleanup Checkmk Agent Setups."
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   loop:
-    - "{{ __checkmk_agent_agent.file.cre }}"
-    - "{{ __checkmk_agent_agent.file.cee }}"
+    - "{{ __checkmk_agent_agent.file.community }}"
+    - "{{ __checkmk_agent_agent.file.pro }}"
     - "{{ __checkmk_agent_agent.file.host }}"
   tags:
     - download-package
