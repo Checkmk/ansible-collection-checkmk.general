@@ -31,14 +31,14 @@ class ModuleDocFragment(object):
             description:
                 - The automation user you want to use. It has to be an 'Automation' user, not a normal one.
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_API_USER).
-            required: true
+            required: false
             type: str
             aliases: [automation_user]
         api_secret:
             description:
                 - The secret to authenticate your automation user.
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_API_SECRET).
-            required: true
+            required: false
             type: str
             aliases: [automation_secret]
         api_auth_cookie:
@@ -63,4 +63,12 @@ class ModuleDocFragment(object):
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_VALIDATE_CERTS).
             default: true
             type: bool
+    notes:
+        - Connection parameters can be sourced from environment variables of the form
+          C(CHECKMK_VAR_*) as documented per option. Modules do B(not) auto-resolve
+          Ansible variables named C(checkmk_var_*) by name. To source credentials from
+          inventory, group_vars or host_vars in a task, template them in explicitly
+          via Jinja (for example by setting C(api_user) to C({{ checkmk_var_api_user }})).
+          Automatic resolution of C(checkmk_var_*) variables is only available in the
+          lookup plugins and the inventory plugin.
     """
