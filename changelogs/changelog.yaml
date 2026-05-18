@@ -1648,3 +1648,18 @@ releases:
     - folder.yml
     - release_summary.yml
     release_date: '2026-04-24'
+  7.5.0:
+    changes:
+      minor_changes:
+      - Both the agent and server role got some updated task titles. There are no
+        functional changes, but the titles were aligned and improved for accessibility
+        and readability.
+      - Finalize new edition naming in line with Checkmk 2.5. All modules and roles
+        now support the new edition naming. Old names and identifiers continue to
+        work but will now trigger a warning to start using the new names.
+      release_summary: Finalizing the new Checkmk edition names.
+    fragments:
+    - editions.yml
+    - release_summary.yml
+    - roles.yml
+    release_date: '2026-05-18'

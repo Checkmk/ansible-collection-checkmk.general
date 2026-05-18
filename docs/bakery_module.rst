@@ -22,7 +22,7 @@ checkmk.general.bakery module -- Trigger baking and signing in the agent bakery
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.5.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -532,7 +532,7 @@ Notes
 -----
 
 .. note::
-   - The agent bakery is only available in the commercial editions of Checkmk. This module will fail on Checkmk Raw (CRE).
+   - The agent bakery is only available in the commercial editions of Checkmk. This module will fail on Checkmk Community.
    - Signing requires a signing key to be present in the bakery. Provide the key ID and passphrase when using :literal:`state=signed` or :literal:`state=baked\_signed`.
 
 .. Seealso
