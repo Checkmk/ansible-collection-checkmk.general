@@ -31,14 +31,14 @@ class ModuleDocFragment(object):
             description:
                 - The automation user you want to use. It has to be an 'Automation' user, not a normal one.
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_API_USER).
-            required: true
+            required: false
             type: str
             aliases: [automation_user]
         api_secret:
             description:
                 - The secret to authenticate your automation user.
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_API_SECRET).
-            required: true
+            required: false
             type: str
             aliases: [automation_secret]
         api_auth_cookie:
