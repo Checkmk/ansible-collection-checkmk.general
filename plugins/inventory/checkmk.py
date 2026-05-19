@@ -249,26 +249,18 @@ class InventoryModule(BaseInventoryPlugin):
         try:
             self.plugin = self.get_option("plugin")
 
-            self.server_url = (
-                self.get_option("server_url") or os.environ.get(
+            self.server_url = self.get_option("server_url") or os.environ.get(
                     "CHECKMK_VAR_SERVER_URL"
                 )
-            )
-            self.site = (
-                self.get_option("site") or os.environ.get(
+            self.site = self.get_option("site") or os.environ.get(
                     "CHECKMK_VAR_SITE"
                 )
-            )
-            self.user = (
-                self.get_option("api_user") or os.environ.get(
+            self.user = self.get_option("api_user") or os.environ.get(
                     "CHECKMK_VAR_API_USER"
                 )
-            )
-            self.secret = (
-                self.get_option("api_secret") or os.environ.get(
+            self.secret = self.get_option("api_secret") or os.environ.get(
                     "CHECKMK_VAR_API_SECRET"
                 )
-            )
 
             _validate_certs_yaml = self.get_option("validate_certs")
             _validate_certs_env = os.environ.get("CHECKMK_VAR_VALIDATE_CERTS")
@@ -286,11 +278,9 @@ class InventoryModule(BaseInventoryPlugin):
             self.want_ipv4 = self.get_option("want_ipv4")
             self.groupsources = self.get_option("groupsources")
 
-            self.folder = (
-                self.get_option("folder") or os.environ.get(
+            self.folder = self.get_option("folder") or os.environ.get(
                     "CHECKMK_VAR_FOLDER"
                 )
-            )
 
             _recursive_yaml = self.get_option("recursive")
             _recursive_env = os.environ.get("CHECKMK_VAR_RECURSIVE")
