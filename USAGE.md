@@ -171,6 +171,15 @@ api_user: "myuser"
 api_secret: "mysecret"
 # Group the hosts based on the following elements
 groupsources: ["hosttags", "sites"]
+recursive: true
+lowercase_hosts: true
+domain_map:
+  tag_criticality_prod: ".example.com"
+  tag_criticality_test: ".test.example.com"
+  tag_criticality_offline: ".offline.example.com"
+exclude_tags:
+  - tag_criticality_test
+
 ```
 
 You can then run your playbook by pointing to this inventory file with the `-i` flag:
