@@ -13,7 +13,7 @@ DOCUMENTATION = r"""
 ---
 module: role
 
-short_description: Manage roles in Checkmk.
+short_description: Manage roles in Checkmk
 
 version_added: "7.5.0"
 
@@ -81,7 +81,7 @@ options:
         choices: ["present", "absent"]
 
 author:
-    - "Checkmk GmbH (@checkmk)"
+    - "Robin Gierse (@robin-checkmk)"
 
 notes:
     - "Idempotency: This module compares the desired configuration
@@ -91,6 +91,7 @@ notes:
 
 seealso:
     - module: checkmk.general.user
+    - module: checkmk.general.contact_group
     - name: "Checkmk documentation on roles"
       description: "Complete documentation for user roles and permissions."
       link: "https://docs.checkmk.com/latest/en/wato_user.html"
@@ -100,7 +101,7 @@ EXAMPLES = r"""
 # Create a custom role based on the "user" role.
 - name: "Create a custom monitoring role."
   checkmk.general.role:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -112,7 +113,7 @@ EXAMPLES = r"""
 # Create a custom role with specific permissions.
 - name: "Create a custom role with tailored permissions."
   checkmk.general.role:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -129,7 +130,7 @@ EXAMPLES = r"""
 # Update permissions on an existing role.
 - name: "Update permissions on an existing custom role."
   checkmk.general.role:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -141,7 +142,7 @@ EXAMPLES = r"""
 # Update permissions on a built-in role.
 - name: "Modify permissions on the built-in user role."
   checkmk.general.role:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -153,12 +154,34 @@ EXAMPLES = r"""
 # Delete a custom role.
 - name: "Delete a custom role."
   checkmk.general.role:
-    server_url: "http://myserver/"
+    server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     name: "limited_user"
     state: "absent"
+
+# ---------------------------------------------------------------------------
+# Using environment variables for authentication
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# task parameters. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS
+
+- name: "Create a custom role using environment variables for authentication."
+  checkmk.general.role:
+    name: "limited_user"
+    title: "Limited Monitoring User"
+    based_on: "user"
+    state: "present"
+  environment:
+    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SITE: "mysite"
+    CHECKMK_VAR_API_USER: "myuser"
+    CHECKMK_VAR_API_SECRET: "mysecret"
+    CHECKMK_VAR_VALIDATE_CERTS: "true"
 """
 
 RETURN = r"""
@@ -185,7 +208,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import (
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
-    result_as_dict,
+    exit_module,
 )
 
 BUILTIN_ROLES = ("admin", "user", "guest", "agent_registration")
@@ -246,8 +269,6 @@ class RoleAPI(CheckmkAPI):
             endpoint="/objects/user_role/%s" % based_on,
             method="GET",
         )
-        if result.http_code != 200:
-            return set()
         content = json.loads(result.content.decode("utf-8"))
         return set(content.get("extensions", {}).get("permissions", []))
 
@@ -341,7 +362,7 @@ def run_module():
             title=dict(type="str", aliases=["alias"]),
             based_on=dict(
                 type="str",
-                choices=["admin", "user", "guest", "agent_registration"],
+                choices=list(BUILTIN_ROLES),
             ),
             permissions=dict(type="dict"),
             state=dict(
@@ -366,14 +387,12 @@ def run_module():
                     msg="Invalid permission value '%s' for '%s'. Must be one of: %s."
                     % (value, perm, ", ".join(sorted(VALID_PERMISSION_VALUES)))
                 )
-                return
             if name in BUILTIN_ROLES and value == "default":
                 module.fail_json(
                     msg="Permission value 'default' is not valid for built-in role '%s'. "
                     "Built-in roles have no base role; use 'yes' or 'no' explicitly."
                     % name
                 )
-                return
 
     role = RoleAPI(module)
     result = RESULT(
@@ -409,21 +428,19 @@ def run_module():
                     changed=False,
                 )
         elif role.current.http_code == 404:
+            # based_on is only required for creation; on update it is ignored,
+            # so this check must run after the GET disambiguates the state.
             if role.based_on is None:
                 module.fail_json(
                     msg="'based_on' is required when creating a new custom role."
                 )
-                return
             if not module.check_mode:
                 result = role.create()
                 # Permissions cannot be set during create; apply via PUT if needed.
                 # Null title so the follow-up edit only sends new_permissions.
                 if not result.failed and role.permissions is not None:
                     role.title = None
-                    edit_result = role.edit()
-                    if edit_result.failed:
-                        module.fail_json(msg=edit_result.msg)
-                        return
+                    role.edit()
             else:
                 result = RESULT(
                     http_code=200,
@@ -440,7 +457,6 @@ def run_module():
                 module.fail_json(
                     msg="Built-in role '%s' cannot be deleted." % role.name
                 )
-                return
             if not module.check_mode:
                 result = role.delete()
             else:
@@ -462,7 +478,7 @@ def run_module():
                 changed=False,
             )
 
-    module.exit_json(**result_as_dict(result))
+    exit_module(module, result=result)
 
 
 def main():

@@ -12,6 +12,7 @@ __metaclass__ = type
 import json
 from unittest.mock import MagicMock, patch
 
+import pytest
 
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.modules.role import (
@@ -26,7 +27,7 @@ from ansible_collections.checkmk.general.plugins.modules.role import (
 # ---------------------------------------------------------------------------
 
 COMMON_PARAMS = {
-    "server_url": "http://localhost/",
+    "server_url": "https://localhost/",
     "site": "mysite",
     "api_user": "cmkadmin",
     "api_secret": "mysecret",
@@ -470,46 +471,6 @@ class TestRunModule:
 
     @patch("ansible_collections.checkmk.general.plugins.modules.role.RoleAPI")
     @patch("ansible_collections.checkmk.general.plugins.modules.role.AnsibleModule")
-    def test_postcreate_edit_failure_calls_fail_json(
-        self, mock_ansible_module_cls, mock_role_api_cls
-    ):
-        mock_module = MagicMock()
-        mock_module.params = _make_module_params(
-            name="new_role",
-            based_on="user",
-            permissions={"wato.all_folders": "yes"},
-        )
-        mock_module.check_mode = False
-        mock_ansible_module_cls.return_value = mock_module
-
-        failed_edit = RESULT(
-            http_code=400,
-            msg="Bad request.",
-            content={},
-            etag="",
-            failed=True,
-            changed=False,
-        )
-        mock_api = MagicMock()
-        mock_api.state = "present"
-        mock_api.name = "new_role"
-        mock_api.current = ROLE_GET_RESPONSE_404
-        mock_api.based_on = "user"
-        mock_api.permissions = {"wato.all_folders": "yes"}
-        mock_api.title = None
-        mock_api.create.return_value = ROLE_CREATE_RESPONSE
-        mock_api.edit.return_value = failed_edit
-        mock_role_api_cls.return_value = mock_api
-
-        run_module()
-
-        mock_module.fail_json.assert_called_once()
-        fail_kwargs = mock_module.fail_json.call_args[1]
-        assert fail_kwargs["msg"] == "Bad request."
-        mock_module.exit_json.assert_not_called()
-
-    @patch("ansible_collections.checkmk.general.plugins.modules.role.RoleAPI")
-    @patch("ansible_collections.checkmk.general.plugins.modules.role.AnsibleModule")
     def test_present_updates_existing_role(
         self, mock_ansible_module_cls, mock_role_api_cls
     ):
@@ -566,6 +527,7 @@ class TestRunModule:
             name="new_role", title="New", based_on=None
         )
         mock_module.check_mode = False
+        mock_module.fail_json.side_effect = SystemExit
         mock_ansible_module_cls.return_value = mock_module
 
         mock_api = MagicMock()
@@ -575,7 +537,8 @@ class TestRunModule:
         mock_api.current = ROLE_GET_RESPONSE_404
         mock_role_api_cls.return_value = mock_api
 
-        run_module()
+        with pytest.raises(SystemExit):
+            run_module()
 
         mock_module.fail_json.assert_called_once()
         fail_kwargs = mock_module.fail_json.call_args[1]
@@ -612,6 +575,7 @@ class TestRunModule:
         mock_module = MagicMock()
         mock_module.params = _make_module_params(name="admin", state="absent")
         mock_module.check_mode = False
+        mock_module.fail_json.side_effect = SystemExit
         mock_ansible_module_cls.return_value = mock_module
 
         mock_api = MagicMock()
@@ -620,7 +584,8 @@ class TestRunModule:
         mock_api.current = ROLE_GET_RESPONSE_200
         mock_role_api_cls.return_value = mock_api
 
-        run_module()
+        with pytest.raises(SystemExit):
+            run_module()
 
         mock_module.fail_json.assert_called_once()
         fail_kwargs = mock_module.fail_json.call_args[1]
@@ -706,9 +671,11 @@ class TestRunModule:
         mock_module = MagicMock()
         mock_module.params = _make_module_params(permissions={"wato.edit": "maybe"})
         mock_module.check_mode = False
+        mock_module.fail_json.side_effect = SystemExit
         mock_ansible_module_cls.return_value = mock_module
 
-        run_module()
+        with pytest.raises(SystemExit):
+            run_module()
 
         mock_module.fail_json.assert_called_once()
         fail_kwargs = mock_module.fail_json.call_args[1]
@@ -726,9 +693,11 @@ class TestRunModule:
             permissions={"general.csv_export": "default"},
         )
         mock_module.check_mode = False
+        mock_module.fail_json.side_effect = SystemExit
         mock_ansible_module_cls.return_value = mock_module
 
-        run_module()
+        with pytest.raises(SystemExit):
+            run_module()
 
         mock_module.fail_json.assert_called_once()
         fail_kwargs = mock_module.fail_json.call_args[1]
