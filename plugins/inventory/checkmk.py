@@ -236,7 +236,8 @@ class InventoryModule(BaseInventoryPlugin):
                 full_tag = group + "_" + value
                 if full_tag in self.exclude_tags:
                     display.vvv(
-                        "Excluding host '%s' due to tag '%s'" % (host.get("id"), full_tag)
+                        "Excluding host '%s' due to tag '%s'"
+                        % (host.get("id"), full_tag)
                     )
                     return True
         return False
@@ -249,20 +250,24 @@ class InventoryModule(BaseInventoryPlugin):
             self.plugin = self.get_option("plugin")
 
             self.server_url = (
-                self.get_option("server_url")
-                or os.environ.get("CHECKMK_VAR_SERVER_URL")
+                self.get_option("server_url") or os.environ.get(
+                    "CHECKMK_VAR_SERVER_URL"
+                )
             )
             self.site = (
-                self.get_option("site")
-                or os.environ.get("CHECKMK_VAR_SITE")
+                self.get_option("site") or os.environ.get(
+                    "CHECKMK_VAR_SITE"
+                )
             )
             self.user = (
-                self.get_option("api_user")
-                or os.environ.get("CHECKMK_VAR_API_USER")
+                self.get_option("api_user") or os.environ.get(
+                    "CHECKMK_VAR_API_USER"
+                )
             )
             self.secret = (
-                self.get_option("api_secret")
-                or os.environ.get("CHECKMK_VAR_API_SECRET")
+                self.get_option("api_secret") or os.environ.get(
+                    "CHECKMK_VAR_API_SECRET"
+                )
             )
 
             _validate_certs_yaml = self.get_option("validate_certs")
@@ -270,7 +275,11 @@ class InventoryModule(BaseInventoryPlugin):
             if _validate_certs_yaml is not None:
                 self.validate_certs = _validate_certs_yaml
             elif _validate_certs_env is not None:
-                self.validate_certs = _validate_certs_env.lower() not in ("false", "0", "no")
+                self.validate_certs = _validate_certs_env.lower() not in (
+                    "false",
+                    "0",
+                    "no"
+                )
             else:
                 self.validate_certs = True
 
@@ -278,8 +287,9 @@ class InventoryModule(BaseInventoryPlugin):
             self.groupsources = self.get_option("groupsources")
 
             self.folder = (
-                self.get_option("folder")
-                or os.environ.get("CHECKMK_VAR_FOLDER")
+                self.get_option("folder") or os.environ.get(
+                    "CHECKMK_VAR_FOLDER"
+                )
             )
 
             _recursive_yaml = self.get_option("recursive")
@@ -287,7 +297,11 @@ class InventoryModule(BaseInventoryPlugin):
             if _recursive_yaml is not None:
                 self.recursive = _recursive_yaml
             elif _recursive_env is not None:
-                self.recursive = _recursive_env.lower() not in ("false", "0", "no")
+                self.recursive = _recursive_env.lower() not in (
+                    "false",
+                    "0",
+                    "no"
+                )
             else:
                 self.recursive = False
 
@@ -297,7 +311,9 @@ class InventoryModule(BaseInventoryPlugin):
             if _exclude_tags_yaml:
                 self.exclude_tags = _exclude_tags_yaml
             elif _exclude_tags_env:
-                self.exclude_tags = [t.strip() for t in _exclude_tags_env.split(",") if t.strip()]
+                self.exclude_tags = [
+                    t.strip() for t in _exclude_tags_env.split(",") if t.strip()
+                ]
             else:
                 self.exclude_tags = []
 
@@ -309,7 +325,11 @@ class InventoryModule(BaseInventoryPlugin):
             if _lowercase_yaml is not None:
                 self.lowercase_hosts = _lowercase_yaml
             elif _lowercase_env is not None:
-                self.lowercase_hosts = _lowercase_env.lower() not in ("false", "0", "no")
+                self.lowercase_hosts = _lowercase_env.lower() not in (
+                    "false",
+                    "0",
+                    "no"
+                )
             else:
                 self.lowercase_hosts = False
 
