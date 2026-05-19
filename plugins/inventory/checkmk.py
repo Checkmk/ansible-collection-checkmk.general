@@ -53,7 +53,6 @@ DOCUMENTATION = """
             description: The secret for the api user.
             required: false
             type: str
-            secret: true
             env:
               - name: CHECKMK_VAR_API_SECRET
         validate_certs:
