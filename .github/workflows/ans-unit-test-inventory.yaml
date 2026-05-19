@@ -17,10 +17,12 @@ on:
       - devel
     paths:
       - 'plugins/inventory/checkmk.py'
+      - 'plugins/doc_fragments/common_lookup.py'
   push:
     paths:
       - '.github/workflows/ans-unit-test-inventory.yaml'
       - 'plugins/inventory/checkmk.py'
+      - 'plugins/doc_fragments/common_lookup.py'
       - 'plugins/module_utils/**'
       - 'tests/unit/plugins/module_utils/**'
       - 'tests/unit/plugins/inventory/**'
@@ -31,4 +33,4 @@ jobs:
     name: "Tests"
     uses: ./.github/workflows/_template-ans-unit-test.yaml
     with:
-      testpath: tests/unit/plugins/inventory/test_checkmk.py
+      testpath: tests/unit/plugins/inventory/

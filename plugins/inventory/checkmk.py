@@ -14,6 +14,8 @@ DOCUMENTATION = """
         - Get hosts from any Checkmk site.
         - Generate groups based on tag groups or sites in Checkmk.
 
+    extends_documentation_fragment: [checkmk.general.common_lookup]
+
     options:
         plugin:
             description: Name of the plugin. Should always be C(checkmk.general.checkmk).
@@ -135,6 +137,29 @@ recursive: true
 exclude_tags:
   - tag_criticality_test
   - tag_criticality_offline
+
+# ---------------------------------------------------------------------------
+# Using environment variables for credentials
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# writing them into the inventory file. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS, CHECKMK_VAR_API_AUTH_TYPE
+
+# Minimal inventory file when using environment variables:
+plugin: checkmk.general.checkmk
+groupsources: ["hosttags", "sites"]
+
+# ---------------------------------------------------------------------------
+# Using Ansible variables for credentials
+# ---------------------------------------------------------------------------
+# Connection parameters can also be provided via Ansible variables, e.g.
+# from group_vars, host_vars, or AWX/AAP credential injection. The supported
+# variable names follow the scheme checkmk_var_<parameter>:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs, checkmk_var_api_auth_type
 """
 
 import json
@@ -164,6 +189,8 @@ class InventoryModule(BaseInventoryPlugin):
         self.site = None
         self.user = None
         self.secret = None
+        self.api_auth_type = None
+        self.api_auth_cookie = None
         self.validate_certs = None
         self.want_ipv4 = None
         self.folder = None
@@ -248,31 +275,13 @@ class InventoryModule(BaseInventoryPlugin):
 
         try:
             self.plugin = self.get_option("plugin")
-
-            self.server_url = self.get_option("server_url") or os.environ.get(
-                "CHECKMK_VAR_SERVER_URL"
-            )
-            self.site = self.get_option("site") or os.environ.get("CHECKMK_VAR_SITE")
-            self.user = self.get_option("api_user") or os.environ.get(
-                "CHECKMK_VAR_API_USER"
-            )
-            self.secret = self.get_option("api_secret") or os.environ.get(
-                "CHECKMK_VAR_API_SECRET"
-            )
-
-            _validate_certs_yaml = self.get_option("validate_certs")
-            _validate_certs_env = os.environ.get("CHECKMK_VAR_VALIDATE_CERTS")
-            if _validate_certs_yaml is not None:
-                self.validate_certs = _validate_certs_yaml
-            elif _validate_certs_env is not None:
-                self.validate_certs = _validate_certs_env.lower() not in (
-                    "false",
-                    "0",
-                    "no",
-                )
-            else:
-                self.validate_certs = True
-
+            self.server_url = self.get_option("server_url")
+            self.site = self.get_option("site")
+            self.user = self.get_option("api_user")
+            self.secret = self.get_option("api_secret")
+            self.api_auth_type = self.get_option("api_auth_type") or "bearer"
+            self.api_auth_cookie = self.get_option("api_auth_cookie")
+            self.validate_certs = self.get_option("validate_certs")
             self.want_ipv4 = self.get_option("want_ipv4")
             self.groupsources = self.get_option("groupsources")
 
@@ -335,10 +344,12 @@ class InventoryModule(BaseInventoryPlugin):
                 )
 
         api = CheckMKLookupAPI(
-            site_url=self.server_url + "/" + self.site,
-            api_user=self.user,
-            api_secret=self.secret,
-            validate_certs=self.validate_certs,
+            site_url=self.get_option("server_url") + "/" + self.get_option("site"),
+            api_auth_type=self.api_auth_type,
+            api_auth_cookie=self.api_auth_cookie,
+            api_user=self.get_option("api_user"),
+            api_secret=self.get_option("api_secret"),
+            validate_certs=self.get_option("validate_certs"),
         )
 
         self.hosttaggroups = self._get_taggroups(api)
