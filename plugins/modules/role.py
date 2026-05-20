@@ -1,9 +1,8 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2025, Checkmk GmbH
-# GNU General Public License v3.0+
-# (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# Copyright: (c) 2026, Robin Gierse <robin.gierse@checkmk.com>
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
@@ -15,14 +14,13 @@ module: role
 
 short_description: Manage roles in Checkmk
 
-version_added: "7.5.0"
+version_added: "7.7.0"
 
 description:
-    - Manage user roles within Checkmk. Custom roles are created by
-      cloning an existing built-in role and can then be modified.
-    - Built-in roles (C(admin), C(user), C(guest), C(agent_registration))
-      cannot be created or deleted, but their permissions can be modified
-      using this module with C(state=present).
+    - Manage roles within Checkmk. Custom roles are created by
+      cloning an existing built-in role.
+    - Built-in roles cannot be created or deleted,
+      but their permissions can be modified.
 
 extends_documentation_fragment:
     - checkmk.general.common
@@ -44,9 +42,7 @@ options:
     based_on:
         description:
             - The ID of the built-in role to clone from when creating
-              a new custom role. Valid values are C(admin), C(user),
-              C(guest), and C(agent_registration).
-            - Required when creating a new custom role.
+              a new custom role.
             - This parameter is ignored when updating an existing role.
         type: str
         choices: ["admin", "user", "guest", "agent_registration"]
@@ -84,10 +80,7 @@ author:
     - "Robin Gierse (@robin-checkmk)"
 
 notes:
-    - "Idempotency: This module compares the desired configuration
-      against the current state and only makes changes when necessary."
-    - "Built-in roles (admin, user, guest, agent_registration) cannot
-      be created or deleted, but their permissions can be updated."
+    - Built-in roles cannot be created or deleted, but their permissions can be updated.
 
 seealso:
     - module: checkmk.general.user
@@ -98,7 +91,10 @@ seealso:
 """
 
 EXAMPLES = r"""
-# Create a custom role based on the "user" role.
+# ---------------------------------------------------------------------------
+# Create and delete roles
+# ---------------------------------------------------------------------------
+
 - name: "Create a custom monitoring role."
   checkmk.general.role:
     server_url: "https://myserver/"
@@ -110,7 +106,6 @@ EXAMPLES = r"""
     based_on: "user"
     state: "present"
 
-# Create a custom role with specific permissions.
 - name: "Create a custom role with tailored permissions."
   checkmk.general.role:
     server_url: "https://myserver/"
@@ -127,7 +122,19 @@ EXAMPLES = r"""
       general.edit_notifications: "no"
     state: "present"
 
-# Update permissions on an existing role.
+- name: "Delete a custom role."
+  checkmk.general.role:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "limited_user"
+    state: "absent"
+
+# ---------------------------------------------------------------------------
+# Update permissions on existing roles
+# ---------------------------------------------------------------------------
+
 - name: "Update permissions on an existing custom role."
   checkmk.general.role:
     server_url: "https://myserver/"
@@ -139,7 +146,6 @@ EXAMPLES = r"""
       wato.all_folders: "yes"
     state: "present"
 
-# Update permissions on a built-in role.
 - name: "Modify permissions on the built-in user role."
   checkmk.general.role:
     server_url: "https://myserver/"
@@ -150,16 +156,6 @@ EXAMPLES = r"""
     permissions:
       general.edit_notifications: "no"
     state: "present"
-
-# Delete a custom role.
-- name: "Delete a custom role."
-  checkmk.general.role:
-    server_url: "https://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    name: "limited_user"
-    state: "absent"
 
 # ---------------------------------------------------------------------------
 # Using environment variables for authentication
@@ -200,7 +196,6 @@ http_code:
 
 import json
 
-# https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import (
     CheckmkAPI,

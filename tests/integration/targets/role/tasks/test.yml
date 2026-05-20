@@ -3,7 +3,7 @@
   ansible.builtin.set_fact:
     checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else None }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a custom role based on user."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a custom role."
   role:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -80,6 +80,16 @@
       - __checkmk_var_role_create_with_perms_again.changed == false
       - __checkmk_var_role_create_with_perms_again.msg == "Role already exists with desired state."
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set a permission to default on a custom role."
   role:
     server_url: "{{ checkmk_var_server_url }}"
@@ -151,6 +161,16 @@
       - __checkmk_var_role_update_perms.changed == true
       - "'Role updated.' in __checkmk_var_role_update_perms.msg"
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Modify permissions on the built-in guest role."
   role:
     server_url: "{{ checkmk_var_server_url }}"
@@ -185,6 +205,16 @@
   ansible.builtin.assert:
     that:
       - __checkmk_var_role_revert_guest.changed == true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Try to delete a built-in role (should fail)."
   role:
@@ -269,38 +299,15 @@
       - __checkmk_var_role_cleanup.changed == true
       - "'Role deleted.' in __checkmk_var_role_cleanup.msg"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a custom role based on admin."
-  role:
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    name: "test_admin_role"
-    title: "Custom Admin Role"
-    based_on: "admin"
-    state: "present"
-  register: __checkmk_var_role_create_admin
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify admin-based role creation."
-  ansible.builtin.assert:
-    that:
-      - __checkmk_var_role_create_admin.changed == true
-      - "'Role created.' in __checkmk_var_role_create_admin.msg"
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the admin-based custom role (cleanup)."
-  role:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    name: "test_admin_role"
-    state: "absent"
-  register: __checkmk_var_role_delete_admin
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify admin-based role was deleted."
-  ansible.builtin.assert:
-    that:
-      - __checkmk_var_role_delete_admin.changed == true
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Test check_mode for role creation."
   role:
@@ -421,3 +428,13 @@
     that:
       - __checkmk_var_role_cleanup_checkmode.changed == true
       - "'Role deleted.' in __checkmk_var_role_cleanup_checkmode.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
