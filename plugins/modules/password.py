@@ -168,14 +168,18 @@ import time
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
+    exit_module,
     result_as_dict,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )
+
+logger = Logger()
 
 # We count 404 not as failed, because we want to know if the password exists or not.
 HTTP_CODES_GET = {
@@ -269,6 +273,7 @@ def run_module():
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
 
+    logger.set_loglevel(module._verbosity)
     result = RESULT(
         http_code=0,
         msg="Nothing to be done",
@@ -278,51 +283,61 @@ def run_module():
         changed=False,
     )
 
+    passwordget = PasswordsGetAPI(module, logger=logger)
+    checkmkversion = CheckmkVersion(str(passwordget.getversion()))
+
+    if checkmkversion >= CheckmkVersion("2.6.0"):
+        if "owner" in module.params:
+            logger.debug("Checkmk Version %s needs 'editable_by' instead of 'owner'" % 
+                         str(checkmkversion))
+            module.params["editable_by"] = module.params.pop("owner")
+
     if module.params.get("state") == "present":
-        passwordget = PasswordsGetAPI(module)
         result = passwordget.get()
 
         if result.http_code == 200:
-            passwordupdate = PasswordsUpdateAPI(module)
+            passwordupdate = PasswordsUpdateAPI(module, logger=logger)
             passwordupdate.headers["If-Match"] = result.etag
             result = passwordupdate.put()
 
             time.sleep(3)
 
         elif result.http_code == 404:
-            passwordcreate = PasswordsCreateAPI(module)
+            passwordcreate = PasswordsCreateAPI(module, logger=logger)
 
-            checkmkversion = CheckmkVersion(str(passwordcreate.getversion()))
             if (
                 checkmkversion.edition in ("ultimatemt", "cme")
                 and module.params.get("customer") is None
             ):
-                result = RESULT(
+                exit_module(
+                    module,
                     http_code=0,
                     msg="Missing required parameter 'customer' for Checkmk Ultimate with multi-tenancy",
                     content="",
-                    etag="",
                     failed=True,
                     changed=False,
+                    logger=logger,
                 )
-                module.fail_json(**result_as_dict(result))
 
             result = passwordcreate.post()
 
             time.sleep(3)
 
     if module.params.get("state") == "absent":
-        passwordget = PasswordsGetAPI(module)
         result = passwordget.get()
 
         if result.http_code == 200:
-            passworddelete = PasswordsDeleteAPI(module)
+            passworddelete = PasswordsDeleteAPI(module, logger=logger)
             passworddelete.headers["If-Match"] = result.etag
             result = passworddelete.delete()
 
             time.sleep(3)
 
-    module.exit_json(**result_as_dict(result))
+    exit_module(
+        module,
+        result=result,
+        logger=logger,
+    )
 
 
 def main():
