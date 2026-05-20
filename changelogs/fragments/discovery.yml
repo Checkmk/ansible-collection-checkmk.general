@@ -1,3 +1,3 @@
 minor_changes:
   - Discovery module - Add support for Checkmk 3.0.
-  - Discovery module - Add ``update_service_parameters`` state for bulk discovery.
+  - Discovery module - Add option to update service parameters for bulk discovery.
