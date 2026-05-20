@@ -1,15 +1,4 @@
 ---
-- name: "Include Global Variables."
-  ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', checkmk_var_params) }}"
-  vars:
-    checkmk_var_params:
-      files:
-        - global.yml
-      paths:
-        - /home/runner/work/ansible-collection-checkmk.general/ansible-collection-checkmk.general/ansible_collections/checkmk/general/tests/integration/files/includes/vars/
-        - /root/ansible_collections/checkmk/general/tests/integration/files/includes/vars/
-        - tests/integration/files/includes/vars/
-
 - name: "Probe whether central sites are already responding."
   ansible.builtin.uri:
     url: "http://127.0.0.1:{{ item.port | default('5000') }}/{{ item.site }}"
