@@ -50,7 +50,7 @@ options:
         required: false
         type: str
         default: new
-        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels, only_service_labels, monitor_undecided_services]
+        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels, only_service_labels, monitor_undecided_services, update_service_parameters]
     do_full_scan:
         description: The option whether to perform a full scan or not. (Bulk mode only).
         required: false
@@ -317,6 +317,7 @@ def run_module():
                 "only_host_labels",
                 "only_service_labels",
                 "monitor_undecided_services",
+                "update_service_parameters",
             ],
         ),
         do_full_scan=dict(type="bool", default=True),
