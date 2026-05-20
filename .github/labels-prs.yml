@@ -143,6 +143,12 @@ lookup:ldap_connection:
           - any-glob-to-any-file: 'plugins/modules/lookup/ldap_connection.py'
           - any-glob-to-any-file: 'plugins/modules/lookup/ldap_connections.py'
 
+lookup:role:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/lookup/role.py'
+          - any-glob-to-any-file: 'plugins/lookup/roles.py'
+
 lookup:rule:
   - any:
       - changed-files:
