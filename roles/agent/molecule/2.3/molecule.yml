@@ -60,6 +60,7 @@ verifier:
   name: ansible
 scenario:
   test_sequence:
+    - dependency
     - destroy
     - syntax
     - create
