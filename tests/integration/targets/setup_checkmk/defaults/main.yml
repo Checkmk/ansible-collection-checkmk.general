@@ -1,0 +1,58 @@
+---
+# Default set of sites this role provisions. Test targets that need a
+# different topology override `checkmk_var_test_sites` via their own
+# `vars/main.yml` after this role finishes. The default mirrors the
+# `site` target so both central and remote sites are installed in local
+# `--docker` runs; the probe at the top of `tasks/main.yml` short-circuits
+# the install block when sites are already responding (e.g. in CI, where
+# Checkmk runs as service containers).
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    site: "testsite"
+    remote_sites:
+      - site_id: "testsite_r_1"
+        site_config:
+          status_connection:
+            connection:
+              socket_type: "tcp"
+              port: 6557
+              encrypted: true
+              host: "localhost"
+              verify: false
+            proxy:
+              use_livestatus_daemon: "with_proxy"
+              global_settings: false
+              tcp:
+                port: 4115
+                only_from: []
+                tls: true
+              params:
+                channels: 6
+                heartbeat:
+                  interval: 10
+                  timeout: 4
+                channel_timeout: 6
+                query_timeout: 240
+                connect_retry: 5
+                cache: true
+            connect_timeout: 2
+            status_host:
+              status_host_set: "disabled"
+            url_prefix: "/testsite_r_1/"
+          configuration_connection:
+            enable_replication: true
+            url_of_remote_site: "http://testsite-r-1:5000/testsite_r_1/check_mk/"
+            disable_remote_configuration: true
+            ignore_tls_errors: false
+            direct_login_to_web_gui_allowed: false
+            replicate_event_console: true
+            replicate_extensions: false
+            message_broker_port: "{{ (checkmk_var_version | regex_replace('p.*', '') is version('2.4', '>=')) | ternary(5671, omit) }}"
+          basic_settings:
+            site_id: "testsite_r_1"
+            alias: "remote test site 1"
+            customer: "{{ (checkmk_var_edition in ['managed', 'ultimatemt']) | ternary('provider', None) }}"
+        authentication:
+          username: "{{ checkmk_var_api_user }}"
+          password: "{{ checkmk_var_api_secret }}"
