@@ -1,4 +1,33 @@
 ---
+# Defaults for local `ansible-test integration <target> --docker` runs.
+# Override any of these via `tests/integration/integration_config.yml`
+# (auto-loaded by ansible-test as extra-vars; gitignored).
+# CI writes `checkmk_var_version` and `checkmk_var_edition` into that file.
+
+# Checkmk version + edition. Edition MUST be one of the keys of
+# `__checkmk_var_{legacy,modern}_edition_mapping` (community, pro, ultimate,
+# ultimatemt). CI matrix values like `raw`/`managed` are download-URL ids
+# and only work in CI, where the install block is skipped by the probe.
+checkmk_var_version: "2.4.0p29"
+checkmk_var_edition: "community"
+
+# REST API endpoint + credentials for the central testsite. Hardcoded
+# port 5000 matches the CI service container and the local --docker install.
+# `checkmk_var_site` is consumed by lookup plugins via the `common_lookup`
+# doc fragment when callers don't pass `site=` explicitly (the "inventory
+# vars" test paths in each `lookup_*` target).
+checkmk_var_server_url: "http://127.0.0.1:5000/"
+checkmk_var_site: "testsite"
+checkmk_var_validate_certs: false
+checkmk_var_api_user: "cmkadmin"
+checkmk_var_api_secret: "Sup3rSec4et!"
+
+# Download URL template for the Checkmk server package. `item.*` resolves
+# inside the loop over `checkmk_var_test_sites` in setup_checkmk's tasks.
+# Pin `checkmk_var_download_{user,pass}` via integration_config.yml for
+# non-community editions.
+checkmk_var_download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ __checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_facts['distribution_release'] }}_amd64.deb"  # noqa yaml[line-length]
+
 # Default set of sites this role provisions. Test targets that need a
 # different topology override `checkmk_var_test_sites` via their own
 # `vars/main.yml` after this role finishes. The default mirrors the
