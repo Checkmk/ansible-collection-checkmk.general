@@ -24,6 +24,9 @@ class CheckMKLookupAPI:
         api_user=None,
         api_secret=None,
         validate_certs=True,
+        proxy_url=None,
+        proxy_user=None,
+        proxy_pass=None,
     ):
         self.headers = {
             "Accept": "application/json",

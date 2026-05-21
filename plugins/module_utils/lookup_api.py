@@ -10,6 +10,8 @@ __metaclass__ = type
 
 import base64
 import json
+import os
+from urllib.parse import urlparse
 
 from ansible.module_utils.common.text.converters import to_text
 from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
@@ -35,6 +37,9 @@ class CheckMKLookupAPI:
         api_user=None,
         api_secret=None,
         validate_certs=True,
+        proxy_url=None,
+        proxy_user=None,
+        proxy_pass=None,
     ):
         self.headers = {
             "Accept": "application/json",
@@ -45,6 +50,18 @@ class CheckMKLookupAPI:
         self.site_url = site_url
         self.url = "%s/check_mk/api/1.0" % site_url
         self.validate_certs = validate_certs
+
+        if proxy_url:
+            proxy_uri = urlparse(proxy_url)
+            if proxy_user and proxy_pass:
+                proxy_uri = proxy_uri._replace(
+                    netloc="%s:%s@%s" % (proxy_user, proxy_pass, proxy_uri.netloc)
+                )
+            self._proxy_https = proxy_uri.geturl()
+            self._proxy_http = proxy_uri._replace(scheme="http").geturl()
+        else:
+            self._proxy_https = None
+            self._proxy_http = None
         # Bearer Authentication: "Bearer USERNAME PASSWORD"
         if api_auth_type == "bearer":
             if not api_user or not api_secret:
@@ -80,10 +97,19 @@ class CheckMKLookupAPI:
     def get(self, endpoint="", parameters=None):
         url = self.url + endpoint
 
-        try:
-            if parameters:
-                url = "%s?%s" % (url, urlencode(parameters))
+        if parameters:
+            url = "%s?%s" % (url, urlencode(parameters))
 
+        _proxy_env_keys = ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY")
+        _saved_env = {}
+        if self._proxy_https:
+            _saved_env = {k: os.environ.get(k) for k in _proxy_env_keys}
+            os.environ["http_proxy"] = self._proxy_http
+            os.environ["https_proxy"] = self._proxy_https
+            os.environ["HTTP_PROXY"] = self._proxy_http
+            os.environ["HTTPS_PROXY"] = self._proxy_https
+
+        try:
             raw_response = open_url(
                 url, headers=self.headers, validate_certs=self.validate_certs
             )
@@ -99,3 +125,9 @@ class CheckMKLookupAPI:
             return json.dumps({"code": 0, "msg": str(e), "url": url})
         except Exception as e:
             return json.dumps({"code": 0, "msg": str(e), "url": url})
+        finally:
+            for k, v in _saved_env.items():
+                if v is None:
+                    os.environ.pop(k, None)
+                else:
+                    os.environ[k] = v
