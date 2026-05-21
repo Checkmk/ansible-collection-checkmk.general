@@ -182,7 +182,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.version import (
 )
 
 logger = Logger()
-checkmkversion = None
 
 # We count 404 not as failed, because we want to know if the password exists or not.
 HTTP_CODES_GET = {
@@ -196,15 +195,17 @@ HTTP_CODES_DELETE = {
 }
 
 
-def _owner_or_editable_by():
-    if checkmkversion < CheckmkVersion("2.3.0p23"):
+def _owner_or_editable_by(version):
+    if version < CheckmkVersion("2.3.0p23"):
+        logger.debug("Using 'owner', as version is %s" % str(version))
         return "owner"
     else:
+        logger.debug("Using 'editable_by', as version is %s" % str(version))
         return "editable_by"
 
 
 class PasswordsCreateAPI(CheckmkAPI):
-    def post(self):
+    def post(self, version=None):
         data = {
             "ident": self.params.get("name", ""),
             "title": self.params.get("title", ""),
@@ -212,7 +213,7 @@ class PasswordsCreateAPI(CheckmkAPI):
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
-            _owner_or_editable_by(): self.params.get(
+            _owner_or_editable_by(version): self.params.get(
                 "editable_by", self.params.get("owner", "")
             ),
             "shared": self.params.get("shared", ""),
@@ -229,14 +230,14 @@ class PasswordsCreateAPI(CheckmkAPI):
 
 
 class PasswordsUpdateAPI(CheckmkAPI):
-    def put(self):
+    def put(self, version=None):
         data = {
             "title": self.params.get("title", ""),
             "customer": self.params.get("customer", ""),
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
-            _owner_or_editable_by(): self.params.get(
+            _owner_or_editable_by(version): self.params.get(
                 "editable_by", self.params.get("owner", "")
             ),
             "shared": self.params.get("shared", ""),
@@ -297,16 +298,16 @@ def run_module():
         changed=False,
     )
 
-    if module.params.get("state") == "present":
-        passwordget = PasswordsGetAPI(module, logger=logger)
-        checkmkversion = CheckmkVersion(str(passwordget.getversion()))
+    passwordget = PasswordsGetAPI(module, logger=logger)
 
+    if module.params.get("state") == "present":
+        version = passwordget.getversion()
         result = passwordget.get()
 
         if result.http_code == 200:
             passwordupdate = PasswordsUpdateAPI(module, logger=logger)
             passwordupdate.headers["If-Match"] = result.etag
-            result = passwordupdate.put()
+            result = passwordupdate.put(version=version)
 
             time.sleep(3)
 
@@ -314,7 +315,7 @@ def run_module():
             passwordcreate = PasswordsCreateAPI(module, logger=logger)
 
             if (
-                checkmkversion.edition in ("ultimatemt", "cme")
+                version.edition in ("ultimatemt", "cme")
                 and module.params.get("customer") is None
             ):
                 exit_module(
@@ -327,7 +328,7 @@ def run_module():
                     logger=logger,
                 )
 
-            result = passwordcreate.post()
+            result = passwordcreate.post(version=version)
 
             time.sleep(3)
 
