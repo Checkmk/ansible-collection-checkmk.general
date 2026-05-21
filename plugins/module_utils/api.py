@@ -63,7 +63,7 @@ class CheckmkAPI:
                 self.module.fail_json(
                     msg="`api_user` and `api_secret` are required for basic authentication."
                 )
-                auth_str = "%s:%s" % (api_user, api_secret)
+            auth_str = "%s:%s" % (api_user, api_secret)
             auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
             self.headers["Authorization"] = "Basic %s" % auth_b64
 
