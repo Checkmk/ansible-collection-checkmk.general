@@ -205,7 +205,7 @@ def _owner_or_editable_by(version):
 
 
 class PasswordsCreateAPI(CheckmkAPI):
-    def post(self, version=None):
+    def post(self, version):
         data = {
             "ident": self.params.get("name", ""),
             "title": self.params.get("title", ""),
@@ -230,7 +230,7 @@ class PasswordsCreateAPI(CheckmkAPI):
 
 
 class PasswordsUpdateAPI(CheckmkAPI):
-    def put(self, version=None):
+    def put(self, version):
         data = {
             "title": self.params.get("title", ""),
             "customer": self.params.get("customer", ""),
@@ -307,7 +307,7 @@ def run_module():
         if result.http_code == 200:
             passwordupdate = PasswordsUpdateAPI(module, logger=logger)
             passwordupdate.headers["If-Match"] = result.etag
-            result = passwordupdate.put(version=version)
+            result = passwordupdate.put(version)
 
             time.sleep(3)
 
@@ -328,7 +328,7 @@ def run_module():
                     logger=logger,
                 )
 
-            result = passwordcreate.post(version=version)
+            result = passwordcreate.post(version)
 
             time.sleep(3)
 
