@@ -104,3 +104,26 @@
     label: "{{ item.ldap_config.general_properties.id }}"
   register: __checkmk_var_result_delete
   failed_when: __checkmk_var_result_delete.changed | bool
+
+# The REST delete + activation above clear the on-disk LDAP state, but
+# mod_wsgi keeps the connection_suffix uniqueness set cached in worker
+# memory. Without flushing it, a later target that creates an LDAP
+# connection with the same suffix gets 400 "should not exist but it does".
+# In CI each target runs in a fresh service container, so this only bites
+# locally — gated on the existing local-docker fingerprint.
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Reload site apache to flush cached LDAP suffix set."
+  ansible.builtin.command: "omd reload {{ outer_item.site }} apache"
+  changed_when: true
+  when:
+    - ansible_facts['virtualization_type'] in ['container', 'podman', 'docker']
+    - (ansible_facts['system_vendor'] == "Dell Inc." and 'Latitude' in ansible_facts['product_name']) or (ansible_facts['system_vendor'] == "QEMU" and 'Ubuntu' in ansible_facts['product_name'])

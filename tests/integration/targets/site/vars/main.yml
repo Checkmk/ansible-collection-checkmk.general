@@ -35,7 +35,21 @@ checkmk_var_test_sites:
             url_prefix: "/testsite_r_1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://testsite-r-1:5000/testsite_r_1/check_mk/"
+            # CI runs `testsite-r-1` as a service container on the same
+            # docker network so the name resolves there. Locally with
+            # `--docker` both sites run in the same container on
+            # different ports (5000 / 5001), so we have to fall back to
+            # 127.0.0.1:5001. Jinja resolves this at module-call time
+            # when `ansible_facts` is already populated.
+            url_of_remote_site: >-
+              {{
+                ( (ansible_facts['system_vendor'] == 'Dell Inc.'
+                   and 'Latitude' in (ansible_facts['product_name'] | default('')))
+                 or (ansible_facts['system_vendor'] == 'QEMU'
+                     and 'Ubuntu' in (ansible_facts['product_name'] | default(''))) )
+                | ternary('http://127.0.0.1:5001/testsite_r_1/check_mk/',
+                          'http://testsite-r-1:5000/testsite_r_1/check_mk/')
+              }}
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false
