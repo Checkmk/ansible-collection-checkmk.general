@@ -55,10 +55,13 @@ options:
         required: false
         type: str
 
-    owner:
-        description: Each password is owned by a group of users which are able to edit, delete and use existing passwords.
+    editable_by:
+        description:
+        - Each password is owned by a group of users which are able to edit, delete and use existing passwords.
+        - Use O(editable_by) in new playbooks. O(owner) is a deprecated alias kept for backward compatibility.
         required: false
         type: str
+        aliases: ["owner"]
 
     shared:
         description: The list of members to share the password with.
@@ -168,14 +171,17 @@ import time
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
-    result_as_dict,
+    exit_module,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
 )
+
+logger = Logger()
 
 # We count 404 not as failed, because we want to know if the password exists or not.
 HTTP_CODES_GET = {
@@ -189,8 +195,17 @@ HTTP_CODES_DELETE = {
 }
 
 
+def _owner_or_editable_by(version):
+    if version < CheckmkVersion("2.3.0p23"):
+        logger.debug("Using 'owner', as version is %s" % str(version))
+        return "owner"
+    else:
+        logger.debug("Using 'editable_by', as version is %s" % str(version))
+        return "editable_by"
+
+
 class PasswordsCreateAPI(CheckmkAPI):
-    def post(self):
+    def post(self, version):
         data = {
             "ident": self.params.get("name", ""),
             "title": self.params.get("title", ""),
@@ -198,7 +213,9 @@ class PasswordsCreateAPI(CheckmkAPI):
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
-            "owner": self.params.get("owner", ""),
+            _owner_or_editable_by(version): self.params.get(
+                "editable_by", self.params.get("owner", "")
+            ),
             "shared": self.params.get("shared", ""),
         }
 
@@ -213,14 +230,16 @@ class PasswordsCreateAPI(CheckmkAPI):
 
 
 class PasswordsUpdateAPI(CheckmkAPI):
-    def put(self):
+    def put(self, version):
         data = {
             "title": self.params.get("title", ""),
             "customer": self.params.get("customer", ""),
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
-            "owner": self.params.get("owner", ""),
+            _owner_or_editable_by(version): self.params.get(
+                "editable_by", self.params.get("owner", "")
+            ),
             "shared": self.params.get("shared", ""),
         }
 
@@ -262,13 +281,14 @@ def run_module():
         comment=dict(type="str", required=False),
         documentation_url=dict(type="str", required=False),
         password=dict(type="str", required=False, no_log=True),
-        owner=dict(type="str", required=False),
+        editable_by=dict(type="str", required=False, aliases=["owner"]),
         shared=dict(type="raw", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
 
+    logger.set_loglevel(module._verbosity)
     result = RESULT(
         http_code=0,
         msg="Nothing to be done",
@@ -278,51 +298,55 @@ def run_module():
         changed=False,
     )
 
+    passwordget = PasswordsGetAPI(module, logger=logger)
+
     if module.params.get("state") == "present":
-        passwordget = PasswordsGetAPI(module)
+        version = passwordget.getversion()
         result = passwordget.get()
 
         if result.http_code == 200:
-            passwordupdate = PasswordsUpdateAPI(module)
+            passwordupdate = PasswordsUpdateAPI(module, logger=logger)
             passwordupdate.headers["If-Match"] = result.etag
-            result = passwordupdate.put()
+            result = passwordupdate.put(version)
 
             time.sleep(3)
 
         elif result.http_code == 404:
-            passwordcreate = PasswordsCreateAPI(module)
+            passwordcreate = PasswordsCreateAPI(module, logger=logger)
 
-            checkmkversion = CheckmkVersion(str(passwordcreate.getversion()))
             if (
-                checkmkversion.edition in ("ultimatemt", "cme")
+                version.edition in ("ultimatemt", "cme")
                 and module.params.get("customer") is None
             ):
-                result = RESULT(
+                exit_module(
+                    module,
                     http_code=0,
                     msg="Missing required parameter 'customer' for Checkmk Ultimate with multi-tenancy",
                     content="",
-                    etag="",
                     failed=True,
                     changed=False,
+                    logger=logger,
                 )
-                module.fail_json(**result_as_dict(result))
 
-            result = passwordcreate.post()
+            result = passwordcreate.post(version)
 
             time.sleep(3)
 
     if module.params.get("state") == "absent":
-        passwordget = PasswordsGetAPI(module)
         result = passwordget.get()
 
         if result.http_code == 200:
-            passworddelete = PasswordsDeleteAPI(module)
+            passworddelete = PasswordsDeleteAPI(module, logger=logger)
             passworddelete.headers["If-Match"] = result.etag
             result = passworddelete.delete()
 
             time.sleep(3)
 
-    module.exit_json(**result_as_dict(result))
+    exit_module(
+        module,
+        result=result,
+        logger=logger,
+    )
 
 
 def main():
