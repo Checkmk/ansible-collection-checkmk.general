@@ -91,6 +91,20 @@ jobs:
           EOF
         working-directory: ./ansible_collections/checkmk/general
 
+      # The service container's docker health check only verifies OMD processes,
+      # not that the REST API is actually available.
+      - name: "Wait for REST API readiness."
+        run: |
+          for url in \
+            "http://localhost:5000/testsite/check_mk/login.py" \
+            "http://localhost:5001/testsite_r_1/check_mk/login.py"; do
+            echo "Probing $url"
+            curl --fail --silent --show-error --output /dev/null \
+              --retry 30 --retry-delay 5 --retry-all-errors \
+              --connect-timeout 5 --max-time 10 \
+              "$url"
+          done
+
       - name: "Run integration test."
         run: uv run ansible-test integration ${{ inputs.module }} -v --color --continue-on-error --retry-on-error --diff --python ${{ matrix.python }}
         working-directory: ./ansible_collections/checkmk/general
