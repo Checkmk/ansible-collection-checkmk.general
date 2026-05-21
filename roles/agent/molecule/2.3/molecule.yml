@@ -61,14 +61,16 @@ verifier:
 scenario:
   test_sequence:
     - dependency
-    - cleanup
     - destroy
     - syntax
     - create
-    # - prepare
     - converge
-    # - idempotence  # disable for now, as we have non-idempotent tasks
-    # - side_effect
     - verify
-    - cleanup
+    - destroy
+  create_sequence:
+    - create
+  converge_sequence:
+    - create
+    - converge
+  destroy_sequence:
     - destroy
