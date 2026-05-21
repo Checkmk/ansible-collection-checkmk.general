@@ -17,12 +17,12 @@ on:
       - devel
     paths:
       - 'plugins/inventory/checkmk.py'
-      - 'plugins/doc_fragments/common_inventory.py'
+      - 'plugins/doc_fragments/common_lookup.py'
   push:
     paths:
       - '.github/workflows/ans-unit-test-inventory.yaml'
       - 'plugins/inventory/checkmk.py'
-      - 'plugins/doc_fragments/common_inventory.py'
+      - 'plugins/doc_fragments/common_lookup.py'
       - 'plugins/module_utils/**'
       - 'tests/unit/plugins/module_utils/**'
       - 'tests/unit/plugins/inventory/**'
