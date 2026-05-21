@@ -174,7 +174,6 @@ from ansible_collections.checkmk.general.plugins.module_utils.types import RESUL
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
     exit_module,
-    result_as_dict,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
@@ -210,8 +209,9 @@ class PasswordsCreateAPI(CheckmkAPI):
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
-            _owner_or_editable_by(self.getversion()):
-                self.params.get("editable_by", self.params.get("owner", "")),
+            _owner_or_editable_by(self.getversion()): self.params.get(
+                "editable_by", self.params.get("owner", "")
+            ),
             "shared": self.params.get("shared", ""),
         }
 
@@ -233,8 +233,9 @@ class PasswordsUpdateAPI(CheckmkAPI):
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
-            _owner_or_editable_by(self.getversion()):
-                self.params.get("editable_by", self.params.get("owner", "")),
+            _owner_or_editable_by(self.getversion()): self.params.get(
+                "editable_by", self.params.get("owner", "")
+            ),
             "shared": self.params.get("shared", ""),
         }
 
