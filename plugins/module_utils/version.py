@@ -44,10 +44,10 @@ class CheckmkVersion:
         }
 
         g = self._matchgroups
-        value = (10000 * int(g[0])) + (1000 * int(g[1])) + (100 * int(g[2]))
+        value = (100000 * int(g[0])) + (10000 * int(g[1])) + (1000 * int(g[2]))
 
         if g[3]:
-            value += 10 * patchtype2num[g[3]]
+            value += 100 * patchtype2num[g[3]]
             value += int(g[4])
 
         return value

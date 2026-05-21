@@ -296,10 +296,10 @@ def run_module():
         changed=False,
     )
 
-    passwordget = PasswordsGetAPI(module, logger=logger)
-    checkmkversion = CheckmkVersion(str(passwordget.getversion()))
-
     if module.params.get("state") == "present":
+        passwordget = PasswordsGetAPI(module, logger=logger)
+        checkmkversion = CheckmkVersion(str(passwordget.getversion()))
+
         result = passwordget.get()
 
         if result.http_code == 200:
