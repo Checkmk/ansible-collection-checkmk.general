@@ -14,7 +14,7 @@ DOCUMENTATION = """
         - Get hosts from any checkmk site.
         - Generate groups based on tag groups or sites in Checkmk.
 
-    extends_documentation_fragment: [checkmk.general.common]
+    extends_documentation_fragment: [checkmk.general.common_lookup]
 
     options:
         plugin:
@@ -33,6 +33,11 @@ DOCUMENTATION = """
             description: Update ansible_host variable with ip address from Checkmk
             type: boolean
             required: false
+    notes:
+        - Because inventory plugins run before C(group_vars/) and C(host_vars/) are
+          loaded, C(checkmk_var_*) values placed there are B(not) visible to this
+          plugin. Sources that B(do) work are extra-vars (C(-e)), environment
+          variables (C(CHECKMK_VAR_*)) and C(ansible.cfg) C([checkmk_lookup]) entries.
 """
 
 EXAMPLES = """
@@ -49,6 +54,30 @@ api_secret: "******"
 validate_certs: false
 groupsources: ["hosttags", "sites"]
 want_ipv4: False
+
+# ---------------------------------------------------------------------------
+# Using environment variables for credentials
+# ---------------------------------------------------------------------------
+# Connection parameters can be provided via environment variables instead of
+# writing them into the inventory file. The supported variables are:
+#   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+#   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+#   CHECKMK_VAR_VALIDATE_CERTS, CHECKMK_VAR_API_AUTH_TYPE
+
+# Minimal inventory file when using environment variables:
+plugin: checkmk.general.checkmk
+groupsources: ["hosttags", "sites"]
+
+# ---------------------------------------------------------------------------
+# Using Ansible variables for credentials
+# ---------------------------------------------------------------------------
+# Connection parameters can also be provided via Ansible variables, e.g.
+# via extra-vars (`-e`). Note that vars from group_vars/ or host_vars/
+# are NOT visible here, because inventory plugins run before those are loaded.
+# The supported variable names follow the scheme checkmk_var_<parameter>:
+#   checkmk_var_server_url, checkmk_var_site,
+#   checkmk_var_api_user, checkmk_var_api_secret,
+#   checkmk_var_validate_certs, checkmk_var_api_auth_type
 """
 
 import json
@@ -77,6 +106,8 @@ class InventoryModule(BaseInventoryPlugin):
         self.site = None
         self.user = None
         self.secret = None
+        self.api_auth_type = None
+        self.api_auth_cookie = None
         self.validate_certs = None
         self.want_ipv4 = None
         self.groupsources = []
@@ -146,6 +177,8 @@ class InventoryModule(BaseInventoryPlugin):
             self.site = self.get_option("site")
             self.user = self.get_option("api_user")
             self.secret = self.get_option("api_secret")
+            self.api_auth_type = self.get_option("api_auth_type")
+            self.api_auth_cookie = self.get_option("api_auth_cookie")
             self.validate_certs = self.get_option("validate_certs")
             self.want_ipv4 = self.get_option("want_ipv4")
             self.groupsources = self.get_option("groupsources")
@@ -154,6 +187,8 @@ class InventoryModule(BaseInventoryPlugin):
 
         api = CheckMKLookupAPI(
             site_url=self.get_option("server_url") + "/" + self.get_option("site"),
+            api_auth_type=self.api_auth_type,
+            api_auth_cookie=self.api_auth_cookie,
             api_user=self.get_option("api_user"),
             api_secret=self.get_option("api_secret"),
             validate_certs=self.get_option("validate_certs"),
