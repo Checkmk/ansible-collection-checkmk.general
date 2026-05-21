@@ -1,54 +1,103 @@
-###########################################################
-#                                                         #
-# Use this template when writing changelogs.       #
-# Remove all comment lines, once you added your changes.  #
-# Refer to the archive, if you need examples.             #
-#                                                         #
-###########################################################
-
-# How to create a changelog:
-# https://docs.ansible.com/ansible/latest/community/development_process.html#changelogs-how-to
-
-# Documentation of the file format:
-# https://github.com/ansible-community/antsibull-changelog/blob/main/docs/changelog.yaml-format.md
-
-# Quick reference:
-## Line Format:
-# When writing a changelog entry, use the following format:
-# - scope - description starting with a uppercase letter and ending with a period at the very end. Multiple sentences are allowed.
-# The scope is usually a module or plugin name or group of modules or plugins, for example, "lookup plugins", "agent role" or "host lookup module".
-# While module names can (and should) be mentioned directly (foo_module), plugin names should always be followed by the type (foo inventory plugin).
-# For changes that are not really scoped (for example, which affect a whole collection), use the following format:
-# - Description starting with an uppercase letter and ending with a dot at the very end. Multiple sentences are allowed.
-
-# Tipps:
-# You can write multi line changelogs like this:
-# - Module name - This is a very long and detailed
-#   changelog line, so we will split it into several
-#   lines, just like this.
+###############################################################################
+#                                                                             #
+#  Changelog fragment template for the checkmk.general collection.            #
+#                                                                             #
+#  How to use:                                                                #
+#    1. Copy this file to changelogs/fragments/<short-name>.yml               #
+#       (e.g. discovery_260.yml, host_module_idempotency.yml).                #
+#    2. Uncomment the section(s) you need and fill them in.                   #
+#    3. Delete everything you do not use, including these instructions,       #
+#       before committing for better readability.                             #
+#                                                                             #
+#  File format reference:                                                     #
+#    https://github.com/ansible-community/antsibull-changelog/blob/main/docs/changelog.yaml-format.md
+#                                                                             #
+###############################################################################
 #
-# Inline code blocks can be written as follows:
-# - my module - fix crash caused by ``cache.update()`` raising an ``IOError``
-
-## Possible keys:
+# Entry style used in this collection:
 #
-# release_summary
-#     Adds a single line release summary to the changelog.
-# breaking_changes
-#     Changes that break existing playbooks or roles.
-#     This includes any change to existing behavior that forces users to update tasks.
-#     Displayed in both the changelogs and the Porting Guides.
-# major_changes
-#     Major changes to Ansible itself. Generally does not include module or plugin changes. Displayed in both the changelogs and the Porting Guides.
-# minor_changes
-#     Minor changes to Ansible, modules, or plugins. This includes new features, new parameters added to modules, or behavior changes to existing parameters.
-# deprecated_features
-#     Features that have been deprecated and are scheduled for removal in a future release. Displayed in both the changelogs and the Porting Guides.
-# removed_features
-#     Features that were previously deprecated and are now removed. Displayed in both the changelogs and the Porting Guides.
-# security_fixes
-#     Fixes that address CVEs or resolve security concerns. Include links to CVE information.
-# bugfixes
-#     Fixes that resolve issues.
-# known_issues
-#     Known issues that are currently not fixed or will not be fixed.
+#   - <Scope> - <Sentence starting with an uppercase letter and ending with a period.>
+#
+#   * Scope is human-readable, not the raw module identifier:
+#       `Discovery module`, `Agent role`, `LDAP Connection lookup module`,
+#       `All modules and roles`, `Inventory plugin`.
+#   * Wrap parameters, code, values, and filenames in DOUBLE backticks:
+#       ``api_user``, ``mega_menu_icons``.
+#   * Multi-line entries are allowed; indent continuation lines by 4 spaces:
+#       - Module name - First sentence.
+#         Second sentence with rationale, migration notes, or links.
+#   * Collection-wide entries may omit the scope and start the sentence
+#     with an uppercase letter.
+#   * New modules or plugins belong under `major_changes`.
+#     New parameters or features on existing modules belong under
+#     `minor_changes`.
+#
+# Available keys (ordered by how often this collection uses them):
+#
+#   release_summary      One short sentence describing the release.
+#                        Only required once per release.
+#   minor_changes        New parameters, new features on existing modules,
+#                        role enhancements, dependency bumps.
+#   bugfixes             Fixes that resolve issues.
+#   major_changes        New modules or plugins, large reworks. Shown in
+#                        both the changelog and the porting guide.
+#   breaking_changes     Changes that force users to update playbooks or
+#                        roles. Shown in both the changelog and the
+#                        porting guide.
+#   known_issues         Known limitations shipped with a release.
+#                        Often paired with `major_changes` for experimental
+#                        or partial support.
+#   deprecated_features  Features scheduled for removal in a future release.
+#   removed_features     Previously deprecated features that are now removed.
+#                        Rarely used; removals are usually documented under
+#                        `breaking_changes` instead.
+#   security_fixes       Fixes that address CVEs or security concerns.
+#                        Include a reference to the vulnerability if possible.
+#
+###############################################################################
+
+
+# release_summary: "One short, friendly sentence describing this release."
+
+
+# minor_changes:
+#   - Discovery module - Add support for Checkmk 3.0.0.
+#   - User module - Checkmk 2.5.0 renames the ``mega_menu_icons`` parameter
+#     of the user management REST API endpoints.
+
+
+# bugfixes:
+#   - Site module - Fix the management of connections without configuration replication.
+#   - Password module - Fix non-required module options being wrongly required.
+
+
+# major_changes:
+#   - Notification module - Add module to manage notification rules.
+#   - All modules and roles - Supporting Checkmk 2.4.0 from this version onwards.
+
+
+# breaking_changes:
+#   - Rename authentication variables ``automation_user`` to ``api_user`` and
+#     ``automation_secret`` to ``api_secret``.
+#     Update your playbooks accordingly. The old names are retained as
+#     aliases for one release and will be removed afterwards.
+
+
+# known_issues:
+#   - Server role - Suse support is currently tested only on openSUSE Leap 15.
+#     If you have any interest in this functionality and have a SLES 15 handy,
+#     we are happy to collaborate on this.
+
+
+# deprecated_features:
+#   - host_group module - Options ``host_group_name`` and ``host_groups`` are
+#     renamed to ``name`` and ``groups``. The old names will be removed in a
+#     future release.
+
+
+# removed_features:
+#   - host module - Deprecated option ``host_name`` was removed. Use ``name`` instead.
+
+
+# security_fixes:
+#   - Module name - Short description of the fix. (CVE-YYYY-NNNNN)

@@ -114,6 +114,11 @@ DOCUMENTATION = """
               - Values are the domain suffixes to append, e.g. C(.example.com).
             required: false
             type: dict
+    notes:
+        - Because inventory plugins run before C(group_vars/) and C(host_vars/) are
+          loaded, C(checkmk_var_*) values placed there are B(not) visible to this
+          plugin. Sources that B(do) work are extra-vars (C(-e)), environment
+          variables (C(CHECKMK_VAR_*)) and C(ansible.cfg) C([checkmk_lookup]) entries.
 """
 
 EXAMPLES = """
@@ -155,8 +160,9 @@ groupsources: ["hosttags", "sites"]
 # Using Ansible variables for credentials
 # ---------------------------------------------------------------------------
 # Connection parameters can also be provided via Ansible variables, e.g.
-# from group_vars, host_vars, or AWX/AAP credential injection. The supported
-# variable names follow the scheme checkmk_var_<parameter>:
+# via extra-vars (`-e`). Note that vars from group_vars/ or host_vars/
+# are NOT visible here, because inventory plugins run before those are loaded.
+# The supported variable names follow the scheme checkmk_var_<parameter>:
 #   checkmk_var_server_url, checkmk_var_site,
 #   checkmk_var_api_user, checkmk_var_api_secret,
 #   checkmk_var_validate_certs, checkmk_var_api_auth_type
@@ -279,7 +285,7 @@ class InventoryModule(BaseInventoryPlugin):
             self.site = self.get_option("site")
             self.user = self.get_option("api_user")
             self.secret = self.get_option("api_secret")
-            self.api_auth_type = self.get_option("api_auth_type") or "bearer"
+            self.api_auth_type = self.get_option("api_auth_type")
             self.api_auth_cookie = self.get_option("api_auth_cookie")
             self.validate_certs = self.get_option("validate_certs")
             self.want_ipv4 = self.get_option("want_ipv4")

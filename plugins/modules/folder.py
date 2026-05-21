@@ -239,7 +239,6 @@ import json
 import sys
 import traceback
 
-# https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.dict_transformations import dict_merge, recursive_diff
 from ansible.module_utils.common.validation import check_type_list
@@ -613,7 +612,6 @@ class FolderAPI(CheckmkAPI):
 
 def _exit_if_missing_pathlib(module):
     # Handle library import error according to the following link:
-    # https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
     if PYTHON_VERSION == 2 and not HAS_PATHLIB2_LIBRARY:
         # Needs: from ansible.module_utils.basic import missing_required_lib
         exit_module(

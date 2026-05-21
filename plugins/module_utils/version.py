@@ -18,7 +18,7 @@ class CheckmkVersion:
 
     def __init__(self, version_raw):
         def _parse(version_raw):
-            _pattern = "([0-9])\\.([0-9])\\.([0-9])([abp])*([0-9]+)*\\.?([a-zA-Z]+)?"
+            _pattern = "([0-9])\\.([0-9])\\.([0-9])([abpi])*([0-9]+)*\\.?([a-zA-Z]+)?"
             r = re.match(_pattern, version_raw)
             return r
 
@@ -44,10 +44,10 @@ class CheckmkVersion:
         }
 
         g = self._matchgroups
-        value = (10000 * int(g[0])) + (1000 * int(g[1])) + (100 * int(g[2]))
+        value = (100000 * int(g[0])) + (10000 * int(g[1])) + (1000 * int(g[2]))
 
         if g[3]:
-            value += 10 * patchtype2num[g[3]]
+            value += 100 * patchtype2num[g[3]]
             value += int(g[4])
 
         return value

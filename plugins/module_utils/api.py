@@ -82,6 +82,7 @@ class CheckmkAPI:
         self.required = {}
         # may be "present", "absent" or an individual one
         self.state = ""
+        self.version = None
 
     def _fetch(
         self, code_mapping="", endpoint="", data=None, method="GET", logger=None
@@ -167,6 +168,9 @@ class CheckmkAPI:
         return result
 
     def getversion(self):
+        if self.version:
+            return self.version
+
         data = {}
 
         result = self._fetch(
@@ -181,4 +185,6 @@ class CheckmkAPI:
 
         content = result.content
         checkmkinfo = json.loads(content)
-        return CheckmkVersion(checkmkinfo.get("versions").get("checkmk"))
+        self.version = CheckmkVersion(checkmkinfo.get("versions").get("checkmk"))
+
+        return self.version

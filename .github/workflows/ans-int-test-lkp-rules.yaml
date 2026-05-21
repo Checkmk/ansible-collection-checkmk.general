@@ -42,24 +42,24 @@ jobs:
       fail-fast: false
       matrix:
         checkmk_version:
-          - 2.3.0p46
+          - 2.3.0p47
           - 2.4.0p29
-          - 2.5.0p2
+          - 2.5.0p3
         checkmk_edition:
           - raw
           - managed
           - community
           - ultimatemt
         exclude:
-          - checkmk_version: 2.3.0p46
+          - checkmk_version: 2.3.0p47
             checkmk_edition: community
-          - checkmk_version: 2.3.0p46
+          - checkmk_version: 2.3.0p47
             checkmk_edition: ultimatemt
           - checkmk_version: 2.4.0p29
             checkmk_edition: community
           - checkmk_version: 2.4.0p29
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.5.0p2
+          - checkmk_version: 2.5.0p3
             checkmk_edition: raw
-          - checkmk_version: 2.5.0p2
+          - checkmk_version: 2.5.0p3
             checkmk_edition: managed

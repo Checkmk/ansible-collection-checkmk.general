@@ -10,7 +10,11 @@ from ansible.inventory.data import InventoryData
 from ansible.plugins.loader import inventory_loader
 
 # Minimal required options that are not under test in a given case.
-_REQUIRED = {"plugin": "checkmk.general.checkmk", "server_url": "http://dummy/", "site": "dummy"}
+_REQUIRED = {
+    "plugin": "checkmk.general.checkmk",
+    "server_url": "http://dummy/",
+    "site": "dummy",
+}
 
 
 @pytest.fixture
@@ -31,6 +35,7 @@ def plugin():
 # Environment variable resolution  (CHECKMK_VAR_*)
 # ---------------------------------------------------------------------------
 
+
 class TestEnvVarResolution:
     """CHECKMK_VAR_* environment variables must be picked up by get_option()."""
 
@@ -41,7 +46,9 @@ class TestEnvVarResolution:
         assert plugin.get_option("server_url") == "http://envserver/"
 
     def test_site(self, plugin, monkeypatch):
-        monkeypatch.setenv("CHECKMK_VAR_SERVER_URL", "http://envserver/")  # also required
+        monkeypatch.setenv(
+            "CHECKMK_VAR_SERVER_URL", "http://envserver/"
+        )  # also required
         monkeypatch.setenv("CHECKMK_VAR_SITE", "envsite")
         plugin.set_options(direct={"plugin": "checkmk.general.checkmk"})
         assert plugin.get_option("site") == "envsite"
@@ -77,24 +84,30 @@ class TestEnvVarResolution:
 # Ansible variable resolution  (checkmk_var_*)
 # ---------------------------------------------------------------------------
 
+
 class TestAnsibleVarResolution:
     """checkmk_var_* Ansible variables must be picked up by get_option().
 
-    This covers the AWX/AAP credential injection use-case where credentials
-    arrive as host/group vars at runtime rather than being written into the
-    inventory file.
+    This covers credential injection where credentials arrive as host/group vars
+    at runtime rather than being written into the inventory file.
     """
 
     def test_server_url(self, plugin):
         plugin.set_options(
-            var_options={"checkmk_var_server_url": "http://varserver/", "checkmk_var_site": "varsite"},
+            var_options={
+                "checkmk_var_server_url": "http://varserver/",
+                "checkmk_var_site": "varsite",
+            },
             direct={"plugin": "checkmk.general.checkmk"},
         )
         assert plugin.get_option("server_url") == "http://varserver/"
 
     def test_site(self, plugin):
         plugin.set_options(
-            var_options={"checkmk_var_server_url": "http://varserver/", "checkmk_var_site": "varsite"},
+            var_options={
+                "checkmk_var_server_url": "http://varserver/",
+                "checkmk_var_site": "varsite",
+            },
             direct={"plugin": "checkmk.general.checkmk"},
         )
         assert plugin.get_option("site") == "varsite"
@@ -132,3 +145,31 @@ class TestAnsibleVarResolution:
             direct=dict(_REQUIRED),
         )
         assert plugin.get_option("api_user") == "varuser"
+
+
+# ---------------------------------------------------------------------------
+# ansible.cfg resolution  ([checkmk_lookup] section)
+# ---------------------------------------------------------------------------
+
+
+class TestIniResolution:
+    """Keys under [checkmk_lookup] in ansible.cfg must be picked up by get_option()."""
+
+    def test_api_user_from_ini(self, tmp_path, monkeypatch):
+        cfg = tmp_path / "ansible.cfg"
+        cfg.write_text("[checkmk_lookup]\napi_user = iniuser\n")
+        monkeypatch.setenv("ANSIBLE_CONFIG", str(cfg))
+
+        # Force Ansible to re-read its config so ANSIBLE_CONFIG takes effect.
+        from ansible.config.manager import ConfigManager
+        import ansible.constants as C
+
+        monkeypatch.setattr(C, "config", ConfigManager())
+
+        # Build the plugin AFTER swapping the config manager so its option
+        # definitions resolve against the new manager.
+        plugin_cls = inventory_loader.get("checkmk.general.checkmk", class_only=True)
+        p = plugin_cls()
+        p.inventory = InventoryData()
+        p.set_options(direct=dict(_REQUIRED))
+        assert p.get_option("api_user") == "iniuser"

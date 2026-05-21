@@ -1,5 +1,9 @@
 minor_changes:
-  - Checkmk inventory plugin - Add support for environment variables (``CHECKMK_VAR_*``) and
-    Ansible variables (``checkmk_var_*``) for connection parameters.
-    This is consistent with how lookup plugins already handle credentials.
-    Also adds support for ``api_auth_type`` and ``api_auth_cookie`` parameters.
+  - Checkmk inventory plugin - Credentials can now be provided via ``CHECKMK_VAR_*``
+    environment variables, ``checkmk_var_*`` Ansible variables, or the
+    ``[checkmk_lookup]`` section in ``ansible.cfg``.
+    Cookie-based authentication is also supported via the new ``api_auth_type``
+    and ``api_auth_cookie`` options.
+  - All modules - Cookie-based authentication can now be used without providing
+    ``api_user`` and ``api_secret``. Bearer and basic authentication still require
+    them.
