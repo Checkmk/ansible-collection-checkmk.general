@@ -182,6 +182,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.version import (
 )
 
 logger = Logger()
+checkmkversion = None
 
 # We count 404 not as failed, because we want to know if the password exists or not.
 HTTP_CODES_GET = {
@@ -195,7 +196,7 @@ HTTP_CODES_DELETE = {
 }
 
 
-def _owner_or_editable_by(checkmkversion):
+def _owner_or_editable_by():
     if checkmkversion < CheckmkVersion("2.3.0p23"):
         return "owner"
     else:
@@ -211,7 +212,7 @@ class PasswordsCreateAPI(CheckmkAPI):
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
-            _owner_or_editable_by(self.getversion()): self.params.get(
+            _owner_or_editable_by(): self.params.get(
                 "editable_by", self.params.get("owner", "")
             ),
             "shared": self.params.get("shared", ""),
@@ -235,7 +236,7 @@ class PasswordsUpdateAPI(CheckmkAPI):
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
-            _owner_or_editable_by(self.getversion()): self.params.get(
+            _owner_or_editable_by(): self.params.get(
                 "editable_by", self.params.get("owner", "")
             ),
             "shared": self.params.get("shared", ""),
