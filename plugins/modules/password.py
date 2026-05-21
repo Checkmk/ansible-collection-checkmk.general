@@ -56,7 +56,9 @@ options:
         type: str
 
     editable_by:
-        description: Each password is owned by a group of users which are able to edit, delete and use existing passwords.
+        description:
+        - Each password is owned by a group of users which are able to edit, delete and use existing passwords.
+        - Use O(editable_by) in new playbooks. O(owner) is a deprecated alias kept for backward compatibility.
         required: false
         type: str
         aliases: ["owner"]
