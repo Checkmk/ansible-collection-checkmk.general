@@ -55,10 +55,11 @@ options:
         required: false
         type: str
 
-    owner:
+    editable_by:
         description: Each password is owned by a group of users which are able to edit, delete and use existing passwords.
         required: false
         type: str
+        aliases: ["owner"]
 
     shared:
         description: The list of members to share the password with.
@@ -193,6 +194,13 @@ HTTP_CODES_DELETE = {
 }
 
 
+def _owner_or_editable_by(checkmkversion):
+    if checkmkversion < CheckmkVersion("2.3.0p23"):
+        return "owner"
+    else:
+        return "editable_by"
+
+
 class PasswordsCreateAPI(CheckmkAPI):
     def post(self):
         data = {
@@ -202,7 +210,8 @@ class PasswordsCreateAPI(CheckmkAPI):
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
-            "owner": self.params.get("owner", ""),
+            _owner_or_editable_by(self.getversion()):
+                self.params.get("editable_by", self.params.get("owner", "")),
             "shared": self.params.get("shared", ""),
         }
 
@@ -224,7 +233,8 @@ class PasswordsUpdateAPI(CheckmkAPI):
             "comment": self.params.get("comment", ""),
             "documentation_url": self.params.get("documentation_url", ""),
             "password": self.params.get("password", ""),
-            "owner": self.params.get("owner", ""),
+            _owner_or_editable_by(self.getversion()):
+                self.params.get("editable_by", self.params.get("owner", "")),
             "shared": self.params.get("shared", ""),
         }
 
@@ -266,7 +276,7 @@ def run_module():
         comment=dict(type="str", required=False),
         documentation_url=dict(type="str", required=False),
         password=dict(type="str", required=False, no_log=True),
-        owner=dict(type="str", required=False),
+        editable_by=dict(type="str", required=False, aliases=["owner"]),
         shared=dict(type="raw", required=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
@@ -285,12 +295,6 @@ def run_module():
 
     passwordget = PasswordsGetAPI(module, logger=logger)
     checkmkversion = CheckmkVersion(str(passwordget.getversion()))
-
-    if checkmkversion >= CheckmkVersion("2.6.0"):
-        if "owner" in module.params:
-            logger.debug("Checkmk Version %s needs 'editable_by' instead of 'owner'" % 
-                         str(checkmkversion))
-            module.params["editable_by"] = module.params.pop("owner")
 
     if module.params.get("state") == "present":
         result = passwordget.get()
