@@ -27,7 +27,7 @@ uv run ansible-test sanity --docker
 uv run ansible-test units --docker
 uv run ansible-test units tests/unit/plugins/<path> --docker   # single target
 uv run ansible-test integration --docker
-cd roles/server && uv run molecule test -s 2.3.0
+cd roles/server && uv run molecule test -s 2.5    # scenarios: 2.3 / 2.4 / 2.5 (default/ is a symlink to 2.5)
 ```
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the human-oriented guide.
@@ -43,7 +43,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the human-oriented guide.
 
 ```
 plugins/
-  modules/         21 modules wrapping the Checkmk REST API
+  modules/         modules wrapping the Checkmk REST API
   inventory/       dynamic inventory plugin
   lookup/          lookup plugins
   module_utils/    api.py (REST), differ.py, utils.py, discovery_<ver>.py
@@ -52,7 +52,7 @@ roles/
   {agent,server}/  install/manage Checkmk agent / server site
 tests/
   unit/plugins/    pytest unit tests, mirrors plugins/ layout
-  integration/     28 targets, one per module/lookup (lookup_* prefix)
+  integration/     one target per module/lookup (lookup_* prefix for lookups)
 changelogs/
   fragments/       per-PR changelog fragments (.yml) — required
 docs/              generated module docs — do NOT hand-edit
