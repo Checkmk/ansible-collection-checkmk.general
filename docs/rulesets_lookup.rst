@@ -22,7 +22,7 @@ checkmk.general.rulesets lookup -- Search rulesets
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.5.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.6.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -670,6 +670,7 @@ Notes
    - Alternatively, you can use a shell/command task that runs against localhost and registers the result.
    - The directory of the play is used as the current working directory.
    - It is :strong:`NOT` possible to assign other variables to the variables mentioned in the :literal:`vars` section! This is a limitation of Ansible itself.
+   - Connection parameters are resolved from (in order of precedence) the value set directly on the plugin invocation, an Ansible variable of the form :literal:`checkmk\_var\_\*`\ , an environment variable of the form :literal:`CHECKMK\_VAR\_\*`\ , and the matching key under section :literal:`[checkmk\_lookup]` in :literal:`ansible.cfg`.
 
 .. Seealso
 

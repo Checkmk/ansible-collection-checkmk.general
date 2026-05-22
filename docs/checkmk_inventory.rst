@@ -22,7 +22,7 @@ checkmk.general.checkmk inventory -- Dynamic Inventory Source or Checkmk
 .. Collection note
 
 .. note::
-    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.5.0).
+    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.6.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -106,7 +106,24 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Authentication cookie for the Checkmk session.
+      The authentication cookie value if using cookie\-based authentication.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block:: ini
+
+          [checkmk_lookup]
+          api_auth_cookie = VALUE
+
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_API\_AUTH\_COOKIE`
+
+      - Variable: checkmk\_var\_api\_auth\_cookie
 
 
       .. raw:: html
@@ -143,16 +160,28 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Type of authentication to use.
+      The authentication type to use ('bearer', 'basic', 'cookie').
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-choices:`Choices:`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"bearer"`
 
-      - :ansible-option-choices-entry-default:`"bearer"` :ansible-option-choices-default-mark:`← (default)`
-      - :ansible-option-choices-entry:`"basic"`
-      - :ansible-option-choices-entry:`"cookie"`
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block:: ini
+
+          [checkmk_lookup]
+          api_auth_type = bearer
+
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_API\_AUTH\_TYPE`
+
+      - Variable: checkmk\_var\_api\_auth\_type
 
 
       .. raw:: html
@@ -180,7 +209,7 @@ Parameters
 
         :ansible-option-aliases:`aliases: automation_secret`
 
-        :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string`
 
 
 
@@ -193,7 +222,24 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The secret to authenticate your automation user. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_API\_SECRET`.
+      Automation secret for the REST API access.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block:: ini
+
+          [checkmk_lookup]
+          api_secret = VALUE
+
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_API\_SECRET`
+
+      - Variable: checkmk\_var\_api\_secret
 
 
       .. raw:: html
@@ -221,7 +267,7 @@ Parameters
 
         :ansible-option-aliases:`aliases: automation_user`
 
-        :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string`
 
 
 
@@ -234,81 +280,24 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The automation user you want to use. It has to be an 'Automation' user, not a normal one. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_API\_USER`.
+      Automation user for the REST API access.
 
 
-      .. raw:: html
+      .. rst-class:: ansible-option-line
 
-        </div>
+      :ansible-option-configuration:`Configuration:`
 
-  * - .. raw:: html
+      - INI entry:
 
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-client_cert"></div>
+        .. code-block:: ini
 
-      .. _ansible_collections.checkmk.general.checkmk_inventory__parameter-client_cert:
-
-      .. rst-class:: ansible-option-title
-
-      **client_cert**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-client_cert" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`path`
+          [checkmk_lookup]
+          api_user = VALUE
 
 
+      - Environment variable: :envvar:`CHECKMK\_VAR\_API\_USER`
 
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      Path to the client certificate file for authentication with the web server hosting Checkmk. This is not a Checkmk feature, but one of Ansible and the respective web server.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-client_key"></div>
-
-      .. _ansible_collections.checkmk.general.checkmk_inventory__parameter-client_key:
-
-      .. rst-class:: ansible-option-title
-
-      **client_key**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-client_key" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`path`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      Path to the client certificate key file for authentication with the web server hosting Checkmk. This is not a Checkmk feature, but one of Ansible and the respective web server.
+      - Variable: checkmk\_var\_api\_user
 
 
       .. raw:: html
@@ -428,7 +417,24 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The base url of your Checkmk server including the protocol but excluding the site. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_SERVER\_URL`.
+      URL of the Checkmk server
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block:: ini
+
+          [checkmk_lookup]
+          server_url = VALUE
+
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_SERVER\_URL`
+
+      - Variable: checkmk\_var\_server\_url
 
 
       .. raw:: html
@@ -465,7 +471,24 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The site you want to connect to. This will be appended to the server\_url as part of the API request url. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_SITE`.
+      Site name.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block:: ini
+
+          [checkmk_lookup]
+          site = VALUE
+
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_SITE`
+
+      - Variable: checkmk\_var\_site
 
 
       .. raw:: html
@@ -502,7 +525,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Whether to validate the SSL certificate of the Checkmk server. If not set the module will fall back to the environment variable :literal:`CHECKMK\_VAR\_VALIDATE\_CERTS`.
+      Whether to validate SSL certificates.
 
 
       .. rst-class:: ansible-option-line
@@ -511,6 +534,23 @@ Parameters
 
       - :ansible-option-choices-entry:`false`
       - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - INI entry:
+
+        .. code-block:: ini
+
+          [checkmk_lookup]
+          validate_certs = true
+
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_VALIDATE\_CERTS`
+
+      - Variable: checkmk\_var\_validate\_certs
 
 
       .. raw:: html
@@ -563,11 +603,24 @@ Parameters
         </div>
 
 
+.. note::
+
+    Configuration entries listed above for each entry type (Ansible variable, environment variable, and so on) have a low to high priority order.
+    For example, a variable that is lower in the list will override a variable that is higher up.
+    The entry types are also ordered by precedence from low to high priority order.
+    For example, an ansible.cfg entry (further up in the list) is overwritten by an Ansible variable (further down in the list).
+
 .. Attributes
 
 
 .. Notes
 
+Notes
+-----
+
+.. note::
+   - Because inventory plugins run before :literal:`group\_vars/` and :literal:`host\_vars/` are loaded, :literal:`checkmk\_var\_\*` values placed there are :strong:`not` visible to this plugin. Sources that :strong:`do` work are extra\-vars (\ :literal:`\-e`\ ), environment variables (\ :literal:`CHECKMK\_VAR\_\*`\ ) and :literal:`ansible.cfg` :literal:`[checkmk\_lookup]` entries.
+   - Connection parameters are resolved from (in order of precedence) the value set directly on the plugin invocation, an Ansible variable of the form :literal:`checkmk\_var\_\*`\ , an environment variable of the form :literal:`CHECKMK\_VAR\_\*`\ , and the matching key under section :literal:`[checkmk\_lookup]` in :literal:`ansible.cfg`.
 
 .. Seealso
 
@@ -592,6 +645,30 @@ Examples
     validate_certs: false
     groupsources: ["hosttags", "sites"]
     want_ipv4: False
+
+    # ---------------------------------------------------------------------------
+    # Using environment variables for credentials
+    # ---------------------------------------------------------------------------
+    # Connection parameters can be provided via environment variables instead of
+    # writing them into the inventory file. The supported variables are:
+    #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
+    #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
+    #   CHECKMK_VAR_VALIDATE_CERTS, CHECKMK_VAR_API_AUTH_TYPE
+
+    # Minimal inventory file when using environment variables:
+    plugin: checkmk.general.checkmk
+    groupsources: ["hosttags", "sites"]
+
+    # ---------------------------------------------------------------------------
+    # Using Ansible variables for credentials
+    # ---------------------------------------------------------------------------
+    # Connection parameters can also be provided via Ansible variables, e.g.
+    # via extra-vars (`-e`). Note that vars from group_vars/ or host_vars/
+    # are NOT visible here, because inventory plugins run before those are loaded.
+    # The supported variable names follow the scheme checkmk_var_<parameter>:
+    #   checkmk_var_server_url, checkmk_var_site,
+    #   checkmk_var_api_user, checkmk_var_api_secret,
+    #   checkmk_var_validate_certs, checkmk_var_api_auth_type
 
 
 
