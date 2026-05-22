@@ -160,7 +160,6 @@ msg:
 
 import json
 
-# https://docs.ansible.com/ansible/latest/dev_guide/testing/sanity/import.html
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger

@@ -63,7 +63,7 @@ class CheckmkAPI:
                 self.module.fail_json(
                     msg="`api_user` and `api_secret` are required for basic authentication."
                 )
-                auth_str = "%s:%s" % (api_user, api_secret)
+            auth_str = "%s:%s" % (api_user, api_secret)
             auth_b64 = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
             self.headers["Authorization"] = "Basic %s" % auth_b64
 
@@ -82,6 +82,7 @@ class CheckmkAPI:
         self.required = {}
         # may be "present", "absent" or an individual one
         self.state = ""
+        self.version = None
 
     def _fetch(
         self, code_mapping="", endpoint="", data=None, method="GET", logger=None
@@ -167,6 +168,9 @@ class CheckmkAPI:
         return result
 
     def getversion(self):
+        if self.version:
+            return self.version
+
         data = {}
 
         result = self._fetch(
@@ -181,4 +185,6 @@ class CheckmkAPI:
 
         content = result.content
         checkmkinfo = json.loads(content)
-        return CheckmkVersion(checkmkinfo.get("versions").get("checkmk"))
+        self.version = CheckmkVersion(checkmkinfo.get("versions").get("checkmk"))
+
+        return self.version

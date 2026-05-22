@@ -1,0 +1,2 @@
+bugfixes:
+  - Module utils - Fix basic authentication being broken due to an indentation error that left ``auth_str`` unassigned.

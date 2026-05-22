@@ -91,6 +91,45 @@ jobs:
           EOF
         working-directory: ./ansible_collections/checkmk/general
 
+      # The Checkmk docker entrypoint occasionally races with omd post-create
+      # scripts: `omd config set APACHE_TCP_ADDR 0.0.0.0` fails with "Cannot
+      # change config variables while site is running", leaving apache bound
+      # to the default 127.0.0.1 inside the container. The host port mapping
+      # then cannot reach apache and probes get TCP RST. On probe failure we
+      # repair the bind config via docker exec.
+      - name: "Wait for REST API readiness."
+        shell: bash
+        env:
+          CENTRAL_CID: ${{ job.services.testsite.id }}
+          REMOTE_CID: ${{ job.services.testsite-r-1.id }}
+        run: |
+          set -eo pipefail
+
+          probe() {
+            curl --fail --silent --show-error --output /dev/null \
+              --retry "${2:-18}" --retry-delay 5 --retry-all-errors \
+              --connect-timeout 5 --max-time 10 "$1"
+          }
+
+          repair() {
+            local cid=$1 site=$2 lstcp=$3
+            echo "::warning ::Repairing $site (entrypoint race)"
+            docker exec "$cid" omd stop "$site" || true
+            docker exec "$cid" omd config "$site" set APACHE_TCP_ADDR 0.0.0.0
+            docker exec "$cid" omd config "$site" set APACHE_TCP_PORT 5000
+            [ "$lstcp" = true ] && docker exec "$cid" omd config "$site" set LIVESTATUS_TCP on
+            docker exec "$cid" omd start "$site"
+          }
+
+          check() {
+            local url=$1 cid=$2 site=$3 lstcp=$4
+            echo "Probing $url"
+            probe "$url" || { repair "$cid" "$site" "$lstcp"; probe "$url" 12; }
+          }
+
+          check http://localhost:5000/testsite/check_mk/login.py     "$CENTRAL_CID" testsite     false
+          check http://localhost:5001/testsite_r_1/check_mk/login.py "$REMOTE_CID"  testsite_r_1 true
+
       - name: "Run integration test."
         run: uv run ansible-test integration ${{ inputs.module }} -v --color --continue-on-error --retry-on-error --diff --python ${{ matrix.python }}
         working-directory: ./ansible_collections/checkmk/general

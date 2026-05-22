@@ -84,4 +84,9 @@ class ModuleDocFragment(object):
                   key: validate_certs
             type: bool
             default: True
+      notes:
+        - Connection parameters are resolved from (in order of precedence) the value
+          set directly on the plugin invocation, an Ansible variable of the form
+          C(checkmk_var_*), an environment variable of the form C(CHECKMK_VAR_*),
+          and the matching key under section C([checkmk_lookup]) in C(ansible.cfg).
     """
