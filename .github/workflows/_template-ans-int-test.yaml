@@ -91,19 +91,59 @@ jobs:
           EOF
         working-directory: ./ansible_collections/checkmk/general
 
-      # The service container's docker health check only verifies OMD processes,
-      # not that the REST API is actually available.
+      # The Checkmk docker entrypoint occasionally races with omd post-create
+      # scripts: `omd config set APACHE_TCP_ADDR 0.0.0.0` fails with "Cannot
+      # change config variables while site is running", leaving apache bound
+      # to the default 127.0.0.1 inside the container. The host port mapping
+      # then cannot reach apache and probes get TCP RST. On probe failure we
+      # repair the bind config via docker exec.
       - name: "Wait for REST API readiness."
+        shell: bash
+        env:
+          CENTRAL_CID: ${{ job.services.testsite.id }}
+          REMOTE_CID: ${{ job.services.testsite-r-1.id }}
         run: |
-          for url in \
-            "http://localhost:5000/testsite/check_mk/login.py" \
-            "http://localhost:5001/testsite_r_1/check_mk/login.py"; do
-            echo "Probing $url"
+          set -eo pipefail
+
+          probe() {
+            local url="$1"
+            local retries="${2:-18}"
             curl --fail --silent --show-error --output /dev/null \
-              --retry 30 --retry-delay 5 --retry-all-errors \
-              --connect-timeout 5 --max-time 10 \
-              "$url"
-          done
+              --retry "$retries" --retry-delay 5 --retry-all-errors \
+              --connect-timeout 5 --max-time 10 "$url"
+          }
+
+          repair() {
+            local cid="$1" site="$2" livestatus_tcp="$3"
+            echo "::warning ::Site $site unreachable; repairing entrypoint race"
+            for i in $(seq 1 30); do
+              docker exec "$cid" test -f "/omd/sites/$site/etc/omd/site.conf" && break
+              sleep 2
+            done
+            docker exec "$cid" omd stop "$site" || true
+            docker exec "$cid" omd config "$site" set APACHE_TCP_ADDR 0.0.0.0
+            docker exec "$cid" omd config "$site" set APACHE_TCP_PORT 5000
+            if [ "$livestatus_tcp" = "true" ]; then
+              docker exec "$cid" omd config "$site" set LIVESTATUS_TCP on
+            fi
+            docker exec "$cid" omd start "$site"
+          }
+
+          probe_with_recovery() {
+            local url="$1" cid="$2" site="$3" lstcp="$4"
+            echo "Probing $url"
+            if probe "$url"; then
+              return 0
+            fi
+            repair "$cid" "$site" "$lstcp"
+            echo "Re-probing $url after repair"
+            probe "$url" 12
+          }
+
+          probe_with_recovery "http://localhost:5000/testsite/check_mk/login.py" \
+                              "$CENTRAL_CID" testsite false
+          probe_with_recovery "http://localhost:5001/testsite_r_1/check_mk/login.py" \
+                              "$REMOTE_CID" testsite_r_1 true
 
       - name: "Run integration test."
         run: uv run ansible-test integration ${{ inputs.module }} -v --color --continue-on-error --retry-on-error --diff --python ${{ matrix.python }}
