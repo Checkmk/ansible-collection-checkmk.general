@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 7.5.0
+Collection version 7.6.0
 
 .. contents::
    :local:
