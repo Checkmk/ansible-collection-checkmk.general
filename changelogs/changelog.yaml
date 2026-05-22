@@ -1663,3 +1663,28 @@ releases:
     - release_summary.yml
     - roles.yml
     release_date: '2026-05-18'
+  7.6.0:
+    changes:
+      bugfixes:
+      - Module utils - Fix basic authentication being broken due to an indentation
+        error that left ``auth_str`` unassigned.
+      - Module utils - Fix version comparison to reliably handle patch release numbers
+        greater than 10.
+      - Password module - Make the module compatible with Checkmk 3.0.0.
+      deprecated_features:
+      - Password module - The ``owner`` parameter was renamed to ``editable_by``.
+        We keep ``owner`` as an alias, but the old name will be removed in a future
+        release. Update your configuration to use ``editable_by``.
+      minor_changes:
+      - All modules - Cookie-based authentication can now be used without providing
+        ``api_user`` and ``api_secret``. Bearer and basic authentication still require
+        them.
+      - Checkmk inventory plugin - Credentials can now be provided via ``CHECKMK_VAR_*``
+        environment variables, ``checkmk_var_*`` Ansible variables, or the ``[checkmk_lookup]``
+        section in ``ansible.cfg``. Cookie-based authentication is also supported
+        via the new ``api_auth_type`` and ``api_auth_cookie`` options.
+    fragments:
+    - api.yml
+    - inventory.yml
+    - password.yml
+    release_date: '2026-05-22'

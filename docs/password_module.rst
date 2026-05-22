@@ -22,7 +22,7 @@ checkmk.general.password module -- Manage passwords in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.5.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.6.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -177,7 +177,7 @@ Parameters
 
         :ansible-option-aliases:`aliases: automation_secret`
 
-        :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -215,7 +215,7 @@ Parameters
 
         :ansible-option-aliases:`aliases: automation_user`
 
-        :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -405,6 +405,46 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-editable_by"></div>
+        <div class="ansibleOptionAnchor" id="parameter-owner"></div>
+
+      .. _ansible_collections.checkmk.general.password_module__parameter-editable_by:
+      .. _ansible_collections.checkmk.general.password_module__parameter-owner:
+
+      .. rst-class:: ansible-option-title
+
+      **editable_by**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-editable_by" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: owner`
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Each password is owned by a group of users which are able to edit, delete and use existing passwords.
+
+      Use :ansopt:`checkmk.general.password#module:editable\_by` in new playbooks. :ansopt:`checkmk.general.password#module:owner` is a deprecated alias kept for backward compatibility.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
 
       .. _ansible_collections.checkmk.general.password_module__parameter-name:
@@ -430,40 +470,6 @@ Parameters
         <div class="ansible-option-cell">
 
       A unique identifier for the password.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-owner"></div>
-
-      .. _ansible_collections.checkmk.general.password_module__parameter-owner:
-
-      .. rst-class:: ansible-option-title
-
-      **owner**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-owner" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      Each password is owned by a group of users which are able to edit, delete and use existing passwords.
 
 
       .. raw:: html
