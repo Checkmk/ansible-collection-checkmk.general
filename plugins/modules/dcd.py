@@ -288,9 +288,7 @@ diff:
 import json
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.checkmk.general.plugins.module_utils.api import (
-    CheckmkAPI,
-)
+from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
@@ -300,44 +298,31 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
 
 logger = Logger()
 
+HTTP_CODES_GET = {
+    200: (False, False, "DCD configuration found, nothing changed"),
+    404: (False, False, "DCD configuration not found"),
+}
 
-class DCDHTTPCodes:
-    """
-    DCDHTTPCodes defines the HTTP status codes and corresponding messages
-    for DCD operations such as GET, CREATE, EDIT, and DELETE.
-    """
+HTTP_CODES_CREATE = {
+    200: (True, False, "DCD configuration created"),
+    201: (True, False, "DCD configuration created"),
+    204: (True, False, "DCD configuration created"),
+    405: (False, True, "Method Not Allowed"),
+}
 
-    get = {
-        200: (False, False, "DCD configuration found, nothing changed"),
-        404: (False, False, "DCD configuration not found"),
-    }
-    create = {
-        200: (True, False, "DCD configuration created"),
-        201: (True, False, "DCD configuration created"),
-        204: (True, False, "DCD configuration created"),
-        405: (False, True, "Method Not Allowed"),
-    }
-    edit = {
-        200: (True, False, "DCD configuration modified"),
-        405: (False, True, "Method Not Allowed"),
-    }
-    delete = {
-        204: (True, False, "DCD configuration deleted"),
-        405: (False, True, "Method Not Allowed"),
-    }
+HTTP_CODES_EDIT = {
+    200: (True, False, "DCD configuration modified"),
+    405: (False, True, "Method Not Allowed"),
+}
+
+HTTP_CODES_DELETE = {
+    204: (True, False, "DCD configuration deleted"),
+    405: (False, True, "Method Not Allowed"),
+}
 
 
 class DCDAPI(CheckmkAPI):
-    """
-    Manages DCD operations via the Checkmk API.
-    """
-
     def __init__(self, module):
-        """
-        Initializes the DCDAPI class, retrieves the current state of the DCD configuration.
-        Args:
-            module (AnsibleModule): The Ansible module object.
-        """
         super().__init__(module)
         dcd_config = self.params.get("dcd_config")
         if not dcd_config or "dcd_id" not in dcd_config:
@@ -351,7 +336,6 @@ class DCDAPI(CheckmkAPI):
         self.dcd_id = dcd_config["dcd_id"]
         self.desired = dcd_config.copy()
 
-        # Ensure 'site' is present in the desired state
         if "site" not in self.desired or self.desired["site"] is None:
             self.desired["site"] = self.params.get("site")
             if self.desired["site"] is None:
@@ -362,11 +346,9 @@ class DCDAPI(CheckmkAPI):
                     logger=logger,
                 )
 
-        # Ensure 'comment' is not null
         if "comment" not in self.desired or self.desired["comment"] is None:
             self.desired["comment"] = ""
 
-        # Completely remove parameters that contain empty lists
         if "connector" in self.desired and isinstance(self.desired["connector"], dict):
             for rule in self.desired["connector"].get("creation_rules", []):
                 if len(rule.get("matching_hosts", [])) == 0:
@@ -376,20 +358,13 @@ class DCDAPI(CheckmkAPI):
                 del self.desired["connector"]["restrict_source_hosts"]
 
         self.state = None
-
         self._get_current()
-
-        # Initialize the ConfigDiffer with desired and current configurations
         self.differ = ConfigDiffer(self.desired, self.current)
 
     def _get_current(self):
-        """
-        Retrieves the current state of the DCD configuration from the Checkmk API.
-        """
-        endpoint = self._build_endpoint(action="get")
         result = self._fetch(
-            code_mapping=DCDHTTPCodes.get,
-            endpoint=endpoint,
+            code_mapping=HTTP_CODES_GET,
+            endpoint="/objects/dcd/%s" % self.dcd_id,
             logger=logger,
             method="GET",
         )
@@ -400,8 +375,7 @@ class DCDAPI(CheckmkAPI):
                 current_raw = json.loads(result.content)
                 self.current = current_raw.get("extensions", {})
                 self.current["dcd_id"] = current_raw.get("id")
-
-            except json.JSONDecodeError:
+            except (ValueError, TypeError):
                 exit_module(
                     self.module,
                     msg="Failed to decode JSON response from API.",
@@ -413,60 +387,21 @@ class DCDAPI(CheckmkAPI):
             self.state = "absent"
             self.current = {}
 
-    def _build_endpoint(self, action="get"):
-        """
-        Builds the API endpoint URL for the DCD configuration.
-        Args:
-            action (str): The action for which to build the endpoint. Options are 'create', 'get', 'edit', 'delete'.
-        Returns:
-            str: API endpoint URL.
-        """
-        if action == "create":
-            return "/domain-types/dcd/collections/all"
-        elif action in ["get", "edit", "delete"]:
-            return "/objects/dcd/%s" % self.dcd_id
-        else:
-            exit_module(
-                self.module,
-                msg="Unsupported action '%s' for building endpoint." % action,
-                failed=True,
-                logger=logger,
-            )
-
     def needs_update(self):
-        """
-        Determines whether an update to the DCD configuration is needed.
-        Returns:
-            bool: True if changes are needed, False otherwise.
-        """
         return self.differ.needs_update()
 
     def generate_diff(self, deletion=False):
-        """
-        Generates a diff between the current and desired state.
-        Args:
-            deletion (bool): Whether the diff is for a deletion.
-        Returns:
-            dict: Dictionary containing 'before' and 'after' states.
-        """
         return self.differ.generate_diff(deletion)
 
-    def _perform_action(self, action, method, data=None):
-        """
-        Helper method to perform CRUD actions.
-        Args:
-            action (str): The action being performed ('create', 'edit', 'delete').
-            method (str): The HTTP method.
-            data (dict, optional): The data to send with the request.
-        Returns:
-            dict: The result dictionary.
-        """
-        endpoint = self._build_endpoint(action=action)
+    def _perform_action(self, action, method, code_mapping, data=None):
+        if action == "create":
+            endpoint = "/domain-types/dcd/collections/all"
+        else:
+            endpoint = "/objects/dcd/%s" % self.dcd_id
 
         diff = None
         if self.module._diff:
-            deletion_flag = action == "delete"
-            diff = self.generate_diff(deletion=deletion_flag)
+            diff = self.generate_diff(deletion=(action == "delete"))
 
         if self.module.check_mode:
             action_msgs = {
@@ -476,12 +411,12 @@ class DCDAPI(CheckmkAPI):
             }
             return dict(
                 msg="DCD configuration %s." % action_msgs.get(action, action),
-                changed=True,  # Indicate that changes would occur
+                changed=True,
                 diff=diff,
             )
 
         return self._fetch(
-            code_mapping=getattr(DCDHTTPCodes, action),
+            code_mapping=code_mapping,
             endpoint=endpoint,
             data=data,
             logger=logger,
@@ -489,42 +424,20 @@ class DCDAPI(CheckmkAPI):
         )
 
     def create(self):
-        """
-        Creates a new DCD configuration via the Checkmk API.
-        Returns:
-            dict: The result of the creation operation.
-        """
         filtered_data = {k: v for k, v in self.desired.items() if v is not None}
-        return self._perform_action(action="create", method="POST", data=filtered_data)
+        return self._perform_action(
+            "create", "POST", HTTP_CODES_CREATE, data=filtered_data
+        )
 
     def edit(self):
-        """
-        Updates an existing DCD configuration via the Checkmk API.
-        Returns:
-            dict: The result of the update operation.
-        """
         filtered_data = {k: v for k, v in self.desired.items() if v is not None}
-        return self._perform_action(action="edit", method="PUT", data=filtered_data)
+        return self._perform_action("edit", "PUT", HTTP_CODES_EDIT, data=filtered_data)
 
     def delete(self):
-        """
-        Deletes an existing DCD configuration via the Checkmk API.
-        Returns:
-            dict: The result of the deletion operation.
-        """
-        return self._perform_action(action="delete", method="DELETE")
+        return self._perform_action("delete", "DELETE", HTTP_CODES_DELETE)
 
 
 def run_module():
-    """
-    The main logic for the Ansible module.
-    This function defines the module parameters, initializes the DCDAPI, and performs
-    the appropriate action (create or delete) based on the state of the DCD configuration.
-    Note: Update functionality is currently disabled due to the lack of a REST API endpoint for updates.
-    Returns:
-        None: The result is returned to Ansible via module.exit_json().
-    """
-
     argument_spec = base_argument_spec()
     argument_spec.update(
         server_url=dict(type="str", required=True),
@@ -573,70 +486,48 @@ def run_module():
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    # Is this necessary? Or should it be handles by api.py?
-    required_if = [
-        ("api_auth_type", "bearer", ["api_user", "api_secret"]),
-        ("api_auth_type", "basic", ["api_user", "api_secret"]),
-        ("api_auth_type", "cookie", ["api_auth_cookie"]),
-    ]
-
     module = AnsibleModule(
         argument_spec=argument_spec,
         supports_check_mode=True,
-        required_if=required_if,
     )
 
     logger.set_loglevel(module._verbosity)
-    logger.set_loglevel(2)
 
     desired_state = module.params["state"]
     dcd_api = DCDAPI(module)
 
-    try:
-        if desired_state == "present":
-            if dcd_api.state == "absent":
-                result = dcd_api.create()
-                exit_module(module, result=result, logger=logger)
-            elif dcd_api.needs_update():
-                exit_module(
-                    module,
-                    msg="DCD object cannot be updated. No REST API endpoint available for updates. Diff: %s"
-                    % str(dcd_api.generate_diff()),
-                    failed=True,
-                    logger=logger,
-                )
+    if desired_state == "present":
+        if dcd_api.state == "absent":
+            result = dcd_api.create()
+            exit_module(module, result=result, logger=logger)
+        elif dcd_api.needs_update():
+            exit_module(
+                module,
+                msg="DCD object cannot be updated. No REST API endpoint available for updates. Diff: %s"
+                % str(dcd_api.generate_diff()),
+                failed=True,
+                logger=logger,
+            )
+        else:
+            exit_module(
+                module,
+                msg="DCD configuration is already in the desired state.",
+                logger=logger,
+            )
 
-            else:
-                exit_module(
-                    module,
-                    msg="DCD configuration is already in the desired state.",
-                    logger=logger,
-                )
-
-        elif desired_state == "absent":
-            if dcd_api.state == "present":
-                result = dcd_api.delete()
-                exit_module(module, result=result, logger=logger)
-            else:
-                exit_module(
-                    module,
-                    msg="DCD configuration is already absent.",
-                    logger=logger,
-                )
-
-    except Exception as e:
-        exit_module(
-            module, msg="Error managing the DCD configuration: %s" % e, logger=logger
-        )
+    elif desired_state == "absent":
+        if dcd_api.state == "present":
+            result = dcd_api.delete()
+            exit_module(module, result=result, logger=logger)
+        else:
+            exit_module(
+                module,
+                msg="DCD configuration is already absent.",
+                logger=logger,
+            )
 
 
 def main():
-    """
-    Main entry point for the module.
-    This function is invoked when the module is executed directly.
-    Returns:
-        None: Calls run_module() to handle the logic.
-    """
     run_module()
 
 
