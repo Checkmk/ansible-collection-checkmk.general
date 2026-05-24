@@ -1,0 +1,153 @@
+---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else None }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create custom roles for lookup tests."
+  checkmk.general.role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    title: "{{ item.title }}"
+    based_on: "{{ item.based_on }}"
+    state: "present"
+  loop: "{{ checkmk_var_roles }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get all roles."
+  ansible.builtin.set_fact:
+    __checkmk_var_roles_list: "{{ lookup('checkmk.general.roles',
+                        server_url=checkmk_var_server_url,
+                        site=outer_item.site,
+                        validate_certs=False,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify all built-in roles are returned."
+  ansible.builtin.assert:
+    that: "item in (__checkmk_var_roles_list | map(attribute='id') | list)"
+    fail_msg: "Built-in role '{{ item }}' not found in lookup result!"
+    success_msg: "Built-in role '{{ item }}' is present."
+  loop:
+    - "admin"
+    - "user"
+    - "guest"
+    - "agent_registration"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify custom roles are returned."
+  ansible.builtin.assert:
+    that: "item.name in (__checkmk_var_roles_list | map(attribute='id') | list)"
+    fail_msg: "Custom role '{{ item.name }}' not found in lookup result!"
+    success_msg: "Custom role '{{ item.name }}' is present."
+  loop: "{{ checkmk_var_roles }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify aliases of custom roles via list lookup."
+  ansible.builtin.assert:
+    that: "(__checkmk_var_roles_list | selectattr('id', 'equalto', item.name) | map(attribute='extensions.alias') | first) == item.title"
+    fail_msg: "Expected alias '{{ item.title }}' for role '{{ item.name }}' but got something else."
+    success_msg: "Alias for role '{{ item.name }}' is '{{ item.title }}' as expected."
+  loop: "{{ checkmk_var_roles }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get a single custom role."
+  ansible.builtin.set_fact:
+    __checkmk_var_role: "{{ lookup('checkmk.general.role',
+                        item.name,
+                        server_url=checkmk_var_server_url,
+                        site=outer_item.site,
+                        validate_certs=False,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret) }}"
+  loop: "{{ checkmk_var_roles }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: __checkmk_var_role_single_lookup
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify single role lookup matches expected alias."
+  ansible.builtin.assert:
+    that: "(lookup('checkmk.general.role',
+                   item.name,
+                   server_url=checkmk_var_server_url,
+                   site=outer_item.site,
+                   validate_certs=False,
+                   api_user=checkmk_var_api_user,
+                   api_secret=checkmk_var_api_secret)).alias == item.title"
+    fail_msg: "Expected alias '{{ item.title }}' for role '{{ item.name }}', got a mismatch."
+    success_msg: "Single role lookup of '{{ item.name }}' has alias '{{ item.title }}' as expected."
+  loop: "{{ checkmk_var_roles }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify single role lookup reports correct basedon."
+  ansible.builtin.assert:
+    that: "(lookup('checkmk.general.role',
+                   item.name,
+                   server_url=checkmk_var_server_url,
+                   site=outer_item.site,
+                   validate_certs=False,
+                   api_user=checkmk_var_api_user,
+                   api_secret=checkmk_var_api_secret)).basedon == item.based_on"
+    fail_msg: "Expected basedon '{{ item.based_on }}' for role '{{ item.name }}'."
+    success_msg: "Role '{{ item.name }}' is based on '{{ item.based_on }}' as expected."
+  loop: "{{ checkmk_var_roles }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up a built-in role."
+  ansible.builtin.set_fact:
+    __checkmk_var_builtin_role: "{{ lookup('checkmk.general.role',
+                        'admin',
+                        server_url=checkmk_var_server_url,
+                        site=outer_item.site,
+                        validate_certs=False,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify built-in admin role has permissions."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_builtin_role.permissions is defined"
+      - "__checkmk_var_builtin_role.permissions | length > 0"
+    fail_msg: "Built-in admin role should expose a non-empty permissions list."
+    success_msg: "Built-in admin role exposes {{ __checkmk_var_builtin_role.permissions | length }} permissions."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Use variables from inventory."
+  block:
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get all roles via inventory variables."
+      ansible.builtin.set_fact:
+        __checkmk_var_roles_list: "{{ lookup('checkmk.general.roles') }}"
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify built-in roles via inventory variables."
+      ansible.builtin.assert:
+        that: "item in (__checkmk_var_roles_list | map(attribute='id') | list)"
+        fail_msg: "Built-in role '{{ item }}' not found via inventory variables!"
+        success_msg: "Built-in role '{{ item }}' is present."
+      loop:
+        - "admin"
+        - "user"
+        - "guest"
+        - "agent_registration"
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify custom role lookup via inventory variables."
+      ansible.builtin.assert:
+        that: "(lookup('checkmk.general.role', item.name)).alias == item.title"
+        fail_msg: "Expected alias '{{ item.title }}' for role '{{ item.name }}' via inventory variables."
+        success_msg: "Single role lookup of '{{ item.name }}' via inventory variables has alias '{{ item.title }}'."
+      loop: "{{ checkmk_var_roles }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete custom roles (cleanup)."
+  checkmk.general.role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  loop: "{{ checkmk_var_roles }}"

@@ -50,6 +50,9 @@ module:notification:
 module:password:
   - 'Component Name: password'
 
+module:role:
+  - 'Component Name: role'
+
 module:rule:
   - 'Component Name: rule'
 
@@ -86,6 +89,10 @@ lookup:host:
 lookup:ldap_connection:
   - 'Component Name: lookup_ldap_connection'
   - 'Component Name: lookup_ldap_connections'
+
+lookup:role:
+  - 'Component Name: lookup_role'
+  - 'Component Name: lookup_roles'
 
 lookup:rule:
   - 'Component Name: lookup_rule'
