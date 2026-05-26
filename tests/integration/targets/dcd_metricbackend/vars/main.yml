@@ -1,0 +1,30 @@
+---
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition | default('ultimatemt') }}"
+    site: "testsite"
+    dcd:
+      id: "IntegrationTestMetricBackendDCD"
+      title: "Integration Test Metric Backend DCD"
+      title_changed: "Integration Test Metric Backend DCD - Changed"
+      title_env: "Integration Test Metric Backend DCD (env)"
+      comment: "Created by integration test"
+      connector:
+        connector_type: "metric_backend"
+        interval: 60
+        host_name_resource_attribute_key: "service.name"
+        creation_rules:
+          - folder_path: "/"
+            delete_hosts: true
+        discover_on_creation: true
+        validity_period: 3600
+        maximum_number_of_hosts: 500
+      connector_changed:
+        connector_type: "metric_backend"
+        interval: 120
+        creation_rules:
+          - folder_path: "/"
+      connector_minimal:
+        connector_type: "metric_backend"
+        creation_rules:
+          - folder_path: "/"

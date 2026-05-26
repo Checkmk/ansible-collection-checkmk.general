@@ -29,6 +29,9 @@ module:contact_group:
 module:dcd:
   - 'Component Name: dcd'
 
+module:dcd_metricbackend:
+  - 'Component Name: dcd_metricbackend'
+
 module:discovery:
   - 'Component Name: discovery'
 
@@ -44,8 +47,14 @@ module:host:
 module:host_group:
   - 'Component Name: host_group'
 
+module:metricbackend:
+  - 'Component Name: metricbackend'
+
 module:notification:
   - 'Component Name: notification'
+
+module:opentelemetry:
+  - 'Component Name: opentelemetry'
 
 module:password:
   - 'Component Name: password'

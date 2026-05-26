@@ -1,0 +1,390 @@
+---
+# ---------------------------------------------------------------------------
+# Collector activation (no read endpoint, always changed on success)
+# ---------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Enable the OTel collector."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "activation"
+    site_id: "{{ outer_item.site }}"
+    state: "enabled"
+  register: __checkmk_var_result_otel_enable
+  failed_when: not __checkmk_var_result_otel_enable.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Disable the OTel collector."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "activation"
+    site_id: "{{ outer_item.site }}"
+    state: "disabled"
+  register: __checkmk_var_result_otel_disable
+  # Toggling the collector triggers an apache reload via activation; retry
+  # while the API socket is still being reset by the restart.
+  until: __checkmk_var_result_otel_disable.http_code != -1
+  retries: 10
+  delay: 3
+  failed_when: not __checkmk_var_result_otel_disable.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Re-enable the OTel collector for subsequent tests."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "activation"
+    site_id: "{{ outer_item.site }}"
+    state: "enabled"
+  register: __checkmk_var_result_otel_reenable
+  # Same restart-induced reset risk as the disable above.
+  until: __checkmk_var_result_otel_reenable.http_code != -1
+  retries: 10
+  delay: 3
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+# ---------------------------------------------------------------------------
+# Prometheus scrape configuration (full CRUD with idempotency)
+# ---------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a prom_scrape config."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "prom_scrape"
+    config_id: "{{ outer_item.prom_scrape.id }}"
+    config:
+      title: "{{ outer_item.prom_scrape.title }}"
+      disabled: false
+      sites:
+        - "{{ outer_item.site }}"
+      comment: "{{ outer_item.prom_scrape.comment }}"
+      prometheus_scrape_configs: "{{ outer_item.prom_scrape.configs }}"
+    state: "present"
+  register: __checkmk_var_result_prom_create
+  failed_when: not __checkmk_var_result_prom_create.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create the same prom_scrape config again (idempotency)."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "prom_scrape"
+    config_id: "{{ outer_item.prom_scrape.id }}"
+    config:
+      title: "{{ outer_item.prom_scrape.title }}"
+      disabled: false
+      sites:
+        - "{{ outer_item.site }}"
+      comment: "{{ outer_item.prom_scrape.comment }}"
+      prometheus_scrape_configs: "{{ outer_item.prom_scrape.configs }}"
+    state: "present"
+  register: __checkmk_var_result_prom_recreate
+  failed_when: __checkmk_var_result_prom_recreate.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update the prom_scrape config."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "prom_scrape"
+    config_id: "{{ outer_item.prom_scrape.id }}"
+    config:
+      title: "{{ outer_item.prom_scrape.title_updated }}"
+      disabled: false
+      sites:
+        - "{{ outer_item.site }}"
+      prometheus_scrape_configs: "{{ outer_item.prom_scrape.configs_updated }}"
+    state: "present"
+  register: __checkmk_var_result_prom_update
+  failed_when: not __checkmk_var_result_prom_update.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the prom_scrape config."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "prom_scrape"
+    config_id: "{{ outer_item.prom_scrape.id }}"
+    state: "absent"
+  register: __checkmk_var_result_prom_delete
+  failed_when: not __checkmk_var_result_prom_delete.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the prom_scrape config again (idempotency)."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "prom_scrape"
+    config_id: "{{ outer_item.prom_scrape.id }}"
+    state: "absent"
+  register: __checkmk_var_result_prom_redelete
+  failed_when: __checkmk_var_result_prom_redelete.changed
+
+# ---------------------------------------------------------------------------
+# Receiver configuration (full CRUD with idempotency)
+# ---------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a receiver config."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "receiver"
+    config_id: "{{ outer_item.receiver.id }}"
+    config:
+      title: "{{ outer_item.receiver.title }}"
+      disabled: false
+      sites:
+        - "{{ outer_item.site }}"
+      comment: "{{ outer_item.receiver.comment }}"
+      receiver_protocol_grpc: "{{ outer_item.receiver.protocol_grpc }}"
+    state: "present"
+  register: __checkmk_var_result_receiver_create
+  failed_when: not __checkmk_var_result_receiver_create.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create the same receiver config again (idempotency)."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "receiver"
+    config_id: "{{ outer_item.receiver.id }}"
+    config:
+      title: "{{ outer_item.receiver.title }}"
+      disabled: false
+      sites:
+        - "{{ outer_item.site }}"
+      comment: "{{ outer_item.receiver.comment }}"
+      receiver_protocol_grpc: "{{ outer_item.receiver.protocol_grpc }}"
+    state: "present"
+  register: __checkmk_var_result_receiver_recreate
+  failed_when: __checkmk_var_result_receiver_recreate.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update the receiver config."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "receiver"
+    config_id: "{{ outer_item.receiver.id }}"
+    config:
+      title: "{{ outer_item.receiver.title_updated }}"
+      disabled: false
+      sites:
+        - "{{ outer_item.site }}"
+    state: "present"
+  register: __checkmk_var_result_receiver_update
+  failed_when: not __checkmk_var_result_receiver_update.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the receiver config."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "receiver"
+    config_id: "{{ outer_item.receiver.id }}"
+    state: "absent"
+  register: __checkmk_var_result_receiver_delete
+  failed_when: not __checkmk_var_result_receiver_delete.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the receiver config again (idempotency)."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "receiver"
+    config_id: "{{ outer_item.receiver.id }}"
+    state: "absent"
+  register: __checkmk_var_result_receiver_redelete
+  failed_when: __checkmk_var_result_receiver_redelete.changed
+
+# ---------------------------------------------------------------------------
+# Receiver configuration with HTTP protocol
+# ---------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create an HTTP receiver config."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "receiver"
+    config_id: "{{ outer_item.receiver_http.id }}"
+    config:
+      title: "{{ outer_item.receiver_http.title }}"
+      disabled: false
+      sites:
+        - "{{ outer_item.site }}"
+      comment: "{{ outer_item.receiver_http.comment }}"
+      receiver_protocol_http: "{{ outer_item.receiver_http.protocol_http }}"
+    state: "present"
+  register: __checkmk_var_result_receiver_http_create
+  failed_when: not __checkmk_var_result_receiver_http_create.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create the same HTTP receiver config again (idempotency)."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "receiver"
+    config_id: "{{ outer_item.receiver_http.id }}"
+    config:
+      title: "{{ outer_item.receiver_http.title }}"
+      disabled: false
+      sites:
+        - "{{ outer_item.site }}"
+      comment: "{{ outer_item.receiver_http.comment }}"
+      receiver_protocol_http: "{{ outer_item.receiver_http.protocol_http }}"
+    state: "present"
+  register: __checkmk_var_result_receiver_http_recreate
+  failed_when: __checkmk_var_result_receiver_http_recreate.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the HTTP receiver config."
+  opentelemetry:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    config_type: "receiver"
+    config_id: "{{ outer_item.receiver_http.id }}"
+    state: "absent"
+  register: __checkmk_var_result_receiver_http_delete
+  failed_when: not __checkmk_var_result_receiver_http_delete.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+
+# ---------------------------------------------------------------------------
+# Test using environment variables for authentication
+# ---------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run module using environment variables."
+  opentelemetry:
+    config_type: "activation"
+    site_id: "{{ outer_item.site }}"
+    state: "disabled"
+  environment: "{{ __checkmk_var_testing_environment }}"
