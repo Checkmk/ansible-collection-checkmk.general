@@ -1,0 +1,4 @@
+major_changes:
+  - Role module - Add module to manage roles and permissions.
+  - Role lookup - Add lookup plugin to fetch a single role's configuration.
+  - Roles lookup - Add lookup plugin to list all configured roles.

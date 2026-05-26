@@ -1,0 +1,13 @@
+---
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    site: "testsite"
+
+checkmk_var_roles:
+  - name: "lookup_test_user_role"
+    title: "Lookup Test User Role"
+    based_on: "user"
+  - name: "lookup_test_admin_role"
+    title: "Lookup Test Admin Role"
+    based_on: "admin"

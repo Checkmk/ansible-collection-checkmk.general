@@ -79,6 +79,11 @@ module:password:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/password.py'
 
+module:role:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/role.py'
+
 module:rule:
   - any:
       - changed-files:
@@ -137,6 +142,12 @@ lookup:ldap_connection:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/lookup/ldap_connection.py'
           - any-glob-to-any-file: 'plugins/modules/lookup/ldap_connections.py'
+
+lookup:role:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/lookup/role.py'
+          - any-glob-to-any-file: 'plugins/lookup/roles.py'
 
 lookup:rule:
   - any:
