@@ -154,14 +154,25 @@
             - download-package
             - install-package
 
-    - name: "{{ ansible_facts['system'] }}: Import Checkmk GPG Key."
-      become: true
-      ansible.builtin.rpm_key:
-        key: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
-        state: present
+    - name: "Ensure GPG key can be imported on RHEL 10 with Ansible < 2.16.18"
       when: checkmk_server_verify_setup | bool and not ansible_facts['os_family'] == "Debian"
-      tags:
-        - import-gpg-key
+      block:
+        - name: "{{ ansible_facts['system'] }}: Import Checkmk GPG Key with rpm_key module."
+          become: true
+          ansible.builtin.rpm_key:
+            key: "{{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
+            state: present
+          tags:
+            - import-gpg-key
+
+      rescue:
+        - name: "{{ ansible_facts['system'] }}: Import Checkmk GPG Key with rpm command."
+          become: true
+          # noqa: command-instead-of-module
+          ansible.builtin.command: "rpm --import {{ __checkmk_server_tmp_dir }}/Check_MK-pubkey.gpg"
+          changed_when: true
+          tags:
+            - import-gpg-key
 
 - name: "{{ ansible_facts['system'] }}: Include OS Family specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"

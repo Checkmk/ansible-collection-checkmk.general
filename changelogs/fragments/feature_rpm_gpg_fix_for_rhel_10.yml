@@ -1,0 +1,4 @@
+---
+
+bugfixes:
+  - "Server role: Ensure Checkmk gpg key can be imported on RHEL 10 with Ansible version < 2.16.18"
