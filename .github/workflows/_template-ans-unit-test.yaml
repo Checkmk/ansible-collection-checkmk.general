@@ -31,6 +31,9 @@ jobs:
         python:
           - '3.12'
           - '3.13'
+        exclude:
+          - ansible: devel
+            python: '3.12'
 
     steps:
 
