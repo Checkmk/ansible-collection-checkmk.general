@@ -58,6 +58,7 @@ jobs:
           enable-cache: true
           github-token: ${{ github.token }}
           working-directory: ./ansible_collections/checkmk/general/
+          python-version: '3.13'
 
       - name: "Create uv venv."
         run: uv venv
