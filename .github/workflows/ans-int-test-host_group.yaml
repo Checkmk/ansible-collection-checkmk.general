@@ -42,7 +42,7 @@ jobs:
         checkmk_version:
           - 2.3.0p48
           - 2.4.0p31
-          - 2.5.0p5
+          - 2.5.0p6
         checkmk_edition:
           - raw
           - managed
@@ -57,7 +57,7 @@ jobs:
             checkmk_edition: community
           - checkmk_version: 2.4.0p31
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.5.0p5
+          - checkmk_version: 2.5.0p6
             checkmk_edition: raw
-          - checkmk_version: 2.5.0p5
+          - checkmk_version: 2.5.0p6
             checkmk_edition: managed
