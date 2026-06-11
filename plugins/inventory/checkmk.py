@@ -9,9 +9,9 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: checkmk
     author: Max Sickora (@max-checkmk)
-    short_description: Dynamic Inventory Source or Checkmk
+    short_description: Dynamic Inventory Source for Checkmk
     description:
-        - Get hosts from any checkmk site.
+        - Get hosts from any Checkmk site.
         - Generate groups based on tag groups or sites in Checkmk.
 
     extends_documentation_fragment: [checkmk.general.common_lookup]
@@ -24,15 +24,66 @@ DOCUMENTATION = """
             choices: ['checkmk.general.checkmk']
         groupsources:
             description:
-              - List of sources for grouping
-              - Possible sources are C(sites) and C(hosttags)
+              - List of sources for grouping.
+              - Possible sources are C(sites) and C(hosttags).
             type: list
             elements: str
             required: false
         want_ipv4:
-            description: Update ansible_host variable with ip address from Checkmk
+            description: Update ansible_host variable with ip address from Checkmk.
             type: boolean
             required: false
+        folder:
+            description:
+              - Restrict hosts to a specific folder path in Checkmk.
+              - Uses the Checkmk tilde-format, e.g. C(~linux~production) instead of C(/linux/production).
+              - If not set, all hosts from the entire site are returned.
+            required: false
+            type: str
+            env:
+              - name: CHECKMK_VAR_FOLDER
+        recursive:
+            description:
+              - If set to C(true) and a C(folder) is defined, all subfolders are included recursively.
+              - Has no effect without C(folder).
+            required: false
+            default: false
+            type: bool
+            env:
+              - name: CHECKMK_VAR_RECURSIVE
+        exclude_tags:
+            description:
+              - List of host tags to exclude from the inventory.
+              - Any host that has at least one of the given tags set will be excluded.
+              - Tags must be given in the full Checkmk format C(tag_<group>_<value>),
+                e.g. C(tag_criticality_test) or C(tag_agent_cmk-agent).
+              - Can also be set via environment variable as a comma-separated string,
+                e.g. C(tag_criticality_test,tag_agent_cmk-agent).
+            required: false
+            type: list
+            elements: str
+            env:
+              - name: CHECKMK_VAR_EXCLUDE_TAGS
+        lowercase_hosts:
+            description:
+              - If set to C(true), all hostnames will be converted to lowercase in the inventory.
+              - Default is C(false), hostnames are used exactly as defined in Checkmk.
+            required: false
+            default: false
+            type: bool
+            env:
+              - name: CHECKMK_VAR_LOWERCASE_HOSTS
+        domain_map:
+            description:
+              - A mapping of full Checkmk tag strings to domain suffixes.
+              - For each host, the keys of this map are checked in order against the host's tags.
+              - The suffix of the first matching entry is appended to the hostname.
+              - If no tag matches, the hostname is used as-is.
+              - Keys must be in the full Checkmk format C(tag_<group>_<value>),
+                e.g. C(tag_criticality_prod).
+              - Values are the domain suffixes to append, e.g. C(.example.com).
+            required: false
+            type: dict
     notes:
         - Because inventory plugins run before C(group_vars/) and C(host_vars/) are
           loaded, C(checkmk_var_*) values placed there are B(not) visible to this
@@ -45,7 +96,7 @@ EXAMPLES = """
 # one of the example blocks below and use it as your inventory source.
 # E.g., with `ansible-inventory -i checkmk.yml --graph`.
 
-# Group all hosts based on both tag groups and sites:
+# Group all hosts based on both tag groups and sites, exclude test systems:
 plugin: checkmk.general.checkmk
 server_url: "http://hostname/"
 site: "sitename"
@@ -53,7 +104,18 @@ api_user: "cmkadmin"
 api_secret: "******"
 validate_certs: false
 groupsources: ["hosttags", "sites"]
-want_ipv4: False
+want_ipv4: false
+exclude_tags:
+  - tag_criticality_test
+
+# Only hosts in a specific folder and its subfolders, excluding test and offline:
+plugin: checkmk.general.checkmk
+validate_certs: false
+folder: "~linux~production"
+recursive: true
+exclude_tags:
+  - tag_criticality_test
+  - tag_criticality_offline
 
 # ---------------------------------------------------------------------------
 # Using environment variables for credentials
@@ -110,6 +172,11 @@ class InventoryModule(BaseInventoryPlugin):
         self.api_auth_cookie = None
         self.validate_certs = None
         self.want_ipv4 = None
+        self.folder = None
+        self.recursive = False
+        self.exclude_tags = []
+        self.lowercase_hosts = False
+        self.domain_map = {}
         self.groupsources = []
         self.hosttaggroups = []
         self.tags = []
@@ -166,6 +233,24 @@ class InventoryModule(BaseInventoryPlugin):
                 sites = ["site_" + site.get("id") for site in self.sites]
                 self.groups.extend(sites)
 
+    def _is_excluded(self, host):
+        """Return True if the host has any of the excluded tags set."""
+        if not self.exclude_tags:
+            return False
+        host_tags = host.get("tags", {})
+        # host_tags has the form {"tag_criticality": "test", "tag_agent": "cmk-agent", ...}
+        # We reconstruct the full tag string "tag_<group>_<value>" and check against exclude_tags
+        for group, value in host_tags.items():
+            if value:
+                full_tag = group + "_" + value
+                if full_tag in self.exclude_tags:
+                    display.vvv(
+                        "Excluding host '%s' due to tag '%s'"
+                        % (host.get("id"), full_tag)
+                    )
+                    return True
+        return False
+
     def parse(self, inventory, loader, path, cache=False):
         super(InventoryModule, self).parse(inventory, loader, path, cache)
 
@@ -182,8 +267,16 @@ class InventoryModule(BaseInventoryPlugin):
             self.validate_certs = self.get_option("validate_certs")
             self.want_ipv4 = self.get_option("want_ipv4")
             self.groupsources = self.get_option("groupsources")
+            self.folder = self.get_option("folder")
+            self.recursive = self.get_option("recursive")
+            self.exclude_tags = self.get_option("exclude_tags") or []
+            self.lowercase_hosts = self.get_option("lowercase_hosts")
+            self.domain_map = self.get_option("domain_map") or {}
         except Exception as e:
             raise AnsibleParserError("All correct options required: {}".format(e))
+
+        if self.exclude_tags:
+            display.vvv("Excluding hosts with tags: %s" % self.exclude_tags)
 
         api = CheckMKLookupAPI(
             site_url=self.get_option("server_url") + "/" + self.get_option("site"),
@@ -236,10 +329,60 @@ class InventoryModule(BaseInventoryPlugin):
                         "site_" + self.convertname(host.get("site")), host.get("id")
                     )
 
-    def _get_hosts(self, api):
+    def _get_domain_suffix(self, host_tags):
+        """Return the suffix of the first domain_map entry matching a host tag, or empty string."""
+        host_full_tags = {
+            group + "_" + value for group, value in host_tags.items() if value
+        }
+        for tag, suffix in self.domain_map.items():
+            if tag in host_full_tags:
+                return suffix
+        return ""
+
+    def _parse_hosts(self, raw_hosts):
+        """Convert raw API host list to internal format, apply exclude_tags and domain_map."""
+        hosts = []
+        for host in raw_hosts:
+            host_id = host.get("id")
+            host_tags = {
+                taggroup: tag
+                for taggroup, tag in host.get("extensions")
+                .get("effective_attributes")
+                .items()
+                if taggroup in self.tags
+            }
+            parsed = {
+                "id": host_id,
+                "title": host.get("extensions").get("title"),
+                "ipaddress": host.get("extensions").get("attributes").get("ipaddress"),
+                "folder": host.get("extensions").get("folder"),
+                "site": host.get("extensions").get("effective_attributes").get("site"),
+                "tags": host_tags,
+            }
+
+            if self._is_excluded(parsed):
+                continue
+
+            if self.domain_map:
+                suffix = self._get_domain_suffix(host_tags)
+                if suffix:
+                    parsed["id"] = host_id + suffix
+                    display.vvv(
+                        "Host '%s' gets suffix '%s' -> '%s'"
+                        % (host_id, suffix, parsed["id"])
+                    )
+
+            if self.lowercase_hosts:
+                parsed["id"] = parsed["id"].lower()
+
+            hosts.append(parsed)
+        return hosts
+
+    def _get_hosts_in_folder(self, api, folder):
+        """Fetch raw hosts directly in a specific folder."""
         response = json.loads(
             api.get(
-                "/domain-types/host_config/collections/all",
+                "/objects/folder_config/%s/collections/hosts" % folder,
                 {"effective_attributes": True},
             )
         )
@@ -252,26 +395,62 @@ class InventoryModule(BaseInventoryPlugin):
                     response.get("msg", ""),
                 )
             )
+        return response.get("value", [])
 
-        hosts = [
-            {
-                "id": host.get("id"),
-                "title": host.get("extensions").get("title"),
-                "ipaddress": host.get("extensions").get("attributes").get("ipaddress"),
-                "folder": host.get("extensions").get("folder"),
-                "site": host.get("extensions").get("effective_attributes").get("site"),
-                "tags": {
-                    taggroup: tag
-                    for taggroup, tag in host.get("extensions")
-                    .get("effective_attributes")
-                    .items()
-                    if taggroup in self.tags
-                },
-            }
-            for host in (response.get("value"))
-        ]
+    def _get_subfolders(self, api, folder):
+        """Fetch all subfolder IDs recursively for a given folder."""
+        response = json.loads(
+            api.get(
+                "/domain-types/folder_config/collections/all",
+                {"parent": folder, "recursive": True},
+            )
+        )
+        if "code" in response:
+            raise AnsibleError(
+                "Received error for %s - %s: %s"
+                % (
+                    response.get("url", ""),
+                    response.get("code", ""),
+                    response.get("msg", ""),
+                )
+            )
+        return [f.get("id") for f in response.get("value", [])]
 
-        return hosts
+    def _get_hosts(self, api):
+        if self.folder:
+            if self.recursive:
+                folders = [self.folder] + self._get_subfolders(api, self.folder)
+                display.vvv("Recursive folder search in: %s" % folders)
+            else:
+                folders = [self.folder]
+
+            raw_hosts = []
+            seen_ids = set()
+            for f in folders:
+                for host in self._get_hosts_in_folder(api, f):
+                    host_id = host.get("id")
+                    if host_id not in seen_ids:
+                        seen_ids.add(host_id)
+                        raw_hosts.append(host)
+        else:
+            response = json.loads(
+                api.get(
+                    "/domain-types/host_config/collections/all",
+                    {"effective_attributes": True},
+                )
+            )
+            if "code" in response:
+                raise AnsibleError(
+                    "Received error for %s - %s: %s"
+                    % (
+                        response.get("url", ""),
+                        response.get("code", ""),
+                        response.get("msg", ""),
+                    )
+                )
+            raw_hosts = response.get("value", [])
+
+        return self._parse_hosts(raw_hosts)
 
     def _get_taggroups(self, api):
         response = json.loads(api.get("/domain-types/host_tag_group/collections/all"))
