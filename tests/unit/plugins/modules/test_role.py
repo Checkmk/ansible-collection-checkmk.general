@@ -433,6 +433,54 @@ class TestRunModule:
 
     @patch("ansible_collections.checkmk.general.plugins.modules.role.RoleAPI")
     @patch("ansible_collections.checkmk.general.plugins.modules.role.AnsibleModule")
+    def test_postcreate_permission_failure_reports_half_created_role(
+        self, mock_ansible_module_cls, mock_role_api_cls
+    ):
+        mock_module = MagicMock()
+        mock_module.params = _make_module_params(
+            name="new_role",
+            title="New",
+            based_on="user",
+            permissions={"nonexistent.permission": "yes"},
+        )
+        mock_module.check_mode = False
+        mock_ansible_module_cls.return_value = mock_module
+
+        mock_api = MagicMock()
+        mock_api.state = "present"
+        mock_api.name = "new_role"
+        mock_api.current = ROLE_GET_RESPONSE_404
+        mock_api.based_on = "user"
+        mock_api.permissions = {"nonexistent.permission": "yes"}
+        mock_api.create.return_value = ROLE_CREATE_RESPONSE
+        mock_api.edit.return_value = RESULT(
+            http_code=400,
+            msg="400 - Bad request: Parameter or validation failure",
+            content={},
+            etag="",
+            failed=True,
+            changed=False,
+        )
+        mock_role_api_cls.return_value = mock_api
+
+        run_module()
+
+        mock_api.create.assert_called_once()
+        mock_api.edit.assert_called_once_with(fail_on_error=False)
+        mock_module.exit_json.assert_called_once()
+        call_kwargs = mock_module.exit_json.call_args[1]
+        assert call_kwargs["failed"] is True
+        # The role was created, so the task did change state.
+        assert call_kwargs["changed"] is True
+        assert (
+            "Role 'new_role' was created, but applying the requested "
+            "permissions failed" in call_kwargs["msg"]
+        )
+        assert "400 - Bad request" in call_kwargs["msg"]
+        assert "re-run the task" in call_kwargs["msg"]
+
+    @patch("ansible_collections.checkmk.general.plugins.modules.role.RoleAPI")
+    @patch("ansible_collections.checkmk.general.plugins.modules.role.AnsibleModule")
     def test_title_nulled_before_postcreate_edit(
         self, mock_ansible_module_cls, mock_role_api_cls
     ):
@@ -457,7 +505,7 @@ class TestRunModule:
 
         captured_title = []
 
-        def capture_title():
+        def capture_title(fail_on_error=True):
             captured_title.append(mock_api.title)
             return ROLE_EDIT_RESPONSE
 

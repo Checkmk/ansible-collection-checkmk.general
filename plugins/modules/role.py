@@ -81,6 +81,15 @@ author:
 
 notes:
     - Built-in roles cannot be created or deleted, but their permissions can be updated.
+    - Creating a role with I(permissions) requires two API calls. The role
+      is first cloned from I(based_on), then the permissions are applied in
+      a second call. If the second call fails (e.g., due to an invalid
+      permission ID), the role still exists on the server with the
+      permissions inherited from the base role. The module then fails with
+      C(changed=true) and a message describing this state. To recover,
+      resolve the error and re-run the task, which updates the permissions
+      of the now existing role. Alternatively, remove the role with
+      C(state=absent).
 
 seealso:
     - module: checkmk.general.user
@@ -317,7 +326,7 @@ class RoleAPI(CheckmkAPI):
             method="POST",
         )
 
-    def edit(self):
+    def edit(self, fail_on_error=True):
         data = self._build_edit_data()
 
         if not data:
@@ -337,6 +346,7 @@ class RoleAPI(CheckmkAPI):
             endpoint="/objects/user_role/%s" % self.name,
             data=data,
             method="PUT",
+            fail_on_error=fail_on_error,
         )
 
     def delete(self):
@@ -435,7 +445,28 @@ def run_module():
                 # Null title so the follow-up edit only sends new_permissions.
                 if not result.failed and role.permissions is not None:
                     role.title = None
-                    role.edit()
+                    edit_result = role.edit(fail_on_error=False)
+                    if edit_result.failed:
+                        # The role was created, but the permissions could not
+                        # be applied. Report changed=True and explain how to
+                        # recover, instead of just surfacing the PUT error.
+                        result = RESULT(
+                            http_code=edit_result.http_code,
+                            msg=(
+                                "Role '%s' was created, but applying the "
+                                "requested permissions failed: %s "
+                                "The role exists on the server with the "
+                                "permissions inherited from '%s'. To recover, "
+                                "resolve the error and re-run the task to "
+                                "update the existing role, or remove the role "
+                                "with 'state: absent'."
+                                % (role.name, edit_result.msg, role.based_on)
+                            ),
+                            content=edit_result.content,
+                            etag=edit_result.etag,
+                            failed=True,
+                            changed=True,
+                        )
             else:
                 result = RESULT(
                     http_code=200,

@@ -90,6 +90,84 @@
     sites:
       - "{{ outer_item.site }}"
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a role with an invalid permission (leaves half-created role)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_half_created_role"
+    title: "Half-Created Role"
+    based_on: "user"
+    permissions:
+      nonexistent.invalid_permission: "yes"
+    state: "present"
+  register: __checkmk_var_role_half_created
+  ignore_errors: true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the error reports the half-created role."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_half_created.failed == true
+      - __checkmk_var_role_half_created.changed == true
+      - "'was created, but applying the requested permissions failed' in __checkmk_var_role_half_created.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Re-run with valid permissions to fix the half-created role."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_half_created_role"
+    title: "Half-Created Role"
+    based_on: "user"
+    permissions:
+      wato.all_folders: "yes"
+    state: "present"
+  register: __checkmk_var_role_fix_half_created
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the subsequent run fixed the half-created role."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_fix_half_created.changed == true
+      - "'Role updated.' in __checkmk_var_role_fix_half_created.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run the fixed role again (idempotency after recovery)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_half_created_role"
+    title: "Half-Created Role"
+    based_on: "user"
+    permissions:
+      wato.all_folders: "yes"
+    state: "present"
+  register: __checkmk_var_role_fix_half_created_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify idempotency after recovery."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_fix_half_created_again.changed == false
+      - __checkmk_var_role_fix_half_created_again.msg == "Role already exists with desired state."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the recovered role (cleanup)."
+  role:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "test_half_created_role"
+    state: "absent"
+  register: __checkmk_var_role_half_created_cleanup
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify cleanup of the recovered role."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_role_half_created_cleanup.changed == true
+      - "'Role deleted.' in __checkmk_var_role_half_created_cleanup.msg"
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set a permission to default on a custom role."
   role:
     server_url: "{{ checkmk_var_server_url }}"

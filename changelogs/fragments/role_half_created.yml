@@ -1,0 +1,7 @@
+bugfixes:
+  - Role module - When creating a role with permissions, a failure while
+    applying the permissions left the cloned role on the server without
+    any indication. The module now fails with ``changed=true`` and a
+    message explaining that the role exists with the permissions inherited
+    from the base role and that re-running the task updates it
+    (https://github.com/Checkmk/ansible-collection-checkmk.general/issues/1101).
