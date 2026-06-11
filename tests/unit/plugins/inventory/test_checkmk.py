@@ -208,7 +208,7 @@ def _prepare_tags_and_sites(inventory, api):
     inventory.sites = inventory._get_sites(api)
 
 
-def _raw_host(host_id, tags=None):
+def _raw_host(host_id, tags=None, folder="/main"):
     effective_attributes = {"site": "maintestsite"}
     effective_attributes.update(tags or {})
     return {
@@ -216,7 +216,7 @@ def _raw_host(host_id, tags=None):
         "extensions": {
             "title": host_id,
             "attributes": {"ipaddress": "192.168.1.1"},
-            "folder": "/main",
+            "folder": folder,
             "effective_attributes": effective_attributes,
         },
     }
@@ -282,18 +282,49 @@ def test_lowercase_hosts(fresh_inventory):
     assert hosts[0]["id"] == "testhost1"
 
 
+def test_folder_matches(fresh_inventory):
+    fresh_inventory.folder = "~main"
+    assert fresh_inventory._folder_matches("/main") is True
+    assert fresh_inventory._folder_matches("/main/sub") is False
+    assert fresh_inventory._folder_matches("/other") is False
+
+    # Slash-format and trailing slashes are accepted as well
+    fresh_inventory.folder = "/main/"
+    assert fresh_inventory._folder_matches("/main") is True
+
+    fresh_inventory.recursive = True
+    fresh_inventory.folder = "~main"
+    assert fresh_inventory._folder_matches("/main") is True
+    assert fresh_inventory._folder_matches("/main/sub") is True
+    assert fresh_inventory._folder_matches("/mainother") is False
+
+    # The root folder matches everything when recursive
+    fresh_inventory.folder = "~"
+    assert fresh_inventory._folder_matches("/") is True
+    assert fresh_inventory._folder_matches("/main/sub") is True
+
+
 def test_get_hosts_folder(fresh_inventory, mocker):
     fresh_inventory.tags = []
     fresh_inventory.folder = "~main"
 
     api = mocker.MagicMock()
-    api.get.return_value = json.dumps({"value": [_raw_host("host_a")]})
+    api.get.return_value = json.dumps(
+        {
+            "value": [
+                _raw_host("host_a", folder="/main"),
+                _raw_host("host_b", folder="/main/sub"),
+                _raw_host("host_c", folder="/other"),
+            ]
+        }
+    )
 
     host_ids = [host["id"] for host in fresh_inventory._get_hosts(api)]
 
+    # Only hosts directly in the folder are returned
     assert host_ids == ["host_a"]
     api.get.assert_called_once_with(
-        "/objects/folder_config/~main/collections/hosts",
+        "/domain-types/host_config/collections/all",
         {"effective_attributes": True},
     )
 
@@ -303,22 +334,21 @@ def test_get_hosts_folder_recursive(fresh_inventory, mocker):
     fresh_inventory.folder = "~main"
     fresh_inventory.recursive = True
 
-    def fake_get(endpoint, parameters=None):
-        if endpoint == "/domain-types/folder_config/collections/all":
-            return json.dumps({"value": [{"id": "~main~sub"}]})
-        if endpoint == "/objects/folder_config/~main/collections/hosts":
-            return json.dumps({"value": [_raw_host("host_a"), _raw_host("host_b")]})
-        if endpoint == "/objects/folder_config/~main~sub/collections/hosts":
-            return json.dumps({"value": [_raw_host("host_b"), _raw_host("host_c")]})
-        raise AssertionError("unexpected endpoint %s" % endpoint)
-
     api = mocker.MagicMock()
-    api.get.side_effect = fake_get
+    api.get.return_value = json.dumps(
+        {
+            "value": [
+                _raw_host("host_a", folder="/main"),
+                _raw_host("host_b", folder="/main/sub"),
+                _raw_host("host_c", folder="/other"),
+            ]
+        }
+    )
 
     host_ids = [host["id"] for host in fresh_inventory._get_hosts(api)]
 
-    # host_b is returned by both folders, but must only appear once
-    assert host_ids == ["host_a", "host_b", "host_c"]
+    # Hosts in the folder and its subfolders are returned
+    assert host_ids == ["host_a", "host_b"]
 
 
 def test_domain_map_with_lowercase_hosts(fresh_inventory):
@@ -370,9 +400,8 @@ def test_recursive_without_folder(fresh_inventory, mocker):
     )
 
 
-def test_get_hosts_folder_error(fresh_inventory, mocker):
+def test_get_hosts_error(fresh_inventory, mocker):
     fresh_inventory.tags = []
-    fresh_inventory.folder = "~nonexistent"
 
     api = mocker.MagicMock()
     api.get.return_value = json.dumps(
@@ -380,20 +409,6 @@ def test_get_hosts_folder_error(fresh_inventory, mocker):
     )
 
     with pytest.raises(AnsibleError, match="404"):
-        fresh_inventory._get_hosts(api)
-
-
-def test_get_subfolders_error(fresh_inventory, mocker):
-    fresh_inventory.tags = []
-    fresh_inventory.folder = "~main"
-    fresh_inventory.recursive = True
-
-    api = mocker.MagicMock()
-    api.get.return_value = json.dumps(
-        {"code": 403, "msg": "Forbidden", "url": "http://localhost"}
-    )
-
-    with pytest.raises(AnsibleError, match="403"):
         fresh_inventory._get_hosts(api)
 
 

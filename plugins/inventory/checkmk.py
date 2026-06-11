@@ -36,7 +36,9 @@ DOCUMENTATION = """
         folder:
             description:
               - Restrict hosts to a specific folder path in Checkmk.
-              - Uses the Checkmk tilde-format, e.g. C(~linux~production) instead of C(/linux/production).
+              - Accepts the Checkmk tilde-format, e.g. C(~linux~production),
+                as well as a regular path, e.g. C(/linux/production).
+              - Unless C(recursive) is enabled, only hosts directly in the given folder are returned.
               - If not set, all hosts from the entire site are returned.
             required: false
             type: str
@@ -164,6 +166,9 @@ from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.utils.display import Display
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    normalize_folder,
 )
 
 display = Display()
@@ -353,8 +358,21 @@ class InventoryModule(BaseInventoryPlugin):
                 return suffix
         return ""
 
+    def _folder_matches(self, host_folder):
+        """Return True if the host's folder matches the folder option."""
+        if not self.folder:
+            return True
+        target = normalize_folder(self.folder)
+        host_folder = normalize_folder(host_folder)
+        if host_folder == target:
+            return True
+        if self.recursive:
+            prefix = "/" if target == "/" else target + "/"
+            return host_folder.startswith(prefix)
+        return False
+
     def _parse_hosts(self, raw_hosts):
-        """Convert raw API host list to internal format, apply exclude_tags and domain_map."""
+        """Convert raw API host list to internal format, apply folder, exclude_tags and domain_map."""
         hosts = []
         for host in raw_hosts:
             host_id = host.get("id")
@@ -374,6 +392,9 @@ class InventoryModule(BaseInventoryPlugin):
                 "tags": host_tags,
             }
 
+            if not self._folder_matches(parsed["folder"]):
+                continue
+
             if self._is_excluded(parsed):
                 continue
 
@@ -392,11 +413,19 @@ class InventoryModule(BaseInventoryPlugin):
             hosts.append(parsed)
         return hosts
 
-    def _get_hosts_in_folder(self, api, folder):
-        """Fetch raw hosts directly in a specific folder."""
+    def _get_hosts(self, api):
+        # The folder option is filtered on the client side in _parse_hosts,
+        # because fetching hosts per folder via the REST API does not support
+        # effective_attributes on all supported Checkmk versions.
+        if self.folder:
+            display.vvv(
+                "Restricting hosts to folder '%s'%s"
+                % (self.folder, " (recursive)" if self.recursive else "")
+            )
+
         response = json.loads(
             api.get(
-                "/objects/folder_config/%s/collections/hosts" % folder,
+                "/domain-types/host_config/collections/all",
                 {"effective_attributes": True},
             )
         )
@@ -409,62 +438,8 @@ class InventoryModule(BaseInventoryPlugin):
                     response.get("msg", ""),
                 )
             )
-        return response.get("value", [])
 
-    def _get_subfolders(self, api, folder):
-        """Fetch all subfolder IDs recursively for a given folder."""
-        response = json.loads(
-            api.get(
-                "/domain-types/folder_config/collections/all",
-                {"parent": folder, "recursive": True},
-            )
-        )
-        if "code" in response:
-            raise AnsibleError(
-                "Received error for %s - %s: %s"
-                % (
-                    response.get("url", ""),
-                    response.get("code", ""),
-                    response.get("msg", ""),
-                )
-            )
-        return [f.get("id") for f in response.get("value", [])]
-
-    def _get_hosts(self, api):
-        if self.folder:
-            if self.recursive:
-                folders = [self.folder] + self._get_subfolders(api, self.folder)
-                display.vvv("Recursive folder search in: %s" % folders)
-            else:
-                folders = [self.folder]
-
-            raw_hosts = []
-            seen_ids = set()
-            for f in folders:
-                for host in self._get_hosts_in_folder(api, f):
-                    host_id = host.get("id")
-                    if host_id not in seen_ids:
-                        seen_ids.add(host_id)
-                        raw_hosts.append(host)
-        else:
-            response = json.loads(
-                api.get(
-                    "/domain-types/host_config/collections/all",
-                    {"effective_attributes": True},
-                )
-            )
-            if "code" in response:
-                raise AnsibleError(
-                    "Received error for %s - %s: %s"
-                    % (
-                        response.get("url", ""),
-                        response.get("code", ""),
-                        response.get("msg", ""),
-                    )
-                )
-            raw_hosts = response.get("value", [])
-
-        return self._parse_hosts(raw_hosts)
+        return self._parse_hosts(response.get("value", []))
 
     def _get_taggroups(self, api):
         response = json.loads(api.get("/domain-types/host_tag_group/collections/all"))
