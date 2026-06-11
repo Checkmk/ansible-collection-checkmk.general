@@ -1,0 +1,30 @@
+---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario '{{ __checkmk_var_scenario }}': Write inventory source."
+  ansible.builtin.copy:
+    content: "{{ __checkmk_var_inventory_base | combine(__checkmk_var_inventory_options) | to_nice_yaml }}"
+    dest: "{{ checkmk_var_inventory_dir }}/checkmk.yml"
+    mode: "0600"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario '{{ __checkmk_var_scenario }}': Run ansible-inventory."
+  ansible.builtin.shell:
+    cmd: >-
+      set -o pipefail;
+      {{ __checkmk_var_inventory_cmd }}
+      -i {{ checkmk_var_inventory_dir }}/checkmk.yml --list
+      | {{ ansible_playbook_python }} {{ checkmk_var_inventory_dir }}/unwrap.py
+    executable: /bin/bash
+  environment: >-
+    {{
+      {
+        'ANSIBLE_COLLECTIONS_PATH': __checkmk_var_collections_path,
+        'ANSIBLE_INVENTORY_ENABLED': 'checkmk.general.checkmk',
+        'ANSIBLE_INVENTORY_UNPARSED_FAILED': 'true',
+      } | combine(__checkmk_var_inventory_env | default({}))
+    }}
+  register: __checkmk_var_inventory_result
+  changed_when: false
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario '{{ __checkmk_var_scenario }}': Parse inventory output."
+  ansible.builtin.set_fact:
+    __checkmk_var_inventory: "{{ __checkmk_var_inventory_result.stdout | from_json }}"
+    __checkmk_var_inventory_hosts: "{{ (__checkmk_var_inventory_result.stdout | from_json)._meta.hostvars.keys() | sort }}"

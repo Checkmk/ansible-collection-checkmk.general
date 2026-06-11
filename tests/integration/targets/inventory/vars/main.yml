@@ -1,0 +1,30 @@
+---
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    site: "testsite"
+
+checkmk_var_inventory_dir: "/tmp/checkmk_inventory_test"
+
+checkmk_var_folders:
+  - path: /top
+    name: Top
+  - path: /top/sub
+    name: Sub
+  - path: /other
+    name: Other
+
+checkmk_var_hosts:
+  - name: inv-prod
+    folder: "/top"
+    criticality: "prod"
+    ipaddress: "127.0.0.1"
+  - name: inv-sub
+    folder: "/top/sub"
+    criticality: "test"
+  - name: INV-UPPER
+    folder: "/other"
+    criticality: "prod"
+  - name: inv-offline
+    folder: "/"
+    criticality: "offline"

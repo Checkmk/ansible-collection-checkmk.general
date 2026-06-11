@@ -1,0 +1,209 @@
+---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create folders."
+  folder:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    path: "{{ item.path }}"
+    name: "{{ item.name }}"
+    state: "present"
+  loop: "{{ checkmk_var_folders }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    folder: "{{ item.folder }}"
+    attributes:
+      site: "{{ outer_item.site }}"
+      tag_criticality: "{{ item.criticality }}"
+      ipaddress: "{{ item.ipaddress | default(omit) }}"
+    state: "present"
+  loop: "{{ checkmk_var_hosts }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create inventory directory."
+  ansible.builtin.file:
+    path: "{{ checkmk_var_inventory_dir }}"
+    state: directory
+    mode: "0700"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Copy unwrap helper script."
+  ansible.builtin.copy:
+    src: unwrap.py
+    dest: "{{ checkmk_var_inventory_dir }}/unwrap.py"
+    mode: "0600"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look for ansible-inventory next to the controller Python."
+  ansible.builtin.stat:
+    path: "{{ ansible_playbook_python | dirname }}/ansible-inventory"
+  register: __checkmk_var_inventory_binary
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set common facts."
+  ansible.builtin.set_fact:
+    __checkmk_var_inventory_cmd: "{{ __checkmk_var_inventory_binary.stat.exists | ternary(__checkmk_var_inventory_binary.stat.path | default(''), 'ansible-inventory') }}"
+    __checkmk_var_collections_path: "{{ role_path | regex_replace('/ansible_collections/.*$', '') }}"
+    __checkmk_var_inventory_base:
+      plugin: checkmk.general.checkmk
+      server_url: "{{ checkmk_var_server_url }}"
+      site: "{{ outer_item.site }}"
+      api_user: "{{ checkmk_var_api_user }}"
+      api_secret: "{{ checkmk_var_api_secret }}"
+      validate_certs: false
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'baseline': Run inventory."
+  ansible.builtin.include_tasks: run_inventory.yml
+  vars:
+    __checkmk_var_scenario: "baseline"
+    __checkmk_var_inventory_options:
+      groupsources: ["hosttags", "sites"]
+      want_ipv4: true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'baseline': Verify hosts, groups and host variables."
+  ansible.builtin.assert:
+    that:
+      - "checkmk_var_hosts | map(attribute='name') | difference(__checkmk_var_inventory_hosts) | length == 0"
+      - "'inv-prod' in __checkmk_var_inventory['tag_criticality_prod']['hosts']"
+      - "'INV-UPPER' in __checkmk_var_inventory['tag_criticality_prod']['hosts']"
+      - "'inv-sub' in __checkmk_var_inventory['tag_criticality_test']['hosts']"
+      - "checkmk_var_hosts | map(attribute='name') | difference(__checkmk_var_inventory['site_' ~ outer_item.site]['hosts']) | length == 0"
+      - "__checkmk_var_inventory._meta.hostvars['inv-prod'].ansible_host == '127.0.0.1'"
+      - "__checkmk_var_inventory._meta.hostvars['inv-sub'].folder == '/top/sub'"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'folder': Run inventory."
+  ansible.builtin.include_tasks: run_inventory.yml
+  vars:
+    __checkmk_var_scenario: "folder"
+    __checkmk_var_inventory_options:
+      folder: "~top"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'folder': Verify only hosts directly in the folder."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_inventory_hosts == ['inv-prod']"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'recursive': Run inventory."
+  ansible.builtin.include_tasks: run_inventory.yml
+  vars:
+    __checkmk_var_scenario: "recursive"
+    __checkmk_var_inventory_options:
+      folder: "~top"
+      recursive: true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'recursive': Verify hosts of folder and subfolders."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_inventory_hosts == ['inv-prod', 'inv-sub']"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'exclude_tags': Run inventory."
+  ansible.builtin.include_tasks: run_inventory.yml
+  vars:
+    __checkmk_var_scenario: "exclude_tags"
+    __checkmk_var_inventory_options:
+      exclude_tags:
+        - "tag_criticality_test"
+        - "tag_criticality_offline"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'exclude_tags': Verify tagged hosts are excluded."
+  ansible.builtin.assert:
+    that:
+      - "'inv-prod' in __checkmk_var_inventory_hosts"
+      - "'INV-UPPER' in __checkmk_var_inventory_hosts"
+      - "'inv-sub' not in __checkmk_var_inventory_hosts"
+      - "'inv-offline' not in __checkmk_var_inventory_hosts"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'lowercase_hosts': Run inventory."
+  ansible.builtin.include_tasks: run_inventory.yml
+  vars:
+    __checkmk_var_scenario: "lowercase_hosts"
+    __checkmk_var_inventory_options:
+      lowercase_hosts: true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'lowercase_hosts': Verify hostnames are lowercase."
+  ansible.builtin.assert:
+    that:
+      - "'inv-upper' in __checkmk_var_inventory_hosts"
+      - "'INV-UPPER' not in __checkmk_var_inventory_hosts"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'domain_map': Run inventory."
+  ansible.builtin.include_tasks: run_inventory.yml
+  vars:
+    __checkmk_var_scenario: "domain_map"
+    __checkmk_var_inventory_options:
+      domain_map:
+        tag_criticality_prod: ".example.com"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'domain_map': Verify domain suffixes."
+  ansible.builtin.assert:
+    that:
+      - "'inv-prod.example.com' in __checkmk_var_inventory_hosts"
+      - "'INV-UPPER.example.com' in __checkmk_var_inventory_hosts"
+      - "'inv-prod' not in __checkmk_var_inventory_hosts"
+      - "'inv-sub' in __checkmk_var_inventory_hosts"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'combined': Run inventory."
+  ansible.builtin.include_tasks: run_inventory.yml
+  vars:
+    __checkmk_var_scenario: "combined"
+    __checkmk_var_inventory_options:
+      groupsources: ["hosttags", "sites"]
+      want_ipv4: true
+      folder: "~"
+      recursive: true
+      exclude_tags:
+        - "tag_criticality_test"
+        - "tag_criticality_offline"
+      lowercase_hosts: true
+      domain_map:
+        tag_criticality_prod: ".example.com"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'combined': Verify all options work together."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_inventory_hosts == ['inv-prod.example.com', 'inv-upper.example.com']"
+      - "'inv-prod.example.com' in __checkmk_var_inventory['tag_criticality_prod']['hosts']"
+      - "__checkmk_var_inventory._meta.hostvars['inv-prod.example.com'].ansible_host == '127.0.0.1'"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'environment': Run inventory."
+  ansible.builtin.include_tasks: run_inventory.yml
+  vars:
+    __checkmk_var_scenario: "environment"
+    __checkmk_var_inventory_options: {}
+    __checkmk_var_inventory_env:
+      CHECKMK_VAR_FOLDER: "~top"
+      CHECKMK_VAR_RECURSIVE: "true"
+      CHECKMK_VAR_EXCLUDE_TAGS: "tag_criticality_test,tag_criticality_offline"
+      CHECKMK_VAR_LOWERCASE_HOSTS: "true"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'environment': Verify options from environment variables."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_inventory_hosts == ['inv-prod']"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  loop: "{{ checkmk_var_hosts }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete folders."
+  folder:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    path: "{{ item.path }}"
+    state: "absent"
+  loop: "{{ checkmk_var_folders | reverse }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete inventory directory."
+  ansible.builtin.file:
+    path: "{{ checkmk_var_inventory_dir }}"
+    state: absent
