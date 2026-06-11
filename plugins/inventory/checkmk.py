@@ -96,35 +96,49 @@ EXAMPLES = """
 # one of the example blocks below and use it as your inventory source.
 # E.g., with `ansible-inventory -i checkmk.yml --graph`.
 
-# Group all hosts based on both tag groups and sites, exclude test systems:
+# Group all hosts based on both tag groups and sites
+# and update ansible_host with the ip address from Checkmk:
 plugin: checkmk.general.checkmk
-server_url: "http://hostname/"
-site: "sitename"
-api_user: "cmkadmin"
-api_secret: "******"
-validate_certs: false
+server_url: "http://myserver/"
+site: "mysite"
+api_user: "myuser"
+api_secret: "mysecret"
+validate_certs: true
 groupsources: ["hosttags", "sites"]
-want_ipv4: false
-exclude_tags:
-  - tag_criticality_test
+want_ipv4: true
 
-# Only hosts in a specific folder and its subfolders, excluding test and offline:
+# The connection options are omitted in the following examples for brevity.
+# They can be set as shown above or via environment variables (see below).
+
+# Exclude test and offline systems from the inventory:
 plugin: checkmk.general.checkmk
-validate_certs: false
-folder: "~linux~production"
-recursive: true
 exclude_tags:
   - tag_criticality_test
   - tag_criticality_offline
 
+# Only hosts in a specific folder and its subfolders:
+plugin: checkmk.general.checkmk
+folder: "linux"
+recursive: true
+
+# Build lowercase FQDNs by appending a domain suffix based on host tags:
+plugin: checkmk.general.checkmk
+lowercase_hosts: true
+domain_map:
+  tag_criticality_prod: ".example.com"
+  tag_criticality_test: ".test.example.com"
+
 # ---------------------------------------------------------------------------
-# Using environment variables for credentials
+# Using environment variables
 # ---------------------------------------------------------------------------
-# Connection parameters can be provided via environment variables instead of
-# writing them into the inventory file. The supported variables are:
+# Connection parameters and the filtering options can be provided via
+# environment variables instead of writing them into the inventory file.
+# The supported variables are:
 #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
 #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
-#   CHECKMK_VAR_VALIDATE_CERTS, CHECKMK_VAR_API_AUTH_TYPE
+#   CHECKMK_VAR_VALIDATE_CERTS, CHECKMK_VAR_API_AUTH_TYPE,
+#   CHECKMK_VAR_FOLDER, CHECKMK_VAR_RECURSIVE,
+#   CHECKMK_VAR_EXCLUDE_TAGS (comma-separated), CHECKMK_VAR_LOWERCASE_HOSTS
 
 # Minimal inventory file when using environment variables:
 plugin: checkmk.general.checkmk
