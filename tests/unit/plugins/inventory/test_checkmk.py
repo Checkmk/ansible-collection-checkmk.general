@@ -5,6 +5,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import json
+
 import pytest
 from ansible.inventory.data import InventoryData
 from ansible_collections.checkmk.general.plugins.inventory.checkmk import (
@@ -180,3 +182,139 @@ def test_populate_nogroups(inventory, mocker):
         "tag_agent_cmk_agent",
     ]:
         assert tag not in inventory.inventory.groups
+
+
+@pytest.fixture()
+def fresh_inventory():
+    r = InventoryModule()
+    r.inventory = InventoryData()
+    return r
+
+
+@pytest.fixture()
+def api():
+    return CheckMKLookupAPI(
+        site_url="http://127.0.0.1/stable",
+        api_user="cmkadmin",
+        api_secret="cmk",
+        validate_certs=False,
+    )
+
+
+def _prepare_tags_and_sites(inventory, api):
+    inventory.hosttaggroups = inventory._get_taggroups(api)
+    inventory.tags = [("tag_" + tag.get("id")) for tag in inventory.hosttaggroups]
+    inventory.sites = inventory._get_sites(api)
+
+
+def _raw_host(host_id, tags=None):
+    effective_attributes = {"site": "maintestsite"}
+    effective_attributes.update(tags or {})
+    return {
+        "id": host_id,
+        "extensions": {
+            "title": host_id,
+            "attributes": {"ipaddress": "192.168.1.1"},
+            "folder": "/main",
+            "effective_attributes": effective_attributes,
+        },
+    }
+
+
+def test_is_excluded(fresh_inventory):
+    fresh_inventory.exclude_tags = ["tag_criticality_test"]
+    assert (
+        fresh_inventory._is_excluded({"id": "h1", "tags": {"tag_criticality": "test"}})
+        is True
+    )
+    assert (
+        fresh_inventory._is_excluded({"id": "h2", "tags": {"tag_criticality": "prod"}})
+        is False
+    )
+    assert (
+        fresh_inventory._is_excluded({"id": "h3", "tags": {"tag_criticality": None}})
+        is False
+    )
+
+
+def test_exclude_tags(fresh_inventory, api):
+    _prepare_tags_and_sites(fresh_inventory, api)
+    fresh_inventory.exclude_tags = ["tag_criticality_test"]
+
+    host_ids = [host["id"] for host in fresh_inventory._get_hosts(api)]
+
+    # testhost1, testhost4 and testhost5 have tag_criticality test
+    for excluded in ["testhost1", "testhost4", "testhost5"]:
+        assert excluded not in host_ids
+    for included in ["testhost2", "testhost3", "testhost6"]:
+        assert included in host_ids
+
+
+def test_domain_map(fresh_inventory, api):
+    _prepare_tags_and_sites(fresh_inventory, api)
+    fresh_inventory.domain_map = {"tag_criticality_prod": ".example.com"}
+
+    host_ids = [host["id"] for host in fresh_inventory._get_hosts(api)]
+
+    # testhost2 has tag_criticality prod and gets the suffix appended
+    assert "testhost2.example.com" in host_ids
+    assert "testhost2" not in host_ids
+    # testhost3 has tag_criticality critical and keeps its name
+    assert "testhost3" in host_ids
+
+
+def test_domain_map_first_match_wins(fresh_inventory):
+    fresh_inventory.domain_map = {
+        "tag_criticality_prod": ".example.com",
+        "tag_networking_lan": ".lan.example.com",
+    }
+    host_tags = {"tag_networking": "lan", "tag_criticality": "prod"}
+    assert fresh_inventory._get_domain_suffix(host_tags) == ".example.com"
+
+
+def test_lowercase_hosts(fresh_inventory):
+    fresh_inventory.tags = ["tag_criticality"]
+    fresh_inventory.lowercase_hosts = True
+
+    hosts = fresh_inventory._parse_hosts([_raw_host("TestHost1")])
+
+    assert hosts[0]["id"] == "testhost1"
+
+
+def test_get_hosts_folder(fresh_inventory, mocker):
+    fresh_inventory.tags = []
+    fresh_inventory.folder = "~main"
+
+    api = mocker.MagicMock()
+    api.get.return_value = json.dumps({"value": [_raw_host("host_a")]})
+
+    host_ids = [host["id"] for host in fresh_inventory._get_hosts(api)]
+
+    assert host_ids == ["host_a"]
+    api.get.assert_called_once_with(
+        "/objects/folder_config/~main/collections/hosts",
+        {"effective_attributes": True},
+    )
+
+
+def test_get_hosts_folder_recursive(fresh_inventory, mocker):
+    fresh_inventory.tags = []
+    fresh_inventory.folder = "~main"
+    fresh_inventory.recursive = True
+
+    def fake_get(endpoint, parameters=None):
+        if endpoint == "/domain-types/folder_config/collections/all":
+            return json.dumps({"value": [{"id": "~main~sub"}]})
+        if endpoint == "/objects/folder_config/~main/collections/hosts":
+            return json.dumps({"value": [_raw_host("host_a"), _raw_host("host_b")]})
+        if endpoint == "/objects/folder_config/~main~sub/collections/hosts":
+            return json.dumps({"value": [_raw_host("host_b"), _raw_host("host_c")]})
+        raise AssertionError("unexpected endpoint %s" % endpoint)
+
+    api = mocker.MagicMock()
+    api.get.side_effect = fake_get
+
+    host_ids = [host["id"] for host in fresh_inventory._get_hosts(api)]
+
+    # host_b is returned by both folders, but must only appear once
+    assert host_ids == ["host_a", "host_b", "host_c"]
