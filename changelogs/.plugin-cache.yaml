@@ -58,6 +58,14 @@ plugins:
       description: Get a list of all ldap_connections
       name: ldap_connections
       version_added: 6.6.0
+    role:
+      description: Get the configuration of a role
+      name: role
+      version_added: 7.7.0
+    roles:
+      description: Get a list of all roles
+      name: roles
+      version_added: 7.7.0
     rule:
       description: Show a rule
       name: rule
@@ -152,6 +160,11 @@ plugins:
       name: password
       namespace: ''
       version_added: 2.3.0
+    role:
+      description: Manage roles in Checkmk
+      name: role
+      namespace: ''
+      version_added: 7.7.0
     rule:
       description: Manage rules in Checkmk
       name: rule
@@ -187,4 +200,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 7.6.0
+version: 7.7.0
