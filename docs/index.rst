@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 7.6.0
+Collection version 7.7.0
 
 .. contents::
    :local:
@@ -69,6 +69,7 @@ Modules
 * :ansplugin:`ldap module <checkmk.general.ldap#module>` -- Manage LDAP connections
 * :ansplugin:`notification module <checkmk.general.notification#module>` -- Manage notification rules in Checkmk.
 * :ansplugin:`password module <checkmk.general.password#module>` -- Manage passwords in Checkmk
+* :ansplugin:`role module <checkmk.general.role#module>` -- Manage roles in Checkmk
 * :ansplugin:`rule module <checkmk.general.rule#module>` -- Manage rules in Checkmk
 * :ansplugin:`service_group module <checkmk.general.service_group#module>` -- Manage service groups in Checkmk (bulk version)
 * :ansplugin:`site module <checkmk.general.site#module>` -- Manage distributed monitoring in Checkmk
@@ -93,6 +94,7 @@ Modules
     ldap_module
     notification_module
     password_module
+    role_module
     rule_module
     service_group_module
     site_module
@@ -127,6 +129,8 @@ Lookup Plugins
 * :ansplugin:`hosts lookup <checkmk.general.hosts#lookup>` -- Get various information about a host
 * :ansplugin:`ldap_connection lookup <checkmk.general.ldap_connection#lookup>` -- Show the configuration of an ldap connection
 * :ansplugin:`ldap_connections lookup <checkmk.general.ldap_connections#lookup>` -- Get a list of all ldap\_connections
+* :ansplugin:`role lookup <checkmk.general.role#lookup>` -- Get the configuration of a role
+* :ansplugin:`roles lookup <checkmk.general.roles#lookup>` -- Get a list of all roles
 * :ansplugin:`rule lookup <checkmk.general.rule#lookup>` -- Show a rule
 * :ansplugin:`rules lookup <checkmk.general.rules#lookup>` -- Get a list rules
 * :ansplugin:`ruleset lookup <checkmk.general.ruleset#lookup>` -- Show a ruleset
@@ -148,6 +152,8 @@ Lookup Plugins
     hosts_lookup
     ldap_connection_lookup
     ldap_connections_lookup
+    role_lookup
+    roles_lookup
     rule_lookup
     rules_lookup
     ruleset_lookup

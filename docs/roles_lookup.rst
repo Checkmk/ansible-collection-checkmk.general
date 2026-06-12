@@ -10,14 +10,14 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.version_lookup:
+.. _ansible_collections.checkmk.general.roles_lookup:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.version lookup -- Get the version of a Checkmk server
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.roles lookup -- Get a list of all roles
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -29,13 +29,13 @@ checkmk.general.version lookup -- Get the version of a Checkmk server
 
     To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.version`.
+    To use it in a playbook, specify: :code:`checkmk.general.roles`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 3.1.0
+New in checkmk.general 7.7.0
 
 .. contents::
    :local:
@@ -49,7 +49,7 @@ Synopsis
 
 .. Description
 
-- Returns the version of a Checkmk server as a string, e.g. '2.1.0p31.cre'
+- Returns a list of all user roles and their configuration, including aliases, base roles, and assigned permissions.
 
 
 .. Aliases
@@ -68,7 +68,7 @@ Keyword parameters
 ------------------
 
 This describes keyword parameters of the lookup. These are the values ``key1=value1``, ``key2=value2`` and so on in the following
-examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.version', key1=value1, key2=value2, ...)``
+examples: ``lookup('checkmk.general.roles', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.roles', key1=value1, key2=value2, ...)``
 
 .. tabularcolumns:: \X{1}{3}\X{2}{3}
 
@@ -86,7 +86,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_cookie"></div>
 
-      .. _ansible_collections.checkmk.general.version_lookup__parameter-api_auth_cookie:
+      .. _ansible_collections.checkmk.general.roles_lookup__parameter-api_auth_cookie:
 
       .. rst-class:: ansible-option-title
 
@@ -140,7 +140,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_type"></div>
 
-      .. _ansible_collections.checkmk.general.version_lookup__parameter-api_auth_type:
+      .. _ansible_collections.checkmk.general.roles_lookup__parameter-api_auth_type:
 
       .. rst-class:: ansible-option-title
 
@@ -199,8 +199,8 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
         <div class="ansibleOptionAnchor" id="parameter-api_secret"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.version_lookup__parameter-api_secret:
-      .. _ansible_collections.checkmk.general.version_lookup__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.roles_lookup__parameter-api_secret:
+      .. _ansible_collections.checkmk.general.roles_lookup__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -257,8 +257,8 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
         <div class="ansibleOptionAnchor" id="parameter-api_user"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.version_lookup__parameter-api_user:
-      .. _ansible_collections.checkmk.general.version_lookup__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.roles_lookup__parameter-api_user:
+      .. _ansible_collections.checkmk.general.roles_lookup__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -314,7 +314,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.version_lookup__parameter-server_url:
+      .. _ansible_collections.checkmk.general.roles_lookup__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -368,7 +368,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.version_lookup__parameter-site:
+      .. _ansible_collections.checkmk.general.roles_lookup__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -422,7 +422,7 @@ examples: ``lookup('checkmk.general.version', key1=value1, key2=value2, ...)`` a
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.version_lookup__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.roles_lookup__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -504,6 +504,15 @@ Notes
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.role <ansible_collections.checkmk.general.role_module>`
+       Manage roles in Checkmk.
+   :ref:`checkmk.general.role <ansible_collections.checkmk.general.role_lookup>` lookup plugin
+       Get the configuration of a role.
 
 .. Examples
 
@@ -512,17 +521,20 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: "Get the Checkmk server version."
+    - name: "Get all configured roles."
       ansible.builtin.debug:
-        msg: "Server version is {{ version }}"
-      vars:
-        version: "{{ lookup('checkmk.general.version',
-                       server_url='https://myserver/',
-                       site='mysite',
-                       api_user='myuser',
-                       api_secret='mysecret',
-                       validate_certs=False
-                   )}}"
+        msg: "Role {{ item.id }}: {{ item.extensions }}"
+      loop: "{{
+        lookup('checkmk.general.roles',
+            server_url='https://myserver/',
+            site='mysite',
+            api_user='myuser',
+            api_secret='mysecret',
+            validate_certs=False
+            )
+        }}"
+      loop_control:
+        label: "{{ item.id }}"
 
     # ---------------------------------------------------------------------------
     # Using variables from inventory
@@ -533,16 +545,18 @@ Examples
     #   checkmk_var_api_user, checkmk_var_api_secret,
     #   checkmk_var_validate_certs
 
-    - name: "Get the Checkmk server version using inventory variables."
+    - name: "Get all configured roles using inventory variables."
       ansible.builtin.debug:
-        msg: "Server version is {{ version }}"
+        msg: "Role {{ item.id }}: {{ item.extensions }}"
       vars:
         checkmk_var_server_url: "https://myserver/"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"
         checkmk_var_validate_certs: false
-        version: "{{ lookup('checkmk.general.version') }}"
+      loop: "{{ lookup('checkmk.general.roles') }}"
+      loop_control:
+        label: "{{ item.id }}"
 
 
 
@@ -570,7 +584,7 @@ Return Value
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-_list"></div>
 
-      .. _ansible_collections.checkmk.general.version_lookup__return-_list:
+      .. _ansible_collections.checkmk.general.roles_lookup__return-_list:
 
       .. rst-class:: ansible-option-title
 
@@ -582,7 +596,7 @@ Return Value
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
 
       .. raw:: html
 
@@ -592,7 +606,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      server Checkmk version
+      A list of all roles and their configuration.
 
 
       .. rst-class:: ansible-option-line
@@ -614,7 +628,7 @@ Return Value
 Authors
 ~~~~~~~
 
-- Lars Getwan (@lgetwan)
+- Robin Gierse (@robin-checkmk)
 
 
 .. Extra links
