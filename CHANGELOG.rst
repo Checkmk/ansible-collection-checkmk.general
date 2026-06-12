@@ -4,6 +4,35 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v7.7.0
+======
+
+Major Changes
+-------------
+
+- Role lookup - Add lookup plugin to fetch a single role's configuration.
+- Role module - Add module to manage roles and permissions.
+- Roles lookup - Add lookup plugin to list all configured roles.
+
+Bugfixes
+--------
+
+- Role module - When creating a role with permissions, a failure while applying the permissions left the cloned role without adjusted permissions. The module now fails with ``changed=true`` and a message explaining that the role exists but the permissions have not been applied. Re-running the task with fixed permissions will fix this state.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.role - Get the configuration of a role
+- checkmk.general.roles - Get a list of all roles
+
+New Modules
+-----------
+
+- checkmk.general.role - Manage roles in Checkmk
+
 v7.6.0
 ======
 

@@ -1688,3 +1688,31 @@ releases:
     - inventory.yml
     - password.yml
     release_date: '2026-05-22'
+  7.7.0:
+    changes:
+      bugfixes:
+      - Role module - When creating a role with permissions, a failure while applying
+        the permissions left the cloned role without adjusted permissions. The module
+        now fails with ``changed=true`` and a message explaining that the role exists
+        but the permissions have not been applied. Re-running the task with fixed
+        permissions will fix this state.
+      major_changes:
+      - Role lookup - Add lookup plugin to fetch a single role's configuration.
+      - Role module - Add module to manage roles and permissions.
+      - Roles lookup - Add lookup plugin to list all configured roles.
+    fragments:
+    - role.yml
+    - role_half_created.yml
+    modules:
+    - description: Manage roles in Checkmk
+      name: role
+      namespace: ''
+    plugins:
+      lookup:
+      - description: Get the configuration of a role
+        name: role
+        namespace: null
+      - description: Get a list of all roles
+        name: roles
+        namespace: null
+    release_date: '2026-06-12'

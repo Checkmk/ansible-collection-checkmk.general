@@ -10,14 +10,14 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.password_module:
+.. _ansible_collections.checkmk.general.role_module:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.password module -- Manage passwords in Checkmk
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.role module -- Manage roles in Checkmk
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -29,13 +29,13 @@ checkmk.general.password module -- Manage passwords in Checkmk
 
     To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.password`.
+    To use it in a playbook, specify: :code:`checkmk.general.role`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 2.3.0
+New in checkmk.general 7.7.0
 
 .. contents::
    :local:
@@ -49,8 +49,7 @@ Synopsis
 
 .. Description
 
-- Manage passwords in Checkmk.
-- Passwords stored in the Checkmk password store can be referenced in rules and special agents without exposing them in plain text in your configuration.
+- Manage roles within Checkmk. Custom roles are created by cloning an existing built\-in role.
 
 
 .. Aliases
@@ -84,7 +83,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_cookie"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-api_auth_cookie:
+      .. _ansible_collections.checkmk.general.role_module__parameter-api_auth_cookie:
 
       .. rst-class:: ansible-option-title
 
@@ -118,7 +117,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_type"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-api_auth_type:
+      .. _ansible_collections.checkmk.general.role_module__parameter-api_auth_type:
 
       .. rst-class:: ansible-option-title
 
@@ -162,8 +161,8 @@ Parameters
         <div class="ansibleOptionAnchor" id="parameter-api_secret"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-api_secret:
-      .. _ansible_collections.checkmk.general.password_module__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.role_module__parameter-api_secret:
+      .. _ansible_collections.checkmk.general.role_module__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -200,8 +199,8 @@ Parameters
         <div class="ansibleOptionAnchor" id="parameter-api_user"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-api_user:
-      .. _ansible_collections.checkmk.general.password_module__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.role_module__parameter-api_user:
+      .. _ansible_collections.checkmk.general.role_module__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -235,9 +234,55 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-based_on"></div>
+
+      .. _ansible_collections.checkmk.general.role_module__parameter-based_on:
+
+      .. rst-class:: ansible-option-title
+
+      **based_on**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-based_on" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The ID of the built\-in role to clone from when creating a new custom role.
+
+      This parameter is ignored when updating an existing role.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"admin"`
+      - :ansible-option-choices-entry:`"user"`
+      - :ansible-option-choices-entry:`"guest"`
+      - :ansible-option-choices-entry:`"agent\_registration"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-client_cert"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-client_cert:
+      .. _ansible_collections.checkmk.general.role_module__parameter-client_cert:
 
       .. rst-class:: ansible-option-title
 
@@ -271,7 +316,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-client_key"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-client_key:
+      .. _ansible_collections.checkmk.general.role_module__parameter-client_key:
 
       .. rst-class:: ansible-option-title
 
@@ -303,151 +348,9 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-comment"></div>
-
-      .. _ansible_collections.checkmk.general.password_module__parameter-comment:
-
-      .. rst-class:: ansible-option-title
-
-      **comment**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-comment" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      A comment for the password.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-customer"></div>
-
-      .. _ansible_collections.checkmk.general.password_module__parameter-customer:
-
-      .. rst-class:: ansible-option-title
-
-      **customer**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-customer" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      For Checkmk Ultimate with multi\-tenancy (CME), you need to specify which customer ID this object belongs to.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-documentation_url"></div>
-
-      .. _ansible_collections.checkmk.general.password_module__parameter-documentation_url:
-
-      .. rst-class:: ansible-option-title
-
-      **documentation_url**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-documentation_url" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      An optional URL pointing to documentation or any other page.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-editable_by"></div>
-        <div class="ansibleOptionAnchor" id="parameter-owner"></div>
-
-      .. _ansible_collections.checkmk.general.password_module__parameter-editable_by:
-      .. _ansible_collections.checkmk.general.password_module__parameter-owner:
-
-      .. rst-class:: ansible-option-title
-
-      **editable_by**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-editable_by" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-aliases:`aliases: owner`
-
-        :ansible-option-type:`string`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      Each password is owned by a group of users which are able to edit, delete and use existing passwords.
-
-      Use :ansopt:`checkmk.general.password#module:editable\_by` in new playbooks. :ansopt:`checkmk.general.password#module:owner` is a deprecated alias kept for backward compatibility.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-name"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-name:
+      .. _ansible_collections.checkmk.general.role_module__parameter-name:
 
       .. rst-class:: ansible-option-title
 
@@ -469,7 +372,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      A unique identifier for the password.
+      The internal ID of the role. This is used to uniquely identify the role. It cannot be changed after creation.
 
 
       .. raw:: html
@@ -479,21 +382,21 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-password"></div>
+        <div class="ansibleOptionAnchor" id="parameter-permissions"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-password:
+      .. _ansible_collections.checkmk.general.role_module__parameter-permissions:
 
       .. rst-class:: ansible-option-title
 
-      **password**
+      **permissions**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-password" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-permissions" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`dictionary`
 
       .. raw:: html
 
@@ -503,7 +406,17 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The password string.
+      A dictionary of permissions to set on the role.
+
+      Keys are permission IDs (e.g., :literal:`general.use`\ , :literal:`wato.edit`\ , :literal:`wato.all\_folders`\ ).
+
+      Values must be one of :literal:`yes`\ , :literal:`no`\ , or :literal:`default`. Values must be quoted strings in YAML; unquoted :literal:`yes` and :literal:`no` are interpreted as booleans and will be rejected.
+
+      The value :literal:`default` reverts a permission to the base role's setting. It is only valid for custom roles. For built\-in roles (\ :literal:`admin`\ , :literal:`user`\ , :literal:`guest`\ , :literal:`agent\_registration`\ ) use :literal:`yes` or :literal:`no` explicitly.
+
+      Permissions not listed here will remain unchanged.
+
+      You can find the internal permission IDs in the Checkmk GUI under :emphasis:`Setup \> Users \> Roles & permissions` using the inline help (available from Checkmk 2.4.0 onwards via Werk
 
 
       .. raw:: html
@@ -515,7 +428,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-server_url:
+      .. _ansible_collections.checkmk.general.role_module__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -547,43 +460,9 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-shared"></div>
-
-      .. _ansible_collections.checkmk.general.password_module__parameter-shared:
-
-      .. rst-class:: ansible-option-title
-
-      **shared**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-shared" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`any`
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      The list of members to share the password with.
-
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-site:
+      .. _ansible_collections.checkmk.general.role_module__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -617,7 +496,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-state"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-state:
+      .. _ansible_collections.checkmk.general.role_module__parameter-state:
 
       .. rst-class:: ansible-option-title
 
@@ -639,7 +518,11 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      create/update or delete a password.
+      The desired state of the role.
+
+      :literal:`present` ensures the role exists with the specified configuration. If the role does not exist, it will be created by cloning the role specified in :literal:`based\_on`.
+
+      :literal:`absent` ensures the custom role does not exist. Built\-in roles cannot be deleted.
 
 
       .. rst-class:: ansible-option-line
@@ -658,8 +541,10 @@ Parameters
 
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-title"></div>
+        <div class="ansibleOptionAnchor" id="parameter-alias"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-title:
+      .. _ansible_collections.checkmk.general.role_module__parameter-alias:
+      .. _ansible_collections.checkmk.general.role_module__parameter-title:
 
       .. rst-class:: ansible-option-title
 
@@ -671,7 +556,9 @@ Parameters
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-aliases:`aliases: alias`
+
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -681,7 +568,9 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      A title for the password.
+      The human\-readable title (alias) of the role.
+
+      Optional when creating a new custom role. If omitted, the title of the source role is used.
 
 
       .. raw:: html
@@ -693,7 +582,7 @@ Parameters
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.role_module__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -736,9 +625,26 @@ Parameters
 
 .. Notes
 
+Notes
+-----
+
+.. note::
+   - Built\-in roles cannot be created or deleted, but their permissions can be updated.
+   - Creating a role with :emphasis:`permissions` requires two API calls. The role is first cloned from :emphasis:`based\_on`\ , then the permissions are applied in a second call. If the second call fails (e.g., due to an invalid permission ID), the role still exists on the server with the permissions inherited from the base role. The module then fails with :literal:`changed=true` and a message describing this state. To recover, resolve the error and re\-run the task, which updates the permissions of the now existing role. Alternatively, remove the role with :literal:`state=absent`.
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.user <ansible_collections.checkmk.general.user_module>`
+       Manage users in Checkmk.
+   :ref:`checkmk.general.contact\_group <ansible_collections.checkmk.general.contact_group_module>`
+       Manage contact groups in Checkmk.
+   `Checkmk documentation on roles <https://docs.checkmk.com/latest/en/wato_user.html>`_
+       Complete documentation for user roles and permissions.
 
 .. Examples
 
@@ -748,54 +654,70 @@ Examples
 .. code-block:: yaml+jinja
 
     # ---------------------------------------------------------------------------
-    # Create, update, and delete passwords
+    # Create and delete roles
     # ---------------------------------------------------------------------------
-    # Creating and updating use the same task structure.
-    # Always set 'no_log: true' when using this module to avoid logging secrets.
 
-    - name: "Create a password."
-      checkmk.general.password:
+    - name: "Create a custom monitoring role."
+      checkmk.general.role:
         server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        name: "mypassword"
-        title: "My Password"
-        comment: "Managed by Ansible"
-        password: "topsecret"
-        owner: "admin"
-        shared:
-          - "all"
+        name: "limited_user"
+        title: "Limited Monitoring User"
+        based_on: "user"
         state: "present"
-      no_log: true
 
-    - name: "Create a password with all optional fields."
-      checkmk.general.password:
+    - name: "Create a custom role with tailored permissions."
+      checkmk.general.role:
         server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        name: "mypassword"
-        title: "My Password"
-        customer: "provider"
-        comment: "Managed by Ansible"
-        documentation_url: "https://docs.example.com/mypassword"
-        password: "topsecret"
-        owner: "admin"
-        shared:
-          - "all"
+        name: "host_manager"
+        title: "Host Manager"
+        based_on: "user"
+        permissions:
+          wato.all_folders: "yes"
+          wato.edit: "yes"
+          wato.manage_hosts: "yes"
+          general.edit_notifications: "no"
         state: "present"
-      no_log: true
 
-    - name: "Delete a password."
-      checkmk.general.password:
+    - name: "Delete a custom role."
+      checkmk.general.role:
         server_url: "https://myserver/"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        name: "mypassword"
-        title: "My Password"
+        name: "limited_user"
         state: "absent"
+
+    # ---------------------------------------------------------------------------
+    # Update permissions on existing roles
+    # ---------------------------------------------------------------------------
+
+    - name: "Update permissions on an existing custom role."
+      checkmk.general.role:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        name: "host_manager"
+        permissions:
+          wato.all_folders: "yes"
+        state: "present"
+
+    - name: "Modify permissions on the built-in user role."
+      checkmk.general.role:
+        server_url: "https://myserver/"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        name: "user"
+        permissions:
+          general.edit_notifications: "no"
+        state: "present"
 
     # ---------------------------------------------------------------------------
     # Using environment variables for authentication
@@ -806,13 +728,12 @@ Examples
     #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
     #   CHECKMK_VAR_VALIDATE_CERTS
 
-    - name: "Create a password using environment variables for authentication."
-      checkmk.general.password:
-        name: "mypassword"
-        title: "My Password"
-        password: "topsecret"
+    - name: "Create a custom role using environment variables for authentication."
+      checkmk.general.role:
+        name: "limited_user"
+        title: "Limited Monitoring User"
+        based_on: "user"
         state: "present"
-      no_log: true
       environment:
         CHECKMK_VAR_SERVER_URL: "https://myserver/"
         CHECKMK_VAR_SITE: "mysite"
@@ -847,7 +768,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-http_code"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__return-http_code:
+      .. _ansible_collections.checkmk.general.role_module__return-http_code:
 
       .. rst-class:: ansible-option-title
 
@@ -892,7 +813,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-msg"></div>
 
-      .. _ansible_collections.checkmk.general.password_module__return-msg:
+      .. _ansible_collections.checkmk.general.role_module__return-msg:
 
       .. rst-class:: ansible-option-title
 
@@ -914,7 +835,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-cell">
 
-      The output message that the module generates.
+      The output message that the module generates. Contains the API response details in case of an error.
 
 
       .. rst-class:: ansible-option-line
@@ -924,7 +845,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
 
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Done."`
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"Role created."`
 
 
       .. raw:: html
@@ -941,7 +862,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- Max Sickora (@max-checkmk)
+- Robin Gierse (@robin-checkmk)
 
 
 .. Extra links
