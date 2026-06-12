@@ -1,0 +1,5 @@
+bugfixes:
+  - Role module - When creating a role with permissions, a failure while
+    applying the permissions left the cloned role without adjusted permissions.
+    The module now fails with ``changed=true`` and a message explaining that the role exists
+    but the permissions have not been applied. Re-running the task with fixed permissions will fix this state.
