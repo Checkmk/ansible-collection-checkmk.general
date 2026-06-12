@@ -19,8 +19,6 @@ version_added: "7.7.0"
 description:
     - Manage roles within Checkmk. Custom roles are created by
       cloning an existing built-in role.
-    - Built-in roles cannot be created or deleted,
-      but their permissions can be modified.
 
 extends_documentation_fragment:
     - checkmk.general.common
