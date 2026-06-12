@@ -85,7 +85,13 @@ class CheckmkAPI:
         self.version = None
 
     def _fetch(
-        self, code_mapping="", endpoint="", data=None, method="GET", logger=None
+        self,
+        code_mapping="",
+        endpoint="",
+        data=None,
+        method="GET",
+        logger=None,
+        fail_on_error=True,
     ):
         if not logger:
             logger = self.logger
@@ -155,7 +161,9 @@ class CheckmkAPI:
             changed=changed,
         )
 
-        if failed:
+        # With fail_on_error=False, the caller handles the failed result,
+        # e.g. to enrich the error message with context about partial changes.
+        if failed and fail_on_error:
             exit_module(
                 self.module,
                 result=result,

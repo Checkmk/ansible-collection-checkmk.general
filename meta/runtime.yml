@@ -12,8 +12,10 @@ action_groups:
     - folder
     - host_group
     - host
+    - ldap
     - notification
     - password
+    - role
     - rule
     - service_group
     - site

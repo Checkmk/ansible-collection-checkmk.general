@@ -1,0 +1,65 @@
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+name: Lookup Module Role Integration
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+  pull_request:
+    branches:
+      - main
+      - devel
+    types:
+      - opened
+    paths:
+      - 'plugins/lookup/role.py'
+      - 'plugins/lookup/roles.py'
+  push:
+    paths:
+      - '.github/workflows/ans-int-test-lkp-role.yaml'
+      - 'plugins/lookup/role.py'
+      - 'plugins/lookup/roles.py'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/lookup_role/**'
+
+jobs:
+
+  integration:
+    name: "${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
+    uses: ./.github/workflows/_template-ans-int-test.yaml
+    with:
+      module: lookup_role
+      checkmk_version: ${{ matrix.checkmk_version }}
+      checkmk_edition: ${{ matrix.checkmk_edition }}
+    strategy:
+      fail-fast: false
+      matrix:
+        checkmk_version:
+          - 2.3.0p48
+          - 2.4.0p31
+          - 2.5.0p6
+        checkmk_edition:
+          - raw
+          - managed
+          - community
+          - ultimatemt
+        exclude:
+          - checkmk_version: 2.3.0p48
+            checkmk_edition: community
+          - checkmk_version: 2.3.0p48
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.4.0p31
+            checkmk_edition: community
+          - checkmk_version: 2.4.0p31
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.5.0p6
+            checkmk_edition: raw
+          - checkmk_version: 2.5.0p6
+            checkmk_edition: managed
