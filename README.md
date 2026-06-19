@@ -17,11 +17,11 @@ Keep that in mind, when using the collection and interacting with this repositor
 
 ## :wrench: Installing this collection
 
-Refer to [INSTALL.md](INSTALL.md) for detailed installation instructions.
+Refer to [INSTALL.md](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/INSTALL.md) for detailed installation instructions.
 
 ## :construction_worker: Using this collection
 
-Refer to [USAGE.md](USAGE.md) for detailed instructions on how to use this collection.
+Refer to [USAGE.md](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/USAGE.md) for detailed instructions on how to use this collection.
 
 ## :electric_plug: Dependencies
 
@@ -39,7 +39,7 @@ or run the following command substituting the `$MODULE_NAME`:
 
     ansible-doc checkmk.general.$MODULE_NAME
 
-For any form of support queries or requests refer to [SUPPORT.md](SUPPORT.md).
+For any form of support queries or requests refer to [SUPPORT.md](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/SUPPORT.md).
 
 ## :toolbox: Included content
 
@@ -115,15 +115,15 @@ Name | Description | Tests
 ## :heavy_plus_sign: Additional content
 
 We love to see the community build things on top of this collection.
-Check out [COMMUNITY.md](COMMUNITY.md) for a listing of interesting projects that build upon this collection in some way.
+Check out [COMMUNITY.md](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/COMMUNITY.md) for a listing of interesting projects that build upon this collection in some way.
 
 ## :green_heart: Getting involved
 
-See [CONTRIBUTING](CONTRIBUTING.md).
+See [CONTRIBUTING.md](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/CONTRIBUTING.md).
 
 ## :mega: Release notes
 
-See [CHANGELOG.rst](CHANGELOG.rst).
+See [CHANGELOG.rst](https://github.com/Checkmk/ansible-collection-checkmk.general/blob/main/CHANGELOG.rst).
 
 ## :books: Versioning
 
