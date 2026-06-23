@@ -36,7 +36,10 @@ COMPATIBLE_MODES = [
     "tabula_rasa",
     "refresh",
     "monitor_undecided_services",
+    "update_service_parameters",
 ]
+
+BULK_ONLY_MODES = ("monitor_undecided_services", "update_service_parameters")
 
 MONITOR_UNDECIDED_SERVICES = [
     "new",
@@ -50,6 +53,13 @@ REMOVE_VANISHED_SERVICES = ["remove", "fix_all", "refresh", "tabula_rasa"]
 
 UPDATE_SERVICE_LABELS = [
     "only_service_labels",
+    "fix_all",
+    "refresh",
+    "tabula_rasa",
+]
+
+UPDATE_SERVICE_PARAMETERS = [
+    "update_service_parameters",
     "fix_all",
     "refresh",
     "tabula_rasa",
@@ -77,7 +87,7 @@ class ServiceDiscoveryAPI(CheckmkAPI):
                 msg="State %s is not supported with this Checkmk version." % mode
             )
 
-        if mode == "monitor_undecided_services":
+        if mode in BULK_ONLY_MODES:
             return generate_result(
                 msg="State %s is only supported in bulk mode." % mode
             )
@@ -108,6 +118,7 @@ class ServiceBulkDiscoveryAPI(CheckmkAPI):
             "monitor_undecided_services": False,
             "remove_vanished_services": False,
             "update_service_labels": False,
+            "update_service_parameters": False,
             "update_host_labels": False,
         }
 
@@ -119,6 +130,9 @@ class ServiceBulkDiscoveryAPI(CheckmkAPI):
 
         if self.params.get("state") in UPDATE_SERVICE_LABELS:
             options["update_service_labels"] = True
+
+        if self.params.get("state") in UPDATE_SERVICE_PARAMETERS:
+            options["update_service_parameters"] = True
 
         if self.params.get("state") in UPDATE_HOST_LABELS:
             options["update_host_labels"] = True

@@ -109,6 +109,19 @@
       failed_when: "'State monitor_undecided_services is only supported in bulk mode.' not in __checkmk_var_result_undecided_post_23.msg"
       when: "(outer_item.version | regex_replace('p.*', '')) is version('2.3.0', '>=')"
 
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update service parameters. (Should fail in 3.0.0 and above, single mode only)"
+      discovery:
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ outer_item.site }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
+        host_name: "{{ item.name }}"
+        state: "update_service_parameters"
+      loop: "{{ checkmk_var_hosts }}"
+      register: __checkmk_var_result_params_single
+      failed_when: "'State update_service_parameters is only supported in bulk mode.' not in __checkmk_var_result_params_single.msg"
+      when: "(outer_item.version | regex_replace('p.*', '')) is version('2.6.0', '>=')"
+
     - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Tabula Rasa. (New since 2.2)"
       discovery:
         server_url: "{{ checkmk_var_server_url }}"
@@ -254,6 +267,30 @@
         state: "monitor_undecided_services"
         bulk_size: 5
       when: "(outer_item.version | regex_replace('p.*', '')) is version('2.3.0', '>=')"
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Update service parameters. (Should fail < 3.0.0)"
+      discovery:
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ outer_item.site }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
+        hosts: "{{ checkmk_var_host_names }}"
+        state: "update_service_parameters"
+        bulk_size: 5
+      register: __checkmk_var_result_params_pre_30
+      failed_when: "'State update_service_parameters is not supported with this Checkmk version.' not in __checkmk_var_result_params_pre_30.msg"
+      when: "(outer_item.version | regex_replace('p.*', '')) is version('2.6.0', '<')"
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Update service parameters. (3.0+)"
+      discovery:
+        server_url: "{{ checkmk_var_server_url }}"
+        site: "{{ outer_item.site }}"
+        api_user: "{{ checkmk_var_api_user }}"
+        api_secret: "{{ checkmk_var_api_secret }}"
+        hosts: "{{ checkmk_var_host_names }}"
+        state: "update_service_parameters"
+        bulk_size: 5
+      when: "(outer_item.version | regex_replace('p.*', '')) is version('2.6.0', '>=')"
 
     - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Bulk: Add undecided services to monitoring."
       discovery:
