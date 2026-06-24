@@ -363,11 +363,17 @@ class InventoryModule(BaseInventoryPlugin):
                 return suffix
         return ""
 
-    def _folder_matches(self, host_folder):
-        """Return True if the host's folder matches the folder option."""
+    def _folder_matches(self, host_folder, target=None):
+        """Return True if the host's folder matches the folder option.
+
+        ``target`` is the pre-normalized folder option. It is computed once per
+        run in ``_parse_hosts`` and passed in to avoid re-normalizing it for
+        every host; when omitted it is derived from ``self.folder``.
+        """
         if not self.folder:
             return True
-        target = normalize_folder(self.folder)
+        if target is None:
+            target = normalize_folder(self.folder)
         host_folder = normalize_folder(host_folder)
         if host_folder == target:
             return True
@@ -378,6 +384,7 @@ class InventoryModule(BaseInventoryPlugin):
 
     def _parse_hosts(self, raw_hosts):
         """Convert raw API host list to internal format, apply folder, exclude_tags and domain_map."""
+        folder_target = normalize_folder(self.folder) if self.folder else None
         hosts = []
         for host in raw_hosts:
             host_id = host.get("id")
@@ -397,7 +404,7 @@ class InventoryModule(BaseInventoryPlugin):
                 "tags": host_tags,
             }
 
-            if not self._folder_matches(parsed["folder"]):
+            if not self._folder_matches(parsed["folder"], folder_target):
                 continue
 
             if self._is_excluded(parsed):
