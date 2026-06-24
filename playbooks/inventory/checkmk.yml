@@ -6,3 +6,10 @@ api_secret: "mysecret"
 validate_certs: false
 groupsources: ["hosttags", "sites"]
 want_ipv4: false
+folder: "/"
+recursive: true
+lowercase_hosts: true
+exclude_tags:
+  - tag_criticality_test
+domain_map:
+  tag_criticality_prod: ".example.com"
