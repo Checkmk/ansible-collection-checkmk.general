@@ -18,7 +18,7 @@ DOCUMENTATION = """
     options:
         plugin:
             description: Name of the plugin. Should always be C(checkmk.general.checkmk).
-            type: string
+            type: str
             required: true
             choices: ['checkmk.general.checkmk']
         groupsources:
@@ -30,7 +30,7 @@ DOCUMENTATION = """
             required: false
         want_ipv4:
             description: Update ansible_host variable with ip address from Checkmk.
-            type: boolean
+            type: bool
             required: false
         folder:
             description:
@@ -39,6 +39,8 @@ DOCUMENTATION = """
                 as well as a regular path, e.g. C(/linux/production).
               - Unless C(recursive) is enabled, only hosts directly in the given folder are returned.
               - If not set, all hosts from the entire site are returned.
+              - All hosts are always fetched from the site and filtered on the client
+                side, so this does not reduce the amount of data retrieved from Checkmk.
             required: false
             type: str
             env:
@@ -83,6 +85,8 @@ DOCUMENTATION = """
               - Keys must be in the full Checkmk format C(tag_<group>_<value>),
                 e.g. C(tag_criticality_prod).
               - Values are the domain suffixes to append, e.g. C(.example.com).
+              - Unlike the other filtering options, this cannot be set via an
+                environment variable.
             required: false
             type: dict
 
@@ -91,6 +95,9 @@ DOCUMENTATION = """
           loaded, C(checkmk_var_*) values placed there are B(not) visible to this
           plugin. Sources that B(do) work are extra-vars (C(-e)), environment
           variables (C(CHECKMK_VAR_*)) and C(ansible.cfg) C([checkmk_lookup]) entries.
+        - The C(lowercase_hosts) and C(domain_map) options change hostnames. If a
+          transformation maps two different Checkmk hosts to the same name, they are
+          merged into a single inventory host, so make sure transformed names stay unique.
 
     author:
         - Max Sickora (@max-checkmk)
