@@ -31,6 +31,7 @@ jobs:
       max-parallel: 2
       matrix:
         ansible:
+          - stable-2.16
           - stable-2.19
           - stable-2.20
           - stable-2.21
