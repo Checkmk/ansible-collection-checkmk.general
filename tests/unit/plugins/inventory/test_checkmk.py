@@ -283,30 +283,30 @@ def test_lowercase_hosts(fresh_inventory):
 
 
 def test_folder_matches(fresh_inventory):
-    fresh_inventory.folder = "~main"
+    fresh_inventory.folder = "/main"
     assert fresh_inventory._folder_matches("/main") is True
     assert fresh_inventory._folder_matches("/main/sub") is False
     assert fresh_inventory._folder_matches("/other") is False
 
-    # Slash-format and trailing slashes are accepted as well
-    fresh_inventory.folder = "/main/"
+    # Trailing slashes and the leading slash are normalized away
+    fresh_inventory.folder = "main/"
     assert fresh_inventory._folder_matches("/main") is True
 
     fresh_inventory.recursive = True
-    fresh_inventory.folder = "~main"
+    fresh_inventory.folder = "/main"
     assert fresh_inventory._folder_matches("/main") is True
     assert fresh_inventory._folder_matches("/main/sub") is True
     assert fresh_inventory._folder_matches("/mainother") is False
 
     # The root folder matches everything when recursive
-    fresh_inventory.folder = "~"
+    fresh_inventory.folder = "/"
     assert fresh_inventory._folder_matches("/") is True
     assert fresh_inventory._folder_matches("/main/sub") is True
 
 
 def test_get_hosts_folder(fresh_inventory, mocker):
     fresh_inventory.tags = []
-    fresh_inventory.folder = "~main"
+    fresh_inventory.folder = "/main"
 
     api = mocker.MagicMock()
     api.get.return_value = json.dumps(
@@ -331,7 +331,7 @@ def test_get_hosts_folder(fresh_inventory, mocker):
 
 def test_get_hosts_folder_recursive(fresh_inventory, mocker):
     fresh_inventory.tags = []
-    fresh_inventory.folder = "~main"
+    fresh_inventory.folder = "/main"
     fresh_inventory.recursive = True
 
     api = mocker.MagicMock()

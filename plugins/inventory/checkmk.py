@@ -35,8 +35,7 @@ DOCUMENTATION = """
         folder:
             description:
               - Restrict hosts to a specific folder path in Checkmk.
-              - Accepts the Checkmk tilde-format, e.g. C(~linux~production),
-                as well as a regular path, e.g. C(/linux/production).
+              - Given as a regular path, e.g. C(/linux/production).
               - Unless C(recursive) is enabled, only hosts directly in the given folder are returned.
               - If not set, all hosts from the entire site are returned.
               - All hosts are always fetched from the site and filtered on the client

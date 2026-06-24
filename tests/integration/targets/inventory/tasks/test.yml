@@ -78,7 +78,7 @@
   vars:
     __checkmk_var_scenario: "folder"
     __checkmk_var_inventory_options:
-      folder: "~top"
+      folder: "/top"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'folder': Verify only hosts directly in the folder."
   ansible.builtin.assert:
@@ -90,7 +90,7 @@
   vars:
     __checkmk_var_scenario: "recursive"
     __checkmk_var_inventory_options:
-      folder: "~top"
+      folder: "/top"
       recursive: true
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'recursive': Verify hosts of folder and subfolders."
@@ -151,7 +151,7 @@
     __checkmk_var_inventory_options:
       groupsources: ["hosttags", "sites"]
       want_ipv4: true
-      folder: "~"
+      folder: "/"
       recursive: true
       exclude_tags:
         - "tag_criticality_test"
@@ -173,7 +173,7 @@
     __checkmk_var_scenario: "environment"
     __checkmk_var_inventory_options: {}
     __checkmk_var_inventory_env:
-      CHECKMK_VAR_FOLDER: "~top"
+      CHECKMK_VAR_FOLDER: "/top"
       CHECKMK_VAR_RECURSIVE: "true"
       CHECKMK_VAR_EXCLUDE_TAGS: "tag_criticality_test,tag_criticality_offline"
       CHECKMK_VAR_LOWERCASE_HOSTS: "true"

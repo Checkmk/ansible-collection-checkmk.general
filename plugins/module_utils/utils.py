@@ -72,11 +72,10 @@ def base_argument_spec():
 def normalize_folder(folder):
     """Normalize a Checkmk folder path to slash-format.
 
-    Accepts the tilde-format used by the REST API ('~linux~production') as
-    well as regular paths ('/linux/production', 'linux/production/') and
+    Accepts regular paths ('/linux/production', 'linux/production/') and
     returns a '/linux/production' style path. The root folder is '/'.
     """
-    folder = (folder or "").strip().replace("~", "/")
+    folder = (folder or "").strip()
     if not folder.startswith("/"):
         folder = "/" + folder
     while "//" in folder:
