@@ -8,7 +8,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
     name: checkmk
-    author: Max Sickora (@max-checkmk)
     short_description: Dynamic Inventory Source for Checkmk
     description:
         - Get hosts from any Checkmk site.
@@ -86,11 +85,17 @@ DOCUMENTATION = """
               - Values are the domain suffixes to append, e.g. C(.example.com).
             required: false
             type: dict
+
     notes:
         - Because inventory plugins run before C(group_vars/) and C(host_vars/) are
           loaded, C(checkmk_var_*) values placed there are B(not) visible to this
           plugin. Sources that B(do) work are extra-vars (C(-e)), environment
           variables (C(CHECKMK_VAR_*)) and C(ansible.cfg) C([checkmk_lookup]) entries.
+
+    author:
+        - Max Sickora (@max-checkmk)
+        - JDog1895 (@JDog1895)
+        - Robin Gierse (@robin-checkmk)
 """
 
 EXAMPLES = """
