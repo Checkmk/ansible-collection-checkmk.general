@@ -37,7 +37,6 @@ DOCUMENTATION = """
               - Restrict hosts to a specific folder path in Checkmk.
               - Given as a regular path, e.g. C(/linux/production).
               - Unless C(recursive) is enabled, only hosts directly in the given folder are returned.
-              - If not set, all hosts from the entire site are returned.
               - All hosts are always fetched from the site and filtered on the client
                 side, so this does not reduce the amount of data retrieved from Checkmk.
             required: false
@@ -59,8 +58,6 @@ DOCUMENTATION = """
               - Any host that has at least one of the given tags set will be excluded.
               - Tags must be given in the full Checkmk format C(tag_<group>_<value>),
                 e.g. C(tag_criticality_test) or C(tag_agent_cmk-agent).
-              - Can also be set via environment variable as a comma-separated string,
-                e.g. C(tag_criticality_test,tag_agent_cmk-agent).
             required: false
             type: list
             elements: str
@@ -69,7 +66,6 @@ DOCUMENTATION = """
         lowercase_hosts:
             description:
               - If set to C(true), all hostnames will be converted to lowercase in the inventory.
-              - Default is C(false), hostnames are used exactly as defined in Checkmk.
             required: false
             default: false
             type: bool
@@ -116,7 +112,6 @@ server_url: "http://myserver/"
 site: "mysite"
 api_user: "myuser"
 api_secret: "mysecret"
-validate_certs: true
 groupsources: ["hosttags", "sites"]
 want_ipv4: true
 
@@ -131,7 +126,7 @@ exclude_tags:
 
 # Only hosts in a specific folder and its subfolders:
 plugin: checkmk.general.checkmk
-folder: "linux"
+folder: "/linux"
 recursive: true
 
 # Build lowercase FQDNs by appending a domain suffix based on host tags:
