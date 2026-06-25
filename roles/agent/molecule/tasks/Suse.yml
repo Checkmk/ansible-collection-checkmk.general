@@ -1,0 +1,48 @@
+---
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Install host-specific {{ checkmk_agent_edition | upper }} Agent."
+  become: true
+  community.general.zypper:
+    name: "{{ __checkmk_agent_agent.file.host }}"
+    force: "{{ checkmk_agent_force_install | bool }}"
+    state: present
+    disable_gpg_check: true
+  when: |
+    checkmk_agent_edition | lower != "community"
+    and checkmk_agent_host_specific | bool
+  tags:
+    - install-package
+
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Install folder-specific {{ checkmk_agent_edition | upper }} Agent."
+  become: true
+  community.general.zypper:
+    name: "{{ __checkmk_agent_agent.file.pro }}"
+    force: "{{ checkmk_agent_force_install | bool }}"
+    state: present
+    disable_gpg_check: true
+  when: |
+    checkmk_agent_edition | lower != "community"
+    and checkmk_agent_folder_specific | bool
+  tags:
+    - install-package
+
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Install Vanilla Agent."
+  become: true
+  community.general.zypper:
+    name: "{{ __checkmk_agent_agent.file.community }}"
+    force: "{{ checkmk_agent_force_install | bool }}"
+    state: present
+    disable_gpg_check: true
+  when: |
+    checkmk_agent_edition | lower == "community"
+    or not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool)
+  tags:
+    - install-package
+
+- name: "{{ ansible_facts['os_family'] }} Derivatives: Allow access to the Checkmk agent on port {{ checkmk_agent_port }}/tcp."
+  when: checkmk_agent_configure_firewall | bool and "firewalld.service" in ansible_facts['services']
+  ansible.posix.firewalld:
+    permanent: true
+    immediate: "{% if ansible_facts['services']['firewalld.service']['state'] == 'running' %}true{% else %}false{% endif %}"
+    port: "{{ checkmk_agent_port }}/tcp"
+    state: "enabled"
+  become: true
