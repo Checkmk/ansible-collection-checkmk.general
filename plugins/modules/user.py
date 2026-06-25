@@ -31,10 +31,8 @@ options:
         description:
             - The authentication type.
               Setting this to C(password) will create a normal user, C(automation) will create an automation user.
-            - When omitted on an existing user, the user's current authentication method
-              (including LDAP or SAML) is preserved. Only specify this when you intend to
-              set or change the user's local authentication.
         required: false
+        default: password
         type: str
         choices: ["password", "automation"]
     authorized_sites:
@@ -416,14 +414,8 @@ class UserAPI(CheckmkAPI):
         user["interface_options"] = {}
 
         # For some keys the API has required sub keys. We can use them as indicator,
-        # that the key must be used.
-        # Only build `auth_option` when the user explicitly asked for an auth change;
-        # otherwise editing any unrelated attribute would reset LDAP/SAML users to
-        # local password authentication.
-        if any(
-            self.required.get(k) is not None
-            for k in ("auth_type", "password", "enforce_password_change")
-        ):
+        # that the key must be used
+        if self.required.get("auth_type"):
             user["auth_option"] = {}
         if self.required.get("email"):
             user["contact_options"] = {}
@@ -597,7 +589,9 @@ def run_module():
         customer=dict(type="str", required=False),
         password=dict(type="str", no_log=True),
         enforce_password_change=dict(type="bool", no_log=False),
-        auth_type=dict(type="str", choices=["password", "automation"]),
+        auth_type=dict(
+            type="str", default="password", choices=["password", "automation"]
+        ),
         disable_login=dict(type="bool"),
         email=dict(type="str"),
         fallback_contact=dict(type="bool"),
