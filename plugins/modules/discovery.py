@@ -50,7 +50,7 @@ options:
         required: false
         type: str
         default: new
-        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels, only_service_labels, monitor_undecided_services]
+        choices: [new, remove, fix_all, refresh, tabula_rasa, only_host_labels, only_service_labels, monitor_undecided_services, update_service_parameters]
     do_full_scan:
         description: The option whether to perform a full scan or not. (Bulk mode only).
         required: false
@@ -275,6 +275,9 @@ from ansible_collections.checkmk.general.plugins.module_utils.discovery_240 impo
 from ansible_collections.checkmk.general.plugins.module_utils.discovery_250 import (
     Discovery250,
 )
+from ansible_collections.checkmk.general.plugins.module_utils.discovery_300 import (
+    Discovery300,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.types import (
     generate_result,
@@ -288,6 +291,7 @@ logger = Logger()
 
 AVAILABLE_API_VERSIONS = [
     # Let's try the newest Version, first.
+    Discovery300,
     Discovery250,
     Discovery240,
     Discovery230,
@@ -313,6 +317,7 @@ def run_module():
                 "only_host_labels",
                 "only_service_labels",
                 "monitor_undecided_services",
+                "update_service_parameters",
             ],
         ),
         do_full_scan=dict(type="bool", default=True),

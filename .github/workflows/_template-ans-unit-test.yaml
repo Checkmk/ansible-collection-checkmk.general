@@ -24,6 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         ansible:
+          - stable-2.16
           - stable-2.19
           - stable-2.20
           - stable-2.21
@@ -38,7 +39,7 @@ jobs:
     steps:
 
       - name: "Check out code."
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: ansible_collections/checkmk/general
 
