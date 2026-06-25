@@ -4,6 +4,15 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v7.8.0
+======
+
+Minor Changes
+-------------
+
+- Discovery module - Add option to update service parameters for bulk discovery.
+- Discovery module - Add support for Checkmk 3.0.
+
 v7.7.0
 ======
 

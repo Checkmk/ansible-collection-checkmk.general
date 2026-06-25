@@ -1716,3 +1716,11 @@ releases:
         name: roles
         namespace: null
     release_date: '2026-06-12'
+  7.8.0:
+    changes:
+      minor_changes:
+      - Discovery module - Add option to update service parameters for bulk discovery.
+      - Discovery module - Add support for Checkmk 3.0.
+    fragments:
+    - discovery.yml
+    release_date: '2026-06-25'
