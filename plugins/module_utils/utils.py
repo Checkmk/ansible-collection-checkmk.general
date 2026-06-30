@@ -69,6 +69,20 @@ def base_argument_spec():
     )
 
 
+def normalize_folder(folder):
+    """Normalize a Checkmk folder path to slash-format.
+
+    Accepts regular paths ('/linux/production', 'linux/production/') and
+    returns a '/linux/production' style path. The root folder is '/'.
+    """
+    folder = (folder or "").strip()
+    if not folder.startswith("/"):
+        folder = "/" + folder
+    while "//" in folder:
+        folder = folder.replace("//", "/")
+    return folder.rstrip("/") or "/"
+
+
 def result_as_dict(result):
     return {
         "changed": result.changed,
