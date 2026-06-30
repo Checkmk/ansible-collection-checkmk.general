@@ -200,4 +200,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 7.8.0
+version: 8.0.0

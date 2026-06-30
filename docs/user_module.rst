@@ -22,7 +22,7 @@ checkmk.general.user module -- Manage users in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 7.8.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.0.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -261,12 +261,14 @@ Parameters
 
       The authentication type. Setting this to :literal:`password` will create a normal user, :literal:`automation` will create an automation user.
 
+      When omitted on an existing user, the user's current authentication method (including LDAP or SAML) is preserved. Only specify this when you intend to set or change the user's local authentication.
+
 
       .. rst-class:: ansible-option-line
 
       :ansible-option-choices:`Choices:`
 
-      - :ansible-option-choices-entry-default:`"password"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"password"`
       - :ansible-option-choices-entry:`"automation"`
 
 
