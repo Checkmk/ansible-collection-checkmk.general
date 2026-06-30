@@ -14,6 +14,7 @@
   loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
+    label: "{{ __mkp.name }}"
   when: __mkp.url is defined
   tags:
     - manage-mkp-packages
@@ -29,6 +30,7 @@
   loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
+    label: "{{ __mkp.name }}"
   when: __mkp.src is defined
   tags:
     - manage-mkp-packages
@@ -43,6 +45,7 @@
   loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
+    label: "{{ __mkp.name }}"
   when: (__mkp.installed | default(true) ) | bool
   tags:
     - manage-mkp-packages
@@ -56,6 +59,7 @@
   loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
+    label: "{{ __mkp.name }}"
   when: (__mkp.enabled | default(true)) | bool
   tags:
     - manage-mkp-packages
@@ -69,6 +73,7 @@
   loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
+    label: "{{ __mkp.name }}"
   when: __mkp.enabled is defined and (not __mkp.enabled | bool)
   tags:
     - manage-mkp-packages
@@ -82,6 +87,7 @@
   loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
+    label: "{{ __mkp.name }}"
   when: __mkp.installed is defined and (not __mkp.installed | bool)
   tags:
     - manage-mkp-packages
@@ -94,5 +100,6 @@
   loop: "{{ __site.mkp_packages }}"
   loop_control:
     loop_var: __mkp
+    label: "{{ __mkp.name }}"
   tags:
     - manage-mkp-packages
