@@ -4,6 +4,19 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v8.0.0
+======
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- User module - The parameter ``auth_type`` no longer defaults to ``password``. Playbooks that create a new user and rely on this default must now set ``auth_type`` explicitly. Existing playbooks that already pass ``auth_type`` are unaffected.
+
+Bugfixes
+--------
+
+- User module - Fix editing of users that authenticate via LDAP or SAML. Since 7.1.0, the parameter ``auth_type`` defaulted to ``password``, so every edit of an existing user silently reset LDAP- or SAML-authenticated users to local authentication. The default has been removed and the authentication option is now only changed when ``auth_type``, ``password`` or ``enforce_password_change`` is set explicitly.
+
 v7.8.0
 ======
 
