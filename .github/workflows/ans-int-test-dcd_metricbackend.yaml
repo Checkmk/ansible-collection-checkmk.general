@@ -40,6 +40,6 @@ jobs:
       fail-fast: false
       matrix:
         checkmk_version:
-          - 3.0.0-2026.06.24
+          - 3.0.0-2026.07.01
         checkmk_edition:
           - ultimatemt
