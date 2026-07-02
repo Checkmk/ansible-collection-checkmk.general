@@ -238,7 +238,6 @@
     end_time: "{{ checkmk_var_dt_end }}"
     service_descriptions:
       - "Check_MK"
-      - "Check_MK Discovery"
   register: __checkmk_var_dt_svc
   loop: "{{ checkmk_var_hosts }}"
 
@@ -264,7 +263,6 @@
     end_time: "{{ checkmk_var_dt_end }}"
     service_descriptions:
       - "Check_MK"
-      - "Check_MK Discovery"
   register: __checkmk_var_dt_svc_again
   loop: "{{ checkmk_var_hosts }}"
 
@@ -287,7 +285,6 @@
     service_descriptions:
       - "Check_MK"
       - "Check_MK Discovery"
-      - "Memory"
   register: __checkmk_var_dt_svc_add
   loop: "{{ checkmk_var_hosts }}"
 
@@ -312,7 +309,6 @@
     service_descriptions:
       - "Check_MK"
       - "Check_MK Discovery"
-      - "Memory"
     state: absent
   register: __checkmk_var_dt_svc_del
   loop: "{{ checkmk_var_hosts }}"
@@ -543,7 +539,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    query: '{"op": "and", "expr": [{"op": "~", "left": "host_name", "right": "^test[0-9]"}, {"op": "=", "left": "description", "right": "Check_MK"}]}'
+    query: '{"op": "and", "expr": [{"op": "~", "left": "host_name", "right": "^test[0-9]"}, {"op": "=", "left": "service_description", "right": "Check_MK"}]}'
     downtime_type: "service"
     comment: "Query service window"
     start_time: "{{ checkmk_var_dt_start }}"
