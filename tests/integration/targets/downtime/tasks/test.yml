@@ -591,7 +591,7 @@
     site_id: "{{ outer_item.site }}"
     end_time: "{{ checkmk_var_dt_end }}"
   register: __checkmk_var_dt_badid
-  failed_when: false
+  ignore_errors: true
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the unknown-ID update failed cleanly."
   ansible.builtin.assert:
