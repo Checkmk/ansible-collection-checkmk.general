@@ -15,3 +15,16 @@ checkmk_var_hosts:
     folder: "/"
   - name: test5.tld
     folder: "/"
+
+# Absolute times used for the idempotency assertions. They are kept in the far
+# future so re-runs always compare against the very same, unambiguous instants.
+checkmk_var_dt_start: "2035-03-25T20:00:00Z"
+checkmk_var_dt_end: "2035-03-26T20:00:00Z"
+# A shorter end time, used to prove that an existing downtime gets modified
+# (the core of issue #672) instead of being left untouched.
+checkmk_var_dt_end_short: "2035-03-25T22:00:00Z"
+
+# A Livestatus query matching all of the test hosts above. Because it filters on
+# 'host_name' (a column present in both the hosts table and the downtimes table)
+# it round-trips cleanly for create-by-query idempotency.
+checkmk_var_dt_query: '{"op": "~", "left": "host_name", "right": "^test[0-9]"}'
