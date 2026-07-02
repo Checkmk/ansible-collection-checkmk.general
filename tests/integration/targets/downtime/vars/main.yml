@@ -28,3 +28,10 @@ checkmk_var_dt_end_short: "2035-03-25T22:00:00Z"
 # 'host_name' (a column present in both the hosts table and the downtimes table)
 # it round-trips cleanly for create-by-query idempotency.
 checkmk_var_dt_query: '{"op": "~", "left": "host_name", "right": "^test[0-9]"}'
+
+# Downtimes are scheduled through the monitoring core's external command
+# interface, which the core processes asynchronously. After a create/modify/
+# delete the change is therefore not instantly visible in the downtimes table,
+# so the tests wait this many seconds before re-reading state for an idempotency
+# check. Raise it if the CI core is slow.
+checkmk_var_dt_settle: 5
