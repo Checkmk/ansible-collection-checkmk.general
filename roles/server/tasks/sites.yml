@@ -76,6 +76,19 @@
   tags:
     - enable-sites
 
+- name: "Include Site Configuration Management."
+  ansible.builtin.include_tasks: configure-site.yml
+  loop: "{{ checkmk_server_sites }}"
+  loop_control:
+    label: "{{ outer_item | combine({'admin_pw': omit}) }}"
+    loop_var: outer_item
+  when: |
+    outer_item.omd_config is defined and
+    ((outer_item.omd_auto_restart is defined and outer_item.omd_auto_restart | bool) or
+    (outer_item.state == "stopped" or outer_item.state == "disabled" or outer_item.state == "present"))
+  tags:
+    - configure-sites
+
 - name: "Start Sites."
   become: true
   ansible.builtin.shell: |
@@ -147,19 +160,6 @@
   register: __checkmk_server_sites_removed
   tags:
     - destroy-sites
-
-- name: "Include Site Configuration Management."
-  ansible.builtin.include_tasks: configure-site.yml
-  loop: "{{ checkmk_server_sites }}"
-  loop_control:
-    label: "{{ outer_item | combine({'admin_pw': omit}) }}"
-    loop_var: outer_item
-  when: |
-    outer_item.omd_config is defined and
-    ((outer_item.omd_auto_restart is defined and outer_item.omd_auto_restart | bool) or
-    (outer_item.state == "stopped" or outer_item.state == "disabled" or outer_item.state == "present"))
-  tags:
-    - configure-sites
 
 - name: "Include MKP Management."
   ansible.builtin.include_tasks: mkp.yml
