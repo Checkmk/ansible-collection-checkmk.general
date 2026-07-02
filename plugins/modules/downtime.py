@@ -57,15 +57,15 @@ options:
         default: []
     query:
         description:
-            - A Livestatus query as a JSON string. See the Checkmk REST API
+            - A Livestatus query as a JSON string, written in terms of the
+              Livestatus C(downtimes) table (e.g. C(host_name),
+              C(service_description), C(comment)). See the Checkmk REST API
               documentation for the query syntax.
-            - For B(update) and B(delete) without I(downtime_type), the query
-              selects existing downtimes (Livestatus C(downtimes) table).
-            - When I(downtime_type) is set, the query selects the hosts or
-              services to act on (Livestatus C(hosts) or C(services) table). The
-              module translates the column names to the C(downtimes) table when it
-              looks up existing downtimes, so writing the query in host/service
-              terms (e.g. C(description), C(name)) works and stays idempotent.
+            - The same query columns are used for B(create), B(update) and
+              B(delete). For query-based B(create) the module automatically
+              translates the columns to the queried object's table (C(host_name)
+              becomes C(name) for hosts, C(service_description) becomes
+              C(description) for services), so one query works for all operations.
             - Mutually exclusive with I(downtime_id) and I(host_name).
         required: false
         type: str
@@ -73,9 +73,9 @@ options:
         description:
             - Selects whether a query operates on host downtimes (C(host)) or
               service downtimes (C(service)).
-            - Required for query-based B(create); for B(update)/B(delete) it makes
-              the query target the C(hosts)/C(services) table (with column
-              translation) instead of the C(downtimes) table directly.
+            - Required for query-based B(create) to choose the object type. For
+              B(update)/B(delete) it optionally narrows the matched downtimes to
+              that type.
         required: false
         type: str
         choices: ["host", "service"]
@@ -175,13 +175,14 @@ notes:
       downtimes. Absolute times (I(end_time)) are fully idempotent. Relative times
       (I(end_after)) are recomputed on every run and will therefore usually trigger
       an update.
-    - For query-based operations with I(downtime_type), column names are
-      translated from the C(hosts)/C(services) table to the C(downtimes) table
-      when looking up existing downtimes (e.g. C(description) becomes
-      C(service_description)). Any column that exists on both tables can be used
-      and stays idempotent. A column that only exists on the host or service
-      object (and is not joined into the C(downtimes) table) cannot be verified;
-      the module then emits a warning and may (re-)create a downtime on each run.
+    - For query-based B(create), the query columns are translated from the
+      C(downtimes) table to the queried object's table (C(host_name) becomes
+      C(name) for hosts, C(service_description) becomes C(description) for
+      services). Write queries in downtimes-table terms and the same query works
+      for create, update and delete. Idempotency relies on the created downtimes
+      being found again by the same query; queries restricted to attributes that
+      exist on both the object and the downtimes table (such as C(host_name) or
+      C(service_description)) are idempotent.
 
 seealso:
     - plugin: checkmk.general.downtime
@@ -251,7 +252,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    query: '{"op": "=", "left": "description", "right": "Filesystem /"}'
+    query: '{"op": "=", "left": "service_description", "right": "Filesystem /"}'
     downtime_type: "service"
     comment: "Storage migration"
     end_after:
@@ -402,73 +403,38 @@ TIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 # ---------------------------------------------------------------------------
 # Query column translation
 # ---------------------------------------------------------------------------
-# A downtime created from a host/service query is created against Livestatus'
-# "hosts"/"services" table, but is looked up again (for idempotency) against the
-# "downtimes" table. That table joins in the host and service columns under a
-# "host_"/"service_" prefix, so the query columns have to be translated when we
-# re-check, e.g. the services column "description" becomes "service_description".
+# Queries are always written in terms of the Livestatus "downtimes" table (the
+# same columns used to update or delete downtimes), e.g. C(host_name) and
+# C(service_description). That is also what the update/delete lookups match on.
 #
-# The rule, verified against the 2.5.0 Livestatus schema (identical in 2.3.0 and
-# 2.4.0), is simply:
-#   * a column that already carries a "host_"/"service_" prefix is kept as-is
-#     (it is already a downtimes-table column), otherwise
-#   * it is prefixed with "host_" or "service_" depending on the queried object.
-# The table below spells out the common, human-written columns explicitly (both
-# for readability and to cover the handful that do not follow the plain rule,
-# such as "service_period"). Anything not listed falls back to the rule above.
-QUERY_COLUMN_MAP = {
-    "host": {
-        "name": "host_name",
-        "alias": "host_alias",
-        "address": "host_address",
-        "state": "host_state",
-        "hard_state": "host_hard_state",
-        "groups": "host_groups",
-        "contact_groups": "host_contact_groups",
-        "labels": "host_labels",
-        "tags": "host_tags",
-        "check_command": "host_check_command",
-        "notes": "host_notes",
-        "filename": "host_filename",
-    },
-    "service": {
-        "description": "service_description",
-        "host_name": "host_name",
-        "state": "service_state",
-        "hard_state": "service_hard_state",
-        "groups": "service_groups",
-        "contact_groups": "service_contact_groups",
-        "labels": "service_labels",
-        "tags": "service_tags",
-        "check_command": "service_check_command",
-        "plugin_output": "service_plugin_output",
-        "notes": "service_notes",
-        "service_period": "service_service_period",
-    },
-}
+# For query-based *creation* the query is instead evaluated against the "hosts"
+# or "services" table, which name the very same attributes differently: the hosts
+# table calls it C(name) (not C(host_name)), and the services table calls it
+# C(description) (not C(service_description)). The downtimes table only exposes
+# them as joined columns under a "host_"/"service_" prefix.
+#
+# So for creation we translate the query columns from the downtimes table back to
+# the queried object's table. The rule, verified against the 2.5.0 Livestatus
+# schema (identical in 2.3.0/2.4.0), is:
+#   * host query:    strip a leading "host_"   (host_name -> name, host_state -> state)
+#   * service query: strip a leading "service_" (service_description -> description),
+#                    but keep "host_" columns as-is (the services table joins them in).
+def _object_query_column(column, kind):
+    """Translate a downtimes-table query column to the hosts/services table."""
+    if kind == "host":
+        return column[len("host_"):] if column.startswith("host_") else column
+    if column.startswith("service_"):
+        return column[len("service_"):]
+    return column  # host_* join columns (and bare service columns) stay as-is
 
 
-def _translate_query_column(column, kind):
-    """Translate a single host/service query column to its downtimes name."""
-    mapped = QUERY_COLUMN_MAP.get(kind, {}).get(column)
-    if mapped:
-        return mapped
-    # Columns already carrying a prefix that the downtimes table also exposes are
-    # kept as-is. A host query only joins "host_" columns; a service query joins
-    # both "host_" and "service_" columns.
-    keep_prefixes = ("host_",) if kind == "host" else ("host_", "service_")
-    if column.startswith(keep_prefixes):
-        return column
-    return "%s_%s" % (kind, column)
-
-
-def _translate_query(query, kind):
+def _object_query(query, kind):
     """Rewrite every column reference in a Livestatus query JSON string.
 
-    C(kind) is C(host) or C(service). The query tree may nest logical operators
-    (C(and)/C(or)/C(not)) whose operands live under C(expr); leaf conditions
-    carry the column name under C(left). Returns the translated JSON string, or
-    the original string if it cannot be parsed.
+    Translates from the downtimes table to the queried object's table (C(kind) is
+    C(host) or C(service)). The tree may nest logical operators (C(and)/C(or)/
+    C(not)) whose operands live under C(expr); leaf conditions carry the column
+    under C(left). Returns the original string if it cannot be parsed.
     """
     try:
         tree = json.loads(query)
@@ -478,7 +444,7 @@ def _translate_query(query, kind):
     def walk(node):
         if isinstance(node, dict):
             if isinstance(node.get("left"), str):
-                node["left"] = _translate_query_column(node["left"], kind)
+                node["left"] = _object_query_column(node["left"], kind)
             for value in node.values():
                 walk(value)
         elif isinstance(node, list):
@@ -623,17 +589,13 @@ class DowntimeAPI(CheckmkAPI):
             return [self._flatten(json.loads(result.content))]
 
         params = {}
-        tolerant = False
         if self.query:
+            # Queries are written against the downtimes table, so they can be used
+            # verbatim to look up existing downtimes. downtime_type narrows the
+            # result to host or service downtimes when given.
+            params["query"] = self.query
             if self.downtime_type:
-                # A create-oriented query targets the hosts/services table. Look
-                # any resulting downtimes up again with the columns translated to
-                # the downtimes table, so re-runs are idempotent.
-                params["query"] = _translate_query(self.query, self.downtime_type)
                 params["downtime_type"] = self.downtime_type
-                tolerant = True
-            else:
-                params["query"] = self.query
         else:
             params["host_name"] = self.host_name
             params["downtime_type"] = "service" if self.is_service else "host"
@@ -644,20 +606,7 @@ class DowntimeAPI(CheckmkAPI):
             endpoint=endpoint,
             method="GET",
             logger=logger,
-            fail_on_error=not tolerant,
         )
-        if tolerant and result.http_code != 200:
-            # The translated query still references a column the downtimes table
-            # does not expose (e.g. a host/service-only column). We cannot verify
-            # what already exists, so we skip the idempotency check rather than
-            # fail the task; a downtime may then be (re-)created on every run.
-            self.module.warn(
-                "Could not look up existing downtimes for the query "
-                "(HTTP %s); idempotency cannot be guaranteed and a downtime may "
-                "be created on every run. Restrict the query to columns that "
-                "also exist on the downtimes table." % result.http_code
-            )
-            return []
         downtimes = [self._flatten(dt) for dt in json.loads(result.content).get("value", [])]
 
         # The collection endpoint cannot filter a list of services for us.
@@ -739,7 +688,7 @@ class DowntimeAPI(CheckmkAPI):
             "recur": self.recur,
             "duration": self.duration,
             "comment": self.comment or DEFAULT_COMMENT,
-            "query": self.query,
+            "query": _object_query(self.query, self.downtime_type or "host"),
         }
         if self.downtime_type == "service":
             data["downtime_type"] = "service_by_query"
