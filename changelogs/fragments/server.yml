@@ -1,0 +1,6 @@
+minor_changes:
+  - Server role - Apply the OMD site configuration before starting the site.
+    Previously, a stopped site (e.g. freshly created or just updated) with
+    ``omd_config`` defined was started first, only to be stopped again
+    immediately to apply the configuration. Now the configuration is applied
+    while the site is still stopped and the site is started only once.
