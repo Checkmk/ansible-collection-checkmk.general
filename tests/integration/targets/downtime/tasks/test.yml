@@ -249,7 +249,7 @@
     service_descriptions:
       - "Check_MK"
       - "Check_MK Discovery"
-      - "CPU load"
+      - "Memory"
   register: __checkmk_var_dt_svc_add
   loop: "{{ checkmk_var_hosts }}"
 
@@ -270,7 +270,7 @@
     service_descriptions:
       - "Check_MK"
       - "Check_MK Discovery"
-      - "CPU load"
+      - "Memory"
     state: absent
   register: __checkmk_var_dt_svc_del
   loop: "{{ checkmk_var_hosts }}"
