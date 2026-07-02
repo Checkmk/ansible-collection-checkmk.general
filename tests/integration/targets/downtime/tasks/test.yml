@@ -52,6 +52,24 @@
   ansible.builtin.wait_for:
     timeout: 60
 
+# Purge any downtimes a previous, prematurely aborted run may have left on the
+# test hosts. Without this a leftover downtime makes the "created -> changed"
+# assertions below fail, because the module correctly reports "already present".
+# No downtime_type is given, so the query hits the downtimes table directly and
+# matches both host and service downtimes regardless of their comment.
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Purge leftover downtimes from previous runs."
+  checkmk.general.downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    query: "{{ checkmk_var_dt_query }}"
+    state: absent
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
 # -----------------------------------------------------------------------------
 # A. Host downtimes: create, idempotency and modify-in-place (#672)
 # -----------------------------------------------------------------------------
@@ -74,6 +92,10 @@
     that: "__checkmk_var_dt_create.results | map(attribute='changed') | unique | list == [true]"
     fail_msg: "Creating the host downtime did not report a change."
     success_msg: "The host downtime was created."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create the same host downtime again."
   checkmk.general.downtime:
@@ -112,6 +134,10 @@
     that: "__checkmk_var_dt_shorten.results | map(attribute='changed') | unique | list == [true]"
     fail_msg: "Shortening the end time did not report a change (issue #672 not solved)."
     success_msg: "The host downtime was shortened in place."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Shorten again (should be idempotent)."
   checkmk.general.downtime:
@@ -152,6 +178,10 @@
     fail_msg: "force=true did not create an additional downtime."
     success_msg: "force=true created an additional downtime."
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove host downtimes with comment."
   checkmk.general.downtime:
     server_url: "{{ checkmk_var_server_url }}"
@@ -169,6 +199,10 @@
     that: "__checkmk_var_dt_del_host.results | map(attribute='changed') | unique | list == [true]"
     fail_msg: "Deleting the host downtimes reported no change."
     success_msg: "The host downtimes were removed."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove host downtimes again (idempotent)."
   checkmk.general.downtime:
@@ -213,6 +247,10 @@
     that: "__checkmk_var_dt_svc.results | map(attribute='changed') | unique | list == [true]"
     fail_msg: "Creating the service downtimes reported no change."
     success_msg: "The service downtimes were created."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Re-create the same service downtimes."
   checkmk.general.downtime:
@@ -259,6 +297,10 @@
     fail_msg: "Adding a new service to an existing window reported no change."
     success_msg: "The additional service downtime was created."
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete service downtimes with comment."
   checkmk.general.downtime:
     server_url: "{{ checkmk_var_server_url }}"
@@ -296,6 +338,10 @@
     start_time: "{{ checkmk_var_dt_start }}"
     end_time: "{{ checkmk_var_dt_end }}"
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up the downtime to obtain its ID."
   ansible.builtin.set_fact:
     __checkmk_var_dt_byid: "{{ (lookup('checkmk.general.downtimes',
@@ -325,6 +371,10 @@
     that: "__checkmk_var_dt_byid_upd.changed | bool"
     fail_msg: "Updating the downtime by ID reported no change."
     success_msg: "The downtime was updated by ID."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update by ID again (idempotent)."
   checkmk.general.downtime:
@@ -384,6 +434,10 @@
     fail_msg: "Creating host downtimes by query reported no change."
     success_msg: "Host downtimes were created by query."
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create by query again (idempotent)."
   checkmk.general.downtime:
     server_url: "{{ checkmk_var_server_url }}"
@@ -420,6 +474,10 @@
     fail_msg: "Updating downtimes by query reported no change."
     success_msg: "Downtimes were updated by query."
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Shorten by query again (idempotent)."
   checkmk.general.downtime:
     server_url: "{{ checkmk_var_server_url }}"
@@ -453,6 +511,10 @@
     that: "__checkmk_var_dt_q_delete.changed | bool"
     fail_msg: "Deleting downtimes by query reported no change."
     success_msg: "Downtimes were deleted by query."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete by query again (idempotent)."
   checkmk.general.downtime:
@@ -493,6 +555,10 @@
     that: "__checkmk_var_dt_qsvc_create.changed | bool"
     fail_msg: "Creating service downtimes by query reported no change."
     success_msg: "Service downtimes were created by query."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete service downtimes by query."
   checkmk.general.downtime:
