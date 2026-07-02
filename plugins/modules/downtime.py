@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2022, Oliver Gaida <ogaida@t-online.de>
+# Copyright: (c) 2025, Lars Getwan <lars.getwan@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
@@ -13,95 +14,188 @@ module: downtime
 
 short_description: Manage downtimes in Checkmk
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "0.2.0"
+version_added: "6.7.0"
 
 description:
-    - Manage downtimes within Checkmk.
+    - Create, update and delete host and service downtimes in Checkmk.
+    - An existing downtime can be updated (e.g. to shorten or extend its end time)
+      without deleting and recreating it. The downtime to act on can be identified
+      by its ID, by host name (and optionally service descriptions), or by a
+      Livestatus query.
+    - This module is idempotent. It only changes downtimes when the desired end
+      time or comment differs from the current state.
 
 extends_documentation_fragment: [checkmk.general.common]
 
 options:
-    comment:
+    downtime_id:
         description:
-            - Remarks for the downtime. If omitted in combination with state = present, the
-              default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of
-              a host or host/service will be removed.
+            - The numeric ID of a single downtime to update or delete.
+            - Requires I(site_id) to be set as well.
+            - Mutually exclusive with I(host_name) and I(query).
         required: false
         type: str
-        default: "Managed by Ansible"
-    duration:
+    site_id:
         description:
-            - Duration in minutes. When set, the downtime does not begin automatically at a nominated time,
-              but when a non-OK status actually appears for the host.
-              Consequently, the start_time and end_time is only the time window in which the scheduled downtime can occur.
+            - The site the downtime lives on. Required when using I(downtime_id).
         required: false
-        type: int
-        default: 0
-    end_after:
+        type: str
+    host_name:
         description:
-            - The timedelta between I(start_time) and I(end_time). If you want to use I(end_after) you have to omit I(end_time).
-              For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
+            - The host to schedule, update or delete a downtime for.
+            - Mutually exclusive with I(downtime_id) and I(query).
+        required: false
+        type: str
+    service_descriptions:
+        description:
+            - A list of service descriptions.
+            - If set together with I(host_name), the module acts on service
+              downtimes for these services. If omitted, it acts on host downtimes.
+        required: false
+        type: list
+        elements: str
+        default: []
+    query:
+        description:
+            - A Livestatus query as a JSON string. See the Checkmk REST API
+              documentation for the query syntax.
+            - For B(update) and B(delete) without I(downtime_type), the query
+              selects existing downtimes (Livestatus C(downtimes) table).
+            - When I(downtime_type) is set, the query selects the hosts or
+              services to act on (Livestatus C(hosts) or C(services) table). The
+              module translates the column names to the C(downtimes) table when it
+              looks up existing downtimes, so writing the query in host/service
+              terms (e.g. C(description), C(name)) works and stays idempotent.
+            - Mutually exclusive with I(downtime_id) and I(host_name).
+        required: false
+        type: str
+    downtime_type:
+        description:
+            - Selects whether a query operates on host downtimes (C(host)) or
+              service downtimes (C(service)).
+            - Required for query-based B(create); for B(update)/B(delete) it makes
+              the query target the C(hosts)/C(services) table (with column
+              translation) instead of the C(downtimes) table directly.
+        required: false
+        type: str
+        choices: ["host", "service"]
+    comment:
+        description:
+            - The comment of the downtime.
+            - When creating or matching a downtime by I(host_name), the comment is
+              part of the identity of the downtime. If omitted, C(Managed by Ansible)
+              is used.
+            - When updating a downtime by I(downtime_id) or I(query), the comment is
+              only changed if it is explicitly set here.
+            - When deleting by I(host_name), the deletion is limited to downtimes
+              with this comment if it is set, otherwise all matching downtimes are
+              removed.
+        required: false
+        type: str
+    start_time:
+        description:
+            - The start datetime of a new downtime, conforming to the ISO 8601
+              profile, e.g. C(2017-07-21T17:32:28Z). Defaults to now.
+            - Only relevant when creating a downtime.
+        required: false
+        type: str
+    start_after:
+        description:
+            - The timedelta between now and the start time. Use this instead of
+              I(start_time). For keys and values see
+              U(https://docs.python.org/3/library/datetime.html#datetime.timedelta).
+            - Only relevant when creating a downtime.
         required: false
         type: dict
         default: {}
     end_time:
         description:
-            - The end datetime of the downtime. The format has to conform to the ISO 8601 profile I(e.g. 2017-07-21T17:32:28Z).
-              The built-in default is 30 minutes after now.
+            - The end datetime of the downtime, conforming to the ISO 8601 profile,
+              e.g. C(2017-07-21T17:32:28Z).
+            - Used both when creating and when updating a downtime.
         required: false
         type: str
-        default: ''
-    force:
-        description: Force the creation of a downtime in case a hostname and comment combination already exists as a downtime.
-        required: false
-        type: bool
-        default: false
-    start_after:
+    end_after:
         description:
-            - The timedelta between now and I(start_time). If you want to use I(start_after) you have to omit I(start_time).
-              For keys and values see U(https://docs.python.org/3/library/datetime.html#datetime.timedelta)
+            - The timedelta between the start time and the end time. Use this
+              instead of I(end_time). For keys and values see
+              U(https://docs.python.org/3/library/datetime.html#datetime.timedelta).
+            - When updating an existing downtime, the delta is applied relative to
+              the (defaulted) start time, i.e. now.
         required: false
         type: dict
         default: {}
-    start_time:
+    duration:
         description:
-            - The start datetime of the downtime. The format has to conform to the ISO 8601 profile I(e.g. 2017-07-21T17:32:28Z).
-              The built-in default is now.
+            - Duration in minutes. When set, the downtime does not begin
+              automatically at a nominated time, but when a non-OK status actually
+              appears for the host (flexible downtime).
+            - Only relevant when creating a downtime.
+        required: false
+        type: int
+        default: 0
+    recur:
+        description:
+            - The recurring mode of a new downtime.
+            - Only relevant when creating a downtime.
         required: false
         type: str
-        default: ''
-    host_name:
-        description: The host to schedule the downtime on.
-        required: true
-        type: str
-    service_descriptions:
-        description: Array of service descriptions. If set only service-downtimes will be set. If omitted a host downtime will be set.
+        default: fixed
+        choices:
+            - fixed
+            - hour
+            - day
+            - week
+            - second_week
+            - fourth_week
+            - weekday_start
+            - weekday_end
+            - day_of_month
+    force:
+        description:
+            - When creating a downtime by I(host_name), a new downtime is normally
+              only created if no downtime with the same host, service and comment
+              exists yet. Set this to C(true) to always create a new downtime.
         required: false
-        type: list
-        elements: str
-        default: []
+        type: bool
+        default: false
     state:
-        description: The state of this downtime. If absent, all matching host/service-downtimes of the given host will be deleted.
+        description:
+            - The desired state of the downtime.
         required: false
         type: str
         default: present
         choices: ["present", "absent"]
 
 notes:
-    - Idempotency for creation was made for host downtimes by only using the hostname and comment attributes.
-      If this combination already exists as a downtime, the new downtime will not be created except using the B(force) argument.
-      The creation of service downtimes works accordingly, with hostname, service description and comment.
+    - Creating a downtime is possible via I(host_name) or via I(query) (using
+      I(downtime_type) to choose host or service). Updating and deleting can be
+      done via I(downtime_id), I(host_name) or I(query).
+    - Idempotency is based on the current end time and comment of the matching
+      downtimes. Absolute times (I(end_time)) are fully idempotent. Relative times
+      (I(end_after)) are recomputed on every run and will therefore usually trigger
+      an update.
+    - For query-based operations with I(downtime_type), column names are
+      translated from the C(hosts)/C(services) table to the C(downtimes) table
+      when looking up existing downtimes (e.g. C(description) becomes
+      C(service_description)). Any column that exists on both tables can be used
+      and stays idempotent. A column that only exists on the host or service
+      object (and is not joined into the C(downtimes) table) cannot be verified;
+      the module then emits a warning and may (re-)create a downtime on each run.
+
+seealso:
+    - plugin: checkmk.general.downtime
+      plugin_type: lookup
+    - plugin: checkmk.general.downtimes
+      plugin_type: lookup
 
 author:
-    - Oliver Gaida (@ogaida)
     - Lars Getwan (@lgetwan)
 """
 
 EXAMPLES = r"""
 # ---------------------------------------------------------------------------
-# Host downtimes - scheduling
+# Creating downtimes
 # ---------------------------------------------------------------------------
 
 - name: "Schedule a host downtime starting now, ending in 2 hours."
@@ -114,17 +208,6 @@ EXAMPLES = r"""
     end_after:
       hours: 2
 
-- name: "Schedule a host downtime with a comment, starting now, ending in 2 hours."
-  checkmk.general.downtime:
-    server_url: "https://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    host_name: "myhost"
-    comment: "Managed by Ansible"
-    end_after:
-      hours: 2
-
 - name: "Schedule a host downtime using absolute start and end times."
   checkmk.general.downtime:
     server_url: "https://myserver/"
@@ -132,25 +215,102 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Managed by Ansible"
+    comment: "Patch window"
     start_time: "2024-03-25T22:00:00Z"
     end_time: "2024-03-26T02:00:00Z"
 
-- name: "Schedule a host downtime starting in 30 minutes and lasting 4 hours."
+- name: "Schedule downtimes for multiple services on a host."
   checkmk.general.downtime:
     server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Managed by Ansible"
-    start_after:
-      minutes: 30
+    comment: "Patch window"
+    service_descriptions:
+      - "CPU utilization"
+      - "Memory"
     end_after:
-      hours: 4
+      hours: 1
+
+- name: "Schedule host downtimes for all hosts matching a query."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    query: '{"op": "~", "left": "host_name", "right": "^web"}'
+    downtime_type: "host"
+    comment: "Rolling web tier maintenance"
+    end_after:
+      hours: 2
+
+- name: "Schedule service downtimes for all services matching a query."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    query: '{"op": "=", "left": "description", "right": "Filesystem /"}'
+    downtime_type: "service"
+    comment: "Storage migration"
+    end_after:
+      hours: 1
 
 # ---------------------------------------------------------------------------
-# Host downtimes - removal
+# Updating an existing downtime (solves issue #672)
+# ---------------------------------------------------------------------------
+# Re-running the same host_name + comment with a different end time shortens or
+# extends the existing downtime instead of doing nothing.
+
+- name: "Shorten the previously created downtime."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    host_name: "myhost"
+    comment: "Patch window"
+    end_after:
+      minutes: 1
+
+- name: "Update a specific downtime by its ID."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    downtime_id: "42"
+    site_id: "mysite"
+    end_time: "2024-03-26T00:00:00Z"
+    comment: "Window reduced"
+
+- name: "Update all downtimes matching a query."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    query: '{"op": "=", "left": "host_name", "right": "myhost"}'
+    end_after:
+      minutes: 30
+
+# On the host_name path the comment is part of the downtime's identity, so a
+# different comment is treated as a different downtime and a new one is created.
+# To change the comment of an existing downtime, select it by a query (e.g. by
+# its host and current comment) and set the new comment; the query matches the
+# downtime independently of the comment you are about to write.
+- name: "Change the comment of an existing downtime."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    query: '{"op": "and", "expr": [{"op": "=", "left": "host_name", "right": "myhost"}, {"op": "=", "left": "comment", "right": "Patch window"}]}'
+    comment: "Pitch window"
+
+# ---------------------------------------------------------------------------
+# Deleting downtimes
 # ---------------------------------------------------------------------------
 
 - name: "Remove all downtimes from a host."
@@ -162,150 +322,25 @@ EXAMPLES = r"""
     host_name: "myhost"
     state: "absent"
 
-- name: "Remove only host downtimes matching a specific comment."
+- name: "Remove only host downtimes with a specific comment."
   checkmk.general.downtime:
     server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Managed by Ansible"
+    comment: "Patch window"
     state: "absent"
 
-# ---------------------------------------------------------------------------
-# Service downtimes - scheduling
-# ---------------------------------------------------------------------------
-
-- name: "Schedule a downtime for a single service on a host."
+- name: "Delete a specific downtime by its ID."
   checkmk.general.downtime:
     server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    host_name: "myhost"
-    comment: "Managed by Ansible"
-    service_descriptions:
-      - "Filesystem /"
-    end_after:
-      hours: 1
-
-- name: "Schedule downtimes for multiple services on a host using absolute times."
-  checkmk.general.downtime:
-    server_url: "https://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    host_name: "myhost"
-    comment: "Managed by Ansible"
-    start_time: "2024-03-25T22:00:00Z"
-    end_time: "2024-03-26T02:00:00Z"
-    service_descriptions:
-      - "CPU utilization"
-      - "Memory"
-
-# ---------------------------------------------------------------------------
-# Service downtimes - removal
-# ---------------------------------------------------------------------------
-
-- name: "Remove all downtimes for specific services on a host."
-  checkmk.general.downtime:
-    server_url: "https://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    host_name: "myhost"
-    service_descriptions:
-      - "CPU utilization"
-      - "Memory"
+    downtime_id: "42"
+    site_id: "mysite"
     state: "absent"
-
-- name: "Remove service downtimes matching a specific comment."
-  checkmk.general.downtime:
-    server_url: "https://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    host_name: "myhost"
-    comment: "Managed by Ansible"
-    service_descriptions:
-      - "CPU utilization"
-      - "Memory"
-    state: "absent"
-
-# ---------------------------------------------------------------------------
-# Looping over multiple hosts
-# ---------------------------------------------------------------------------
-
-- name: "Schedule a host downtime for multiple hosts."
-  checkmk.general.downtime:
-    server_url: "https://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    host_name: "{{ item }}"
-    comment: "Managed by Ansible"
-    start_time: "2024-03-25T22:00:00Z"
-    end_time: "2024-03-26T02:00:00Z"
-  loop:
-    - "myhost01"
-    - "myhost02"
-    - "myhost03"
-
-- name: "Remove host downtimes for multiple hosts."
-  checkmk.general.downtime:
-    server_url: "https://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    host_name: "{{ item }}"
-    comment: "Managed by Ansible"
-    state: "absent"
-  loop:
-    - "myhost01"
-    - "myhost02"
-    - "myhost03"
-
-# ---------------------------------------------------------------------------
-# Flexible (triggered) downtime
-# ---------------------------------------------------------------------------
-# A flexible downtime does not start at a fixed time. Instead, it starts when
-# a non-OK state appears for the host or service within the configured time
-# window. The 'duration' parameter controls how long the downtime lasts once
-# triggered. 'start_time' and 'end_time' define the window during which the
-# trigger is active.
-# Refer to the official user guide for more details on the feature:
-# https://docs.checkmk.com/latest/en/basics_downtimes.html#advanced_options
-
-- name: "Schedule a flexible host downtime triggered by a non-OK state."
-  checkmk.general.downtime:
-    server_url: "https://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    host_name: "myhost"
-    comment: "Flexible downtime during maintenance window"
-    start_time: "2024-03-25T22:00:00Z"
-    end_time: "2024-03-26T02:00:00Z"
-    duration: 30
-
-# ---------------------------------------------------------------------------
-# Forcing a duplicate downtime
-# ---------------------------------------------------------------------------
-# By default, creating a downtime with the same host_name and comment combination
-# as an existing downtime is skipped for idempotency. Use 'force: true' to create a
-# duplicate downtime regardless.
-
-- name: "Force a new host downtime even if one with the same comment already exists."
-  checkmk.general.downtime:
-    server_url: "https://myserver/"
-    site: "mysite"
-    api_user: "myuser"
-    api_secret: "mysecret"
-    host_name: "myhost"
-    comment: "Repeated patching run"
-    end_after:
-      hours: 2
-    force: true
 
 # ---------------------------------------------------------------------------
 # Using environment variables for authentication
@@ -332,20 +367,26 @@ EXAMPLES = r"""
 
 RETURN = r"""
 msg:
-    description: The output message that the module generates. Contains the API response details in case of an error. No output in case of success.
+    description:
+        - The output message that the module generates.
     type: str
     returned: always
-    sample: ''
+http_code:
+    description:
+        - The HTTP code returned by the Checkmk API.
+    type: int
+    returned: always
 """
 
 import json
-import re
 from datetime import datetime, timedelta
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.urls import fetch_url
+from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
+    exit_module,
 )
 
 try:
@@ -353,303 +394,606 @@ try:
 except ImportError:  # For Python 3
     from urllib.parse import urlencode
 
+logger = Logger()
 
-def bail_out(module, state, msg):
-    if state == "ok":
-        result = {"msg": msg, "changed": False, "failed": False}
-        module.exit_json(**result)
-    elif state == "changed":
-        result = {"msg": msg, "changed": True, "failed": False}
-        module.exit_json(**result)
-    else:
-        result = {"msg": msg, "changed": False, "failed": True}
-        module.fail_json(**result)
+DEFAULT_COMMENT = "Managed by Ansible"
+TIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
+# ---------------------------------------------------------------------------
+# Query column translation
+# ---------------------------------------------------------------------------
+# A downtime created from a host/service query is created against Livestatus'
+# "hosts"/"services" table, but is looked up again (for idempotency) against the
+# "downtimes" table. That table joins in the host and service columns under a
+# "host_"/"service_" prefix, so the query columns have to be translated when we
+# re-check, e.g. the services column "description" becomes "service_description".
+#
+# The rule, verified against the 2.5.0 Livestatus schema (identical in 2.3.0 and
+# 2.4.0), is simply:
+#   * a column that already carries a "host_"/"service_" prefix is kept as-is
+#     (it is already a downtimes-table column), otherwise
+#   * it is prefixed with "host_" or "service_" depending on the queried object.
+# The table below spells out the common, human-written columns explicitly (both
+# for readability and to cover the handful that do not follow the plain rule,
+# such as "service_period"). Anything not listed falls back to the rule above.
+QUERY_COLUMN_MAP = {
+    "host": {
+        "name": "host_name",
+        "alias": "host_alias",
+        "address": "host_address",
+        "state": "host_state",
+        "hard_state": "host_hard_state",
+        "groups": "host_groups",
+        "contact_groups": "host_contact_groups",
+        "labels": "host_labels",
+        "tags": "host_tags",
+        "check_command": "host_check_command",
+        "notes": "host_notes",
+        "filename": "host_filename",
+    },
+    "service": {
+        "description": "service_description",
+        "host_name": "host_name",
+        "state": "service_state",
+        "hard_state": "service_hard_state",
+        "groups": "service_groups",
+        "contact_groups": "service_contact_groups",
+        "labels": "service_labels",
+        "tags": "service_tags",
+        "check_command": "service_check_command",
+        "plugin_output": "service_plugin_output",
+        "notes": "service_notes",
+        "service_period": "service_service_period",
+    },
+}
 
 
-def _set_timestamps(module):
-    default_start_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-    default_end_time = (datetime.utcnow() + timedelta(minutes=30)).strftime(
-        "%Y-%m-%dT%H:%M:%SZ"
-    )
-    start_time = module.params.get("start_time")
-    end_time = module.params.get("end_time")
+def _translate_query_column(column, kind):
+    """Translate a single host/service query column to its downtimes name."""
+    mapped = QUERY_COLUMN_MAP.get(kind, {}).get(column)
+    if mapped:
+        return mapped
+    # Columns already carrying a prefix that the downtimes table also exposes are
+    # kept as-is. A host query only joins "host_" columns; a service query joins
+    # both "host_" and "service_" columns.
+    keep_prefixes = ("host_",) if kind == "host" else ("host_", "service_")
+    if column.startswith(keep_prefixes):
+        return column
+    return "%s_%s" % (kind, column)
 
-    end_after = module.params.get("end_after")
-    # TODO: Once, Python2.6 is no longer used, better use this:
-    #  end_after = {k: int(v) for k, v in end_after.items()}
-    end_after = dict([(k, int(v)) for k, v in end_after.items()])
 
-    start_after = module.params.get("start_after")
-    # TODO: Once, Python2.6 is no longer used, better use this:
-    #  start_after = {k: int(v) for k, v in start_after.items()}
-    start_after = dict([(k, int(v)) for k, v in start_after.items()])
+def _translate_query(query, kind):
+    """Rewrite every column reference in a Livestatus query JSON string.
 
-    if start_time == "":
-        if start_after == {}:
-            start_time = default_start_time
-        else:
-            start_time = (datetime.utcnow() + timedelta(**start_after)).strftime(
-                "%Y-%m-%dT%H:%M:%SZ"
+    C(kind) is C(host) or C(service). The query tree may nest logical operators
+    (C(and)/C(or)/C(not)) whose operands live under C(expr); leaf conditions
+    carry the column name under C(left). Returns the translated JSON string, or
+    the original string if it cannot be parsed.
+    """
+    try:
+        tree = json.loads(query)
+    except (TypeError, ValueError):
+        return query
+
+    def walk(node):
+        if isinstance(node, dict):
+            if isinstance(node.get("left"), str):
+                node["left"] = _translate_query_column(node["left"], kind)
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for item in node:
+                walk(item)
+
+    walk(tree)
+    return json.dumps(tree)
+
+
+class DowntimeHTTPCodes:
+    """HTTP status codes and their meaning, as (changed, failed, message)."""
+
+    get = {
+        200: (False, False, "Downtime(s) found"),
+        204: (False, False, "No downtimes found"),
+        404: (False, False, "Downtime not found"),
+    }
+    create = {
+        200: (True, False, "Downtime created"),
+        204: (True, False, "Downtime created"),
+    }
+    modify = {
+        200: (True, False, "Downtime modified"),
+        204: (True, False, "Downtime modified"),
+    }
+    delete = {
+        200: (True, False, "Downtime deleted"),
+        204: (True, False, "Downtime deleted"),
+    }
+
+
+class DowntimeAPI(CheckmkAPI):
+    """Manages downtime operations via the Checkmk REST API.
+
+    The strategy is uniform for all identification methods: fetch the downtimes
+    that currently match, then act on each of them by its ID. Creating is the
+    only exception, as it is not tied to an existing object.
+    """
+
+    def __init__(self, module):
+        super().__init__(module)
+
+        self.desired_state = self.params.get("state")
+
+        # The Checkmk version is fetched so the module can adapt to version
+        # specific behaviour. The create/update/delete endpoints used here behave
+        # identically from 2.3.0 up to 2.5.0, so no branching is needed yet. This
+        # is the natural place to add adjustments for 3.0.0 and later.
+        self.version = self.getversion()
+
+        # Identification.
+        self.downtime_id = self.params.get("downtime_id")
+        self.dt_site_id = self.params.get("site_id")
+        self.host_name = self.params.get("host_name")
+        self.service_descriptions = self.params.get("service_descriptions") or []
+        self.query = self.params.get("query")
+        self.downtime_type = self.params.get("downtime_type")
+        self.is_service = bool(self.service_descriptions)
+
+        # Attributes.
+        self.comment = self.params.get("comment")
+        self.duration = self.params.get("duration")
+        self.recur = self.params.get("recur")
+        self.force = self.params.get("force")
+
+        error = self._verify_parameters()
+        if error:
+            exit_module(self.module, msg=error, failed=True, logger=logger)
+
+        self.current = self._get_current()
+
+    def _verify_parameters(self):
+        """Ensure a valid, unambiguous identification was given."""
+        given = [
+            name
+            for name, value in (
+                ("downtime_id", self.downtime_id),
+                ("host_name", self.host_name),
+                ("query", self.query),
             )
-    if end_time == "":
-        if end_after == {}:
-            end_time = default_end_time
+            if value
+        ]
+        if not given:
+            return "One of 'downtime_id', 'host_name' or 'query' is required."
+        # 'mutually_exclusive' in the argument spec already guards multiples.
+        if self.downtime_id and not self.dt_site_id:
+            return "The parameter 'site_id' is required when using 'downtime_id'."
+        return None
+
+    # -- Time helpers --------------------------------------------------------
+
+    def _start_time(self):
+        """Return the start time (ISO 8601) for a new downtime."""
+        start_time = self.params.get("start_time")
+        start_after = {k: int(v) for k, v in self.params.get("start_after").items()}
+        if start_time:
+            return start_time
+        if start_after:
+            return (datetime.utcnow() + timedelta(**start_after)).strftime(TIME_FORMAT)
+        return datetime.utcnow().strftime(TIME_FORMAT)
+
+    def _desired_end_time(self, default=None):
+        """Return the desired end time (ISO 8601) or C(default) if none given."""
+        end_time = self.params.get("end_time")
+        end_after = {k: int(v) for k, v in self.params.get("end_after").items()}
+        if end_time:
+            return end_time
+        if end_after:
+            base = datetime.strptime(self._start_time(), TIME_FORMAT)
+            return (base + timedelta(**end_after)).strftime(TIME_FORMAT)
+        return default
+
+    @staticmethod
+    def _to_epoch(iso_time):
+        """Normalize an ISO 8601 timestamp to epoch seconds for comparison."""
+        if iso_time is None:
+            return None
+        try:
+            return int(datetime.fromisoformat(iso_time.replace("Z", "+00:00")).timestamp())
+        except ValueError:
+            return None
+
+    # -- Fetching ------------------------------------------------------------
+
+    def _get_current(self):
+        """Fetch the downtimes matching the identification as a flat list."""
+        if self.downtime_id:
+            endpoint = "/objects/downtime/%s?%s" % (
+                self.downtime_id,
+                urlencode({"site_id": self.dt_site_id}),
+            )
+            result = self._fetch(
+                code_mapping=DowntimeHTTPCodes.get,
+                endpoint=endpoint,
+                method="GET",
+                logger=logger,
+                fail_on_error=False,
+            )
+            if result.http_code != 200:
+                return []
+            return [self._flatten(json.loads(result.content))]
+
+        params = {}
+        tolerant = False
+        if self.query:
+            if self.downtime_type:
+                # A create-oriented query targets the hosts/services table. Look
+                # any resulting downtimes up again with the columns translated to
+                # the downtimes table, so re-runs are idempotent.
+                params["query"] = _translate_query(self.query, self.downtime_type)
+                params["downtime_type"] = self.downtime_type
+                tolerant = True
+            else:
+                params["query"] = self.query
         else:
-            start_time = re.sub(r"Z$", "+00:00", start_time)
-            dt_start = datetime.fromisoformat(start_time)
-            end_time = (dt_start + timedelta(**end_after)).isoformat()
-    return [start_time, end_time]
+            params["host_name"] = self.host_name
+            params["downtime_type"] = "service" if self.is_service else "host"
 
+        endpoint = "/domain-types/downtime/collections/all?%s" % urlencode(params)
+        result = self._fetch(
+            code_mapping=DowntimeHTTPCodes.get,
+            endpoint=endpoint,
+            method="GET",
+            logger=logger,
+            fail_on_error=not tolerant,
+        )
+        if tolerant and result.http_code != 200:
+            # The translated query still references a column the downtimes table
+            # does not expose (e.g. a host/service-only column). We cannot verify
+            # what already exists, so we skip the idempotency check rather than
+            # fail the task; a downtime may then be (re-)created on every run.
+            self.module.warn(
+                "Could not look up existing downtimes for the query "
+                "(HTTP %s); idempotency cannot be guaranteed and a downtime may "
+                "be created on every run. Restrict the query to columns that "
+                "also exist on the downtimes table." % result.http_code
+            )
+            return []
+        downtimes = [self._flatten(dt) for dt in json.loads(result.content).get("value", [])]
 
-def _get_current_downtimes(module, base_url, headers):
-    service_descriptions = module.params.get("service_descriptions")
-    host_name = module.params.get("host_name")
-    comment = module.params.get("comment")
-    filters = []
-    is_service = len(service_descriptions) != 0
-
-    if is_service:
-        # Handle list of service descriptions
-        service_descriptions = module.params.get("service_descriptions")
-        if len(service_descriptions) > 1:
-            filters = [
-                '{"op": "or", "expr": [%s]}'
-                % ", ".join(
-                    [
-                        '{"op": "~", "left": "service_description", "right": "%s"}' % s
-                        for s in service_descriptions
-                    ]
-                )
+        # The collection endpoint cannot filter a list of services for us.
+        if self.is_service:
+            downtimes = [
+                dt for dt in downtimes if dt["service_description"] in self.service_descriptions
             ]
-        else:
-            filters = [
-                '{"op": "~", "left": "service_description", "right": "%s"}'
-                % service_descriptions[0]
-            ]
-        filters.append('{"op": "=", "left": "is_service", "right": "1"}')
-    else:
-        filters.append('{"op": "=", "left": "is_service", "right": "0"}')
+        return downtimes
 
-    api_endpoint = "/domain-types/downtime/collections/all"
-    filters.append('{"op": "~", "left": "host_name", "right": "%s"}' % host_name)
-    if comment:
-        filters.append('{"op": "~", "left": "comment", "right": "%s"}' % comment)
+    @staticmethod
+    def _flatten(raw):
+        """Turn a REST downtime object into a flat dict."""
+        ext = raw.get("extensions", {})
+        return {
+            "id": raw.get("id"),
+            "site_id": ext.get("site_id"),
+            "host_name": ext.get("host_name"),
+            "service_description": ext.get("service_description"),
+            "is_service": ext.get("is_service", False),
+            "start_time": ext.get("start_time"),
+            "end_time": ext.get("end_time"),
+            "comment": ext.get("comment"),
+        }
 
-    params = {"query": '{"op": "and", "expr": [%s]}' % ", ".join(filters)}
+    def needs_update(self, downtime, desired_end, desired_comment):
+        """Return True if a downtime differs from the desired end time/comment."""
+        if desired_end is not None and self._to_epoch(downtime["end_time"]) != self._to_epoch(
+            desired_end
+        ):
+            return True
+        if desired_comment is not None and downtime["comment"] != desired_comment:
+            return True
+        return False
 
-    url = "%s%s?%s" % (base_url, api_endpoint, urlencode(params))
-    response, info = fetch_url(module, url, headers=headers, method="GET")
+    # -- API actions ---------------------------------------------------------
 
-    if info["status"] != 200:
-        bail_out(
-            module,
-            "failed",
-            "Error calling API while getting downtimes for %s. HTTP code %d. Details: %s, "
-            % (host_name, info["status"], info.get("body", str(info))),
+    def _run(self, action, method, endpoint, data=None):
+        """Perform a single change (skipped in check mode)."""
+        if self.module.check_mode:
+            return None
+        return self._fetch(
+            code_mapping=getattr(DowntimeHTTPCodes, action),
+            endpoint=endpoint,
+            data=data,
+            method=method,
+            logger=logger,
         )
 
-    body = json.loads(response.read().decode("utf-8"))
-
-    if is_service:
-        service_descriptions = []
-        for dt in body["value"]:
-            service_descriptions.append(dt["title"].split(":")[1].strip())
-        return service_descriptions
-
-    else:
-        if len(body["value"]) > 0:
-            return ["HOST"]
-
-    return []
-
-
-def set_downtime(module, base_url, headers, service_description=None):
-    params = {}
-    comment = module.params.get("comment", "Set by Ansible")
-    host_name = module.params.get("host_name")
-    service_descriptions = module.params.get("service_descriptions")
-    is_host = len(service_descriptions) == 0
-    current_downtimes = _get_current_downtimes(module, base_url, headers)
-
-    if is_host:
-        item = host_name
-        params = {
-            "downtime_type": "host",
+    def create(self, service_descriptions=None):
+        """Create a host downtime, or service downtimes for the given services."""
+        end_time = self._desired_end_time(
+            default=(datetime.utcnow() + timedelta(minutes=30)).strftime(TIME_FORMAT)
+        )
+        data = {
+            "start_time": self._start_time(),
+            "end_time": end_time,
+            "recur": self.recur,
+            "duration": self.duration,
+            "comment": self.comment or DEFAULT_COMMENT,
+            "host_name": self.host_name,
         }
-        api_endpoint = "/domain-types/downtime/collections/host"
-        if len(current_downtimes) != 0 and not module.params.get("force"):
-            return (
-                "ok",
-                "Downtime already exists for '%s' with comment '%s', you may use force attribute to create a new downtime with the same comment ."
-                % (item, comment),
-            )
-    else:
-        if not module.params.get("force"):
-            # Only consider services that do not have downtimes with that comment, yet
-            service_descriptions = [
-                s for s in service_descriptions if s not in current_downtimes
-            ]
+        if service_descriptions:
+            data["downtime_type"] = "service"
+            data["service_descriptions"] = service_descriptions
+            endpoint = "/domain-types/downtime/collections/service"
+        else:
+            data["downtime_type"] = "host"
+            endpoint = "/domain-types/downtime/collections/host"
+        return self._run("create", "POST", endpoint, data=data)
 
-        item = "%s/[%s]" % (host_name, ", ".join(service_descriptions))
-        params = {
-            "service_descriptions": service_descriptions,
-            "downtime_type": "service",
+    def create_by_query(self):
+        """Create host or service downtimes for all objects matching the query."""
+        end_time = self._desired_end_time(
+            default=(datetime.utcnow() + timedelta(minutes=30)).strftime(TIME_FORMAT)
+        )
+        data = {
+            "start_time": self._start_time(),
+            "end_time": end_time,
+            "recur": self.recur,
+            "duration": self.duration,
+            "comment": self.comment or DEFAULT_COMMENT,
+            "query": self.query,
         }
-        api_endpoint = "/domain-types/downtime/collections/service"
+        if self.downtime_type == "service":
+            data["downtime_type"] = "service_by_query"
+            endpoint = "/domain-types/downtime/collections/service"
+        else:
+            data["downtime_type"] = "host_by_query"
+            endpoint = "/domain-types/downtime/collections/host"
+        return self._run("create", "POST", endpoint, data=data)
 
-    if is_host or len(service_descriptions) > 0:
-
-        start_time, end_time = _set_timestamps(module)
-        params.update(
-            {
-                "start_time": start_time,
-                "end_time": end_time,
-                "duration": module.params.get("duration"),
-                "recur": "fixed",
-                "comment": comment,
-                "host_name": host_name,
+    def modify(self, downtimes, desired_end, desired_comment):
+        """Modify the end time and/or comment of the given downtimes, by ID."""
+        endpoint = "/domain-types/downtime/actions/modify/invoke"
+        result = None
+        for downtime in downtimes:
+            data = {
+                "modify_type": "by_id",
+                "downtime_id": str(downtime["id"]),
+                "site_id": downtime["site_id"],
             }
-        )
+            if desired_end is not None:
+                data["end_time"] = {"modify_type": "absolute", "value": desired_end}
+            if desired_comment is not None:
+                data["comment"] = desired_comment
+            result = self._run("modify", "PUT", endpoint, data=data)
+        return result
 
-        url = base_url + api_endpoint
+    def delete(self, downtimes):
+        """Delete the given downtimes, by ID."""
+        endpoint = "/domain-types/downtime/actions/delete/invoke"
+        result = None
+        for downtime in downtimes:
+            data = {
+                "delete_type": "by_id",
+                "downtime_id": str(downtime["id"]),
+                "site_id": downtime["site_id"],
+            }
+            result = self._run("delete", "POST", endpoint, data=data)
+        return result
 
-        response, info = fetch_url(
-            module, url, module.jsonify(params), headers=headers, method="POST"
-        )
 
-        if info["status"] != 204:
-            return (
-                "failed",
-                "Error calling API while adding downtime for '%s' with comment '%s'. HTTP code %d.  Details: %s, "
-                % (item, comment, info["status"], info.get("body", str(info))),
-            )
+def _diff_text(before, after):
+    """A compact, human readable diff embedded into the check-mode message."""
+    def summarize(downtimes):
+        return [
+            {
+                "id": dt["id"],
+                "host_name": dt["host_name"],
+                "service_description": dt["service_description"],
+                "end_time": dt["end_time"],
+                "comment": dt["comment"],
+            }
+            for dt in downtimes
+        ]
 
-        return "changed", "Downtime added for '%s' with comment '%s'." % (item, comment)
-
-    return (
-        "ok",
-        "Downtime already exists for '%s' with comment '%s', you may use force attribute to create a new downtime with the same comment ."
-        % (item, comment),
+    return " diff=%s" % json.dumps(
+        {"before": summarize(before), "after": after}, sort_keys=True
     )
 
 
-def remove_downtime(module, base_url, headers):
-    host_name = module.params.get("host_name")
-    service_descriptions = module.params.get("service_descriptions")
-    comment = module.params.get("comment")
-    current_downtimes = _get_current_downtimes(module, base_url, headers)
-    is_host = len(service_descriptions) == 0
-    query_filters = []
+def _update_matching(module, api, matching):
+    """Update the end time and/or comment of already-matched downtimes."""
+    desired_end = api._desired_end_time()
+    desired_comment = api.comment  # None => leave the comment unchanged
+    if desired_end is None and desired_comment is None:
+        exit_module(
+            module,
+            msg="Downtime(s) already present, nothing to update"
+            " (set 'end_time'/'end_after' and/or 'comment' to change them).",
+            logger=logger,
+        )
+    to_change = [
+        dt for dt in matching if api.needs_update(dt, desired_end, desired_comment)
+    ]
+    if not to_change:
+        exit_module(module, msg="Downtime(s) already in the desired state.", logger=logger)
+    if module.check_mode:
+        exit_module(
+            module,
+            msg="Downtime(s) would be modified."
+            + _diff_text(to_change, {"end_time": desired_end, "comment": desired_comment}),
+            changed=True,
+            logger=logger,
+        )
+    result = api.modify(to_change, desired_end, desired_comment)
+    exit_module(module, result=result, logger=logger)
 
-    if is_host:
-        item = host_name
 
-    else:
-        item = "%s/[%s]" % (host_name, ", ".join(service_descriptions))
-        if len(service_descriptions) > 1:
-            query_filters.append(
-                '{"op": "or", "expr": [%s]}'
-                % ", ".join(
-                    [
-                        '{"op": "~", "left": "service_description", "right": "%s"}' % s
-                        for s in service_descriptions
-                    ]
-                )
+def _present(module, api):
+    """Handle state=present: create and/or update as needed."""
+
+    # --- Update-only path: identification by downtime_id ------------------
+    # A downtime cannot be created from an ID, so a missing match is an error.
+    if api.downtime_id:
+        if not api.current:
+            exit_module(
+                module,
+                msg="No downtime found to update for the given ID.",
+                failed=True,
+                logger=logger,
             )
+        _update_matching(module, api, api.current)
 
-        else:
-            query_filters.append(
-                '{"op": "~", "left": "service_description", "right": "%s"}'
-                % service_descriptions[0]
+    # --- Query path: update matching downtimes, or create if none exist ---
+    if api.query:
+        if api.current:
+            _update_matching(module, api, api.current)
+        # Nothing matches yet: schedule downtimes for the selected objects.
+        if module.check_mode:
+            exit_module(
+                module,
+                msg="Downtime(s) would be created for all objects matching the query.",
+                changed=True,
+                logger=logger,
             )
+        result = api.create_by_query()
+        exit_module(module, result=result, logger=logger)
 
-    if len(current_downtimes) == 0:  # and comment is not None:
-        return "ok", "'%s' has no downtimes with comment '%s'." % (item, comment)
+    # --- Create/update path: identification by host_name ------------------
+    # For host based identification the comment is part of the downtime's
+    # identity, so we only look at downtimes carrying the effective comment.
+    effective_comment = api.comment or DEFAULT_COMMENT
+    existing = [dt for dt in api.current if dt["comment"] == effective_comment]
+    desired_end = api._desired_end_time()
 
+    if api.is_service:
+        have = {dt["service_description"] for dt in existing}
+        create_services = [
+            s for s in api.service_descriptions if api.force or s not in have
+        ]
+        create_needed = bool(create_services)
+        update_targets = (
+            []
+            if api.force
+            else [
+                dt
+                for dt in existing
+                if dt["service_description"] in api.service_descriptions
+                and api.needs_update(dt, desired_end, None)
+            ]
+        )
     else:
-        api_endpoint = "/domain-types/downtime/actions/delete/invoke"
-        url = base_url + api_endpoint
-
-        # Create the query
-        query_filters.append(
-            '{"op": "~", "left": "host_name", "right": "%s"}' % host_name
+        create_services = None
+        create_needed = api.force or not existing
+        update_targets = (
+            []
+            if create_needed
+            else [dt for dt in existing if api.needs_update(dt, desired_end, None)]
         )
 
-        if comment is not None:
-            # If there's a comment, only delete downtimes that match that comment
-            query_filters.append(
-                '{"op": "~", "left": "comment", "right": "%s"}' % comment
-            )
+    if not create_needed and not update_targets:
+        exit_module(module, msg="Downtime(s) already in the desired state.", logger=logger)
 
-        params = {
-            "delete_type": "query",
-            "query": '{"op": "and", "expr": [%s]}' % ", ".join(query_filters),
-        }
-
-        response, info = fetch_url(
-            module, url, module.jsonify(params), headers=headers, method="POST"
+    if module.check_mode:
+        exit_module(
+            module,
+            msg="Downtime(s) would be created/modified."
+            + _diff_text(update_targets, {"end_time": desired_end}),
+            changed=True,
+            logger=logger,
         )
 
-        if info["status"] != 204:
-            return (
-                "failed",
-                "Error calling API while removing downtime from '%s' with comment '%s'. HTTP code %d. Details: %s, "
-                % (item, comment, info["status"], info.get("body", str(info))),
-            )
-        else:
-            return "changed", "Downtime removed from '%s' with comment '%s'." % (
-                item,
-                comment,
-            )
+    results = []
+    if create_needed:
+        results.append(api.create(service_descriptions=create_services))
+    if update_targets:
+        results.append(api.modify(update_targets, desired_end, None))
+
+    result = next((r for r in reversed(results) if r is not None), None)
+    if result is not None:
+        exit_module(module, result=result, logger=logger)
+    exit_module(module, msg="Downtime(s) created/modified.", changed=True, logger=logger)
+
+
+def _absent(module, api):
+    """Handle state=absent: delete matching downtimes."""
+    # For host based identification, a comment (if given) narrows the deletion.
+    if api.host_name and api.comment:
+        matching = [dt for dt in api.current if dt["comment"] == api.comment]
+    else:
+        matching = api.current
+
+    if not matching:
+        exit_module(module, msg="No matching downtimes, nothing to delete.", logger=logger)
+
+    if module.check_mode:
+        exit_module(
+            module,
+            msg="Downtime(s) would be deleted." + _diff_text(matching, []),
+            changed=True,
+            logger=logger,
+        )
+    result = api.delete(matching)
+    exit_module(module, result=result, logger=logger)
 
 
 def run_module():
     argument_spec = base_argument_spec()
     argument_spec.update(
-        host_name=dict(type="str", required=True),
-        comment=dict(type="str", default="Managed by Ansible"),
-        duration=dict(type="int", default=0),
-        start_after=dict(type="dict", default={}),
-        start_time=dict(type="str", default=""),
-        end_after=dict(type="dict", default={}),
-        end_time=dict(type="str", default=""),
-        force=dict(type="bool", default=False),
+        downtime_id=dict(type="str"),
+        site_id=dict(type="str"),
+        host_name=dict(type="str"),
         service_descriptions=dict(type="list", elements="str", default=[]),
+        query=dict(type="str"),
+        downtime_type=dict(type="str", choices=["host", "service"]),
+        comment=dict(type="str"),
+        start_time=dict(type="str"),
+        start_after=dict(type="dict", default={}),
+        end_time=dict(type="str"),
+        end_after=dict(type="dict", default={}),
+        duration=dict(type="int", default=0),
+        recur=dict(
+            type="str",
+            default="fixed",
+            choices=[
+                "fixed",
+                "hour",
+                "day",
+                "week",
+                "second_week",
+                "fourth_week",
+                "weekday_start",
+                "weekday_end",
+                "day_of_month",
+            ],
+        ),
+        force=dict(type="bool", default=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
+    required_if = [
+        ("api_auth_type", "bearer", ["api_user", "api_secret"]),
+        ("api_auth_type", "basic", ["api_user", "api_secret"]),
+        ("api_auth_type", "cookie", ["api_auth_cookie"]),
+    ]
 
-    # Use the parameters to initialize some common variables
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer %s %s"
-        % (
-            module.params.get("api_user"),
-            module.params.get("api_secret"),
-        ),
-    }
-
-    base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url"),
-        module.params.get("site"),
+    module = AnsibleModule(
+        argument_spec=argument_spec,
+        supports_check_mode=True,
+        mutually_exclusive=[("downtime_id", "host_name", "query")],
+        required_by={"downtime_id": ("site_id",)},
+        required_if=required_if,
     )
 
-    # here, we need only the state param
-    state = module.params.get("state", "present")
+    logger.set_loglevel(module._verbosity)
 
-    # Handle the host accordingly to above findings and desired state
-    if state == "present":
-        state, msg = set_downtime(module, base_url, headers)
-        bail_out(module, state, msg)
+    api = DowntimeAPI(module)
 
-    elif state == "absent":
-        state, msg = remove_downtime(module, base_url, headers)
-        bail_out(module, state, msg)
-
-    else:
-        bail_out(module, "error", "Unknown error")
+    try:
+        if module.params["state"] == "present":
+            _present(module, api)
+        else:
+            _absent(module, api)
+    except Exception as e:
+        exit_module(module, msg="Error managing the downtime: %s" % e, logger=logger)
 
 
 def main():
