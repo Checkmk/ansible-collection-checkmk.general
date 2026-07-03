@@ -175,14 +175,12 @@ notes:
       downtimes. Absolute times (I(end_time)) are fully idempotent. Relative times
       (I(end_after)) are recomputed on every run and will therefore usually trigger
       an update.
-    - For query-based B(create), the query columns are translated from the
-      C(downtimes) table to the queried object's table (C(host_name) becomes
-      C(name) for hosts, C(service_description) becomes C(description) for
-      services). Write queries in downtimes-table terms and the same query works
-      for create, update and delete. Idempotency relies on the created downtimes
-      being found again by the same query; queries restricted to attributes that
-      exist on both the object and the downtimes table (such as C(host_name) or
-      C(service_description)) are idempotent.
+    - On the Checkmk Raw edition (renamed I(Community) in 2.5) the Nagios core
+      cannot modify a downtime in place. When an existing downtime needs its end
+      time or comment changed on that edition, the module deletes and re-creates
+      it. The resulting downtime is identical except that it receives a new
+      downtime ID. On CMC-based editions the downtime is modified in place and
+      keeps its ID.
 
 seealso:
     - plugin: checkmk.general.downtime
@@ -400,6 +398,13 @@ logger = Logger()
 DEFAULT_COMMENT = "Managed by Ansible"
 TIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
+# Editions that run the Nagios core (Checkmk Raw, renamed "Community" in 2.5).
+# Their core accepts the MODIFY_*_DOWNTIME commands but silently ignores them,
+# so in-place downtime modification is not possible and is emulated by
+# delete + re-create. Every other edition runs the CMC, which modifies in place.
+# The edition is taken from the version string suffix ("cre"/"raw" up to 2.4,
+# "community" from 2.5 on).
+RAW_EDITIONS = frozenset({"cre", "raw", "community"})
 
 # ---------------------------------------------------------------------------
 # Query column translation
@@ -423,9 +428,9 @@ TIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 def _object_query_column(column, kind):
     """Translate a downtimes-table query column to the hosts/services table."""
     if kind == "host":
-        return column[len("host_") :] if column.startswith("host_") else column
+        return column[len("host_"):] if column.startswith("host_") else column
     if column.startswith("service_"):
-        return column[len("service_") :]
+        return column[len("service_"):]
     return column  # host_* join columns (and bare service columns) stay as-is
 
 
@@ -497,6 +502,12 @@ class DowntimeAPI(CheckmkAPI):
         # is the natural place to add adjustments for 3.0.0 and later.
         self.version = self.getversion()
 
+        # The Nagios core (Raw/Community edition) does not honour the
+        # MODIFY_*_DOWNTIME commands, so modifications are emulated there by
+        # deleting and re-creating the downtime. See modify().
+        edition = getattr(self.version, "edition", None)
+        self.on_nagios_core = str(edition or "").lower() in RAW_EDITIONS
+
         # Identification.
         self.downtime_id = self.params.get("downtime_id")
         self.dt_site_id = self.params.get("site_id")
@@ -565,9 +576,7 @@ class DowntimeAPI(CheckmkAPI):
         if iso_time is None:
             return None
         try:
-            return int(
-                datetime.fromisoformat(iso_time.replace("Z", "+00:00")).timestamp()
-            )
+            return int(datetime.fromisoformat(iso_time.replace("Z", "+00:00")).timestamp())
         except ValueError:
             return None
 
@@ -610,16 +619,12 @@ class DowntimeAPI(CheckmkAPI):
             method="GET",
             logger=logger,
         )
-        downtimes = [
-            self._flatten(dt) for dt in json.loads(result.content).get("value", [])
-        ]
+        downtimes = [self._flatten(dt) for dt in json.loads(result.content).get("value", [])]
 
         # The collection endpoint cannot filter a list of services for us.
         if self.is_service:
             downtimes = [
-                dt
-                for dt in downtimes
-                if dt["service_description"] in self.service_descriptions
+                dt for dt in downtimes if dt["service_description"] in self.service_descriptions
             ]
         return downtimes
 
@@ -640,9 +645,9 @@ class DowntimeAPI(CheckmkAPI):
 
     def needs_update(self, downtime, desired_end, desired_comment):
         """Return True if a downtime differs from the desired end time/comment."""
-        if desired_end is not None and self._to_epoch(
-            downtime["end_time"]
-        ) != self._to_epoch(desired_end):
+        if desired_end is not None and self._to_epoch(downtime["end_time"]) != self._to_epoch(
+            desired_end
+        ):
             return True
         if desired_comment is not None and downtime["comment"] != desired_comment:
             return True
@@ -706,7 +711,20 @@ class DowntimeAPI(CheckmkAPI):
         return self._run("create", "POST", endpoint, data=data)
 
     def modify(self, downtimes, desired_end, desired_comment):
-        """Modify the end time and/or comment of the given downtimes, by ID."""
+        """Modify the end time and/or comment of the given downtimes.
+
+        On the CMC this issues MODIFY_*_DOWNTIME, changing each downtime in
+        place (its ID is preserved). The Nagios core used by the Raw/Community
+        edition accepts those commands but silently ignores them, so there the
+        change is applied by deleting and re-creating each downtime. That
+        assigns a new downtime ID but leaves the resulting state identical.
+        """
+        if self.on_nagios_core:
+            result = None
+            for downtime in downtimes:
+                result = self._recreate(downtime, desired_end, desired_comment)
+            return result
+
         endpoint = "/domain-types/downtime/actions/modify/invoke"
         result = None
         for downtime in downtimes:
@@ -721,6 +739,31 @@ class DowntimeAPI(CheckmkAPI):
                 data["comment"] = desired_comment
             result = self._run("modify", "PUT", endpoint, data=data)
         return result
+
+    def _recreate(self, downtime, desired_end, desired_comment):
+        """Delete a downtime and re-create it with the new end time/comment.
+
+        Used on the Nagios core, which cannot modify a downtime in place. The
+        original start time and any unchanged attributes are preserved; the
+        recurrence/duration come from the module parameters, matching create().
+        """
+        self.delete([downtime])
+        data = {
+            "start_time": downtime["start_time"],
+            "end_time": desired_end if desired_end is not None else downtime["end_time"],
+            "recur": self.recur,
+            "duration": self.duration,
+            "comment": desired_comment if desired_comment is not None else downtime["comment"],
+            "host_name": downtime["host_name"],
+        }
+        if downtime["is_service"]:
+            data["downtime_type"] = "service"
+            data["service_descriptions"] = [downtime["service_description"]]
+            endpoint = "/domain-types/downtime/collections/service"
+        else:
+            data["downtime_type"] = "host"
+            endpoint = "/domain-types/downtime/collections/host"
+        return self._run("create", "POST", endpoint, data=data)
 
     def delete(self, downtimes):
         """Delete the given downtimes, by ID."""
@@ -738,7 +781,6 @@ class DowntimeAPI(CheckmkAPI):
 
 def _diff_text(before, after):
     """A compact, human readable diff embedded into the check-mode message."""
-
     def summarize(downtimes):
         return [
             {
@@ -771,16 +813,12 @@ def _update_matching(module, api, matching):
         dt for dt in matching if api.needs_update(dt, desired_end, desired_comment)
     ]
     if not to_change:
-        exit_module(
-            module, msg="Downtime(s) already in the desired state.", logger=logger
-        )
+        exit_module(module, msg="Downtime(s) already in the desired state.", logger=logger)
     if module.check_mode:
         exit_module(
             module,
             msg="Downtime(s) would be modified."
-            + _diff_text(
-                to_change, {"end_time": desired_end, "comment": desired_comment}
-            ),
+            + _diff_text(to_change, {"end_time": desired_end, "comment": desired_comment}),
             changed=True,
             logger=logger,
         )
@@ -851,9 +889,7 @@ def _present(module, api):
         )
 
     if not create_needed and not update_targets:
-        exit_module(
-            module, msg="Downtime(s) already in the desired state.", logger=logger
-        )
+        exit_module(module, msg="Downtime(s) already in the desired state.", logger=logger)
 
     if module.check_mode:
         exit_module(
@@ -873,9 +909,7 @@ def _present(module, api):
     result = next((r for r in reversed(results) if r is not None), None)
     if result is not None:
         exit_module(module, result=result, logger=logger)
-    exit_module(
-        module, msg="Downtime(s) created/modified.", changed=True, logger=logger
-    )
+    exit_module(module, msg="Downtime(s) created/modified.", changed=True, logger=logger)
 
 
 def _absent(module, api):
@@ -887,9 +921,7 @@ def _absent(module, api):
         matching = api.current
 
     if not matching:
-        exit_module(
-            module, msg="No matching downtimes, nothing to delete.", logger=logger
-        )
+        exit_module(module, msg="No matching downtimes, nothing to delete.", logger=logger)
 
     if module.check_mode:
         exit_module(
