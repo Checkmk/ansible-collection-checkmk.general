@@ -133,7 +133,7 @@
   ansible.builtin.assert:
     that: "__checkmk_var_dt_shorten.results | map(attribute='changed') | unique | list == [true]"
     fail_msg: "Shortening the end time did not report a change (issue #672 not solved)."
-    success_msg: "The host downtime was shortened in place."
+    success_msg: "The host downtime was shortened."
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
   ansible.builtin.wait_for:
@@ -371,6 +371,21 @@
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
   ansible.builtin.wait_for:
     timeout: "{{ checkmk_var_dt_settle }}"
+
+# On the Nagios core (Raw/Community edition) an update is a delete + re-create,
+# so the downtime is assigned a new ID. Re-resolve it before acting by ID again.
+# On CMC the ID is unchanged and the lookup returns the same downtime.
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Re-resolve the downtime ID (it changes after an update on the Nagios core)."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_byid: "{{ (lookup('checkmk.general.downtimes',
+                            host_name='test1.tld',
+                            server_url=checkmk_var_server_url,
+                            site=outer_item.site,
+                            validate_certs=False,
+                            api_user=checkmk_var_api_user,
+                            api_secret=checkmk_var_api_secret)
+                          | selectattr('extensions.comment', 'equalto', 'By-ID window reduced')
+                          | first) }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update by ID again (idempotent)."
   checkmk.general.downtime:
