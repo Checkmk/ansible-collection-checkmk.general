@@ -632,12 +632,18 @@ class DowntimeAPI(CheckmkAPI):
     def _flatten(raw):
         """Turn a REST downtime object into a flat dict."""
         ext = raw.get("extensions", {})
+        # is_service is a bool from 2.4.0 on, but a "yes"/"no" string in 2.3.0.
+        raw_is_service = ext.get("is_service", False)
+        if isinstance(raw_is_service, bool):
+            is_service = raw_is_service
+        else:
+            is_service = str(raw_is_service).strip().lower() in ("yes", "true", "1")
         return {
             "id": raw.get("id"),
             "site_id": ext.get("site_id"),
             "host_name": ext.get("host_name"),
             "service_description": ext.get("service_description"),
-            "is_service": ext.get("is_service", False),
+            "is_service": is_service,
             "start_time": ext.get("start_time"),
             "end_time": ext.get("end_time"),
             "comment": ext.get("comment"),
