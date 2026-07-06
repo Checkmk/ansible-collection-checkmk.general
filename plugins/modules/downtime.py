@@ -429,6 +429,7 @@ TIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 # "community" from 2.5 on).
 RAW_EDITIONS = frozenset({"cre", "raw", "community"})
 
+
 # ---------------------------------------------------------------------------
 # Query column translation
 # ---------------------------------------------------------------------------
@@ -451,9 +452,9 @@ RAW_EDITIONS = frozenset({"cre", "raw", "community"})
 def _object_query_column(column, kind):
     """Translate a downtimes-table query column to the hosts/services table."""
     if kind == "host":
-        return column[len("host_"):] if column.startswith("host_") else column
+        return column[len("host_") :] if column.startswith("host_") else column
     if column.startswith("service_"):
-        return column[len("service_"):]
+        return column[len("service_") :]
     return column  # host_* join columns (and bare service columns) stay as-is
 
 
@@ -599,7 +600,9 @@ class DowntimeAPI(CheckmkAPI):
         if iso_time is None:
             return None
         try:
-            return int(datetime.fromisoformat(iso_time.replace("Z", "+00:00")).timestamp())
+            return int(
+                datetime.fromisoformat(iso_time.replace("Z", "+00:00")).timestamp()
+            )
         except ValueError:
             return None
 
@@ -642,12 +645,16 @@ class DowntimeAPI(CheckmkAPI):
             method="GET",
             logger=logger,
         )
-        downtimes = [self._flatten(dt) for dt in json.loads(result.content).get("value", [])]
+        downtimes = [
+            self._flatten(dt) for dt in json.loads(result.content).get("value", [])
+        ]
 
         # The collection endpoint cannot filter a list of services for us.
         if self.is_service:
             downtimes = [
-                dt for dt in downtimes if dt["service_description"] in self.service_descriptions
+                dt
+                for dt in downtimes
+                if dt["service_description"] in self.service_descriptions
             ]
         return downtimes
 
@@ -674,9 +681,9 @@ class DowntimeAPI(CheckmkAPI):
 
     def needs_update(self, downtime, desired_end, desired_comment):
         """Return True if a downtime differs from the desired end time/comment."""
-        if desired_end is not None and self._to_epoch(downtime["end_time"]) != self._to_epoch(
-            desired_end
-        ):
+        if desired_end is not None and self._to_epoch(
+            downtime["end_time"]
+        ) != self._to_epoch(desired_end):
             return True
         if desired_comment is not None and downtime["comment"] != desired_comment:
             return True
@@ -779,10 +786,14 @@ class DowntimeAPI(CheckmkAPI):
         self.delete([downtime])
         data = {
             "start_time": downtime["start_time"],
-            "end_time": desired_end if desired_end is not None else downtime["end_time"],
+            "end_time": (
+                desired_end if desired_end is not None else downtime["end_time"]
+            ),
             "recur": self.recur,
             "duration": self.duration,
-            "comment": desired_comment if desired_comment is not None else downtime["comment"],
+            "comment": (
+                desired_comment if desired_comment is not None else downtime["comment"]
+            ),
             "host_name": downtime["host_name"],
         }
         if downtime["is_service"]:
@@ -810,6 +821,7 @@ class DowntimeAPI(CheckmkAPI):
 
 def _diff_text(before, after):
     """A compact, human readable diff embedded into the check-mode message."""
+
     def summarize(downtimes):
         return [
             {
@@ -842,12 +854,16 @@ def _update_matching(module, api, matching):
         dt for dt in matching if api.needs_update(dt, desired_end, desired_comment)
     ]
     if not to_change:
-        exit_module(module, msg="Downtime(s) already in the desired state.", logger=logger)
+        exit_module(
+            module, msg="Downtime(s) already in the desired state.", logger=logger
+        )
     if module.check_mode:
         exit_module(
             module,
             msg="Downtime(s) would be modified."
-            + _diff_text(to_change, {"end_time": desired_end, "comment": desired_comment}),
+            + _diff_text(
+                to_change, {"end_time": desired_end, "comment": desired_comment}
+            ),
             changed=True,
             logger=logger,
         )
@@ -918,7 +934,9 @@ def _present(module, api):
         )
 
     if not create_needed and not update_targets:
-        exit_module(module, msg="Downtime(s) already in the desired state.", logger=logger)
+        exit_module(
+            module, msg="Downtime(s) already in the desired state.", logger=logger
+        )
 
     if module.check_mode:
         exit_module(
@@ -938,7 +956,9 @@ def _present(module, api):
     result = next((r for r in reversed(results) if r is not None), None)
     if result is not None:
         exit_module(module, result=result, logger=logger)
-    exit_module(module, msg="Downtime(s) created/modified.", changed=True, logger=logger)
+    exit_module(
+        module, msg="Downtime(s) created/modified.", changed=True, logger=logger
+    )
 
 
 def _absent(module, api):
@@ -950,7 +970,9 @@ def _absent(module, api):
         matching = api.current
 
     if not matching:
-        exit_module(module, msg="No matching downtimes, nothing to delete.", logger=logger)
+        exit_module(
+            module, msg="No matching downtimes, nothing to delete.", logger=logger
+        )
 
     if module.check_mode:
         exit_module(
