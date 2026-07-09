@@ -9,6 +9,8 @@
         update_cache: true
         cache_valid_time: 600
       when: ansible_facts['os_family'] == 'Debian'
+      tags:
+        - molecule-idempotence-notest
 
     - name: "Install prerequisites."
       ansible.builtin.package:
@@ -29,8 +31,10 @@
       when: ansible_facts['distribution'] == 'Ubuntu'
 
     # See https://github.com/geerlingguy/docker-rockylinux9-ansible/issues/6
-    - name: "Fix permissions on /etc/shadow for Rocky 9 and 10."  # noqa no-changed-when
-      ansible.builtin.command: chmod 0400 /etc/shadow
+    - name: "Fix permissions on /etc/shadow for Rocky 9 and 10."
+      ansible.builtin.file:
+        path: /etc/shadow
+        mode: "0400"
       when: ansible_facts['distribution'] == 'Rocky' and (ansible_facts['distribution_major_version'] == '9' or ansible_facts['distribution_major_version'] == '10')
 
     - name: "Download MKP."
