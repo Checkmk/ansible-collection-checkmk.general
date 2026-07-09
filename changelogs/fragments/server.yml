@@ -4,3 +4,7 @@ minor_changes:
     ``omd_config`` defined was started first, only to be stopped again
     immediately to apply the configuration. Now the configuration is applied
     while the site is still stopped and the site is started only once.
+bugfixes:
+  - Server role - Only update the site admin password when it actually
+    differs from the configured one. Previously, the password hash was
+    rewritten on every run, breaking idempotence.
