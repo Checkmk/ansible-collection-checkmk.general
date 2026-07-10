@@ -169,11 +169,15 @@
     loop_var: __site
   when: __site.mkp_packages is defined
 
-- name: "Update Site Admin Password for Checkmk < 2.1."  # noqa no-changed-when
+- name: "Update Site Admin Password for Checkmk < 2.1."
   become: true
   ansible.builtin.shell: |
     set -o pipefail
-    echo '{{ item.admin_pw }}' | htpasswd -i /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
+    if ! echo '{{ item.admin_pw }}' | htpasswd -vi /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin > /dev/null 2>&1
+    then
+      echo '{{ item.admin_pw }}' | htpasswd -i /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
+      echo "Password updated."
+    fi
   args:
     executable: /bin/bash
   no_log: "{{ checkmk_server_no_log | bool }}"
@@ -181,16 +185,22 @@
   loop_control:
     label: "{{ item | combine({'admin_pw': omit}) }}"
   when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '<'))
+  register: __checkmk_server_admin_pw_legacy
+  changed_when: "'Password updated.' in __checkmk_server_admin_pw_legacy.stdout"
   tags:
     - set-site-admin-pw
 
 # In the future this should be done with 'cmk-passwd' available from 2.1.0p16 (https://checkmk.com/werk/14389)
 # To keep things simple, we do it in a more generic way here, which works in all 2.1 releases
-- name: "Update Site Admin Password for Checkmk >= 2.1."  # noqa no-changed-when
+- name: "Update Site Admin Password for Checkmk >= 2.1."
   become: true
   ansible.builtin.shell: |
     set -o pipefail
-    echo '{{ item.admin_pw }}' | htpasswd -i -B -C 12 /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
+    if ! echo '{{ item.admin_pw }}' | htpasswd -vi /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin > /dev/null 2>&1
+    then
+      echo '{{ item.admin_pw }}' | htpasswd -i -B -C 12 /omd/sites/{{ item.name }}/etc/htpasswd cmkadmin
+      echo "Password updated."
+    fi
   args:
     executable: /bin/bash
   no_log: "{{ checkmk_server_no_log | bool }}"
@@ -198,6 +208,8 @@
   loop_control:
     label: "{{ item | combine({'admin_pw': omit}) }}"
   when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '>='))
+  register: __checkmk_server_admin_pw
+  changed_when: "'Password updated.' in __checkmk_server_admin_pw.stdout"
   tags:
     - set-site-admin-pw
 
