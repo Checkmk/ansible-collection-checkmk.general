@@ -4,6 +4,14 @@ minor_changes:
     ``omd_config`` defined was started first, only to be stopped again
     immediately to apply the configuration. Now the configuration is applied
     while the site is still stopped and the site is started only once.
+  - Server role - Use the site or package name as the loop label in the site
+    and MKP management tasks for cleaner output. The ``no_log`` logic was
+    also improved to be as little obstructive as possible.
 bugfixes:
   - Server role - Only update the site admin password when it actually
     differs from the configured one.
+security_fixes:
+  - Server role - The MKP management tasks no longer show the whole package
+    dictionary, including a potentially configured ``download_password``,
+    as the loop label. Additionally, the MKP download task now honors
+    ``checkmk_server_no_log`` when a ``download_password`` is configured.
