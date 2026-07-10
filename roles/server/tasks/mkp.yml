@@ -10,6 +10,7 @@
     url_username: "{{ __mkp.download_user | default(omit) }}"
     url_password: "{{ __mkp.download_password | default(omit) }}"
     checksum: "{{ __mkp.checksum | default(omit) }}"
+  no_log: "{{ __mkp.download_password is defined and checkmk_server_no_log | bool }}"
   retries: 3
   loop: "{{ __site.mkp_packages }}"
   loop_control:
