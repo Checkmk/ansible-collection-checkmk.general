@@ -94,6 +94,7 @@ argument_specs:
             options:
               name:
                 type: "str"
+                required: true
                 description: "The name of the extension package."
               version:
                 type: "str"
