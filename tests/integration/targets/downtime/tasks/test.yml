@@ -673,6 +673,9 @@
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "test1.tld"
+    service_descriptions:
+      - "Check_MK"
+      - "Check_MK Discovery"
     comment: Schedule downtime on services with relative timestamps
     state: absent
   register: __checkmk_var_dt_relative_delete
