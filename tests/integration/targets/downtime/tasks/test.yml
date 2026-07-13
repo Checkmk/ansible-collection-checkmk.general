@@ -653,7 +653,7 @@
     service_descriptions:
       - "Check_MK"
       - "Check_MK Discovery"
-  state: present
+    state: present
   register: __checkmk_var_dt_relative
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the downtime was created."
