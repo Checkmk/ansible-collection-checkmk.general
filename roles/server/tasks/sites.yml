@@ -13,10 +13,10 @@
   args:
     executable: /bin/bash
     creates: "/omd/sites/{{ item.name }}"
-  no_log: "{{ checkmk_server_no_log | bool }}"
+  no_log: "{{ item.admin_pw is defined and checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   loop_control:
-    label: "{{ item | combine({'admin_pw': omit}) }}"
+    label: "{{ item.name }}"
   when: item.state != "absent"
   register: __checkmk_server_sites_created
   tags:
@@ -35,10 +35,10 @@
     omd version {{ item.name }} | egrep -o '[^ ]+$'
   args:
     executable: /bin/bash
-  no_log: "{{ checkmk_server_no_log | bool }}"
+  no_log: "{{ item.admin_pw is defined and checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   loop_control:
-    label: "{{ item | combine({'admin_pw': omit}) }}"
+    label: "{{ item.name }}"
   changed_when: "__checkmk_server_sites_versions.stdout != item.version + '.' + __checkmk_var_edition_id | lower"
   when: item.state != "absent"
   register: __checkmk_server_sites_versions
@@ -49,7 +49,7 @@
   ansible.builtin.include_tasks: update-site.yml
   loop: "{{ __checkmk_server_sites_versions.results }}"
   loop_control:
-    label: "{{ item | ansible.utils.remove_keys(target=['admin_pw']) }}"
+    label: "{{ item.item.name }}"
   when: "item.changed"
   tags:
     - update-sites
@@ -66,10 +66,10 @@
     fi
   args:
     executable: /bin/bash
-  no_log: "{{ checkmk_server_no_log | bool }}"
+  no_log: "{{ item.admin_pw is defined and checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   loop_control:
-    label: "{{ item | combine({'admin_pw': omit}) }}"
+    label: "{{ item.name }}"
   when: (item.state == "enabled") or (item.state == "started")
   register: __checkmk_server_sites_stopped
   changed_when: "'Autostart enabled.' in __checkmk_server_sites_stopped.stdout"
@@ -80,7 +80,7 @@
   ansible.builtin.include_tasks: configure-site.yml
   loop: "{{ checkmk_server_sites }}"
   loop_control:
-    label: "{{ outer_item | combine({'admin_pw': omit}) }}"
+    label: "{{ outer_item.name }}"
     loop_var: outer_item
   when: |
     outer_item.omd_config is defined and
@@ -97,10 +97,10 @@
   args:
     executable: /bin/bash
     creates: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
-  no_log: "{{ checkmk_server_no_log | bool }}"
+  no_log: "{{ item.admin_pw is defined and checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   loop_control:
-    label: "{{ item | combine({'admin_pw': omit}) }}"
+    label: "{{ item.name }}"
   when: item.state == "started"
   register: __checkmk_server_sites_started
   tags:
@@ -114,10 +114,10 @@
   args:
     executable: /bin/bash
     removes: "/opt/omd/sites/{{ item.name }}/tmp/run/live"
-  no_log: "{{ checkmk_server_no_log | bool }}"
+  no_log: "{{ item.admin_pw is defined and checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   loop_control:
-    label: "{{ item | combine({'admin_pw': omit}) }}"
+    label: "{{ item.name }}"
   when: item.state != "started"
   register: __checkmk_server_sites_stopped
   tags:
@@ -134,10 +134,10 @@
     fi
   args:
     executable: /bin/bash
-  no_log: "{{ checkmk_server_no_log | bool }}"
+  no_log: "{{ item.admin_pw is defined and checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   loop_control:
-    label: "{{ item | combine({'admin_pw': omit}) }}"
+    label: "{{ item.name }}"
   when: (item.state == "disabled") or (item.state == "present") or (item.state == "stopped")
   register: __checkmk_server_sites_stopped
   changed_when: "'Autostart disabled.' in __checkmk_server_sites_stopped.stdout"
@@ -152,10 +152,10 @@
   args:
     executable: /bin/bash
     removes: "/omd/sites/{{ item.name }}"
-  no_log: "{{ checkmk_server_no_log | bool }}"
+  no_log: "{{ item.admin_pw is defined and checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   loop_control:
-    label: "{{ item | combine({'admin_pw': omit}) }}"
+    label: "{{ item.name }}"
   when: item.state == "absent"
   register: __checkmk_server_sites_removed
   tags:
@@ -165,7 +165,7 @@
   ansible.builtin.include_tasks: mkp.yml
   loop: "{{ checkmk_server_sites }}"
   loop_control:
-    label: "{{ __site | combine({'admin_pw': omit}) }}"
+    label: "{{ __site.name }}"
     loop_var: __site
   when: __site.mkp_packages is defined
 
@@ -183,7 +183,7 @@
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   loop_control:
-    label: "{{ item | combine({'admin_pw': omit}) }}"
+    label: "{{ item.name }}"
   when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '<'))
   register: __checkmk_server_admin_pw_legacy
   changed_when: "'Password updated.' in __checkmk_server_admin_pw_legacy.stdout"
@@ -206,7 +206,7 @@
   no_log: "{{ checkmk_server_no_log | bool }}"
   loop: "{{ checkmk_server_sites }}"
   loop_control:
-    label: "{{ item | combine({'admin_pw': omit}) }}"
+    label: "{{ item.name }}"
   when: item.admin_pw is defined and (item.state != "absent") and (item.version | regex_replace('p.*', '') is version('2.1', '>='))
   register: __checkmk_server_admin_pw
   changed_when: "'Password updated.' in __checkmk_server_admin_pw.stdout"
@@ -219,10 +219,10 @@
       - "Just a trigger."
   loop: "{{ __checkmk_server_sites_created.results }}"
   loop_control:
-    label: "{{ item | ansible.utils.remove_keys(target=['admin_pw']) }}"
+    label: "{{ item.item.name }}"
   when: __checkmk_server_sites_created.changed | bool and not item.item.admin_pw is defined and item.item.state != "absent"
   changed_when: true
   notify: Warn site admin password
-  no_log: "{{ checkmk_server_no_log | bool }}"
+  no_log: "{{ item.item.admin_pw is defined and checkmk_server_no_log | bool }}"
   tags:
     - create-sites
