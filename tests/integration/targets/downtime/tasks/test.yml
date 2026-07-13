@@ -589,7 +589,102 @@
     success_msg: "Service downtimes were deleted by query."
 
 # -----------------------------------------------------------------------------
-# F. Error handling: cannot create from an unknown downtime_id
+# F. Create / delete without comment
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create downtime without comment (absolute time)."
+  checkmk.general.downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
+    start_time: "2034-03-25T20:39:28Z"
+    end_time: "2034-03-26T20:39:28Z"
+    state: present
+  register: __checkmk_var_dt_no_comment_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the downtime was created."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_no_comment_create.changed | bool"
+    fail_msg: "Creating downtime without comment reported no change."
+    success_msg: "Downtime was created without comment."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete downtime without comment."
+  checkmk.general.downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
+    start_time: "2034-03-25T20:39:28Z"
+    end_time: "2034-03-26T20:39:28Z"
+    state: absent
+  register: __checkmk_var_dt_no_comment_delete
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the delete changed the state."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_no_comment_delete.changed | bool"
+    fail_msg: "Deleting downtime without comment reported no change."
+    success_msg: "Downtime was deleted without comment."
+
+# -----------------------------------------------------------------------------
+# G. Create / delete relative downtime
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create relative downtime."
+  checkmk.general.downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
+    comment: Schedule downtime on services with relative timestamps
+    start_after:
+      hours: 2
+      minutes: 30
+    end_after:
+      hours: 1
+      minutes: 30
+    service_descriptions:
+      - "Check_MK"
+      - "Check_MK Discovery"
+  state: present
+  register: __checkmk_var_dt_relative
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the downtime was created."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_relative.changed | bool"
+    fail_msg: "Creating relative downtime reported no change."
+    success_msg: "Relative downtime was created."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete relative downtime."
+  checkmk.general.downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
+    comment: Schedule downtime on services with relative timestamps
+    state: absent
+  register: __checkmk_var_dt_relative_delete
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the delete changed the state."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_relative_delete.changed | bool"
+    fail_msg: "Deleting downtime reported no change."
+    success_msg: "Relative downtime was deleted."
+
+# -----------------------------------------------------------------------------
+# H. Error handling: cannot create from an unknown downtime_id
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Present with an unknown downtime_id must fail."
