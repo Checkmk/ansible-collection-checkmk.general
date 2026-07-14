@@ -33,7 +33,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Basic configuration
 
-    checkmk_server_version: "2.5.0p7"
+    checkmk_server_version: "2.5.0p8"
 
 The main Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see [Site Management](#site_management) below.
@@ -158,7 +158,7 @@ Extension packages can also be listed to be installed on the specific central si
 
     checkmk_server_no_log: true
 
-Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default. Set to `false` for easier troubleshooting.
+Whether to log sensitive information like passwords. Ansible output will be censored for enhanced security by default. Censoring is applied per item: only tasks and loop items that handle sensitive data, like sites with an `admin_pw` or packages with a `download_password`, are censored. Set to `false` to disable censoring altogether for easier troubleshooting.
 > **Warning**: Be careful when changing this value in production, passwords may be leaked in operating system logs.
 
     checkmk_server_configure_firewall: true

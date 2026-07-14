@@ -11,7 +11,7 @@ argument_specs:
 
       checkmk_server_version:
         type: "str"
-        default: "2.5.0p7"
+        default: "2.5.0p8"
         description:
           - Refer to the README for details.
 
@@ -94,6 +94,7 @@ argument_specs:
             options:
               name:
                 type: "str"
+                required: true
                 description: "The name of the extension package."
               version:
                 type: "str"

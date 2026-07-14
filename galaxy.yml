@@ -10,7 +10,7 @@ name: general
 
 # The version of the collection. Must be compatible with semantic versioning
 
-version: 8.0.0
+version: 8.1.0
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -47,7 +47,6 @@ tags: [checkmk, monitoring, check_mk, check, discovery, ubuntu, debian, sles, rh
 dependencies:
   "community.general": ">=6.0.0"
   "ansible.posix": ">=1.5.0"
-  "ansible.utils": ">=2.0.0"
   "ansible.windows": ">=2.0.0"
 
 # The URL of the originating SCM repository
