@@ -20,7 +20,7 @@ checkmk.general.server role -- Install and manage Checkmk servers
 .. Collection note
 
 .. note::
-    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.0.0).
+    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -955,7 +955,7 @@ Parameters
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
 
 
@@ -1563,7 +1563,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"2.5.0p7"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"2.5.0p8"`
 
       .. raw:: html
 

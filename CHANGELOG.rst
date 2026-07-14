@@ -4,6 +4,31 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v8.1.0
+======
+
+Release Summary
+---------------
+
+Quality of life and security improvements for the server role.
+
+Minor Changes
+-------------
+
+- Remove the unused dependency on the ``ansible.utils`` collection.
+- Server role - Apply the OMD site configuration before starting the site. Previously, a stopped site (e.g. freshly created or just updated) with ``omd_config`` defined was started first, only to be stopped again immediately to apply the configuration. Now the configuration is applied while the site is still stopped and the site is started only once.
+- Server role - Use the site or package name as the loop label in the site and MKP management tasks for cleaner output. The ``no_log`` logic was also improved to be as little obstructive as possible.
+
+Security Fixes
+--------------
+
+- Server role - The MKP management tasks no longer show the whole package dictionary, including a potentially configured ``download_password``, as the loop label. Additionally, the MKP download task now honors ``checkmk_server_no_log`` when a ``download_password`` is configured.
+
+Bugfixes
+--------
+
+- Server role - Only update the site admin password when it actually differs from the configured one.
+
 v8.0.0
 ======
 
