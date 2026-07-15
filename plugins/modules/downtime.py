@@ -189,7 +189,8 @@ seealso:
       plugin_type: lookup
 
 author:
-    - Lars Getwan (@lgetwan)
+    - Oliver Gaida (@ogaida) -- Original implementation
+    - Lars Getwan (@lgetwan), with the help of Claude -- Modified version
 """
 
 EXAMPLES = r"""
