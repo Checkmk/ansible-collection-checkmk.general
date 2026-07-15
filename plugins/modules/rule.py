@@ -829,12 +829,9 @@ class RuleAPI(CheckmkAPI):
 
         if self.is_new_rule:
             location = self.desired.get("rule").get("location")
-            if location and not (
-                # folder should be there
-                location.get("folder", "/") == "/"
-                # position should be there
-                and location.get("position", "bottom") == "bottom"
-            ):
+            # create() already places the rule at the bottom of the target
+            # folder, so only the other positions need an extra move call.
+            if location and location.get("position", "any") not in ("bottom", "any"):
                 return True
 
         return False
