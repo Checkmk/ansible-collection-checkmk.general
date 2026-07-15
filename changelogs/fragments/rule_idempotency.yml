@@ -3,3 +3,4 @@ bugfixes:
   - rule module - Compare rule values structurally instead of rewriting parentheses to brackets, which silently ignored real changes to values containing parentheses or brackets inside strings.
   - rule module - Translate ``host_labels`` and ``service_labels`` conditions to the label group format used by Checkmk 2.3 and newer, preventing a new rule from being created on every run when the old syntax is used.
   - rule module - Do not issue a superfluous move API call when creating a rule with the default location.
+  - rule module - Fix documentation examples that used a value format rejected by Checkmk 2.5, and document value format requirements, secret masking and rule location semantics.
