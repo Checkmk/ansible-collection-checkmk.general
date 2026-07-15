@@ -48,7 +48,7 @@ options:
                         description:
                             - Position of the rule in the folder.
                             - Has no effect when I(state=absent).
-                            - For new rule C(any) wil be equivalent to C(bottom).
+                            - For a new rule C(any) will be equivalent to C(bottom).
                         required: false
                         type: str
                         choices:
@@ -100,11 +100,19 @@ options:
         default: present
         type: str
 notes:
-    - If rule_id is omitted, due to the internal processing of the C(value_raw), finding the
-      matching rule is not reliable, when C(rule_id) is omitted. This sometimes leads to the
-      module not being idempotent or to rules being created over and over again.
-    - If rule_id is provided, for the same reason, it might happen, that tasks changing a rule
-      again and again, even if it already meets the expectations.
+    - Provide C(value_raw) in the canonical format of the target Checkmk version,
+      for example by copying it from the GUI (Export rule for API) or from the output
+      of an existing rule. Value formats can change between Checkmk versions, so
+      playbooks may need updating after a Checkmk upgrade.
+    - Rules containing passwords or other secrets cannot be compared reliably, because
+      the Checkmk API masks secrets in its responses. Such tasks report a change on
+      every run when C(rule_id) is provided, or create a new rule on every run when it
+      is omitted. Referencing an entry from the password store and writing the value
+      exactly as the API returns it avoids this.
+    - The positions C(top), C(bottom), C(before) and C(after) describe the rule order
+      at the time the task runs. Rules created later, including by subsequent tasks,
+      can displace such rules, causing move operations on the next run. Only C(any)
+      is stable in that regard.
 
 seealso:
     - plugin: checkmk.general.rule
@@ -134,7 +142,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       conditions:
         host_name:
@@ -145,7 +153,7 @@ EXAMPLES = r"""
         host_labels: []
         service_labels: []
       properties:
-        description: "Allow higher memory usage on myhost01"
+        description: "Allow higher filesystem usage on myhost01"
         comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
@@ -165,7 +173,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       rule_id: "{{ rule_result.content.id }}"
     state: "absent"
@@ -180,7 +188,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       conditions:
         host_name:
@@ -191,7 +199,7 @@ EXAMPLES = r"""
         host_labels: []
         service_labels: []
       properties:
-        description: "Allow even higher memory usage on myhost02"
+        description: "Allow even higher filesystem usage on myhost02"
         comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (85.0, 99.0)}"
@@ -210,7 +218,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       conditions:
         host_labels:
@@ -218,7 +226,7 @@ EXAMPLES = r"""
             operator: "is"
             value: "yes"
       properties:
-        description: "Allow higher memory usage on Checkmk servers"
+        description: "Allow higher filesystem usage on Checkmk servers"
         comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
@@ -233,7 +241,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       conditions:
         host_label_groups:
@@ -246,7 +254,7 @@ EXAMPLES = r"""
         host_tags: []
         service_label_groups: []
       properties:
-        description: "Allow higher memory usage on Linux hosts in mysite"
+        description: "Allow higher filesystem usage on Linux hosts in mysite"
         comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
@@ -265,13 +273,13 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       rule_id: "{{ item.id }}"
     state: "absent"
   loop: "{{
            lookup('checkmk.general.rules',
-             ruleset='checkgroup_parameters:memory_percentage_used',
+             ruleset='checkgroup_parameters:filesystem',
              comment_regex='Managed by Ansible',
              server_url='https://myserver/',
              site='mysite',
@@ -293,10 +301,10 @@ EXAMPLES = r"""
 
 - name: "Create a rule using environment variables for authentication."
   checkmk.general.rule:
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       properties:
-        description: "Allow higher memory usage"
+        description: "Allow higher filesystem usage"
         comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
