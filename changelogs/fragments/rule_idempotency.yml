@@ -1,0 +1,2 @@
+bugfixes:
+  - rule module - Fail as documented when the provided ``rule_id`` does not exist, instead of reporting an unchanged success.
