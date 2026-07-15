@@ -198,7 +198,8 @@ seealso:
       link: "https://docs.checkmk.com/latest/en/basics_downtimes.html"
 
 author:
-    - Lars Getwan (@lgetwan)
+    - Oliver Gaida (@ogaida) -- Original implementation
+    - Lars Getwan (@lgetwan), with the help of Claude -- Modified version
 """
 
 EXAMPLES = r"""
