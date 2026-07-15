@@ -661,7 +661,32 @@ class RuleAPI(CheckmkAPI):
                 if not desired["rule"].get(what).get(key):
                     desired["rule"][what][key] = value
 
+        if self.version_select_str == "230_or_newer":
+            self._migrate_label_conditions(desired["rule"].get("conditions", {}))
+
         return desired
+
+    def _migrate_label_conditions(self, conditions):
+        # Checkmk >= 2.3 stores plain label conditions as label groups.
+        # Apply the same translation to the desired state, so that both
+        # comparing against and sending to the API use the migrated format.
+        for old_key, new_key in (
+            ("host_labels", "host_label_groups"),
+            ("service_labels", "service_label_groups"),
+        ):
+            labels = conditions.pop(old_key, None)
+            if not labels:
+                continue
+            label_group = [
+                {
+                    "operator": ("not" if label.get("operator") == "is_not" else "and"),
+                    "label": "%s:%s" % (label.get("key"), label.get("value")),
+                }
+                for label in labels
+            ]
+            if not conditions.get(new_key):
+                conditions[new_key] = []
+            conditions[new_key].append({"operator": "and", "label_group": label_group})
 
     def _raw_value_eval(self, state, data):
         value_raw = data.get("value_raw", "''")
