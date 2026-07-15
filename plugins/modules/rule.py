@@ -631,7 +631,8 @@ class RuleAPI(CheckmkAPI):
             )
 
     def rule_id_found(self):
-        return self.current is not None
+        # _get_rule_by_id returns an empty dict when the rule does not exist.
+        return bool(self.current)
 
     def _clean_desired(self, params):
         desired = {}
@@ -986,7 +987,7 @@ def run_module():
     )
 
     desired_state = module.params.get("state")
-    rule_id = module.params.get("rule_id")
+    rule_id = module.params.get("rule", {}).get("rule_id")
 
     if desired_state == "present":
         if current_rule.rule_id_found():
