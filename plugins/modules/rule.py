@@ -457,6 +457,15 @@ POSITION_MAPPING = {
 }
 
 
+def _tuples_to_lists(value):
+    # Only containers are converted; string contents are never touched.
+    if isinstance(value, (list, tuple)):
+        return [_tuples_to_lists(v) for v in value]
+    if isinstance(value, dict):
+        return {k: _tuples_to_lists(v) for k, v in value.items()}
+    return value
+
+
 class RuleHTTPCodes:
     # http_code: (changed, failed, "Message")
     get = {
@@ -657,19 +666,18 @@ class RuleAPI(CheckmkAPI):
     def _raw_value_eval(self, state, data):
         value_raw = data.get("value_raw", "''")
 
-        # This is an ugly hack that translates tuples into lists to have a better hit rate with
-        # idempotency.
-        # Once the internal handling of value_raw has improved, we will no longer need this.
-        value_raw = value_raw.translate(str.maketrans("()", "[]"))
-
         # As safely as possible evaluate the value_raw
         try:
-            return literal_eval(value_raw)
+            value = literal_eval(value_raw)
 
         except Exception as e:
             self.module.fail_json(
                 msg="ERROR: The %s value_raw has invalid format: %s" % (state, e)
             )
+
+        # Tuples and lists are interchangeable in rule values as far as
+        # change detection is concerned.
+        return _tuples_to_lists(value)
 
     def _get_rules_in_ruleset(self, ruleset):
         result = self._fetch(

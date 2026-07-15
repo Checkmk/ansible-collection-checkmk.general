@@ -1,2 +1,3 @@
 bugfixes:
   - rule module - Fail as documented when the provided ``rule_id`` does not exist, instead of reporting an unchanged success.
+  - rule module - Compare rule values structurally instead of rewriting parentheses to brackets, which silently ignored real changes to values containing parentheses or brackets inside strings.
