@@ -44,7 +44,28 @@
         state: present
       loop:
         - python311-rpm  # Actual dependency, needed before first role run
-      when: ansible_facts['os_family'] == 'Suse'
+      when: ansible_facts['os_family'] == 'Suse' and ansible_facts['distribution_major_version'] == '15'
+
+    # This seems Suse specific: https://support.scc.suse.com/s/kb/Ansible-fails-to-run-ansible-builtin-package-facts?language=en_US
+    - name: "Install prerequisites."
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - python313-rpm  # Actual dependency, needed before first role run
+        - procps  # Seems to be a missing dependency in Checkmk
+      when: ansible_facts['os_family'] == 'Suse' and ansible_facts['distribution_major_version'] == '16'
+
+    # This is systemd specific. `systemd-tmpfiles --create` should create `/run/lock/`, which does not trigger on a container.
+    # Currently only SLES 16 seems to be affected. Further reading: https://lwn.net/Articles/1041316/
+    - name: "Ensure /run/lock/ exists, as Checkmk relies on it."
+      ansible.builtin.file:
+        path: /run/lock
+        state: directory
+        mode: "0755"
+        owner: root
+        group: root
+      when: ansible_facts['os_family'] == 'Suse' and ansible_facts['distribution_major_version'] == '16'
 
     - name: "Download MKP."
       ansible.builtin.get_url:

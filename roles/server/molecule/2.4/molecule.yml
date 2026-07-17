@@ -68,6 +68,16 @@ platforms:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     systemd: always
+  - name: opensuse16
+    # image: docker.io/geerlingguy/docker-opensuseleap15-ansible
+    image: ghcr.io/x86-39/docker-opensuseleap16-ansible
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    pre_build_image: true
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns: host
+    systemd: always
 provisioner:
   name: ansible
   connection_options:
