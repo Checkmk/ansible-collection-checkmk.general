@@ -8,7 +8,7 @@
     disable_gpg_check: "{{ not checkmk_server_verify_setup | bool }}"
     force_resolution: true
     simple_errors: true
-  notify: Start httpd
+  notify: Start Apache
   tags:
     - install-package
 
