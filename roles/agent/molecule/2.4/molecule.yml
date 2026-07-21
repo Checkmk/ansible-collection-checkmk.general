@@ -68,7 +68,6 @@ platforms:
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    cgroupns: host
     systemd: always
 provisioner:
   name: ansible
