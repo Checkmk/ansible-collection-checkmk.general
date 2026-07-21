@@ -311,6 +311,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
+    normalize_folder,
     result_as_dict,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
@@ -366,7 +367,7 @@ class HostAPI(CheckmkAPI):
         self.extended_functionality = self.params.get("extended_functionality", True)
 
         if self.params.get("folder"):
-            self.params["folder"] = self._normalize_folder(self.params.get("folder"))
+            self.params["folder"] = normalize_folder(self.params.get("folder"))
 
         self.desired = {}
 
@@ -455,18 +456,6 @@ class HostAPI(CheckmkAPI):
                 self.module.exit_json(**result_as_dict(result))
             else:
                 self.module.warn(msg)
-
-    def _normalize_folder(self, folder):
-        if folder in ["", " ", "/", "//", "~"]:
-            return "/"
-
-        if not folder.startswith("/"):
-            folder = "/%s" % folder
-
-        if folder.endswith("/"):
-            folder = folder.rstrip("/")
-
-        return folder
 
     def _build_default_endpoint(self):
         return "%s/%s" % (
@@ -648,9 +637,7 @@ class HostAPI(CheckmkAPI):
                     if "network_scan_results" in value:
                         value.pop("network_scan_results")
                 self.current[key] = value
-            self.current["folder"] = self._normalize_folder(
-                self.current.get("folder", "/")
-            )
+            self.current["folder"] = normalize_folder(self.current.get("folder", "/"))
 
             self.etag = result.etag
 
@@ -692,7 +679,7 @@ class HostAPI(CheckmkAPI):
             data.pop("remove_attributes")
 
         if not data.get("folder"):
-            data["folder"] = self._normalize_folder("/")
+            data["folder"] = normalize_folder("/")
 
         if self.module.check_mode:
             return self._check_output("create")
