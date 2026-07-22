@@ -8,8 +8,8 @@
 # `__checkmk_var_{legacy,modern}_edition_mapping` (community, pro, ultimate,
 # ultimatemt). CI matrix values like `raw`/`managed` are download-URL ids
 # and only work in CI, where the install block is skipped by the probe.
-checkmk_var_version: "2.4.0p29"
-checkmk_var_edition: "community"
+checkmk_var_version: "2.5.0p9"
+checkmk_var_edition: "ultimatemt"
 
 # REST API endpoint + credentials for the central testsite. Hardcoded
 # port 5000 matches the CI service container and the local --docker install.

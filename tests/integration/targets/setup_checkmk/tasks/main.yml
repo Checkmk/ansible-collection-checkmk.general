@@ -1,5 +1,5 @@
 ---
-- name: "Probe whether central sites are already responding."
+- name: "Probe whether the central site is already responding."
   ansible.builtin.uri:
     url: "http://127.0.0.1:{{ item.port | default('5000') }}/{{ item.site }}"
     validate_certs: false
@@ -12,12 +12,25 @@
   changed_when: false
   loop: "{{ checkmk_var_test_sites }}"
 
+- name: "Probe whether the remote site is already responding."
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:5001/{{ item.1.site_config.basic_settings.site_id }}"  # Hardcoded ip:port for local testing
+    validate_certs: false
+    status_code:
+      - 200
+      - 301
+      - 302
+  register: __checkmk_var_remote_site_probe
+  failed_when: false
+  changed_when: false
+  loop: "{{ checkmk_var_test_sites | subelements('remote_sites', skip_missing=True) }}"
+
 - name: "Install and create Checkmk sites."
   when: >-
-    (__checkmk_var_central_site_probe.results
-     | map(attribute='status', default=-1)
-     | select('in', [200, 301, 302])
-     | list | length) < (checkmk_var_test_sites | length)
+    (__checkmk_var_central_site_probe.results + __checkmk_var_remote_site_probe.results)
+    | map(attribute='status', default=-1)
+    | reject('in', [200, 301, 302])
+    | list | length > 0
   block:
     - name: "Install dependencies."
       ansible.builtin.package:
