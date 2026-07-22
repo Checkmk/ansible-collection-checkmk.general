@@ -22,7 +22,7 @@ checkmk.general.password module -- Manage passwords in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -739,6 +739,17 @@ Parameters
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.user <ansible_collections.checkmk.general.user_module>`
+       Manage users in Checkmk.
+   :ref:`checkmk.general.rule <ansible_collections.checkmk.general.rule_module>`
+       Manage rules in Checkmk.
+   `Password store: The official user guide. <https://docs.checkmk.com/latest/en/password_store.html>`_
+       The official user guide on the Checkmk password store.
 
 .. Examples
 
@@ -763,7 +774,7 @@ Examples
         title: "My Password"
         comment: "Managed by Ansible"
         password: "topsecret"
-        owner: "admin"
+        editable_by: "admin"
         shared:
           - "all"
         state: "present"
@@ -781,7 +792,7 @@ Examples
         comment: "Managed by Ansible"
         documentation_url: "https://docs.example.com/mypassword"
         password: "topsecret"
-        owner: "admin"
+        editable_by: "admin"
         shared:
           - "all"
         state: "present"

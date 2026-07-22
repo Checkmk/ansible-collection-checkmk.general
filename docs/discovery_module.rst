@@ -22,7 +22,7 @@ checkmk.general.discovery module -- Discover services in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -801,8 +801,16 @@ See Also
 
 .. seealso::
 
+   :ref:`checkmk.general.activation <ansible_collections.checkmk.general.activation_module>`
+       Activate changes in Checkmk.
    :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
        Manage hosts in Checkmk.
+   :ref:`checkmk.general.rule <ansible_collections.checkmk.general.rule_module>`
+       Manage rules in Checkmk.
+   :ref:`checkmk.general.service\_group <ansible_collections.checkmk.general.service_group_module>`
+       Manage service groups in Checkmk (bulk version).
+   `Configuring services in Checkmk: The official user guide. <https://docs.checkmk.com/latest/en/wato_services.html>`_
+       The official user guide on discovering and configuring services.
 
 .. Examples
 
