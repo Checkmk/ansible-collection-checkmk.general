@@ -3,6 +3,7 @@
   ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"
   tags:
     - include-os-family-tasks
+    - always
 
 - name: "{{ ansible_facts['system'] }}: Ensure Host Folder is present."
   checkmk.general.folder:
@@ -17,6 +18,8 @@
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_folder_create | bool and checkmk_agent_add_host | bool
   notify: "Activate changes"
+  tags:
+    - manage-host
 
 - name: "{{ ansible_facts['system'] }}: Ensure Host is present in the correct Folder."
   checkmk.general.host:
@@ -33,6 +36,8 @@
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_add_host | bool
   notify: "Activate changes"
+  tags:
+    - manage-host
 
 - name: "{{ ansible_facts['system'] }}: Update Host Attributes."
   checkmk.general.host:
@@ -49,6 +54,8 @@
   delegate_to: "{{ checkmk_agent_delegate_api_calls }}"
   when: checkmk_agent_add_host | bool
   notify: "Activate changes"
+  tags:
+    - manage-host
 
 - name: "Ensure registration readiness."  # noqa no-handler
   when:
@@ -57,16 +64,22 @@
   block:
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers
+  tags:
+    - register-agent
 
 - name: "{{ ansible_facts['system'] }}: Check for Agent Controller Binary."
   ansible.windows.win_stat:
     path: "{{ __checkmk_agent_controller_binary_path }}"
   register: __checkmk_agent_controller_binary
+  tags:
+    - register-agent
 
 - name: "{{ ansible_facts['system'] }}: Check for Agent Binary."
   ansible.windows.win_stat:
     path: "{{ __checkmk_agent_binary_path }}"
   register: __checkmk_agent_binary
+  tags:
+    - register-agent
 
 - name: "{{ ansible_facts['system'] }}: Read Updater State."
   ansible.windows.win_command: powershell.exe -
@@ -74,6 +87,8 @@
     stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\config\cmk-update-agent.state ; Exit 0
   register: __checkmk_agent_updater_state
   changed_when: false
+  tags:
+    - register-agent
 
 - name: "{{ ansible_facts['system'] }}: Read Agent Controller State."
   ansible.windows.win_command: powershell.exe -
@@ -81,6 +96,8 @@
     stdin: Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\registered_connections.json ; Exit 0
   register: __checkmk_agent_registered_connections
   changed_when: false
+  tags:
+    - register-agent
 
 - name: "{{ ansible_facts['system'] }}: Register Agent for automatic Updates using User Password."
   ansible.windows.win_command: |
@@ -100,6 +117,8 @@
     and not (('\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout)
     and ('\'last_error\': None' in __checkmk_agent_updater_state.stdout))
   changed_when: "'Successfully registered agent of host' in __checkmk_agent_update_state.stderr"
+  tags:
+    - register-agent
 
 - name: "{{ ansible_facts['system'] }}: Register Agent for automatic Updates using Automation Secret."
   ansible.windows.win_command: |
@@ -118,6 +137,8 @@
     and not (('\'server\': \'' + checkmk_agent_registration_server + '\', \'site\': \'' + checkmk_agent_registration_site + '\'' in __checkmk_agent_updater_state.stdout)
     and ('\'last_error\': None' in __checkmk_agent_updater_state.stdout))
   changed_when: "'Successfully registered agent of host' in __checkmk_agent_update_state.stderr"
+  tags:
+    - register-agent
 
 - name: "{{ ansible_facts['system'] }}: Register Agent for TLS."
   ansible.windows.win_command: |
@@ -134,14 +155,20 @@
     and (__checkmk_agent_auth is defined and __checkmk_agent_auth | length > 0)
     and not checkmk_agent_registration_server + '/' + checkmk_agent_registration_site in __checkmk_agent_registered_connections.stdout
   changed_when: "'Registration complete' in __checkmk_agent_tls_state.stdout"
+  tags:
+    - register-agent
 
 - name: "{{ ansible_facts['system'] }}: Verify Checkmk Agent Port is open."
   ansible.windows.win_wait_for:
     port: "{{ checkmk_agent_port }}"
     timeout: 60
   when: checkmk_agent_mode == 'pull'
+  tags:
+    - register-agent
 
 - name: "{{ ansible_facts['system'] }}: Initial push of data for push agent."  # noqa no-changed-when
   become: true
   ansible.windows.win_command: cmk-agent-ctl.exe push
   when: checkmk_agent_mode == 'push'
+  tags:
+    - register-agent

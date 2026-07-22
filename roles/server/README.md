@@ -200,21 +200,25 @@ Configure the host to which Checkmk GPG Key downloads are delegated to. After do
 Tasks are tagged with the following tags:
 | Tag | Purpose |
 | ---- | ------- |
+| `always` | Preflight checks that must always run, regardless of the tags selected. |
 | `download-package` | Download server package. |
 | `install-package` | Install server package with package manager. |
 | `install-prerequisites` | Install packages that are required for the role or server to work. |
 | `download-gpg-key` | Download Checkmk GPG key for verifying the package. |
 | `import-gpg-key` | Import the downloaded Checkmk GPG key for verifying the package. |
 | `include-os-family-vars` | Include OS family specific variables. |
-| `include-rhel-version-vars` | Include RHEL version specific variables. |
 | `set-selinux-boolean` | Set necessary SELinux booleans for Checkmk to work on SELinux enabled systems. |
 | `enable-repos` | Enable the required external repositories on RHEL based systems. Powertools on RHEL 7 and CentOS 8. CRB and EPEL on RHEL 8. |
-| `checkmk_server_epel_gpg_check` | Download and use GPG key verification for EPEL repository. |
+| `configure-firewall` | Configure the firewall to allow access to the Checkmk server. |
 | `create-sites` | Create sites on the Checkmk server. |
 | `update-sites` | Update sites on the Checkmk server. |
+| `configure-sites` | Apply OMD configuration to sites. |
 | `start-sites` | Start sites on the Checkmk server. |
 | `stop-sites` | Stop sites on the Checkmk server. |
+| `enable-sites` | Enable sites on the Checkmk server. |
+| `disable-sites` | Disable sites on the Checkmk server. |
 | `destroy-sites` | Destroy sites on the Checkmk server. |
+| `manage-mkp-packages` | Download, install, enable, disable or remove MKP packages on sites. |
 | `set-site-admin-pw` | Set the cmkadmin password of a site. |
 | `update-pause` | Pause with a warning when updating a site. |
 | `cleanup` | Clean up old Checkmk versions. |

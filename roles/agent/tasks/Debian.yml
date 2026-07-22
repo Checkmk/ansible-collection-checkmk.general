@@ -43,3 +43,5 @@
     port: "{{ checkmk_agent_port }}"
     comment: "Allow Checkmk Agent access from anywhere."
   become: true
+  tags:
+    - configure-firewall

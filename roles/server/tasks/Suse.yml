@@ -29,6 +29,8 @@
     state: started
     enabled: true
   when: checkmk_server_configure_firewall | bool
+  tags:
+    - configure-firewall
 
 - name: "{{ ansible_facts['os_family'] }} Derivatives: Open Firewall Ports for the Checkmk Server."
   when: checkmk_server_configure_firewall | bool and "firewalld.service" in ansible_facts['services']
@@ -39,3 +41,5 @@
     state: "enabled"
   become: true
   loop: "{{ checkmk_server_ports }}"
+  tags:
+    - configure-firewall

@@ -212,13 +212,18 @@ This setting can be used to increase the timeout in seconds for downloading the 
 Tasks are tagged with the following tags:
 | Tag | Purpose |
 | ---- | ------- |
+| `always` | Preflight checks that must always run, regardless of the tags selected. |
 | `download-package` | Download agent package. |
 | `install-package` | Install agent package with package manager. |
 | `install-prerequisites` | Install packages that are required for the role or agent to work. |
 | `include-os-family-vars` | Include OS family specific variables. |
 | `include-os-family-tasks` | Include OS family specific tasks. |
+| `include-system-tasks` | Include agent package download tasks and OS specific tasks. |
 | `get-package-facts` | Get package facts, used in the role. |
 | `enable-xinetd` | Enable xinetd on hosts with systemd prior to version 220. |
+| `configure-firewall` | Configure the firewall to allow access to the Checkmk agent. |
+| `manage-host` | Create or update the host object and its attributes on the Checkmk server. |
+| `register-agent` | Register the agent for updates and/or TLS with the Checkmk server. |
 
 You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
 

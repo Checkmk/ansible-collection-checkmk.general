@@ -1,0 +1,3 @@
+minor_changes:
+  - Agent role - Add missing tags to several tasks and fix consistency issues.
+  - Server role - Add missing tags to several tasks and fix consistency issues.
