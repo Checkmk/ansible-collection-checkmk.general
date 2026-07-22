@@ -16,13 +16,13 @@
 
 .. Title
 
-checkmk.general.checkmk inventory -- Dynamic Inventory Source or Checkmk
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.checkmk inventory -- Dynamic Inventory Source for Checkmk
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
 .. note::
-    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
+    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -46,7 +46,7 @@ Synopsis
 
 .. Description
 
-- Get hosts from any checkmk site.
+- Get hosts from any Checkmk site.
 - Generate groups based on tag groups or sites in Checkmk.
 
 
@@ -307,6 +307,153 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-domain_map"></div>
+
+      .. _ansible_collections.checkmk.general.checkmk_inventory__parameter-domain_map:
+
+      .. rst-class:: ansible-option-title
+
+      **domain_map**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-domain_map" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`dictionary`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      A mapping of full Checkmk tag strings to domain suffixes.
+
+      For each host, the keys of this map are checked in order against the host's tags.
+
+      The suffix of the first matching entry is appended to the hostname.
+
+      If no tag matches, the hostname is used as\-is.
+
+      Keys must be in the full Checkmk format :literal:`tag\_\<group\>\_\<value\>`\ , e.g. :literal:`tag\_criticality\_prod`.
+
+      Values are the domain suffixes to append, e.g. :literal:`.example.com`.
+
+      Unlike the other filtering options, this cannot be set via an environment variable.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-exclude_tags"></div>
+
+      .. _ansible_collections.checkmk.general.checkmk_inventory__parameter-exclude_tags:
+
+      .. rst-class:: ansible-option-title
+
+      **exclude_tags**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-exclude_tags" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      List of host tags to exclude from the inventory.
+
+      Any host that has at least one of the given tags set will be excluded.
+
+      Tags must be given in the full Checkmk format :literal:`tag\_\<group\>\_\<value\>`\ , e.g. :literal:`tag\_criticality\_test` or :literal:`tag\_agent\_cmk\-agent`.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_EXCLUDE\_TAGS`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-folder"></div>
+
+      .. _ansible_collections.checkmk.general.checkmk_inventory__parameter-folder:
+
+      .. rst-class:: ansible-option-title
+
+      **folder**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-folder" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Restrict hosts to a specific folder path in Checkmk.
+
+      Given as a regular path, e.g. :literal:`/linux/production`.
+
+      Unless :literal:`recursive` is enabled, only hosts directly in the given folder are returned.
+
+      All hosts are always fetched from the site and filtered on the client side, so this does not reduce the amount of data retrieved from Checkmk.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_FOLDER`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-groupsources"></div>
 
       .. _ansible_collections.checkmk.general.checkmk_inventory__parameter-groupsources:
@@ -334,9 +481,61 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      List of sources for grouping
+      List of sources for grouping.
 
-      Possible sources are :literal:`sites` and :literal:`hosttags`
+      Possible sources are :literal:`sites` and :literal:`hosttags`.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-lowercase_hosts"></div>
+
+      .. _ansible_collections.checkmk.general.checkmk_inventory__parameter-lowercase_hosts:
+
+      .. rst-class:: ansible-option-title
+
+      **lowercase_hosts**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-lowercase_hosts" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      If set to :literal:`true`\ , all hostnames will be converted to lowercase in the inventory.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_LOWERCASE\_HOSTS`
 
 
       .. raw:: html
@@ -381,6 +580,60 @@ Parameters
       :ansible-option-choices:`Choices:`
 
       - :ansible-option-choices-entry:`"checkmk.general.checkmk"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-recursive"></div>
+
+      .. _ansible_collections.checkmk.general.checkmk_inventory__parameter-recursive:
+
+      .. rst-class:: ansible-option-title
+
+      **recursive**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-recursive" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      If set to :literal:`true` and a :literal:`folder` is defined, all subfolders are included recursively.
+
+      Has no effect without :literal:`folder`.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-configuration:`Configuration:`
+
+      - Environment variable: :envvar:`CHECKMK\_VAR\_RECURSIVE`
 
 
       .. raw:: html
@@ -587,7 +840,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Update ansible\_host variable with ip address from Checkmk
+      Update ansible\_host variable with ip address from Checkmk.
 
 
       .. rst-class:: ansible-option-line
@@ -620,6 +873,7 @@ Notes
 
 .. note::
    - Because inventory plugins run before :literal:`group\_vars/` and :literal:`host\_vars/` are loaded, :literal:`checkmk\_var\_\*` values placed there are :strong:`not` visible to this plugin. Sources that :strong:`do` work are extra\-vars (\ :literal:`\-e`\ ), environment variables (\ :literal:`CHECKMK\_VAR\_\*`\ ) and :literal:`ansible.cfg` :literal:`[checkmk\_lookup]` entries.
+   - The :literal:`lowercase\_hosts` and :literal:`domain\_map` options change hostnames. If a transformation maps two different Checkmk hosts to the same name, they are merged into a single inventory host, so make sure transformed names stay unique.
    - Connection parameters are resolved from (in order of precedence) the value set directly on the plugin invocation, an Ansible variable of the form :literal:`checkmk\_var\_\*`\ , an environment variable of the form :literal:`CHECKMK\_VAR\_\*`\ , and the matching key under section :literal:`[checkmk\_lookup]` in :literal:`ansible.cfg`.
 
 .. Seealso
@@ -636,24 +890,48 @@ Examples
     # one of the example blocks below and use it as your inventory source.
     # E.g., with `ansible-inventory -i checkmk.yml --graph`.
 
-    # Group all hosts based on both tag groups and sites:
+    # Group all hosts based on both tag groups and sites
+    # and update ansible_host with the ip address from Checkmk:
     plugin: checkmk.general.checkmk
-    server_url: "http://hostname/"
-    site: "sitename"
-    api_user: "cmkadmin"
-    api_secret: "******"
-    validate_certs: false
+    server_url: "http://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
     groupsources: ["hosttags", "sites"]
-    want_ipv4: False
+    want_ipv4: true
+
+    # The connection options are omitted in the following examples for brevity.
+    # They can be set as shown above or via environment variables (see below).
+
+    # Exclude test and offline systems from the inventory:
+    plugin: checkmk.general.checkmk
+    exclude_tags:
+      - tag_criticality_test
+      - tag_criticality_offline
+
+    # Only hosts in a specific folder and its subfolders:
+    plugin: checkmk.general.checkmk
+    folder: "/linux"
+    recursive: true
+
+    # Build lowercase FQDNs by appending a domain suffix based on host tags:
+    plugin: checkmk.general.checkmk
+    lowercase_hosts: true
+    domain_map:
+      tag_criticality_prod: ".example.com"
+      tag_criticality_test: ".test.example.com"
 
     # ---------------------------------------------------------------------------
-    # Using environment variables for credentials
+    # Using environment variables
     # ---------------------------------------------------------------------------
-    # Connection parameters can be provided via environment variables instead of
-    # writing them into the inventory file. The supported variables are:
+    # Connection parameters and the filtering options can be provided via
+    # environment variables instead of writing them into the inventory file.
+    # The supported variables are:
     #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
     #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
-    #   CHECKMK_VAR_VALIDATE_CERTS, CHECKMK_VAR_API_AUTH_TYPE
+    #   CHECKMK_VAR_VALIDATE_CERTS, CHECKMK_VAR_API_AUTH_TYPE,
+    #   CHECKMK_VAR_FOLDER, CHECKMK_VAR_RECURSIVE,
+    #   CHECKMK_VAR_EXCLUDE_TAGS (comma-separated), CHECKMK_VAR_LOWERCASE_HOSTS
 
     # Minimal inventory file when using environment variables:
     plugin: checkmk.general.checkmk
@@ -687,6 +965,8 @@ Authors
 ~~~~~~~
 
 - Max Sickora (@max-checkmk)
+- JDog1895 (@JDog1895)
+- Robin Gierse (@robin-checkmk)
 
 
 .. Extra links

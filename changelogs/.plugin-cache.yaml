@@ -18,7 +18,7 @@ plugins:
   httpapi: {}
   inventory:
     checkmk:
-      description: Dynamic Inventory Source or Checkmk
+      description: Dynamic Inventory Source for Checkmk
       name: checkmk
       version_added: null
   lookup:
@@ -200,4 +200,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 8.1.0
+version: 8.2.0

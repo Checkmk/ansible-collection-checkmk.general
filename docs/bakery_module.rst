@@ -22,7 +22,7 @@ checkmk.general.bakery module -- Trigger baking and signing in the agent bakery
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -544,6 +544,16 @@ See Also
 
    :ref:`checkmk.general.bakery <ansible_collections.checkmk.general.bakery_lookup>` lookup plugin
        Get the bakery status of a Checkmk server.
+   :ref:`checkmk.general.activation <ansible_collections.checkmk.general.activation_module>`
+       Activate changes in Checkmk.
+   :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
+       Manage hosts in Checkmk.
+   :ref:`checkmk.general.rule <ansible_collections.checkmk.general.rule_module>`
+       Manage rules in Checkmk.
+   `The Agent Bakery in Checkmk: The official user guide. <https://docs.checkmk.com/latest/en/wato_monitoringagents.html#bakery>`_
+       The official user guide on the agent bakery.
+   `Automatic Agent Updates in Checkmk: The official user guide. <https://docs.checkmk.com/latest/en/agent_deployment.html>`_
+       The official user guide on automatic agent updates.
 
 .. Examples
 

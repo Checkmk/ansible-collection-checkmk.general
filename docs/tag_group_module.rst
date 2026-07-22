@@ -22,7 +22,7 @@ checkmk.general.tag_group module -- Manage tag groups in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -845,6 +845,8 @@ See Also
        Manage folders in Checkmk.
    :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
        Manage hosts in Checkmk.
+   `Configuring tag groups in Checkmk: The official user guide. <https://docs.checkmk.com/latest/en/host_tags.html>`_
+       The official user guide on managing tag groups.
 
 .. Examples
 

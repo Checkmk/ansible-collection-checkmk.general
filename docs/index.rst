@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 8.1.0
+Collection version 8.2.0
 
 .. contents::
    :local:
@@ -107,7 +107,7 @@ Modules
 Inventory Plugins
 ~~~~~~~~~~~~~~~~~
 
-* :ansplugin:`checkmk inventory <checkmk.general.checkmk#inventory>` -- Dynamic Inventory Source or Checkmk
+* :ansplugin:`checkmk inventory <checkmk.general.checkmk#inventory>` -- Dynamic Inventory Source for Checkmk
 
 .. toctree::
     :maxdepth: 1
