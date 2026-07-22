@@ -52,6 +52,9 @@ seealso:
       plugin_type: lookup
     - plugin: checkmk.general.activations
       plugin_type: lookup
+    - name: "Activating changes in Checkmk: The official user guide."
+      description: "The official user guide on activating changes."
+      link: "https://docs.checkmk.com/latest/en/wato.html#activate_changes"
 
 author:
     - Robin Gierse (@robin-checkmk)

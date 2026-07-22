@@ -75,6 +75,13 @@ options:
         choices: ["present", "absent"]
         type: str
 
+seealso:
+    - module: checkmk.general.user
+    - module: checkmk.general.rule
+    - name: "Password store: The official user guide."
+      description: "The official user guide on the Checkmk password store."
+      link: "https://docs.checkmk.com/latest/en/password_store.html"
+
 author:
     - Max Sickora (@max-checkmk)
 """
