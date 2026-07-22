@@ -167,6 +167,8 @@
   loop_control:
     label: "{{ __site.name }}"
     loop_var: __site
+  tags:
+    - manage-mkp-packages
   when: __site.mkp_packages is defined
 
 - name: "Update Site Admin Password for Checkmk < 2.1."
