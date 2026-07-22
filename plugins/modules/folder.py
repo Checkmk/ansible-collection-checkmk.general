@@ -85,6 +85,10 @@ seealso:
     - plugin: checkmk.general.folders
       plugin_type: lookup
     - module: checkmk.general.host
+    - module: checkmk.general.activation
+    - name: "Configuring folders in Checkmk: The official user guide."
+      description: "The official user guide on managing hosts and folders."
+      link: "https://docs.checkmk.com/latest/en/hosts_setup.html"
 
 author:
     - Robin Gierse (@robin-checkmk)

@@ -54,6 +54,7 @@ options:
 
 seealso:
     - module: checkmk.general.host
+    - module: checkmk.general.activation
 
 author:
     - Michael Sekania (@msekania)

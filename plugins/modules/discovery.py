@@ -84,13 +84,18 @@ options:
         type: int
         default: -1
 
-
 notes:
     - When using C(hosts) (bulk mode), hosts are processed in batches controlled by C(bulk_size).
       A larger C(bulk_size) is faster but may put more load on the Checkmk server.
 
 seealso:
+    - module: checkmk.general.activation
     - module: checkmk.general.host
+    - module: checkmk.general.rule
+    - module: checkmk.general.service_group
+    - name: "Configuring services in Checkmk: The official user guide."
+      description: "The official user guide on discovering and configuring services."
+      link: "https://docs.checkmk.com/latest/en/wato_services.html"
 
 author:
     - Robin Gierse (@robin-checkmk)

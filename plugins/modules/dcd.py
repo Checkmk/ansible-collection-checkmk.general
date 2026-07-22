@@ -131,6 +131,14 @@ notes:
   If a DCD with the same C(dcd_id) already exists but differs from the desired state,
   the module will fail.
 
+seealso:
+    - module: checkmk.general.host
+    - module: checkmk.general.folder
+    - module: checkmk.general.site
+    - name: "Dynamic host management: The official user guide."
+      description: "The official user guide on the Dynamic Host Management (DCD)."
+      link: "https://docs.checkmk.com/latest/en/dcd.html"
+
 author:
 - Lars Getwan (@lgetwan)
 """

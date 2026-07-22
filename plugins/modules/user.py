@@ -156,8 +156,13 @@ options:
         choices: ["present", "absent", "reset_password"]
 
 seealso:
+    - module: checkmk.general.activation
     - module: checkmk.general.contact_group
     - module: checkmk.general.ldap
+    - module: checkmk.general.password
+    - name: "Users in Checkmk: The official user guide."
+      description: "The official user guide on users."
+      link: "https://docs.checkmk.com/latest/en/wato_user.html"
 
 author:
     - Lars Getwan (@lgetwan)

@@ -94,6 +94,15 @@ notes:
       If this combination already exists as a downtime, the new downtime will not be created except using the B(force) argument.
       The creation of service downtimes works accordingly, with hostname, service description and comment.
 
+seealso:
+    - module: checkmk.general.activation
+    - module: checkmk.general.host
+    - module: checkmk.general.rule
+    - module: checkmk.general.timeperiod
+    - name: "Scheduling downtimes in Checkmk: The official user guide."
+      description: "The official user guide on scheduling downtimes."
+      link: "https://docs.checkmk.com/latest/en/basics_downtimes.html"
+
 author:
     - Oliver Gaida (@ogaida)
     - Lars Getwan (@lgetwan)
