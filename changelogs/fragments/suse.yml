@@ -1,0 +1,3 @@
+minor_changes:
+  - Server role - Add support for SLES 16.
+  - Server role - Switch web server handler from ``httpd` to ``Apache2`` for SLES 16.

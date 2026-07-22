@@ -51,6 +51,15 @@ notes:
 seealso:
     - plugin: checkmk.general.bakery
       plugin_type: lookup
+    - module: checkmk.general.activation
+    - module: checkmk.general.host
+    - module: checkmk.general.rule
+    - name: "The Agent Bakery in Checkmk: The official user guide."
+      description: "The official user guide on the agent bakery."
+      link: "https://docs.checkmk.com/latest/en/wato_monitoringagents.html#bakery"
+    - name: "Automatic Agent Updates in Checkmk: The official user guide."
+      description: "The official user guide on automatic agent updates."
+      link: "https://docs.checkmk.com/latest/en/agent_deployment.html"
 
 author:
     - Max Sickora (@max-checkmk)

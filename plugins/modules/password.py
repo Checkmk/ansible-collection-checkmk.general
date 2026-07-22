@@ -75,6 +75,13 @@ options:
         choices: ["present", "absent"]
         type: str
 
+seealso:
+    - module: checkmk.general.user
+    - module: checkmk.general.rule
+    - name: "Password store: The official user guide."
+      description: "The official user guide on the Checkmk password store."
+      link: "https://docs.checkmk.com/latest/en/password_store.html"
+
 author:
     - Max Sickora (@max-checkmk)
 """
@@ -96,7 +103,7 @@ EXAMPLES = r"""
     title: "My Password"
     comment: "Managed by Ansible"
     password: "topsecret"
-    owner: "admin"
+    editable_by: "admin"
     shared:
       - "all"
     state: "present"
@@ -114,7 +121,7 @@ EXAMPLES = r"""
     comment: "Managed by Ansible"
     documentation_url: "https://docs.example.com/mypassword"
     password: "topsecret"
-    owner: "admin"
+    editable_by: "admin"
     shared:
       - "all"
     state: "present"

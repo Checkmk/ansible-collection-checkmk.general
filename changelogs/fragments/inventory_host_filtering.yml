@@ -1,0 +1,5 @@
+minor_changes:
+  - Inventory plugin - Add ``folder`` and ``recursive`` options to restrict the inventory to a Checkmk folder and optionally its subfolders.
+  - Inventory plugin - Add ``exclude_tags`` option to exclude hosts with certain tags from the inventory.
+  - Inventory plugin - Add ``lowercase_hosts`` option to convert hostnames to lowercase.
+  - Inventory plugin - Add ``domain_map`` option to append a domain suffix to hostnames based on host tags.

@@ -87,6 +87,9 @@ seealso:
     - module: checkmk.general.aux_tag
     - module: checkmk.general.folder
     - module: checkmk.general.host
+    - name: "Configuring tag groups in Checkmk: The official user guide."
+      description: "The official user guide on managing tag groups."
+      link: "https://docs.checkmk.com/latest/en/host_tags.html"
 
 author:
     - Max Sickora (@Max-checkmk)

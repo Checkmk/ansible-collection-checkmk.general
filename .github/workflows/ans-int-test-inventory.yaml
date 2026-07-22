@@ -1,8 +1,9 @@
+---
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Lookup Module Rulesets Integration
+name: Inventory Plugin Integration
 
 permissions:
   contents: read
@@ -18,16 +19,14 @@ on:
     types:
       - opened
     paths:
-      - 'plugins/lookup/ruleset.py'
-      - 'plugins/lookup/rulesets.py'
+      - 'plugins/inventory/checkmk.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-lkp-rulesets.yaml'
-      - 'plugins/lookup/ruleset.py'
-      - 'plugins/lookup/rulesets.py'
+      - '.github/workflows/ans-int-test-inventory.yaml'
+      - 'plugins/inventory/checkmk.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/files/includes/**'
-      - 'tests/integration/targets/lookup_rulesets/**'
+      - 'tests/integration/targets/inventory/**'
 
 jobs:
 
@@ -35,7 +34,7 @@ jobs:
     name: "${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
     uses: ./.github/workflows/_template-ans-int-test.yaml
     with:
-      module: lookup_rulesets
+      module: inventory
       checkmk_version: ${{ matrix.checkmk_version }}
       checkmk_edition: ${{ matrix.checkmk_edition }}
     strategy:

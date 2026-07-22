@@ -61,6 +61,9 @@ seealso:
     - module: checkmk.general.user
     - module: checkmk.general.host
     - module: checkmk.general.notification
+    - name: "Contact groups in Checkmk: The official user guide."
+      description: "The official user guide on contact groups."
+      link: "https://docs.checkmk.com/latest/en/intro_users.html#contact_groups"
 
 author:
     - Michael Sekania (@msekania)
