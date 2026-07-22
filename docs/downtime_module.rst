@@ -22,7 +22,7 @@ checkmk.general.downtime module -- Manage downtimes in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -807,6 +807,21 @@ Notes
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.activation <ansible_collections.checkmk.general.activation_module>`
+       Activate changes in Checkmk.
+   :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
+       Manage hosts in Checkmk.
+   :ref:`checkmk.general.rule <ansible_collections.checkmk.general.rule_module>`
+       Manage rules in Checkmk.
+   :ref:`checkmk.general.timeperiod <ansible_collections.checkmk.general.timeperiod_module>`
+       Manage time periods in Checkmk.
+   `Scheduling downtimes in Checkmk: The official user guide. <https://docs.checkmk.com/latest/en/basics_downtimes.html>`_
+       The official user guide on scheduling downtimes.
 
 .. Examples
 

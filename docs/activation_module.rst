@@ -22,7 +22,7 @@ checkmk.general.activation module -- Activate changes in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -556,6 +556,8 @@ See Also
        Get the status of a single activation.
    :ref:`checkmk.general.activations <ansible_collections.checkmk.general.activations_lookup>` lookup plugin
        Get all activations.
+   `Activating changes in Checkmk: The official user guide. <https://docs.checkmk.com/latest/en/wato.html#activate_changes>`_
+       The official user guide on activating changes.
 
 .. Examples
 

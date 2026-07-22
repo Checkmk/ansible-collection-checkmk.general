@@ -4,6 +4,24 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v8.2.0
+======
+
+Release Summary
+---------------
+
+Inventories and Chameleons.
+
+Minor Changes
+-------------
+
+- Inventory plugin - Add ``domain_map`` option to append a domain suffix to hostnames based on host tags.
+- Inventory plugin - Add ``exclude_tags`` option to exclude hosts with certain tags from the inventory.
+- Inventory plugin - Add ``folder`` and ``recursive`` options to restrict the inventory to a Checkmk folder and optionally its subfolders.
+- Inventory plugin - Add ``lowercase_hosts`` option to convert hostnames to lowercase.
+- Server role - Add support for SLES 16.
+- Server role - Switch web server handler from ``httpd` to ``Apache2`` for SLES 16.
+
 v8.1.0
 ======
 

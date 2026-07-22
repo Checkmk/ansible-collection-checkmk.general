@@ -22,7 +22,7 @@ checkmk.general.contact_group module -- Manage contact groups in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -612,6 +612,8 @@ See Also
        Manage hosts in Checkmk.
    :ref:`checkmk.general.notification <ansible_collections.checkmk.general.notification_module>`
        Manage notification rules in Checkmk.
+   `Contact groups in Checkmk: The official user guide. <https://docs.checkmk.com/latest/en/intro_users.html#contact_groups>`_
+       The official user guide on contact groups.
 
 .. Examples
 

@@ -22,7 +22,7 @@ checkmk.general.dcd module -- Manage Dynamic Host Management
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -1264,6 +1264,19 @@ Notes
 
 .. Seealso
 
+See Also
+--------
+
+.. seealso::
+
+   :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
+       Manage hosts in Checkmk.
+   :ref:`checkmk.general.folder <ansible_collections.checkmk.general.folder_module>`
+       Manage folders in Checkmk.
+   :ref:`checkmk.general.site <ansible_collections.checkmk.general.site_module>`
+       Manage distributed monitoring in Checkmk.
+   `Dynamic host management: The official user guide. <https://docs.checkmk.com/latest/en/dcd.html>`_
+       The official user guide on the Dynamic Host Management (DCD).
 
 .. Examples
 

@@ -22,7 +22,7 @@ checkmk.general.folder module -- Manage folders in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -688,6 +688,10 @@ See Also
        Get various information about a folder.
    :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
        Manage hosts in Checkmk.
+   :ref:`checkmk.general.activation <ansible_collections.checkmk.general.activation_module>`
+       Activate changes in Checkmk.
+   `Configuring folders in Checkmk: The official user guide. <https://docs.checkmk.com/latest/en/hosts_setup.html>`_
+       The official user guide on managing hosts and folders.
 
 .. Examples
 

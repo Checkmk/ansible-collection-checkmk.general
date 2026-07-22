@@ -22,7 +22,7 @@ checkmk.general.user module -- Manage users in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.1.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -1360,10 +1360,16 @@ See Also
 
 .. seealso::
 
+   :ref:`checkmk.general.activation <ansible_collections.checkmk.general.activation_module>`
+       Activate changes in Checkmk.
    :ref:`checkmk.general.contact\_group <ansible_collections.checkmk.general.contact_group_module>`
        Manage contact groups in Checkmk.
    :ref:`checkmk.general.ldap <ansible_collections.checkmk.general.ldap_module>`
        Manage LDAP connections.
+   :ref:`checkmk.general.password <ansible_collections.checkmk.general.password_module>`
+       Manage passwords in Checkmk.
+   `Users in Checkmk: The official user guide. <https://docs.checkmk.com/latest/en/wato_user.html>`_
+       The official user guide on users.
 
 .. Examples
 
