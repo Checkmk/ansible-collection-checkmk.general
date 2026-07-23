@@ -10,6 +10,8 @@
   ansible.builtin.shell: |
     set -o pipefail
     omd -V {{ item.version }}.{{ __checkmk_var_edition_id | lower }} create {{ item.name }}
+    {% if item.uid is defined %} --uid {{ item.uid }}{% endif %}
+    {% if item.gid is defined %} --gid {{ item.gid }}{% endif %}
   args:
     executable: /bin/bash
     creates: "/omd/sites/{{ item.name }}"
