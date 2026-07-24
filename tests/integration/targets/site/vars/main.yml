@@ -35,7 +35,22 @@ checkmk_var_test_sites:
             url_prefix: "/testsite_r_1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://testsite-r-1:5000/testsite_r_1/check_mk/"
+            # In CI, `testsite-r-1` is a service container on the runner's Docker
+            # network, reachable on its own port 5000. Locally with `--docker`,
+            # only the controller container exists and the remote site listens on
+            # 127.0.0.1:5001 (see setup_checkmk's port configuration) — detect the
+            # local case the same way bakery/inventory/role/lookup_role do.
+            url_of_remote_site: >-
+              {{
+                (
+                  (ansible_facts['virtualization_type'] in ['container', 'podman', 'docker'])
+                  and (
+                    (ansible_facts['system_vendor'] == "Dell Inc." and 'Latitude' in ansible_facts['product_name'])
+                    or (ansible_facts['system_vendor'] == "QEMU" and 'Ubuntu' in ansible_facts['product_name'])
+                  )
+                )
+                | ternary("http://127.0.0.1:5001/testsite_r_1/check_mk/", "http://testsite-r-1:5000/testsite_r_1/check_mk/")
+              }}
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false

@@ -1,0 +1,87 @@
+---
+# Defaults for local `ansible-test integration <target> --docker` runs.
+# Override any of these via `tests/integration/integration_config.yml`
+# (auto-loaded by ansible-test as extra-vars; gitignored).
+# CI writes `checkmk_var_version` and `checkmk_var_edition` into that file.
+
+# Checkmk version + edition. Edition MUST be one of the keys of
+# `__checkmk_var_{legacy,modern}_edition_mapping` (community, pro, ultimate,
+# ultimatemt). CI matrix values like `raw`/`managed` are download-URL ids
+# and only work in CI, where the install block is skipped by the probe.
+checkmk_var_version: "2.5.0p9"
+checkmk_var_edition: "ultimatemt"
+
+# REST API endpoint + credentials for the central testsite. Hardcoded
+# port 5000 matches the CI service container and the local --docker install.
+# `checkmk_var_site` is consumed by lookup plugins via the `common_lookup`
+# doc fragment when callers don't pass `site=` explicitly (the "inventory
+# vars" test paths in each `lookup_*` target).
+checkmk_var_server_url: "http://127.0.0.1:5000/"
+checkmk_var_site: "testsite"
+checkmk_var_validate_certs: false
+checkmk_var_api_user: "cmkadmin"
+checkmk_var_api_secret: "Sup3rSec4et!"
+
+# Download URL template for the Checkmk server package. `item.*` resolves
+# inside the loop over `checkmk_var_test_sites` in setup_checkmk's tasks.
+# Pin `checkmk_var_download_{user,pass}` via integration_config.yml for
+# non-community editions.
+checkmk_var_download_url: "https://download.checkmk.com/checkmk/{{ item.version }}/check-mk-{{ __checkmk_server_edition_mapping[item.edition] }}-{{ item.version }}_0.{{ ansible_facts['distribution_release'] }}_amd64.deb"  # noqa yaml[line-length]
+
+# Default set of sites this role provisions. Test targets that need a
+# different topology override `checkmk_var_test_sites` via their own
+# `vars/main.yml` after this role finishes. The default mirrors the
+# `site` target so both central and remote sites are installed in local
+# `--docker` runs; the probe at the top of `tasks/main.yml` short-circuits
+# the install block when sites are already responding (e.g. in CI, where
+# Checkmk runs as service containers).
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    site: "testsite"
+    remote_sites:
+      - site_id: "testsite_r_1"
+        site_config:
+          status_connection:
+            connection:
+              socket_type: "tcp"
+              port: 6557
+              encrypted: true
+              host: "localhost"
+              verify: false
+            proxy:
+              use_livestatus_daemon: "with_proxy"
+              global_settings: false
+              tcp:
+                port: 4115
+                only_from: []
+                tls: true
+              params:
+                channels: 6
+                heartbeat:
+                  interval: 10
+                  timeout: 4
+                channel_timeout: 6
+                query_timeout: 240
+                connect_retry: 5
+                cache: true
+            connect_timeout: 2
+            status_host:
+              status_host_set: "disabled"
+            url_prefix: "/testsite_r_1/"
+          configuration_connection:
+            enable_replication: true
+            url_of_remote_site: "http://testsite-r-1:5000/testsite_r_1/check_mk/"
+            disable_remote_configuration: true
+            ignore_tls_errors: false
+            direct_login_to_web_gui_allowed: false
+            replicate_event_console: true
+            replicate_extensions: false
+            message_broker_port: "{{ (checkmk_var_version | regex_replace('p.*', '') is version('2.4', '>=')) | ternary(5671, omit) }}"
+          basic_settings:
+            site_id: "testsite_r_1"
+            alias: "remote test site 1"
+            customer: "{{ (checkmk_var_edition in ['managed', 'ultimatemt']) | ternary('provider', None) }}"
+        authentication:
+          username: "{{ checkmk_var_api_user }}"
+          password: "{{ checkmk_var_api_secret }}"
