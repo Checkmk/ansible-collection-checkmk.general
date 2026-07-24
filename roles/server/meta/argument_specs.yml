@@ -89,11 +89,11 @@ argument_specs:
                 type: "str"
                 description: "The value of the variable."
           uid:
-            type: "str"
+            type: "int"
             description: "The UID of the OMD site user"
             required: false
           gid:
-            type: "str"
+            type: "int"
             description: "The GID of the OMD site group"
             required: false
           mkp_packages:
