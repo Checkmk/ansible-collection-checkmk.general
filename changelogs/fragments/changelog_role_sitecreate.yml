@@ -1,4 +1,2 @@
-release_summary: "Add support in server role for UID and GID"
-
 minor_changes:
   - "Add support in server role for optional parameter OMD create UID and GID"
