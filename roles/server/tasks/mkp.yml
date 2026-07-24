@@ -38,7 +38,7 @@
 
 - name: "{{ __site.name }}: Install MKP Packages."
   become: true
-  ansible.builtin.command: "su - {{ __site.name }} -c /bin/bash -l -c 'mkp add {{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp'"
+  ansible.builtin.command: "su - {{ __site.name }} -s /bin/bash -c 'mkp add {{ __checkmk_server_tmp_dir }}/{{ __mkp.name }}-{{ __mkp.version }}.mkp'"
   changed_when: __checkmk_server_mkp_install_output.rc == 0
   failed_when: __checkmk_server_mkp_install_output.rc != 0 and 'exists on the site' not in __checkmk_server_mkp_install_output.stderr
   register: __checkmk_server_mkp_install_output
@@ -52,7 +52,7 @@
 
 - name: "{{ __site.name }}: Enable MKP Packages."
   become: true
-  ansible.builtin.command: "su - {{ __site.name }} -c /bin/bash -l -c 'mkp enable {{ __mkp.name }} {{ __mkp.version }}'"
+  ansible.builtin.command: "su - {{ __site.name }} -s /bin/bash -c 'mkp enable {{ __mkp.name }} {{ __mkp.version }}'"
   changed_when: __checkmk_server_mkp_enable_output.rc == 0
   register: __checkmk_server_mkp_enable_output
   loop: "{{ __site.mkp_packages }}"
@@ -65,7 +65,7 @@
 
 - name: "{{ __site.name }}: Disable MKP Packages."
   become: true
-  ansible.builtin.command: "su - {{ __site.name }} -c /bin/bash -l -c 'mkp disable {{ __mkp.name }} {{ __mkp.version }}'"
+  ansible.builtin.command: "su - {{ __site.name }} -s /bin/bash -c 'mkp disable {{ __mkp.name }} {{ __mkp.version }}'"
   changed_when: __checkmk_server_mkp_disable_output.rc == 0
   register: __checkmk_server_mkp_disable_output
   loop: "{{ __site.mkp_packages }}"
@@ -78,7 +78,7 @@
 
 - name: "{{ __site.name }}: Remove MKP Packages."
   become: true
-  ansible.builtin.command: "su - {{ __site.name }} -c /bin/bash -l -c 'mkp remove {{ __mkp.name }} {{ __mkp.version }}'"
+  ansible.builtin.command: "su - {{ __site.name }} -s /bin/bash -c 'mkp remove {{ __mkp.name }} {{ __mkp.version }}'"
   changed_when: __checkmk_server_mkp_remove_output.rc == 0
   register: __checkmk_server_mkp_remove_output
   loop: "{{ __site.mkp_packages }}"
