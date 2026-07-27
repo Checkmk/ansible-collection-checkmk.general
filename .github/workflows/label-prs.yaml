@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: "Label Pull Requests."
-      uses: actions/labeler@v6
+      uses: actions/labeler@v7
       with:
         configuration-path: .github/labels-prs.yml
         sync-labels: false
