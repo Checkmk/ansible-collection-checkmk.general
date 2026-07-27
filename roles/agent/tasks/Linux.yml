@@ -95,11 +95,11 @@
   when:
     - (__checkmk_agent_create_result.changed | bool) or
       (__checkmk_agent_update_attributes_result.changed | bool)
+  tags:
+    - register-agent
   block:
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers
-  tags:
-    - register-agent
 
 - name: "{{ ansible_facts['system'] }}: Check for Agent Updater Binary."
   ansible.builtin.stat:
