@@ -1,0 +1,39 @@
+---
+- name: Destroy
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    checkmk_var_vagrant_env:
+      VAGRANT_CWD: "{{ molecule_ephemeral_directory }}"
+      VAGRANT_DEFAULT_PROVIDER: libvirt
+      VAGRANT_NO_PARALLEL: "1"
+
+  tasks:
+
+    # Also needed when destroying without a preceding create, for example on the
+    # first action of a test sequence.
+    - name: "Place the Vagrantfile in the ephemeral directory."
+      ansible.builtin.copy:
+        src: "{{ molecule_scenario_directory }}/Vagrantfile"
+        dest: "{{ molecule_ephemeral_directory }}/Vagrantfile"
+        mode: "0644"
+
+    - name: "Destroy the instance(s)."
+      ansible.builtin.command:
+        cmd: vagrant destroy --force
+        chdir: "{{ molecule_ephemeral_directory }}"
+      environment: "{{ checkmk_var_vagrant_env }}"
+      register: __checkmk_var_vagrant_destroy
+      changed_when: "'not created' not in __checkmk_var_vagrant_destroy.stdout"
+
+    # An empty list, not an empty mapping: the driver looks the instance up with
+    # 'next()' and only recovers from a StopIteration.
+    - name: "Reset the instance config."
+      ansible.builtin.copy:
+        content: |
+          # Molecule managed
+          {{ [] | to_json | from_json | to_yaml }}
+        dest: "{{ molecule_instance_config }}"
+        mode: "0600"

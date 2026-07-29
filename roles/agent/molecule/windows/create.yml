@@ -1,0 +1,103 @@
+---
+# Boots the Windows host defined in the Vagrantfile of this scenario and writes
+# the connection details into the instance config, where the 'default' driver of
+# Molecule picks them up. See the Vagrantfile for why the vagrant driver is not
+# used.
+- name: Create
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    checkmk_var_vagrant_env:
+      VAGRANT_CWD: "{{ molecule_ephemeral_directory }}"
+      VAGRANT_DEFAULT_PROVIDER: libvirt
+      VAGRANT_NO_PARALLEL: "1"
+
+  tasks:
+
+    - name: "Place the Vagrantfile in the ephemeral directory."
+      ansible.builtin.copy:
+        src: "{{ molecule_scenario_directory }}/Vagrantfile"
+        dest: "{{ molecule_ephemeral_directory }}/Vagrantfile"
+        mode: "0644"
+
+    - name: "Boot the instance(s). This includes downloading the box, be patient."
+      ansible.builtin.command:
+        cmd: vagrant up
+        chdir: "{{ molecule_ephemeral_directory }}"
+      environment: "{{ checkmk_var_vagrant_env }}"
+      register: __checkmk_var_vagrant_up
+      changed_when: "'already running' not in __checkmk_var_vagrant_up.stdout"
+
+    - name: "Query the state of the instance(s)."
+      ansible.builtin.command:
+        cmd: vagrant status --machine-readable
+        chdir: "{{ molecule_ephemeral_directory }}"
+      environment: "{{ checkmk_var_vagrant_env }}"
+      register: __checkmk_var_vagrant_status
+      changed_when: false
+
+    - name: "Fail if an instance is not running."
+      ansible.builtin.fail:
+        msg: >-
+          Vagrant did not bring up '{{ item.name }}'.
+          Status: {{ __checkmk_var_vagrant_status.stdout }}
+      when: "',' + item.name + ',state,running' not in __checkmk_var_vagrant_status.stdout"
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: "Read the WinRM configuration of the instance(s)."
+      ansible.builtin.command:
+        cmd: "vagrant winrm-config {{ item.name }}"
+        chdir: "{{ molecule_ephemeral_directory }}"
+      environment: "{{ checkmk_var_vagrant_env }}"
+      register: __checkmk_var_vagrant_conf
+      changed_when: false
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: "Fail if no address could be determined."
+      ansible.builtin.fail:
+        msg: >-
+          'vagrant winrm-config' returned no HostName for '{{ item.item.name }}'.
+          Output: {{ item.stdout }}
+      when: item.stdout_lines | select('search', 'HostName') | list | length == 0
+      loop: "{{ __checkmk_var_vagrant_conf.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    - name: "Populate the instance config."
+      ansible.builtin.set_fact:
+        __checkmk_var_instance_conf: "{{ __checkmk_var_instance_conf | default([]) + [__checkmk_var_instance_entry] }}"
+      vars:
+        __checkmk_var_instance_entry:
+          instance: "{{ item.item.name }}"
+          address: "{{ item.stdout_lines | select('search', 'HostName') | first | split | last }}"
+          # The 'default' driver turns these into the ansible_* connection
+          # variables of the instance.
+          #
+          # No 'shell_type' on purpose. The winrm connection plugin selects its own
+          # shell and does its own PowerShell encoding; setting
+          # 'ansible_shell_type' to powershell makes it wrap the command twice and
+          # the '-EncodedCommand' payload ends up not being valid base64. Only the
+          # ssh connection to a Windows host needs 'powershell' here.
+          user: vagrant
+          password: vagrant
+          port: 5985
+          connection: winrm
+          winrm_transport: ntlm
+          winrm_server_cert_validation: ignore
+      loop: "{{ __checkmk_var_vagrant_conf.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    - name: "Dump the instance config."
+      ansible.builtin.copy:
+        content: |
+          # Molecule managed
+          {{ __checkmk_var_instance_conf | to_json | from_json | to_yaml }}
+        dest: "{{ molecule_instance_config }}"
+        mode: "0600"

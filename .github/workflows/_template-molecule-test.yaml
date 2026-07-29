@@ -14,24 +14,41 @@ on:
       role:
         required: true
         type: string
+      scenarios:
+        description: >-
+          JSON array of the Molecule scenarios to run, one job per entry.
+          Keys per entry:
+            scenario       Name of the Molecule scenario. Required.
+            name           Name of the job. Required.
+            virtualization Set to true for scenarios that boot a VM with Vagrant
+                           and libvirt instead of using containers. Installs the
+                           virtualization stack and collects extra diagnostics.
+            experimental   Set to true to keep a failure from failing the run.
+            timeout        Job timeout in minutes. Defaults to 360.
+        required: false
+        type: string
+        default: >-
+          [{"scenario": "2.3", "name": "Checkmk 2.3"},
+           {"scenario": "2.4", "name": "Checkmk 2.4"},
+           {"scenario": "2.5", "name": "Checkmk 2.5"}]
 
 jobs:
   build:
     runs-on: ubuntu-24.04
-    name: Checkmk ${{ matrix.checkmk }}
+    name: ${{ matrix.name }}
+    continue-on-error: ${{ matrix.experimental || false }}
+    timeout-minutes: ${{ matrix.timeout || 360 }}
     strategy:
-      fail-fast: false
+      fail-fast: true  # ToDo: remove before flight
       matrix:
-        checkmk:
-          - '2.3'
-          - '2.4'
-          - '2.5'
+        include: ${{ fromJSON(inputs.scenarios) }}
 
     steps:
 
       # This was necessary at some point to avoid random failure.
       # Disabling on 20250826 to check, if it is still necessary.
       # Re-enabling on 20251124 as it still seems necessary.
+      # A Windows box needs considerably more space than the containers do.
       - name: "Free Disk Space."
         uses: jlumbroso/free-disk-space@main
         with:
@@ -47,6 +64,93 @@ jobs:
           sudo swapon /mnt/swap
           free -h
           swapon --show
+
+      # Nested virtualization is available on GitHub-hosted Ubuntu runners
+      # ('/dev/kvm' exists since the Dadsv5 move in January 2024), but it is
+      # explicitly not supported by GitHub. Scenarios that rely on it should set
+      # 'experimental' as well.
+      - name: "Verify and open up KVM."
+        if: matrix.virtualization
+        run: |
+          test -e /dev/kvm || { echo "::error::/dev/kvm is not available on this runner."; exit 1; }
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm
+
+      # Ubuntu dropped Vagrant from the archive after the BUSL relicensing, so
+      # neither 'vagrant' nor 'vagrant-libvirt' can be installed with apt on
+      # 24.04. Vagrant comes from HashiCorp directly and the libvirt provider is
+      # installed as a Vagrant plugin. That plugin has a native extension, and
+      # linking it against the Ruby that HashiCorp embeds in their package is a
+      # documented problem, hence the explicit build environment below:
+      # https://vagrant-libvirt.github.io/vagrant-libvirt/installation.html
+      - name: "Install libvirt."
+        if: matrix.virtualization
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            qemu-system-x86 \
+            qemu-utils \
+            libvirt-daemon-system \
+            libvirt-clients \
+            libvirt-dev \
+            dnsmasq-base \
+            gcc \
+            make \
+            pkg-config \
+            ruby-dev \
+            libxml2-dev \
+            libxslt1-dev \
+            zlib1g-dev
+          sudo systemctl enable --now libvirtd
+          # Vagrant talks to libvirt as the runner user. Group membership is
+          # deliberately NOT used for that: it would only take effect in a new
+          # login session, and wrapping the Molecule step in 'sg' to force it
+          # breaks rootless podman, because that changes the primary group of the
+          # process and newuidmap refuses to map a process whose group differs
+          # from the one in /etc/passwd. The socket is opened up instead, which is
+          # enough because Ubuntu 24.04 already ships 'auth_unix_rw = "none"', so
+          # the socket permissions are the only gate. Acceptable because this
+          # runner is ephemeral and single tenant.
+          sudo mkdir -p /etc/systemd/system/libvirtd.socket.d
+          printf '[Socket]\nSocketMode=0666\n' \
+            | sudo tee /etc/systemd/system/libvirtd.socket.d/override.conf
+          sudo systemctl stop libvirtd.service libvirtd.socket libvirtd-ro.socket libvirtd-admin.socket
+          sudo systemctl daemon-reload
+          sudo systemctl start libvirtd.socket libvirtd.service
+          ls -l /var/run/libvirt/libvirt-sock
+          # Deliberately without sudo: this proves the runner user has access.
+          virsh --connect qemu:///system version
+
+      # The Checkmk site runs in a container that shares the network namespace of
+      # the runner, where it binds TCP/80 and TCP/443. A rootless container cannot
+      # bind ports below this boundary in the host namespace, because the
+      # capability is checked against the user namespace that owns the network
+      # namespace, which is the host one.
+      - name: "Allow the site container to bind privileged ports."
+        if: matrix.virtualization
+        run: |
+          sudo sysctl -w net.ipv4.ip_unprivileged_port_start=0
+          cat /proc/sys/net/ipv4/ip_unprivileged_port_start
+
+      - name: "Install Vagrant and the libvirt provider."
+        if: matrix.virtualization
+        run: |
+          curl -fsSL https://apt.releases.hashicorp.com/gpg \
+            | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.asc > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.asc] https://apt.releases.hashicorp.com $(lsb_release -cs) main" \
+            | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt-get update
+          sudo apt-get install -y vagrant
+          export CONFIGURE_ARGS="with-ldflags=-L/opt/vagrant/embedded/lib with-libvirt-include=/usr/include/libvirt with-libvirt-lib=/usr/lib/x86_64-linux-gnu"
+          export GEM_HOME="$HOME/.vagrant.d/gems"
+          export GEM_PATH="$GEM_HOME:/opt/vagrant/embedded/gems"
+          export PATH="/opt/vagrant/embedded/bin:$PATH"
+          vagrant plugin install vagrant-libvirt
+          vagrant --version
+          vagrant plugin list
 
       - name: "Check out code."
         uses: actions/checkout@v7
@@ -65,7 +169,32 @@ jobs:
         working-directory: ./ansible_collections/checkmk/general
 
       - name: "Run Molecule."
+        if: ${{ ! matrix.virtualization }}
         run: |
           cd roles/${{ inputs.role}}/
-          uv run molecule test --report -s ${{ matrix.checkmk }}
+          uv run molecule test --report -s ${{ matrix.scenario }}
         working-directory: ./ansible_collections/checkmk/general
+
+      # The Vagrant box is not cached. Downloading and booting it is the bulk of
+      # this job, measured at about 12 of 21 minutes, so a cache would genuinely
+      # help. It is still not worth it: at roughly 7 GB the box would take most of
+      # the 10 GB Actions cache budget of the repository and evict the uv caches
+      # that every other workflow relies on. If the runtime becomes a problem, the
+      # trigger is the better lever.
+      - name: "Run Molecule (virtualized)."
+        if: matrix.virtualization
+        # No Vagrant environment here on purpose: create.yml and destroy.yml set
+        # what they need themselves, so a local run behaves like this one.
+        run: |
+          cd roles/${{ inputs.role}}/
+          uv run molecule test --report -s ${{ matrix.scenario }}
+        working-directory: ./ansible_collections/checkmk/general
+
+      - name: "Collect diagnostics."
+        if: failure() && matrix.virtualization
+        run: |
+          vagrant global-status --prune || true
+          sudo virsh --connect qemu:///system list --all || true
+          sudo virsh --connect qemu:///system net-list --all || true
+          podman ps -a || true
+          podman logs checkmk-server 2>&1 | tail -100 || true

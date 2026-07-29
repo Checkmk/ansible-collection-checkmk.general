@@ -1,0 +1,42 @@
+# Windows host under test for the 'windows' Molecule scenario of the agent role.
+#
+# This file is used by create.yml and destroy.yml, which copy it into the
+# ephemeral directory of the scenario and run the Vagrant CLI there, so that the
+# '.vagrant' state directory does not end up in the repository.
+#
+# The Molecule vagrant driver is deliberately not used: it drives Vagrant through
+# an Ansible module that ships with the driver, and Molecule 26 no longer puts
+# that module on the library path, so the driver cannot create or destroy
+# anything. See misc/windows_ci.md.
+#
+# Keep 'management_network_address' in sync with 'checkmk_var_site_address' in
+# group_vars/all.yml: the host end of this network is what the Windows host uses
+# to reach the Checkmk site.
+
+Vagrant.configure("2") do |config|
+  config.vm.define "ansidows" do |c|
+    c.vm.box = "peru/windows-server-2022-standard-x64-eval"
+    c.vm.communicator = "winrm"
+    c.vm.boot_timeout = 900
+    c.winrm.max_tries = 200
+    c.winrm.retry_delay = 5
+
+    # 'c.vm.hostname' is deliberately not set: renaming a Windows computer forces
+    # a reboot in the middle of 'vagrant up'. The Checkmk host name comes from the
+    # Molecule inventory instead.
+
+    # libvirt would try to share this via NFS, which does not work on Windows.
+    c.vm.synced_folder ".", "/vagrant", disabled: true
+
+    c.vm.provider "libvirt" do |libvirt|
+      libvirt.memory = 4096
+      libvirt.cpus = 2
+      # A dedicated management network, so this scenario never collides with the
+      # networks of the repository Vagrantfile (192.168.124.0/24) or with the
+      # vagrant-libvirt default network (192.168.121.0/24).
+      libvirt.management_network_name = "molecule_windows"
+      libvirt.management_network_address = "192.168.126.0/24"
+      libvirt.keymap = "us"
+    end
+  end
+end

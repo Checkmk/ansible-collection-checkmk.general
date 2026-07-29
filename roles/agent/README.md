@@ -186,6 +186,9 @@ This setting only enables very basic firewall configuration.
 
 Configure the host to which Checkmk API calls are delegated to.
 Typically this would be your Ansible host, hence the default `localhost`.
+The API calls are performed by the modules of this collection, which need a
+Python interpreter on the host they run on. On Windows targets this must
+therefore not be the managed host itself.
 
     checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 

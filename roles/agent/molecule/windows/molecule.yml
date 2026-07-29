@@ -1,0 +1,57 @@
+---
+# This scenario tests the Windows tasks of the agent role.
+#
+# Unlike the Linux scenarios it cannot use containers, so it boots a Windows
+# Server VM with Vagrant and libvirt/KVM. The VM is defined in the Vagrantfile of
+# this scenario and driven by create.yml and destroy.yml. The Molecule vagrant
+# driver is not used, see the comment in the Vagrantfile.
+#
+# The Checkmk site runs in a podman container with host networking, which makes it
+# reachable from the VM on the libvirt management network and lets the site reach
+# the agent of the VM in return. See prepare.yml.
+#
+# Requirements on the host running this scenario:
+#   - libvirt with KVM, and access to /dev/kvm
+#   - vagrant and the vagrant-libvirt plugin
+dependency:
+  name: galaxy
+driver:
+  name: default
+platforms:
+  # The name has to match the machine defined in the Vagrantfile. Everything
+  # about the VM itself is configured there; the connection details are written
+  # to the instance config by create.yml.
+  - name: ansidows
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      roles_path: "$MOLECULE_PROJECT_DIRECTORY/.."
+verifier:
+  name: ansible
+scenario:
+  test_sequence:
+    - dependency
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    # No idempotence step, for the same reason the Linux scenarios do not have
+    # one: the role has tasks that report a change on every run. On Windows these
+    # are the agent download ('win_get_url' defaults to 'force: true'), the
+    # cleanup of the downloaded packages, and the two discovery tasks, because
+    # the discovery module maps HTTP 200 to 'changed'. Instead, verify.yml
+    # asserts the condition that the registration guards of tasks/Win32NT.yml
+    # evaluate, which is the part of the Windows logic most likely to rot.
+    - verify
+    - destroy
+  create_sequence:
+    - create
+    - prepare
+  converge_sequence:
+    - create
+    - prepare
+    - converge
+  destroy_sequence:
+    - destroy

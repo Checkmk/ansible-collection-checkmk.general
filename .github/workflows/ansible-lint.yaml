@@ -101,6 +101,13 @@ jobs:
         run: uv run ansible-galaxy collection install ./
         working-directory: ./ansible_collections/checkmk/general/
 
+      # Not a dependency of the collection itself, but the prepare playbook of
+      # the Windows Molecule scenario uses it, and ansible-lint has to be able to
+      # resolve the modules of every playbook below './roles/'.
+      - name: "Install Collections used by the Molecule scenarios."
+        run: uv run ansible-galaxy collection install containers.podman
+        working-directory: ./ansible_collections/checkmk/general/
+
       # Run the linting
       - name: "Run ansible-lint on roles."
         run:  uv run ansible-lint -c .ansible-lint ./roles/

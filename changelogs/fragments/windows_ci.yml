@@ -1,0 +1,3 @@
+minor_changes:
+  - Agent role - Add a Molecule scenario that tests the Windows tasks against a Windows Server 2022 host, which is provisioned with Vagrant and libvirt. It runs in CI as an additional leg of the agent role test matrix.
+  - Agent role - Document that ``checkmk_agent_delegate_api_calls`` must not point at a Windows host, because the modules of this collection need a Python interpreter on the host they run on.

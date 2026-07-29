@@ -1,0 +1,4 @@
+---
+collections:
+  - name: containers.podman
+  - name: ansible.windows

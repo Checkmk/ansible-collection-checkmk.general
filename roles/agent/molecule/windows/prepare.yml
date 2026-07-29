@@ -1,0 +1,130 @@
+---
+# The Windows host needs a Checkmk site to talk to, and the site needs to reach
+# the agent of the Windows host in return. The site therefore runs in a container
+# that shares the network namespace of the host:
+#
+#   Windows host -> 192.168.126.1 (host end of the libvirt management network)
+#                -> site apache, agent download, REST API, agent receiver
+#   site         -> 192.168.126.x:6556 -> agent of the Windows host
+#
+# The implicit localhost is not a member of the 'all' group, so the plays that
+# run against the controller load the scenario variables explicitly.
+- name: "Prepare - Start the container that hosts the Checkmk site."
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - group_vars/all.yml
+  tasks:
+
+    # The site binds TCP/80 and TCP/443 in the network namespace of the host. A
+    # rootless container cannot bind ports below this boundary there, because the
+    # capability is checked against the user namespace that owns the network
+    # namespace. Without this check the failure would surface much later, as
+    # apache refusing to start inside the container.
+    - name: "Read the start of the unprivileged port range."
+      ansible.builtin.slurp:
+        src: /proc/sys/net/ipv4/ip_unprivileged_port_start
+      register: __checkmk_var_unprivileged_port_start
+
+    - name: "Verify the site container will be able to bind the site ports."
+      ansible.builtin.assert:
+        that: (__checkmk_var_unprivileged_port_start.content | b64decode | trim | int) <= 80
+        fail_msg: >-
+          The Checkmk site of this scenario runs in a rootless container that
+          shares the network namespace of this host, where it has to bind TCP/80
+          and TCP/443. That is currently not permitted below port
+          {{ __checkmk_var_unprivileged_port_start.content | b64decode | trim }}.
+          Run 'sudo sysctl -w net.ipv4.ip_unprivileged_port_start=0' before
+          running this scenario. Note that this lowers a system wide boundary, so
+          on a workstation you may want to revert it afterwards.
+
+    - name: "Start the Checkmk server container."
+      containers.podman.podman_container:
+        name: "{{ checkmk_var_server_container }}"
+        image: docker.io/geerlingguy/docker-ubuntu2404-ansible
+        state: started
+        # See the comment at the top of this file.
+        network: host
+        privileged: true
+        systemd: always
+        volumes:
+          - /sys/fs/cgroup:/sys/fs/cgroup:rw
+
+    - name: "Add the Checkmk server to the inventory."
+      ansible.builtin.add_host:
+        name: "{{ checkmk_var_server_container }}"
+        groups:
+          - checkmk_server
+        # Only the platform instances get the WinRM connection options from
+        # molecule.yml, so this host needs its own connection settings.
+        ansible_connection: containers.podman.podman
+        ansible_python_interpreter: /usr/bin/python3
+      changed_when: false
+
+- name: "Prepare - Install the Checkmk site."
+  hosts: checkmk_server
+  gather_facts: true
+
+  pre_tasks:
+
+    - name: "Update apt cache."
+      ansible.builtin.package:
+        update_cache: true
+        cache_valid_time: 600
+
+    # The Linux scenarios also install 'ufw' here, to exercise the firewall task
+    # of the server role. That task is gated on the ufw service being present, and
+    # this scenario deliberately keeps it out, see
+    # 'checkmk_server_configure_firewall' in group_vars/all.yml.
+    - name: "Install prerequisites."
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apt-utils
+        - man
+
+    # Without this the 'update-alternatives' call in the post-installation script
+    # of the Checkmk package fails to create the manpage symlink, and the whole
+    # dpkg run fails. The Linux scenarios do the same.
+    - name: "Create '/usr/share/man/man8/'."
+      ansible.builtin.file:
+        path: /usr/share/man/man8/
+        state: directory
+        mode: "0755"
+        owner: root
+        group: root
+
+  tasks:
+
+    - name: "Run server role."
+      ansible.builtin.include_role:
+        name: server
+
+- name: "Prepare - Wait until the site is reachable for the Windows host."
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - group_vars/all.yml
+  tasks:
+
+    # This is the address the Windows host will use, so probing it here turns a
+    # networking problem into a clear failure before the role even runs.
+    - name: "Query the version endpoint of the site."
+      ansible.builtin.uri:
+        url: "http://{{ checkmk_var_site_address }}/{{ checkmk_var_checkmk_site }}/check_mk/api/1.0/version"
+        headers:
+          # Same authentication scheme the modules of this collection use.
+          Authorization: "Bearer {{ checkmk_var_api_user }} {{ checkmk_var_api_secret }}"
+          Accept: "application/json"
+        status_code: [200]
+      register: __checkmk_var_site_version
+      retries: 30
+      delay: 5
+      until: __checkmk_var_site_version is succeeded
+
+    - name: "Report the version of the site."
+      ansible.builtin.debug:
+        msg: "Site '{{ checkmk_var_checkmk_site }}' is up: {{ __checkmk_var_site_version.json.versions.checkmk }}"

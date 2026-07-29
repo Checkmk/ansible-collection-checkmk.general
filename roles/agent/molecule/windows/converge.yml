@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+
+  tasks:
+
+    - name: "Run agent role."
+      ansible.builtin.include_role:
+        name: agent

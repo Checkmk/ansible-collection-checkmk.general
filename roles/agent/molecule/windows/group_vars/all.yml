@@ -1,0 +1,87 @@
+---
+# General
+checkmk_var_version: "2.5.0p9"
+checkmk_var_edition: "community"
+checkmk_var_checkmk_site: "mysite"
+checkmk_var_api_user: "cmkadmin"
+checkmk_var_api_secret: "mysecret"
+
+# Test setup specifics
+## Name of the container that runs the Checkmk site. It uses host networking,
+## see prepare.yml.
+checkmk_var_server_container: "checkmk-server"
+## The Checkmk site as seen from the Windows host: the host end of the libvirt
+## management network. Keep in sync with 'management_network_address' in
+## molecule.yml.
+checkmk_var_site_address: "192.168.126.1"
+## The Windows host under test. Used where 'inventory_hostname' is not available,
+## for example in plays that run against the controller.
+checkmk_var_agent_host: "ansidows"
+
+## Basic Configuration
+checkmk_agent_version: "{{ checkmk_var_version }}"
+checkmk_agent_edition: "{{ checkmk_var_edition }}"
+checkmk_agent_server_protocol: http
+checkmk_agent_server: "{{ checkmk_var_site_address }}"
+
+checkmk_agent_server_validate_certs: false
+checkmk_agent_server_port: "{% if checkmk_agent_server_protocol == 'https' %}443{% else %}80{% endif %}"
+checkmk_agent_site: "{{ checkmk_var_checkmk_site }}"
+
+## Authentication
+checkmk_agent_user: "{{ checkmk_var_api_user | default('automation') }}"
+checkmk_agent_pass: "{{ checkmk_var_api_secret }}"
+
+## Registration
+checkmk_agent_registration_server: "{{ checkmk_agent_server }}"
+checkmk_agent_registration_server_protocol: "{{ checkmk_agent_server_protocol }}"
+checkmk_agent_registration_site: "{{ checkmk_agent_site }}"
+checkmk_agent_auto_activate: true
+checkmk_agent_add_host: true
+checkmk_agent_host_name: "{{ checkmk_var_agent_host }}"
+checkmk_agent_host_attributes:
+  # The address of the Windows host on the libvirt management network. The site
+  # runs in the network namespace of the host, so this is how it reaches the
+  # agent on TCP/6556.
+  ipaddress: "{{ hostvars[checkmk_var_agent_host]['ansible_host'] }}"
+checkmk_agent_folder: "{{ checkmk_var_folder_path | default('/') }}"
+checkmk_agent_discover: true
+checkmk_agent_discover_max_parallel_tasks: 2
+checkmk_agent_force_foreign_changes: false
+
+## Agent Configuration
+checkmk_agent_mode: 'pull'
+checkmk_agent_port: 6556
+checkmk_agent_update: false
+checkmk_agent_tls: true
+checkmk_agent_force_install: false
+
+## Security
+checkmk_agent_no_log: false
+
+## Delegation
+## Must not be the Windows host: the Checkmk modules are Python modules and need
+## an interpreter on the host they run on. 'localhost' is the role default.
+checkmk_agent_delegate_api_calls: localhost
+checkmk_agent_delegate_download: "{{ inventory_hostname }}"
+checkmk_agent_delegate_registration: false
+checkmk_agent_delegate_registration_target: "{{ inventory_hostname }}"
+
+# Server Role (needed for integrated testing)
+
+checkmk_server_edition: "{{ checkmk_var_edition }}"
+checkmk_server_version: "{{ checkmk_var_version }}"
+checkmk_server_verify_setup: true
+## The site container shares the network namespace of the host, so enabling a
+## firewall inside it would rewrite the netfilter rules of the host and can cut
+## off the libvirt network of the Windows host. The firewall handling is covered
+## by the Linux scenarios.
+checkmk_server_configure_firewall: false
+
+checkmk_server_sites:
+  - name: "{{ checkmk_var_checkmk_site }}"
+    version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    state: started
+    admin_pw: "{{ checkmk_var_api_secret }}"
+    update_conflict_resolution: install

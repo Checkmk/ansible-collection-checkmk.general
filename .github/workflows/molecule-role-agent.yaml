@@ -35,3 +35,13 @@ jobs:
     uses: ./.github/workflows/_template-molecule-test.yaml
     with:
       role: agent
+      # The Windows scenario cannot use containers. It boots a Windows Server VM
+      # with Vagrant and libvirt, which takes considerably longer than the
+      # container based scenarios and runs on virtualization that GitHub does not
+      # officially support, hence 'experimental'.
+      scenarios: >-
+        [{"scenario": "2.3", "name": "Checkmk 2.3"},
+         {"scenario": "2.4", "name": "Checkmk 2.4"},
+         {"scenario": "2.5", "name": "Checkmk 2.5"},
+         {"scenario": "windows", "name": "Checkmk 2.5 / Windows Server 2022",
+          "virtualization": true, "experimental": true, "timeout": 60}]

@@ -1,0 +1,108 @@
+---
+- name: "Verify - Windows host."
+  hosts: all
+  gather_facts: false
+
+  tasks:
+
+    - name: "Test the Agent binary is present."
+      ansible.windows.win_stat:
+        path: 'C:\Program Files (x86)\checkmk\service\check_mk_agent.exe'
+      register: checkmk_agent_binary
+
+    - name: "Verify the Agent binary is present."
+      ansible.builtin.assert:
+        that: checkmk_agent_binary.stat.exists | bool
+
+    - name: "Test the Agent Controller binary is present."
+      ansible.windows.win_stat:
+        path: 'C:\Program Files (x86)\checkmk\service\cmk-agent-ctl.exe'
+      register: checkmk_agent_controller_binary
+
+    - name: "Verify the Agent Controller binary is present."
+      ansible.builtin.assert:
+        that: checkmk_agent_controller_binary.stat.exists | bool
+
+    - name: "Test the Agent Service is running."
+      ansible.windows.win_service_info:
+        name: CheckMkService
+      register: checkmk_agent_service
+
+    - name: "Verify the Agent Service is running."
+      ansible.builtin.assert:
+        that:
+          - checkmk_agent_service.exists | bool
+          - checkmk_agent_service.services | length == 1
+          - checkmk_agent_service.services[0].state == 'started'
+
+    - name: "Test that the Agent is listening on the default Port."
+      ansible.windows.win_wait_for:
+        port: "{{ checkmk_agent_port }}"
+        timeout: 60
+
+    - name: "Read the registered connections of the Agent Controller."
+      ansible.windows.win_shell: |
+        Get-Content -ErrorAction Ignore -LiteralPath C:\ProgramData\checkmk\agent\registered_connections.json
+        Exit 0
+      register: checkmk_agent_registered_connections
+      changed_when: false
+
+    # This is the exact condition the registration guard in tasks/Win32NT.yml
+    # evaluates, so it also catches the case where that guard stops matching and
+    # the role starts registering the agent on every run.
+    - name: "Verify the Agent is registered for TLS with the site."
+      ansible.builtin.assert:
+        that: >-
+          checkmk_agent_registration_server + '/' + checkmk_agent_registration_site
+          in checkmk_agent_registered_connections.stdout
+        fail_msg: >-
+          The Agent is not registered with
+          '{{ checkmk_agent_registration_server }}/{{ checkmk_agent_registration_site }}'.
+          Registered connections: {{ checkmk_agent_registered_connections.stdout }}
+      when: checkmk_agent_tls | bool
+
+- name: "Verify - Checkmk site."
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - group_vars/all.yml
+  vars:
+    checkmk_var_site_url: "http://{{ checkmk_var_site_address }}/{{ checkmk_var_checkmk_site }}/check_mk/api/1.0"
+    checkmk_var_api_headers:
+      Authorization: "Bearer {{ checkmk_var_api_user }} {{ checkmk_var_api_secret }}"
+      Accept: "application/json"
+
+  tasks:
+
+    # The site runs in the network namespace of the controller, so this is the
+    # path the site itself uses to fetch data from the agent.
+    - name: "Test the Agent of the Windows host is reachable from the site."
+      ansible.builtin.wait_for:
+        host: "{{ hostvars[checkmk_var_agent_host]['ansible_host'] }}"
+        port: "{{ checkmk_agent_port }}"
+        timeout: 60
+
+    - name: "Test the Windows host is present in the site configuration."
+      ansible.builtin.uri:
+        url: "{{ checkmk_var_site_url }}/objects/host_config/{{ checkmk_var_agent_host }}"
+        headers: "{{ checkmk_var_api_headers }}"
+        status_code: [200]
+
+    - name: "Test that services were discovered on the Windows host."
+      ansible.builtin.uri:
+        url: "{{ checkmk_var_site_url }}/objects/host/{{ checkmk_var_agent_host }}/collections/services"
+        headers: "{{ checkmk_var_api_headers }}"
+        status_code: [200]
+      register: checkmk_agent_discovered_services
+      retries: 12
+      delay: 5
+      until:
+        - checkmk_agent_discovered_services is succeeded
+        - checkmk_agent_discovered_services.json.value | default([]) | length > 0
+
+    - name: "Report the discovered services."
+      ansible.builtin.debug:
+        msg: >-
+          Discovered {{ checkmk_agent_discovered_services.json.value | length }}
+          services on '{{ checkmk_var_agent_host }}'.
