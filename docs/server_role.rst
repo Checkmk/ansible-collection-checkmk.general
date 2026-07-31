@@ -20,7 +20,7 @@ checkmk.general.server role -- Install and manage Checkmk servers
 .. Collection note
 
 .. note::
-    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
+    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -337,6 +337,47 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_delegate_download"></div>
+
+      .. _ansible_collections.checkmk.general.server_role__parameter-main__checkmk_server_delegate_download:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_server_delegate_download**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_server_delegate_download" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ inventory\_hostname }}"`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_download_pass"></div>
 
       .. _ansible_collections.checkmk.general.server_role__parameter-main__checkmk_server_download_pass:
@@ -366,6 +407,47 @@ Parameters
 
       Refer to the README for details.
 
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_download_proxy"></div>
+
+      .. _ansible_collections.checkmk.general.server_role__parameter-main__checkmk_server_download_proxy:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_server_download_proxy**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_server_download_proxy" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`""`
 
       .. raw:: html
 
@@ -497,6 +579,47 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_gpg_delegate_download"></div>
+
+      .. _ansible_collections.checkmk.general.server_role__parameter-main__checkmk_server_gpg_delegate_download:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_server_gpg_delegate_download**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_server_gpg_delegate_download" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_server\_delegate\_download }}"`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_gpg_download_pass"></div>
 
       .. _ansible_collections.checkmk.general.server_role__parameter-main__checkmk_server_gpg_download_pass:
@@ -526,6 +649,47 @@ Parameters
 
       Refer to the README for details.
 
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_gpg_download_proxy"></div>
+
+      .. _ansible_collections.checkmk.general.server_role__parameter-main__checkmk_server_gpg_download_proxy:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_server_gpg_download_proxy**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_server_gpg_download_proxy" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_server\_download\_proxy }}"`
 
       .. raw:: html
 
@@ -608,6 +772,47 @@ Parameters
       - :ansible-option-choices-entry:`false`
       - :ansible-option-choices-entry-default:`true` :ansible-option-choices-default-mark:`← (default)`
 
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_ports"></div>
+
+      .. _ansible_collections.checkmk.general.server_role__parameter-main__checkmk_server_ports:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_server_ports**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_server_ports" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=integer`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`[22, 80, 443, 8000]`
 
       .. raw:: html
 
@@ -734,6 +939,51 @@ Parameters
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
       The edition of the site.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_sites/gid"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.checkmk.general.server_role__parameter-main__checkmk_server_sites/gid:
+
+      .. rst-class:: ansible-option-title
+
+      **gid**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_server_sites/gid" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The GID of the OMD site group
 
 
       .. raw:: html
@@ -1395,6 +1645,51 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_sites/uid"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.checkmk.general.server_role__parameter-main__checkmk_server_sites/uid:
+
+      .. rst-class:: ansible-option-title
+
+      **uid**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_server_sites/uid" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The UID of the OMD site user
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-main--checkmk_server_sites/update_conflict_resolution"></div>
 
       .. raw:: latex
@@ -1563,7 +1858,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"2.5.0p9"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"2.5.0p10"`
 
       .. raw:: html
 
