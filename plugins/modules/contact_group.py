@@ -302,10 +302,13 @@ def get_current_contact_groups(module, base_url, headers):
 
 def update_single_contact_group(module, base_url, headers):
     name = module.params["name"]
+    title = module.params.get("title")
+    if title is None:
+        title = name
 
     api_endpoint = "/objects/contact_group_config/" + name
     params = {
-        "alias": module.params.get("title", name),
+        "alias": title,
     }
     url = base_url + api_endpoint
 
@@ -356,18 +359,21 @@ def update_contact_groups(module, base_url, groups, headers):
 
 def create_single_contact_group(module, base_url, headers):
     name = module.params["name"]
+    title = module.params.get("title")
+    if title is None:
+        title = name
 
     api_endpoint = "/domain-types/contact_group_config/collections/all"
     if module.params.get("customer") is not None:
         params = {
             "name": name,
-            "alias": module.params.get("title", name),
+            "alias": title,
             "customer": module.params.get("customer", "provider"),
         }
     else:
         params = {
             "name": name,
-            "alias": module.params.get("title", name),
+            "alias": title,
         }
     url = base_url + api_endpoint
 
@@ -555,7 +561,8 @@ def run_module():
                 remainings_list = [
                     el
                     for el in intersection_list
-                    if el.get("title") != current_groups_dict[el.get("name")]
+                    if el.get("title", el.get("name"))
+                    != current_groups_dict[el.get("name")]
                 ]
 
                 if len(remainings_list) > 0:
@@ -598,7 +605,11 @@ def run_module():
             headers["If-Match"] = etag
             msg_tokens = []
 
-            if current_title != module.params["title"]:
+            title = module.params.get("title")
+            if title is None:
+                title = module.params.get("name")
+
+            if current_title != title:
                 update_single_contact_group(module, base_url, headers)
                 msg_tokens.append("Contact group was updated.")
 
