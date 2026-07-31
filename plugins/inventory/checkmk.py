@@ -166,6 +166,7 @@ groupsources: ["hosttags", "sites"]
 
 import json
 import re
+from pathlib import PurePosixPath
 
 from ansible.errors import AnsibleError, AnsibleParserError
 from ansible.plugins.inventory import BaseInventoryPlugin
@@ -379,8 +380,12 @@ class InventoryModule(BaseInventoryPlugin):
         if host_folder == target:
             return True
         if self.recursive:
-            prefix = "/" if target == "/" else target + "/"
-            return host_folder.startswith(prefix)
+            target_parts = PurePosixPath(target).parts
+            host_parts = PurePosixPath(host_folder).parts
+            return (
+                len(host_parts) > len(target_parts)
+                and host_parts[: len(target_parts)] == target_parts
+            )
         return False
 
     def _parse_hosts(self, raw_hosts):

@@ -20,8 +20,7 @@ are already present on your system.
 # Distribution support
 
 This role includes explicit distribution support.
-That means, that even if the role might run on other distributions,
-we can only verify, that it works on the ones listed in `defaults/main.yml` in the variable `__checkmk_server_stable_os`.
+That means, that we can only verify, that it works on the distributions listed in `defaults/main.yml` in the variable `__checkmk_server_stable_os`.
 
 To elaborate: We do **not** guarantee, that this role will work on them.
 But we do our best to stay as stable as possible on them. On top of that we have
@@ -33,7 +32,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Basic configuration
 
-    checkmk_server_version: "2.5.0p9"
+    checkmk_server_version: "2.5.0p10"
 
 The main Checkmk version. This is used for installing Checkmk.
 To manage sites and their version, see [Site Management](#site_management) below.
@@ -193,33 +192,40 @@ Configure the host to which Checkmk Server Setup downloads are delegated to. Aft
 
     checkmk_server_gpg_delegate_download: "{{ checkmk_server_delegate_download }}"
 
-Configure the host to which Checkmk GPG Key downloads are delegated to. After download the files are transferred to the managed host, when the managed host didn't perform the download itself.
+Configure the host to which Checkmk GPG Key downloads are delegated to. After download the files are transferred to the managed host, when the managed host did not perform the download itself.
 
 # Tags
 
 Tasks are tagged with the following tags:
 | Tag | Purpose |
 | ---- | ------- |
+| `always` | Tasks that must always run, regardless of the tags selected. |
 | `download-package` | Download server package. |
 | `install-package` | Install server package with package manager. |
 | `install-prerequisites` | Install packages that are required for the role or server to work. |
 | `download-gpg-key` | Download Checkmk GPG key for verifying the package. |
 | `import-gpg-key` | Import the downloaded Checkmk GPG key for verifying the package. |
 | `include-os-family-vars` | Include OS family specific variables. |
-| `include-rhel-version-vars` | Include RHEL version specific variables. |
 | `set-selinux-boolean` | Set necessary SELinux booleans for Checkmk to work on SELinux enabled systems. |
 | `enable-repos` | Enable the required external repositories on RHEL based systems. Powertools on RHEL 7 and CentOS 8. CRB and EPEL on RHEL 8. |
-| `checkmk_server_epel_gpg_check` | Download and use GPG key verification for EPEL repository. |
+| `configure-firewall` | Configure the firewall to allow access to the Checkmk server. |
 | `create-sites` | Create sites on the Checkmk server. |
 | `update-sites` | Update sites on the Checkmk server. |
+| `configure-sites` | Apply OMD configuration to sites. |
 | `start-sites` | Start sites on the Checkmk server. |
 | `stop-sites` | Stop sites on the Checkmk server. |
+| `enable-sites` | Enable sites on the Checkmk server. |
+| `disable-sites` | Disable sites on the Checkmk server. |
 | `destroy-sites` | Destroy sites on the Checkmk server. |
+| `manage-mkp-packages` | Download, install, enable, disable or remove MKP packages on sites. |
 | `set-site-admin-pw` | Set the cmkadmin password of a site. |
 | `update-pause` | Pause with a warning when updating a site. |
 | `cleanup` | Clean up old Checkmk versions. |
 
 You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
+
+Note that a few tasks are tagged `always` and therefore run even when you select
+other tags. Those tasks are technically always necessary, so you cannot skip them.
 
 # Dependencies
 

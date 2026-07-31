@@ -106,3 +106,5 @@
     state: "enabled"
   become: true
   loop: "{{ checkmk_server_ports }}"
+  tags:
+    - configure-firewall

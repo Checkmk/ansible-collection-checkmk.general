@@ -1,0 +1,4 @@
+bugfixes:
+  - Server role - Fix MKP management tasks failing when connecting as an
+    unprivileged user without ACL support, by using ``su`` to switch to the
+    site user instead of relying on ``become_user``.

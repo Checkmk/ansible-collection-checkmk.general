@@ -92,7 +92,7 @@ It's important to know that this role comes with predefined default values locat
 - hosts: all
   vars:
     # Example of overriding a default variable
-    checkmk_agent_edition: 'cce'
+    checkmk_agent_edition: 'ultimate'
   roles:
     - role: checkmk.general.agent
 ```

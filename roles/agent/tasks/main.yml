@@ -10,16 +10,22 @@
   ansible.builtin.set_fact:
     checkmk_agent_edition: "{{ __checkmk_var_short_code_mapping[checkmk_agent_edition | lower] }}"
   when: checkmk_agent_edition | lower in __checkmk_var_short_code_mapping
+  tags:
+    - always
 
 - name: "Preflight - Fail if Checkmk Edition is incorrect."
   ansible.builtin.fail:
     msg: "The provided Checkmk Edition '{{ checkmk_agent_edition }}' does  not exist or is not supported by this role."
   when: checkmk_agent_edition | lower not in __checkmk_agent_edition_mapping
+  tags:
+    - always
 
 - name: "{{ ansible_facts['os_family'] }}: Include OS family specific variables."
   ansible.builtin.include_vars: "{{ ansible_facts['os_family'] }}.yml"
   tags:
     - include-os-family-vars
+    - install-package
+    - download-package
 
 - name: "{{ ansible_facts['system'] }}: Include agent package download tasks."
   ansible.builtin.include_tasks: "{{ ansible_facts['system'] }}-files.yml"
@@ -30,7 +36,7 @@
 - name: "{{ ansible_facts['system'] }}: Include OS specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_facts['system'] }}.yml"
   tags:
-    - include-system-tasks
+    - always
 
 - name: "Trigger service data refresh on host."
   become: false
@@ -49,6 +55,8 @@
   retries: 3
   delay: 10
   until: "__checkmk_agent_refresh_state.changed | bool"
+  tags:
+    - discover-host
 
 - name: "Update monitored services and labels on host."
   become: false
@@ -68,3 +76,5 @@
   delay: 10
   until: "__checkmk_agent_discovery_state.changed | bool"
   notify: "Activate changes"
+  tags:
+    - discover-host

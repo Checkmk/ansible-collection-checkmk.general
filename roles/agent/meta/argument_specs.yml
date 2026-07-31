@@ -11,7 +11,7 @@ argument_specs:
 
       checkmk_agent_version:
         type: "str"
-        default: "2.5.0p9"
+        default: "2.5.0p10"
         description:
           - Refer to the README for details.
 
@@ -41,19 +41,19 @@ argument_specs:
 
       checkmk_agent_registration_server_protocol:
         type: "str"
-        default: "http"
+        default: "{{ checkmk_agent_server_protocol }}"
         description:
           - Refer to the README for details.
 
       checkmk_agent_registration_server:
         type: "str"
-        default: "localhost"
+        default: "{{ checkmk_agent_server }}"
         description:
           - Refer to the README for details.
 
       checkmk_agent_registration_site:
         type: "str"
-        default: "mysite"
+        default: "{{ checkmk_agent_site }}"
         description:
           - Refer to the README for details.
 
@@ -71,7 +71,7 @@ argument_specs:
 
       checkmk_agent_user:
         type: "str"
-        default: "automation"
+        default: "{{ api_user | default('automation') }}"
         description:
           - Refer to the README for details.
 
@@ -139,12 +139,6 @@ argument_specs:
         description:
           - Refer to the README for details.
 
-      checkmk_agent_configure_firewall_zone:
-        type: "str"
-        default: "public"
-        description:
-          - Refer to the README for details.
-
       checkmk_agent_force_install:
         type: "bool"
         default: false
@@ -169,6 +163,18 @@ argument_specs:
         description:
           - Refer to the README for details.
 
+      checkmk_agent_delegate_registration:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_delegate_registration_target:
+        type: "str"
+        default: "{{ inventory_hostname }}"
+        description:
+          - Refer to the README for details.
+
       checkmk_agent_host_name:
         type: "str"
         default: "{{ inventory_hostname }}"
@@ -180,6 +186,19 @@ argument_specs:
         default: "{{ checkmk_var_folder_path | default('/') }}"
         description:
           - Refer to the README for details.
+
+      checkmk_agent_folder_create:
+        type: "bool"
+        default: false
+        description:
+          - Refer to the README for details.
+
+      checkmk_agent_host_ip:
+        type: "str"
+        description:
+          - Refer to the README for details.
+            Has no role default on purpose, so that it stays undefined and is
+            omitted from 'checkmk_agent_host_attributes' unless you set it.
 
       checkmk_agent_host_attributes:
         type: "dict"
@@ -199,3 +218,10 @@ argument_specs:
         default: true
         description:
           - Refer to the README for details.
+
+      checkmk_agent_download_timeout:
+        type: "str"
+        description:
+          - Refer to the README for details.
+            Has no role default on purpose, so that it stays undefined and the
+            module defaults apply unless you set it. Value in seconds.

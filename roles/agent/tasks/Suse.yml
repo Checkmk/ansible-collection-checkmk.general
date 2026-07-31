@@ -46,3 +46,5 @@
     port: "{{ checkmk_agent_port }}/tcp"
     state: "enabled"
   become: true
+  tags:
+    - configure-firewall

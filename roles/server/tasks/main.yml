@@ -19,6 +19,8 @@
   ansible.builtin.set_fact:
     checkmk_server_edition: "{{ __checkmk_var_short_code_mapping[checkmk_server_edition | lower] }}"
   when: checkmk_server_edition | lower in __checkmk_var_short_code_mapping
+  tags:
+    - always
 
 - name: "Preflight - Normalize legacy edition identifiers in checkmk_server_sites."
   ansible.builtin.set_fact:
@@ -64,6 +66,8 @@
 
 - name: "{{ ansible_facts['system'] }}: Populate service facts."
   ansible.builtin.service_facts:
+  tags:
+    - configure-firewall
 
 - name: "{{ ansible_facts['os_family'] }} Derivatives: Update APT Cache."
   become: true
