@@ -1786,3 +1786,37 @@ releases:
     - release_summary.yml
     - suse.yml
     release_date: '2026-07-22'
+  8.3.0:
+    changes:
+      bugfixes:
+      - Agent role - Raise ``min_ansible_version`` in ``meta/main.yml`` from ``2.4``
+        to ``2.18``, matching ``requires_ansible`` in ``meta/runtime.yml``. This is
+        no functional change, just an alignment.
+      - Server role - Fix MKP management tasks failing when connecting as an unprivileged
+        user without ACL support, by using ``su`` to switch to the site user instead
+        of relying on ``become_user``.
+      - Server role - Raise ``min_ansible_version`` in ``meta/main.yml`` from ``2.4``
+        to ``2.18``, matching ``requires_ansible`` in ``meta/runtime.yml``. This is
+        no functional change, just an alignment.
+      minor_changes:
+      - Add support in server role for optional parameter OMD create UID and GID
+      - Agent role - Add missing tags to several tasks and fix consistency issues.
+      - Agent role - Ten role variables are now declared in ``meta/argument_specs.yml``
+        and are therefore type checked when the role starts, which they were not before.
+        Most values are converted automatically, but a value that cannot be converted
+        now fails the run instead of being passed through unchecked. A non numeric
+        entry in ``checkmk_agent_port`` for example now aborts the role.
+      - Server role - Add missing tags to several tasks and fix consistency issues.
+      - Server role - Ten role variables are now declared in ``meta/argument_specs.yml``
+        and are therefore type checked when the role starts, which they were not before.
+        Most values are converted automatically, but a value that cannot be converted
+        now fails the run instead of being passed through unchecked. A non numeric
+        entry in ``checkmk_server_ports`` for example now aborts the role.
+      release_summary: Tag along for these features and fixes.
+    fragments:
+    - changelog_role_sitecreate.yml
+    - docs.yml
+    - mkps.yml
+    - release_summary.yml
+    - tagging.yml
+    release_date: '2026-07-31'

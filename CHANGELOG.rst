@@ -4,6 +4,30 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v8.3.0
+======
+
+Release Summary
+---------------
+
+Tag along for these features and fixes.
+
+Minor Changes
+-------------
+
+- Add support in server role for optional parameter OMD create UID and GID
+- Agent role - Add missing tags to several tasks and fix consistency issues.
+- Agent role - Ten role variables are now declared in ``meta/argument_specs.yml`` and are therefore type checked when the role starts, which they were not before. Most values are converted automatically, but a value that cannot be converted now fails the run instead of being passed through unchecked. A non numeric entry in ``checkmk_agent_port`` for example now aborts the role.
+- Server role - Add missing tags to several tasks and fix consistency issues.
+- Server role - Ten role variables are now declared in ``meta/argument_specs.yml`` and are therefore type checked when the role starts, which they were not before. Most values are converted automatically, but a value that cannot be converted now fails the run instead of being passed through unchecked. A non numeric entry in ``checkmk_server_ports`` for example now aborts the role.
+
+Bugfixes
+--------
+
+- Agent role - Raise ``min_ansible_version`` in ``meta/main.yml`` from ``2.4`` to ``2.18``, matching ``requires_ansible`` in ``meta/runtime.yml``. This is no functional change, just an alignment.
+- Server role - Fix MKP management tasks failing when connecting as an unprivileged user without ACL support, by using ``su`` to switch to the site user instead of relying on ``become_user``.
+- Server role - Raise ``min_ansible_version`` in ``meta/main.yml`` from ``2.4`` to ``2.18``, matching ``requires_ansible`` in ``meta/runtime.yml``. This is no functional change, just an alignment.
+
 v8.2.0
 ======
 
