@@ -26,7 +26,6 @@ Refer to [USAGE.md](https://github.com/Checkmk/ansible-collection-checkmk.genera
 ## :electric_plug: Dependencies
 
  - [ansible.posix](https://github.com/ansible-collections/ansible.posix)
- - [ansible.utils](https://github.com/ansible-collections/ansible.utils)
  - [ansible.windows](https://github.com/ansible-collections/ansible.windows)
  - [community.general](https://github.com/ansible-collections/community.general)
 

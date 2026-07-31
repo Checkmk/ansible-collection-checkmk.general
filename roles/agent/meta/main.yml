@@ -19,7 +19,7 @@ galaxy_info:
   # - CC-BY-4.0
   license: GPL-2.0-or-later
 
-  min_ansible_version: "2.4"
+  min_ansible_version: "2.18"
 
   # If this a Container Enabled role, provide the minimum Ansible Container version.
   # min_ansible_container_version:
