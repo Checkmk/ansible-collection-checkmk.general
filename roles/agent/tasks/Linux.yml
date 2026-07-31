@@ -36,7 +36,6 @@
 - name: "{{ ansible_facts['os_family'] }}: Run OS Family specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_facts['os_family'] }}.yml"
   tags:
-    - include-os-family-tasks
     - always
 
 - name: "{{ ansible_facts['system'] }}: Ensure Host Folder is present."
@@ -92,11 +91,8 @@
     - manage-host
 
 - name: "Ensure registration readiness."  # noqa no-handler
-  when:
-    - (__checkmk_agent_create_result.changed | bool) or
-      (__checkmk_agent_update_attributes_result.changed | bool)
   tags:
-    - register-agent
+    - always
   block:
     - name: "Trigger activation of changes."
       ansible.builtin.meta: flush_handlers

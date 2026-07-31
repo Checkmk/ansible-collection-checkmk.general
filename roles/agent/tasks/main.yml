@@ -36,7 +36,6 @@
 - name: "{{ ansible_facts['system'] }}: Include OS specific tasks."
   ansible.builtin.include_tasks: "{{ ansible_facts['system'] }}.yml"
   tags:
-    - include-system-tasks
     - always
 
 - name: "Trigger service data refresh on host."
@@ -56,6 +55,8 @@
   retries: 3
   delay: 10
   until: "__checkmk_agent_refresh_state.changed | bool"
+  tags:
+    - discover-host
 
 - name: "Update monitored services and labels on host."
   become: false
@@ -75,3 +76,5 @@
   delay: 10
   until: "__checkmk_agent_discovery_state.changed | bool"
   notify: "Activate changes"
+  tags:
+    - discover-host

@@ -200,7 +200,7 @@ Configure the host to which Checkmk GPG Key downloads are delegated to. After do
 Tasks are tagged with the following tags:
 | Tag | Purpose |
 | ---- | ------- |
-| `always` | Preflight checks that must always run, regardless of the tags selected. |
+| `always` | Tasks that must always run, regardless of the tags selected. |
 | `download-package` | Download server package. |
 | `install-package` | Install server package with package manager. |
 | `install-prerequisites` | Install packages that are required for the role or server to work. |
