@@ -20,8 +20,7 @@ are already present on your system.
 # Distribution support
 
 This role includes explicit distribution support.
-That means, that even if the role might run on other distributions,
-we can only verify, that it works on the ones listed in `defaults/main.yml` in the variable `__checkmk_server_stable_os`.
+That means, that we can only verify, that it works on the distributions listed in `defaults/main.yml` in the variable `__checkmk_server_stable_os`.
 
 To elaborate: We do **not** guarantee, that this role will work on them.
 But we do our best to stay as stable as possible on them. On top of that we have
@@ -193,7 +192,7 @@ Configure the host to which Checkmk Server Setup downloads are delegated to. Aft
 
     checkmk_server_gpg_delegate_download: "{{ checkmk_server_delegate_download }}"
 
-Configure the host to which Checkmk GPG Key downloads are delegated to. After download the files are transferred to the managed host, when the managed host didn't perform the download itself.
+Configure the host to which Checkmk GPG Key downloads are delegated to. After download the files are transferred to the managed host, when the managed host did not perform the download itself.
 
 # Tags
 
@@ -224,6 +223,9 @@ Tasks are tagged with the following tags:
 | `cleanup` | Clean up old Checkmk versions. |
 
 You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
+
+Note that a few tasks are tagged `always` and therefore run even when you select
+other tags. Those tasks are technically always necessary, so you cannot skip them.
 
 # Dependencies
 

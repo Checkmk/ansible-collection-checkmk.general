@@ -11,8 +11,16 @@ Install it by running:
 
 Refer to [INSTALL.md](../../INSTALL.md) for detailed installation instructions.
 
-Additionally, this role requires the Python module `netaddr` on the controller.
-Please make sure it is installed on your system and available for Ansible.
+# Distribution support
+
+Unlike the server role, this role does not include explicit distribution support.
+It runs on any host whose `ansible_facts['os_family']` is `Debian`, `RedHat`,
+`Suse` or `Windows`, as those are the OS families it ships tasks and variables for.
+This covers the common derivatives, such as Ubuntu, RHEL, CentOS, AlmaLinux,
+Rocky Linux, Oracle Linux, SLES and openSUSE Leap. On any other OS family the
+role fails when including the OS family specific tasks.
+
+To learn about the distributions used in automated tests, inspect the corresponding `molecule/*/molecule.yml`.
 
 # Role variables
 
@@ -58,10 +66,11 @@ The name of your Checkmk site.
 
 ## Authentication
 
-    checkmk_agent_user: 'myuser'
+    checkmk_agent_user: "{{ api_user | default('automation') }}"
 
 The Checkmk user used to authenticate against your Checkmk site, both for API calls and agent updates.
 This can be a "normal" user (for interactive logins) or an automation user.
+Defaults to `api_user`, if you set it, and to `automation` otherwise.
 
     checkmk_agent_pass: 'mypass'
 
@@ -116,9 +125,10 @@ Define an IP address which will be added to the host in Checkmk. This is optiona
 
 Define attributes with which the host will be added to Checkmk.
 
-    checkmk_agent_folder: '/'
+    checkmk_agent_folder: "{{ checkmk_var_folder_path | default('/') }}"
 
 The folder into which the automatically created host will be placed.
+Defaults to `checkmk_var_folder_path`, if you set it, and to `/` otherwise.
 
     checkmk_agent_folder_create: false
 
@@ -178,7 +188,6 @@ Whether to log sensitive information like passwords, Ansible output will be cens
 Automatically configure the firewall to allow access to the Checkmk agent on the `checkmk_agent_port`.
 This setting only has effect on systems, which are running `ufw` or `firewalld`.
 For elaborate firewall configuration, use your own firewall management!
-This setting only enables very basic firewall configuration.
 
 ## Delegation
 
@@ -189,7 +198,7 @@ Typically this would be your Ansible host, hence the default `localhost`.
 
     checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 
-Configure the host to which downloads are delegated to. After download the files are transferred to the managed host, when the managed host didn't do the download itself.
+Configure the host to which downloads are delegated to. After download the files are transferred to the managed host, when the managed host did not perform the download itself.
 
     checkmk_agent_delegate_registration: false
 
@@ -203,7 +212,7 @@ Configure the target which is used to register the monitored host on the Checkmk
 
 ## Advanced options
 
-    checkmk_agent_download_timeout: "{% if ansible_system == 'Win32NT' %}30{% else %}10{% endif %}"
+    checkmk_agent_download_timeout: "{% if ansible_facts['system'] == 'Win32NT' %}30{% else %}10{% endif %}"
 
 This setting can be used to increase the timeout in seconds for downloading the Checkmk agent from the Checkmk server. Only use this, if you encounter issues with the agent download. There is no role default, the module defaults will be used.
 
@@ -226,6 +235,9 @@ Tasks are tagged with the following tags:
 | `discover-host` | Trigger service discovery and update monitored services and labels on the host. |
 
 You can use Ansible to skip tasks, or only run certain tasks by using these tags. By default, all tasks are run when no tags are specified.
+
+Note that a few tasks are tagged `always` and therefore run even when you select
+other tags. Those tasks are technically always necessary, so you cannot skip them.
 
 # Dependencies
 
@@ -252,7 +264,7 @@ See [CONTRIBUTING](../../CONTRIBUTING).
 
 # Disclaimer
 
-This role is provided AS IS and we can and will not guarantee that the role works
+This role is provided **as is** and we can and will not guarantee that the role works
 as intended, nor can we be accountable for any damage or misconfiguration done
 by this role. Study the role thoroughly before using it.
 

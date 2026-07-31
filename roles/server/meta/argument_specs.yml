@@ -129,6 +129,17 @@ argument_specs:
         description:
           - Refer to the README for details.
 
+      checkmk_server_ports:
+        type: "list"
+        elements: "int"
+        default:
+          - 22
+          - 80
+          - 443
+          - 8000
+        description:
+          - Refer to the README for details.
+
       checkmk_server_backup_on_update:
         type: "bool"
         default: true
@@ -171,5 +182,29 @@ argument_specs:
       checkmk_server_no_log:
         type: "bool"
         default: true
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_delegate_download:
+        type: "str"
+        default: "{{ inventory_hostname }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_gpg_delegate_download:
+        type: "str"
+        default: "{{ checkmk_server_delegate_download }}"
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_download_proxy:
+        type: "str"
+        default: ""
+        description:
+          - Refer to the README for details.
+
+      checkmk_server_gpg_download_proxy:
+        type: "str"
+        default: "{{ checkmk_server_download_proxy }}"
         description:
           - Refer to the README for details.

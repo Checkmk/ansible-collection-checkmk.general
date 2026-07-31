@@ -1,0 +1,42 @@
+bugfixes:
+  - Agent role - Align ``meta/argument_specs.yml`` with the role. Removed the
+    leftover ``checkmk_agent_configure_firewall_zone`` option, corrected the
+    documented defaults of ``checkmk_agent_registration_server``,
+    ``checkmk_agent_registration_server_protocol``,
+    ``checkmk_agent_registration_site`` and ``checkmk_agent_user``, and added
+    the missing ``checkmk_agent_delegate_registration``,
+    ``checkmk_agent_delegate_registration_target``,
+    ``checkmk_agent_download_timeout``, ``checkmk_agent_folder_create`` and
+    ``checkmk_agent_host_ip`` options.
+  - Agent role - Make the default of
+    ``checkmk_agent_discover_max_parallel_tasks`` an integer, matching its type
+    in ``meta/argument_specs.yml``.
+  - Agent role - Remove the stale ``netaddr`` requirement from the README and
+    add a brief distribution support section, noting that this role, unlike the
+    server role, does not verify the target distribution.
+  - Server role - Correct the distribution support section of the README, which
+    claimed the role might run on distributions outside
+    ``__checkmk_server_stable_os``. A preflight task fails the run on those.
+  - Agent role - Show the real defaults of ``checkmk_agent_folder`` and
+    ``checkmk_agent_user`` in the README, which advertised ``/`` and ``myuser``
+    and hid the ``checkmk_var_folder_path`` and ``api_user`` fallbacks.
+  - Agent role - Use ``ansible_facts['system']`` instead of the injected
+    ``ansible_system`` fact in the ``checkmk_agent_download_timeout`` README
+    example, matching ``defaults/main.yml``.
+  - Server role - Add the missing ``checkmk_server_delegate_download``,
+    ``checkmk_server_download_proxy``, ``checkmk_server_gpg_delegate_download``,
+    ``checkmk_server_gpg_download_proxy`` and ``checkmk_server_ports`` options
+    to ``meta/argument_specs.yml``.
+  - Agent role, Server role - Note in the READMEs that some tasks are tagged
+    ``always`` and run regardless of the selected tags, and align the wording of
+    the shared README sections between both roles.
+  - Server role - Align the ``platforms`` list in ``meta/main.yml`` with
+    ``__checkmk_server_stable_os``. It claimed only Debian and Ubuntu, although
+    the role ships RedHat and Suse tasks.
+  - Agent role, Server role - Raise ``min_ansible_version`` in ``meta/main.yml``
+    from ``2.4`` to ``2.18``, matching ``requires_ansible`` in
+    ``meta/runtime.yml``.
+  - Remove ``ansible.utils`` from the dependency list in the README. It was
+    dropped as a dependency in 8.1.0, but stayed in the documentation.
+  - Use the ``ultimate`` edition instead of the legacy ``cce`` short code in the
+    ``USAGE.md`` role example.
