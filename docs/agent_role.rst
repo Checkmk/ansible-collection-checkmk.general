@@ -20,7 +20,7 @@ checkmk.general.agent role -- Install Checkmk agents
 .. Collection note
 
 .. note::
-    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.2.0).
+    This role is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -210,47 +210,6 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_agent_configure_firewall_zone"></div>
-
-      .. _ansible_collections.checkmk.general.agent_role__parameter-main__checkmk_agent_configure_firewall_zone:
-
-      .. rst-class:: ansible-option-title
-
-      **checkmk_agent_configure_firewall_zone**
-
-      .. raw:: html
-
-        <a class="ansibleOptionLink" href="#parameter-main--checkmk_agent_configure_firewall_zone" title="Permalink to this option"></a>
-
-      .. ansible-option-type-line::
-
-        :ansible-option-type:`string`
-
-
-
-
-      .. raw:: html
-
-        </div>
-
-    - .. raw:: html
-
-        <div class="ansible-option-cell">
-
-      Refer to the README for details.
-
-
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"public"`
-
-      .. raw:: html
-
-        </div>
-
-  * - .. raw:: html
-
-        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-main--checkmk_agent_delegate_api_calls"></div>
 
       .. _ansible_collections.checkmk.general.agent_role__parameter-main__checkmk_agent_delegate_api_calls:
@@ -303,6 +262,92 @@ Parameters
       .. raw:: html
 
         <a class="ansibleOptionLink" href="#parameter-main--checkmk_agent_delegate_download" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ inventory\_hostname }}"`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_agent_delegate_registration"></div>
+
+      .. _ansible_collections.checkmk.general.agent_role__parameter-main__checkmk_agent_delegate_registration:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_agent_delegate_registration**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_agent_delegate_registration" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_agent_delegate_registration_target"></div>
+
+      .. _ansible_collections.checkmk.general.agent_role__parameter-main__checkmk_agent_delegate_registration_target:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_agent_delegate_registration_target**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_agent_delegate_registration_target" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -419,6 +464,43 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_agent_download_timeout"></div>
+
+      .. _ansible_collections.checkmk.general.agent_role__parameter-main__checkmk_agent_download_timeout:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_agent_download_timeout**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_agent_download_timeout" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details. Has no role default on purpose, so that it stays undefined and the module defaults apply unless you set it. Value in seconds.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-main--checkmk_agent_edition"></div>
 
       .. _ansible_collections.checkmk.general.agent_role__parameter-main__checkmk_agent_edition:
@@ -493,6 +575,51 @@ Parameters
       .. rst-class:: ansible-option-line
 
       :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_var\_folder\_path \| default('/') }}"`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_agent_folder_create"></div>
+
+      .. _ansible_collections.checkmk.general.agent_role__parameter-main__checkmk_agent_folder_create:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_agent_folder_create**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_agent_folder_create" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
 
       .. raw:: html
 
@@ -624,6 +751,43 @@ Parameters
       .. rst-class:: ansible-option-line
 
       :ansible-option-default-bold:`Default:` :ansible-option-default:`{"ipaddress": "{{ checkmk\_agent\_host\_ip \| default(omit) }}"}`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-main--checkmk_agent_host_ip"></div>
+
+      .. _ansible_collections.checkmk.general.agent_role__parameter-main__checkmk_agent_host_ip:
+
+      .. rst-class:: ansible-option-title
+
+      **checkmk_agent_host_ip**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-main--checkmk_agent_host_ip" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Refer to the README for details. Has no role default on purpose, so that it stays undefined and is omitted from 'checkmk\_agent\_host\_attributes' unless you set it.
+
 
       .. raw:: html
 
@@ -914,7 +1078,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"localhost"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_agent\_server }}"`
 
       .. raw:: html
 
@@ -955,7 +1119,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"http"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_agent\_server\_protocol }}"`
 
       .. raw:: html
 
@@ -996,7 +1160,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"mysite"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ checkmk\_agent\_site }}"`
 
       .. raw:: html
 
@@ -1365,7 +1529,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"automation"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"{{ api\_user \| default('automation') }}"`
 
       .. raw:: html
 
@@ -1406,7 +1570,7 @@ Parameters
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"2.5.0p9"`
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"2.5.0p10"`
 
       .. raw:: html
 
