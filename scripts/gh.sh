@@ -95,6 +95,7 @@ _run_status() {
         return 0
     fi
 
+    # shellcheck disable=SC2016 # This is a jq program, so '$t' and '$s' must not be expanded by the shell.
     jq_helpers='
         def age($t):
             if $t == null or $t == "" then "-" else
