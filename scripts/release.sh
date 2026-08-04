@@ -49,13 +49,15 @@ done
 echo "# General things to keep in mind:"
 echo "- Did you provide changelogs for all relevant changes?"
 echo "- Did you update SUPPORT.md with the latest compability information?"
+echo "- Did you update the Checkmk version mentioned in tests/integration/README.md?"
 echo
 
 echo "# Changes:"
 sed -i "s/version: ${source_version}/version: ${target_version}/g" "${collection_dir}/galaxy.yml" && echo "Updated Collection version in 'galaxy.yml' from ${source_version} to ${target_version}."
 # The following is quite hacky, but it works well enough. If you want to tame the sed monster, have at it. Otherwise be careful with changes here.
 ## Integration tests
-find "${collection_dir}/tests/integration/files/includes/vars/" -type f -name global.yml -exec sed -i "s/2.5.0.*/${checkmk_stable}\"/g" {} \; && echo "Updated Checkmk Stable version for integration tests includes to ${checkmk_stable}."
+sed -i "s/2.5.0.*/${checkmk_stable}\"/g" "${collection_dir}/tests/integration/targets/setup_checkmk/defaults/main.yml" && echo "Updated Checkmk Stable version for integration tests default (setup_checkmk) to ${checkmk_stable}."
+sed -i "s/2.5.0.*/${checkmk_stable}\"/g" "${collection_dir}/tests/integration/integration_config.yml.template" && echo "Updated Checkmk Stable version for integration_config.yml.template example to ${checkmk_stable}."
 ## GitHub Workflows
 find "${collection_dir}/.github/workflows/" -type f -name "ans-int-test-*.yaml" -exec sed -i "s/2.5.0.*/${checkmk_stable}/g" {} \; && echo "Updated Checkmk Stable version for GitHub Workflows to ${checkmk_stable}."
 find "${collection_dir}/.github/workflows/" -type f -name "ans-int-test-*.yaml" -exec sed -i "s/2.4.0.*/${checkmk_oldstable}/g" {} \; && echo "Updated Checkmk Oldstable version for GitHub Workflows to ${checkmk_oldstable}."
