@@ -89,14 +89,9 @@
     - name: "Configure Checkmk Site Ports (Apache, Livestatus, Broker) - Central Site."
       ansible.builtin.shell:
         cmd: |
-          # 1. Configure Apache Port
           omd config {{ item.site }} set APACHE_TCP_PORT {{ item.port | default('5000') }}
-
-          # 2. Configure Livestatus
           omd config {{ item.site }} set LIVESTATUS_TCP on
           omd config {{ item.site }} set LIVESTATUS_TCP_PORT {{ item.remote_sites[0].site_config.status_connection.connection.port | default('6557') }}
-
-          # 3. Configure Message Broker
           {% if item.remote_sites[0].site_config.configuration_connection.message_broker_port is defined %}
           omd config {{ item.site }} set RABBITMQ_TCP_PORT {{ item.remote_sites[0].site_config.configuration_connection.message_broker_port | default('5671') }}
           {% endif %}
@@ -108,14 +103,9 @@
     - name: "Configure Checkmk Site Ports (Apache, Livestatus, Broker) - Remote Sites."
       ansible.builtin.shell:
         cmd: |
-          # 1. Configure Apache Port
           omd config {{ item.1.site_config.basic_settings.site_id }} set APACHE_TCP_PORT 5001  # Hardcoded port for local testing
-
-          # 2. Configure Livestatus
           omd config {{ item.1.site_config.basic_settings.site_id }} set LIVESTATUS_TCP on
           omd config {{ item.1.site_config.basic_settings.site_id }} set LIVESTATUS_TCP_PORT {{ item.1.site_config.status_connection.proxy.tcp.port | default('6557') }}
-
-          # 3. Configure Message Broker
           {% if item.1.site_config.configuration_connection.message_broker_port is defined %}
           omd config {{ item.1.site_config.basic_settings.site_id }} set RABBITMQ_TCP_PORT {{ item.1.site_config.configuration_connection.message_broker_port | default('5671') }}
           {% endif %}

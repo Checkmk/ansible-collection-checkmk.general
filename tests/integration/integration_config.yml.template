@@ -12,15 +12,13 @@
 # `checkmk_var_version` and `checkmk_var_edition` set from the workflow's
 # matrix. Don't commit your local copy.
 
-# Checkmk version to install/test. Match a real Checkmk release line.
+# Checkmk version to install/test.
 # checkmk_var_version: "2.5.0p9"
 
-# Checkmk edition. Must be one of the keys of
-# `__checkmk_var_{legacy,modern}_edition_mapping` for the local install
-# path: community, pro, ultimate, ultimatemt.
+# Checkmk edition.
 # checkmk_var_edition: "ultimatemt"
 
-# Download credentials for non-community editions (enterprise/ultimate/
-# ultimatemt). Community edition does not need credentials.
+# Download credentials for non-community, pre-2.5 editions.
+# Community edition and all edition >= 2.5 do not need credentials.
 # checkmk_var_download_user: "your-user"
 # checkmk_var_download_pass: "your-token"
