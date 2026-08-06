@@ -68,7 +68,7 @@ EXAMPLES = r"""
 
 - name: "Create an auxiliary tag."
   checkmk.general.aux_tag:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -78,7 +78,7 @@ EXAMPLES = r"""
 
 - name: "Create an auxiliary tag with a topic and help text."
   checkmk.general.aux_tag:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -90,7 +90,7 @@ EXAMPLES = r"""
 
 - name: "Update the title of an existing auxiliary tag."
   checkmk.general.aux_tag:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -104,7 +104,7 @@ EXAMPLES = r"""
 
 - name: "Delete an auxiliary tag."
   checkmk.general.aux_tag:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -126,7 +126,7 @@ EXAMPLES = r"""
     title: "HTTPS"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

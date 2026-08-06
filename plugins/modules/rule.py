@@ -130,7 +130,7 @@ EXAMPLES = r"""
 
 - name: "Create a rule at the top of the main folder."
   checkmk.general.rule:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -161,7 +161,7 @@ EXAMPLES = r"""
 
 - name: "Delete a rule by ID."
   checkmk.general.rule:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -176,7 +176,7 @@ EXAMPLES = r"""
 
 - name: "Create a rule and place it after an existing rule."
   checkmk.general.rule:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -206,7 +206,7 @@ EXAMPLES = r"""
 
 - name: "Create a rule matching a host label."
   checkmk.general.rule:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -229,7 +229,7 @@ EXAMPLES = r"""
 
 - name: "Create a rule with combined label group conditions (Checkmk >= 2.3.0)."
   checkmk.general.rule:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -261,7 +261,7 @@ EXAMPLES = r"""
 
 - name: "Delete all rules in a ruleset that match a certain comment."
   checkmk.general.rule:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -273,7 +273,7 @@ EXAMPLES = r"""
            lookup('checkmk.general.rules',
              ruleset='checkgroup_parameters:memory_percentage_used',
              comment_regex='Managed by Ansible',
-             server_url='https://myserver/',
+             server_url='https://myserver',
              site='mysite',
              api_user='myuser',
              api_secret='mysecret',
@@ -305,7 +305,7 @@ EXAMPLES = r"""
         position: "bottom"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

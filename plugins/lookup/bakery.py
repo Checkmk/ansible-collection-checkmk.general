@@ -35,7 +35,7 @@ EXAMPLES = """
     msg: "Bakery status is {{ bakery }}"
   vars:
     bakery: "{{ lookup('checkmk.general.bakery',
-                   server_url='https://myserver/',
+                   server_url='https://myserver',
                    site='mysite',
                    api_user='myuser',
                    api_secret='mysecret',
@@ -55,7 +55,7 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "Bakery status is {{ bakery }}"
   vars:
-    checkmk_var_server_url: "https://myserver/"
+    checkmk_var_server_url: "https://myserver"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
@@ -94,7 +94,8 @@ class LookupModule(LookupBase):
         ret = []
 
         api = CheckMKLookupAPI(
-            site_url=server_url + "/" + site,
+            server_url=server_url,
+            site=site,
             api_auth_type=api_auth_type,
             api_auth_cookie=api_auth_cookie,
             api_user=api_user,

@@ -1,6 +1,6 @@
 ---
 # Provice the URL and credentials to your Checkmk site here #
-checkmk_var_server_url: "http://myserver/"
+checkmk_var_server_url: "http://myserver"
 checkmk_var_site: "mysite"
 checkmk_var_api_user: "myuser"
 checkmk_var_api_secret: "mysecret"

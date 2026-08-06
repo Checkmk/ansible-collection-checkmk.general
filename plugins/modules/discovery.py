@@ -111,7 +111,7 @@ EXAMPLES = r"""
 
 - name: "Add newly discovered services on a host."
   checkmk.general.discovery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -120,7 +120,7 @@ EXAMPLES = r"""
 
 - name: "Add newly discovered services, update labels, and remove vanished services on a host."
   checkmk.general.discovery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -129,7 +129,7 @@ EXAMPLES = r"""
 
 - name: "Remove all vanished services from a host."
   checkmk.general.discovery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -138,7 +138,7 @@ EXAMPLES = r"""
 
 - name: "Discover only host labels on a host."
   checkmk.general.discovery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -147,7 +147,7 @@ EXAMPLES = r"""
 
 - name: "Discover only service labels on a host."
   checkmk.general.discovery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -156,7 +156,7 @@ EXAMPLES = r"""
 
 - name: "Move all undecided services to monitored on a host."
   checkmk.general.discovery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -169,7 +169,7 @@ EXAMPLES = r"""
 
 - name: "Add newly discovered services on multiple hosts."
   checkmk.general.discovery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -180,7 +180,7 @@ EXAMPLES = r"""
 
 - name: "Add newly discovered services, update labels, and remove vanished services on multiple hosts."
   checkmk.general.discovery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -191,7 +191,7 @@ EXAMPLES = r"""
 
 - name: "Bulk discovery with a timeout of 30 seconds."
   checkmk.general.discovery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -203,7 +203,7 @@ EXAMPLES = r"""
 
 - name: "Bulk discovery processing 3 hosts at a time."
   checkmk.general.discovery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -219,7 +219,7 @@ EXAMPLES = r"""
 
 - name: "Start bulk discovery without waiting for completion."
   checkmk.general.discovery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -243,7 +243,7 @@ EXAMPLES = r"""
     host_name: "myhost"
     state: "new"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

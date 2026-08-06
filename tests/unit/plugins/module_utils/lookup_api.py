@@ -18,7 +18,8 @@ class CheckMKLookupAPI:
 
     def __init__(
         self,
-        site_url,
+        server_url,
+        site,
         api_auth_type="bearer",
         api_auth_cookie=None,
         api_user=None,
@@ -31,8 +32,8 @@ class CheckMKLookupAPI:
         }
         self.cookies = {}
 
-        self.site_url = site_url
-        self.url = "%s/check_mk/api/1.0" % site_url
+        self.site_url = "%s/%s" % (server_url.rstrip("/"), site)
+        self.url = "%s/check_mk/api/1.0" % self.site_url
         self.validate_certs = validate_certs
         # Bearer Authentication: "Bearer USERNAME PASSWORD"
         if api_auth_type == "bearer":

@@ -67,7 +67,7 @@ EXAMPLES = r"""
 
 - name: "Create a host group."
   checkmk.general.host_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -77,7 +77,7 @@ EXAMPLES = r"""
 
 - name: "Delete a host group."
   checkmk.general.host_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -90,7 +90,7 @@ EXAMPLES = r"""
 
 - name: "Create several host groups at once."
   checkmk.general.host_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -105,7 +105,7 @@ EXAMPLES = r"""
 
 - name: "Delete several host groups at once."
   checkmk.general.host_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -120,7 +120,7 @@ EXAMPLES = r"""
 
 - name: "Create a host group and assign it to a customer (Checkmk Ultimate with multi-tenancy (CME) only)."
   checkmk.general.host_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -144,7 +144,7 @@ EXAMPLES = r"""
     title: "Linux Servers"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
@@ -466,7 +466,7 @@ def run_module():
     }
 
     base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
+        module.params.get("server_url", "").rstrip("/"),
         module.params.get("site", ""),
     )
 

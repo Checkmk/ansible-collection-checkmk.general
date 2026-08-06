@@ -76,7 +76,7 @@ EXAMPLES = r"""
 
 - name: "Create a service group."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -86,7 +86,7 @@ EXAMPLES = r"""
 
 - name: "Delete a service group."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -99,7 +99,7 @@ EXAMPLES = r"""
 
 - name: "Create several service groups at once."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -114,7 +114,7 @@ EXAMPLES = r"""
 
 - name: "Delete several service groups at once."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -129,7 +129,7 @@ EXAMPLES = r"""
 
 - name: "Create a service group and assign it to a customer (Checkmk Ultimate with multi-tenancy (CME) only)."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -153,7 +153,7 @@ EXAMPLES = r"""
     title: "Web Services"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
@@ -443,7 +443,7 @@ def run_module():
     }
 
     base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
+        module.params.get("server_url", "").rstrip("/"),
         module.params.get("site", ""),
     )
 

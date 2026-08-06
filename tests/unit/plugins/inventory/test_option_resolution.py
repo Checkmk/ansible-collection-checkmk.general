@@ -161,8 +161,8 @@ class TestIniResolution:
         monkeypatch.setenv("ANSIBLE_CONFIG", str(cfg))
 
         # Force Ansible to re-read its config so ANSIBLE_CONFIG takes effect.
-        from ansible.config.manager import ConfigManager
         import ansible.constants as C
+        from ansible.config.manager import ConfigManager
 
         monkeypatch.setattr(C, "config", ConfigManager())
 

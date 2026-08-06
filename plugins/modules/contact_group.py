@@ -76,7 +76,7 @@ EXAMPLES = r"""
 
 - name: "Create a single contact group."
   checkmk.general.contact_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -86,7 +86,7 @@ EXAMPLES = r"""
 
 - name: "Update the title of a single contact group."
   checkmk.general.contact_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -96,7 +96,7 @@ EXAMPLES = r"""
 
 - name: "Delete a single contact group."
   checkmk.general.contact_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -112,7 +112,7 @@ EXAMPLES = r"""
 
 - name: "Create multiple contact groups."
   checkmk.general.contact_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -127,7 +127,7 @@ EXAMPLES = r"""
 
 - name: "Delete multiple contact groups."
   checkmk.general.contact_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -145,7 +145,7 @@ EXAMPLES = r"""
 
 - name: "Create a single contact group assigned to a customer."
   checkmk.general.contact_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -156,7 +156,7 @@ EXAMPLES = r"""
 
 - name: "Create multiple contact groups assigned to a customer."
   checkmk.general.contact_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -183,7 +183,7 @@ EXAMPLES = r"""
     title: "My Contact Group"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
@@ -500,7 +500,7 @@ def run_module():
     }
 
     base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
+        module.params.get("server_url", "").rstrip("/"),
         module.params.get("site", ""),
     )
 
