@@ -57,10 +57,10 @@ You can set default values for module parameters at the play level. These defaul
 You can also define these parameters as environment variables. Ansible will automatically pick them up. This is particularly useful for sensitive information like secrets.
 
 ```bash
-export CHECKMK_SERVER_URL="http://myserver/"
-export CHECKMK_SITE="mysite"
-export CHECKMK_AUTOMATION_USER="myuser"
-export CHECKMK_AUTOMATION_SECRET="mysecret"
+export CHECKMK_VAR_SERVER_URL="http://myserver/"
+export CHECKMK_VAR_SITE="mysite"
+export CHECKMK_VAR_API_USER="myuser"
+export CHECKMK_VAR_API_SECRET="mysecret"
 ```
 
 ### INI-style variables
