@@ -40,7 +40,7 @@ checkmk_var_ldap_connections:
         ldap_version: 2
         page_size: 2000
         response_timeout: 8
-        connection_suffix: "dc=domaincomp,dc=de"
+        connection_suffix: "dc=domaincomplookup,dc=de"
       users:
         user_base_dn: "basen.und.vettern"
         search_scope: search_only_base_dn_entry
