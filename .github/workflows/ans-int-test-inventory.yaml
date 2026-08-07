@@ -26,7 +26,7 @@ on:
       - 'plugins/inventory/checkmk.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/files/includes/**'
-      - 'tests/integration/targets/inventory/**'
+      - 'tests/integration/targets/inventory_checkmk/**'
 
 jobs:
 
@@ -34,7 +34,7 @@ jobs:
     name: "${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
     uses: ./.github/workflows/_template-ans-int-test.yaml
     with:
-      module: inventory
+      module: inventory_checkmk
       checkmk_version: ${{ matrix.checkmk_version }}
       checkmk_edition: ${{ matrix.checkmk_edition }}
     strategy:
