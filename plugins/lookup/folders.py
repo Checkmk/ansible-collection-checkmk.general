@@ -19,8 +19,11 @@ DOCUMENTATION = """
     options:
 
       _terms:
-        description: complete folder path using tilde as a delimiter
+        description:
+          - One or more complete folder paths using tilde as a delimiter, either as separate terms or as a single list.
         required: True
+        type: list
+        elements: str
 
       show_hosts:
         description: Also show the hosts of the folder(s) found
@@ -157,7 +160,7 @@ class LookupModule(LookupBase):
         )
 
         ret = []
-        for term in terms:
+        for term in self._flatten(terms):
             parameters = {
                 "parent": term.replace("/", "~"),
                 "recursive": recursive,

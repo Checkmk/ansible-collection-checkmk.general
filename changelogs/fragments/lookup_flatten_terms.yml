@@ -1,0 +1,7 @@
+---
+minor_changes:
+  - Activation, Folder, Folders, Host, LDAP Connection, Role and Site lookup
+    modules - Terms can now be passed as a single list, not only as separate
+    arguments. Previously ``lookup('checkmk.general.host', my_host_list)``
+    failed with ``can only concatenate str (not "_AnsibleLazyTemplateList")``,
+    and the Activation lookup module silently built an invalid URL instead.

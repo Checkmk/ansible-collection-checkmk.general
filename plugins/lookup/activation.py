@@ -18,8 +18,11 @@ DOCUMENTATION = """
     options:
 
       _terms:
-        description: activation ID to look up
+        description:
+          - One or more activation IDs, either as separate terms or as a single list.
         required: True
+        type: list
+        elements: str
 
     extends_documentation_fragment: [checkmk.general.common_lookup]
 
@@ -114,7 +117,7 @@ class LookupModule(LookupBase):
 
         ret = []
 
-        for term in terms:
+        for term in self._flatten(terms):
             response = json.loads(api.get("/objects/activation_run/%s" % term))
 
             if "code" in response:
