@@ -37,3 +37,7 @@ __checkmk_agent_files_mapping:
   RedHat: linux_rpm
   Suse: linux_rpm
   Windows: windows_msi
+
+# Temporary directory to download the agent to (Win-Path if controller runs on Windows, Lin-Path if controller runs on Linux)
+# Hast to include the suffix directory delimiter (Win = \\, Lin = /)
+__checkmk_agent_host_tmp_dir: "/tmp/"

@@ -27,8 +27,30 @@
     - install-package
     - download-package
 
-- name: "{{ ansible_facts['system'] }}: Include agent package download tasks."
-  ansible.builtin.include_tasks: "{{ ansible_facts['system'] }}-files.yml"
+- name: "Preflight - Make sure facts for the delegate Host (Controller or Target Host) are present."
+  ansible.builtin.setup:
+  delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else inventory_hostname }}"
+  delegate_facts: true
+  tags:
+    - download-package
+
+- name: "Preflight - Set facts for the delegate Host (Controller or target Host)"
+  ansible.builtin.set_fact:
+    __checkmk_agent_delegate_is_windows: >-
+      {{ hostvars['localhost']['ansible_facts']['os_family'] == 'Windows' }}
+  tags:
+    - download-package
+
+- name: "{{ ansible_facts['system'] }}: Include agent package download tasks (Linux)."
+  ansible.builtin.include_tasks: "Linux-files.yml"
+  when: not __checkmk_agent_delegate_is_windows
+  tags:
+    - include-system-tasks
+    - download-package
+
+- name: "{{ ansible_facts['system'] }}: Include agent package download tasks (Windows)."
+  ansible.builtin.include_tasks: "Win32NT-files.yml"
+  when: __checkmk_agent_delegate_is_windows
   tags:
     - include-system-tasks
     - download-package
