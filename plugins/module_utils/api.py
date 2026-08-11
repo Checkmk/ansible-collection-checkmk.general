@@ -14,6 +14,10 @@ import base64
 import json
 
 from ansible.module_utils.urls import fetch_url
+from ansible_collections.checkmk.general.plugins.module_utils.proxy import (
+    build_proxy_url_from_params,
+    proxy_environment,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (  # result_as_dict,
     GENERIC_HTTP_CODES,
@@ -33,6 +37,11 @@ class CheckmkAPI:
         self.params = self.module.params
         server = self.params.get("server_url")
         site = self.params.get("site")
+        self.proxy_url = None
+        try:
+            self.proxy_url = build_proxy_url_from_params(self.params)
+        except ValueError as e:
+            self.module.fail_json(msg="Invalid proxy configuration: %s" % e)
         self.url = "%s/%s/check_mk/api/1.0" % (server, site)
 
         self.headers = {
@@ -122,23 +131,24 @@ class CheckmkAPI:
 
         num_of_retries = 1
         timeout = 60
-        for i in range(num_of_retries):
-            response, info = fetch_url(
-                module=self.module,
-                url="%s/%s" % (self.url, endpoint),
-                data=None if not data else self.module.jsonify(data),
-                headers=self.headers,
-                method=method,
-                use_proxy=None,
-                timeout=timeout,
-            )
+        with proxy_environment(self.proxy_url):
+            for i in range(num_of_retries):
+                response, info = fetch_url(
+                    module=self.module,
+                    url="%s/%s" % (self.url, endpoint),
+                    data=None if not data else self.module.jsonify(data),
+                    headers=self.headers,
+                    method=method,
+                    use_proxy=True,
+                    timeout=timeout,
+                )
 
-            http_code = info["status"]
+                http_code = info["status"]
 
-            if http_code != -1:
-                break
+                if http_code != -1:
+                    break
 
-            timeout *= 2
+                timeout *= 2
 
         (
             changed,

@@ -15,6 +15,10 @@ from ansible.module_utils.common.text.converters import to_text
 from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
 from ansible.module_utils.six.moves.urllib.parse import urlencode
 from ansible.module_utils.urls import open_url
+from ansible_collections.checkmk.general.plugins.module_utils.proxy import (
+    build_proxy_url,
+    proxy_environment,
+)
 
 HTTP_ERROR_CODES = {
     400: "Bad Request: Parameter or validation failure.",
@@ -35,6 +39,9 @@ class CheckMKLookupAPI:
         api_user=None,
         api_secret=None,
         validate_certs=True,
+        proxy_url=None,
+        proxy_user=None,
+        proxy_pass=None,
     ):
         self.headers = {
             "Accept": "application/json",
@@ -45,6 +52,9 @@ class CheckMKLookupAPI:
         self.site_url = site_url
         self.url = "%s/check_mk/api/1.0" % site_url
         self.validate_certs = validate_certs
+
+        self.proxy_url = build_proxy_url(proxy_url, proxy_user, proxy_pass)
+
         # Bearer Authentication: "Bearer USERNAME PASSWORD"
         if api_auth_type == "bearer":
             if not api_user or not api_secret:
@@ -80,22 +90,23 @@ class CheckMKLookupAPI:
     def get(self, endpoint="", parameters=None):
         url = self.url + endpoint
 
-        try:
-            if parameters:
-                url = "%s?%s" % (url, urlencode(parameters))
+        if parameters:
+            url = "%s?%s" % (url, urlencode(parameters))
 
-            raw_response = open_url(
-                url, headers=self.headers, validate_certs=self.validate_certs
-            )
-            return to_text(raw_response.read())
-        except HTTPError as e:
-            if e.code in HTTP_ERROR_CODES:
-                return json.dumps(
-                    {"code": e.code, "msg": HTTP_ERROR_CODES[e.code], "url": url}
+        with proxy_environment(self.proxy_url):
+            try:
+                raw_response = open_url(
+                    url, headers=self.headers, validate_certs=self.validate_certs
                 )
-            else:
-                return json.dumps({"code": e.code, "msg": e.reason, "url": url})
-        except URLError as e:
-            return json.dumps({"code": 0, "msg": str(e), "url": url})
-        except Exception as e:
-            return json.dumps({"code": 0, "msg": str(e), "url": url})
+                return to_text(raw_response.read())
+            except HTTPError as e:
+                if e.code in HTTP_ERROR_CODES:
+                    return json.dumps(
+                        {"code": e.code, "msg": HTTP_ERROR_CODES[e.code], "url": url}
+                    )
+                else:
+                    return json.dumps({"code": e.code, "msg": e.reason, "url": url})
+            except URLError as e:
+                return json.dumps({"code": 0, "msg": str(e), "url": url})
+            except Exception as e:
+                return json.dumps({"code": 0, "msg": str(e), "url": url})
