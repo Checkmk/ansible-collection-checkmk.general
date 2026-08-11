@@ -13,3 +13,5 @@ playbooks/test*.yml
 .direnv/
 .vscode/
 uv.lock
+__pycache__/
+*.py[cod]
