@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- encoding: utf-8; py-indent-offset: 4 -*-
 
-# Copyright: (c) 2025, Lars Getwan <lars.getwan@checkmk.com>
+# Copyright: (c) 2022, Oliver Gaida <ogaida@t-online.de> & 2025, Lars Getwan <lars.getwan@checkmk.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
@@ -14,7 +14,7 @@ module: downtime
 
 short_description: Manage downtimes in Checkmk
 
-version_added: "6.7.0"
+version_added: "0.2.0"
 
 description:
     - Create, update and delete host and service downtimes in Checkmk.
@@ -22,8 +22,6 @@ description:
       without deleting and recreating it. The downtime to act on can be identified
       by its ID, by host name (and optionally service descriptions), or by a
       Livestatus query.
-    - This module is idempotent. It only changes downtimes when the desired end
-      time or comment differs from the current state.
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -49,8 +47,11 @@ options:
     service_descriptions:
         description:
             - A list of service descriptions.
-            - If set together with I(host_name), the module acts on service
-              downtimes for these services. If omitted, it acts on host downtimes.
+            - Together with I(host_name), the module acts on service downtimes
+              for these services on that particular host. If omitted, it acts on
+              host downtimes.
+            - If you want to set a downtime on a particular service for I(all)
+              hosts, you have to use the I(query) parameter.
         required: false
         type: list
         elements: str
@@ -61,11 +62,10 @@ options:
               Livestatus C(downtimes) table (e.g. C(host_name),
               C(service_description), C(comment)). See the Checkmk REST API
               documentation for the query syntax.
-            - The same query columns are used for B(create), B(update) and
-              B(delete). For query-based B(create) the module automatically
-              translates the columns to the queried object's table (C(host_name)
-              becomes C(name) for hosts, C(service_description) becomes
-              C(description) for services), so one query works for all operations.
+            - As the column names are different, depending on the Livestatus table,
+              Please use the column names as defined in the downtimes table, e.g.
+              C(service_description) instead of C(description) and C(host_name)
+              instead of C(name).
             - Mutually exclusive with I(downtime_id) and I(host_name).
         required: false
         type: str
@@ -175,12 +175,11 @@ notes:
       downtimes. Absolute times (I(end_time)) are fully idempotent. Relative times
       (I(end_after)) are recomputed on every run and will therefore usually trigger
       an update.
-    - On the Checkmk Raw edition (renamed I(Community) in 2.5) the Nagios core
-      cannot modify a downtime in place. When an existing downtime needs its end
-      time or comment changed on that edition, the module deletes and re-creates
-      it. The resulting downtime is identical except that it receives a new
-      downtime ID. On CMC-based editions the downtime is modified in place and
-      keeps its ID.
+    - On the Community edition the Nagios core cannot modify a downtime in place.
+      When an existing downtime needs its end time or comment changed on that edition,
+      the module deletes and re-creates it. The resulting downtime is identical except
+      that it receives a new downtime ID. On CMC-based editions the downtime is modified
+      in place and keeps its ID.
 
 seealso:
     - plugin: checkmk.general.downtime
@@ -189,8 +188,8 @@ seealso:
       plugin_type: lookup
 
 author:
-    - Oliver Gaida (@ogaida) -- Original implementation
-    - Lars Getwan (@lgetwan), with the help of Claude -- Modified version
+    - Oliver Gaida (@ogaida)
+    - Lars Getwan (@lgetwan)
 """
 
 EXAMPLES = r"""
@@ -215,7 +214,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Patch window"
+    comment: "Managed by Ansible"
     start_time: "2024-03-25T22:00:00Z"
     end_time: "2024-03-26T02:00:00Z"
 
@@ -226,7 +225,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Patch window"
+    comment: "Managed by Ansible"
     service_descriptions:
       - "CPU utilization"
       - "Memory"
@@ -258,7 +257,7 @@ EXAMPLES = r"""
       hours: 1
 
 # ---------------------------------------------------------------------------
-# Updating an existing downtime (solves issue #672)
+# Updating an existing downtime
 # ---------------------------------------------------------------------------
 # Re-running the same host_name + comment with a different end time shortens or
 # extends the existing downtime instead of doing nothing.
@@ -270,7 +269,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Patch window"
+    comment: "Managed by Ansible"
     end_after:
       minutes: 1
 
@@ -306,8 +305,8 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    query: '{"op": "and", "expr": [{"op": "=", "left": "host_name", "right": "myhost"}, {"op": "=", "left": "comment", "right": "Patch window"}]}'
-    comment: "Pitch window"
+    query: '{"op": "and", "expr": [{"op": "=", "left": "host_name", "right": "myhost"}, {"op": "=", "left": "comment", "right": "Managed by Ansible"}]}'
+    comment: "Managed by NSA"
 
 # ---------------------------------------------------------------------------
 # Deleting downtimes
@@ -329,7 +328,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     host_name: "myhost"
-    comment: "Patch window"
+    comment: "Managed by Ansible"
     state: "absent"
 
 - name: "Delete a specific downtime by its ID."
