@@ -145,8 +145,10 @@ domain_map:
 #   CHECKMK_VAR_SERVER_URL, CHECKMK_VAR_SITE,
 #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
 #   CHECKMK_VAR_VALIDATE_CERTS, CHECKMK_VAR_API_AUTH_TYPE,
+#   CHECKMK_VAR_API_AUTH_COOKIE,
 #   CHECKMK_VAR_FOLDER, CHECKMK_VAR_RECURSIVE,
-#   CHECKMK_VAR_EXCLUDE_TAGS (comma-separated), CHECKMK_VAR_LOWERCASE_HOSTS
+#   CHECKMK_VAR_EXCLUDE_TAGS (comma-separated), CHECKMK_VAR_LOWERCASE_HOSTS,
+#   CHECKMK_VAR_PROXY_URL, CHECKMK_VAR_PROXY_USER, CHECKMK_VAR_PROXY_PASS
 
 # Minimal inventory file when using environment variables:
 plugin: checkmk.general.checkmk
@@ -161,7 +163,9 @@ groupsources: ["hosttags", "sites"]
 # The supported variable names follow the scheme checkmk_var_<parameter>:
 #   checkmk_var_server_url, checkmk_var_site,
 #   checkmk_var_api_user, checkmk_var_api_secret,
-#   checkmk_var_validate_certs, checkmk_var_api_auth_type
+#   checkmk_var_validate_certs, checkmk_var_api_auth_type,
+#   checkmk_var_api_auth_cookie,
+#   checkmk_var_proxy_url, checkmk_var_proxy_user, checkmk_var_proxy_pass
 """
 
 import json
@@ -197,6 +201,9 @@ class InventoryModule(BaseInventoryPlugin):
         self.api_auth_type = None
         self.api_auth_cookie = None
         self.validate_certs = None
+        self.proxy_url = None
+        self.proxy_user = None
+        self.proxy_pass = None
         self.want_ipv4 = None
         self.folder = None
         self.recursive = False
@@ -291,6 +298,9 @@ class InventoryModule(BaseInventoryPlugin):
             self.api_auth_type = self.get_option("api_auth_type")
             self.api_auth_cookie = self.get_option("api_auth_cookie")
             self.validate_certs = self.get_option("validate_certs")
+            self.proxy_url = self.get_option("proxy_url")
+            self.proxy_user = self.get_option("proxy_user")
+            self.proxy_pass = self.get_option("proxy_pass")
             self.want_ipv4 = self.get_option("want_ipv4")
             self.groupsources = self.get_option("groupsources")
             self.folder = self.get_option("folder")
@@ -311,6 +321,9 @@ class InventoryModule(BaseInventoryPlugin):
             api_user=self.get_option("api_user"),
             api_secret=self.get_option("api_secret"),
             validate_certs=self.get_option("validate_certs"),
+            proxy_url=self.proxy_url,
+            proxy_user=self.proxy_user,
+            proxy_pass=self.proxy_pass,
         )
 
         self.hosttaggroups = self._get_taggroups(api)

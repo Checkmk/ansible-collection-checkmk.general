@@ -63,4 +63,31 @@ class ModuleDocFragment(object):
                   If not set the module will fall back to the environment variable C(CHECKMK_VAR_VALIDATE_CERTS).
             default: true
             type: bool
+        proxy_url:
+            description:
+                - The URL of your proxy server, e.g. C(http://proxy.example.com:3128).
+                - If no scheme is given, C(http://) is assumed.
+                - Only the C(http) and C(https) schemes are supported.
+                - The same proxy is used for HTTP and HTTPS requests, as the scheme
+                  describes how to reach the proxy, not which traffic it forwards.
+                - Hosts listed in the C(no_proxy) environment variable are still bypassed.
+            type: str
+        proxy_user:
+            description:
+                - The username to authenticate against your proxy server.
+                - Must be provided together with I(proxy_pass).
+            type: str
+        proxy_pass:
+            description:
+                - The password to authenticate against your proxy server.
+                - Must be provided together with I(proxy_user).
+            type: str
+    notes:
+        - Connection parameters can be sourced from environment variables of the form
+          C(CHECKMK_VAR_*) as documented per option. Modules do B(not) auto-resolve
+          Ansible variables named C(checkmk_var_*) by name. To source credentials from
+          inventory, group_vars or host_vars in a task, template them in explicitly
+          via Jinja (for example by setting C(api_user) to C({{ checkmk_var_api_user }})).
+          Automatic resolution of C(checkmk_var_*) variables is only available in the
+          lookup plugins and the inventory plugin.
     """

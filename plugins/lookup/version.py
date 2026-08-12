@@ -87,6 +87,9 @@ class LookupModule(LookupBase):
         api_user = self.get_option("api_user")
         api_secret = self.get_option("api_secret")
         validate_certs = self.get_option("validate_certs")
+        proxy_url = self.get_option("proxy_url")
+        proxy_user = self.get_option("proxy_user")
+        proxy_pass = self.get_option("proxy_pass")
 
         site_url = server_url + "/" + site
 
@@ -97,6 +100,9 @@ class LookupModule(LookupBase):
             api_user=api_user,
             api_secret=api_secret,
             validate_certs=validate_certs,
+            proxy_url=proxy_url,
+            proxy_user=proxy_user,
+            proxy_pass=proxy_pass,
         )
 
         response = json.loads(api.get("/version"))
