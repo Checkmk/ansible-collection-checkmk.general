@@ -103,7 +103,7 @@ EXAMPLES = r"""
 
 - name: "Create a tag group."
   checkmk.general.tag_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -122,7 +122,7 @@ EXAMPLES = r"""
 
 - name: "Create a tag group with auxiliary tags assigned to its values."
   checkmk.general.tag_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -145,7 +145,7 @@ EXAMPLES = r"""
 
 - name: "Delete a tag group."
   checkmk.general.tag_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -160,7 +160,7 @@ EXAMPLES = r"""
 
 - name: "Delete a tag group and repair affected hosts automatically."
   checkmk.general.tag_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -186,7 +186,7 @@ EXAMPLES = r"""
         title: "Datacenter 1"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

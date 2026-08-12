@@ -13,7 +13,6 @@ import json
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.modules.role import (
     BUILTIN_ROLES,

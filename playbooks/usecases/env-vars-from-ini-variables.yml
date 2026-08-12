@@ -6,7 +6,7 @@
 # You need the following section in your `ansible.cfg`:
 #
 # [checkmk_lookup]
-# server_url = https://myserver/
+# server_url = https://myserver
 # site = mysite
 # api_user = myuser
 # api_secret = mysecret

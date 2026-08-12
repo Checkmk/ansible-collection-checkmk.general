@@ -601,7 +601,7 @@ EXAMPLES = r"""
 
 - name: "Create an LDAP connection with minimal configuration."
   checkmk.general.ldap:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -618,7 +618,7 @@ EXAMPLES = r"""
 
 - name: "Delete an LDAP connection."
   checkmk.general.ldap:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -633,7 +633,7 @@ EXAMPLES = r"""
 
 - name: "Create a fully configured LDAP connection."
   checkmk.general.ldap:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -691,7 +691,7 @@ EXAMPLES = r"""
 
 - name: "Update the comment on all existing LDAP connections."
   checkmk.general.ldap:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -702,7 +702,7 @@ EXAMPLES = r"""
       general_properties:
         comment: "Managed by Ansible"
   loop: "{{ lookup('checkmk.general.ldap_connections',
-                        server_url='https://myserver/',
+                        server_url='https://myserver',
                         site='mysite',
                         api_user='myuser',
                         api_secret='mysecret',
@@ -733,7 +733,7 @@ EXAMPLES = r"""
           ldap_server: "ldap.example.com"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

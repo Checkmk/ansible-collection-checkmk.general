@@ -63,9 +63,8 @@ def test_populate_allgroups(inventory, mocker):
     inventory.get_option = mocker.MagicMock(side_effect=get_option(opts))
 
     api = CheckMKLookupAPI(
-        site_url=inventory.get_option("server_url")
-        + "/"
-        + inventory.get_option("site"),
+        server_url=inventory.get_option("server_url"),
+        site=inventory.get_option("site"),
         api_user=inventory.get_option("api_user"),
         api_secret=inventory.get_option("api_secret"),
         validate_certs=inventory.get_option("validate_certs"),
@@ -151,9 +150,8 @@ def test_populate_nogroups(inventory, mocker):
     inventory.get_option = mocker.MagicMock(side_effect=get_option(opts))
 
     api = CheckMKLookupAPI(
-        site_url=inventory.get_option("server_url")
-        + "/"
-        + inventory.get_option("site"),
+        server_url=inventory.get_option("server_url"),
+        site=inventory.get_option("site"),
         api_user=inventory.get_option("api_user"),
         api_secret=inventory.get_option("api_secret"),
         validate_certs=inventory.get_option("validate_certs"),
@@ -195,7 +193,8 @@ def fresh_inventory():
 @pytest.fixture()
 def api():
     return CheckMKLookupAPI(
-        site_url="http://127.0.0.1/stable",
+        server_url="http://127.0.0.1",
+        site="stable",
         api_user="cmkadmin",
         api_secret="cmk",
         validate_certs=False,

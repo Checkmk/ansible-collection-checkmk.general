@@ -115,7 +115,7 @@ EXAMPLES = r"""
 
 - name: "Schedule a host downtime starting now, ending in 2 hours."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -125,7 +125,7 @@ EXAMPLES = r"""
 
 - name: "Schedule a host downtime with a comment, starting now, ending in 2 hours."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -136,7 +136,7 @@ EXAMPLES = r"""
 
 - name: "Schedule a host downtime using absolute start and end times."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -147,7 +147,7 @@ EXAMPLES = r"""
 
 - name: "Schedule a host downtime starting in 30 minutes and lasting 4 hours."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -164,7 +164,7 @@ EXAMPLES = r"""
 
 - name: "Remove all downtimes from a host."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -173,7 +173,7 @@ EXAMPLES = r"""
 
 - name: "Remove only host downtimes matching a specific comment."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -187,7 +187,7 @@ EXAMPLES = r"""
 
 - name: "Schedule a downtime for a single service on a host."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -200,7 +200,7 @@ EXAMPLES = r"""
 
 - name: "Schedule downtimes for multiple services on a host using absolute times."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -218,7 +218,7 @@ EXAMPLES = r"""
 
 - name: "Remove all downtimes for specific services on a host."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -230,7 +230,7 @@ EXAMPLES = r"""
 
 - name: "Remove service downtimes matching a specific comment."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -247,7 +247,7 @@ EXAMPLES = r"""
 
 - name: "Schedule a host downtime for multiple hosts."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -262,7 +262,7 @@ EXAMPLES = r"""
 
 - name: "Remove host downtimes for multiple hosts."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -287,7 +287,7 @@ EXAMPLES = r"""
 
 - name: "Schedule a flexible host downtime triggered by a non-OK state."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -306,7 +306,7 @@ EXAMPLES = r"""
 
 - name: "Force a new host downtime even if one with the same comment already exists."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -332,7 +332,7 @@ EXAMPLES = r"""
     end_after:
       hours: 2
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
@@ -641,7 +641,7 @@ def run_module():
     }
 
     base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url"),
+        (module.params.get("server_url") or "").rstrip("/"),
         module.params.get("site"),
     )
 

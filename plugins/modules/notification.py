@@ -44,7 +44,7 @@ EXAMPLES = r"""
 
 - name: "Create an email notification rule"
   checkmk.general.notification:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -69,7 +69,7 @@ EXAMPLES = r"""
 
 - name: "Create a Slack notification rule"
   checkmk.general.notification:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -92,7 +92,7 @@ EXAMPLES = r"""
 
 - name: "Create a Microsoft Teams notification rule"
   checkmk.general.notification:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -120,7 +120,7 @@ EXAMPLES = r"""
 #       Keys absent from rule_config will not be modified in the existing rule.
 - name: "Update a notification rule"
   checkmk.general.notification:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -140,7 +140,7 @@ EXAMPLES = r"""
 
 - name: "Delete a notification rule by rule_id"
   checkmk.general.notification:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -151,7 +151,7 @@ EXAMPLES = r"""
 #       Use rule_id for unambiguous deletion.
 - name: "Delete a notification rule by description"
   checkmk.general.notification:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -185,7 +185,7 @@ EXAMPLES = r"""
           state: "enabled"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

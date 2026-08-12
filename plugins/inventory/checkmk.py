@@ -108,7 +108,7 @@ EXAMPLES = """
 # Group all hosts based on both tag groups and sites
 # and update ansible_host with the ip address from Checkmk:
 plugin: checkmk.general.checkmk
-server_url: "http://myserver/"
+server_url: "http://myserver"
 site: "mysite"
 api_user: "myuser"
 api_secret: "mysecret"
@@ -305,7 +305,8 @@ class InventoryModule(BaseInventoryPlugin):
             display.vvv("Excluding hosts with tags: %s" % self.exclude_tags)
 
         api = CheckMKLookupAPI(
-            site_url=self.get_option("server_url") + "/" + self.get_option("site"),
+            server_url=self.get_option("server_url"),
+            site=self.get_option("site"),
             api_auth_type=self.api_auth_type,
             api_auth_cookie=self.api_auth_cookie,
             api_user=self.get_option("api_user"),

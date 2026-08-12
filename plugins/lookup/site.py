@@ -45,7 +45,7 @@ EXAMPLES = """
     site_config: "{{
       lookup('checkmk.general.site',
         'myremotesite',
-        server_url='https://myserver/',
+        server_url='https://myserver',
         site='mysite',
         api_user='myuser',
         api_secret='mysecret',
@@ -66,7 +66,7 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "Site myremotesite: {{ site_config }}"
   vars:
-    checkmk_var_server_url: "https://myserver/"
+    checkmk_var_server_url: "https://myserver"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
@@ -102,10 +102,9 @@ class LookupModule(LookupBase):
         api_secret = self.get_option("api_secret")
         validate_certs = self.get_option("validate_certs")
 
-        site_url = server_url + "/" + site
-
         api = CheckMKLookupAPI(
-            site_url=site_url,
+            server_url=server_url,
+            site=site,
             api_auth_type=api_auth_type,
             api_auth_cookie=api_auth_cookie,
             api_user=api_user,

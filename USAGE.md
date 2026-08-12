@@ -15,7 +15,7 @@ We encourage you - in accordance with Ansible Best Practices - to always use **F
   tasks:
     - name: "Run activation."
       checkmk.general.activation:
-        server_url: "http://myserver/"
+        server_url: "http://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -39,7 +39,7 @@ You can set default values for module parameters at the play level. These defaul
 - hosts: all
   module_defaults:
     group/checkmk.general.checkmk:
-      server_url: "http://myserver/"
+      server_url: "http://myserver"
       site: "mysite"
       api_user: "myuser"
       api_secret: "mysecret"
@@ -57,7 +57,7 @@ You can set default values for module parameters at the play level. These defaul
 You can also define these parameters as environment variables. Ansible will automatically pick them up. This is particularly useful for sensitive information like secrets.
 
 ```bash
-export CHECKMK_VAR_SERVER_URL="http://myserver/"
+export CHECKMK_VAR_SERVER_URL="http://myserver"
 export CHECKMK_VAR_SITE="mysite"
 export CHECKMK_VAR_API_USER="myuser"
 export CHECKMK_VAR_API_SECRET="mysecret"
@@ -69,7 +69,7 @@ Ansible can read variables from an INI file (e.g., `ansible.cfg` or a custom fil
 
 ```ini
 [checkmk]
-server_url = http://myserver/
+server_url = http://myserver
 site = mysite
 api_user = myuser
 api_secret = mysecret
@@ -113,7 +113,7 @@ This example demonstrates how to create or update a host in Checkmk:
   tasks:
     - name: "Create or update a host."
       checkmk.general.host:
-        server_url: "http://myserver/"
+        server_url: "http://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -165,7 +165,7 @@ To use the plugin, create a YAML file (e.g., `checkmk.yml`) with the following c
 
 ```yaml
 plugin: checkmk.general.checkmk
-server_url: "http://myserver/"
+server_url: "http://myserver"
 site: "mysite"
 api_user: "myuser"
 api_secret: "mysecret"
