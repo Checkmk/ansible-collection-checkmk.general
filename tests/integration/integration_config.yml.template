@@ -13,7 +13,7 @@
 # matrix. Don't commit your local copy.
 
 # Checkmk version to install/test.
-# checkmk_var_version: "2.5.0p9"
+# checkmk_var_version: "2.5.0p11"
 
 # Checkmk edition.
 # checkmk_var_edition: "ultimatemt"
