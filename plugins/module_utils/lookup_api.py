@@ -94,13 +94,34 @@ class CheckMKLookupAPI:
             )
             return to_text(raw_response.read())
         except HTTPError as e:
-            if e.code in HTTP_ERROR_CODES:
-                return json.dumps(
-                    {"code": e.code, "msg": HTTP_ERROR_CODES[e.code], "url": url}
-                )
-            else:
-                return json.dumps({"code": e.code, "msg": e.reason, "url": url})
+            msg = HTTP_ERROR_CODES.get(e.code, e.reason)
+            detail = self._error_detail(e)
+            if detail:
+                msg = "%s %s" % (msg, detail)
+            return json.dumps({"code": e.code, "msg": msg, "url": url})
         except URLError as e:
             return json.dumps({"code": 0, "msg": str(e), "url": url})
         except Exception as e:
             return json.dumps({"code": 0, "msg": str(e), "url": url})
+
+    @staticmethod
+    def _error_detail(error):
+        """Extract the human readable part of a Checkmk REST API error body.
+
+        The canned messages in HTTP_ERROR_CODES say what went wrong but not
+        which parameter caused it, which matters for endpoints that validate
+        a payload.
+        """
+        try:
+            body = json.loads(to_text(error.read()))
+        except Exception:
+            return ""
+
+        if not isinstance(body, dict):
+            return ""
+
+        parts = [body[key] for key in ("detail", "fields") if body.get(key)]
+
+        return " ".join(
+            part if isinstance(part, str) else json.dumps(part) for part in parts
+        )
