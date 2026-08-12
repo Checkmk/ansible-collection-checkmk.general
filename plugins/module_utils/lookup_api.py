@@ -85,12 +85,27 @@ class CheckMKLookupAPI:
     def get(self, endpoint="", parameters=None):
         url = self.url + endpoint
 
-        try:
-            if parameters:
-                url = "%s?%s" % (url, urlencode(parameters))
+        if parameters:
+            # doseq renders list values as repeated keys (`columns=a&columns=b`),
+            # which is how the REST API expects array query parameters.
+            url = "%s?%s" % (url, urlencode(parameters, doseq=True))
 
+        return self._request(url)
+
+    def post(self, endpoint="", data=None):
+        url = self.url + endpoint
+        body = json.dumps(data if data is not None else {}).encode("utf-8")
+
+        return self._request(url, method="POST", data=body)
+
+    def _request(self, url, method="GET", data=None):
+        try:
             raw_response = open_url(
-                url, headers=self.headers, validate_certs=self.validate_certs
+                url,
+                method=method,
+                data=data,
+                headers=self.headers,
+                validate_certs=self.validate_certs,
             )
             return to_text(raw_response.read())
         except HTTPError as e:
@@ -110,7 +125,7 @@ class CheckMKLookupAPI:
 
         The canned messages in HTTP_ERROR_CODES say what went wrong but not
         which parameter caused it, which matters for endpoints that validate
-        a payload.
+        a payload, e.g. a Livestatus query expression.
         """
         try:
             body = json.loads(to_text(error.read()))
