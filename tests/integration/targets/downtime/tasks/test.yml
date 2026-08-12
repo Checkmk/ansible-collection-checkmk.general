@@ -3,7 +3,7 @@
 # Downtime module integration tests
 # =============================================================================
 # Beyond simply running the module, these tests assert the `changed` flag so
-# that idempotency and the modify-in-place behaviour (issue #672) are actually
+# that idempotency and the modify-in-place behaviour are actually
 # verified rather than merely exercised.
 # =============================================================================
 
@@ -16,7 +16,7 @@
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
-  checkmk.general.host:
+  host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -30,7 +30,7 @@
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Discover hosts."
-  checkmk.general.discovery:
+  discovery:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -40,7 +40,7 @@
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run activation."
-  checkmk.general.activation:
+  activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -58,7 +58,7 @@
 # No downtime_type is given, so the query hits the downtimes table directly and
 # matches both host and service downtimes regardless of their comment.
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Purge leftover downtimes from previous runs."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -71,17 +71,17 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 # -----------------------------------------------------------------------------
-# A. Host downtimes: create, idempotency and modify-in-place (#672)
+# A. Host downtimes: create, idempotency and modify-in-place
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create host downtime (absolute)."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: "Patch window"
+    comment: "Create host downtime (absolute)"
     start_time: "{{ checkmk_var_dt_start }}"
     end_time: "{{ checkmk_var_dt_end }}"
   register: __checkmk_var_dt_create
@@ -98,13 +98,13 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create the same host downtime again."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: "Patch window"
+    comment: "Create host downtime (absolute)"
     start_time: "{{ checkmk_var_dt_start }}"
     end_time: "{{ checkmk_var_dt_end }}"
   register: __checkmk_var_dt_create_again
@@ -116,14 +116,14 @@
     fail_msg: "Re-creating an identical host downtime reported a change."
     success_msg: "Re-creating an identical host downtime was idempotent."
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Shorten the host downtime (issue #672)."
-  checkmk.general.downtime:
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Shorten the host downtime."
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: "Patch window"
+    comment: "Create host downtime (absolute)"
     start_time: "{{ checkmk_var_dt_start }}"
     end_time: "{{ checkmk_var_dt_end_short }}"
   register: __checkmk_var_dt_shorten
@@ -132,7 +132,7 @@
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the host downtime was modified."
   ansible.builtin.assert:
     that: "__checkmk_var_dt_shorten.results | map(attribute='changed') | unique | list == [true]"
-    fail_msg: "Shortening the end time did not report a change (issue #672 not solved)."
+    fail_msg: "Shortening the end time did not report a change."
     success_msg: "The host downtime was shortened."
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
@@ -140,13 +140,13 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Shorten again (should be idempotent)."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: "Patch window"
+    comment: "Create host downtime (absolute)"
     start_time: "{{ checkmk_var_dt_start }}"
     end_time: "{{ checkmk_var_dt_end_short }}"
   register: __checkmk_var_dt_shorten_again
@@ -159,13 +159,13 @@
     success_msg: "The shortened host downtime is idempotent."
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Force a second host downtime."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: "Patch window"
+    comment: "Create host downtime (absolute)"
     start_time: "{{ checkmk_var_dt_start }}"
     end_time: "{{ checkmk_var_dt_end_short }}"
     force: true
@@ -183,13 +183,13 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove host downtimes with comment."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: "Patch window"
+    comment: "Create host downtime (absolute)"
     state: absent
   register: __checkmk_var_dt_del_host
   loop: "{{ checkmk_var_hosts }}"
@@ -205,13 +205,13 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove host downtimes again (idempotent)."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: "Patch window"
+    comment: "Create host downtime (absolute)"
     state: absent
   register: __checkmk_var_dt_del_host_again
   loop: "{{ checkmk_var_hosts }}"
@@ -227,13 +227,13 @@
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create service downtimes."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: "Service window"
+    comment: "Service downtime"
     start_time: "{{ checkmk_var_dt_start }}"
     end_time: "{{ checkmk_var_dt_end }}"
     service_descriptions:
@@ -252,13 +252,13 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Re-create the same service downtimes."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: "Service window"
+    comment: "Service downtime"
     start_time: "{{ checkmk_var_dt_start }}"
     end_time: "{{ checkmk_var_dt_end }}"
     service_descriptions:
@@ -273,13 +273,13 @@
     success_msg: "Re-creating identical service downtimes was idempotent."
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Add one more service to the window."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: "Service window"
+    comment: "Service downtime"
     start_time: "{{ checkmk_var_dt_start }}"
     end_time: "{{ checkmk_var_dt_end }}"
     service_descriptions:
@@ -299,13 +299,13 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete service downtimes with comment."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: "Service window"
+    comment: "Service downtime"
     service_descriptions:
       - "Check_MK"
       - "Check_MK Discovery"
@@ -324,7 +324,7 @@
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a host downtime to update by ID."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -351,7 +351,7 @@
                           | first) }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update that downtime by its ID."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -388,7 +388,7 @@
                           | first) }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update by ID again (idempotent)."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -406,7 +406,7 @@
     success_msg: "The by-ID update is idempotent."
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the by-ID downtime again by ID."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -427,7 +427,7 @@
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create host downtimes for all matching hosts by query."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -450,7 +450,7 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create by query again (idempotent)."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -469,7 +469,7 @@
     success_msg: "Creating host downtimes by query is idempotent."
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Shorten all matching downtimes by query."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -490,7 +490,7 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Shorten by query again (idempotent)."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -507,7 +507,7 @@
     success_msg: "Updating downtimes by query is idempotent."
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete all matching downtimes by query."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -528,7 +528,7 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete by query again (idempotent)."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -549,7 +549,7 @@
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create service downtimes by query."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -572,7 +572,7 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete service downtimes by query."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -593,7 +593,7 @@
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create downtime without comment (absolute time)."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -615,7 +615,7 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete downtime without comment."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -637,7 +637,7 @@
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create relative downtime."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -667,7 +667,7 @@
     timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete relative downtime."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -691,7 +691,7 @@
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Present with an unknown downtime_id must fail."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -713,7 +713,7 @@
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove any remaining host downtimes."
-  checkmk.general.downtime:
+  downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -723,7 +723,7 @@
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
-  checkmk.general.host:
+  host:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -734,7 +734,7 @@
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run activation."
-  checkmk.general.activation:
+  activation:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -742,7 +742,7 @@
     force_foreign_changes: true
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run module using environment variables."
-  checkmk.general.downtime:
+  downtime:
     host_name: "test1.tld"
     comment: "Env-based window"
     state: absent
