@@ -6,9 +6,12 @@ checkmk-general-*.tar.gz
 .vagrant/
 build/
 tests/output
+tests/integration/integration_config.yml
 playbooks/vars/config.yml
 playbooks/test*.yml
 *venv*/
 .direnv/
 .vscode/
 uv.lock
+__pycache__/
+*.py[cod]

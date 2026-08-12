@@ -131,7 +131,7 @@ EXAMPLES = r"""
 
 - name: "Create a host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -141,7 +141,7 @@ EXAMPLES = r"""
 
 - name: "Delete a host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -156,7 +156,7 @@ EXAMPLES = r"""
 
 - name: "Create a host with an IP address and alias."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -169,7 +169,7 @@ EXAMPLES = r"""
 
 - name: "Create a host pinned to a specific monitoring site."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -185,7 +185,7 @@ EXAMPLES = r"""
 
 - name: "Update specific attributes without touching others."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -196,7 +196,7 @@ EXAMPLES = r"""
 
 - name: "Set a custom tag on a host (note the 'tag_' prefix)."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -207,7 +207,7 @@ EXAMPLES = r"""
 
 - name: "Remove specific attributes from a host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -224,7 +224,7 @@ EXAMPLES = r"""
 
 - name: "Move a host to a different folder."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -238,7 +238,7 @@ EXAMPLES = r"""
 
 - name: "Create a cluster host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -252,7 +252,7 @@ EXAMPLES = r"""
 
 - name: "Add a node to an existing cluster host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -263,7 +263,7 @@ EXAMPLES = r"""
 
 - name: "Remove a node from a cluster host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -287,7 +287,7 @@ EXAMPLES = r"""
     folder: "/"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
@@ -311,6 +311,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
+    normalize_folder,
     result_as_dict,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
@@ -366,7 +367,7 @@ class HostAPI(CheckmkAPI):
         self.extended_functionality = self.params.get("extended_functionality", True)
 
         if self.params.get("folder"):
-            self.params["folder"] = self._normalize_folder(self.params.get("folder"))
+            self.params["folder"] = normalize_folder(self.params.get("folder"))
 
         self.desired = {}
 
@@ -455,18 +456,6 @@ class HostAPI(CheckmkAPI):
                 self.module.exit_json(**result_as_dict(result))
             else:
                 self.module.warn(msg)
-
-    def _normalize_folder(self, folder):
-        if folder in ["", " ", "/", "//", "~"]:
-            return "/"
-
-        if not folder.startswith("/"):
-            folder = "/%s" % folder
-
-        if folder.endswith("/"):
-            folder = folder.rstrip("/")
-
-        return folder
 
     def _build_default_endpoint(self):
         return "%s/%s" % (
@@ -648,9 +637,7 @@ class HostAPI(CheckmkAPI):
                     if "network_scan_results" in value:
                         value.pop("network_scan_results")
                 self.current[key] = value
-            self.current["folder"] = self._normalize_folder(
-                self.current.get("folder", "/")
-            )
+            self.current["folder"] = normalize_folder(self.current.get("folder", "/"))
 
             self.etag = result.etag
 
@@ -692,7 +679,7 @@ class HostAPI(CheckmkAPI):
             data.pop("remove_attributes")
 
         if not data.get("folder"):
-            data["folder"] = self._normalize_folder("/")
+            data["folder"] = normalize_folder("/")
 
         if self.module.check_mode:
             return self._check_output("create")

@@ -31,7 +31,11 @@ class CheckmkAPI:
         self.module = module
         self.logger = logger
         self.params = self.module.params
-        server = self.params.get("server_url")
+        # Tolerate a trailing slash on server_url. Without it, a server_url
+        # ending in a slash produces a doubled slash in front of the site name.
+        # The Checkmk API happens to accept that, but other consumers of the
+        # same variable are not as forgiving.
+        server = (self.params.get("server_url") or "").rstrip("/")
         site = self.params.get("site")
         self.url = "%s/%s/check_mk/api/1.0" % (server, site)
 

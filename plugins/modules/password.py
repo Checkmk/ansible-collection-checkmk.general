@@ -75,6 +75,13 @@ options:
         choices: ["present", "absent"]
         type: str
 
+seealso:
+    - module: checkmk.general.user
+    - module: checkmk.general.rule
+    - name: "Password store: The official user guide."
+      description: "The official user guide on the Checkmk password store."
+      link: "https://docs.checkmk.com/latest/en/password_store.html"
+
 author:
     - Max Sickora (@max-checkmk)
 """
@@ -88,7 +95,7 @@ EXAMPLES = r"""
 
 - name: "Create a password."
   checkmk.general.password:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -96,7 +103,7 @@ EXAMPLES = r"""
     title: "My Password"
     comment: "Managed by Ansible"
     password: "topsecret"
-    owner: "admin"
+    editable_by: "admin"
     shared:
       - "all"
     state: "present"
@@ -104,7 +111,7 @@ EXAMPLES = r"""
 
 - name: "Create a password with all optional fields."
   checkmk.general.password:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -114,7 +121,7 @@ EXAMPLES = r"""
     comment: "Managed by Ansible"
     documentation_url: "https://docs.example.com/mypassword"
     password: "topsecret"
-    owner: "admin"
+    editable_by: "admin"
     shared:
       - "all"
     state: "present"
@@ -122,7 +129,7 @@ EXAMPLES = r"""
 
 - name: "Delete a password."
   checkmk.general.password:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -147,7 +154,7 @@ EXAMPLES = r"""
     state: "present"
   no_log: true
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

@@ -51,6 +51,15 @@ notes:
 seealso:
     - plugin: checkmk.general.bakery
       plugin_type: lookup
+    - module: checkmk.general.activation
+    - module: checkmk.general.host
+    - module: checkmk.general.rule
+    - name: "The Agent Bakery in Checkmk: The official user guide."
+      description: "The official user guide on the agent bakery."
+      link: "https://docs.checkmk.com/latest/en/wato_monitoringagents.html#bakery"
+    - name: "Automatic Agent Updates in Checkmk: The official user guide."
+      description: "The official user guide on automatic agent updates."
+      link: "https://docs.checkmk.com/latest/en/agent_deployment.html"
 
 author:
     - Max Sickora (@max-checkmk)
@@ -63,7 +72,7 @@ EXAMPLES = r"""
 
 - name: "Bake all agents without signing."
   checkmk.general.bakery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -71,7 +80,7 @@ EXAMPLES = r"""
 
 - name: "Sign all agents with an existing signing key."
   checkmk.general.bakery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -81,7 +90,7 @@ EXAMPLES = r"""
 
 - name: "Bake and sign all agents in one step."
   checkmk.general.bakery:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -102,7 +111,7 @@ EXAMPLES = r"""
   checkmk.general.bakery:
     state: "baked"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

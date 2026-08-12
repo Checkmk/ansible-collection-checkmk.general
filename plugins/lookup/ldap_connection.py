@@ -18,8 +18,11 @@ DOCUMENTATION = """
     options:
 
       _terms:
-        description: ldap connection ID
+        description:
+          - One or more LDAP connection IDs, either as separate terms or as a single list.
         required: True
+        type: list
+        elements: str
 
     extends_documentation_fragment: [checkmk.general.common_lookup]
 
@@ -45,7 +48,7 @@ EXAMPLES = """
     ldap_config: "{{
       lookup('checkmk.general.ldap_connection',
         'my_ldap_connection',
-        server_url='https://myserver/',
+        server_url='https://myserver',
         site='mysite',
         api_user='myuser',
         api_secret='mysecret',
@@ -66,7 +69,7 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "LDAP connection: {{ ldap_config }}"
   vars:
-    checkmk_var_server_url: "https://myserver/"
+    checkmk_var_server_url: "https://myserver"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
@@ -105,10 +108,9 @@ class LookupModule(LookupBase):
         api_secret = self.get_option("api_secret")
         validate_certs = self.get_option("validate_certs")
 
-        site_url = server_url + "/" + site
-
         api = CheckMKLookupAPI(
-            site_url=site_url,
+            server_url=server_url,
+            site=site,
             # api_auth_type=api_auth_type,
             # api_auth_cookie=api_auth_cookie,
             api_user=api_user,
@@ -118,7 +120,7 @@ class LookupModule(LookupBase):
 
         ret = []
 
-        for term in terms:
+        for term in self._flatten(terms):
             response = json.loads(api.get("/objects/ldap_connection/" + term))
 
             if "code" in response:

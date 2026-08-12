@@ -1,0 +1,6 @@
+---
+minor_changes:
+  - All lookup modules - REST API errors now include the detail Checkmk reports
+    about them, instead of only the generic message belonging to the HTTP status
+    code. This makes validation failures diagnosable without inspecting the API
+    by hand.

@@ -30,6 +30,11 @@ uv run ansible-test integration --docker
 cd roles/server && uv run molecule test -s 2.5    # scenarios: 2.3 / 2.4 / 2.5 (default/ is a symlink to 2.5)
 ```
 
+Run the unit tests through `ansible-test`. If you ever fall back to invoking `pytest` directly,
+run `tests/unit/plugins/module_utils/` and `tests/unit/plugins/inventory/` as **separate**
+invocations: the inventory `conftest.py` replaces `module_utils.lookup_api` in `sys.modules` with
+a stub, which leaks into the `module_utils` tests when both are collected in one session.
+
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the human-oriented guide.
 
 ## Code Style
@@ -46,7 +51,8 @@ plugins/
   modules/         modules wrapping the Checkmk REST API
   inventory/       dynamic inventory plugin
   lookup/          lookup plugins
-  module_utils/    api.py (REST), differ.py, utils.py, discovery_<ver>.py
+  module_utils/    api.py (REST), lookup_api.py (lookups/inventory),
+                   proxy.py, differ.py, utils.py, discovery_<ver>.py
   doc_fragments/   reusable DOCUMENTATION blocks
 roles/
   {agent,server}/  install/manage Checkmk agent / server site
@@ -69,8 +75,18 @@ Modules and tests are name-aligned: `plugins/modules/host.py` ↔ `tests/integra
 
 - **Do** copy an existing module / lookup / integration target when adding a new one.
 - **Do** run `uv run ansible-test sanity --docker` after making changes.
-- **Don't** reimplement HTTP / REST plumbing — reuse [`plugins/module_utils/api.py`](plugins/module_utils/api.py).
+- **Don't** reimplement HTTP / REST plumbing — reuse [`plugins/module_utils/api.py`](plugins/module_utils/api.py)
+  (modules) or [`plugins/module_utils/lookup_api.py`](plugins/module_utils/lookup_api.py) (lookups / inventory).
+  Both already route requests through the proxy options.
+- **Don't** build proxy URLs or touch the `*_proxy` environment variables by hand — use
+  [`plugins/module_utils/proxy.py`](plugins/module_utils/proxy.py). A module that calls `fetch_url`
+  directly instead of going through `CheckmkAPI` imports `fetch_url_via_proxy as fetch_url` from it,
+  so every call site is covered (see `host_group` / `contact_group` / `service_group`).
 - **Don't** use `site` as a top-level module option; it collides with `base_argument_spec()` — remap to e.g. `target_site`.
+- **Don't** commit build artefacts. `__pycache__/` and `*.py[cod]` are gitignored; never force-add them.
+- **Don't** add a new connection option to a doc fragment without wiring it through *every* consumer.
+  `common_lookup.py` is shared by all 18 lookup plugins **and** the inventory plugin — a documented
+  but unwired option fails silently, which is worse than no option at all.
 
 ## Adding a new module / lookup plugin
 

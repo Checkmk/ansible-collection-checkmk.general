@@ -1,0 +1,2 @@
+minor_changes:
+  - Remove the unused dependency on the ``ansible.utils`` collection.

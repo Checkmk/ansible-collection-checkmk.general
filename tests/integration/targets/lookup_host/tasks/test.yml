@@ -58,6 +58,23 @@
               }}"
   loop: "{{ __checkmk_var_hosts_list }}"
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get several hosts from a single list term."
+  ansible.builtin.set_fact:
+    __checkmk_var_flatten_list: "{{ lookup('checkmk.general.host',
+                                    checkmk_var_hosts | map(attribute='name') | list,
+                                    server_url=checkmk_var_server_url,
+                                    site=outer_item.site,
+                                    validate_certs=False,
+                                    api_user=checkmk_var_api_user,
+                                    api_secret=checkmk_var_api_secret,
+                                    wantlist=True) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify one result per list entry."
+  ansible.builtin.assert:
+    that: "__checkmk_var_flatten_list | length == checkmk_var_hosts | map(attribute='name') | list | length"
+    fail_msg: "Expected {{ checkmk_var_hosts | map(attribute='name') | list | length }} results, but found {{ __checkmk_var_flatten_list | length }}!"
+    success_msg: "Expected {{ checkmk_var_hosts | map(attribute='name') | list | length }} results and found them."
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Use variables from inventory."
   block:
 

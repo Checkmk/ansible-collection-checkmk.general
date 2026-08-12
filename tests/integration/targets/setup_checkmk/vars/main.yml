@@ -1,0 +1,41 @@
+---
+# Mapping of edition names to omd version-string identifiers for Checkmk < 2.5.
+# omd uses short codes (cre, cee, ...) in its version strings, not package-name
+# prefixes (raw, enterprise, ...) nor the new names (community, pro, ...).
+# This can be reverted, once 2.5.0 is the oldest supported version.
+__checkmk_server_omd_legacy_edition_ids:
+  community: cre
+  pro: cee
+  ultimate: cce
+  ultimatemt: cme
+
+# Maps current edition identifiers to download URL identifiers for Checkmk < 2.5.
+__checkmk_var_legacy_edition_mapping:
+  community: raw
+  pro: enterprise
+  ultimate: cloud
+  ultimatemt: managed
+
+# Maps current edition identifiers to download URL identifiers for Checkmk >= 2.5.
+__checkmk_var_modern_edition_mapping:
+  community: community
+  pro: pro
+  ultimate: ultimate
+  ultimatemt: ultimatemt
+
+# Bringing the above two mappings back together.
+__checkmk_server_edition_mapping: >-
+  {{
+    ( (item.version | regex_replace('p.*', '')) is version('2.5', '<') )
+    | ternary(__checkmk_var_legacy_edition_mapping, __checkmk_var_modern_edition_mapping)
+  }}
+
+# Dictionary for testing the modules with environment variables.
+# Consumed by test targets that exercise the env-var auth path.
+__checkmk_var_testing_environment:
+  CHECKMK_VAR_SERVER_URL: "{{ checkmk_var_server_url }}"
+  CHECKMK_VAR_SITE: "{{ outer_item.site }}"
+  CHECKMK_VAR_VALIDATE_CERTS: "false"
+  CHECKMK_VAR_API_AUTH_TYPE: "bearer"
+  CHECKMK_VAR_API_USER: "{{ checkmk_var_api_user }}"
+  CHECKMK_VAR_API_SECRET: "{{ checkmk_var_api_secret }}"

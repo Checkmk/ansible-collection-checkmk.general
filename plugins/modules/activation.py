@@ -52,6 +52,9 @@ seealso:
       plugin_type: lookup
     - plugin: checkmk.general.activations
       plugin_type: lookup
+    - name: "Activating changes in Checkmk: The official user guide."
+      description: "The official user guide on activating changes."
+      link: "https://docs.checkmk.com/latest/en/wato.html#activate_changes"
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -64,7 +67,7 @@ EXAMPLES = r"""
 
 - name: "Activate changes on all sites."
   checkmk.general.activation:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -72,7 +75,7 @@ EXAMPLES = r"""
 
 - name: "Activate changes on all sites and wait for completion."
   checkmk.general.activation:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -85,7 +88,7 @@ EXAMPLES = r"""
 
 - name: "Activate changes on a specific site."
   checkmk.general.activation:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -95,7 +98,7 @@ EXAMPLES = r"""
 
 - name: "Activate changes on multiple specific sites."
   checkmk.general.activation:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -112,7 +115,7 @@ EXAMPLES = r"""
 
 - name: "Activate changes including changes made by other users."
   checkmk.general.activation:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -121,7 +124,7 @@ EXAMPLES = r"""
 
 - name: "Activate changes including foreign changes and wait for completion."
   checkmk.general.activation:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -142,7 +145,7 @@ EXAMPLES = r"""
   checkmk.general.activation:
   run_once: true
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

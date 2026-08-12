@@ -104,7 +104,7 @@ EXAMPLES = r"""
 
 - name: "Create a custom monitoring role."
   checkmk.general.role:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -115,7 +115,7 @@ EXAMPLES = r"""
 
 - name: "Create a custom role with tailored permissions."
   checkmk.general.role:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -131,7 +131,7 @@ EXAMPLES = r"""
 
 - name: "Delete a custom role."
   checkmk.general.role:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -144,7 +144,7 @@ EXAMPLES = r"""
 
 - name: "Update permissions on an existing custom role."
   checkmk.general.role:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -155,7 +155,7 @@ EXAMPLES = r"""
 
 - name: "Modify permissions on the built-in user role."
   checkmk.general.role:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -180,7 +180,7 @@ EXAMPLES = r"""
     based_on: "user"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

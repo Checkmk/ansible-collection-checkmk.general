@@ -187,3 +187,20 @@
     groups: "{{ checkmk_var_contact_groups_create }}"
     state: "present"
   environment: "{{ __checkmk_var_testing_environment }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables (cleanup)."
+  contact_group:
+    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    groups: "{{ checkmk_var_contact_groups_create }}"
+    state: "absent"
+  environment: "{{ __checkmk_var_testing_environment }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"

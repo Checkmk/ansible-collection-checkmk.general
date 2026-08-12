@@ -4,6 +4,73 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v8.3.0
+======
+
+Release Summary
+---------------
+
+Tag along for these features and fixes.
+
+Minor Changes
+-------------
+
+- Add support in server role for optional parameter OMD create UID and GID
+- Agent role - Add missing tags to several tasks and fix consistency issues.
+- Agent role - Ten role variables are now declared in ``meta/argument_specs.yml`` and are therefore type checked when the role starts, which they were not before. Most values are converted automatically, but a value that cannot be converted now fails the run instead of being passed through unchecked. A non numeric entry in ``checkmk_agent_port`` for example now aborts the role.
+- Server role - Add missing tags to several tasks and fix consistency issues.
+- Server role - Ten role variables are now declared in ``meta/argument_specs.yml`` and are therefore type checked when the role starts, which they were not before. Most values are converted automatically, but a value that cannot be converted now fails the run instead of being passed through unchecked. A non numeric entry in ``checkmk_server_ports`` for example now aborts the role.
+
+Bugfixes
+--------
+
+- Agent role - Raise ``min_ansible_version`` in ``meta/main.yml`` from ``2.4`` to ``2.18``, matching ``requires_ansible`` in ``meta/runtime.yml``. This is no functional change, just an alignment.
+- Server role - Fix MKP management tasks failing when connecting as an unprivileged user without ACL support, by using ``su`` to switch to the site user instead of relying on ``become_user``.
+- Server role - Raise ``min_ansible_version`` in ``meta/main.yml`` from ``2.4`` to ``2.18``, matching ``requires_ansible`` in ``meta/runtime.yml``. This is no functional change, just an alignment.
+
+v8.2.0
+======
+
+Release Summary
+---------------
+
+Inventories and Chameleons.
+
+Minor Changes
+-------------
+
+- Inventory plugin - Add ``domain_map`` option to append a domain suffix to hostnames based on host tags.
+- Inventory plugin - Add ``exclude_tags`` option to exclude hosts with certain tags from the inventory.
+- Inventory plugin - Add ``folder`` and ``recursive`` options to restrict the inventory to a Checkmk folder and optionally its subfolders.
+- Inventory plugin - Add ``lowercase_hosts`` option to convert hostnames to lowercase.
+- Server role - Add support for SLES 16.
+- Server role - Switch web server handler from ``httpd` to ``Apache2`` for SLES 16.
+
+v8.1.0
+======
+
+Release Summary
+---------------
+
+Quality of life and security improvements for the server role.
+
+Minor Changes
+-------------
+
+- Remove the unused dependency on the ``ansible.utils`` collection.
+- Server role - Apply the OMD site configuration before starting the site. Previously, a stopped site (e.g. freshly created or just updated) with ``omd_config`` defined was started first, only to be stopped again immediately to apply the configuration. Now the configuration is applied while the site is still stopped and the site is started only once.
+- Server role - Use the site or package name as the loop label in the site and MKP management tasks for cleaner output. The ``no_log`` logic was also improved to be as little obstructive as possible.
+
+Security Fixes
+--------------
+
+- Server role - The MKP management tasks no longer show the whole package dictionary, including a potentially configured ``download_password``, as the loop label. Additionally, the MKP download task now honors ``checkmk_server_no_log`` when a ``download_password`` is configured.
+
+Bugfixes
+--------
+
+- Server role - Only update the site admin password when it actually differs from the configured one.
+
 v8.0.0
 ======
 

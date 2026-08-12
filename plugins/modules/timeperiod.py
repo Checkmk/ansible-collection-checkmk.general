@@ -69,7 +69,7 @@ EXAMPLES = r"""
 
 - name: "Create a time period covering business hours on weekdays."
   checkmk.general.timeperiod:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -100,7 +100,7 @@ EXAMPLES = r"""
 
 - name: "Create a time period using 'all' as a shorthand for every day."
   checkmk.general.timeperiod:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -115,7 +115,7 @@ EXAMPLES = r"""
 
 - name: "Create a time period with holiday exceptions."
   checkmk.general.timeperiod:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -139,7 +139,7 @@ EXAMPLES = r"""
 
 - name: "Create a time period that excludes another time period."
   checkmk.general.timeperiod:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -156,7 +156,7 @@ EXAMPLES = r"""
 
 - name: "Delete a time period."
   checkmk.general.timeperiod:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -183,7 +183,7 @@ EXAMPLES = r"""
             end: "17:00"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

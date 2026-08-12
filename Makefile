@@ -163,13 +163,13 @@ tests-molecule-agent: vm
 	@vagrant ssh collection -c "\
 	export LC_ALL=C.UTF-8 && \
 	cd $(COLLECTION_ROOT)/roles/agent/ && \
-	uv run molecule test -s 2.4.0"
+	uv run molecule test"
 
 tests-molecule-server: vm
 	@vagrant ssh collection -c "\
 	export LC_ALL=C.UTF-8 && \
 	cd $(COLLECTION_ROOT)/roles/server/ && \
-	uv run molecule test -s 2.4.0"
+	uv run molecule test"
 
 tests-integration: vm
 	@vagrant ssh collection -c "\

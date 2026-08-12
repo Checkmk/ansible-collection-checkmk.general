@@ -19,7 +19,7 @@ galaxy_info:
   # - CC-BY-4.0
   license: GPL-2.0-or-later
 
-  min_ansible_version: "2.4"
+  min_ansible_version: "2.18"
 
   # If this a Container Enabled role, provide the minimum Ansible Container version.
   # min_ansible_container_version:
@@ -30,16 +30,24 @@ galaxy_info:
   # To view available platforms and versions (or releases), visit:
   # https://galaxy.ansible.com/api/v1/platforms/
   #
+  # Keep this list in sync with '__checkmk_server_stable_os' in defaults/main.yml,
+  # which is the authoritative list of explicitly supported distributions.
   platforms:
     - name: Debian
       versions:
-        - buster
-        - bullseye
+        - all
     - name: Ubuntu
       versions:
-        - bionic
-        - focal
-        - jammy
+        - all
+    - name: EL
+      versions:
+        - all
+    - name: opensuse
+      versions:
+        - all
+    - name: SLES
+      versions:
+        - all
 
   galaxy_tags: [checkmk, monitoring, server]
   # List tags for your role here, one per line. A tag is a keyword that describes

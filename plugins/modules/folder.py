@@ -85,6 +85,10 @@ seealso:
     - plugin: checkmk.general.folders
       plugin_type: lookup
     - module: checkmk.general.host
+    - module: checkmk.general.activation
+    - name: "Configuring folders in Checkmk: The official user guide."
+      description: "The official user guide on managing hosts and folders."
+      link: "https://docs.checkmk.com/latest/en/hosts_setup.html"
 
 author:
     - Robin Gierse (@robin-checkmk)
@@ -99,7 +103,7 @@ EXAMPLES = r"""
 
 - name: "Create a folder."
   checkmk.general.folder:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -109,7 +113,7 @@ EXAMPLES = r"""
 
 - name: "Create a nested folder."
   checkmk.general.folder:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -119,7 +123,7 @@ EXAMPLES = r"""
 
 - name: "Delete a folder."
   checkmk.general.folder:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -134,7 +138,7 @@ EXAMPLES = r"""
 
 - name: "Create a folder and pin its hosts to a specific monitoring site."
   checkmk.general.folder:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -146,7 +150,7 @@ EXAMPLES = r"""
 
 - name: "Create a folder with host tags set."
   checkmk.general.folder:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -163,7 +167,7 @@ EXAMPLES = r"""
 
 - name: "Update specific attributes on a folder without touching others."
   checkmk.general.folder:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -174,7 +178,7 @@ EXAMPLES = r"""
 
 - name: "Remove specific attributes from a folder."
   checkmk.general.folder:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -185,7 +189,7 @@ EXAMPLES = r"""
 
 - name: "Remove multiple attributes from a folder."
   checkmk.general.folder:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -210,7 +214,7 @@ EXAMPLES = r"""
     name: "My Folder"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

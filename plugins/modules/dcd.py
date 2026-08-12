@@ -131,6 +131,14 @@ notes:
   If a DCD with the same C(dcd_id) already exists but differs from the desired state,
   the module will fail.
 
+seealso:
+    - module: checkmk.general.host
+    - module: checkmk.general.folder
+    - module: checkmk.general.site
+    - name: "Dynamic host management: The official user guide."
+      description: "The official user guide on the Dynamic Host Management (DCD)."
+      link: "https://docs.checkmk.com/latest/en/dcd.html"
+
 author:
 - Lars Getwan (@lgetwan)
 """
@@ -145,7 +153,7 @@ EXAMPLES = r"""
 
 - name: "Create a DCD connection with a creation rule."
   checkmk.general.dcd:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -166,7 +174,7 @@ EXAMPLES = r"""
 
 - name: "Create a DCD connection with host attributes set on created hosts."
   checkmk.general.dcd:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -192,7 +200,7 @@ EXAMPLES = r"""
 
 - name: "Create a fully configured piggyback DCD with custom timing and host matching."
   checkmk.general.dcd:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -229,7 +237,7 @@ EXAMPLES = r"""
 
 - name: "Delete a DCD connection."
   checkmk.general.dcd:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -255,7 +263,7 @@ EXAMPLES = r"""
       site: "mysite"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

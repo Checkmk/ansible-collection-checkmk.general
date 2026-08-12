@@ -76,7 +76,7 @@ EXAMPLES = r"""
 
 - name: "Create a service group."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -86,7 +86,7 @@ EXAMPLES = r"""
 
 - name: "Delete a service group."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -99,7 +99,7 @@ EXAMPLES = r"""
 
 - name: "Create several service groups at once."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -114,7 +114,7 @@ EXAMPLES = r"""
 
 - name: "Delete several service groups at once."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -129,7 +129,7 @@ EXAMPLES = r"""
 
 - name: "Create a service group and assign it to a customer (Checkmk Ultimate with multi-tenancy (CME) only)."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -153,7 +153,7 @@ EXAMPLES = r"""
     title: "Web Services"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
@@ -263,10 +263,13 @@ def get_current_service_groups(module, base_url, headers):
 
 def update_single_service_group(module, base_url, headers):
     name = module.params["name"]
+    title = module.params.get("title")
+    if title is None:
+        title = name
 
     api_endpoint = "/objects/service_group_config/" + name
     params = {
-        "alias": module.params.get("title", name),
+        "alias": title,
     }
     url = base_url + api_endpoint
 
@@ -311,18 +314,21 @@ def update_service_groups(module, base_url, groups, headers):
 
 def create_single_service_group(module, base_url, headers):
     name = module.params["name"]
+    title = module.params.get("title")
+    if title is None:
+        title = name
 
     api_endpoint = "/domain-types/service_group_config/collections/all"
     if module.params.get("customer") is not None:
         params = {
             "name": name,
-            "alias": module.params.get("title", name),
+            "alias": title,
             "customer": module.params.get("customer", "provider"),
         }
     else:
         params = {
             "name": name,
-            "alias": module.params.get("title", name),
+            "alias": title,
         }
     url = base_url + api_endpoint
 
@@ -443,7 +449,7 @@ def run_module():
     }
 
     base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
+        module.params.get("server_url", "").rstrip("/"),
         module.params.get("site", ""),
     )
 
@@ -498,7 +504,8 @@ def run_module():
                 remainings_list = [
                     el
                     for el in intersection_list
-                    if el.get("title") != current_groups_dict[el.get("name")]
+                    if el.get("title", el.get("name"))
+                    != current_groups_dict[el.get("name")]
                 ]
 
                 if len(remainings_list) > 0:
@@ -541,7 +548,11 @@ def run_module():
             headers["If-Match"] = etag
             msg_tokens = []
 
-            if current_title != module.params["title"]:
+            title = module.params.get("title")
+            if title is None:
+                title = module.params.get("name")
+
+            if current_title != title:
                 update_single_service_group(module, base_url, headers)
                 msg_tokens.append("Service group was updated.")
 

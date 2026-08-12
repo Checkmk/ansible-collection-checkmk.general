@@ -107,6 +107,42 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.site lookup plugin <checkmk.general.site#lookup>`,
     :ansplugin:`checkmk.general.sites lookup plugin <checkmk.general.sites#lookup>`,
     :ansplugin:`checkmk.general.version lookup plugin <checkmk.general.version#lookup>`
+.. envvar:: CHECKMK_VAR_EXCLUDE_TAGS
+
+    List of host tags to exclude from the inventory.
+
+    Any host that has at least one of the given tags set will be excluded.
+
+    Tags must be given in the full Checkmk format :literal:`tag\_\<group\>\_\<value\>`\ , e.g. :literal:`tag\_criticality\_test` or :literal:`tag\_agent\_cmk\-agent`.
+
+    *Used by:*
+    :ansplugin:`checkmk.general.checkmk inventory plugin <checkmk.general.checkmk#inventory>`
+.. envvar:: CHECKMK_VAR_FOLDER
+
+    Restrict hosts to a specific folder path in Checkmk.
+
+    Given as a regular path, e.g. :literal:`/linux/production`.
+
+    Unless :literal:`recursive` is enabled, only hosts directly in the given folder are returned.
+
+    All hosts are always fetched from the site and filtered on the client side, so this does not reduce the amount of data retrieved from Checkmk.
+
+    *Used by:*
+    :ansplugin:`checkmk.general.checkmk inventory plugin <checkmk.general.checkmk#inventory>`
+.. envvar:: CHECKMK_VAR_LOWERCASE_HOSTS
+
+    If set to :literal:`true`\ , all hostnames will be converted to lowercase in the inventory.
+
+    *Used by:*
+    :ansplugin:`checkmk.general.checkmk inventory plugin <checkmk.general.checkmk#inventory>`
+.. envvar:: CHECKMK_VAR_RECURSIVE
+
+    If set to :literal:`true` and a :literal:`folder` is defined, all subfolders are included recursively.
+
+    Has no effect without :literal:`folder`.
+
+    *Used by:*
+    :ansplugin:`checkmk.general.checkmk inventory plugin <checkmk.general.checkmk#inventory>`
 .. envvar:: CHECKMK_VAR_SERVER_URL
 
     URL of the Checkmk server

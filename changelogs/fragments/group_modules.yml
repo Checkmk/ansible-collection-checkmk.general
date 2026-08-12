@@ -1,0 +1,4 @@
+bugfixes:
+  - contact_group module - Fix idempotency and creation when "title" is omitted.
+  - service_group module - Fix idempotency and creation when "title" is omitted.
+  - host_group module - Fix idempotency and creation when "title" is omitted.

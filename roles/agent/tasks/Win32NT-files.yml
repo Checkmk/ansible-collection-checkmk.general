@@ -52,6 +52,7 @@
     and checkmk_agent_folder is defined
     and not checkmk_agent_host_specific | bool
   retries: 3
+  delay: 10
   # This task may fail, as we fall back to the vanilla agent later
   failed_when: false
   changed_when: __checkmk_agent_folder_download_state.status_code is defined and __checkmk_agent_folder_download_state.status_code == 200
