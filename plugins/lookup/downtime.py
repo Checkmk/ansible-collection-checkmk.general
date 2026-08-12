@@ -45,7 +45,7 @@ EXAMPLES = """
     downtime: "{{
       lookup('checkmk.general.downtime',
         '42',
-        server_url='https://myserver/',
+        server_url='https://myserver',
         site='mysite',
         api_user='myuser',
         api_secret='mysecret',
@@ -101,7 +101,8 @@ class LookupModule(LookupBase):
         validate_certs = self.get_option("validate_certs")
 
         api = CheckMKLookupAPI(
-            site_url=server_url + "/" + site,
+            server_url=server_url,
+            site=site,
             api_user=api_user,
             api_secret=api_secret,
             validate_certs=validate_certs,
