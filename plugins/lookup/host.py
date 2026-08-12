@@ -18,8 +18,11 @@ DOCUMENTATION = """
     options:
 
       _terms:
-        description: host name
+        description:
+          - One or more host names, either as separate terms or as a single list.
         required: True
+        type: list
+        elements: str
 
       effective_attributes:
         description: show all effective attributes on hosts
@@ -141,7 +144,7 @@ class LookupModule(LookupBase):
             "effective_attributes": effective_attributes,
         }
 
-        for term in terms:
+        for term in self._flatten(terms):
             api_endpoint = "/objects/host_config/" + term
 
             response = json.loads(api.get("/objects/host_config/" + term, parameters))

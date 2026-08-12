@@ -18,8 +18,11 @@ DOCUMENTATION = """
     options:
 
       _terms:
-        description: ldap connection ID
+        description:
+          - One or more LDAP connection IDs, either as separate terms or as a single list.
         required: True
+        type: list
+        elements: str
 
     extends_documentation_fragment: [checkmk.general.common_lookup]
 
@@ -117,7 +120,7 @@ class LookupModule(LookupBase):
 
         ret = []
 
-        for term in terms:
+        for term in self._flatten(terms):
             response = json.loads(api.get("/objects/ldap_connection/" + term))
 
             if "code" in response:

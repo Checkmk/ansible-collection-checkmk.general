@@ -18,8 +18,11 @@ DOCUMENTATION = """
     options:
 
       _terms:
-        description: complete folder path using tilde as a delimiter
+        description:
+          - One or more complete folder paths using tilde as a delimiter, either as separate terms or as a single list.
         required: True
+        type: list
+        elements: str
 
     extends_documentation_fragment: [checkmk.general.common_lookup]
 
@@ -131,7 +134,7 @@ class LookupModule(LookupBase):
 
         ret = []
 
-        for term in terms:
+        for term in self._flatten(terms):
             response = json.loads(
                 api.get("/objects/folder_config/" + term.replace("/", "~"))
             )
