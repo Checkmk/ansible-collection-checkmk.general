@@ -186,8 +186,6 @@ seealso:
       plugin_type: lookup
     - plugin: checkmk.general.downtimes
       plugin_type: lookup
-
-seealso:
     - module: checkmk.general.activation
     - module: checkmk.general.host
     - module: checkmk.general.rule
