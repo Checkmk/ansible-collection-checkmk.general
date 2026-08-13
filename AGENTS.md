@@ -52,7 +52,7 @@ plugins/
   inventory/       dynamic inventory plugin
   lookup/          lookup plugins
   module_utils/    api.py (REST), lookup_api.py (lookups/inventory),
-                   proxy.py, differ.py, utils.py, discovery_<ver>.py
+                   differ.py, utils.py, discovery_<ver>.py
   doc_fragments/   reusable DOCUMENTATION blocks
 roles/
   {agent,server}/  install/manage Checkmk agent / server site
@@ -77,11 +77,6 @@ Modules and tests are name-aligned: `plugins/modules/host.py` ↔ `tests/integra
 - **Do** run `uv run ansible-test sanity --docker` after making changes.
 - **Don't** reimplement HTTP / REST plumbing — reuse [`plugins/module_utils/api.py`](plugins/module_utils/api.py)
   (modules) or [`plugins/module_utils/lookup_api.py`](plugins/module_utils/lookup_api.py) (lookups / inventory).
-  Both already route requests through the proxy options.
-- **Don't** build proxy URLs or touch the `*_proxy` environment variables by hand — use
-  [`plugins/module_utils/proxy.py`](plugins/module_utils/proxy.py). A module that calls `fetch_url`
-  directly instead of going through `CheckmkAPI` imports `fetch_url_via_proxy as fetch_url` from it,
-  so every call site is covered (see `host_group` / `contact_group` / `service_group`).
 - **Don't** use `site` as a top-level module option; it collides with `base_argument_spec()` — remap to e.g. `target_site`.
 - **Don't** commit build artefacts. `__pycache__/` and `*.py[cod]` are gitignored; never force-add them.
 - **Don't** add a new connection option to a doc fragment without wiring it through *every* consumer.
