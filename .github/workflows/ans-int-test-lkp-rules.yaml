@@ -26,7 +26,7 @@ on:
       - 'plugins/lookup/rule.py'
       - 'plugins/lookup/rules.py'
       - 'plugins/module_utils/**'
-      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/setup_checkmk/**'
       - 'tests/integration/targets/lookup_rules/**'
 
 jobs:

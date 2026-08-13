@@ -24,7 +24,7 @@ on:
       - '.github/workflows/ans-int-test-notification.yaml'
       - 'plugins/modules/notification.py'
       - 'plugins/module_utils/**'
-      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/setup_checkmk/**'
       - 'tests/integration/targets/notification/**'
 
 jobs:

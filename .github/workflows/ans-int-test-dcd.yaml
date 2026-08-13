@@ -24,7 +24,7 @@ on:
       - '.github/workflows/ans-int-test-dcd.yaml'
       - 'plugins/modules/dcd.py'
       - 'plugins/module_utils/**'
-      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/setup_checkmk/**'
       - 'tests/integration/targets/activation/**'
 
 jobs:

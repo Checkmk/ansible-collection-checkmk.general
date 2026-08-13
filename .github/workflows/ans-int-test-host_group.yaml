@@ -24,7 +24,7 @@ on:
       - '.github/workflows/ans-int-test-host_group.yaml'
       - 'plugins/modules/host_group.py'
       - 'plugins/module_utils/**'
-      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/setup_checkmk/**'
       - 'tests/integration/targets/host_group/**'
 
 jobs:

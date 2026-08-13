@@ -24,7 +24,7 @@ on:
       - '.github/workflows/ans-int-test-ldap.yaml'
       - 'plugins/modules/ldap.py'
       - 'plugins/module_utils/**'
-      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/setup_checkmk/**'
       - 'tests/integration/targets/ldap/**'
 
 jobs:

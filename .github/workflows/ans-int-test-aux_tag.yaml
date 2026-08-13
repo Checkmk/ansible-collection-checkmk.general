@@ -24,7 +24,7 @@ on:
       - '.github/workflows/ans-int-test-aux_tag.yaml'
       - 'plugins/modules/aux_tag.py'
       - 'plugins/module_utils/**'
-      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/setup_checkmk/**'
       - 'tests/integration/targets/aux_tag/**'
 
 jobs:
