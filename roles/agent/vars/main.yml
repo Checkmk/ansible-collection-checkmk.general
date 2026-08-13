@@ -40,4 +40,4 @@ __checkmk_agent_files_mapping:
 
 # Temporary directory to download the agent to (Win-Path if controller runs on Windows, Lin-Path if controller runs on Linux)
 # Hast to include the suffix directory delimiter (Win = \\, Lin = /)
-__checkmk_agent_host_tmp_dir: "/tmp/"
+__checkmk_agent_host_tmp_dir: "{{ checkmk_agent_delegate_download_tmp_dir | default('/tmp/') }}"

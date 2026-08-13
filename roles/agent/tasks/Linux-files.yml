@@ -1,5 +1,5 @@
 ---
-- name: Copy block for Linux target and Linux controller
+- name: "{{ ansible_facts['system'] }}: File handling for Linux target and Linux controller"
   when: not __checkmk_agent_delegate_is_windows
   block:
     - name: "{{ ansible_facts['system'] }}: Download host-specific {{ checkmk_agent_edition | upper }} Agent."
@@ -23,7 +23,7 @@
       # This task may fail, as we fall back to the vanilla agent later
       failed_when: false
       changed_when: __checkmk_agent_host_download_state.status is defined and __checkmk_agent_host_download_state.status == 200
-      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else 'inventory_hostname' }}"
+      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else inventory_hostname }}"
       tags:
         - download-package
 
@@ -59,7 +59,7 @@
       # This task may fail, as we fall back to the vanilla agent later
       failed_when: false
       changed_when: __checkmk_agent_folder_download_state.status is defined and __checkmk_agent_folder_download_state.status == 200
-      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else 'inventory_hostname' }}"
+      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else inventory_hostname }}"
       tags:
         - download-package
 
@@ -85,7 +85,7 @@
       retries: 3
       delay: 10
       until: "not __checkmk_agent_vanilla_download_state.failed | bool"
-      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else 'inventory_hostname' }}"
+      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else inventory_hostname }}"
       tags:
         - download-package
 
@@ -125,7 +125,7 @@
       tags:
         - download-package
 
-- name: Copy block for Windows target and Linux controller
+- name: "{{ ansible_facts['system'] }}: File handling for Linux target and Windows controller"
   when: __checkmk_agent_delegate_is_windows
   block:
     - name: "{{ ansible_facts['system'] }}: Download host-specific {{ checkmk_agent_edition | upper }} Agent."
@@ -148,7 +148,7 @@
       # This task may fail, as we fall back to the vanilla agent later
       failed_when: false
       changed_when: __checkmk_agent_host_download_state.status_code is defined and __checkmk_agent_host_download_state.status_code == 200
-      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else 'inventory_hostname' }}"
+      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else inventory_hostname }}"
       tags:
         - download-package
 
@@ -183,7 +183,7 @@
       # This task may fail, as we fall back to the vanilla agent later
       failed_when: false
       changed_when: __checkmk_agent_folder_download_state.status_code is defined and __checkmk_agent_folder_download_state.status_code == 200
-      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else 'inventory_hostname' }}"
+      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else inventory_hostname }}"
       tags:
         - download-package
 
@@ -207,7 +207,7 @@
       retries: 3
       delay: 10
       until: "not __checkmk_agent_vanilla_download_state.failed | bool"
-      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else 'inventory_hostname' }}"
+      delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else inventory_hostname }}"
       tags:
         - download-package
 
