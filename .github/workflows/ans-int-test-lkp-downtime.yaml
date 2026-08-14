@@ -42,6 +42,7 @@ jobs:
       fail-fast: false
       matrix:
         checkmk_version:
+          - 2.3.0p48
           - 2.4.0p35
           - 2.5.0p10
         checkmk_edition:
