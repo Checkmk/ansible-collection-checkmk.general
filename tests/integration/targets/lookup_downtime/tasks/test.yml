@@ -148,7 +148,8 @@
                           site=outer_item.site,
                           validate_certs=False,
                           api_user=checkmk_var_api_user,
-                          api_secret=checkmk_var_api_secret) }}"
+                          api_secret=checkmk_var_api_secret,
+                          wantlist=True) }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the downtime matches."
   ansible.builtin.assert:
@@ -191,7 +192,7 @@
 
     - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up one downtime by ID."
       ansible.builtin.set_fact:
-        __checkmk_var_dt_id_inv: "{{ lookup('checkmk.general.downtime', __checkmk_var_dt_inv[0].id) }}"
+        __checkmk_var_dt_id_inv: "{{ lookup('checkmk.general.downtime', __checkmk_var_dt_inv[0].id, wantlist=True) }}"
 
     - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the ID matches."
       ansible.builtin.assert:
