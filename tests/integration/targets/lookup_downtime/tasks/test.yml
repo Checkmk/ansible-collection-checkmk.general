@@ -1,0 +1,220 @@
+---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
+  ansible.builtin.set_fact:
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else None }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a host."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ checkmk_var_host }}"
+    folder: "/"
+    attributes:
+      site: "{{ outer_item.site }}"
+      ipaddress: 127.0.0.1
+    state: "present"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Discover and activate (needed for the service downtime)."
+  discovery:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "{{ checkmk_var_host }}"
+    state: "fix_all"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run activation."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    redirect: true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the activation to finish."
+  ansible.builtin.wait_for:
+    timeout: 60
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a host downtime."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "{{ checkmk_var_host }}"
+    comment: "Host downtime"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a service downtime."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "{{ checkmk_var_host }}"
+    comment: "Service downtime"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+    service_descriptions:
+      - "Check_MK"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime commands."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+# -----------------------------------------------------------------------------
+# downtimes: filtering by host, downtime_type, service_description and query
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up all downtimes of the host."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_all: "{{ lookup('checkmk.general.downtimes',
+                          host_name=checkmk_var_host,
+                          server_url=checkmk_var_server_url,
+                          site=outer_item.site,
+                          validate_certs=False,
+                          api_user=checkmk_var_api_user,
+                          api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert both downtimes were found."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_all | length == 2"
+    fail_msg: "Expected 2 downtimes, but found {{ __checkmk_var_dt_all | length }}!"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up downtimes filtered by downtime_type."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_host_only: "{{ lookup('checkmk.general.downtimes',
+                          host_name=checkmk_var_host,
+                          downtime_type='host',
+                          server_url=checkmk_var_server_url,
+                          site=outer_item.site,
+                          validate_certs=False,
+                          api_user=checkmk_var_api_user,
+                          api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert only the host downtime was found."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_dt_host_only | length == 1"
+      - "__checkmk_var_dt_host_only[0].extensions.comment == 'Host downtime'"
+    fail_msg: "Expected exactly the host downtime, but found {{ __checkmk_var_dt_host_only }}!"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up downtimes filtered by service_description."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_svc_only: "{{ lookup('checkmk.general.downtimes',
+                          host_name=checkmk_var_host,
+                          service_description='Check_MK',
+                          server_url=checkmk_var_server_url,
+                          site=outer_item.site,
+                          validate_certs=False,
+                          api_user=checkmk_var_api_user,
+                          api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert only the service downtime was found."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_dt_svc_only | length == 1"
+      - "__checkmk_var_dt_svc_only[0].extensions.comment == 'Service downtime'"
+    fail_msg: "Expected exactly the service downtime, but found {{ __checkmk_var_dt_svc_only }}!"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up downtimes by query."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_by_query: "{{ lookup('checkmk.general.downtimes',
+                          query='{\"op\": \"=\", \"left\": \"host_name\", \"right\": \"' ~ checkmk_var_host ~ '\"}',
+                          server_url=checkmk_var_server_url,
+                          site=outer_item.site,
+                          validate_certs=False,
+                          api_user=checkmk_var_api_user,
+                          api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the query found both downtimes."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_by_query | length == 2"
+    fail_msg: "Expected 2 downtimes via query, but found {{ __checkmk_var_dt_by_query | length }}!"
+
+# -----------------------------------------------------------------------------
+# downtime: lookup by ID, including several IDs from a single list term
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up the host downtime by its ID."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_by_id: "{{ lookup('checkmk.general.downtime',
+                          __checkmk_var_dt_host_only[0].id,
+                          server_url=checkmk_var_server_url,
+                          site=outer_item.site,
+                          validate_certs=False,
+                          api_user=checkmk_var_api_user,
+                          api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the downtime matches."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_dt_by_id | length == 1"
+      - "__checkmk_var_dt_by_id[0].extensions.comment == 'Host downtime'"
+    fail_msg: "Expected the host downtime by ID, but found {{ __checkmk_var_dt_by_id }}!"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up both downtimes from a single list term."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_by_ids: "{{ lookup('checkmk.general.downtime',
+                          __checkmk_var_dt_all | map(attribute='id') | list,
+                          server_url=checkmk_var_server_url,
+                          site=outer_item.site,
+                          validate_certs=False,
+                          api_user=checkmk_var_api_user,
+                          api_secret=checkmk_var_api_secret,
+                          wantlist=True) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert one result per ID."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_by_ids | length == 2"
+    fail_msg: "Expected 2 downtimes, but found {{ __checkmk_var_dt_by_ids | length }}!"
+
+# -----------------------------------------------------------------------------
+# Using variables from inventory
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Use variables from inventory."
+  block:
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up downtimes."
+      ansible.builtin.set_fact:
+        __checkmk_var_dt_inv: "{{ lookup('checkmk.general.downtimes', host_name=checkmk_var_host) }}"
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert both downtimes were found."
+      ansible.builtin.assert:
+        that: "__checkmk_var_dt_inv | length == 2"
+        fail_msg: "Expected 2 downtimes, but found {{ __checkmk_var_dt_inv | length }}!"
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up one downtime by ID."
+      ansible.builtin.set_fact:
+        __checkmk_var_dt_id_inv: "{{ lookup('checkmk.general.downtime', __checkmk_var_dt_inv[0].id) }}"
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the ID matches."
+      ansible.builtin.assert:
+        that: "__checkmk_var_dt_id_inv[0].id == __checkmk_var_dt_inv[0].id"
+        fail_msg: "Expected downtime ID {{ __checkmk_var_dt_inv[0].id }}, but found {{ __checkmk_var_dt_id_inv[0].id }}!"
+
+# -----------------------------------------------------------------------------
+# Teardown
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove the host (and its downtimes)."
+  host:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ checkmk_var_host }}"
+    state: "absent"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run activation."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
