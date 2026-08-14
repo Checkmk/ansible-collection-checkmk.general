@@ -22,8 +22,8 @@ description:
       without deleting and recreating it. The downtime to act on can be identified
       by its ID, by host name (and optionally service descriptions), or by a
       Livestatus query.
-    - On the I(host_name) path the I(comment) is part of a downtime's identity
-      (defaulting to C(Managed by Ansible)): a matching downtime is updated in
+    - On the I(host_name) path the I(comment) is part of a downtime's identity,
+      defaulting to C(Managed by Ansible): a matching downtime is updated in
       place, but a different comment identifies a different downtime and creates a
       new one. This keeps the module idempotent and stops it from touching
       downtimes it did not create. To change a comment, match the downtime by
@@ -148,7 +148,6 @@ options:
         required: false
         type: str
         default: fixed
-        aliases: ["recur"]
         choices:
             - fixed
             - hour
@@ -159,6 +158,7 @@ options:
             - weekday_start
             - weekday_end
             - day_of_month
+        aliases: ["recur"]
     force:
         description:
             - When creating a downtime by I(host_name), a new downtime is normally
@@ -547,7 +547,7 @@ class DowntimeAPI(CheckmkAPI):
         # Attributes.
         self.comment = self.params.get("comment")
         self.duration = self.params.get("duration")
-        self.recur = self.params.get("recur")
+        self.recur = self.params.get("recurring")
         self.force = self.params.get("force")
 
         error = self._verify_parameters()
