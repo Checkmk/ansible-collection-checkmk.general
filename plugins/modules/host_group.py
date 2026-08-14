@@ -190,6 +190,19 @@ def exit_ok(module, msg):
     module.exit_json(**result)
 
 
+def group_alias(entry):
+    """Resolve the alias of a group entry, falling back to its name.
+
+    Both spellings of "no title given" have to reach the name: the key is
+    absent when a `groups` entry omits it, and it is present but None when a
+    bare `title:` is written or when AnsibleModule fills in the unset
+    top-level option.
+    """
+    title = entry.get("title")
+
+    return entry.get("name") if title is None else title
+
+
 def get_current_single_host_group(module, base_url, headers):
     current_state = "unknown"
     current_title = ""
@@ -263,13 +276,10 @@ def get_current_host_groups(module, base_url, headers):
 
 def update_single_host_group(module, base_url, headers):
     name = module.params["name"]
-    title = module.params.get("title")
-    if title is None:
-        title = name
 
     api_endpoint = "/objects/host_group_config/" + name
     params = {
-        "alias": title,
+        "alias": group_alias(module.params),
     }
     url = base_url + api_endpoint
 
@@ -295,7 +305,7 @@ def update_host_groups(module, base_url, groups, headers):
             {
                 "name": el.get("name"),
                 "attributes": {
-                    "alias": el.get("title", el.get("name")),
+                    "alias": group_alias(el),
                 },
             }
             for el in groups
@@ -320,21 +330,18 @@ def update_host_groups(module, base_url, groups, headers):
 
 def create_single_host_group(module, base_url, headers):
     name = module.params["name"]
-    title = module.params.get("title")
-    if title is None:
-        title = name
 
     api_endpoint = "/domain-types/host_group_config/collections/all"
     if module.params.get("customer") is not None:
         params = {
             "name": name,
-            "alias": title,
+            "alias": group_alias(module.params),
             "customer": module.params.get("customer", "provider"),
         }
     else:
         params = {
             "name": name,
-            "alias": title,
+            "alias": group_alias(module.params),
         }
     url = base_url + api_endpoint
 
@@ -361,7 +368,7 @@ def create_host_groups(module, base_url, groups, headers):
             "entries": [
                 {
                     "name": el.get("name"),
-                    "alias": el.get("title", el.get("name")),
+                    "alias": group_alias(el),
                     "customer": module.params.get("customer"),
                 }
                 for el in groups
@@ -372,7 +379,7 @@ def create_host_groups(module, base_url, groups, headers):
             "entries": [
                 {
                     "name": el.get("name"),
-                    "alias": el.get("title", el.get("name")),
+                    "alias": group_alias(el),
                 }
                 for el in groups
             ],
@@ -527,8 +534,7 @@ def run_module():
                 remainings_list = [
                     el
                     for el in intersection_list
-                    if el.get("title", el.get("name"))
-                    != current_groups_dict[el.get("name")]
+                    if group_alias(el) != current_groups_dict[el.get("name")]
                 ]
 
                 if len(remainings_list) > 0:
@@ -571,11 +577,7 @@ def run_module():
             headers["If-Match"] = etag
             msg_tokens = []
 
-            title = module.params.get("title")
-            if title is None:
-                title = module.params.get("name")
-
-            if current_title != title:
+            if current_title != group_alias(module.params):
                 update_single_host_group(module, base_url, headers)
                 msg_tokens.append("Host group was updated.")
 
