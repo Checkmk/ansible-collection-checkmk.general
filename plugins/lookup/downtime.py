@@ -109,7 +109,7 @@ class LookupModule(LookupBase):
         )
 
         ret = []
-        for term in terms:
+        for term in self._flatten(terms):
             # Query by the 'id' column so no site_id has to be supplied. The
             # object endpoint (/objects/downtime/{id}) would require a site_id.
             query = json.dumps({"op": "=", "left": "id", "right": str(term)})
