@@ -8,7 +8,7 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: downtime
     author: Lars Getwan (@lgetwan)
-    version_added: "6.7.0"
+    version_added: "8.5.0"
 
     short_description: Show a downtime identified by its ID
 
