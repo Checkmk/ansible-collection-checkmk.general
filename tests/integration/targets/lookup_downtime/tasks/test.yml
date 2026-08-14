@@ -175,7 +175,7 @@
     fail_msg: "Expected 2 downtimes, but found {{ __checkmk_var_dt_by_ids | length }}!"
 
 # -----------------------------------------------------------------------------
-# Using variables from inventory
+# Using variables from inventory.
 # -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Use variables from inventory."
