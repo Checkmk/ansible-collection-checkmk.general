@@ -125,7 +125,7 @@ def test_no_request_contains_a_stringified_list(name):
     It interpolates the term with %s, so a list term produced a syntactically
     valid but nonsensical URL and reported a 404 rather than failing loudly.
     """
-    _, calls = _run(name, [["alpha", "beta"]])
+    calls = _run(name, [["alpha", "beta"]])[1]
 
     for call in calls:
         assert "[" not in call, call
