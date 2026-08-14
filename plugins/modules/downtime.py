@@ -22,6 +22,13 @@ description:
       without deleting and recreating it. The downtime to act on can be identified
       by its ID, by host name (and optionally service descriptions), or by a
       Livestatus query.
+    - On the I(host_name) path the I(comment) is part of a downtime's identity
+      (defaulting to C(Managed by Ansible)): a matching downtime is updated in
+      place, but a different comment identifies a different downtime and creates a
+      new one. This keeps the module idempotent and stops it from touching
+      downtimes it did not create. To change a comment, match the downtime by
+      I(downtime_id) or I(query) instead.
+
 
 extends_documentation_fragment: [checkmk.general.common]
 
@@ -134,13 +141,14 @@ options:
         required: false
         type: int
         default: 0
-    recur:
+    recurring:
         description:
             - The recurring mode of a new downtime.
             - Only relevant when creating a downtime.
         required: false
         type: str
         default: fixed
+        aliases: ["recur"]
         choices:
             - fixed
             - hour
@@ -998,7 +1006,7 @@ def run_module():
         end_time=dict(type="str"),
         end_after=dict(type="dict", default={}),
         duration=dict(type="int", default=0),
-        recur=dict(
+        recurring=dict(
             type="str",
             default="fixed",
             choices=[
@@ -1012,6 +1020,7 @@ def run_module():
                 "weekday_end",
                 "day_of_month",
             ],
+            aliases=["recur"],
         ),
         force=dict(type="bool", default=False),
         state=dict(type="str", default="present", choices=["present", "absent"]),
