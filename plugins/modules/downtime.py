@@ -222,7 +222,6 @@ EXAMPLES = r"""
     end_after:
       hours: 2
 
-<<<<<<< HEAD
 - name: "Schedule a host downtime with a comment, starting now, ending in 2 hours."
   checkmk.general.downtime:
     server_url: "https://myserver"
@@ -234,8 +233,6 @@ EXAMPLES = r"""
     end_after:
       hours: 2
 
-=======
->>>>>>> 8cb75dc1 (Draft: New (rewritten) downtime module.)
 - name: "Schedule a host downtime using absolute start and end times."
   checkmk.general.downtime:
     server_url: "https://myserver"
