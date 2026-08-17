@@ -5,7 +5,7 @@ requires-python = ">=3.11"
 dependencies = [
     "antsibull-changelog==0.35.1",
     "antsibull-docs==2.25.0",
-    "ansible-lint==26.6.0",
+    "ansible-lint==26.8.0",
     "molecule==26.6.0",
     "molecule-plugins[podman]==26.7.15",
     "pywinrm==0.5.0",
