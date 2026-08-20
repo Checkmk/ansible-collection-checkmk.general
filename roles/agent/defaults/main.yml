@@ -48,10 +48,8 @@ checkmk_agent_no_log: true
 checkmk_agent_configure_firewall: true
 
 ## Delegation
-checkmk_agent_delegate_api_calls: 'localhost'
+checkmk_agent_delegate_api_calls: "localhost"
 checkmk_agent_delegate_download: true
-checkmk_agent_delegate_download_tmp_dir: /tmp/
-# checkmk_agent_delegate_download_tmp_dir: C:\\Windows\\Temp
 checkmk_agent_delegate_registration: false
 checkmk_agent_delegate_registration_target: "{{ inventory_hostname }}"
 
