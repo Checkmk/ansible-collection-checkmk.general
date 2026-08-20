@@ -20,6 +20,31 @@
   tags:
     - always
 
+- name: "Preflight - Make sure facts for the Ansible controller are present."
+  ansible.builtin.setup:
+  when: checkmk_agent_delegate_download
+  delegate_to: localhost
+  delegate_facts: true
+  tags:
+    - download-package
+
+- name: "Preflight - Set facts for the downloading Host"
+  ansible.builtin.set_fact:
+    __checkmk_agent_download_to_windows: >-
+      {{
+        (checkmk_agent_delegate_download and hostvars['localhost']['ansible_facts']['os_family'] == 'Windows') or
+        (not checkmk_agent_delegate_download and ansible_facts['os_family'] == 'Windows')
+      }}
+  tags:
+    - download-package
+
+- name: "Preflight - Set facts for handling of the agent download"
+  ansible.builtin.set_fact:
+    __checkmk_agent_host_tmp_dir: >-
+      {{ '/tmp/' if not __checkmk_agent_download_to_windows else 'C:\\Windows\\Temp\\' }}
+  tags:
+    - download-package
+
 - name: "{{ ansible_facts['os_family'] }}: Include OS family specific variables."
   ansible.builtin.include_vars: "{{ ansible_facts['os_family'] }}.yml"
   tags:
@@ -27,30 +52,8 @@
     - install-package
     - download-package
 
-- name: "Preflight - Make sure facts for the delegate Host (Controller or Target Host) are present."
-  ansible.builtin.setup:
-  delegate_to: "{{ 'localhost' if checkmk_agent_delegate_download else inventory_hostname }}"
-  delegate_facts: true
-  tags:
-    - download-package
-
-- name: "Preflight - Set facts for the delegate Host (Controller or target Host)"
-  ansible.builtin.set_fact:
-    __checkmk_agent_delegate_is_windows: >-
-      {{ hostvars['localhost']['ansible_facts']['os_family'] == 'Windows' }}
-  tags:
-    - download-package
-
-- name: "{{ ansible_facts['system'] }}: Include agent package download tasks (Linux)."
-  ansible.builtin.include_tasks: "Linux-files.yml"
-  when: not __checkmk_agent_delegate_is_windows
-  tags:
-    - include-system-tasks
-    - download-package
-
-- name: "{{ ansible_facts['system'] }}: Include agent package download tasks (Windows)."
-  ansible.builtin.include_tasks: "Win32NT-files.yml"
-  when: __checkmk_agent_delegate_is_windows
+- name: "{{ ansible_facts['system'] }}: Include agent package download tasks."
+  ansible.builtin.include_tasks: "{{ ansible_facts['system'] }}-files.yml"
   tags:
     - include-system-tasks
     - download-package

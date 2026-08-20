@@ -1,6 +1,6 @@
 ---
 - name: "{{ ansible_facts['system'] }}: File handling for Windows target and Linux controller"
-  when: not __checkmk_agent_delegate_is_windows
+  when: not __checkmk_agent_download_to_windows
   block:
     - name: "{{ ansible_facts['system'] }}: Download host-specific {{ checkmk_agent_edition | upper }} Agent."
       ansible.builtin.uri:
@@ -125,14 +125,12 @@
       tags:
         - download-package
 
-
 - name: "{{ ansible_facts['system'] }}: File handling for Windows target and Windows controller"
-  when: __checkmk_agent_delegate_is_windows
+  when: __checkmk_agent_download_to_windows
   block:
     - name: "{{ ansible_facts['system'] }}: Download host-specific {{ checkmk_agent_edition | upper }} Agent."
       ansible.windows.win_get_url:
-        url:
-          "{{ __checkmk_agent_agent.url.pro }}?\
+        url: "{{ __checkmk_agent_agent.url.pro }}?\
           host_name={{ checkmk_agent_host_name }}&\
           os_type={{ __checkmk_agent_files_mapping[ansible_facts['os_family']] }}&\
           agent_type=host_name"
@@ -163,8 +161,7 @@
 
     - name: "{{ ansible_facts['system'] }}: Download folder-specific {{ checkmk_agent_edition | upper }} Agent."
       ansible.windows.win_get_url:
-        url:
-          "{{ __checkmk_agent_agent.url.pro }}?\
+        url: "{{ __checkmk_agent_agent.url.pro }}?\
           os_type={{ __checkmk_agent_files_mapping[ansible_facts['os_family']] }}&\
           folder_name={{ checkmk_agent_folder }}&\
           agent_type=generic"
@@ -218,6 +215,7 @@
       ansible.windows.win_copy:
         src: "{{ __checkmk_agent_agent.file.download.host }}"
         dest: "{{ __checkmk_agent_agent.file.upload.host }}"
+        remote_src: "{{ not checkmk_agent_delegate_download }}"
       when: |
         checkmk_agent_edition | lower != "community"
         and checkmk_agent_host_specific | bool
@@ -229,6 +227,7 @@
       ansible.windows.win_copy:
         src: "{{ __checkmk_agent_agent.file.download.pro }}"
         dest: "{{ __checkmk_agent_agent.file.upload.pro }}"
+        remote_src: "{{ not checkmk_agent_delegate_download }}"
       when: |
         checkmk_agent_edition | lower != "community"
         and checkmk_agent_folder_specific | bool
@@ -240,6 +239,7 @@
       ansible.windows.win_copy:
         src: "{{ __checkmk_agent_agent.file.download.community }}"
         dest: "{{ __checkmk_agent_agent.file.upload.community }}"
+        remote_src: "{{ not checkmk_agent_delegate_download }}"
       when: |
         checkmk_agent_delegate_download != inventory_hostname
         and (checkmk_agent_edition | lower == "community"
