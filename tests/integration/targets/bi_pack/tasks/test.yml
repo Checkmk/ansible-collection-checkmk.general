@@ -1,0 +1,108 @@
+---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create BI packs."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack: "{{ item }}"
+    state: "present"
+  register: __checkmk_var_result_bi_pack_create
+  loop: "{{ checkmk_var_bi_packs_create }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: not __checkmk_var_result_bi_pack_create.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create BI packs again (idempotency)."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack: "{{ item }}"
+    state: "present"
+  register: __checkmk_var_result_bi_pack_recreate
+  loop: "{{ checkmk_var_bi_packs_create }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: __checkmk_var_result_bi_pack_recreate.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Modify BI packs."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack: "{{ item }}"
+    state: "present"
+  register: __checkmk_var_result_bi_pack_modify
+  loop: "{{ checkmk_var_bi_packs_modify }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: not __checkmk_var_result_bi_pack_modify.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Modify BI packs again (idempotency)."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack: "{{ item }}"
+    state: "present"
+  register: __checkmk_var_result_bi_pack_remodify
+  loop: "{{ checkmk_var_bi_packs_modify }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: __checkmk_var_result_bi_pack_remodify.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check that 'title' is required when creating."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack:
+      id: "ansible_test_pack_without_title"
+    state: "present"
+  register: __checkmk_var_result_bi_pack_no_title
+  failed_when: "\"'title' is required\" not in __checkmk_var_result_bi_pack_no_title.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete BI packs."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack:
+      id: "{{ item.id }}"
+    state: "absent"
+  register: __checkmk_var_result_bi_pack_delete
+  loop: "{{ checkmk_var_bi_packs_create }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: not __checkmk_var_result_bi_pack_delete.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete BI packs again (idempotency)."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack:
+      id: "{{ item.id }}"
+    state: "absent"
+  register: __checkmk_var_result_bi_pack_redelete
+  loop: "{{ checkmk_var_bi_packs_create }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: __checkmk_var_result_bi_pack_redelete.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"

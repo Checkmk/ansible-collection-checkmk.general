@@ -1,0 +1,8 @@
+---
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition | default('ultimatemt') }}"
+    site: "testsite"
+
+checkmk_var_dcd_id: "PiggybackBoar"
+checkmk_var_dcd_title: "Piggyback Configuration for Boar"
