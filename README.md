@@ -145,7 +145,6 @@ Do **not** consider it a concrete planning document!
     - Event Console
   - Setup
     - Agents
-    - Business Intelligence
     - Event Console
     - Notification Rules
 - OMD Module
