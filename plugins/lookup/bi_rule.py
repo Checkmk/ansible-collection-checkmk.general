@@ -95,6 +95,9 @@ import json
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
+from ansible_collections.checkmk.general.plugins.module_utils.bi import (
+    object_attributes,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
 )
@@ -136,6 +139,8 @@ class LookupModule(LookupBase):
                     )
                 )
 
-            ret.append(response.get("extensions", {}))
+            # The BI endpoints return the attributes flat on some responses
+            # and wrapped in 'extensions' on others.
+            ret.append(object_attributes(response))
 
         return ret
