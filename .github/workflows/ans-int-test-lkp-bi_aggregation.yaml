@@ -1,0 +1,65 @@
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+name: Lookup Module BI Aggregation Integration
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+  pull_request:
+    branches:
+      - main
+      - devel
+    types:
+      - opened
+    paths:
+      - 'plugins/lookup/bi_aggregation.py'
+      - 'plugins/lookup/bi_aggregations.py'
+  push:
+    paths:
+      - '.github/workflows/ans-int-test-lkp-bi_aggregation.yaml'
+      - 'plugins/lookup/bi_aggregation.py'
+      - 'plugins/lookup/bi_aggregations.py'
+      - 'plugins/module_utils/**'
+      - 'tests/integration/targets/setup_checkmk/**'
+      - 'tests/integration/targets/lookup_bi_aggregation/**'
+
+jobs:
+
+  integration:
+    name: "${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
+    uses: ./.github/workflows/_template-ans-int-test.yaml
+    with:
+      module: lookup_bi_aggregation
+      checkmk_version: ${{ matrix.checkmk_version }}
+      checkmk_edition: ${{ matrix.checkmk_edition }}
+    strategy:
+      fail-fast: false
+      matrix:
+        checkmk_version:
+          - 2.3.0p49
+          - 2.4.0p35
+          - 2.5.0p11
+        checkmk_edition:
+          - raw
+          - managed
+          - community
+          - ultimatemt
+        exclude:
+          - checkmk_version: 2.3.0p49
+            checkmk_edition: community
+          - checkmk_version: 2.3.0p49
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.4.0p35
+            checkmk_edition: community
+          - checkmk_version: 2.4.0p35
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.5.0p11
+            checkmk_edition: raw
+          - checkmk_version: 2.5.0p11
+            checkmk_edition: managed
