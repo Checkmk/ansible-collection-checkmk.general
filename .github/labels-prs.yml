@@ -69,6 +69,11 @@ module:host_group:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/host_group.py'
 
+module:ldap:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/ldap.py'
+
 module:notification:
   - any:
       - changed-files:
