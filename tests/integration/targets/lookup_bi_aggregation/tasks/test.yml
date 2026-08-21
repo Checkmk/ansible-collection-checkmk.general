@@ -65,6 +65,16 @@
     fail_msg: "Expected comment {{ checkmk_var_bi_aggregation_comment }}, but found {{ __checkmk_var_bi_aggregation.comment | default('nothing') }}!"
     success_msg: "Expected comment {{ checkmk_var_bi_aggregation_comment }} and found it."
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the aggregation reports its pack membership."
+  ansible.builtin.assert:
+    that: "'pack_id' in __checkmk_var_bi_aggregation"
+    fail_msg: >-
+      The aggregation's extensions do not contain 'pack_id' (keys:
+      {{ __checkmk_var_bi_aggregation.keys() | list }}). The bi_aggregation module
+      backfills pack_id from its parameters, so without it the module cannot detect
+      an aggregation being moved to another pack. See misc/bi_dcd_followups.md #6.
+    success_msg: "The aggregation reports its pack membership, so pack_id takes part in the diff."
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Pass several aggregation IDs as a list."
   ansible.builtin.assert:
     that: "__checkmk_var_bi_aggregations_by_id | length == checkmk_var_bi_aggregations | length"
