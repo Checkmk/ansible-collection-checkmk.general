@@ -41,12 +41,15 @@
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the listed BI aggregations are usable objects, not link stubs."
   ansible.builtin.assert:
     that:
-      - "__checkmk_var_bi_aggregations | map(attribute='id') | list | sort == checkmk_var_bi_aggregations | map(attribute='id') | list | sort"
+      - "__checkmk_var_bi_aggregations | map(attribute='id', default='<no id>') | list | sort == checkmk_var_bi_aggregations | map(attribute='id') | list | sort"
     fail_msg: >-
       Expected ids {{ checkmk_var_bi_aggregations | map(attribute='id') | list | sort }},
       but got {{ __checkmk_var_bi_aggregations | map(attribute='id', default='<no id>') | list }}.
-      If the entries have no 'id', the pack's 'members' container holds link stubs
-      rather than domain objects and the bi_aggregations lookup needs to fetch each one.
+      The keys actually present on each entry are
+      {{ __checkmk_var_bi_aggregations | map('dict2items') | map('map', attribute='key') | map('list') | list }}.
+      Entries reported as '<no id>' are not objects the bi_aggregations lookup can return
+      usefully; if they look like link stubs the lookup has to fetch each object
+      individually. See misc/bi_dcd_followups.md.
     success_msg: "The listed BI aggregations carry their ids."
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get a single BI aggregation."
