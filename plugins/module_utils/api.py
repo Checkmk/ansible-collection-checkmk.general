@@ -17,6 +17,7 @@ from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (  # result_as_dict,
     GENERIC_HTTP_CODES,
+    base_api_url,
     exit_module,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
@@ -31,13 +32,7 @@ class CheckmkAPI:
         self.module = module
         self.logger = logger
         self.params = self.module.params
-        # Tolerate a trailing slash on server_url. Without it, a server_url
-        # ending in a slash produces a doubled slash in front of the site name.
-        # The Checkmk API happens to accept that, but other consumers of the
-        # same variable are not as forgiving.
-        server = (self.params.get("server_url") or "").rstrip("/")
-        site = self.params.get("site")
-        self.url = "%s/%s/check_mk/api/1.0" % (server, site)
+        self.url = base_api_url(self.params)
 
         self.headers = {
             "Accept": "application/json",
