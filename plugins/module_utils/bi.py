@@ -70,3 +70,64 @@ def prune_none(value):
     if isinstance(value, list):
         return [prune_none(v) for v in value]
     return value
+
+
+# Keys that belong to the REST API's domain object envelope rather than to the
+# object itself. 'id' is deliberately absent: for a flat BI response it is a
+# real attribute of the object.
+ENVELOPE_KEYS = ("links", "domainType", "members", "extensions")
+
+
+def object_attributes(response):
+    """Return an object's own attributes from a REST API response.
+
+    The BI endpoints are not consistent about wrapping. Some responses are
+    domain objects carrying the attributes in 'extensions', others return the
+    attributes flat at the top level. Reading only 'extensions' yields an empty
+    dict for the flat form, which makes every comparison report a difference.
+
+    Args:
+        response (dict): The decoded API response.
+
+    Returns:
+        dict: The object's attributes, whichever form the response took.
+    """
+    extensions = response.get("extensions")
+    if isinstance(extensions, dict) and extensions:
+        attributes = dict(extensions)
+        # For the wrapped form the identifier lives on the envelope.
+        attributes.setdefault("id", response.get("id"))
+        return attributes
+
+    return {k: v for k, v in response.items() if k not in ENVELOPE_KEYS}
+
+
+def restrict_to_shape(desired, current):
+    """Reduce current to the keys desired actually specifies, recursively.
+
+    Checkmk fills in defaults for nested options it was not given, so a
+    playbook that specifies a subset of a nested dict would otherwise differ
+    from the server on every run. ConfigDiffer only restricts the comparison at
+    the top level, so nested dicts need this treatment before being handed to
+    it.
+
+    Lists are only descended into when both sides have the same length, so a
+    genuine difference in list length is still reported.
+
+    Args:
+        desired: The configuration the user asked for.
+        current: The configuration the server reports.
+
+    Returns:
+        The current configuration, pruned to the shape of the desired one.
+    """
+    if isinstance(desired, dict) and isinstance(current, dict):
+        return {
+            k: restrict_to_shape(desired[k], current[k])
+            for k in desired
+            if k in current
+        }
+    if isinstance(desired, list) and isinstance(current, list):
+        if len(desired) == len(current):
+            return [restrict_to_shape(d, c) for d, c in zip(desired, current)]
+    return current
