@@ -175,6 +175,7 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.bi import prune_none
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
@@ -216,11 +217,15 @@ class BIPackAPI(CheckmkAPI):
             self.module.fail_json(msg="Missing 'id' in pack dictionary.")
 
         self.pack_id = pack["id"]
-        self.desired = {
-            "title": pack.get("title"),
-            "contact_groups": pack.get("contact_groups"),
-            "public": pack.get("public"),
-        }
+        # title, contact_groups and public are all required by the API;
+        # the latter two always have a default, so only title can be absent.
+        self.desired = prune_none(
+            {
+                "title": pack.get("title"),
+                "contact_groups": pack.get("contact_groups"),
+                "public": pack.get("public"),
+            }
+        )
 
         self.state = None
         self._get_current()

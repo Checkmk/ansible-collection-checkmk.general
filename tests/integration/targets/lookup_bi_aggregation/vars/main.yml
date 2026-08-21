@@ -10,6 +10,9 @@ checkmk_var_bi_aggregations:
   - id: "ansible_test_aggregation_one"
     pack_id: "ansible_test_pack"
     comment: "aggregation one"
+    groups:
+      names: []
+      paths: []
     node:
       search:
         type: "empty"
@@ -28,6 +31,9 @@ checkmk_var_bi_aggregations:
   - id: "ansible_test_aggregation_two"
     pack_id: "ansible_test_pack"
     comment: "aggregation two"
+    groups:
+      names: []
+      paths: []
     node:
       search:
         type: "empty"

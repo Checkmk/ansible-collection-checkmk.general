@@ -10,6 +10,9 @@ checkmk_var_bi_aggregations_create:
   - id: "ansible_test_aggregation"
     pack_id: "ansible_test_pack"
     comment: "created by the integration test"
+    groups:
+      names: []
+      paths: []
     node:
       search:
         type: "empty"
@@ -30,6 +33,9 @@ checkmk_var_bi_aggregations_modify:
   - id: "ansible_test_aggregation"
     pack_id: "ansible_test_pack"
     comment: "modified by the integration test"
+    groups:
+      names: []
+      paths: []
     node:
       search:
         type: "empty"
