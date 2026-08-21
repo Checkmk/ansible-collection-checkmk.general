@@ -1,0 +1,21 @@
+---
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    site: "testsite"
+
+checkmk_var_bi_packs_create:
+  - id: "ansible_test_pack"
+    title: "Ansible Test Pack"
+    contact_groups: []
+    public: false
+  - id: "ansible_test_pack_two"
+    title: "Ansible Test Pack Two"
+    contact_groups: []
+    public: true
+
+checkmk_var_bi_packs_modify:
+  - id: "ansible_test_pack"
+    title: "Ansible Test Pack Modified"
+    contact_groups: []
+    public: true

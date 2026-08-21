@@ -1,0 +1,165 @@
+---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a BI pack."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack:
+      id: "{{ checkmk_var_bi_pack_id }}"
+      title: "{{ checkmk_var_bi_pack_title }}"
+    state: "present"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a second BI pack."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack:
+      id: "{{ checkmk_var_bi_pack_id_two }}"
+      title: "Ansible Test Pack Two"
+    state: "present"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a BI rule in the pack."
+  bi_rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    rule:
+      pack_id: "{{ checkmk_var_bi_pack_id }}"
+      id: "{{ checkmk_var_bi_rule_id }}"
+      nodes: []
+      properties:
+        title: "Ansible Test Rule"
+        comment: ""
+        docu_url: ""
+        icon: ""
+        state_messages: {}
+      aggregation_function:
+        type: "worst"
+        count: 1
+        restrict_state: 2
+      computation_options:
+        disabled: false
+      node_visualization:
+        type: "block"
+        style_config: {}
+    state: "present"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get the BI pack."
+  ansible.builtin.set_fact:
+    __checkmk_var_bi_pack: "{{ lookup('checkmk.general.bi_pack',
+                       checkmk_var_bi_pack_id,
+                       server_url=checkmk_var_server_url,
+                       site=outer_item.site,
+                       validate_certs=False,
+                       api_user=checkmk_var_api_user,
+                       api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the BI pack title."
+  ansible.builtin.assert:
+    that: "__checkmk_var_bi_pack.title == checkmk_var_bi_pack_title"
+    fail_msg: "Expected title {{ checkmk_var_bi_pack_title }}, but found {{ __checkmk_var_bi_pack.title | default('nothing') }}!"
+    success_msg: "Expected title {{ checkmk_var_bi_pack_title }} and found it."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the BI pack carries its rules and aggregations."
+  ansible.builtin.assert:
+    that:
+      - "'rules' in __checkmk_var_bi_pack"
+      - "'aggregations' in __checkmk_var_bi_pack"
+    fail_msg: "The BI pack lookup did not return the 'rules' and 'aggregations' keys!"
+    success_msg: "The BI pack lookup returned the 'rules' and 'aggregations' keys."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Pass several pack IDs as a list."
+  ansible.builtin.assert:
+    that: "__checkmk_var_bi_packs | length == 2"
+    fail_msg: "Expected 2 results, but found {{ __checkmk_var_bi_packs | length }}!"
+    success_msg: "Expected 2 results and found them."
+  vars:
+    __checkmk_var_bi_packs: "{{ lookup('checkmk.general.bi_pack',
+                        [checkmk_var_bi_pack_id, checkmk_var_bi_pack_id_two],
+                        server_url=checkmk_var_server_url,
+                        site=outer_item.site,
+                        validate_certs=False,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get all BI packs."
+  ansible.builtin.set_fact:
+    __checkmk_var_bi_packs: "{{ lookup('checkmk.general.bi_packs',
+                        server_url=checkmk_var_server_url,
+                        site=outer_item.site,
+                        validate_certs=False,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify that both created BI packs are listed."
+  ansible.builtin.assert:
+    that: "item in (__checkmk_var_bi_packs | map(attribute='id') | list)"
+    fail_msg: "Expected {{ item }} to be listed, but it is not!"
+    success_msg: "Expected {{ item }} to be listed and it is."
+  loop:
+    - "{{ checkmk_var_bi_pack_id }}"
+    - "{{ checkmk_var_bi_pack_id_two }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Use variables from inventory."
+  block:
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get the BI pack."
+      ansible.builtin.set_fact:
+        __checkmk_var_bi_pack: "{{ lookup('checkmk.general.bi_pack', checkmk_var_bi_pack_id) }}"
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the BI pack title."
+      ansible.builtin.assert:
+        that: "__checkmk_var_bi_pack.title == checkmk_var_bi_pack_title"
+        fail_msg: "Expected title {{ checkmk_var_bi_pack_title }}, but found {{ __checkmk_var_bi_pack.title | default('nothing') }}!"
+        success_msg: "Expected title {{ checkmk_var_bi_pack_title }} and found it."
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get all BI packs."
+      ansible.builtin.set_fact:
+        __checkmk_var_bi_packs: "{{ lookup('checkmk.general.bi_packs') }}"
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify that both created BI packs are listed."
+      ansible.builtin.assert:
+        that: "item in (__checkmk_var_bi_packs | map(attribute='id') | list)"
+        fail_msg: "Expected {{ item }} to be listed, but it is not!"
+        success_msg: "Expected {{ item }} to be listed and it is."
+      loop:
+        - "{{ checkmk_var_bi_pack_id }}"
+        - "{{ checkmk_var_bi_pack_id_two }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the BI rule."
+  bi_rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    rule:
+      pack_id: "{{ checkmk_var_bi_pack_id }}"
+      id: "{{ checkmk_var_bi_rule_id }}"
+    state: "absent"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the BI packs."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack:
+      id: "{{ item }}"
+    state: "absent"
+  loop:
+    - "{{ checkmk_var_bi_pack_id }}"
+    - "{{ checkmk_var_bi_pack_id_two }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"

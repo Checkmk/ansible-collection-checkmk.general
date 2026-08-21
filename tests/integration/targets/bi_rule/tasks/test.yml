@@ -1,0 +1,132 @@
+---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a BI pack to hold the rules."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack:
+      id: "{{ checkmk_var_bi_pack_id }}"
+      title: "Ansible Test Pack"
+    state: "present"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create BI rules."
+  bi_rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    rule: "{{ item }}"
+    state: "present"
+  register: __checkmk_var_result_bi_rule_create
+  loop: "{{ checkmk_var_bi_rules_create }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: not __checkmk_var_result_bi_rule_create.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create BI rules again (idempotency)."
+  bi_rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    rule: "{{ item }}"
+    state: "present"
+  register: __checkmk_var_result_bi_rule_recreate
+  loop: "{{ checkmk_var_bi_rules_create }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: __checkmk_var_result_bi_rule_recreate.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Modify BI rules."
+  bi_rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    rule: "{{ item }}"
+    state: "present"
+  register: __checkmk_var_result_bi_rule_modify
+  loop: "{{ checkmk_var_bi_rules_modify }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: not __checkmk_var_result_bi_rule_modify.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Modify BI rules again (idempotency)."
+  bi_rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    rule: "{{ item }}"
+    state: "present"
+  register: __checkmk_var_result_bi_rule_remodify
+  loop: "{{ checkmk_var_bi_rules_modify }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: __checkmk_var_result_bi_rule_remodify.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Check that the rule body is required when creating."
+  bi_rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    rule:
+      pack_id: "{{ checkmk_var_bi_pack_id }}"
+      id: "ansible_test_rule_incomplete"
+    state: "present"
+  register: __checkmk_var_result_bi_rule_incomplete
+  failed_when: "'are required in' not in __checkmk_var_result_bi_rule_incomplete.msg"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete BI rules (identifiers only)."
+  bi_rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    rule:
+      pack_id: "{{ item.pack_id }}"
+      id: "{{ item.id }}"
+    state: "absent"
+  register: __checkmk_var_result_bi_rule_delete
+  loop: "{{ checkmk_var_bi_rules_create }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: not __checkmk_var_result_bi_rule_delete.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete BI rules again (idempotency)."
+  bi_rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    rule:
+      pack_id: "{{ item.pack_id }}"
+      id: "{{ item.id }}"
+    state: "absent"
+  register: __checkmk_var_result_bi_rule_redelete
+  loop: "{{ checkmk_var_bi_rules_create }}"
+  loop_control:
+    label: "{{ item.id }}"
+  failed_when: __checkmk_var_result_bi_rule_redelete.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the BI pack."
+  bi_pack:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    pack:
+      id: "{{ checkmk_var_bi_pack_id }}"
+    state: "absent"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
