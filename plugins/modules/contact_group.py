@@ -204,6 +204,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_api_url,
     base_argument_spec,
 )
 
@@ -512,10 +513,7 @@ def run_module():
         ),
     }
 
-    base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", "").rstrip("/"),
-        module.params.get("site", ""),
-    )
+    base_url = base_api_url(module.params)
 
     # Determine desired state
     state = module.params.get("state", "present")
