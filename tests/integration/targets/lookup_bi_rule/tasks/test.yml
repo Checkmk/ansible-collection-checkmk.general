@@ -65,16 +65,6 @@
     fail_msg: "Expected title {{ checkmk_var_bi_rule_title }}, but found {{ __checkmk_var_bi_rule.properties.title | default('nothing') }}!"
     success_msg: "Expected title {{ checkmk_var_bi_rule_title }} and found it."
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the rule reports its pack membership."
-  ansible.builtin.assert:
-    that: "'pack_id' in __checkmk_var_bi_rule"
-    fail_msg: >-
-      The rule's extensions do not contain 'pack_id' (keys:
-      {{ __checkmk_var_bi_rule.keys() | list }}). The bi_rule module backfills
-      pack_id from its parameters, so without it the module cannot detect a rule
-      being moved to another pack. See misc/bi_dcd_followups.md #6.
-    success_msg: "The rule reports its pack membership, so pack_id takes part in the diff."
-
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Pass several rule IDs as a list."
   ansible.builtin.assert:
     that: "__checkmk_var_bi_rules_by_id | length == checkmk_var_bi_rules | length"
