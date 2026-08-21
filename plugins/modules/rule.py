@@ -104,15 +104,32 @@ notes:
       for example by copying it from the GUI (Export rule for API) or from the output
       of an existing rule. Value formats can change between Checkmk versions, so
       playbooks may need updating after a Checkmk upgrade.
-    - Rules containing passwords or other secrets cannot be compared reliably, because
-      the Checkmk API masks secrets in its responses. Such tasks report a change on
-      every run when C(rule_id) is provided, or create a new rule on every run when it
-      is omitted. Referencing an entry from the password store and writing the value
-      exactly as the API returns it avoids this.
+    - The Checkmk API masks secrets in its responses. Rules that contain an explicit
+      password in C(value_raw) can therefore never be compared with the desired state.
+      They report a change on every run when C(rule_id) is provided, and create another
+      rule on every run when it is omitted. Reference an entry of the Checkmk password
+      store instead, which can be managed with the M(checkmk.general.password) module.
+      This is the only supported way to manage rules containing secrets with this module.
+    - Write the password store reference exactly as the target Checkmk site returns it,
+      because its representation depends on the Checkmk version and on the ruleset.
+      Rulesets using the modern rule specs return for example
+      C(('cmk_postprocessed', 'stored_password', ('my_password', ''))) on Checkmk 2.3 and
+      2.4, and C(('cmk_postprocessed', 'stored_password', ('my_password', '******'))) on
+      Checkmk 2.5, while rulesets still using the legacy valuespecs return
+      C(('store', 'my_password')). The last element of such a reference is not evaluated
+      for password store entries, so the masked value can be used as it is returned.
     - The positions C(top), C(bottom), C(before) and C(after) describe the rule order
-      at the time the task runs. Rules created later, including by subsequent tasks,
-      can displace such rules, causing move operations on the next run. Only C(any)
-      is stable in that regard.
+      at the time the task runs. Rules created later, including by subsequent tasks or
+      in the GUI, can displace such rules, so the next run detects a location change
+      and moves the rule back.
+    - C(position=any) accepts any position within the folder and is thus the only
+      position that is idempotent on its own. Do not use it for rulesets that are
+      evaluated in first match order, because the rule which takes effect would then
+      depend on an arbitrary position. Order the rules of such a ruleset explicitly,
+      as shown in the examples, anchoring the first rule and chaining the following
+      ones behind their predecessor with C(position=after) and C(neighbour). Once
+      established, such a chain is idempotent, and it restores the intended order if
+      rules are inserted in between.
 
 seealso:
     - plugin: checkmk.general.rule
@@ -261,6 +278,53 @@ EXAMPLES = r"""
       location:
         folder: "/"
         position: "bottom"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Ordered rules in a ruleset that is evaluated in first match order
+# ---------------------------------------------------------------------------
+# Anchor the first rule of the chain, then chain every following rule behind
+# its predecessor. The relative order of the rules is then guaranteed and
+# idempotent, regardless of other rules in the same folder.
+
+- name: "Create the more specific rule first."
+  checkmk.general.rule:
+    server_url: "https://myserver"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      conditions:
+        host_labels:
+          - key: "role"
+            operator: "is"
+            value: "database"
+      properties:
+        description: "Filesystem levels for database servers"
+        comment: "Managed by Ansible"
+      value_raw: "{'levels': (95.0, 98.0)}"
+      location:
+        folder: "/"
+        position: "any"
+    state: "present"
+  register: database_rule
+
+- name: "Create the general rule directly after the specific one."
+  checkmk.general.rule:
+    server_url: "https://myserver"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      properties:
+        description: "Filesystem levels for all other hosts"
+        comment: "Managed by Ansible"
+      value_raw: "{'levels': (80.0, 90.0)}"
+      location:
+        position: "after"
+        neighbour: "{{ database_rule.content.id }}"
     state: "present"
 
 # ---------------------------------------------------------------------------
