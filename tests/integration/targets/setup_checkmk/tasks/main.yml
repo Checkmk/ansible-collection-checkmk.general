@@ -185,3 +185,19 @@
   delay: 5
   register: __checkmk_var_site_remote_status_online
   loop: "{{ checkmk_var_test_sites | subelements('remote_sites', skip_missing=True) }}"
+
+# Consumed by targets that have to address the sites differently depending on
+# whether they run in neighbouring containers (CI) or on this very filesystem
+# (local `--docker` runs). Probed after provisioning, so it also holds true on
+# the first target of a fresh local run, which creates the sites above.
+- name: "Check, whether the sites reside on this filesystem."
+  ansible.builtin.stat:
+    path: "/omd/sites/{{ item.site }}"
+  loop: "{{ checkmk_var_test_sites }}"
+  loop_control:
+    label: "{{ item.site }}"
+  register: __checkmk_var_result_setup_site_paths
+
+- name: "Record, whether the sites reside on this filesystem."
+  ansible.builtin.set_fact:
+    checkmk_var_sites_are_local: "{{ __checkmk_var_result_setup_site_paths.results | selectattr('stat.exists') | list | length > 0 }}"
