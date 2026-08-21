@@ -1,0 +1,83 @@
+---
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a DCD configuration."
+  dcd:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    dcd_config:
+      dcd_id: "{{ checkmk_var_dcd_id }}"
+      title: "{{ checkmk_var_dcd_title }}"
+      comment: "Piggyback config for Boar host"
+      site: "{{ outer_item.site }}"
+      connector:
+        connector_type: "piggyback"
+        interval: 5
+        creation_rules:
+          - folder_path: "/"
+            delete_hosts: false
+            host_attributes:
+              tag_address_family: "no-ip"
+              tag_agent: "special-agents"
+              tag_piggyback: "piggyback"
+              tag_snmp_ds: "no-snmp"
+        discover_on_creation: true
+        restrict_source_hosts:
+          - "boar"
+    state: "present"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get the DCD connection."
+  ansible.builtin.set_fact:
+    __checkmk_var_dcd: "{{ lookup('checkmk.general.dcd',
+                   checkmk_var_dcd_id,
+                   server_url=checkmk_var_server_url,
+                   site=outer_item.site,
+                   validate_certs=False,
+                   api_user=checkmk_var_api_user,
+                   api_secret=checkmk_var_api_secret) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the DCD connection title."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dcd.title == checkmk_var_dcd_title"
+    fail_msg: "Expected title {{ checkmk_var_dcd_title }}, but found {{ __checkmk_var_dcd.title | default('nothing') }}!"
+    success_msg: "Expected title {{ checkmk_var_dcd_title }} and found it."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the DCD connection ID is carried over."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dcd.dcd_id == checkmk_var_dcd_id"
+    fail_msg: "Expected dcd_id {{ checkmk_var_dcd_id }}, but found {{ __checkmk_var_dcd.dcd_id | default('nothing') }}!"
+    success_msg: "Expected dcd_id {{ checkmk_var_dcd_id }} and found it."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Use variables from inventory."
+  block:
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get the DCD connection."
+      ansible.builtin.set_fact:
+        __checkmk_var_dcd: "{{ lookup('checkmk.general.dcd', checkmk_var_dcd_id) }}"
+
+    - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the DCD connection title."
+      ansible.builtin.assert:
+        that: "__checkmk_var_dcd.title == checkmk_var_dcd_title"
+        fail_msg: "Expected title {{ checkmk_var_dcd_title }}, but found {{ __checkmk_var_dcd.title | default('nothing') }}!"
+        success_msg: "Expected title {{ checkmk_var_dcd_title }} and found it."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the DCD configuration."
+  dcd:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    dcd_config:
+      dcd_id: "{{ checkmk_var_dcd_id }}"
+      site: "{{ outer_item.site }}"
+    state: "absent"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"

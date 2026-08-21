@@ -1,0 +1,10 @@
+---
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    site: "testsite"
+
+checkmk_var_bi_pack_id: "ansible_test_pack"
+checkmk_var_bi_pack_id_two: "ansible_test_pack_two"
+checkmk_var_bi_pack_title: "Ansible Test Pack"
+checkmk_var_bi_rule_id: "ansible_test_rule"
