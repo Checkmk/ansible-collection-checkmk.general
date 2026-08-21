@@ -175,7 +175,11 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
-from ansible_collections.checkmk.general.plugins.module_utils.bi import prune_none
+from ansible_collections.checkmk.general.plugins.module_utils.bi import (
+    object_attributes,
+    prune_none,
+    restrict_to_shape,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
@@ -230,8 +234,11 @@ class BIPackAPI(CheckmkAPI):
         self.state = None
         self._get_current()
 
-        # Initialize the ConfigDiffer with desired and current configurations
-        self.differ = ConfigDiffer(self.desired, self.current)
+        # Checkmk fills in defaults for options it was not given, so compare
+        # only what the playbook actually specified.
+        self.differ = ConfigDiffer(
+            self.desired, restrict_to_shape(self.desired, self.current)
+        )
 
     def _get_current(self):
         """
@@ -254,8 +261,9 @@ class BIPackAPI(CheckmkAPI):
                     content=response.content,
                 )
 
-            # The pack attributes live in 'extensions' of the returned domain object.
-            self.current = api_response.get("extensions", {})
+            # Some BI endpoints wrap the attributes in 'extensions', others
+            # return them flat at the top level.
+            self.current = object_attributes(api_response)
         else:
             self.state = "absent"
             self.current = {}

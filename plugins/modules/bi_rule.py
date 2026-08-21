@@ -190,7 +190,11 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
-from ansible_collections.checkmk.general.plugins.module_utils.bi import prune_none
+from ansible_collections.checkmk.general.plugins.module_utils.bi import (
+    object_attributes,
+    prune_none,
+    restrict_to_shape,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
@@ -256,8 +260,11 @@ class BIRuleAPI(CheckmkAPI):
         self.state = None
         self._get_current()
 
-        # Initialize the ConfigDiffer with desired and current configurations
-        self.differ = ConfigDiffer(self.desired, self.current)
+        # Checkmk fills in defaults for nested options it was not given, so
+        # compare only what the playbook actually specified.
+        self.differ = ConfigDiffer(
+            self.desired, restrict_to_shape(self.desired, self.current)
+        )
 
     def _get_current(self):
         """
@@ -280,15 +287,17 @@ class BIRuleAPI(CheckmkAPI):
                     content=result.content,
                 )
 
-            # The rule attributes live in 'extensions' of the returned domain
-            # object. Comparing the whole domain object instead would always
-            # report a difference, because of 'links', 'members' and friends.
-            self.current = current_raw.get("extensions", {})
+            # Some BI endpoints wrap the attributes in 'extensions',
+            # others return them flat at the top level.
+            self.current = object_attributes(current_raw)
 
-            # The identifying attributes are part of the domain object itself,
-            # so carry them over for the comparison.
-            self.current.setdefault("id", current_raw.get("id"))
-            self.current.setdefault("pack_id", self.pack_id)
+            # The API reports pack_id as an empty string rather than the
+            # owning pack, so it cannot be compared. Carry the desired
+            # value over when the API does not report one, which keeps
+            # the comparison correct if it ever starts to.
+            # Consequence: moving to another pack is not detected.
+            if not self.current.get("pack_id"):
+                self.current["pack_id"] = self.desired.get("pack_id")
         else:
             self.state = "absent"
             self.current = {}
