@@ -97,7 +97,10 @@ import json
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
-from ansible_collections.checkmk.general.plugins.module_utils.bi import member_values
+from ansible_collections.checkmk.general.plugins.module_utils.bi import (
+    member_values,
+    object_attributes,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
 )
@@ -141,7 +144,7 @@ class LookupModule(LookupBase):
 
             # This endpoint returns the pack together with its rules and
             # aggregations, which live in the 'members' container.
-            pack = response.get("extensions", {})
+            pack = object_attributes(response)
             pack["rules"] = member_values(response, "rules")
             pack["aggregations"] = member_values(response, "aggregations")
 
