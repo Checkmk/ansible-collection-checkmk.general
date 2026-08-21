@@ -443,6 +443,7 @@ content:
 
 import json
 from ast import literal_eval
+from copy import deepcopy
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
@@ -807,17 +808,16 @@ class RuleAPI(CheckmkAPI):
         return None
 
     def _normalize_rule(self, r):
-        loc = r.copy()
+        # Work on a deep copy: normalizing must not modify the rule that was
+        # passed in, which would silently alter self.desired or self.current.
+        loc = deepcopy(r)
         for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
-            if loc.get(what):
+            for candidate in (loc, loc.get("extensions", {})):
+                if not candidate.get(what):
+                    continue
                 for key, value in def_vals.items():
-                    if loc.get(what).get(key, value) == value:
-                        loc[what].pop(key, None)
-            if loc.get("extensions", {}).get(what):
-                ext = loc.get("extensions", {})
-                for key, value in def_vals.items():
-                    if ext.get(what).get(key, value) == value:
-                        ext[what].pop(key, None)
+                    if candidate[what].get(key, value) == value:
+                        candidate[what].pop(key, None)
         return loc
 
     def _detect_changes(self):
@@ -954,7 +954,7 @@ class RuleAPI(CheckmkAPI):
 
     def create(self):
         # rule is there always (required true)
-        data = self.desired.get("rule").copy()
+        data = self._normalize_rule(self.desired.get("rule"))
         location = data.pop("location", {})
         data["ruleset"] = self.desired.get("ruleset")
         data["folder"] = location.get("folder", "/")
@@ -988,8 +988,8 @@ class RuleAPI(CheckmkAPI):
 
     def edit(self):
         # rule is there always (required true)
-        data = self.desired.get("rule").copy()
-        data.pop("location")
+        data = self._normalize_rule(self.desired.get("rule"))
+        data.pop("location", None)
         self.headers["if-Match"] = self.etag
 
         if not data.get("value_raw"):
