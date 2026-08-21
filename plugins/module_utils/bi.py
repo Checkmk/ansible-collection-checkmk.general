@@ -50,3 +50,23 @@ def member_values(response, name):
         return list(fallback.values())
 
     return []
+
+
+def prune_none(value):
+    """Recursively drop keys whose value is None.
+
+    Unset Ansible options arrive as None all the way down a nested argument
+    spec, and the Checkmk API rejects explicit nulls with
+    "Field may not be null" rather than treating them as absent.
+
+    Args:
+        value: An arbitrarily nested structure of dicts, lists and scalars.
+
+    Returns:
+        The same structure with all None-valued dictionary keys removed.
+    """
+    if isinstance(value, dict):
+        return {k: prune_none(v) for k, v in value.items() if v is not None}
+    if isinstance(value, list):
+        return [prune_none(v) for v in value]
+    return value
