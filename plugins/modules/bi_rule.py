@@ -73,12 +73,16 @@ options:
             params:
                 type: dict
                 required: false
-                description: Additional parameters for the BI rule.
+                description:
+                  - Additional parameters for the BI rule.
+                  - The Checkmk API requires this field, so it defaults to an empty argument list.
+                default: {"arguments": []}
                 suboptions:
                     arguments:
                         type: list
                         elements: str
                         required: false
+                        default: []
                         description: List of arguments for the BI rule.
 
     state:
@@ -186,6 +190,7 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.bi import prune_none
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
@@ -243,9 +248,10 @@ class BIRuleAPI(CheckmkAPI):
         self.rule_id = rule["id"]
         self.pack_id = rule["pack_id"]
 
-        # Only compare what the user actually specified. Unset suboptions arrive
-        # as None from the argument spec and must not take part in the diff.
-        self.desired = {k: v for k, v in rule.items() if v is not None}
+        # Only compare and send what the user actually specified. Unset options
+        # arrive as None from the argument spec; the API rejects explicit nulls,
+        # and they must not take part in the diff either.
+        self.desired = prune_none(rule)
 
         self.state = None
         self._get_current()
@@ -432,8 +438,11 @@ def run_module():
                 params=dict(
                     type="dict",
                     required=False,
+                    default=dict(arguments=[]),
                     options=dict(
-                        arguments=dict(type="list", elements="str", required=False),
+                        arguments=dict(
+                            type="list", elements="str", required=False, default=[]
+                        ),
                     ),
                 ),
             ),

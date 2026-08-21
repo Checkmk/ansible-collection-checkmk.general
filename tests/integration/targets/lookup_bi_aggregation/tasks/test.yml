@@ -38,6 +38,17 @@
     fail_msg: "Expected {{ checkmk_var_bi_aggregations | length }} aggregations, but found {{ __checkmk_var_bi_aggregations | length }}!"
     success_msg: "Expected {{ checkmk_var_bi_aggregations | length }} aggregations and found them."
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the listed BI aggregations are usable objects, not link stubs."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_bi_aggregations | map(attribute='id') | list | sort == checkmk_var_bi_aggregations | map(attribute='id') | list | sort"
+    fail_msg: >-
+      Expected ids {{ checkmk_var_bi_aggregations | map(attribute='id') | list | sort }},
+      but got {{ __checkmk_var_bi_aggregations | map(attribute='id', default='<no id>') | list }}.
+      If the entries have no 'id', the pack's 'members' container holds link stubs
+      rather than domain objects and the bi_aggregations lookup needs to fetch each one.
+    success_msg: "The listed BI aggregations carry their ids."
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get a single BI aggregation."
   ansible.builtin.set_fact:
     __checkmk_var_bi_aggregation: "{{ lookup('checkmk.general.bi_aggregation',

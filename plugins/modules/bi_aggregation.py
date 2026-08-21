@@ -56,6 +56,7 @@ options:
             groups:
                 description:
                     - Groups associated with the aggregation.
+                    - Required when I(state=present). Pass empty lists to assign no groups.
                 type: dict
                 required: false
                 suboptions:
@@ -74,6 +75,7 @@ options:
             node:
                 description:
                     - Node generation definition.
+                    - Required when I(state=present).
                 type: dict
                 required: false
                 suboptions:
@@ -90,11 +92,13 @@ options:
             aggregation_visualization:
                 description:
                     - Aggregation visualization options.
+                    - Required when I(state=present).
                 type: dict
                 required: false
             computation_options:
                 description:
                     - Computation options.
+                    - Required when I(state=present).
                 type: dict
                 required: false
     state:
@@ -201,9 +205,20 @@ import json
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.bi import prune_none
 from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
+)
+
+# Suboptions of 'aggregation' that the Checkmk API requires when creating or
+# updating. Omitting any of them is answered with a 400, so check up front and
+# report which ones are missing instead of passing the API error back.
+REQUIRED_WHEN_PRESENT = (
+    "groups",
+    "node",
+    "aggregation_visualization",
+    "computation_options",
 )
 
 
@@ -254,9 +269,10 @@ class BIAggregationAPI(CheckmkAPI):
         self.aggregation_id = aggregation["id"]
         self.pack_id = aggregation["pack_id"]
 
-        # Only compare what the user actually specified. Unset suboptions arrive
-        # as None from the argument spec and must not take part in the diff.
-        self.desired = {k: v for k, v in aggregation.items() if v is not None}
+        # Only compare and send what the user actually specified. Unset options
+        # arrive as None from the argument spec; the API rejects explicit nulls,
+        # and they must not take part in the diff either.
+        self.desired = prune_none(aggregation)
 
         self.state = None
         self._get_current()
@@ -483,6 +499,17 @@ def run_module():
     )
 
     desired_state = module.params.get("state")
+    aggregation = module.params.get("aggregation")
+
+    # The API needs the full aggregation definition to create or update it,
+    # while a deletion only needs the identifying attributes.
+    if desired_state == "present":
+        missing = [key for key in REQUIRED_WHEN_PRESENT if aggregation.get(key) is None]
+        if missing:
+            module.fail_json(
+                msg="The following options are required in 'aggregation' when "
+                "state is 'present': %s" % ", ".join(missing)
+            )
 
     bi_aggregation_api = BIAggregationAPI(module)
 
