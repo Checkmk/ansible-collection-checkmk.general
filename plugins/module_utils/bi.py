@@ -11,45 +11,62 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-def member_values(response, name):
-    """Return the objects of a named member collection of a domain object.
+def _with_id(key, value):
+    """Restore an object's id when a collection was keyed by it.
 
-    'GET /objects/bi_pack/{pack_id}' returns the pack together with its rules
-    and aggregations. Those are nested in the 'members' container of the domain
-    object, and Checkmk has used more than one shape for it over time. Rather
-    than guessing, accept every shape we have seen and always return a list.
+    Checkmk returns some collections as a mapping of object id to object, and
+    the object itself then carries no 'id' of its own. Flattening such a
+    mapping to a list would throw the identifier away.
 
     Args:
-        response (dict): The decoded domain object returned by the REST API.
-        name (str): Name of the member collection, e.g. 'rules'.
+        key: The mapping key the object was stored under.
+        value: The object.
 
     Returns:
-        list: The objects of that member collection, empty if there are none.
+        The object, with 'id' set from the key if it had none.
     """
-    members = response.get("members") or {}
-    member = members.get(name)
+    if isinstance(value, dict) and not value.get("id"):
+        return dict(value, id=key)
+    return value
 
-    # A member collection, i.e. {"members": {"rules": {"value": [...]}}}
-    if isinstance(member, dict):
-        value = member.get("value")
-        if isinstance(value, list):
-            return value
-        if isinstance(value, dict):
-            return list(value.values())
-        return []
 
-    # An already flattened list, i.e. {"members": {"rules": [...]}}
-    if isinstance(member, list):
-        return member
-
-    # Older responses put the collections next to 'extensions' instead.
-    fallback = response.get(name)
-    if isinstance(fallback, list):
-        return fallback
-    if isinstance(fallback, dict):
-        return list(fallback.values())
-
+def _as_list(collection):
+    """Return a member collection as a list, whether it was a list or a mapping."""
+    if isinstance(collection, list):
+        return collection
+    if isinstance(collection, dict):
+        return [_with_id(k, v) for k, v in collection.items()]
     return []
+
+
+def member_values(response, name):
+    """Return the objects of a named collection of a BI pack response.
+
+    'GET /objects/bi_pack/{pack_id}' returns the pack together with its rules
+    and aggregations. Checkmk has used more than one shape for that over time:
+    nested in the 'members' container of a domain object, or alongside the
+    pack's own attributes in a flat response, and as either a list or a mapping
+    of id to object. Rather than guessing, accept all of them and always return
+    a list of objects that carry their 'id'.
+
+    Args:
+        response (dict): The decoded API response.
+        name (str): Name of the collection, e.g. 'rules'.
+
+    Returns:
+        list: The objects of that collection, empty if there are none.
+    """
+    collection = (response.get("members") or {}).get(name)
+
+    if collection is None:
+        # Flat responses carry the collections next to the pack's attributes.
+        collection = response.get(name)
+
+    # A member collection wrapper, i.e. {"value": [...]}
+    if isinstance(collection, dict) and "value" in collection:
+        collection = collection.get("value")
+
+    return _as_list(collection)
 
 
 def prune_none(value):
