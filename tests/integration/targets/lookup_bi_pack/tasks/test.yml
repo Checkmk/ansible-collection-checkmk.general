@@ -74,11 +74,11 @@
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the created rule is listed in the pack."
   ansible.builtin.assert:
-    that: "checkmk_var_bi_rule_id in (__checkmk_var_bi_pack.rules | map(attribute='id') | list)"
+    that: "checkmk_var_bi_rule_id in (__checkmk_var_bi_pack.rules | map(attribute='id', default='<no id>') | list)"
     fail_msg: >-
       Expected {{ checkmk_var_bi_rule_id }} among the pack's rules, but found
-      {{ __checkmk_var_bi_pack.rules }}. An empty list means the member collection
-      is not named 'rules'; entries without an 'id' mean they are link stubs.
+      {{ __checkmk_var_bi_pack.rules }}. An empty list means the collection is not
+      named 'rules'; entries without an 'id' mean they are not full objects.
     success_msg: "The created rule is listed in the pack with its id."
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Pass several pack IDs as a list."
@@ -106,7 +106,7 @@
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify that both created BI packs are listed."
   ansible.builtin.assert:
-    that: "item in (__checkmk_var_bi_packs | map(attribute='id') | list)"
+    that: "item in (__checkmk_var_bi_packs | map(attribute='id', default='<no id>') | list)"
     fail_msg: "Expected {{ item }} to be listed, but it is not!"
     success_msg: "Expected {{ item }} to be listed and it is."
   loop:
@@ -132,7 +132,7 @@
 
     - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify that both created BI packs are listed."
       ansible.builtin.assert:
-        that: "item in (__checkmk_var_bi_packs | map(attribute='id') | list)"
+        that: "item in (__checkmk_var_bi_packs | map(attribute='id', default='<no id>') | list)"
         fail_msg: "Expected {{ item }} to be listed, but it is not!"
         success_msg: "Expected {{ item }} to be listed and it is."
       loop:
