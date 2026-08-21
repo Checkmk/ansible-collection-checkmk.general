@@ -5,6 +5,9 @@ action_groups:
     - activation
     - aux_tag
     - bakery
+    - bi_aggregation
+    - bi_pack
+    - bi_rule
     - contact_group
     - dcd
     - dcd_metricbackend
