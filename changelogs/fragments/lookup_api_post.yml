@@ -1,7 +1,10 @@
 ---
 minor_changes:
-  - All lookup modules - Array query parameters are now sent as repeated keys,
-    e.g. ``columns=name&columns=state``, which is the form the REST API expects.
-  - All lookup modules - The lookup API can now issue ``POST`` requests. Checkmk
-    3.0 removes the ``GET`` variants of the monitoring collection endpoints,
-    which are ``POST`` only on every supported version.
+  - Lookup plugins, Inventory plugin - ``CheckMKLookupAPI`` now encodes list valued query parameters
+    as repeated keys, e.g. ``columns=name&columns=state``, which is the form the REST API expects.
+    No plugin passes a list yet, so this only affects code importing the class directly from ``module_utils``,
+    not playbooks or roles.
+  - Lookup plugins, Inventory plugin - ``CheckMKLookupAPI`` gained a ``post()`` method alongside ``get()``,
+    as groundwork for the monitoring collection endpoints, whose ``GET`` variants Checkmk 3.0 removes.
+    None of the endpoints the lookup and inventory plugins currently use is a monitoring collection,
+    so all of them keep using ``GET`` and nothing changes for playbooks or roles.
