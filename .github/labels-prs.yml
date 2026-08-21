@@ -117,31 +117,31 @@ module:user:
 lookup:activation:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/lookup/activation.py'
-          - any-glob-to-any-file: 'plugins/modules/lookup/activations.py'
+          - any-glob-to-any-file: 'plugins/lookup/activation.py'
+          - any-glob-to-any-file: 'plugins/lookup/activations.py'
 
 lookup:bakery:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/lookup/bakery.py'
+          - any-glob-to-any-file: 'plugins/lookup/bakery.py'
 
 lookup:folder:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/lookup/folder.py'
-          - any-glob-to-any-file: 'plugins/modules/lookup/folders.py'
+          - any-glob-to-any-file: 'plugins/lookup/folder.py'
+          - any-glob-to-any-file: 'plugins/lookup/folders.py'
 
 lookup:host:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/lookup/host.py'
-          - any-glob-to-any-file: 'plugins/modules/lookup/hosts.py'
+          - any-glob-to-any-file: 'plugins/lookup/host.py'
+          - any-glob-to-any-file: 'plugins/lookup/hosts.py'
 
 lookup:ldap_connection:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/lookup/ldap_connection.py'
-          - any-glob-to-any-file: 'plugins/modules/lookup/ldap_connections.py'
+          - any-glob-to-any-file: 'plugins/lookup/ldap_connection.py'
+          - any-glob-to-any-file: 'plugins/lookup/ldap_connections.py'
 
 lookup:role:
   - any:
@@ -152,22 +152,22 @@ lookup:role:
 lookup:rule:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/lookup/rule.py'
-          - any-glob-to-any-file: 'plugins/modules/lookup/rules.py'
+          - any-glob-to-any-file: 'plugins/lookup/rule.py'
+          - any-glob-to-any-file: 'plugins/lookup/rules.py'
 
 lookup:ruleset:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/lookup/ruleset.py'
-          - any-glob-to-any-file: 'plugins/modules/lookup/rulesets.py'
+          - any-glob-to-any-file: 'plugins/lookup/ruleset.py'
+          - any-glob-to-any-file: 'plugins/lookup/rulesets.py'
 
 lookup:site:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/lookup/site.py'
-          - any-glob-to-any-file: 'plugins/modules/lookup/sites.py'
+          - any-glob-to-any-file: 'plugins/lookup/site.py'
+          - any-glob-to-any-file: 'plugins/lookup/sites.py'
 
 lookup:version:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/lookup/version.py'
+          - any-glob-to-any-file: 'plugins/lookup/version.py'
