@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.24.0
+  :antsibull-docs: 2.26.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.activation lookup -- Get the status of a single activation
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -93,7 +93,7 @@ Terms
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string` / :ansible-option-required:`required`
 
 
 
@@ -106,7 +106,7 @@ Terms
 
         <div class="ansible-option-cell">
 
-      activation ID to look up
+      One or more activation IDs, either as separate terms or as a single list.
 
 
       .. raw:: html
@@ -584,7 +584,7 @@ Examples
       vars:
         activation: "{{ lookup('checkmk.general.activation',
                        'my_activation_id',
-                       server_url='https://myserver/',
+                       server_url='https://myserver',
                        site='mysite',
                        api_user='myuser',
                        api_secret='mysecret',
@@ -604,7 +604,7 @@ Examples
       ansible.builtin.debug:
         msg: "Activation status is {{ activation }}"
       vars:
-        checkmk_var_server_url: "https://myserver/"
+        checkmk_var_server_url: "https://myserver"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"

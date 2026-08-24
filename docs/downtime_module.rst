@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.24.0
+  :antsibull-docs: 2.26.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.downtime module -- Manage downtimes in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -836,7 +836,7 @@ Examples
 
     - name: "Schedule a host downtime starting now, ending in 2 hours."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -846,7 +846,7 @@ Examples
 
     - name: "Schedule a host downtime with a comment, starting now, ending in 2 hours."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -857,7 +857,7 @@ Examples
 
     - name: "Schedule a host downtime using absolute start and end times."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -868,7 +868,7 @@ Examples
 
     - name: "Schedule a host downtime starting in 30 minutes and lasting 4 hours."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -885,7 +885,7 @@ Examples
 
     - name: "Remove all downtimes from a host."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -894,7 +894,7 @@ Examples
 
     - name: "Remove only host downtimes matching a specific comment."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -908,7 +908,7 @@ Examples
 
     - name: "Schedule a downtime for a single service on a host."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -921,7 +921,7 @@ Examples
 
     - name: "Schedule downtimes for multiple services on a host using absolute times."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -939,7 +939,7 @@ Examples
 
     - name: "Remove all downtimes for specific services on a host."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -951,7 +951,7 @@ Examples
 
     - name: "Remove service downtimes matching a specific comment."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -968,7 +968,7 @@ Examples
 
     - name: "Schedule a host downtime for multiple hosts."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -983,7 +983,7 @@ Examples
 
     - name: "Remove host downtimes for multiple hosts."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -1008,7 +1008,7 @@ Examples
 
     - name: "Schedule a flexible host downtime triggered by a non-OK state."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -1027,7 +1027,7 @@ Examples
 
     - name: "Force a new host downtime even if one with the same comment already exists."
       checkmk.general.downtime:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -1053,7 +1053,7 @@ Examples
         end_after:
           hours: 2
       environment:
-        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SERVER_URL: "https://myserver"
         CHECKMK_VAR_SITE: "mysite"
         CHECKMK_VAR_API_USER: "myuser"
         CHECKMK_VAR_API_SECRET: "mysecret"

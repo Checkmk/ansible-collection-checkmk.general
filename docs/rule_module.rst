@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.24.0
+  :antsibull-docs: 2.26.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.rule module -- Manage rules in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -941,7 +941,7 @@ Examples
 
     - name: "Create a rule at the top of the main folder."
       checkmk.general.rule:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -972,7 +972,7 @@ Examples
 
     - name: "Delete a rule by ID."
       checkmk.general.rule:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -987,7 +987,7 @@ Examples
 
     - name: "Create a rule and place it after an existing rule."
       checkmk.general.rule:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -1017,7 +1017,7 @@ Examples
 
     - name: "Create a rule matching a host label."
       checkmk.general.rule:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -1040,7 +1040,7 @@ Examples
 
     - name: "Create a rule with combined label group conditions (Checkmk >= 2.3.0)."
       checkmk.general.rule:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -1072,7 +1072,7 @@ Examples
 
     - name: "Delete all rules in a ruleset that match a certain comment."
       checkmk.general.rule:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -1084,7 +1084,7 @@ Examples
                lookup('checkmk.general.rules',
                  ruleset='checkgroup_parameters:memory_percentage_used',
                  comment_regex='Managed by Ansible',
-                 server_url='https://myserver/',
+                 server_url='https://myserver',
                  site='mysite',
                  api_user='myuser',
                  api_secret='mysecret',
@@ -1116,7 +1116,7 @@ Examples
             position: "bottom"
         state: "present"
       environment:
-        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SERVER_URL: "https://myserver"
         CHECKMK_VAR_SITE: "mysite"
         CHECKMK_VAR_API_USER: "myuser"
         CHECKMK_VAR_API_SECRET: "mysecret"

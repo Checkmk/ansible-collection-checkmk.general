@@ -4,6 +4,32 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v8.4.0
+======
+
+Release Summary
+---------------
+
+Quality-of-life improvements across all plugins.
+
+Minor Changes
+-------------
+
+- All lookup modules - REST API errors now include the detail Checkmk reports about them, instead of only the generic message belonging to the HTTP status code. This makes validation failures diagnosable without inspecting the API by hand.
+- All modules - The REST API base URL is now built by ``base_api_url()`` in ``module_utils/utils.py``, instead of ``CheckmkAPI`` and the four modules that do not use it each assembling it by hand. The trailing-slash handling therefore lives in one place on the module side too. This only affects code importing from ``module_utils``, not playbooks or roles.
+- Lookup modules - Terms can now be passed as a single list, not only as separate arguments. Previously ``lookup('checkmk.general.host', my_host_list)`` failed with ``can only concatenate str (not "_AnsibleLazyTemplateList")``, and the Activation lookup module silently built an invalid URL instead.
+- Lookup plugins, Inventory plugin - ``CheckMKLookupAPI`` gained a ``post()`` method alongside ``get()``, as groundwork for the monitoring collection endpoints, whose ``GET`` variants Checkmk 3.0 removes. None of the endpoints the lookup and inventory plugins currently use is a monitoring collection, so all of them keep using ``GET`` and nothing changes for playbooks or roles.
+- Lookup plugins, Inventory plugin - ``CheckMKLookupAPI`` now encodes list valued query parameters as repeated keys, e.g. ``columns=name&columns=state``, which is the form the REST API expects. No plugin passes a list yet, so this only affects code importing the class directly from ``module_utils``, not playbooks or roles.
+- Lookup plugins, Inventory plugin - ``CheckMKLookupAPI`` now takes ``server_url`` and ``site`` separately and joins them itself, instead of every caller building the site URL by hand. This only affects code importing the class directly from ``module_utils``, not playbooks or roles.
+
+Bugfixes
+--------
+
+- All modules, lookup plugins and the inventory plugin - Normalize a trailing slash on ``server_url``. The documentation consistently showed the ``https://myserver/`` form, which built request URLs with a doubled slash in front of the site name. The Checkmk REST API tolerates that, but other consumers of the same variable do not.
+- contact_group module - Fix idempotency and creation when "title" is omitted.
+- host_group module - Fix idempotency and creation when "title" is omitted.
+- service_group module - Fix idempotency and creation when "title" is omitted.
+
 v8.3.0
 ======
 

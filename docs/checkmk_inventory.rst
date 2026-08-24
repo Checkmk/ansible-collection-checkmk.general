@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.24.0
+  :antsibull-docs: 2.26.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.checkmk inventory -- Dynamic Inventory Source for Checkmk
 .. Collection note
 
 .. note::
-    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
+    This inventory plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -893,7 +893,7 @@ Examples
     # Group all hosts based on both tag groups and sites
     # and update ansible_host with the ip address from Checkmk:
     plugin: checkmk.general.checkmk
-    server_url: "http://myserver/"
+    server_url: "http://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
