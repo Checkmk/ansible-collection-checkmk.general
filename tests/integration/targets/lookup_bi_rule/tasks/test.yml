@@ -55,7 +55,10 @@
       instead of {{ checkmk_var_bi_rules | map(attribute='id') | list | sort }}.
     success_msg: "The ids hydrate into BI rules carrying their ids."
   vars:
-    __checkmk_var_hydrated: "{{ lookup('checkmk.general.bi_rule',
+    # query() rather than lookup(): lookup() collapses a single result to the
+    # bare object, and 'map' would then walk that object's keys instead of a
+    # one-element list. query() is lookup(wantlist=True).
+    __checkmk_var_hydrated: "{{ query('checkmk.general.bi_rule',
                         __checkmk_var_bi_rules,
                         server_url=checkmk_var_server_url,
                         site=outer_item.site,
@@ -85,7 +88,7 @@
     fail_msg: "Expected {{ checkmk_var_bi_rules | length }} results, but found {{ __checkmk_var_bi_rules_by_id | length }}!"
     success_msg: "Expected {{ checkmk_var_bi_rules | length }} results and found them."
   vars:
-    __checkmk_var_bi_rules_by_id: "{{ lookup('checkmk.general.bi_rule',
+    __checkmk_var_bi_rules_by_id: "{{ query('checkmk.general.bi_rule',
                               checkmk_var_bi_rules | map(attribute='id') | list,
                               server_url=checkmk_var_server_url,
                               site=outer_item.site,
