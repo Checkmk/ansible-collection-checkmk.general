@@ -10,6 +10,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+from ansible.module_utils.six.moves.urllib.parse import unquote
+
 
 def _with_id(key, value):
     """Restore an object's id when a collection was keyed by it.
@@ -148,3 +150,56 @@ def restrict_to_shape(desired, current):
         if len(desired) == len(current):
             return [restrict_to_shape(d, c) for d, c in zip(desired, current)]
     return current
+
+
+def _id_from_href(href):
+    """Return the object id from the tail of a REST API object URL.
+
+    Args:
+        href (str): A link such as '.../api/1.0/objects/bi_rule/my_rule'.
+
+    Returns:
+        str: The last path segment, percent-decoded, or None if there is none.
+    """
+    if not href or not isinstance(href, str):
+        return None
+
+    path = href.split("?")[0].split("#")[0].rstrip("/")
+    if "/" not in path:
+        return None
+
+    return unquote(path.rsplit("/", 1)[-1]) or None
+
+
+def member_ids(response, name):
+    """Return the ids of the objects in a named collection of a BI pack.
+
+    'GET /objects/bi_pack/{pack_id}' reports a pack's rules and aggregations as
+    HATEOAS link stubs rather than as objects:
+
+        {"domainType": "link", "method": "GET", "type": "application/json",
+         "rel": "urn:org.restfulobjects:rels/value;collection=\"items\"",
+         "href": ".../api/1.0/objects/bi_rule/my_rule"}
+
+    Checkmk has no bulk endpoint for BI rules or aggregations, so the objects
+    can only be fetched one at a time. The plural lookups therefore return ids
+    and leave hydration to the singular lookups, which accept a list of ids.
+
+    Args:
+        response (dict): The decoded API response.
+        name (str): Name of the collection, e.g. 'rules'.
+
+    Returns:
+        list: The ids of the objects in that collection, in the order reported.
+    """
+    ids = []
+    for entry in member_values(response, name):
+        if not isinstance(entry, dict):
+            continue
+
+        # An object carries its own id; a link stub only has the URL.
+        object_id = entry.get("id") or _id_from_href(entry.get("href"))
+        if object_id:
+            ids.append(object_id)
+
+    return ids
