@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.24.0
+  :antsibull-docs: 2.26.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.host module -- Manage hosts in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -777,6 +777,7 @@ Notes
 
 .. note::
    - When specifying :literal:`attributes`\ , the entire attributes dict replaces any existing host attributes. Use :literal:`update\_attributes` to merge with existing attributes instead.
+   - A host can be monitored through a relay by setting the :literal:`relay` host attribute to the ID of the relay. This requires Checkmk 2.5.0 or newer and one of the editions Ultimate or Ultimate with multi\-tenancy or Checkmk Cloud. The attribute expects the relay ID, which is a UUID, not the alias of the relay.
 
 .. Seealso
 
@@ -807,7 +808,7 @@ Examples
 
     - name: "Create a host."
       checkmk.general.host:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -817,7 +818,7 @@ Examples
 
     - name: "Delete a host."
       checkmk.general.host:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -832,7 +833,7 @@ Examples
 
     - name: "Create a host with an IP address and alias."
       checkmk.general.host:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -845,7 +846,7 @@ Examples
 
     - name: "Create a host pinned to a specific monitoring site."
       checkmk.general.host:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -861,7 +862,7 @@ Examples
 
     - name: "Update specific attributes without touching others."
       checkmk.general.host:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -872,7 +873,7 @@ Examples
 
     - name: "Set a custom tag on a host (note the 'tag_' prefix)."
       checkmk.general.host:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -883,13 +884,29 @@ Examples
 
     - name: "Remove specific attributes from a host."
       checkmk.general.host:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
         name: "myhost"
         remove_attributes:
           - alias
+        state: "present"
+
+    # ---------------------------------------------------------------------------
+    # Monitor a host through a relay
+    # ---------------------------------------------------------------------------
+
+    - name: "Create a host which is monitored through a relay."
+      checkmk.general.host:
+        server_url: "https://myserver"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        name: "myhost"
+        folder: "/"
+        attributes:
+          relay: "97ee81ac-f552-4b5d-8818-73bda9dedf5f"
         state: "present"
 
     # ---------------------------------------------------------------------------
@@ -900,7 +917,7 @@ Examples
 
     - name: "Move a host to a different folder."
       checkmk.general.host:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -914,7 +931,7 @@ Examples
 
     - name: "Create a cluster host."
       checkmk.general.host:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -928,7 +945,7 @@ Examples
 
     - name: "Add a node to an existing cluster host."
       checkmk.general.host:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -939,7 +956,7 @@ Examples
 
     - name: "Remove a node from a cluster host."
       checkmk.general.host:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -963,7 +980,7 @@ Examples
         folder: "/"
         state: "present"
       environment:
-        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SERVER_URL: "https://myserver"
         CHECKMK_VAR_SITE: "mysite"
         CHECKMK_VAR_API_USER: "myuser"
         CHECKMK_VAR_API_SECRET: "mysecret"

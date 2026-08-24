@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.24.0
+  :antsibull-docs: 2.26.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.host_group module -- Manage host groups in Checkmk (bulk version
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -624,7 +624,7 @@ Examples
 
     - name: "Create a host group."
       checkmk.general.host_group:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -634,7 +634,7 @@ Examples
 
     - name: "Delete a host group."
       checkmk.general.host_group:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -647,7 +647,7 @@ Examples
 
     - name: "Create several host groups at once."
       checkmk.general.host_group:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -662,7 +662,7 @@ Examples
 
     - name: "Delete several host groups at once."
       checkmk.general.host_group:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -677,7 +677,7 @@ Examples
 
     - name: "Create a host group and assign it to a customer (Checkmk Ultimate with multi-tenancy (CME) only)."
       checkmk.general.host_group:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -701,7 +701,7 @@ Examples
         title: "Linux Servers"
         state: "present"
       environment:
-        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SERVER_URL: "https://myserver"
         CHECKMK_VAR_SITE: "mysite"
         CHECKMK_VAR_API_USER: "myuser"
         CHECKMK_VAR_API_SECRET: "mysecret"
