@@ -125,8 +125,8 @@
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify that both created BI packs are listed."
   ansible.builtin.assert:
-    that: "item in (__checkmk_var_bi_packs | map(attribute='id', default='<no id>') | list)"
-    fail_msg: "Expected {{ item }} to be listed, but it is not!"
+    that: "item in __checkmk_var_bi_packs"
+    fail_msg: "Expected the id {{ item }} among {{ __checkmk_var_bi_packs }}, but it is not there!"
     success_msg: "Expected {{ item }} to be listed and it is."
   loop:
     - "{{ checkmk_var_bi_pack_id }}"
@@ -151,8 +151,8 @@
 
     - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify that both created BI packs are listed."
       ansible.builtin.assert:
-        that: "item in (__checkmk_var_bi_packs | map(attribute='id', default='<no id>') | list)"
-        fail_msg: "Expected {{ item }} to be listed, but it is not!"
+        that: "item in __checkmk_var_bi_packs"
+        fail_msg: "Expected the id {{ item }} among {{ __checkmk_var_bi_packs }}, but it is not there!"
         success_msg: "Expected {{ item }} to be listed and it is."
       loop:
         - "{{ checkmk_var_bi_pack_id }}"
