@@ -203,3 +203,20 @@ def member_ids(response, name):
             ids.append(object_id)
 
     return ids
+
+
+def collection_ids(response):
+    """Return the ids of the objects in a domain-type collection response.
+
+    'GET /domain-types/bi_pack/collections/all' reports its packs the same way a
+    pack reports its rules: as link stubs under 'value', built by
+    constructors.collection_item(), which carries the identifier only inside the
+    href. So the ids are extracted rather than read off the objects.
+
+    Args:
+        response (dict): The decoded API response.
+
+    Returns:
+        list: The ids of the objects in the collection.
+    """
+    return member_ids(response, "value")

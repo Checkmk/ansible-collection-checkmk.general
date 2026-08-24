@@ -16,7 +16,9 @@ minor_changes:
     Thanks to Atruvia AG (https://atruvia.de/) for donating the initial code!
   - dcd lookup - Add lookup plugin to get the attributes of a DCD connection.
     Thanks to Atruvia AG (https://atruvia.de/) for donating the initial code!
-  - bi_packs lookup - Add lookup plugin to list all BI packs of a site.
+  - bi_packs lookup - Add lookup plugin to list the ids of all BI packs of a site.
+    Checkmk reports the pack collection as links rather than as objects, so the ids
+    are returned and can be passed to the ``bi_pack`` lookup.
   - bi_rules lookup - Add lookup plugin to list the ids of all BI rules of a BI pack.
     Checkmk reports a pack's rules as links and has no bulk endpoint for them,
     so the ids are returned and can be passed to the ``bi_rule`` lookup.

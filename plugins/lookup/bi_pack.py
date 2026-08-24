@@ -86,8 +86,8 @@ EXAMPLES = """
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
-    rules: "{{ lookup('checkmk.general.bi_rule',
-                 lookup('checkmk.general.bi_pack', 'default') | map(attribute='rules') | flatten) }}"
+    rules: "{{ query('checkmk.general.bi_rule',
+                 lookup('checkmk.general.bi_pack', 'default').rules) }}"
 
 - name: "Get BI pack attributes using inventory variables."
   ansible.builtin.debug:

@@ -10,10 +10,13 @@ DOCUMENTATION = """
     author: Lars Getwan (@lgetwan)
     version_added: "8.4.0"
 
-    short_description: Get a list of all BI packs
+    short_description: Get the ids of all BI packs
 
     description:
-      - Returns a list of all BI packs of a Checkmk site.
+      - Returns the ids of all BI packs of a Checkmk site.
+      - Checkmk reports the pack collection as links rather than as objects, so this
+        plugin returns ids. Pass them to the M(checkmk.general.bi_pack) lookup to get
+        the packs themselves.
 
     extends_documentation_fragment: [checkmk.general.common_lookup]
 
@@ -50,9 +53,9 @@ EXAMPLES = """
       )
     }}"
 
-- name: "Get the IDs of all BI packs."
+- name: "Get the packs themselves, by feeding the ids to the singular lookup."
   ansible.builtin.debug:
-    msg: "BI pack IDs: {{ packs | map(attribute='id') | list }}"
+    msg: "BI packs: {{ query('checkmk.general.bi_pack', packs) }}"
   vars:
     checkmk_var_server_url: "https://myserver"
     checkmk_var_site: "mysite"
@@ -64,15 +67,17 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - A list of all BI packs of the site.
+      - The ids of all BI packs of the site.
+      - Pass these to the M(checkmk.general.bi_pack) lookup to get the packs.
     type: list
-    elements: dict
+    elements: str
 """
 
 import json
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
+from ansible_collections.checkmk.general.plugins.module_utils.bi import collection_ids
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
 )
@@ -111,4 +116,5 @@ class LookupModule(LookupBase):
                 )
             )
 
-        return [response.get("value", [])]
+        # The collection reports its packs as links, not as objects.
+        return [collection_ids(response)]
