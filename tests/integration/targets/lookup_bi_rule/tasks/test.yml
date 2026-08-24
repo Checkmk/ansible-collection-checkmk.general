@@ -38,19 +38,30 @@
     fail_msg: "Expected {{ checkmk_var_bi_rules | length }} rules, but found {{ __checkmk_var_bi_rules | length }}!"
     success_msg: "Expected {{ checkmk_var_bi_rules | length }} rules and found them."
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the listed BI rules are usable objects, not link stubs."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the returned BI rules ids."
   ansible.builtin.assert:
-    that:
-      - "__checkmk_var_bi_rules | map(attribute='id', default='<no id>') | list | sort == checkmk_var_bi_rules | map(attribute='id') | list | sort"
+    that: "__checkmk_var_bi_rules | sort == checkmk_var_bi_rules | map(attribute='id') | list | sort"
     fail_msg: >-
       Expected ids {{ checkmk_var_bi_rules | map(attribute='id') | list | sort }},
-      but got {{ __checkmk_var_bi_rules | map(attribute='id', default='<no id>') | list }}.
-      The keys actually present on each entry are
-      {{ __checkmk_var_bi_rules | map('dict2items') | map('map', attribute='key') | map('list') | list }}.
-      Entries reported as '<no id>' are not objects the bi_rules lookup can return
-      usefully; if they look like link stubs the lookup has to fetch each object
-      individually. See misc/bi_dcd_followups.md.
-    success_msg: "The listed BI rules carry their ids."
+      but got {{ __checkmk_var_bi_rules }}.
+    success_msg: "The bi_rules lookup returned the expected ids."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Hydrate the ids into objects via the singular lookup."
+  ansible.builtin.assert:
+    that: "__checkmk_var_hydrated | map(attribute='id') | list | sort == checkmk_var_bi_rules | map(attribute='id') | list | sort"
+    fail_msg: >-
+      Feeding the ids to the bi_rule lookup returned
+      {{ __checkmk_var_hydrated | map(attribute='id', default='<no id>') | list }}
+      instead of {{ checkmk_var_bi_rules | map(attribute='id') | list | sort }}.
+    success_msg: "The ids hydrate into BI rules carrying their ids."
+  vars:
+    __checkmk_var_hydrated: "{{ lookup('checkmk.general.bi_rule',
+                        __checkmk_var_bi_rules,
+                        server_url=checkmk_var_server_url,
+                        site=outer_item.site,
+                        validate_certs=False,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret) }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get a single BI rule."
   ansible.builtin.set_fact:
