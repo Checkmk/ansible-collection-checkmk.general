@@ -1,0 +1,25 @@
+---
+major_changes:
+  - bi_pack module - Add module to manage BI packs.
+    Thanks to Atruvia AG (https://atruvia.de/) for donating the initial code!
+  - bi_rule module - Add module to manage BI rules.
+    Thanks to Atruvia AG (https://atruvia.de/) for donating the initial code!
+  - bi_aggregation module - Add module to manage BI aggregations.
+    Thanks to Atruvia AG (https://atruvia.de/) for donating the initial code!
+minor_changes:
+  - bi_pack lookup - Add lookup plugin to get the attributes of a BI pack, including the ids of
+    its rules and aggregations.
+    Thanks to Atruvia AG (https://atruvia.de/) for donating the initial code!
+  - bi_rule lookup - Add lookup plugin to get the attributes of a BI rule.
+    Thanks to Atruvia AG (https://atruvia.de/) for donating the initial code!
+  - bi_aggregation lookup - Add lookup plugin to get the attributes of a BI aggregation.
+    Thanks to Atruvia AG (https://atruvia.de/) for donating the initial code!
+  - dcd lookup - Add lookup plugin to get the attributes of a DCD connection.
+    Thanks to Atruvia AG (https://atruvia.de/) for donating the initial code!
+  - bi_packs lookup - Add lookup plugin to list all BI packs of a site.
+  - bi_rules lookup - Add lookup plugin to list the ids of all BI rules of a BI pack.
+    Checkmk reports a pack's rules as links and has no bulk endpoint for them,
+    so the ids are returned and can be passed to the ``bi_rule`` lookup.
+  - bi_aggregations lookup - Add lookup plugin to list the ids of all BI aggregations of a BI pack.
+    Checkmk reports a pack's aggregations as links and has no bulk endpoint for them,
+    so the ids are returned and can be passed to the ``bi_aggregation`` lookup.

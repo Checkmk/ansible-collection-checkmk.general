@@ -1,0 +1,57 @@
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+name: Lookup Module DCD Integration
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+  pull_request:
+    branches:
+      - main
+      - devel
+    types:
+      - opened
+    paths:
+      - 'plugins/lookup/dcd.py'
+
+  push:
+    paths:
+      - '.github/workflows/ans-int-test-lkp-dcd.yaml'
+      - 'plugins/lookup/dcd.py'
+
+      - 'plugins/module_utils/**'
+      - 'tests/integration/targets/setup_checkmk/**'
+      - 'tests/integration/targets/lookup_dcd/**'
+
+jobs:
+
+  integration:
+    name: "${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
+    uses: ./.github/workflows/_template-ans-int-test.yaml
+    with:
+      module: lookup_dcd
+      checkmk_version: ${{ matrix.checkmk_version }}
+      checkmk_edition: ${{ matrix.checkmk_edition }}
+    strategy:
+      fail-fast: false
+      matrix:
+        checkmk_version:
+          - 2.3.0p49
+          - 2.4.0p35
+          - 2.5.0p11
+        checkmk_edition:
+          - managed
+          - ultimatemt
+        exclude:
+          - checkmk_version: 2.3.0p49
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.4.0p35
+            checkmk_edition: ultimatemt
+          - checkmk_version: 2.5.0p11
+            checkmk_edition: managed

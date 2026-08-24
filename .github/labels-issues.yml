@@ -23,6 +23,15 @@ module:aux_tag:
 module:bakery:
   - 'Component Name: bakery'
 
+module:bi_aggregation:
+  - 'Component Name: bi_aggregation'
+
+module:bi_pack:
+  - 'Component Name: bi_pack'
+
+module:bi_rule:
+  - 'Component Name: bi_rule'
+
 module:contact_group:
   - 'Component Name: contact_group'
 
@@ -89,6 +98,21 @@ lookup:activation:
 
 lookup:bakery:
   - 'Component Name: lookup_bakery'
+
+lookup:bi_aggregation:
+  - 'Component Name: lookup_bi_aggregation'
+  - 'Component Name: lookup_bi_aggregations'
+
+lookup:bi_pack:
+  - 'Component Name: lookup_bi_pack'
+  - 'Component Name: lookup_bi_packs'
+
+lookup:bi_rule:
+  - 'Component Name: lookup_bi_rule'
+  - 'Component Name: lookup_bi_rules'
+
+lookup:dcd:
+  - 'Component Name: lookup_dcd'
 
 lookup:folder:
   - 'Component Name: lookup_folder'

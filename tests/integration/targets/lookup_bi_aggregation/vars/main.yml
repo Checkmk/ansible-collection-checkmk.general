@@ -1,0 +1,54 @@
+---
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    site: "testsite"
+
+checkmk_var_bi_pack_id: "ansible_test_pack"
+
+checkmk_var_bi_aggregations:
+  - id: "ansible_test_aggregation_one"
+    pack_id: "ansible_test_pack"
+    comment: "aggregation one"
+    groups:
+      names: []
+      paths: []
+    node:
+      search:
+        type: "empty"
+      action:
+        type: "state_of_host"
+        host_regex: ".*"
+    aggregation_visualization:
+      ignore_rule_styles: false
+      layout_id: "builtin_default"
+      line_style: "round"
+    computation_options:
+      disabled: false
+      use_hard_states: false
+      escalate_downtimes_as_warn: false
+      freeze_aggregations: false
+  - id: "ansible_test_aggregation_two"
+    pack_id: "ansible_test_pack"
+    comment: "aggregation two"
+    groups:
+      names: []
+      paths: []
+    node:
+      search:
+        type: "empty"
+      action:
+        type: "state_of_host"
+        host_regex: ".*"
+    aggregation_visualization:
+      ignore_rule_styles: false
+      layout_id: "builtin_default"
+      line_style: "round"
+    computation_options:
+      disabled: false
+      use_hard_states: false
+      escalate_downtimes_as_warn: false
+      freeze_aggregations: false
+
+checkmk_var_bi_aggregation_id: "ansible_test_aggregation_one"
+checkmk_var_bi_aggregation_comment: "aggregation one"
