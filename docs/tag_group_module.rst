@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.24.0
+  :antsibull-docs: 2.26.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.tag_group module -- Manage tag groups in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -861,7 +861,7 @@ Examples
 
     - name: "Create a tag group."
       checkmk.general.tag_group:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -880,7 +880,7 @@ Examples
 
     - name: "Create a tag group with auxiliary tags assigned to its values."
       checkmk.general.tag_group:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -903,7 +903,7 @@ Examples
 
     - name: "Delete a tag group."
       checkmk.general.tag_group:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -918,7 +918,7 @@ Examples
 
     - name: "Delete a tag group and repair affected hosts automatically."
       checkmk.general.tag_group:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -944,7 +944,7 @@ Examples
             title: "Datacenter 1"
         state: "present"
       environment:
-        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SERVER_URL: "https://myserver"
         CHECKMK_VAR_SITE: "mysite"
         CHECKMK_VAR_API_USER: "myuser"
         CHECKMK_VAR_API_SECRET: "mysecret"

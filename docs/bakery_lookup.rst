@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.24.0
+  :antsibull-docs: 2.26.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.bakery lookup -- Get the bakery status of a Checkmk server
 .. Collection note
 
 .. note::
-    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
+    This lookup plugin is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -524,7 +524,7 @@ Examples
         msg: "Bakery status is {{ bakery }}"
       vars:
         bakery: "{{ lookup('checkmk.general.bakery',
-                       server_url='https://myserver/',
+                       server_url='https://myserver',
                        site='mysite',
                        api_user='myuser',
                        api_secret='mysecret',
@@ -544,7 +544,7 @@ Examples
       ansible.builtin.debug:
         msg: "Bakery status is {{ bakery }}"
       vars:
-        checkmk_var_server_url: "https://myserver/"
+        checkmk_var_server_url: "https://myserver"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"
