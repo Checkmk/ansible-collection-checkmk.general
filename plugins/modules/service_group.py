@@ -76,7 +76,7 @@ EXAMPLES = r"""
 
 - name: "Create a service group."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -86,7 +86,7 @@ EXAMPLES = r"""
 
 - name: "Delete a service group."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -99,7 +99,7 @@ EXAMPLES = r"""
 
 - name: "Create several service groups at once."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -114,7 +114,7 @@ EXAMPLES = r"""
 
 - name: "Delete several service groups at once."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -129,7 +129,7 @@ EXAMPLES = r"""
 
 - name: "Create a service group and assign it to a customer (Checkmk Ultimate with multi-tenancy (CME) only)."
   checkmk.general.service_group:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -153,7 +153,7 @@ EXAMPLES = r"""
     title: "Web Services"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"
@@ -173,6 +173,7 @@ import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_api_url,
     base_argument_spec,
 )
 
@@ -190,6 +191,19 @@ def exit_changed(module, msg):
 def exit_ok(module, msg):
     result = {"msg": msg, "changed": False, "failed": False}
     module.exit_json(**result)
+
+
+def group_alias(entry):
+    """Resolve the alias of a group entry, falling back to its name.
+
+    Both spellings of "no title given" have to reach the name: the key is
+    absent when a `groups` entry omits it, and it is present but None when a
+    bare `title:` is written or when AnsibleModule fills in the unset
+    top-level option.
+    """
+    title = entry.get("title")
+
+    return entry.get("name") if title is None else title
 
 
 def get_current_single_service_group(module, base_url, headers):
@@ -266,7 +280,7 @@ def update_single_service_group(module, base_url, headers):
 
     api_endpoint = "/objects/service_group_config/" + name
     params = {
-        "alias": module.params.get("title", name),
+        "alias": group_alias(module.params),
     }
     url = base_url + api_endpoint
 
@@ -289,7 +303,7 @@ def update_service_groups(module, base_url, groups, headers):
             {
                 "name": el.get("name"),
                 "attributes": {
-                    "alias": el.get("title", el.get("name")),
+                    "alias": group_alias(el),
                 },
             }
             for el in groups
@@ -316,13 +330,13 @@ def create_single_service_group(module, base_url, headers):
     if module.params.get("customer") is not None:
         params = {
             "name": name,
-            "alias": module.params.get("title", name),
+            "alias": group_alias(module.params),
             "customer": module.params.get("customer", "provider"),
         }
     else:
         params = {
             "name": name,
-            "alias": module.params.get("title", name),
+            "alias": group_alias(module.params),
         }
     url = base_url + api_endpoint
 
@@ -346,7 +360,7 @@ def create_service_groups(module, base_url, groups, headers):
             "entries": [
                 {
                     "name": el.get("name"),
-                    "alias": el.get("title", el.get("name")),
+                    "alias": group_alias(el),
                     "customer": module.params.get("customer"),
                 }
                 for el in groups
@@ -357,7 +371,7 @@ def create_service_groups(module, base_url, groups, headers):
             "entries": [
                 {
                     "name": el.get("name"),
-                    "alias": el.get("title", el.get("name")),
+                    "alias": group_alias(el),
                 }
                 for el in groups
             ],
@@ -442,10 +456,7 @@ def run_module():
         ),
     }
 
-    base_url = "%s/%s/check_mk/api/1.0" % (
-        module.params.get("server_url", ""),
-        module.params.get("site", ""),
-    )
+    base_url = base_api_url(module.params)
 
     # Determine desired state
     state = module.params.get("state", "present")
@@ -498,7 +509,7 @@ def run_module():
                 remainings_list = [
                     el
                     for el in intersection_list
-                    if el.get("title") != current_groups_dict[el.get("name")]
+                    if group_alias(el) != current_groups_dict[el.get("name")]
                 ]
 
                 if len(remainings_list) > 0:
@@ -541,7 +552,7 @@ def run_module():
             headers["If-Match"] = etag
             msg_tokens = []
 
-            if current_title != module.params["title"]:
+            if current_title != group_alias(module.params):
                 update_single_service_group(module, base_url, headers)
                 msg_tokens.append("Service group was updated.")
 

@@ -19,8 +19,11 @@ DOCUMENTATION = """
     options:
 
       _terms:
-        description: complete folder path using tilde as a delimiter
+        description:
+          - One or more complete folder paths using tilde as a delimiter, either as separate terms or as a single list.
         required: True
+        type: list
+        elements: str
 
       show_hosts:
         description: Also show the hosts of the folder(s) found
@@ -58,7 +61,7 @@ EXAMPLES = """
     lookup('checkmk.general.folders',
         '~',
         recursive=True,
-        server_url='https://myserver/',
+        server_url='https://myserver',
         site='mysite',
         api_user='myuser',
         api_secret='mysecret',
@@ -77,7 +80,7 @@ EXAMPLES = """
                      '~tests',
                      show_hosts=True,
                      recursive=True,
-                     server_url='https://myserver/',
+                     server_url='https://myserver',
                      site='mysite',
                      api_user='myuser',
                      api_secret='mysecret',
@@ -101,7 +104,7 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "Folder: {{ item.id }}"
   vars:
-    checkmk_var_server_url: "https://myserver/"
+    checkmk_var_server_url: "https://myserver"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
@@ -145,10 +148,9 @@ class LookupModule(LookupBase):
         api_secret = self.get_option("api_secret")
         validate_certs = self.get_option("validate_certs")
 
-        site_url = server_url + "/" + site
-
         api = CheckMKLookupAPI(
-            site_url=site_url,
+            server_url=server_url,
+            site=site,
             api_auth_type=api_auth_type,
             api_auth_cookie=api_auth_cookie,
             api_user=api_user,
@@ -157,7 +159,7 @@ class LookupModule(LookupBase):
         )
 
         ret = []
-        for term in terms:
+        for term in self._flatten(terms):
             parameters = {
                 "parent": term.replace("/", "~"),
                 "recursive": recursive,

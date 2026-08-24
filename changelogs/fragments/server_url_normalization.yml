@@ -1,0 +1,17 @@
+bugfixes:
+  - All modules, lookup plugins and the inventory plugin - Normalize a trailing
+    slash on ``server_url``. The documentation consistently showed the
+    ``https://myserver/`` form, which built request URLs with a doubled slash in
+    front of the site name. The Checkmk REST API tolerates that, but other
+    consumers of the same variable do not.
+
+minor_changes:
+  - Lookup plugins, Inventory plugin - ``CheckMKLookupAPI`` now takes
+    ``server_url`` and ``site`` separately and joins them itself, instead of
+    every caller building the site URL by hand. This only affects code importing
+    the class directly from ``module_utils``, not playbooks or roles.
+  - All modules - The REST API base URL is now built by ``base_api_url()`` in
+    ``module_utils/utils.py``, instead of ``CheckmkAPI`` and the four modules
+    that do not use it each assembling it by hand. The trailing-slash handling
+    therefore lives in one place on the module side too. This only affects code
+    importing from ``module_utils``, not playbooks or roles.

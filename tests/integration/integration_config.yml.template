@@ -1,0 +1,24 @@
+---
+# Copy this file to `tests/integration/integration_config.yml` (gitignored)
+# and uncomment/edit the values you need to override. `ansible-test integration`
+# auto-loads this file as extra-vars, which have the highest precedence and
+# therefore override `setup_checkmk`'s role defaults.
+#
+# You only need this file if the defaults in
+# `tests/integration/targets/setup_checkmk/defaults/main.yml` don't match
+# what you want — e.g. testing a different Checkmk version or edition.
+#
+# CI writes this file automatically before invoking ansible-test, with
+# `checkmk_var_version` and `checkmk_var_edition` set from the workflow's
+# matrix. Don't commit your local copy.
+
+# Checkmk version to install/test.
+# checkmk_var_version: "2.5.0p11"
+
+# Checkmk edition.
+# checkmk_var_edition: "ultimatemt"
+
+# Download credentials for non-community, pre-2.5 editions.
+# Community edition and all edition >= 2.5 do not need credentials.
+# checkmk_var_download_user: "your-user"
+# checkmk_var_download_pass: "your-token"

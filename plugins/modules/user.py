@@ -177,7 +177,7 @@ EXAMPLES = r"""
 
 - name: "Create a standard user with password authentication."
   checkmk.general.user:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -192,7 +192,7 @@ EXAMPLES = r"""
 
 - name: "Create an automation user for API access."
   checkmk.general.user:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -206,7 +206,7 @@ EXAMPLES = r"""
 
 - name: "Delete a user."
   checkmk.general.user:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -219,7 +219,7 @@ EXAMPLES = r"""
 
 - name: "Create a user assigned to contact groups."
   checkmk.general.user:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -241,7 +241,7 @@ EXAMPLES = r"""
 
 - name: "Create a user with all available options."
   checkmk.general.user:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -271,7 +271,7 @@ EXAMPLES = r"""
 
 - name: "Reset a user's password."
   checkmk.general.user:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -286,7 +286,7 @@ EXAMPLES = r"""
 
 - name: "Create a user and assign them to a customer (Checkmk Ultimate with multi-tenancy (CME) only)."
   checkmk.general.user:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -315,7 +315,7 @@ EXAMPLES = r"""
     password: "initial_password"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

@@ -44,6 +44,9 @@ module:host:
 module:host_group:
   - 'Component Name: host_group'
 
+module:ldap:
+  - 'Component Name: ldap'
+
 module:notification:
   - 'Component Name: notification'
 

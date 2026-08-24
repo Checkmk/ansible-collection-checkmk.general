@@ -108,6 +108,11 @@ options:
 notes:
     - When specifying C(attributes), the entire attributes dict replaces any existing host
       attributes. Use C(update_attributes) to merge with existing attributes instead.
+    - A host can be monitored through a relay by setting the C(relay) host attribute to the
+      ID of the relay. This requires Checkmk 2.5.0 or newer and one of the editions
+      Ultimate or Ultimate with multi-tenancy or Checkmk Cloud.
+      The attribute expects the relay ID, which is a UUID, not the alias
+      of the relay.
 
 seealso:
     - plugin: checkmk.general.host
@@ -131,7 +136,7 @@ EXAMPLES = r"""
 
 - name: "Create a host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -141,7 +146,7 @@ EXAMPLES = r"""
 
 - name: "Delete a host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -156,7 +161,7 @@ EXAMPLES = r"""
 
 - name: "Create a host with an IP address and alias."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -169,7 +174,7 @@ EXAMPLES = r"""
 
 - name: "Create a host pinned to a specific monitoring site."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -185,7 +190,7 @@ EXAMPLES = r"""
 
 - name: "Update specific attributes without touching others."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -196,7 +201,7 @@ EXAMPLES = r"""
 
 - name: "Set a custom tag on a host (note the 'tag_' prefix)."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -207,13 +212,29 @@ EXAMPLES = r"""
 
 - name: "Remove specific attributes from a host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     name: "myhost"
     remove_attributes:
       - alias
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Monitor a host through a relay
+# ---------------------------------------------------------------------------
+
+- name: "Create a host which is monitored through a relay."
+  checkmk.general.host:
+    server_url: "https://myserver"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "myhost"
+    folder: "/"
+    attributes:
+      relay: "97ee81ac-f552-4b5d-8818-73bda9dedf5f"
     state: "present"
 
 # ---------------------------------------------------------------------------
@@ -224,7 +245,7 @@ EXAMPLES = r"""
 
 - name: "Move a host to a different folder."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -238,7 +259,7 @@ EXAMPLES = r"""
 
 - name: "Create a cluster host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -252,7 +273,7 @@ EXAMPLES = r"""
 
 - name: "Add a node to an existing cluster host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -263,7 +284,7 @@ EXAMPLES = r"""
 
 - name: "Remove a node from a cluster host."
   checkmk.general.host:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -287,7 +308,7 @@ EXAMPLES = r"""
     folder: "/"
     state: "present"
   environment:
-    CHECKMK_VAR_SERVER_URL: "https://myserver/"
+    CHECKMK_VAR_SERVER_URL: "https://myserver"
     CHECKMK_VAR_SITE: "mysite"
     CHECKMK_VAR_API_USER: "myuser"
     CHECKMK_VAR_API_SECRET: "mysecret"

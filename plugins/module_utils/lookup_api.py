@@ -29,7 +29,8 @@ class CheckMKLookupAPI:
 
     def __init__(
         self,
-        site_url,
+        server_url,
+        site,
         api_auth_type="bearer",
         api_auth_cookie=None,
         api_user=None,
@@ -42,8 +43,12 @@ class CheckMKLookupAPI:
         }
         self.cookies = {}
 
-        self.site_url = site_url
-        self.url = "%s/check_mk/api/1.0" % site_url
+        # Joining here rather than in every caller keeps the trailing-slash
+        # handling in one place. rstrip() and not urljoin(): urljoin treats the
+        # last path segment as a document, so a server_url with a path prefix
+        # and no trailing slash would lose that prefix.
+        self.site_url = "%s/%s" % (server_url.rstrip("/"), site)
+        self.url = "%s/check_mk/api/1.0" % self.site_url
         self.validate_certs = validate_certs
         # Bearer Authentication: "Bearer USERNAME PASSWORD"
         if api_auth_type == "bearer":
@@ -80,22 +85,58 @@ class CheckMKLookupAPI:
     def get(self, endpoint="", parameters=None):
         url = self.url + endpoint
 
-        try:
-            if parameters:
-                url = "%s?%s" % (url, urlencode(parameters))
+        if parameters:
+            # doseq renders list values as repeated keys (`columns=a&columns=b`),
+            # which is how the REST API expects array query parameters.
+            url = "%s?%s" % (url, urlencode(parameters, doseq=True))
 
+        return self._request(url)
+
+    def post(self, endpoint="", data=None):
+        url = self.url + endpoint
+        body = json.dumps(data if data is not None else {}).encode("utf-8")
+
+        return self._request(url, method="POST", data=body)
+
+    def _request(self, url, method="GET", data=None):
+        try:
             raw_response = open_url(
-                url, headers=self.headers, validate_certs=self.validate_certs
+                url,
+                method=method,
+                data=data,
+                headers=self.headers,
+                validate_certs=self.validate_certs,
             )
             return to_text(raw_response.read())
         except HTTPError as e:
-            if e.code in HTTP_ERROR_CODES:
-                return json.dumps(
-                    {"code": e.code, "msg": HTTP_ERROR_CODES[e.code], "url": url}
-                )
-            else:
-                return json.dumps({"code": e.code, "msg": e.reason, "url": url})
+            msg = HTTP_ERROR_CODES.get(e.code, e.reason)
+            detail = self._error_detail(e)
+            if detail:
+                msg = "%s %s" % (msg, detail)
+            return json.dumps({"code": e.code, "msg": msg, "url": url})
         except URLError as e:
             return json.dumps({"code": 0, "msg": str(e), "url": url})
         except Exception as e:
             return json.dumps({"code": 0, "msg": str(e), "url": url})
+
+    @staticmethod
+    def _error_detail(error):
+        """Extract the human readable part of a Checkmk REST API error body.
+
+        The canned messages in HTTP_ERROR_CODES say what went wrong but not
+        which parameter caused it, which matters for endpoints that validate
+        a payload, e.g. a Livestatus query expression.
+        """
+        try:
+            body = json.loads(to_text(error.read()))
+        except Exception:
+            return ""
+
+        if not isinstance(body, dict):
+            return ""
+
+        parts = [body[key] for key in ("detail", "fields") if body.get(key)]
+
+        return " ".join(
+            part if isinstance(part, str) else json.dumps(part) for part in parts
+        )
