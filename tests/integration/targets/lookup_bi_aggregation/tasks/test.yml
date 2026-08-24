@@ -38,19 +38,30 @@
     fail_msg: "Expected {{ checkmk_var_bi_aggregations | length }} aggregations, but found {{ __checkmk_var_bi_aggregations | length }}!"
     success_msg: "Expected {{ checkmk_var_bi_aggregations | length }} aggregations and found them."
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the listed BI aggregations are usable objects, not link stubs."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the returned BI aggregations ids."
   ansible.builtin.assert:
-    that:
-      - "__checkmk_var_bi_aggregations | map(attribute='id', default='<no id>') | list | sort == checkmk_var_bi_aggregations | map(attribute='id') | list | sort"
+    that: "__checkmk_var_bi_aggregations | sort == checkmk_var_bi_aggregations | map(attribute='id') | list | sort"
     fail_msg: >-
       Expected ids {{ checkmk_var_bi_aggregations | map(attribute='id') | list | sort }},
-      but got {{ __checkmk_var_bi_aggregations | map(attribute='id', default='<no id>') | list }}.
-      The keys actually present on each entry are
-      {{ __checkmk_var_bi_aggregations | map('dict2items') | map('map', attribute='key') | map('list') | list }}.
-      Entries reported as '<no id>' are not objects the bi_aggregations lookup can return
-      usefully; if they look like link stubs the lookup has to fetch each object
-      individually. See misc/bi_dcd_followups.md.
-    success_msg: "The listed BI aggregations carry their ids."
+      but got {{ __checkmk_var_bi_aggregations }}.
+    success_msg: "The bi_aggregations lookup returned the expected ids."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Hydrate the ids into objects via the singular lookup."
+  ansible.builtin.assert:
+    that: "__checkmk_var_hydrated | map(attribute='id') | list | sort == checkmk_var_bi_aggregations | map(attribute='id') | list | sort"
+    fail_msg: >-
+      Feeding the ids to the bi_aggregation lookup returned
+      {{ __checkmk_var_hydrated | map(attribute='id', default='<no id>') | list }}
+      instead of {{ checkmk_var_bi_aggregations | map(attribute='id') | list | sort }}.
+    success_msg: "The ids hydrate into BI aggregations carrying their ids."
+  vars:
+    __checkmk_var_hydrated: "{{ lookup('checkmk.general.bi_aggregation',
+                        __checkmk_var_bi_aggregations,
+                        server_url=checkmk_var_server_url,
+                        site=outer_item.site,
+                        validate_certs=False,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret) }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Get a single BI aggregation."
   ansible.builtin.set_fact:

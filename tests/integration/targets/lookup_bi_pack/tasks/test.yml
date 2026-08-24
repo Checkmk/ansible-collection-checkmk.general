@@ -74,12 +74,28 @@
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the created rule is listed in the pack."
   ansible.builtin.assert:
-    that: "checkmk_var_bi_rule_id in (__checkmk_var_bi_pack.rules | map(attribute='id', default='<no id>') | list)"
+    that: "checkmk_var_bi_rule_id in __checkmk_var_bi_pack.rules"
     fail_msg: >-
-      Expected {{ checkmk_var_bi_rule_id }} among the pack's rules, but found
+      Expected the id {{ checkmk_var_bi_rule_id }} among the pack's rules, but found
       {{ __checkmk_var_bi_pack.rules }}. An empty list means the collection is not
-      named 'rules'; entries without an 'id' mean they are not full objects.
-    success_msg: "The created rule is listed in the pack with its id."
+      named 'rules'.
+    success_msg: "The created rule's id is listed in the pack."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Hydrate the pack's rule ids into objects."
+  ansible.builtin.assert:
+    that: "checkmk_var_bi_rule_id in (__checkmk_var_hydrated | map(attribute='id', default='<no id>') | list)"
+    fail_msg: >-
+      Feeding the pack's rule ids to the bi_rule lookup returned
+      {{ __checkmk_var_hydrated | map(attribute='id', default='<no id>') | list }}.
+    success_msg: "The pack's rule ids hydrate into rules carrying their ids."
+  vars:
+    __checkmk_var_hydrated: "{{ lookup('checkmk.general.bi_rule',
+                        __checkmk_var_bi_pack.rules,
+                        server_url=checkmk_var_server_url,
+                        site=outer_item.site,
+                        validate_certs=False,
+                        api_user=checkmk_var_api_user,
+                        api_secret=checkmk_var_api_secret) }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Pass several pack IDs as a list."
   ansible.builtin.assert:
