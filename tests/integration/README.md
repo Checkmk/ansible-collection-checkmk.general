@@ -31,31 +31,17 @@ With rootless podman, add this once - without it the tests fail:
 pids_limit = 0
 ```
 
-Podman defaults to `pids_limit = 2048`. `systemd` is PID 1 inside the
-ansible-test container and derives `DefaultTasksMax = 15% of that = 307`,
-and everything `podman exec` starts - the whole `ansible-playbook` run
-plus the Checkmk site it provisions - lands in `init.scope`. So the entire
-test run shares 307 tasks. A site idles at ~180 of them, and the 3.0
-ClickHouse metric backend alone wants 512 threads. CI uses Docker, which
-sets no pids limit, so this never shows up there.
+Podman's default `pids_limit = 2048` makes `systemd` inside the ansible-test
+container cap everything the run starts at 307 tasks, which a Checkmk site
+plus its ClickHouse metric backend exceeds. It has to be that file -
+`ansible-test` does not pass `CONTAINERS_CONF_OVERRIDE` through to podman. CI
+uses Docker, which sets no pids limit.
 
-It has to be that file, not an environment variable: `ansible-test`'s
-`common_environment()` passes only `HOME`, `PATH` and a short allowlist
-through to podman, so `CONTAINERS_CONF_OVERRIDE` never arrives.
+Symptoms, none of which name the real cause:
 
-Symptoms, which vary with whichever process loses the race for the last
-task slot and none of which name the real cause:
-
-- `/bin/sh: 1: Cannot fork` - Ansible cannot start the module
-- a bare Apache `500 Internal Server Error` from the site, with
-  `RuntimeError: can't start new thread` in `var/log/apache/error_log`
-- `Couldn't get 512 threads from global thread pool` in
-  `var/log/clickhouse-server/clickhouse-server.err.log`
-
-To confirm it, read `/sys/fs/cgroup/init.scope/pids.events` inside the
-container: a rising `max` counter there is this limit. The container's own
-`/sys/fs/cgroup/pids.events` stays at `max 0`, which is why the failure
-looks like the host running out of memory.
+- `/bin/sh: 1: Cannot fork`
+- a bare Apache `500 Internal Server Error` from the site
+- `Couldn't get 512 threads from global thread pool` from ClickHouse
 
 ## Testing a different version or edition
 
