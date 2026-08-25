@@ -197,10 +197,24 @@ msg:
     type: str
     returned: always
     sample: 'Notification rule created.'
+http_code:
+    description: The HTTP code the Checkmk API returns.
+    type: int
+    returned: always
+    sample: 200
+etag:
+    description:
+        - The ETag the Checkmk API returned for the notification rule.
+        - Empty when the API returned no ETag.
+    type: str
+    returned: always
+    sample: '"ad55730d5488e55e07c58a3da9759fba8cd0b009"'
 content:
-    description: The complete notification rule object.
+    description:
+        - The complete notification rule object, as decoded from the API response.
+        - Empty when the API returned no body, e.g. when nothing had to be done.
     type: dict
-    returned: when rule is created or updated
+    returned: always
     contains:
         id:
             description: The ID of the notification rule.
@@ -211,10 +225,12 @@ content:
             description: The title/description of the rule.
             type: str
             returned: when rule is created or updated
+            sample: 'My notification rule'
         extensions:
             description: The rule configuration details.
             type: dict
             returned: when rule is created or updated
+            sample: {'notify_plugin': ['mail', {}]}
 """
 
 import json
@@ -224,7 +240,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
-    result_as_dict,
+    exit_module,
 )
 
 HTTP_CODES_GET = {
@@ -470,17 +486,18 @@ def run_module():
                 changed=False,
             )
 
-    result_dict = result_as_dict(result)
     if result.content:
+        # The API response is decoded into the result itself, so that
+        # exit_module() can return the whole RESULT unchanged.
         try:
             content = result.content
             if isinstance(content, bytes):
                 content = content.decode("utf-8")
-            result_dict["content"] = json.loads(content)
+            result = result._replace(content=json.loads(content))
         except (json.JSONDecodeError, AttributeError):
             pass
 
-    module.exit_json(**result_dict)
+    exit_module(module, result=result)
 
 
 def main():
