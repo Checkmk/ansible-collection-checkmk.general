@@ -322,15 +322,19 @@ http_code:
     description: The HTTP code the Checkmk API returns.
     type: int
     returned: always
-    sample: '200'
+    sample: 200
 etag:
-    description: The etag of the rule.
+    description:
+        - The ETag the Checkmk API returned for the rule.
+        - Empty when the API returned no ETag.
     type: str
-    returned: when the rule is created or when it already exists
+    returned: always
     sample: '"ad55730d5488e55e07c58a3da9759fba8cd0b009"'
 content:
-    description: The complete created/changed rule
-    returned: when the rule is created or when it already exists
+    description:
+        - The complete created or changed rule, as decoded from the API response.
+        - Empty when the API returned no body, e.g. when nothing had to be done.
+    returned: always
     type: dict
     contains:
         id:
@@ -344,29 +348,35 @@ content:
             returned: when the rule is created or when it already exists
             contains:
                 conditions:
-                    description: The contitions of the rule.
-                    type: str
+                    description: The conditions of the rule.
+                    type: dict
                     returned: when the rule is created or when it already exists
+                    sample: {}
                 folder:
                     description: The folder of the rule.
                     type: str
                     returned: when the rule is created or when it already exists
+                    sample: '/'
                 folder_index:
                     description: The index of the rule inside the folder.
-                    type: str
+                    type: int
                     returned: when the rule is created or when it already exists
+                    sample: 0
                 properties:
                     description: The properties of the rule.
-                    type: str
+                    type: dict
                     returned: when the rule is created or when it already exists
+                    sample: {'disabled': false, 'description': ''}
                 ruleset:
                     description: The ruleset of the rule.
                     type: str
                     returned: when the rule is created or when it already exists
+                    sample: 'active_checks:ping'
                 value_raw:
-                    description: The actual value of the rule
+                    description: The actual value of the rule.
                     type: str
                     returned: when the rule is created or when it already exists
+                    sample: "{'levels': (200.0, 500.0)}"
 """
 
 import json
@@ -377,6 +387,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
+    exit_module,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
@@ -1018,8 +1029,8 @@ def run_module():
 
     if result.content:
         result = result._replace(content=json.loads(result.content))
-    result_as_dict = result._asdict()
-    module.exit_json(**result_as_dict)
+
+    exit_module(module, result=result)
 
 
 def main():
