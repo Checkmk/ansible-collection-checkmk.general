@@ -76,7 +76,7 @@ EXAMPLES = """
 
 - name: "Get all BI rules of every BI pack."
   ansible.builtin.debug:
-    msg: "BI rules of pack {{ item.id }}: {{ lookup('checkmk.general.bi_rules', pack_id=item.id) }}"
+    msg: "BI rules of pack {{ item }}: {{ lookup('checkmk.general.bi_rules', pack_id=item) }}"
   loop: "{{ lookup('checkmk.general.bi_packs') }}"
   vars:
     checkmk_var_server_url: "https://myserver"
