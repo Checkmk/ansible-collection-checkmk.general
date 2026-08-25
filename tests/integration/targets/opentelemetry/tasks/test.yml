@@ -305,6 +305,9 @@
       disabled: false
       sites:
         - "{{ outer_item.site }}"
+      # The PUT endpoint replaces the whole object and rejects a body without
+      # any receiver, so the protocol has to be sent again on every update.
+      receiver_protocol_grpc: "{{ outer_item.receiver.protocol_grpc }}"
     state: "present"
   register: __checkmk_var_result_receiver_update
   until: __checkmk_var_result_receiver_update.http_code != -1
