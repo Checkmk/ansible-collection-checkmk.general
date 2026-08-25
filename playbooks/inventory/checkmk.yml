@@ -4,7 +4,7 @@ site: "mysite"
 api_user: "myuser"
 api_secret: "mysecret"
 validate_certs: false
-groupsources: ["hosttags", "sites"]
+groupsources: ["hosttags", "sites", "labels"]
 want_ipv4: false
 folder: "/"
 recursive: true
