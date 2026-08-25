@@ -458,3 +458,51 @@
     site_id: "{{ outer_item.site }}"
     state: "disabled"
   environment: "{{ __checkmk_var_testing_environment }}"
+
+# ---------------------------------------------------------------------------
+# Leave the site settled
+#
+# Toggling the collector rewrites the site configuration, so activating that
+# change restarts the site's apache. Both the activation above and the one
+# below therefore have a restart in flight when they return - `redirect` is
+# false, so the module does not wait for the activation to finish. Without the
+# waits here the target ends mid-restart and the next target's very first API
+# call fails with a connection reset or refusal.
+# ---------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+    sites:
+      - "{{ outer_item.site }}"
+  register: __checkmk_var_result_otel_final_activation
+  # The activation of the deletion above may still be restarting the site, so
+  # this call can hit a reset socket or an apache error page. Retry on any
+  # failure - unlike the opentelemetry module, `activation` does not return
+  # `http_code`, so there is nothing more specific to key on.
+  until: __checkmk_var_result_otel_final_activation is succeeded
+  retries: 10
+  delay: 3
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the activation to finish."
+  ansible.builtin.wait_for:
+    timeout: 60
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the site to be reachable again."
+  ansible.builtin.uri:
+    url: "{{ checkmk_var_server_url }}{{ outer_item.site }}/check_mk/api/1.0/version"
+    method: "GET"
+    validate_certs: false
+    headers:
+      Authorization: "Bearer {{ checkmk_var_api_user }} {{ checkmk_var_api_secret }}"
+      Accept: "application/json"
+    status_code:
+      - 200
+  register: __checkmk_var_result_otel_site_ready
+  until: __checkmk_var_result_otel_site_ready.status == 200
+  retries: 30
+  delay: 5
