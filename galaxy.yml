@@ -62,6 +62,7 @@ homepage: https://github.com/Checkmk/ansible-collection-checkmk.general
 issues: https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc
 
 build_ignore:
+  - .venv*
   - misc/
   - scripts/
   - tests/

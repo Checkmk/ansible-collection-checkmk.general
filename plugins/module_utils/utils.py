@@ -103,14 +103,6 @@ def normalize_folder(folder):
     return folder.rstrip("/") or "/"
 
 
-def result_as_dict(result):
-    return {
-        "changed": result.changed,
-        "failed": result.failed,
-        "msg": result.msg,
-    }
-
-
 def merge_results(results):
     """Merges two or more results. Call like this:
     over_all_result = merge_results({"created": create_result, "moved": move_result})"""
