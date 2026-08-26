@@ -97,7 +97,6 @@
       when: |
         checkmk_agent_edition | lower != "community"
         and checkmk_agent_host_specific | bool
-        and checkmk_agent_delegate_download != inventory_hostname
       tags:
         - download-package
 
@@ -109,7 +108,6 @@
       when: |
         checkmk_agent_edition | lower != "community"
         and checkmk_agent_folder_specific | bool
-        and checkmk_agent_delegate_download != inventory_hostname
       tags:
         - download-package
 
@@ -119,8 +117,7 @@
         dest: "{{ __checkmk_agent_agent.file.upload.community }}"
         mode: "0644"
       when: |
-        checkmk_agent_delegate_download != inventory_hostname
-        and (checkmk_agent_edition | lower == "community"
+        (checkmk_agent_edition | lower == "community"
         or not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool))
       tags:
         - download-package
@@ -219,7 +216,6 @@
       when: |
         checkmk_agent_edition | lower != "community"
         and checkmk_agent_host_specific | bool
-        and checkmk_agent_delegate_download != inventory_hostname
       tags:
         - download-package
 
@@ -231,7 +227,6 @@
       when: |
         checkmk_agent_edition | lower != "community"
         and checkmk_agent_folder_specific | bool
-        and checkmk_agent_delegate_download != inventory_hostname
       tags:
         - download-package
 
@@ -241,8 +236,7 @@
         dest: "{{ __checkmk_agent_agent.file.upload.community }}"
         remote_src: "{{ not checkmk_agent_delegate_download }}"
       when: |
-        checkmk_agent_delegate_download != inventory_hostname
-        and (checkmk_agent_edition | lower == "community"
+        (checkmk_agent_edition | lower == "community"
         or not (checkmk_agent_host_specific | bool or checkmk_agent_folder_specific | bool))
       tags:
         - download-package
