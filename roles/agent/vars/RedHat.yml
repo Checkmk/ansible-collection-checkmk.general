@@ -11,6 +11,6 @@ __checkmk_agent_agent:
       pro: "{{ __checkmk_agent_host_tmp_dir }}check-mk-agent-{{ checkmk_agent_version }}-1.noarch-generic.rpm"
       host: "{{ __checkmk_agent_host_tmp_dir }}check-mk-agent-{{ checkmk_agent_version }}-1.noarch-{{ inventory_hostname }}.rpm"
     upload:
-      community: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-vanilla.rpm"
-      pro: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-generic.rpm"
-      host: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-{{ inventory_hostname }}.rpm"
+      community: "{{ __checkmk_agent_lin_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-vanilla.rpm"
+      pro: "{{ __checkmk_agent_lin_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-generic.rpm"
+      host: "{{ __checkmk_agent_lin_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-{{ inventory_hostname }}.rpm"
