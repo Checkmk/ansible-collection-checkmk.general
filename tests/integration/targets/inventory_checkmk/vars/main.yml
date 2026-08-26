@@ -19,9 +19,15 @@ checkmk_var_hosts:
     folder: "/top"
     criticality: "prod"
     ipaddress: "127.0.0.1"
+    # The space is intentional: it has to be sanitized out of the group name.
+    labels:
+      os_family: "linux"
+      team: "ops team"
   - name: inv-sub
     folder: "/top/sub"
     criticality: "test"
+    labels:
+      os_family: "windows"
   - name: INV-UPPER
     folder: "/other"
     criticality: "prod"
