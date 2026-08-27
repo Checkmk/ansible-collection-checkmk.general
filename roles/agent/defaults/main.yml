@@ -1,12 +1,12 @@
 ---
 ## Basic Configuration
 checkmk_agent_version: "2.5.0p11"
-checkmk_agent_edition: 'community'
-checkmk_agent_server_protocol: 'http'
-checkmk_agent_server: 'localhost'
+checkmk_agent_edition: "community"
+checkmk_agent_server_protocol: "http"
+checkmk_agent_server: "localhost"
 checkmk_agent_server_validate_certs: true
 checkmk_agent_server_port: "{% if checkmk_agent_server_protocol == 'https' %}443{% else %}80{% endif %}"
-checkmk_agent_site: 'mysite'
+checkmk_agent_site: "mysite"
 
 ## Authentication
 checkmk_agent_user: "{{ api_user | default('automation') }}"
@@ -36,7 +36,7 @@ checkmk_agent_discover_max_parallel_tasks: 0
 checkmk_agent_force_foreign_changes: false
 
 ## Agent Configuration
-checkmk_agent_mode: 'pull'
+checkmk_agent_mode: "pull"
 checkmk_agent_port: 6556
 checkmk_agent_update: false
 checkmk_agent_tls: false
@@ -48,7 +48,7 @@ checkmk_agent_no_log: true
 checkmk_agent_configure_firewall: true
 
 ## Delegation
-checkmk_agent_delegate_api_calls: 'localhost'
+checkmk_agent_delegate_api_calls: "localhost"
 checkmk_agent_delegate_download: "{{ inventory_hostname }}"
 checkmk_agent_delegate_registration: false
 checkmk_agent_delegate_registration_target: "{{ inventory_hostname }}"

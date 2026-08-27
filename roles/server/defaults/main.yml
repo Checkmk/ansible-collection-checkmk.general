@@ -38,7 +38,7 @@ __checkmk_server_stable_os:
 
 ## Basic Configuration
 checkmk_server_version: "2.5.0p11"
-checkmk_server_edition: 'community'
+checkmk_server_edition: "community"
 checkmk_server_verify_setup: true
 checkmk_server_epel_gpg_check: true
 checkmk_server_cleanup: false
@@ -83,8 +83,8 @@ checkmk_server_sites: []
 
 ## Site Updates
 checkmk_server_backup_on_update: true  # Not recommended to disable this option
-checkmk_server_backup_dir: '/tmp'
-checkmk_server_backup_opts: '--no-past'
+checkmk_server_backup_dir: "/tmp"
+checkmk_server_backup_opts: "--no-past"
 checkmk_server_allow_downgrades: false
 
 ## Delegation
@@ -92,5 +92,5 @@ checkmk_server_delegate_download: "{{ inventory_hostname }}"
 checkmk_server_gpg_delegate_download: "{{ checkmk_server_delegate_download }}"
 
 ## HTTP Proxy
-checkmk_server_download_proxy: ''
+checkmk_server_download_proxy: ""
 checkmk_server_gpg_download_proxy: "{{ checkmk_server_download_proxy }}"

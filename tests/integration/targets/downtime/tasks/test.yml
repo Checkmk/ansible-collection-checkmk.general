@@ -179,7 +179,7 @@
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    force: "yes"
+    force: true
     comment: Schedule downtime on host with absolute timestamps
     start_time: "2024-03-25T20:39:28Z"
     end_time: "2024-03-26T20:39:28Z"
