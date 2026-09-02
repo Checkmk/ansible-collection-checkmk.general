@@ -269,6 +269,18 @@ EXAMPLES = r"""
     end_after:
       hours: 2
 
+- name: "Schedule host downtimes for a host group using a query."
+  checkmk.general.downtime:
+    server_url: "https://myserver/"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    query: '{"op": ">=", "left": "host_groups", "right": "my_hostgroup"}'
+    downtime_type: "host"
+    comment: "Maintenance for my_hostgroup"
+    end_after:
+      hours: 4
+
 - name: "Schedule service downtimes for all services matching a query."
   checkmk.general.downtime:
     server_url: "https://myserver/"
