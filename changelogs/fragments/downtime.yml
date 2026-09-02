@@ -1,0 +1,4 @@
+major_changes:
+  - Downtime module - The module is now idempotent and can also update downtimes' end times.
+  - Downtime lookup - Add lookup plugin to fetch a single downtime.
+  - Downtimes lookup - Add lookup plugin to get a list of downtimes.
