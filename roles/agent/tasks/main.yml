@@ -20,31 +20,6 @@
   tags:
     - always
 
-- name: "Preflight - Make sure facts for the Ansible controller are present."
-  ansible.builtin.setup:
-  when: checkmk_agent_delegate_download
-  delegate_to: localhost
-  delegate_facts: true
-  tags:
-    - download-package
-
-- name: "Preflight - Set facts for the downloading Host"
-  ansible.builtin.set_fact:
-    __checkmk_agent_download_to_windows: >-
-      {{
-        (checkmk_agent_delegate_download and hostvars['localhost']['ansible_facts']['os_family'] == 'Windows') or
-        (not checkmk_agent_delegate_download and ansible_facts['os_family'] == 'Windows')
-      }}
-  tags:
-    - download-package
-
-- name: "Preflight - Set facts for handling of the agent download"
-  ansible.builtin.set_fact:
-    __checkmk_agent_host_tmp_dir: >-
-      {{ '/tmp/' if not __checkmk_agent_download_to_windows else 'C:\\Windows\\Temp\\' }}
-  tags:
-    - download-package
-
 - name: "{{ ansible_facts['os_family'] }}: Include OS family specific variables."
   ansible.builtin.include_vars: "{{ ansible_facts['os_family'] }}.yml"
   tags:
