@@ -85,7 +85,7 @@ EXAMPLES = """
   loop: "{{
     lookup('checkmk.general.downtimes',
         query=checkmk_var_query,
-        server_url='https://myserver'
+        server_url='https://myserver',
         site='mysite',
         api_user='myuser',
         api_secret='mysecret',
