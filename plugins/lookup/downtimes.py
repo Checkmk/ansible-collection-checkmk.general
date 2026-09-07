@@ -177,4 +177,4 @@ class LookupModule(LookupBase):
                 )
             )
 
-        return response.get("value", [])
+        return [response.get("value", [])]
