@@ -3,6 +3,10 @@ SHELL=/bin/bash
 VERSION := $$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)
 
 COLLECTION_ROOT="/home/vagrant/ansible_collections/checkmk/general"
+# The box shares COLLECTION_ROOT with the host over virtiofs and therefore keeps
+# its own environment. `vagrant ssh -c` is non-interactive and never sources
+# ~/.bashrc, so it has to be passed explicitly on each invocation below.
+UV_ENV_VM := .venv-vm
 CONTAINER_BUILD_ROOT="$(COLLECTION_ROOT)/tests/container"
 CONTAINER_NAME="ansible-checkmk-test"
 
@@ -62,7 +66,7 @@ version:
 	@newversion=$$(dialog --stdout --inputbox "New Version:" 0 0 "$(VERSION)") ; \
 	if [ -n "$$newversion" ] ; then ./scripts/release.sh -s "$(VERSION)" -t $$newversion ; fi
 
-setup: setup-python kvm vagrant
+setup: python kvm vagrant
 
 python:
 	@uv help > /dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -135,7 +139,7 @@ tests: tests-linting tests-sanity tests-integration
 
 tests-linting: vm
 	@vagrant ssh collection -c "\
-	export LC_ALL=C.UTF-8 && \
+	export LC_ALL=C.UTF-8 UV_PROJECT_ENVIRONMENT=$(UV_ENV_VM) && \
 	cd $(COLLECTION_ROOT) && \
 	uv run ansible-galaxy collection install ./ && \
 	uv run yamllint -c .yamllint ./roles/ && \
@@ -147,13 +151,13 @@ tests-linting: vm
 
 tests-sanity: vm
 	@vagrant ssh collection -c "\
-	export LC_ALL=C.UTF-8 && \
+	export LC_ALL=C.UTF-8 UV_PROJECT_ENVIRONMENT=$(UV_ENV_VM) && \
 	cd $(COLLECTION_ROOT) && \
 	uv run ansible-test sanity --docker"
 
 tests-units: vm
 	@vagrant ssh collection -c "\
-	export LC_ALL=C.UTF-8 && \
+	export LC_ALL=C.UTF-8 UV_PROJECT_ENVIRONMENT=$(UV_ENV_VM) && \
 	cd $(COLLECTION_ROOT) && \
 	uv run ansible-test units --docker"
 
@@ -161,18 +165,18 @@ tests-molecule: tests-molecule-agent tests-molecule-server
 
 tests-molecule-agent: vm
 	@vagrant ssh collection -c "\
-	export LC_ALL=C.UTF-8 && \
+	export LC_ALL=C.UTF-8 UV_PROJECT_ENVIRONMENT=$(UV_ENV_VM) && \
 	cd $(COLLECTION_ROOT)/roles/agent/ && \
 	uv run molecule test"
 
 tests-molecule-server: vm
 	@vagrant ssh collection -c "\
-	export LC_ALL=C.UTF-8 && \
+	export LC_ALL=C.UTF-8 UV_PROJECT_ENVIRONMENT=$(UV_ENV_VM) && \
 	cd $(COLLECTION_ROOT)/roles/server/ && \
 	uv run molecule test"
 
 tests-integration: vm
 	@vagrant ssh collection -c "\
-	export LC_ALL=C.UTF-8 && \
+	export LC_ALL=C.UTF-8 UV_PROJECT_ENVIRONMENT=$(UV_ENV_VM) && \
 	cd $(COLLECTION_ROOT) && \
 	uv run ansible-test integration --docker"

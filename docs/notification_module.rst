@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.24.0
+  :antsibull-docs: 2.26.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.notification module -- Manage notification rules in Checkmk.
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -2133,7 +2133,7 @@ Examples
 
     - name: "Create an email notification rule"
       checkmk.general.notification:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -2158,7 +2158,7 @@ Examples
 
     - name: "Create a Slack notification rule"
       checkmk.general.notification:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -2181,7 +2181,7 @@ Examples
 
     - name: "Create a Microsoft Teams notification rule"
       checkmk.general.notification:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -2209,7 +2209,7 @@ Examples
     #       Keys absent from rule_config will not be modified in the existing rule.
     - name: "Update a notification rule"
       checkmk.general.notification:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -2229,7 +2229,7 @@ Examples
 
     - name: "Delete a notification rule by rule_id"
       checkmk.general.notification:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -2240,7 +2240,7 @@ Examples
     #       Use rule_id for unambiguous deletion.
     - name: "Delete a notification rule by description"
       checkmk.general.notification:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -2274,7 +2274,7 @@ Examples
               state: "enabled"
         state: "present"
       environment:
-        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SERVER_URL: "https://myserver"
         CHECKMK_VAR_SITE: "mysite"
         CHECKMK_VAR_API_USER: "myuser"
         CHECKMK_VAR_API_SECRET: "mysecret"

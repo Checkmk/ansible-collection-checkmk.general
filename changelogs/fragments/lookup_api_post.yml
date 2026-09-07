@@ -1,7 +1,0 @@
----
-minor_changes:
-  - All lookup modules - Array query parameters are now sent as repeated keys,
-    e.g. ``columns=name&columns=state``, which is the form the REST API expects.
-  - All lookup modules - The lookup API can now issue ``POST`` requests. Checkmk
-    3.0.0 removes the ``GET`` variants of the monitoring collection endpoints,
-    which are ``POST`` only on every supported version.

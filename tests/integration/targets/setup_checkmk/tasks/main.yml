@@ -119,17 +119,46 @@
         name: apache2
         state: started
 
-    - name: "Start Central Site."
-      ansible.builtin.shell: "omd status -b {{ item.site }} || omd start {{ item.site }}"
+    # Status and start are separate tasks on purpose. Combining them into
+    # `omd status -b <site> || omd start <site>` makes the result rc ambiguous:
+    # 0 means either "was already running" or "we just started it", so the task
+    # cannot report `changed` honestly.
+    - name: "Check whether the central site is already running."
+      ansible.builtin.command: "omd status -b {{ item.site }}"
       register: __checkmk_var_site_central_status
-      changed_when: __checkmk_var_site_central_status.rc == "0"
+      changed_when: false
+      failed_when: false
       loop: "{{ checkmk_var_test_sites }}"
+      loop_control:
+        label: "{{ item.site }}"
+
+    - name: "Start Central Site."
+      ansible.builtin.command: "omd start {{ item.item.site }}"
+      when: item.rc != 0
+      changed_when: true
+      loop: "{{ __checkmk_var_site_central_status.results }}"
+      loop_control:
+        label: "{{ item.item.site }}"
+
+    - name: "Check whether the remote sites are already running."
+      ansible.builtin.command: "omd status -b {{ item.1.site_config.basic_settings.site_id }}"
+      register: __checkmk_var_site_remote_status
+      changed_when: false
+      failed_when: false
+      loop: "{{ checkmk_var_test_sites | subelements('remote_sites', skip_missing=True) }}"
+      loop_control:
+        label: "{{ item.1.site_config.basic_settings.site_id }}"
 
     - name: "Start Remote Sites."
-      ansible.builtin.shell: "omd status -b {{ item.1.site_config.basic_settings.site_id }} || omd start {{ item.1.site_config.basic_settings.site_id }}"
-      register: __checkmk_var_site_remote_status
-      changed_when: __checkmk_var_site_remote_status.rc == "0"
-      loop: "{{ checkmk_var_test_sites | subelements('remote_sites', skip_missing=True) }}"
+      vars:
+        # item.item is the (site, remote_site) pair the status loop iterated over.
+        __checkmk_var_remote_site_id: "{{ item.item.1.site_config.basic_settings.site_id }}"
+      ansible.builtin.command: "omd start {{ __checkmk_var_remote_site_id }}"
+      when: item.rc != 0
+      changed_when: true
+      loop: "{{ __checkmk_var_site_remote_status.results }}"
+      loop_control:
+        label: "{{ __checkmk_var_remote_site_id }}"
 
 - name: "Wait for Central Site to be ready."
   ansible.builtin.uri:
@@ -156,3 +185,19 @@
   delay: 5
   register: __checkmk_var_site_remote_status_online
   loop: "{{ checkmk_var_test_sites | subelements('remote_sites', skip_missing=True) }}"
+
+# Consumed by targets that have to address the sites differently depending on
+# whether they run in neighbouring containers (CI) or on this very filesystem
+# (local `--docker` runs). Probed after provisioning, so it also holds true on
+# the first target of a fresh local run, which creates the sites above.
+- name: "Check, whether the sites reside on this filesystem."
+  ansible.builtin.stat:
+    path: "/omd/sites/{{ item.site }}"
+  loop: "{{ checkmk_var_test_sites }}"
+  loop_control:
+    label: "{{ item.site }}"
+  register: __checkmk_var_result_setup_site_paths
+
+- name: "Record, whether the sites reside on this filesystem."
+  ansible.builtin.set_fact:
+    checkmk_var_sites_are_local: "{{ __checkmk_var_result_setup_site_paths.results | selectattr('stat.exists') | list | length > 0 }}"

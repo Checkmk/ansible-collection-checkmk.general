@@ -67,7 +67,7 @@
         site: "{{ checkmk_var_site }}"
         api_user: "{{ checkmk_var_api_user }}"
         api_secret: "{{ checkmk_var_api_secret }}"
-        force_foreign_changes: 'true'
+        force_foreign_changes: "true"
         sites:
           - "{{ checkmk_var_site }}"
       delegate_to: localhost
@@ -122,7 +122,7 @@
         site: "{{ checkmk_var_site }}"
         api_user: "{{ checkmk_var_api_user }}"
         api_secret: "{{ checkmk_var_api_secret }}"
-        force_foreign_changes: 'true'
+        force_foreign_changes: "true"
         sites:
           - "{{ checkmk_var_site }}"
       delegate_to: localhost

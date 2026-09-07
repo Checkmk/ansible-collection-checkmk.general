@@ -26,7 +26,7 @@ on:
       - 'plugins/lookup/activation.py'
       - 'plugins/lookup/activations.py'
       - 'plugins/module_utils/**'
-      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/setup_checkmk/**'
       - 'tests/integration/targets/lookup_activation/**'
 
 jobs:
@@ -42,24 +42,24 @@ jobs:
       fail-fast: false
       matrix:
         checkmk_version:
-          - 2.3.0p48
+          - 2.3.0p49
           - 2.4.0p35
-          - 2.5.0p10
+          - 2.5.0p11
         checkmk_edition:
           - raw
           - managed
           - community
           - ultimatemt
         exclude:
-          - checkmk_version: 2.3.0p48
+          - checkmk_version: 2.3.0p49
             checkmk_edition: community
-          - checkmk_version: 2.3.0p48
+          - checkmk_version: 2.3.0p49
             checkmk_edition: ultimatemt
           - checkmk_version: 2.4.0p35
             checkmk_edition: community
           - checkmk_version: 2.4.0p35
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.5.0p10
+          - checkmk_version: 2.5.0p11
             checkmk_edition: raw
-          - checkmk_version: 2.5.0p10
+          - checkmk_version: 2.5.0p11
             checkmk_edition: managed

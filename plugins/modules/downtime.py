@@ -421,6 +421,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
+    base_api_url,
     base_argument_spec,
     exit_module,
 )
@@ -1047,6 +1048,19 @@ def run_module():
         required_by={"downtime_id": ("site_id",)},
         required_if=required_if,
     )
+
+    # Use the parameters to initialize some common variables
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer %s %s"
+        % (
+            module.params.get("api_user"),
+            module.params.get("api_secret"),
+        ),
+    }
+
+    base_url = base_api_url(module.params)
 
     logger.set_loglevel(module._verbosity)
 

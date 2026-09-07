@@ -4,7 +4,7 @@
 # (auto-loaded by ansible-test as extra-vars; gitignored).
 # CI writes `checkmk_var_version` and `checkmk_var_edition` into that file.
 
-checkmk_var_version: "2.5.0p9"
+checkmk_var_version: "2.5.0p11"
 checkmk_var_edition: "ultimatemt"
 
 # REST API endpoint + credentials for the central testsite. Hardcoded
@@ -14,6 +14,21 @@ checkmk_var_site: "testsite"
 checkmk_var_validate_certs: false
 checkmk_var_api_user: "cmkadmin"
 checkmk_var_api_secret: "Sup3rSec4et!"
+
+# How the central site reaches the remote site depends on where the sites run.
+# In CI they are service containers on the runner's Docker network, addressed by
+# container name on their own port 5000. Locally with `--docker` both sites are
+# omd sites inside the test container, so the remote one is on 127.0.0.1:5001
+# (see the port configuration in `tasks/main.yml`). `checkmk_var_sites_are_local`
+# is set by this role once the sites exist.
+checkmk_var_remote_site_url: >-
+  {{
+    (checkmk_var_sites_are_local | default(false))
+    | ternary(
+        'http://127.0.0.1:5001/testsite_r_1/check_mk/',
+        'http://testsite-r-1:5000/testsite_r_1/check_mk/'
+      )
+  }}
 
 # Download URL template for the Checkmk server package. `item.*` resolves
 # inside the loop over `checkmk_var_test_sites` in setup_checkmk's tasks.
@@ -62,7 +77,7 @@ checkmk_var_test_sites:
             url_prefix: "/testsite_r_1/"
           configuration_connection:
             enable_replication: true
-            url_of_remote_site: "http://testsite-r-1:5000/testsite_r_1/check_mk/"
+            url_of_remote_site: "{{ checkmk_var_remote_site_url }}"
             disable_remote_configuration: true
             ignore_tls_errors: false
             direct_login_to_web_gui_allowed: false

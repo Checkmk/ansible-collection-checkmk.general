@@ -24,7 +24,7 @@ on:
       - '.github/workflows/ans-int-test-ldap.yaml'
       - 'plugins/modules/ldap.py'
       - 'plugins/module_utils/**'
-      - 'tests/integration/files/includes/**'
+      - 'tests/integration/targets/setup_checkmk/**'
       - 'tests/integration/targets/ldap/**'
 
 jobs:
@@ -41,14 +41,14 @@ jobs:
       matrix:
         checkmk_version:
           - 2.4.0p35
-          - 2.5.0p10
+          - 2.5.0p11
         checkmk_edition:
           - managed
           - ultimatemt
         exclude:
-          - checkmk_version: 2.3.0p48
+          - checkmk_version: 2.3.0p49
             checkmk_edition: ultimatemt
           - checkmk_version: 2.4.0p35
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.5.0p10
+          - checkmk_version: 2.5.0p11
             checkmk_edition: managed

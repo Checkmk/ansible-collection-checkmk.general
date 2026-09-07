@@ -108,6 +108,11 @@ options:
 notes:
     - When specifying C(attributes), the entire attributes dict replaces any existing host
       attributes. Use C(update_attributes) to merge with existing attributes instead.
+    - A host can be monitored through a relay by setting the C(relay) host attribute to the
+      ID of the relay. This requires Checkmk 2.5.0 or newer and one of the editions
+      Ultimate or Ultimate with multi-tenancy or Checkmk Cloud.
+      The attribute expects the relay ID, which is a UUID, not the alias
+      of the relay.
 
 seealso:
     - plugin: checkmk.general.host
@@ -214,6 +219,22 @@ EXAMPLES = r"""
     name: "myhost"
     remove_attributes:
       - alias
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Monitor a host through a relay
+# ---------------------------------------------------------------------------
+
+- name: "Create a host which is monitored through a relay."
+  checkmk.general.host:
+    server_url: "https://myserver"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    name: "myhost"
+    folder: "/"
+    attributes:
+      relay: "97ee81ac-f552-4b5d-8818-73bda9dedf5f"
     state: "present"
 
 # ---------------------------------------------------------------------------

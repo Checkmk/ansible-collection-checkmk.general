@@ -69,6 +69,26 @@ def base_argument_spec():
     )
 
 
+def base_api_url(params):
+    """Build the REST API base URL from a module's params.
+
+    Joining here rather than in every module keeps the trailing-slash handling
+    in one place. A ``server_url`` ending in a slash would otherwise produce a
+    doubled slash in front of the site name. The Checkmk API happens to accept
+    that, but other consumers of the same variable are not as forgiving.
+
+    Only trailing slashes are stripped, never a path prefix the user
+    configured, so ``https://myserver/checkmk`` keeps its ``/checkmk``.
+
+    ``server_url`` is required by ``base_argument_spec()``, but it is read
+    defensively: an unset option reaches a module as ``None``, not as a missing
+    key, and this must not raise before Ansible reports the missing option.
+    """
+    server_url = (params.get("server_url") or "").rstrip("/")
+
+    return "%s/%s/check_mk/api/1.0" % (server_url, params.get("site"))
+
+
 def normalize_folder(folder):
     """Normalize a Checkmk folder path to slash-format.
 

@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.24.0
+  :antsibull-docs: 2.26.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.ldap module -- Manage LDAP connections
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.3.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -4064,7 +4064,7 @@ Examples
 
     - name: "Create an LDAP connection with minimal configuration."
       checkmk.general.ldap:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -4081,7 +4081,7 @@ Examples
 
     - name: "Delete an LDAP connection."
       checkmk.general.ldap:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -4096,7 +4096,7 @@ Examples
 
     - name: "Create a fully configured LDAP connection."
       checkmk.general.ldap:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -4154,7 +4154,7 @@ Examples
 
     - name: "Update the comment on all existing LDAP connections."
       checkmk.general.ldap:
-        server_url: "https://myserver/"
+        server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
@@ -4165,7 +4165,7 @@ Examples
           general_properties:
             comment: "Managed by Ansible"
       loop: "{{ lookup('checkmk.general.ldap_connections',
-                            server_url='https://myserver/',
+                            server_url='https://myserver',
                             site='mysite',
                             api_user='myuser',
                             api_secret='mysecret',
@@ -4196,7 +4196,7 @@ Examples
               ldap_server: "ldap.example.com"
         state: "present"
       environment:
-        CHECKMK_VAR_SERVER_URL: "https://myserver/"
+        CHECKMK_VAR_SERVER_URL: "https://myserver"
         CHECKMK_VAR_SITE: "mysite"
         CHECKMK_VAR_API_USER: "myuser"
         CHECKMK_VAR_API_SECRET: "mysecret"
