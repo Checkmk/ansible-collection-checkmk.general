@@ -27,7 +27,7 @@ on:
       - 'plugins/lookup/downtimes.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/files/includes/**'
-      - 'tests/integration/targets/downtime/**'
+      - 'tests/integration/targets/lookup_downtime/**'
 
 jobs:
 
