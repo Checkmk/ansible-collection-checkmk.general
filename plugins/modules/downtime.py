@@ -1058,7 +1058,12 @@ def run_module():
         else:
             _absent(module, api)
     except Exception as e:
-        exit_module(module, msg="Error managing the downtime: %s" % e, logger=logger)
+        exit_module(
+            module,
+            msg="Error managing the downtime: %s" % e,
+            failed=True,
+            logger=logger,
+        )
 
 
 def main():
