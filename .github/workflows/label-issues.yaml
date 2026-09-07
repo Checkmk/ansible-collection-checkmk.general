@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: "Label Issues."
-      uses: github/issue-labeler@v3.4
+      uses: github/issue-labeler@v3.5
       with:
         configuration-path: .github/labels-issues.yml
         include-title: 1
