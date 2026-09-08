@@ -20,14 +20,6 @@ platforms:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     systemd: always
-  - name: debian11
-    image: docker.io/geerlingguy/docker-debian11-ansible
-    command: ${MOLECULE_DOCKER_COMMAND:-""}
-    pre_build_image: true
-    privileged: true
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    systemd: always
   - name: debian12
     image: docker.io/geerlingguy/docker-debian12-ansible
     command: ${MOLECULE_DOCKER_COMMAND:-""}
