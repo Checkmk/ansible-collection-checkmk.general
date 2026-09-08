@@ -280,8 +280,8 @@
     path: "{{ item }}"
     state: absent
   loop:
-    - "{{ __checkmk_agent_agent.file.community }}"
-    - "{{ __checkmk_agent_agent.file.pro }}"
-    - "{{ __checkmk_agent_agent.file.host }}"
+    - "{{ __checkmk_agent_agent.file.upload.community }}"
+    - "{{ __checkmk_agent_agent.file.upload.pro }}"
+    - "{{ __checkmk_agent_agent.file.upload.host }}"
   tags:
     - download-package
