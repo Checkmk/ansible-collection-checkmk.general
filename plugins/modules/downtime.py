@@ -259,7 +259,7 @@ EXAMPLES = r"""
 
 - name: "Schedule host downtimes for all hosts matching a query."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -271,7 +271,7 @@ EXAMPLES = r"""
 
 - name: "Schedule host downtimes for a host group using a query."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -283,7 +283,7 @@ EXAMPLES = r"""
 
 - name: "Schedule service downtimes for all services matching a query."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -301,7 +301,7 @@ EXAMPLES = r"""
 
 - name: "Shorten the previously created downtime."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -312,7 +312,7 @@ EXAMPLES = r"""
 
 - name: "Update a specific downtime by its ID."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -323,7 +323,7 @@ EXAMPLES = r"""
 
 - name: "Update all downtimes matching a query."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
@@ -338,7 +338,7 @@ EXAMPLES = r"""
 # downtime independently of the comment you are about to write.
 - name: "Change the comment of an existing downtime."
   checkmk.general.downtime:
-    server_url: "https://myserver/"
+    server_url: "https://myserver"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
