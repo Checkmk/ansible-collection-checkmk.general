@@ -767,11 +767,22 @@
                           | selectattr('extensions.comment', 'equalto', 'Recurring flexible window')
                           | first) }}"
 
+# Recurring downtimes are a CMC-only feature. The Nagios core used by the
+# Raw/Community edition has no scheduler for them, so the REST API silently
+# ignores 'recurring' there instead of rejecting it.
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert 'recurring' (week) was applied."
   ansible.builtin.assert:
     that: "__checkmk_var_dt_recur.extensions.recurring | bool"
     fail_msg: "The downtime created with recurring=week was not flagged as recurring."
     success_msg: "The downtime is correctly flagged as recurring."
+  when: "outer_item.edition not in ['raw', 'community']"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert 'recurring' (week) was ignored on the Nagios core."
+  ansible.builtin.assert:
+    that: "not (__checkmk_var_dt_recur.extensions.recurring | bool)"
+    fail_msg: "The Raw/Community edition unexpectedly flagged the downtime as recurring."
+    success_msg: "The Raw/Community edition correctly ignored recurring=week (unsupported on the Nagios core)."
+  when: "outer_item.edition in ['raw', 'community']"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert 'duration' (45) selected the flexible mode."
   ansible.builtin.assert:
