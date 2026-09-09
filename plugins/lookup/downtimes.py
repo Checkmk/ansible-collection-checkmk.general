@@ -30,7 +30,7 @@ DOCUMENTATION = """
         type: str
         required: False
 
-      downtime_search_for_type:
+      downtime_type:
         description: Restrict the result to host or service downtimes or accept both.
         type: str
         required: False
@@ -147,7 +147,7 @@ class LookupModule(LookupBase):
         validate_certs = self.get_option("validate_certs")
 
         parameters = {
-            "downtime_search_for_type": self.get_option("downtime_search_for_type")
+            "downtime_type": self.get_option("downtime_type")
             or "both"
         }
         host_name = self.get_option("host_name")
