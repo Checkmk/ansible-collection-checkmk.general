@@ -146,7 +146,10 @@ class LookupModule(LookupBase):
         api_secret = self.get_option("api_secret")
         validate_certs = self.get_option("validate_certs")
 
-        parameters = {"downtime_search_for_type": self.get_option("downtime_search_for_type") or "both"}
+        parameters = {
+            "downtime_search_for_type": self.get_option("downtime_search_for_type")
+            or "both"
+        }
         host_name = self.get_option("host_name")
         service_description = self.get_option("service_description")
         query = self.get_option("query")
