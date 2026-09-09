@@ -20,6 +20,8 @@ DOCUMENTATION = """
       _terms:
         description: One or more downtime IDs.
         required: True
+        type: list
+        elements: str
 
     extends_documentation_fragment: [checkmk.general.common_lookup]
 
@@ -96,6 +98,8 @@ class LookupModule(LookupBase):
         self.set_options(var_options=variables, direct=kwargs)
         server_url = self.get_option("server_url")
         site = self.get_option("site")
+        api_auth_type = self.get_option("api_auth_type") or "bearer"
+        api_auth_cookie = self.get_option("api_auth_cookie")
         api_user = self.get_option("api_user")
         api_secret = self.get_option("api_secret")
         validate_certs = self.get_option("validate_certs")
@@ -103,6 +107,8 @@ class LookupModule(LookupBase):
         api = CheckMKLookupAPI(
             server_url=server_url,
             site=site,
+            api_auth_type=api_auth_type,
+            api_auth_cookie=api_auth_cookie,
             api_user=api_user,
             api_secret=api_secret,
             validate_certs=validate_certs,
@@ -130,6 +136,10 @@ class LookupModule(LookupBase):
                     )
                 )
 
-            ret += response.get("value", [])
+            value = response.get("value", [])
+            if not value:
+                raise AnsibleError("Downtime with ID %s not found" % term)
+
+            ret += value
 
         return ret

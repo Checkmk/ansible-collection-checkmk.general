@@ -709,6 +709,108 @@
     success_msg: "Updating a non-existent downtime by ID failed as expected."
 
 # -----------------------------------------------------------------------------
+# I. Recurring, flexible (duration) downtime with a relative start time
+# -----------------------------------------------------------------------------
+# 'changed' alone cannot prove that 'recurring'/'duration'/'start_after' were
+# actually applied, as none of them are part of the module's own idempotency
+# check (see needs_update()). So the created downtime is read back via the
+# lookup plugin and asserted on its raw REST attributes instead:
+#   * extensions.recurring        -> set by 'recurring' (a value other than
+#                                     the default 'fixed' makes it recurring)
+#   * extensions.mode.type/
+#     extensions.mode.duration_minutes -> set by 'duration' (> 0 selects the
+#                                     flexible mode)
+#   * extensions.start_time       -> set by 'start_after'
+# As with the other relative-time test (section G), no re-create/idempotency
+# check is done here: start_after/end_after are recomputed from "now" on every
+# run, so a second run is expected to report a change (see the module notes).
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Record the time before creating the downtime."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_recur_before: "{{ now(utc=true).strftime('%Y-%m-%dT%H:%M:%SZ') }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a recurring, flexible downtime with a relative start time."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
+    comment: "Recurring flexible window"
+    start_after:
+      minutes: 10
+    end_after:
+      hours: 2
+    recurring: week
+    duration: 45
+  register: __checkmk_var_dt_recur_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the downtime was created."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_recur_create.changed | bool"
+    fail_msg: "Creating the recurring/flexible downtime reported no change."
+    success_msg: "The recurring/flexible downtime was created."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up the created downtime."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_recur: "{{ (lookup('checkmk.general.downtimes',
+                            host_name='test1.tld',
+                            server_url=checkmk_var_server_url,
+                            site=outer_item.site,
+                            validate_certs=False,
+                            api_user=checkmk_var_api_user,
+                            api_secret=checkmk_var_api_secret)
+                          | selectattr('extensions.comment', 'equalto', 'Recurring flexible window')
+                          | first) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert 'recurring' (week) was applied."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_recur.extensions.recurring | bool"
+    fail_msg: "The downtime created with recurring=week was not flagged as recurring."
+    success_msg: "The downtime is correctly flagged as recurring."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert 'duration' (45) selected the flexible mode."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_dt_recur.extensions.mode.type == 'flexible'"
+      - "__checkmk_var_dt_recur.extensions.mode.duration_minutes == 45"
+    fail_msg: "The downtime created with duration=45 is not a 45 minute flexible downtime."
+    success_msg: "The downtime is correctly a 45 minute flexible downtime."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert 'start_after' produced a start time about 10 minutes in the future."
+  ansible.builtin.assert:
+    that:
+      - >-
+        ((__checkmk_var_dt_recur.extensions.start_time[:19] | to_datetime(format='%Y-%m-%dT%H:%M:%S'))
+        - (__checkmk_var_dt_recur_before | to_datetime(format='%Y-%m-%dT%H:%M:%SZ'))).total_seconds() >= 480
+      - >-
+        ((__checkmk_var_dt_recur.extensions.start_time[:19] | to_datetime(format='%Y-%m-%dT%H:%M:%S'))
+        - (__checkmk_var_dt_recur_before | to_datetime(format='%Y-%m-%dT%H:%M:%SZ'))).total_seconds() <= 1200
+    fail_msg: "start_after={minutes: 10} did not produce a start time roughly 10 minutes in the future."
+    success_msg: "start_after correctly produced a start time about 10 minutes in the future."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the recurring/flexible downtime."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
+    comment: "Recurring flexible window"
+    state: absent
+  register: __checkmk_var_dt_recur_delete
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the downtime was deleted."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_recur_delete.changed | bool"
+    fail_msg: "Deleting the recurring/flexible downtime reported no change."
+    success_msg: "The recurring/flexible downtime was deleted."
+
+# -----------------------------------------------------------------------------
 # Teardown
 # -----------------------------------------------------------------------------
 

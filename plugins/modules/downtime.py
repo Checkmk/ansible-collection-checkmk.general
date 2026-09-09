@@ -343,7 +343,7 @@ EXAMPLES = r"""
     api_user: "myuser"
     api_secret: "mysecret"
     query: '{"op": "and", "expr": [{"op": "=", "left": "host_name", "right": "myhost"}, {"op": "=", "left": "comment", "right": "Managed by Ansible"}]}'
-    comment: "Managed by NSA"
+    comment: "Managed by Brian Epstein"
 
 # ---------------------------------------------------------------------------
 # Deleting downtimes
