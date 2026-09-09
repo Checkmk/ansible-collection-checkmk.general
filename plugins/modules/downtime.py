@@ -144,6 +144,7 @@ options:
         description:
             - The recurring mode of a new downtime.
             - Only relevant when creating a downtime.
+            - Only available when using the CMC.
         required: false
         type: str
         default: fixed
