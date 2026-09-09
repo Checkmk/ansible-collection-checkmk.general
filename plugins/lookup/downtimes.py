@@ -67,7 +67,7 @@ EXAMPLES = """
   loop: "{{
     lookup('checkmk.general.downtimes',
         host_name='myhost',
-        server_url='https://myserver/',
+        server_url='https://myserver',
         site='mysite',
         api_user='myuser',
         api_secret='mysecret',
@@ -108,7 +108,7 @@ EXAMPLES = """
   ansible.builtin.debug:
     msg: "Downtime {{ item.id }}"
   vars:
-    checkmk_var_server_url: "https://myserver/"
+    checkmk_var_server_url: "https://myserver"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
