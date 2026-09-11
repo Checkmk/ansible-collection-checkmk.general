@@ -9,11 +9,11 @@
 # matches a particular Checkmk version exactly. The site has to be running.
 #
 # Usage:
-#   Extract both variants into 'misc/':      ./openapi.sh -s mysite
-#   Only the documentation variant:          ./openapi.sh -s mysite -f doc
-#   Write somewhere else:                    ./openapi.sh -s mysite -o /tmp
-#   Against a remote server:                 ./openapi.sh -s mysite -U https://myserver
-#   With explicit credentials:               ./openapi.sh -s mysite -a myuser -p mysecret
+#   Extract both variants into 'misc/openapi/':  ./openapi.sh -s mysite
+#   Only the documentation variant:              ./openapi.sh -s mysite -f doc
+#   Write somewhere else:                        ./openapi.sh -s mysite -o /tmp
+#   Against a remote server:                     ./openapi.sh -s mysite -U https://myserver
+#   With explicit credentials:                   ./openapi.sh -s mysite -a myuser -p mysecret
 #
 # Credentials default to the ones 'cmk-dev-install-site' configures on a local
 # development site. Override them with '-a' and '-p', or by exporting
@@ -29,9 +29,9 @@ collection_dir="${script_dir%/*}"
 api_user="${CHECKMK_VAR_API_USER:-cmkadmin}"
 api_secret="${CHECKMK_VAR_API_SECRET:-cmk}"
 server_url="http://localhost"
-output_dir="${collection_dir}/misc"
+output_dir="${collection_dir}/misc/openapi"
 # 'doc' is the complete published API, 'swagger-ui' is what the built-in Swagger
-# UI renders. Note that neither is the 'internal' variant of 'misc/spec.yaml',
+# UI renders. Note that neither is the 'internal' variant of 'spec.yaml',
 # which is not served by any site and only comes out of the source tree.
 variants="doc swagger-ui"
 
@@ -67,7 +67,7 @@ while getopts 's:f:o:U:a:p:h' OPTION; do
 done
 
 [[ -n "${site:-}" ]] || usage
-[[ -d "$output_dir" ]] || { echo "No such directory: ${output_dir}" >&2 ; exit 1 ; }
+mkdir -p "$output_dir" || { echo "Cannot create: ${output_dir}" >&2 ; exit 1 ; }
 
 api_url="${server_url}/${site}/check_mk/api/1.0"
 
