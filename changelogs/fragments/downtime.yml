@@ -1,0 +1,13 @@
+major_changes:
+  - Downtime module - The module is now idempotent and can also update downtimes' end times.
+  - Downtime module - Add the options ``downtime_id`` and ``site_id`` to select a single existing downtime by its ID.
+  - Downtime module - Add the options ``query`` and ``downtime_type`` to select downtimes by a Livestatus query.
+  - Downtime module - Add the option ``recurring`` (alias ``recur``) to set the recurring mode of a new downtime.
+  - Downtime module - The option ``host_name`` is no longer required. Provide exactly one of ``downtime_id``, ``host_name`` and ``query``.
+  - Downtime lookup - Add lookup plugin to fetch a single downtime.
+  - Downtimes lookup - Add lookup plugin to get a list of downtimes.
+
+known_issues:
+  - Downtime module - On the Nagios core (Checkmk Community) a downtime cannot be modified in place, so the module deletes and re-creates it.
+    The downtime is identical afterwards, but it gets a new ID.
+  - Downtime module - The option ``recurring`` only works on CMC-based editions. The module therefore ignores it on the Nagios core.
