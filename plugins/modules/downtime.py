@@ -705,6 +705,16 @@ class DowntimeAPI(CheckmkAPI):
             return True
         return False
 
+    def _effective_recur(self):
+        """'recurring' only works on the CMC. On the Nagios core (Raw/Community)
+        the same wire field is read as a plain boolean 'fixed' flag by
+        SCHEDULE_HOST_DOWNTIME, so any non-'fixed' value (e.g. recur_mode=6 for
+        'week') is truthy there and silently turns a flexible downtime into a
+        fixed one. Force 'fixed' on that core so 'duration' still selects the
+        flexible mode correctly.
+        """
+        return "fixed" if self.on_nagios_core else self.recur
+
     # -- API actions ---------------------------------------------------------
 
     def _run(self, action, method, endpoint, data=None):
@@ -727,7 +737,7 @@ class DowntimeAPI(CheckmkAPI):
         data = {
             "start_time": self._start_time(),
             "end_time": end_time,
-            "recur": self.recur,
+            "recur": self._effective_recur(),
             "duration": self.duration,
             "comment": self.comment or DEFAULT_COMMENT,
             "host_name": self.host_name,
@@ -749,7 +759,7 @@ class DowntimeAPI(CheckmkAPI):
         data = {
             "start_time": self._start_time(),
             "end_time": end_time,
-            "recur": self.recur,
+            "recur": self._effective_recur(),
             "duration": self.duration,
             "comment": self.comment or DEFAULT_COMMENT,
             "query": _object_query(self.query, self.downtime_type or "host"),
@@ -805,7 +815,7 @@ class DowntimeAPI(CheckmkAPI):
             "end_time": (
                 desired_end if desired_end is not None else downtime["end_time"]
             ),
-            "recur": self.recur,
+            "recur": self._effective_recur(),
             "duration": self.duration,
             "comment": (
                 desired_comment if desired_comment is not None else downtime["comment"]
