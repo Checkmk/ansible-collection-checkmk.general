@@ -62,7 +62,6 @@
   failed_when: __checkmk_var_result_login.changed | bool
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update site connection."
-  when: "(outer_item.version | regex_replace('p.*', '')) is version('2.5.0', '!=')"
   site:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
@@ -73,8 +72,8 @@
       site_config:
         basic_settings:
           alias: "{{ item.site_id }} with new alias"
-        configuration_connection:
-        status_connection:
+        configuration_connection: "{{ item.site_config.configuration_connection }}"
+        status_connection: "{{ item.site_config.status_connection }}"
     state: "present"
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
@@ -91,6 +90,8 @@
       site_config:
         basic_settings:
           alias: "{{ item.site_id }} with new alias"
+        configuration_connection: "{{ item.site_config.configuration_connection }}"
+        status_connection: "{{ item.site_config.status_connection }}"
     state: "present"
   loop: "{{ outer_item.remote_sites }}"
   loop_control:
@@ -160,3 +161,46 @@
   environment: "{{ __checkmk_var_testing_environment }}"
   register: __checkmk_var_result_environment
   failed_when: __checkmk_var_result_environment.changed | bool
+
+# A connection without configuration replication.
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create status-only site connection."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    site_id: "{{ item.site_id }}"
+    site_connection:
+      site_config: "{{ item.site_config }}"
+    state: "present"
+  loop: "{{ outer_item.status_only_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create status-only site connection again."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    site_id: "{{ item.site_id }}"
+    site_connection:
+      site_config: "{{ item.site_config }}"
+    state: "present"
+  loop: "{{ outer_item.status_only_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
+  register: __checkmk_var_result_status_only
+  failed_when: __checkmk_var_result_status_only.changed | bool
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete status-only site connection."
+  site:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    site_id: "{{ item.site_id }}"
+    state: "absent"
+  loop: "{{ outer_item.status_only_sites }}"
+  loop_control:
+    label: "{{ item.site_id }}"
