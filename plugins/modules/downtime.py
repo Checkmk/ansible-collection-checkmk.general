@@ -144,7 +144,8 @@ options:
         description:
             - The recurring mode of a new downtime.
             - Only relevant when creating a downtime.
-            - Only available when using the CMC.
+            - Only available when using the CMC. On the Nagios core the
+              option is ignored and the downtime is created non-recurring.
         required: false
         type: str
         default: fixed

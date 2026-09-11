@@ -768,8 +768,9 @@
                           | first) }}"
 
 # Recurring downtimes are a CMC-only feature. The Nagios core used by the
-# Raw/Community edition has no scheduler for them, so the REST API silently
-# ignores 'recurring' there instead of rejecting it.
+# Raw/Community edition has no scheduler for them, so the module sends
+# 'fixed' there instead of the requested mode (see _effective_recur() in
+# the module), which also keeps 'duration' working on that core.
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert 'recurring' (week) was applied."
   ansible.builtin.assert:
     that: "__checkmk_var_dt_recur.extensions.recurring | bool"

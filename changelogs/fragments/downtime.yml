@@ -10,4 +10,4 @@ major_changes:
 known_issues:
   - Downtime module - On the Nagios core (Checkmk Community) a downtime cannot be modified in place, so the module deletes and re-creates it.
     The downtime is identical afterwards, but it gets a new ID.
-  - Downtime module - The option ``recurring`` only works on CMC-based editions. The Nagios core silently ignores it.
+  - Downtime module - The option ``recurring`` only works on CMC-based editions. The module therefore ignores it on the Nagios core.
