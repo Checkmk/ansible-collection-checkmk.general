@@ -18,7 +18,8 @@ DOCUMENTATION = """
     options:
 
       _terms:
-        description: One or more downtime IDs.
+        description:
+          - One or more downtime IDs, either as separate terms or as a single list.
         required: True
         type: list
         elements: str
