@@ -1,7 +1,19 @@
 ---
+# =============================================================================
+# Downtime module integration tests
+# =============================================================================
+# Beyond simply running the module, these tests assert the `changed` flag so
+# that idempotency and the modify-in-place behaviour are actually
+# verified rather than merely exercised.
+# =============================================================================
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
     checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else None }}"
+
+# -----------------------------------------------------------------------------
+# Setup: hosts, discovery, activation
+# -----------------------------------------------------------------------------
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create hosts."
   host:
@@ -40,173 +52,251 @@
   ansible.builtin.wait_for:
     timeout: 60
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host without comment."
+# Purge any downtimes a previous, prematurely aborted run may have left on the
+# test hosts. Without this a leftover downtime makes the "created -> changed"
+# assertions below fail, because the module correctly reports "already present".
+# No downtime_type is given, so the query hits the downtimes table directly and
+# matches both host and service downtimes regardless of their comment.
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Purge leftover downtimes from previous runs."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
-    start_time: "2024-03-25T20:39:28Z"
-    end_time: "2024-03-26T20:39:28Z"
-    state: present
-  loop: "{{ checkmk_var_hosts }}"
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete downtime on host without comment."
-  downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
-    start_time: "2024-03-25T20:39:28Z"
-    end_time: "2024-03-26T20:39:28Z"
+    query: "{{ checkmk_var_dt_query }}"
     state: absent
-  loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on services with relative times."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+# -----------------------------------------------------------------------------
+# A. Host downtimes: create, idempotency and modify-in-place
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create host downtime (absolute)."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: Schedule downtime on services with relative timestamps
-    start_after:
-      hours: 2
-      minutes: 30
-    end_after:
-      hours: 1
-      minutes: 30
-    service_descriptions:
-      - "Check_MK"
-      - "Check_MK Discovery"
+    comment: "Create host downtime (absolute)"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+  register: __checkmk_var_dt_create
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on services with relative times in strings."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the host downtime was created."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_create.results | map(attribute='changed') | unique | list == [true]"
+    fail_msg: "Creating the host downtime did not report a change."
+    success_msg: "The host downtime was created."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create the same host downtime again."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: Schedule downtime on services with relative timestamps in strings
-    start_after:
-      hours: "2"
-      minutes: "30"
-    end_after:
-      hours: "1"
-      minutes: "30"
-    service_descriptions:
-      - "Check_MK"
-      - "Check_MK Discovery"
+    comment: "Create host downtime (absolute)"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+  register: __checkmk_var_dt_create_again
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on services with absolute timestamps."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the second run is idempotent."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_create_again.results | map(attribute='changed') | unique | list == [false]"
+    fail_msg: "Re-creating an identical host downtime reported a change."
+    success_msg: "Re-creating an identical host downtime was idempotent."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Shorten the host downtime."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: Schedule downtime on services with absolute timestamps
-    start_time: "2024-03-25T20:39:28Z"
-    end_time: "2024-03-26T20:39:28Z"
-    service_descriptions:
-      - "Check_MK"
-      - "Check_MK Discovery"
+    comment: "Create host downtime (absolute)"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end_short }}"
+  register: __checkmk_var_dt_shorten
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on services without timestamps."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the host downtime was modified."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_shorten.results | map(attribute='changed') | unique | list == [true]"
+    fail_msg: "Shortening the end time did not report a change."
+    success_msg: "The host downtime was shortened."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Shorten again (should be idempotent)."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: Schedule downtime on services without timestamps
-    service_descriptions:
-      - "Check_MK"
-      - "Check_MK Discovery"
-    end_after:
-      minutes: 1
+    comment: "Create host downtime (absolute)"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end_short }}"
+  register: __checkmk_var_dt_shorten_again
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host with relative times."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the modified state is idempotent."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_shorten_again.results | map(attribute='changed') | unique | list == [false]"
+    fail_msg: "Re-applying the shortened end time reported a change."
+    success_msg: "The shortened host downtime is idempotent."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Force a second host downtime."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: Schedule downtime on host with relative timestamps
-    start_after:
-      hours: 2
-      minutes: 30
-    end_after:
-      hours: 1
-      minutes: 30
-  loop: "{{ checkmk_var_hosts }}"
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host with absolute timestamps."
-  downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
-    comment: Schedule downtime on host with absolute timestamps
-    start_time: "2024-03-25T20:39:28Z"
-    end_time: "2024-03-26T20:39:28Z"
-  loop: "{{ checkmk_var_hosts }}"
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host with absolute timestamps. Again."
-  downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
-    comment: Schedule downtime on host with absolute timestamps
-    start_time: "2024-03-25T20:39:28Z"
-    end_time: "2024-03-26T20:39:28Z"
-  loop: "{{ checkmk_var_hosts }}"
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host with absolute timestamps. Again. With force."
-  downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
-    force: "yes"
-    comment: Schedule downtime on host with absolute timestamps
-    start_time: "2024-03-25T20:39:28Z"
-    end_time: "2024-03-26T20:39:28Z"
-  loop: "{{ checkmk_var_hosts }}"
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime forcibly on host with absolute timestamps."
-  downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
-    comment: Schedule downtime on host with absolute timestamps
-    start_time: "2024-03-25T20:39:28Z"
-    end_time: "2024-03-26T20:39:28Z"
+    comment: "Create host downtime (absolute)"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end_short }}"
     force: true
+  register: __checkmk_var_dt_force
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on host without timestamps."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert force created a new downtime."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_force.results | map(attribute='changed') | unique | list == [true]"
+    fail_msg: "force=true did not create an additional downtime."
+    success_msg: "force=true created an additional downtime."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove host downtimes with comment."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: Schedule downtime on host without timestamps
+    comment: "Create host downtime (absolute)"
+    state: absent
+  register: __checkmk_var_dt_del_host
   loop: "{{ checkmk_var_hosts }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert host downtimes were removed."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_del_host.results | map(attribute='changed') | unique | list == [true]"
+    fail_msg: "Deleting the host downtimes reported no change."
+    success_msg: "The host downtimes were removed."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove host downtimes again (idempotent)."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "{{ item.name }}"
+    comment: "Create host downtime (absolute)"
+    state: absent
+  register: __checkmk_var_dt_del_host_again
+  loop: "{{ checkmk_var_hosts }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the delete is idempotent."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_del_host_again.results | map(attribute='changed') | unique | list == [false]"
+    fail_msg: "Deleting already-absent host downtimes reported a change."
+    success_msg: "Deleting already-absent host downtimes was idempotent."
+
+# -----------------------------------------------------------------------------
+# B. Service downtimes: create, add a service, idempotency, delete
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create service downtimes."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "{{ item.name }}"
+    comment: "Service downtime"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+    service_descriptions:
+      - "Check_MK"
+  register: __checkmk_var_dt_svc
+  loop: "{{ checkmk_var_hosts }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert service downtimes were created."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_svc.results | map(attribute='changed') | unique | list == [true]"
+    fail_msg: "Creating the service downtimes reported no change."
+    success_msg: "The service downtimes were created."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Re-create the same service downtimes."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "{{ item.name }}"
+    comment: "Service downtime"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+    service_descriptions:
+      - "Check_MK"
+  register: __checkmk_var_dt_svc_again
+  loop: "{{ checkmk_var_hosts }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert service creation is idempotent."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_svc_again.results | map(attribute='changed') | unique | list == [false]"
+    fail_msg: "Re-creating identical service downtimes reported a change."
+    success_msg: "Re-creating identical service downtimes was idempotent."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Add one more service to the window."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "{{ item.name }}"
+    comment: "Service downtime"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+    service_descriptions:
+      - "Check_MK"
+      - "Check_MK Discovery"
+  register: __checkmk_var_dt_svc_add
+  loop: "{{ checkmk_var_hosts }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert only the missing service was added."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_svc_add.results | map(attribute='changed') | unique | list == [true]"
+    fail_msg: "Adding a new service to an existing window reported no change."
+    success_msg: "The additional service downtime was created."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete service downtimes with comment."
   downtime:
@@ -215,105 +305,535 @@
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: Schedule downtime on services with relative timestamps
+    comment: "Service downtime"
     service_descriptions:
       - "Check_MK"
       - "Check_MK Discovery"
     state: absent
+  register: __checkmk_var_dt_svc_del
   loop: "{{ checkmk_var_hosts }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete host downtimes with comment."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert service downtimes were removed."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_svc_del.results | map(attribute='changed') | unique | list == [true]"
+    fail_msg: "Deleting the service downtimes reported no change."
+    success_msg: "The service downtimes were removed."
+
+# -----------------------------------------------------------------------------
+# C. Update by downtime_id (identification and site resolved via the lookup)
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a host downtime to update by ID."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
-    comment: Schedule downtime on host without timestamps
+    host_name: "test1.tld"
+    comment: "By-ID window"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up the downtime to obtain its ID."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_byid: "{{ (lookup('checkmk.general.downtimes',
+                            host_name='test1.tld',
+                            server_url=checkmk_var_server_url,
+                            site=outer_item.site,
+                            validate_certs=False,
+                            api_user=checkmk_var_api_user,
+                            api_secret=checkmk_var_api_secret)
+                          | selectattr('extensions.comment', 'equalto', 'By-ID window')
+                          | first) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update that downtime by its ID."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    downtime_id: "{{ __checkmk_var_dt_byid.id }}"
+    site_id: "{{ __checkmk_var_dt_byid.extensions.site_id }}"
+    end_time: "{{ checkmk_var_dt_end_short }}"
+    comment: "By-ID window reduced"
+  register: __checkmk_var_dt_byid_upd
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the by-ID update changed the downtime."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_byid_upd.changed | bool"
+    fail_msg: "Updating the downtime by ID reported no change."
+    success_msg: "The downtime was updated by ID."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+# On the Nagios core (Raw/Community edition) an update is a delete + re-create,
+# so the downtime is assigned a new ID. Re-resolve it before acting by ID again.
+# On CMC the ID is unchanged and the lookup returns the same downtime.
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Re-resolve the downtime ID (it changes after an update on the Nagios core)."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_byid: "{{ (lookup('checkmk.general.downtimes',
+                            host_name='test1.tld',
+                            server_url=checkmk_var_server_url,
+                            site=outer_item.site,
+                            validate_certs=False,
+                            api_user=checkmk_var_api_user,
+                            api_secret=checkmk_var_api_secret)
+                          | selectattr('extensions.comment', 'equalto', 'By-ID window reduced')
+                          | first) }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Update by ID again (idempotent)."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    downtime_id: "{{ __checkmk_var_dt_byid.id }}"
+    site_id: "{{ __checkmk_var_dt_byid.extensions.site_id }}"
+    end_time: "{{ checkmk_var_dt_end_short }}"
+    comment: "By-ID window reduced"
+  register: __checkmk_var_dt_byid_upd_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the by-ID update is idempotent."
+  ansible.builtin.assert:
+    that: "not (__checkmk_var_dt_byid_upd_again.changed | bool)"
+    fail_msg: "Re-applying the same by-ID update reported a change."
+    success_msg: "The by-ID update is idempotent."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the by-ID downtime again by ID."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    downtime_id: "{{ __checkmk_var_dt_byid.id }}"
+    site_id: "{{ __checkmk_var_dt_byid.extensions.site_id }}"
     state: absent
-  loop: "{{ checkmk_var_hosts }}"
+  register: __checkmk_var_dt_byid_del
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete service downtimes with comment again."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the by-ID delete changed the state."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_byid_del.changed | bool"
+    fail_msg: "Deleting the downtime by ID reported no change."
+    success_msg: "The downtime was deleted by ID."
+
+# -----------------------------------------------------------------------------
+# D. Create / update / delete by query (host_by_query)
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create host downtimes for all matching hosts by query."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
+    query: "{{ checkmk_var_dt_query }}"
+    downtime_type: "host"
+    comment: "Query window"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+  register: __checkmk_var_dt_q_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the query create changed the state."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_q_create.changed | bool"
+    fail_msg: "Creating host downtimes by query reported no change."
+    success_msg: "Host downtimes were created by query."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create by query again (idempotent)."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    query: "{{ checkmk_var_dt_query }}"
+    downtime_type: "host"
+    comment: "Query window"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+  register: __checkmk_var_dt_q_create_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the query create is idempotent."
+  ansible.builtin.assert:
+    that: "not (__checkmk_var_dt_q_create_again.changed | bool)"
+    fail_msg: "Re-creating host downtimes by query reported a change."
+    success_msg: "Creating host downtimes by query is idempotent."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Shorten all matching downtimes by query."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    query: "{{ checkmk_var_dt_query }}"
+    downtime_type: "host"
+    end_time: "{{ checkmk_var_dt_end_short }}"
+  register: __checkmk_var_dt_q_update
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the query update changed the state."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_q_update.changed | bool"
+    fail_msg: "Updating downtimes by query reported no change."
+    success_msg: "Downtimes were updated by query."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Shorten by query again (idempotent)."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    query: "{{ checkmk_var_dt_query }}"
+    downtime_type: "host"
+    end_time: "{{ checkmk_var_dt_end_short }}"
+  register: __checkmk_var_dt_q_update_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the query update is idempotent."
+  ansible.builtin.assert:
+    that: "not (__checkmk_var_dt_q_update_again.changed | bool)"
+    fail_msg: "Re-applying the query update reported a change."
+    success_msg: "Updating downtimes by query is idempotent."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete all matching downtimes by query."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    query: "{{ checkmk_var_dt_query }}"
+    downtime_type: "host"
+    state: absent
+  register: __checkmk_var_dt_q_delete
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the query delete changed the state."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_q_delete.changed | bool"
+    fail_msg: "Deleting downtimes by query reported no change."
+    success_msg: "Downtimes were deleted by query."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete by query again (idempotent)."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    query: "{{ checkmk_var_dt_query }}"
+    downtime_type: "host"
+    state: absent
+  register: __checkmk_var_dt_q_delete_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the query delete is idempotent."
+  ansible.builtin.assert:
+    that: "not (__checkmk_var_dt_q_delete_again.changed | bool)"
+    fail_msg: "Deleting already-absent downtimes by query reported a change."
+    success_msg: "Deleting downtimes by query is idempotent."
+
+# -----------------------------------------------------------------------------
+# E. Create / delete by query (service_by_query)
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create service downtimes by query."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    query: '{"op": "and", "expr": [{"op": "~", "left": "host_name", "right": "^test[0-9]"}, {"op": "=", "left": "service_description", "right": "Check_MK"}]}'
+    downtime_type: "service"
+    comment: "Query service window"
+    start_time: "{{ checkmk_var_dt_start }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+  register: __checkmk_var_dt_qsvc_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the service query create changed the state."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_qsvc_create.changed | bool"
+    fail_msg: "Creating service downtimes by query reported no change."
+    success_msg: "Service downtimes were created by query."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete service downtimes by query."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    query: '{"op": "and", "expr": [{"op": "~", "left": "host_name", "right": "^test[0-9]"}, {"op": "=", "left": "service_description", "right": "Check_MK"}]}'
+    downtime_type: "service"
+    state: absent
+  register: __checkmk_var_dt_qsvc_delete
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the service query delete changed the state."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_qsvc_delete.changed | bool"
+    fail_msg: "Deleting service downtimes by query reported no change."
+    success_msg: "Service downtimes were deleted by query."
+
+# -----------------------------------------------------------------------------
+# F. Create / delete without comment
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create downtime without comment (absolute time)."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
+    start_time: "2034-03-25T20:39:28Z"
+    end_time: "2034-03-26T20:39:28Z"
+    state: present
+  register: __checkmk_var_dt_no_comment_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the downtime was created."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_no_comment_create.changed | bool"
+    fail_msg: "Creating downtime without comment reported no change."
+    success_msg: "Downtime was created without comment."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete downtime without comment."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
+    start_time: "2034-03-25T20:39:28Z"
+    end_time: "2034-03-26T20:39:28Z"
+    state: absent
+  register: __checkmk_var_dt_no_comment_delete
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the delete changed the state."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_no_comment_delete.changed | bool"
+    fail_msg: "Deleting downtime without comment reported no change."
+    success_msg: "Downtime was deleted without comment."
+
+# -----------------------------------------------------------------------------
+# G. Create / delete relative downtime
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create relative downtime."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
     comment: Schedule downtime on services with relative timestamps
-    service_descriptions:
-      - "Check_MK"
-      - "Check_MK Discovery"
-    state: absent
-  loop: "{{ checkmk_var_hosts }}"
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete host downtimes with comment again."
-  downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
-    comment: Schedule downtime on host without timestamps
-    state: absent
-  loop: "{{ checkmk_var_hosts }}"
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete service downtimes."
-  downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
-    service_descriptions:
-      - "CPU load"
-      - "CPU utililization"
-      - "Memory"
-      - "Uptime"
-    state: absent
-  loop: "{{ checkmk_var_hosts }}"
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete host downtimes."
-  downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
-    state: absent
-  loop: "{{ checkmk_var_hosts }}"
-
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Schedule downtime on single service."
-  downtime:
-    server_url: "{{ checkmk_var_server_url }}"
-    site: "{{ outer_item.site }}"
-    api_user: "{{ checkmk_var_api_user }}"
-    api_secret: "{{ checkmk_var_api_secret }}"
-    host_name: "{{ item.name }}"
-    comment: Schedule downtime on single service
+    start_after:
+      hours: 2
+      minutes: 30
     end_after:
+      hours: 1
       minutes: 30
     service_descriptions:
       - "Check_MK"
-  loop: "{{ checkmk_var_hosts }}"
+      - "Check_MK Discovery"
+    state: present
+  register: __checkmk_var_dt_relative
 
-- name: "Pause for Downtimes to take Effect."
-  ansible.builtin.pause:
-    seconds: 5
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the downtime was created."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_relative.changed | bool"
+    fail_msg: "Creating relative downtime reported no change."
+    success_msg: "Relative downtime was created."
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete downtime on single service."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete relative downtime."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
+    service_descriptions:
+      - "Check_MK"
+      - "Check_MK Discovery"
+    comment: Schedule downtime on services with relative timestamps
+    state: absent
+  register: __checkmk_var_dt_relative_delete
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the delete changed the state."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_relative_delete.changed | bool"
+    fail_msg: "Deleting downtime reported no change."
+    success_msg: "Relative downtime was deleted."
+
+# -----------------------------------------------------------------------------
+# H. Error handling: cannot create from an unknown downtime_id
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Present with an unknown downtime_id must fail."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    downtime_id: "999999999"
+    site_id: "{{ outer_item.site }}"
+    end_time: "{{ checkmk_var_dt_end }}"
+  register: __checkmk_var_dt_badid
+  ignore_errors: true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the unknown-ID update failed cleanly."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_badid.failed | bool"
+    fail_msg: "Updating a non-existent downtime by ID should fail, but it did not."
+    success_msg: "Updating a non-existent downtime by ID failed as expected."
+
+# -----------------------------------------------------------------------------
+# I. Recurring, flexible (duration) downtime with a relative start time
+# -----------------------------------------------------------------------------
+# 'changed' alone cannot prove that 'recurring'/'duration'/'start_after' were
+# actually applied, as none of them are part of the module's own idempotency
+# check (see needs_update()). So the created downtime is read back via the
+# lookup plugin and asserted on its raw REST attributes instead:
+#   * extensions.recurring        -> set by 'recurring' (a value other than
+#                                     the default 'fixed' makes it recurring)
+#   * extensions.mode.type/
+#     extensions.mode.duration_minutes -> set by 'duration' (> 0 selects the
+#                                     flexible mode)
+#   * extensions.start_time       -> set by 'start_after'
+# As with the other relative-time test (section G), no re-create/idempotency
+# check is done here: start_after/end_after are recomputed from "now" on every
+# run, so a second run is expected to report a change (see the module notes).
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Record the time before creating the downtime."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_recur_before: "{{ now(utc=true).strftime('%Y-%m-%dT%H:%M:%SZ') }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a recurring, flexible downtime with a relative start time."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
+    comment: "Recurring flexible window"
+    start_after:
+      minutes: 10
+    end_after:
+      hours: 2
+    recurring: week
+    duration: 45
+  register: __checkmk_var_dt_recur_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the downtime was created."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_recur_create.changed | bool"
+    fail_msg: "Creating the recurring/flexible downtime reported no change."
+    success_msg: "The recurring/flexible downtime was created."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Wait for the core to process the queued downtime command."
+  ansible.builtin.wait_for:
+    timeout: "{{ checkmk_var_dt_settle }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Look up the created downtime."
+  ansible.builtin.set_fact:
+    __checkmk_var_dt_recur: "{{ (lookup('checkmk.general.downtimes',
+                            host_name='test1.tld',
+                            server_url=checkmk_var_server_url,
+                            site=outer_item.site,
+                            validate_certs=False,
+                            api_user=checkmk_var_api_user,
+                            api_secret=checkmk_var_api_secret)
+                          | selectattr('extensions.comment', 'equalto', 'Recurring flexible window')
+                          | first) }}"
+
+# Recurring downtimes are a CMC-only feature. The Nagios core used by the
+# Raw/Community edition has no scheduler for them, so the module sends
+# 'fixed' there instead of the requested mode (see _effective_recur() in
+# the module), which also keeps 'duration' working on that core.
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert 'recurring' (week) was applied."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_recur.extensions.recurring | bool"
+    fail_msg: "The downtime created with recurring=week was not flagged as recurring."
+    success_msg: "The downtime is correctly flagged as recurring."
+  when: "outer_item.edition not in ['raw', 'community']"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert 'recurring' (week) was ignored on the Nagios core."
+  ansible.builtin.assert:
+    that: "not (__checkmk_var_dt_recur.extensions.recurring | bool)"
+    fail_msg: "The Raw/Community edition unexpectedly flagged the downtime as recurring."
+    success_msg: "The Raw/Community edition correctly ignored recurring=week (unsupported on the Nagios core)."
+  when: "outer_item.edition in ['raw', 'community']"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert 'duration' (45) selected the flexible mode."
+  ansible.builtin.assert:
+    that:
+      - "__checkmk_var_dt_recur.extensions.mode.type == 'flexible'"
+      - "__checkmk_var_dt_recur.extensions.mode.duration_minutes == 45"
+    fail_msg: "The downtime created with duration=45 is not a 45 minute flexible downtime."
+    success_msg: "The downtime is correctly a 45 minute flexible downtime."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert 'start_after' produced a start time about 10 minutes in the future."
+  ansible.builtin.assert:
+    that:
+      - >-
+        ((__checkmk_var_dt_recur.extensions.start_time[:19] | to_datetime(format='%Y-%m-%dT%H:%M:%S'))
+        - (__checkmk_var_dt_recur_before | to_datetime(format='%Y-%m-%dT%H:%M:%SZ'))).total_seconds() >= 480
+      - >-
+        ((__checkmk_var_dt_recur.extensions.start_time[:19] | to_datetime(format='%Y-%m-%dT%H:%M:%S'))
+        - (__checkmk_var_dt_recur_before | to_datetime(format='%Y-%m-%dT%H:%M:%SZ'))).total_seconds() <= 1200
+    fail_msg: "start_after={minutes: 10} did not produce a start time roughly 10 minutes in the future."
+    success_msg: "start_after correctly produced a start time about 10 minutes in the future."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the recurring/flexible downtime."
+  downtime:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    host_name: "test1.tld"
+    comment: "Recurring flexible window"
+    state: absent
+  register: __checkmk_var_dt_recur_delete
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the downtime was deleted."
+  ansible.builtin.assert:
+    that: "__checkmk_var_dt_recur_delete.changed | bool"
+    fail_msg: "Deleting the recurring/flexible downtime reported no change."
+    success_msg: "The recurring/flexible downtime was deleted."
+
+# -----------------------------------------------------------------------------
+# Teardown
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Remove any remaining host downtimes."
   downtime:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     host_name: "{{ item.name }}"
-    comment: Schedule downtime on single service
-    service_descriptions:
-      - "Check_MK"
     state: absent
-  register: __checkmk_var_result_delete
-  failed_when: not __checkmk_var_result_delete.changed | bool
   loop: "{{ checkmk_var_hosts }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete hosts."
@@ -335,12 +855,9 @@
     api_secret: "{{ checkmk_var_api_secret }}"
     force_foreign_changes: true
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run module using environment variables."
   downtime:
-    host_name: "{{ item.name }}"
-    comment: Schedule downtime on single service
-    service_descriptions:
-      - "Check_MK"
+    host_name: "test1.tld"
+    comment: "Env-based window"
     state: absent
-  loop: "{{ checkmk_var_hosts }}"
   environment: "{{ __checkmk_var_testing_environment }}"

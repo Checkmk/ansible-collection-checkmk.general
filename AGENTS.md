@@ -70,6 +70,8 @@ Modules and tests are name-aligned: `plugins/modules/host.py` ↔ `tests/integra
 
 - Module docs live inline (`DOCUMENTATION` / `EXAMPLES` / `RETURN`); `docs/` is generated.
 - Per-version discovery branching lives in `plugins/module_utils/discovery_<ver>.py`.
+- Need the REST API spec for a given Checkmk version? `scripts/openapi.sh -s <site>` pulls it
+  from a running site into `misc/openapi/`. Don't trust the spec's schema types for response *shapes*.
 
 ## Do & Don't
 

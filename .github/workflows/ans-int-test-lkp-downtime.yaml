@@ -2,7 +2,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Module LDAP Integration
+name: Lookup Module Downtime Integration
 
 permissions:
   contents: read
@@ -18,14 +18,16 @@ on:
     types:
       - opened
     paths:
-      - 'plugins/modules/ldap.py'
+      - 'plugins/lookup/downtime.py'
+      - 'plugins/lookup/downtimes.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-ldap.yaml'
-      - 'plugins/modules/ldap.py'
+      - '.github/workflows/ans-int-test-lkp-downtime.yaml'
+      - 'plugins/lookup/downtime.py'
+      - 'plugins/lookup/downtimes.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/targets/setup_checkmk/**'
-      - 'tests/integration/targets/ldap/**'
+      - 'tests/integration/targets/lookup_downtime/**'
 
 jobs:
 
@@ -33,22 +35,31 @@ jobs:
     name: "${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
     uses: ./.github/workflows/_template-ans-int-test.yaml
     with:
-      module: ldap
+      module: lookup_downtime
       checkmk_version: ${{ matrix.checkmk_version }}
       checkmk_edition: ${{ matrix.checkmk_edition }}
     strategy:
       fail-fast: false
       matrix:
         checkmk_version:
-          - 2.4.0p36
-          - 2.5.0p13
+          - 2.3.0p49
+          - 2.4.0p35
+          - 2.5.0p11
         checkmk_edition:
+          - raw
           - managed
+          - community
           - ultimatemt
         exclude:
           - checkmk_version: 2.3.0p49
+            checkmk_edition: community
+          - checkmk_version: 2.3.0p49
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.4.0p36
+          - checkmk_version: 2.4.0p35
+            checkmk_edition: community
+          - checkmk_version: 2.4.0p35
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.5.0p13
+          - checkmk_version: 2.5.0p11
+            checkmk_edition: raw
+          - checkmk_version: 2.5.0p11
             checkmk_edition: managed

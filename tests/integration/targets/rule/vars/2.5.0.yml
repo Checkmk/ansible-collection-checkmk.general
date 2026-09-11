@@ -90,7 +90,7 @@ checkmk_var_rules:
         "comment": "Managed by Ansible - Rule for Checkmk 2.5.0\n",
         "disabled": false,
       }
-      value_raw: 'True'
+      value_raw: "True"
 
   - name: "Memory percentage used - Combined host label conditions."
     ruleset: "checkgroup_parameters:memory_percentage_used"
