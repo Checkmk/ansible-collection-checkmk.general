@@ -67,6 +67,36 @@ EXAMPLES = r"""
           alias: "My Remote Site"
     state: "present"
 
+- name: "Add a read-only remote site, without configuration replication."
+  checkmk.general.site:
+    server_url: "https://myserver"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    site_id: "customersite"
+    site_connection:
+      site_config:
+        status_connection:
+          connection:
+            socket_type: "tcp"
+            port: 6557
+            encrypted: true
+            host: "customersite.example.com"
+            verify: true
+          proxy:
+            use_livestatus_daemon: "direct"
+          connect_timeout: 2
+          status_host:
+            status_host_set: "disabled"
+          url_prefix: "/customersite/"
+        configuration_connection:
+          enable_replication: false
+          message_broker_port: 5672
+        basic_settings:
+          site_id: "customersite"
+          alias: "Customer Site"
+    state: "present"
+
 - name: "Delete a remote site connection."
   checkmk.general.site:
     server_url: "https://myserver"
@@ -304,6 +334,57 @@ class SiteAPI(CheckmkAPI):
                 logger=logger,
             )
 
+    def verify_message_broker_port(self):
+        """Only called when a connection is about to be created.
+
+        From 2.5.0 on, the API requires message_broker_port on every
+        connection, replicated or not. There is no safe default: OMD assigns
+        RABBITMQ_PORT per site, so the second site on a machine gets 5673 and
+        the third 5674. Defaulting to 5672 would create connections that look
+        fine and point the broker at the wrong site, so fail loudly instead.
+
+        An update does not need the parameter, because merge_with() takes the
+        stored value from the existing connection.
+        """
+        message_broker_port = (
+            self.params.get("site_connection", {})
+            .get("site_config", {})
+            .get("configuration_connection", {})
+            .get("message_broker_port")
+        )
+
+        if self.getversion() >= CheckmkVersion("2.5.0") and not message_broker_port:
+            exit_module(
+                self.module,
+                msg=(
+                    "The parameter message_broker_port is required when creating a "
+                    "connection on Checkmk versions starting with 2.5.0. Read it "
+                    "from the machine hosting the remote site with "
+                    "'omd config <site> show RABBITMQ_PORT'. "
+                    "Version found: %s" % self.getversion()
+                ),
+                failed=True,
+                logger=logger,
+            )
+
+
+def strips_unreplicated_fields(version):
+    """Whether the API accepts a configuration_connection that carries nothing
+    but enable_replication.
+
+    Werk 16722 made the other fields optional for connections without
+    replication, and 2.4 models that as a dedicated schema
+    (ConfigurationConnectionWithoutReplicationAttributes, which requires only
+    enable_replication).
+
+    2.5 collapsed the two schemas into a single ConnectionModel that requires
+    all of them again, whether replication is enabled or not, and 3.0 behaves
+    the same way. So the stripping applies to the 2.4 span only, and sending a
+    bare {"enable_replication": false} to 2.5 gets a 400 listing eight missing
+    required fields.
+    """
+    return CheckmkVersion("2.3.0p25") < version < CheckmkVersion("2.5.0")
+
 
 def werk16722(site_config):
     # Remove previously mandatory fields. See https://checkmk.com/werk/16722
@@ -349,8 +430,8 @@ def run_module():
         .get("enable_replication", False)
     )
 
-    # Can be removed, once we no longer support Checkmk versions older than 2.3.0p25
-    if site_api.getversion() > CheckmkVersion("2.3.0p25") and not replication_enabled:
+    # Can be removed, once we no longer support Checkmk 2.4
+    if strips_unreplicated_fields(site_api.getversion()) and not replication_enabled:
         # Remove unneeded parameters from the module's parameters
         logger.debug("Cleaning up module parameters")
         werk16722(module.params.get("site_connection", {}).get("site_config", {}))
@@ -358,10 +439,10 @@ def run_module():
     desired_site_connection = SiteConnection.from_module_params(module.params)
     existing_site_connection = SiteConnection.from_api(site_api.get(site_id))
 
-    # Can be removed, once we no longer support Checkmk versions older than 2.3.0p25
+    # Can be removed, once we no longer support Checkmk 2.4
     if (
         existing_site_connection
-        and site_api.getversion() > CheckmkVersion("2.3.0p25")
+        and strips_unreplicated_fields(site_api.getversion())
         and not replication_enabled
     ):
         # Remove unneeded parameters from the existing site connection's config
@@ -390,6 +471,7 @@ def run_module():
                 )
 
         else:
+            site_api.verify_message_broker_port()
             result = site_api.create(desired_site_connection)
 
         exit_module(module, result=result, logger=logger)
