@@ -26,7 +26,7 @@ To learn about the distributions used in automated tests, inspect the correspond
 
 ## Basic configuration
 
-    checkmk_agent_version: "2.5.0p11"
+    checkmk_agent_version: "2.5.0p13"
 
 The Checkmk version of the site your agents will talk to.
 
