@@ -64,17 +64,21 @@ options:
         default: []
     query:
         description:
-            - A Livestatus query as a JSON string, written in terms of the
-              Livestatus C(downtimes) table (e.g. C(host_name),
-              C(service_description), C(comment)). See the Checkmk REST API
-              documentation for the query syntax.
+            - A Livestatus query, written in terms of the Livestatus
+              C(downtimes) table (e.g. C(host_name), C(service_description),
+              C(comment)). See the Checkmk REST API documentation for the query
+              syntax.
+            - Can be given either as a JSON string or as a native YAML/JSON
+              mapping. Note that a variable holding a JSON string may be
+              converted to a mapping by Ansible's templating, so both forms have
+              to be accepted here.
             - As the column names are different, depending on the Livestatus table,
               Please use the column names as defined in the downtimes table, e.g.
               C(service_description) instead of C(description) and C(host_name)
               instead of C(name).
             - Mutually exclusive with I(downtime_id) and I(host_name).
         required: false
-        type: str
+        type: jsonarg
     downtime_type:
         description:
             - Selects whether a query operates on host downtimes (C(host)) or
@@ -1019,7 +1023,7 @@ def run_module():
         site_id=dict(type="str"),
         host_name=dict(type="str"),
         service_descriptions=dict(type="list", elements="str", default=[]),
-        query=dict(type="str"),
+        query=dict(type="jsonarg"),
         downtime_type=dict(type="str", choices=["host", "service"]),
         comment=dict(type="str"),
         start_time=dict(type="str"),
