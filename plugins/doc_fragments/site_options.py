@@ -321,6 +321,14 @@ class ModuleDocFragment(object):
                                 message_broker_port:
                                     description:
                                         - The port used by the message broker to exchange messages.
+                                        - Available from Checkmk 2.4.0 on, and B(required) from
+                                          2.5.0 on for every connection, whether replication is
+                                          enabled or not.
+                                        - There is no safe default. OMD assigns C(RABBITMQ_PORT)
+                                          when a site is created, so the second site on a machine
+                                          gets 5673 and the third 5674. Read the value from the
+                                          machine hosting the remote site with
+                                          C(omd config <site> show RABBITMQ_PORT).
                                     type: int
                         basic_settings:
                             description:

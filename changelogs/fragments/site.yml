@@ -1,0 +1,7 @@
+bugfixes:
+  - Site module - Fix site connections without configuration replication being
+    impossible to create on Checkmk 2.5.0 and newer, where the API requires the
+    fields that Werk 16722 had made optional.
+  - Site module - Fail with an actionable message when ``message_broker_port``
+    is missing while creating a connection on Checkmk 2.5.0 and newer, where
+    the API requires it.
