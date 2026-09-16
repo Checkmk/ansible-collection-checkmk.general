@@ -4,6 +4,47 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v8.5.0
+======
+
+Major Changes
+-------------
+
+- Downtime lookup - Add lookup plugin to fetch a single downtime.
+- Downtime module - Add the option ``recurring`` (alias ``recur``) to set the recurring mode of a new downtime.
+- Downtime module - Add the options ``downtime_id`` and ``site_id`` to select a single existing downtime by its ID.
+- Downtime module - Add the options ``query`` and ``downtime_type`` to select downtimes by a Livestatus query. The query can be passed either as a JSON string or as a mapping.
+- Downtime module - The module is now idempotent and can also update downtimes' end times.
+- Downtime module - The option ``host_name`` is no longer required. Provide exactly one of ``downtime_id``, ``host_name`` and ``query``.
+- Downtimes lookup - Add lookup plugin to get a list of downtimes.
+
+Bugfixes
+--------
+
+- Site module - Fail with an actionable message when ``message_broker_port`` is missing while creating a connection on Checkmk 2.5.0 and newer, where the API requires it.
+- Site module - Fix site connections without configuration replication being impossible to create on Checkmk 2.5.0 and newer, where the API requires the fields that Werk 16722 had made optional.
+- rule module - Compare rule values structurally instead of rewriting parentheses to brackets, which silently ignored real changes to values containing parentheses or brackets inside strings.
+- rule module - Do not issue a superfluous move API call when creating a rule with the default location.
+- rule module - Do not modify the desired and current rule while normalizing them for comparison, so that the data sent to the API no longer depends on comparison side effects.
+- rule module - Fail as documented when the provided ``rule_id`` does not exist, instead of reporting an unchanged success.
+- rule module - Fix documentation examples that used a value format rejected by Checkmk 2.5, and document value format requirements, secret masking and rule location semantics.
+- rule module - Translate ``host_labels`` and ``service_labels`` conditions to the label group format used by Checkmk 2.3 and newer, preventing a new rule from being created on every run when the old syntax is used.
+
+Known Issues
+------------
+
+- Downtime module - On the Nagios core (Checkmk Community) a downtime cannot be modified in place, so the module deletes and re-creates it. The downtime is identical afterwards, but it gets a new ID.
+- Downtime module - The option ``recurring`` only works on CMC-based editions. The module therefore ignores it on the Nagios core.
+
+New Plugins
+-----------
+
+Lookup
+~~~~~~
+
+- checkmk.general.downtime - Show a downtime identified by its ID
+- checkmk.general.downtimes - Get a list of downtimes
+
 v8.4.0
 ======
 

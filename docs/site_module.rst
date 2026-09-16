@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.26.0
+  :antsibull-docs: 2.27.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.site module -- Manage distributed monitoring in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.5.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -1107,6 +1107,10 @@ Parameters
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
       The port used by the message broker to exchange messages.
+
+      Available from Checkmk 2.4.0 on, and :strong:`required` from 2.5.0 on for every connection, whether replication is enabled or not.
+
+      There is no safe default. OMD assigns :literal:`RABBITMQ\_PORT` when a site is created, so the second site on a machine gets 5673 and the third 5674. Read the value from the machine hosting the remote site with :literal:`omd config \<site\> show RABBITMQ\_PORT`.
 
 
       .. raw:: html
@@ -3129,6 +3133,36 @@ Examples
             basic_settings:
               site_id: "myremotesite"
               alias: "My Remote Site"
+        state: "present"
+
+    - name: "Add a read-only remote site, without configuration replication."
+      checkmk.general.site:
+        server_url: "https://myserver"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        site_id: "customersite"
+        site_connection:
+          site_config:
+            status_connection:
+              connection:
+                socket_type: "tcp"
+                port: 6557
+                encrypted: true
+                host: "customersite.example.com"
+                verify: true
+              proxy:
+                use_livestatus_daemon: "direct"
+              connect_timeout: 2
+              status_host:
+                status_host_set: "disabled"
+              url_prefix: "/customersite/"
+            configuration_connection:
+              enable_replication: false
+              message_broker_port: 5672
+            basic_settings:
+              site_id: "customersite"
+              alias: "Customer Site"
         state: "present"
 
     - name: "Delete a remote site connection."
