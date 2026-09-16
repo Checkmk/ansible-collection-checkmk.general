@@ -2,7 +2,7 @@
 - name: "{{ ansible_facts['os_family'] }} Derivatives: Install host-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
   community.general.zypper:
-    name: "{{ __checkmk_agent_agent.file.host }}"
+    name: "{{ __checkmk_agent_agent.file.upload.host }}"
     force: "{{ checkmk_agent_force_install | bool }}"
     state: present
     disable_gpg_check: true
@@ -15,7 +15,7 @@
 - name: "{{ ansible_facts['os_family'] }} Derivatives: Install folder-specific {{ checkmk_agent_edition | upper }} Agent."
   become: true
   community.general.zypper:
-    name: "{{ __checkmk_agent_agent.file.pro }}"
+    name: "{{ __checkmk_agent_agent.file.upload.pro }}"
     force: "{{ checkmk_agent_force_install | bool }}"
     state: present
     disable_gpg_check: true
@@ -28,7 +28,7 @@
 - name: "{{ ansible_facts['os_family'] }} Derivatives: Install Vanilla Agent."
   become: true
   community.general.zypper:
-    name: "{{ __checkmk_agent_agent.file.community }}"
+    name: "{{ __checkmk_agent_agent.file.upload.community }}"
     force: "{{ checkmk_agent_force_install | bool }}"
     state: present
     disable_gpg_check: true

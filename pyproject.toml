@@ -13,10 +13,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = [
-    "black==26.5.1",
-    "isort==9.0.1",
-]
+dev = ["black==26.5.1", "isort==9.0.1"]
 
 
 [tool.isort]
