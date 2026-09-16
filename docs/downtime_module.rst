@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.26.0
+  :antsibull-docs: 2.27.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.downtime module -- Manage downtimes in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.5.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -49,7 +49,9 @@ Synopsis
 
 .. Description
 
-- Manage downtimes within Checkmk.
+- Create, update and delete host and service downtimes in Checkmk.
+- An existing downtime can be updated (e.g. to shorten or extend its end time) without deleting and recreating it. The downtime to act on can be identified by its ID, by host name (and optionally service descriptions), or by a Livestatus query.
+- On the :emphasis:`host\_name` path the :emphasis:`comment` (which defaults to :literal:`Managed by Ansible`\ ) is part of a downtime's identity. A matching downtime is updated in place, while a different comment identifies a different downtime and creates a new one. This keeps the module idempotent and stops it from touching downtimes it did not create. To change a comment, match the downtime by :emphasis:`downtime\_id` or :emphasis:`query` instead.
 
 
 .. Aliases
@@ -326,12 +328,96 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Remarks for the downtime. If omitted in combination with state = present, the default 'Set by Ansible' will be used, in combination with state = absent, ALL downtimes of a host or host/service will be removed.
+      The comment of the downtime.
+
+      When creating or matching a downtime by :emphasis:`host\_name`\ , the comment is part of the identity of the downtime. If omitted, :literal:`Managed by Ansible` is used.
+
+      When updating a downtime by :emphasis:`downtime\_id` or :emphasis:`query`\ , the comment is only changed if it is explicitly set here.
+
+      When deleting by :emphasis:`host\_name`\ , the deletion is limited to downtimes with this comment if it is set, otherwise all matching downtimes are removed.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-downtime_id"></div>
+
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-downtime_id:
+
+      .. rst-class:: ansible-option-title
+
+      **downtime_id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-downtime_id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The numeric ID of a single downtime to update or delete.
+
+      Requires :emphasis:`site\_id` to be set as well.
+
+      Mutually exclusive with :emphasis:`host\_name` and :emphasis:`query`.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-downtime_type"></div>
+
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-downtime_type:
+
+      .. rst-class:: ansible-option-title
+
+      **downtime_type**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-downtime_type" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Selects whether a query operates on host downtimes (\ :literal:`host`\ ) or service downtimes (\ :literal:`service`\ ).
+
+      Required for query\-based :strong:`create` to choose the object type. For :strong:`update`\ /\ :strong:`delete` it optionally narrows the matched downtimes to that type.
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`"Managed by Ansible"`
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"host"`
+      - :ansible-option-choices-entry:`"service"`
+
 
       .. raw:: html
 
@@ -364,7 +450,9 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Duration in minutes. When set, the downtime does not begin automatically at a nominated time, but when a non\-OK status actually appears for the host. Consequently, the start\_time and end\_time is only the time window in which the scheduled downtime can occur.
+      Duration in minutes. When set, the downtime does not begin automatically at a nominated time, but when a non\-OK status actually appears for the host (flexible downtime).
+
+      Only relevant when creating a downtime.
 
 
       .. rst-class:: ansible-option-line
@@ -402,7 +490,9 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The timedelta between :emphasis:`start\_time` and :emphasis:`end\_time`. If you want to use :emphasis:`end\_after` you have to omit :emphasis:`end\_time`. For keys and values see \ `https://docs.python.org/3/library/datetime.html#datetime.timedelta <https://docs.python.org/3/library/datetime.html#datetime.timedelta>`__
+      The timedelta between the start time and the end time. Use this instead of :emphasis:`end\_time`. For keys and values see \ `https://docs.python.org/3/library/datetime.html#datetime.timedelta <https://docs.python.org/3/library/datetime.html#datetime.timedelta>`__.
+
+      When updating an existing downtime, the delta is applied relative to the (defaulted) start time, i.e. now.
 
 
       .. rst-class:: ansible-option-line
@@ -440,12 +530,10 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The end datetime of the downtime. The format has to conform to the ISO 8601 profile :emphasis:`e.g. 2017\-07\-21T17:32:28Z`. The built\-in default is 30 minutes after now.
+      The end datetime of the downtime, conforming to the ISO 8601 profile, e.g. :literal:`2017\-07\-21T17:32:28Z`.
 
+      Used both when creating and when updating a downtime.
 
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`""`
 
       .. raw:: html
 
@@ -478,7 +566,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Force the creation of a downtime in case a hostname and comment combination already exists as a downtime.
+      When creating a downtime by :emphasis:`host\_name`\ , a new downtime is normally only created if no downtime with the same host, service and comment exists yet. Set this to :literal:`true` to always create a new downtime.
 
 
       .. rst-class:: ansible-option-line
@@ -510,7 +598,7 @@ Parameters
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string` / :ansible-option-required:`required`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -520,7 +608,106 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The host to schedule the downtime on.
+      The host to schedule, update or delete a downtime for.
+
+      Mutually exclusive with :emphasis:`downtime\_id` and :emphasis:`query`.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-query"></div>
+
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-query:
+
+      .. rst-class:: ansible-option-title
+
+      **query**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-query" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`jsonarg`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      A Livestatus query, written in terms of the Livestatus :literal:`downtimes` table (e.g. :literal:`host\_name`\ , :literal:`service\_description`\ , :literal:`comment`\ ). See the Checkmk REST API documentation for the query syntax.
+
+      Can be given either as a JSON string or as a native YAML/JSON mapping. Note that a variable holding a JSON string may be converted to a mapping by Ansible's templating, so both forms have to be accepted here.
+
+      As the column names are different, depending on the Livestatus table, Please use the column names as defined in the downtimes table, e.g. :literal:`service\_description` instead of :literal:`description` and :literal:`host\_name` instead of :literal:`name`.
+
+      Mutually exclusive with :emphasis:`downtime\_id` and :emphasis:`host\_name`.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-recurring"></div>
+        <div class="ansibleOptionAnchor" id="parameter-recur"></div>
+
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-recur:
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-recurring:
+
+      .. rst-class:: ansible-option-title
+
+      **recurring**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-recurring" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: recur`
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The recurring mode of a new downtime.
+
+      Only relevant when creating a downtime.
+
+      Only available when using the CMC. On the Nagios core the option is ignored and the downtime is created non\-recurring.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`"fixed"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"hour"`
+      - :ansible-option-choices-entry:`"day"`
+      - :ansible-option-choices-entry:`"week"`
+      - :ansible-option-choices-entry:`"second\_week"`
+      - :ansible-option-choices-entry:`"fourth\_week"`
+      - :ansible-option-choices-entry:`"weekday\_start"`
+      - :ansible-option-choices-entry:`"weekday\_end"`
+      - :ansible-option-choices-entry:`"day\_of\_month"`
 
 
       .. raw:: html
@@ -588,7 +775,11 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      Array of service descriptions. If set only service\-downtimes will be set. If omitted a host downtime will be set.
+      A list of service descriptions.
+
+      Together with :emphasis:`host\_name`\ , the module acts on service downtimes for these services on that particular host. If omitted, it acts on host downtimes.
+
+      If you want to set a downtime on a particular service for :emphasis:`all` hosts, you have to use the :emphasis:`query` parameter.
 
 
       .. rst-class:: ansible-option-line
@@ -636,6 +827,40 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-site_id"></div>
+
+      .. _ansible_collections.checkmk.general.downtime_module__parameter-site_id:
+
+      .. rst-class:: ansible-option-title
+
+      **site_id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-site_id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The site the downtime lives on. Required when using :emphasis:`downtime\_id`.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-start_after"></div>
 
       .. _ansible_collections.checkmk.general.downtime_module__parameter-start_after:
@@ -660,7 +885,9 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The timedelta between now and :emphasis:`start\_time`. If you want to use :emphasis:`start\_after` you have to omit :emphasis:`start\_time`. For keys and values see \ `https://docs.python.org/3/library/datetime.html#datetime.timedelta <https://docs.python.org/3/library/datetime.html#datetime.timedelta>`__
+      The timedelta between now and the start time. Use this instead of :emphasis:`start\_time`. For keys and values see \ `https://docs.python.org/3/library/datetime.html#datetime.timedelta <https://docs.python.org/3/library/datetime.html#datetime.timedelta>`__.
+
+      Only relevant when creating a downtime.
 
 
       .. rst-class:: ansible-option-line
@@ -698,12 +925,10 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The start datetime of the downtime. The format has to conform to the ISO 8601 profile :emphasis:`e.g. 2017\-07\-21T17:32:28Z`. The built\-in default is now.
+      The start datetime of a new downtime, conforming to the ISO 8601 profile, e.g. :literal:`2017\-07\-21T17:32:28Z`. Defaults to now.
 
+      Only relevant when creating a downtime.
 
-      .. rst-class:: ansible-option-line
-
-      :ansible-option-default-bold:`Default:` :ansible-option-default:`""`
 
       .. raw:: html
 
@@ -736,7 +961,7 @@ Parameters
 
         <div class="ansible-option-cell">
 
-      The state of this downtime. If absent, all matching host/service\-downtimes of the given host will be deleted.
+      The desired state of the downtime.
 
 
       .. rst-class:: ansible-option-line
@@ -803,7 +1028,9 @@ Notes
 -----
 
 .. note::
-   - Idempotency for creation was made for host downtimes by only using the hostname and comment attributes. If this combination already exists as a downtime, the new downtime will not be created except using the :strong:`force` argument. The creation of service downtimes works accordingly, with hostname, service description and comment.
+   - Creating a downtime is possible via :emphasis:`host\_name` or via :emphasis:`query` (using :emphasis:`downtime\_type` to choose host or service). Updating and deleting can be done via :emphasis:`downtime\_id`\ , :emphasis:`host\_name` or :emphasis:`query`.
+   - Idempotency is based on the current end time and comment of the matching downtimes. Absolute times (\ :emphasis:`end\_time`\ ) are fully idempotent. Relative times (\ :emphasis:`end\_after`\ ) are recomputed on every run and will therefore usually trigger an update.
+   - On the Community edition the Nagios core cannot modify a downtime in place. When an existing downtime needs its end time or comment changed on that edition, the module deletes and re\-creates it. The resulting downtime is identical except that it receives a new downtime ID. On CMC\-based editions the downtime is modified in place and keeps its ID.
 
 .. Seealso
 
@@ -812,6 +1039,10 @@ See Also
 
 .. seealso::
 
+   :ref:`checkmk.general.downtime <ansible_collections.checkmk.general.downtime_lookup>` lookup plugin
+       Show a downtime identified by its ID.
+   :ref:`checkmk.general.downtimes <ansible_collections.checkmk.general.downtimes_lookup>` lookup plugin
+       Get a list of downtimes.
    :ref:`checkmk.general.activation <ansible_collections.checkmk.general.activation_module>`
        Activate changes in Checkmk.
    :ref:`checkmk.general.host <ansible_collections.checkmk.general.host_module>`
@@ -831,7 +1062,7 @@ Examples
 .. code-block:: yaml+jinja
 
     # ---------------------------------------------------------------------------
-    # Host downtimes - scheduling
+    # Creating downtimes
     # ---------------------------------------------------------------------------
 
     - name: "Schedule a host downtime starting now, ending in 2 hours."
@@ -866,7 +1097,7 @@ Examples
         start_time: "2024-03-25T22:00:00Z"
         end_time: "2024-03-26T02:00:00Z"
 
-    - name: "Schedule a host downtime starting in 30 minutes and lasting 4 hours."
+    - name: "Schedule downtimes for multiple services on a host."
       checkmk.general.downtime:
         server_url: "https://myserver"
         site: "mysite"
@@ -874,13 +1105,102 @@ Examples
         api_secret: "mysecret"
         host_name: "myhost"
         comment: "Managed by Ansible"
-        start_after:
-          minutes: 30
+        service_descriptions:
+          - "CPU utilization"
+          - "Memory"
+        end_after:
+          hours: 1
+
+    - name: "Schedule host downtimes for all hosts matching a query."
+      checkmk.general.downtime:
+        server_url: "https://myserver"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        query: '{"op": "~", "left": "host_name", "right": "^web"}'
+        downtime_type: "host"
+        comment: "Rolling web tier maintenance"
+        end_after:
+          hours: 2
+
+    - name: "Schedule host downtimes for a host group using a query."
+      checkmk.general.downtime:
+        server_url: "https://myserver"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        query: '{"op": ">=", "left": "host_groups", "right": "my_hostgroup"}'
+        downtime_type: "host"
+        comment: "Maintenance for my_hostgroup"
         end_after:
           hours: 4
 
+    - name: "Schedule service downtimes for all services matching a query."
+      checkmk.general.downtime:
+        server_url: "https://myserver"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        query: '{"op": "=", "left": "service_description", "right": "Filesystem /"}'
+        downtime_type: "service"
+        comment: "Storage migration"
+        end_after:
+          hours: 1
+
     # ---------------------------------------------------------------------------
-    # Host downtimes - removal
+    # Updating an existing downtime
+    # ---------------------------------------------------------------------------
+    # Re-running the same host_name + comment with a different end time shortens or
+    # extends the existing downtime instead of doing nothing.
+
+    - name: "Shorten the previously created downtime."
+      checkmk.general.downtime:
+        server_url: "https://myserver"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        host_name: "myhost"
+        comment: "Managed by Ansible"
+        end_after:
+          minutes: 1
+
+    - name: "Update a specific downtime by its ID."
+      checkmk.general.downtime:
+        server_url: "https://myserver"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        downtime_id: "42"
+        site_id: "mysite"
+        end_time: "2024-03-26T00:00:00Z"
+        comment: "Window reduced"
+
+    - name: "Update all downtimes matching a query."
+      checkmk.general.downtime:
+        server_url: "https://myserver"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        query: '{"op": "=", "left": "host_name", "right": "myhost"}'
+        end_after:
+          minutes: 30
+
+    # On the host_name path the comment is part of the downtime's identity, so a
+    # different comment is treated as a different downtime and a new one is created.
+    # To change the comment of an existing downtime, select it by a query (e.g. by
+    # its host and current comment) and set the new comment; the query matches the
+    # downtime independently of the comment you are about to write.
+    - name: "Change the comment of an existing downtime."
+      checkmk.general.downtime:
+        server_url: "https://myserver"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        query: '{"op": "and", "expr": [{"op": "=", "left": "host_name", "right": "myhost"}, {"op": "=", "left": "comment", "right": "Managed by Ansible"}]}'
+        comment: "Managed by Peter Grant"
+
+    # ---------------------------------------------------------------------------
+    # Deleting downtimes
     # ---------------------------------------------------------------------------
 
     - name: "Remove all downtimes from a host."
@@ -892,7 +1212,7 @@ Examples
         host_name: "myhost"
         state: "absent"
 
-    - name: "Remove only host downtimes matching a specific comment."
+    - name: "Remove only host downtimes with a specific comment."
       checkmk.general.downtime:
         server_url: "https://myserver"
         site: "mysite"
@@ -902,140 +1222,15 @@ Examples
         comment: "Managed by Ansible"
         state: "absent"
 
-    # ---------------------------------------------------------------------------
-    # Service downtimes - scheduling
-    # ---------------------------------------------------------------------------
-
-    - name: "Schedule a downtime for a single service on a host."
+    - name: "Delete a specific downtime by its ID."
       checkmk.general.downtime:
         server_url: "https://myserver"
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        host_name: "myhost"
-        comment: "Managed by Ansible"
-        service_descriptions:
-          - "Filesystem /"
-        end_after:
-          hours: 1
-
-    - name: "Schedule downtimes for multiple services on a host using absolute times."
-      checkmk.general.downtime:
-        server_url: "https://myserver"
-        site: "mysite"
-        api_user: "myuser"
-        api_secret: "mysecret"
-        host_name: "myhost"
-        comment: "Managed by Ansible"
-        start_time: "2024-03-25T22:00:00Z"
-        end_time: "2024-03-26T02:00:00Z"
-        service_descriptions:
-          - "CPU utilization"
-          - "Memory"
-
-    # ---------------------------------------------------------------------------
-    # Service downtimes - removal
-    # ---------------------------------------------------------------------------
-
-    - name: "Remove all downtimes for specific services on a host."
-      checkmk.general.downtime:
-        server_url: "https://myserver"
-        site: "mysite"
-        api_user: "myuser"
-        api_secret: "mysecret"
-        host_name: "myhost"
-        service_descriptions:
-          - "CPU utilization"
-          - "Memory"
+        downtime_id: "42"
+        site_id: "mysite"
         state: "absent"
-
-    - name: "Remove service downtimes matching a specific comment."
-      checkmk.general.downtime:
-        server_url: "https://myserver"
-        site: "mysite"
-        api_user: "myuser"
-        api_secret: "mysecret"
-        host_name: "myhost"
-        comment: "Managed by Ansible"
-        service_descriptions:
-          - "CPU utilization"
-          - "Memory"
-        state: "absent"
-
-    # ---------------------------------------------------------------------------
-    # Looping over multiple hosts
-    # ---------------------------------------------------------------------------
-
-    - name: "Schedule a host downtime for multiple hosts."
-      checkmk.general.downtime:
-        server_url: "https://myserver"
-        site: "mysite"
-        api_user: "myuser"
-        api_secret: "mysecret"
-        host_name: "{{ item }}"
-        comment: "Managed by Ansible"
-        start_time: "2024-03-25T22:00:00Z"
-        end_time: "2024-03-26T02:00:00Z"
-      loop:
-        - "myhost01"
-        - "myhost02"
-        - "myhost03"
-
-    - name: "Remove host downtimes for multiple hosts."
-      checkmk.general.downtime:
-        server_url: "https://myserver"
-        site: "mysite"
-        api_user: "myuser"
-        api_secret: "mysecret"
-        host_name: "{{ item }}"
-        comment: "Managed by Ansible"
-        state: "absent"
-      loop:
-        - "myhost01"
-        - "myhost02"
-        - "myhost03"
-
-    # ---------------------------------------------------------------------------
-    # Flexible (triggered) downtime
-    # ---------------------------------------------------------------------------
-    # A flexible downtime does not start at a fixed time. Instead, it starts when
-    # a non-OK state appears for the host or service within the configured time
-    # window. The 'duration' parameter controls how long the downtime lasts once
-    # triggered. 'start_time' and 'end_time' define the window during which the
-    # trigger is active.
-    # Refer to the official user guide for more details on the feature:
-    # https://docs.checkmk.com/latest/en/basics_downtimes.html#advanced_options
-
-    - name: "Schedule a flexible host downtime triggered by a non-OK state."
-      checkmk.general.downtime:
-        server_url: "https://myserver"
-        site: "mysite"
-        api_user: "myuser"
-        api_secret: "mysecret"
-        host_name: "myhost"
-        comment: "Flexible downtime during maintenance window"
-        start_time: "2024-03-25T22:00:00Z"
-        end_time: "2024-03-26T02:00:00Z"
-        duration: 30
-
-    # ---------------------------------------------------------------------------
-    # Forcing a duplicate downtime
-    # ---------------------------------------------------------------------------
-    # By default, creating a downtime with the same host_name and comment combination
-    # as an existing downtime is skipped for idempotency. Use 'force: true' to create a
-    # duplicate downtime regardless.
-
-    - name: "Force a new host downtime even if one with the same comment already exists."
-      checkmk.general.downtime:
-        server_url: "https://myserver"
-        site: "mysite"
-        api_user: "myuser"
-        api_secret: "mysecret"
-        host_name: "myhost"
-        comment: "Repeated patching run"
-        end_after:
-          hours: 2
-        force: true
 
     # ---------------------------------------------------------------------------
     # Using environment variables for authentication
@@ -1084,6 +1279,46 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-http_code"></div>
+
+      .. _ansible_collections.checkmk.general.downtime_module__return-http_code:
+
+      .. rst-class:: ansible-option-title
+
+      **http_code**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-http_code" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The HTTP code returned by the Checkmk API.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-msg"></div>
 
       .. _ansible_collections.checkmk.general.downtime_module__return-msg:
@@ -1108,17 +1343,12 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-cell">
 
-      The output message that the module generates. Contains the API response details in case of an error. No output in case of success.
+      The output message that the module generates.
 
 
       .. rst-class:: ansible-option-line
 
       :ansible-option-returned-bold:`Returned:` always
-
-      .. rst-class:: ansible-option-line
-      .. rst-class:: ansible-option-sample
-
-      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`""`
 
 
       .. raw:: html

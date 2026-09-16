@@ -1,7 +1,7 @@
 :orphan:
 
 .. meta::
-  :antsibull-docs: 2.26.0
+  :antsibull-docs: 2.27.0
 
 .. _list_of_collection_env_vars:
 
@@ -20,6 +20,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.checkmk inventory plugin <checkmk.general.checkmk#inventory>`,
+    :ansplugin:`checkmk.general.downtime lookup plugin <checkmk.general.downtime#lookup>`,
+    :ansplugin:`checkmk.general.downtimes lookup plugin <checkmk.general.downtimes#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
     :ansplugin:`checkmk.general.host lookup plugin <checkmk.general.host#lookup>`,
@@ -44,6 +46,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.checkmk inventory plugin <checkmk.general.checkmk#inventory>`,
+    :ansplugin:`checkmk.general.downtime lookup plugin <checkmk.general.downtime#lookup>`,
+    :ansplugin:`checkmk.general.downtimes lookup plugin <checkmk.general.downtimes#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
     :ansplugin:`checkmk.general.host lookup plugin <checkmk.general.host#lookup>`,
@@ -68,6 +72,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.checkmk inventory plugin <checkmk.general.checkmk#inventory>`,
+    :ansplugin:`checkmk.general.downtime lookup plugin <checkmk.general.downtime#lookup>`,
+    :ansplugin:`checkmk.general.downtimes lookup plugin <checkmk.general.downtimes#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
     :ansplugin:`checkmk.general.host lookup plugin <checkmk.general.host#lookup>`,
@@ -92,6 +98,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.checkmk inventory plugin <checkmk.general.checkmk#inventory>`,
+    :ansplugin:`checkmk.general.downtime lookup plugin <checkmk.general.downtime#lookup>`,
+    :ansplugin:`checkmk.general.downtimes lookup plugin <checkmk.general.downtimes#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
     :ansplugin:`checkmk.general.host lookup plugin <checkmk.general.host#lookup>`,
@@ -152,6 +160,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.checkmk inventory plugin <checkmk.general.checkmk#inventory>`,
+    :ansplugin:`checkmk.general.downtime lookup plugin <checkmk.general.downtime#lookup>`,
+    :ansplugin:`checkmk.general.downtimes lookup plugin <checkmk.general.downtimes#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
     :ansplugin:`checkmk.general.host lookup plugin <checkmk.general.host#lookup>`,
@@ -176,6 +186,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.checkmk inventory plugin <checkmk.general.checkmk#inventory>`,
+    :ansplugin:`checkmk.general.downtime lookup plugin <checkmk.general.downtime#lookup>`,
+    :ansplugin:`checkmk.general.downtimes lookup plugin <checkmk.general.downtimes#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
     :ansplugin:`checkmk.general.host lookup plugin <checkmk.general.host#lookup>`,
@@ -200,6 +212,8 @@ Environment variables used by the ansible-core configuration are documented in :
     :ansplugin:`checkmk.general.activations lookup plugin <checkmk.general.activations#lookup>`,
     :ansplugin:`checkmk.general.bakery lookup plugin <checkmk.general.bakery#lookup>`,
     :ansplugin:`checkmk.general.checkmk inventory plugin <checkmk.general.checkmk#inventory>`,
+    :ansplugin:`checkmk.general.downtime lookup plugin <checkmk.general.downtime#lookup>`,
+    :ansplugin:`checkmk.general.downtimes lookup plugin <checkmk.general.downtimes#lookup>`,
     :ansplugin:`checkmk.general.folder lookup plugin <checkmk.general.folder#lookup>`,
     :ansplugin:`checkmk.general.folders lookup plugin <checkmk.general.folders#lookup>`,
     :ansplugin:`checkmk.general.host lookup plugin <checkmk.general.host#lookup>`,
