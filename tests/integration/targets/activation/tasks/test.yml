@@ -70,7 +70,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    force_foreign_changes: 'false'
+    force_foreign_changes: "false"
     sites:
       - "{{ outer_item.site }}"
 
@@ -92,7 +92,7 @@
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
     redirect: true
-    force_foreign_changes: 'false'
+    force_foreign_changes: "false"
     sites:
       - "{{ outer_item.site }}"
 

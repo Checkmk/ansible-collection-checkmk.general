@@ -19,10 +19,14 @@ on:
       - opened
     paths:
       - 'plugins/modules/downtime.py'
+      - 'plugins/lookup/downtime.py'
+      - 'plugins/lookup/downtimes.py'
   push:
     paths:
       - '.github/workflows/ans-int-test-downtime.yaml'
       - 'plugins/modules/downtime.py'
+      - 'plugins/lookup/downtime.py'
+      - 'plugins/lookup/downtimes.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/targets/setup_checkmk/**'
       - 'tests/integration/targets/downtime/**'
@@ -41,8 +45,8 @@ jobs:
       matrix:
         checkmk_version:
           - 2.3.0p49
-          - 2.4.0p35
-          - 2.5.0p11
+          - 2.4.0p36
+          - 2.5.0p13
         checkmk_edition:
           - raw
           - managed
@@ -53,11 +57,11 @@ jobs:
             checkmk_edition: community
           - checkmk_version: 2.3.0p49
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.4.0p35
+          - checkmk_version: 2.4.0p36
             checkmk_edition: community
-          - checkmk_version: 2.4.0p35
+          - checkmk_version: 2.4.0p36
             checkmk_edition: ultimatemt
-          - checkmk_version: 2.5.0p11
+          - checkmk_version: 2.5.0p13
             checkmk_edition: raw
-          - checkmk_version: 2.5.0p11
+          - checkmk_version: 2.5.0p13
             checkmk_edition: managed

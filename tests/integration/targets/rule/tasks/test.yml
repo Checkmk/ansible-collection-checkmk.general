@@ -147,3 +147,296 @@
   loop_control:
     label: "{{ item.content.id }}"
   environment: "{{ __checkmk_var_testing_environment }}"
+
+# ---------------------------------------------------------------------------
+# Regression tests for previously fixed idempotency defects
+# ---------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a rule with parentheses inside a value."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "custom_checks"
+    rule:
+      properties:
+        comment: "Managed by Ansible"
+        description: "Ansible test - parentheses in values"
+        disabled: false
+      value_raw: "{'service_description': 'Ansible test', 'command_line': 'echo (1)'}"
+      location:
+        folder: "/"
+        position: "any"
+    state: "present"
+  register: __checkmk_var_result_parentheses_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a rule with parentheses inside a value. Again."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "custom_checks"
+    rule:
+      properties:
+        comment: "Managed by Ansible"
+        description: "Ansible test - parentheses in values"
+        disabled: false
+      value_raw: "{'service_description': 'Ansible test', 'command_line': 'echo (1)'}"
+      location:
+        folder: "/"
+        position: "any"
+    state: "present"
+  register: __checkmk_var_result_parentheses_again
+  failed_when: __checkmk_var_result_parentheses_again.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Replace the parentheses inside the value with brackets."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "custom_checks"
+    rule:
+      rule_id: "{{ __checkmk_var_result_parentheses_create.content.id }}"
+      properties:
+        comment: "Managed by Ansible"
+        description: "Ansible test - parentheses in values"
+        disabled: false
+      value_raw: "{'service_description': 'Ansible test', 'command_line': 'echo [1]'}"
+    state: "present"
+  register: __checkmk_var_result_brackets_modify
+  failed_when: not __checkmk_var_result_brackets_modify.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Replace the parentheses inside the value with brackets. Again."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "custom_checks"
+    rule:
+      rule_id: "{{ __checkmk_var_result_parentheses_create.content.id }}"
+      properties:
+        comment: "Managed by Ansible"
+        description: "Ansible test - parentheses in values"
+        disabled: false
+      value_raw: "{'service_description': 'Ansible test', 'command_line': 'echo [1]'}"
+    state: "present"
+  register: __checkmk_var_result_brackets_again
+  failed_when: __checkmk_var_result_brackets_again.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the rule with brackets inside the value."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "custom_checks"
+    rule:
+      rule_id: "{{ __checkmk_var_result_parentheses_create.content.id }}"
+    state: "absent"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a rule using plain label conditions."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      conditions:
+        host_labels:
+          - key: "cmk/site"
+            operator: "is"
+            value: "{{ outer_item.site }}"
+      properties:
+        comment: "Managed by Ansible"
+        description: "Ansible test - plain label conditions"
+        disabled: false
+      value_raw: "{'magic': 0.8}"
+      location:
+        folder: "/"
+        position: "any"
+    state: "present"
+  register: __checkmk_var_result_labels_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a rule using plain label conditions. Again."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      conditions:
+        host_labels:
+          - key: "cmk/site"
+            operator: "is"
+            value: "{{ outer_item.site }}"
+      properties:
+        comment: "Managed by Ansible"
+        description: "Ansible test - plain label conditions"
+        disabled: false
+      value_raw: "{'magic': 0.8}"
+      location:
+        folder: "/"
+        position: "any"
+    state: "present"
+  register: __checkmk_var_result_labels_again
+  failed_when: __checkmk_var_result_labels_again.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Find the rules created from plain label conditions."
+  ansible.builtin.set_fact:
+    __checkmk_var_label_rules: "{{ lookup('checkmk.general.rules',
+        ruleset='checkgroup_parameters:filesystem',
+        comment_regex='Managed by Ansible',
+        server_url=checkmk_var_server_url,
+        site=outer_item.site,
+        api_user=checkmk_var_api_user,
+        api_secret=checkmk_var_api_secret,
+        validate_certs=False)
+        | selectattr('extensions.properties.description', 'equalto', 'Ansible test - plain label conditions')
+        | list }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify that plain label conditions did not create a duplicate."
+  ansible.builtin.assert:
+    that: __checkmk_var_label_rules | length == 1
+    fail_msg: "Expected exactly one rule, found {{ __checkmk_var_label_rules | length }}."
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the rule using plain label conditions."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      rule_id: "{{ __checkmk_var_result_labels_create.content.id }}"
+    state: "absent"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Try to update a rule with a nonexistent rule_id."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      rule_id: "00000000-0000-0000-0000-000000000000"
+      properties:
+        description: "Ansible test - nonexistent rule_id"
+      value_raw: "{'magic': 0.8}"
+    state: "present"
+  register: __checkmk_var_result_missing_id
+  ignore_errors: true
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify the failure for a nonexistent rule_id."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_result_missing_id is failed
+      - "'rule_id was not found' in __checkmk_var_result_missing_id.msg"
+    fail_msg: "Expected a failure for a nonexistent rule_id, got: {{ __checkmk_var_result_missing_id.msg }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete a rule with a nonexistent rule_id."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      rule_id: "00000000-0000-0000-0000-000000000000"
+    state: "absent"
+  register: __checkmk_var_result_missing_id_absent
+  failed_when: __checkmk_var_result_missing_id_absent.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a rule without specifying a location."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      properties:
+        comment: "Managed by Ansible"
+        description: "Ansible test - default location"
+        disabled: false
+      value_raw: "{'magic': 0.8}"
+    state: "present"
+  register: __checkmk_var_result_default_location
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify that a rule created at the default location is not moved."
+  ansible.builtin.assert:
+    that:
+      - __checkmk_var_result_default_location.changed
+      - "'move' not in __checkmk_var_result_default_location.msg | lower"
+    fail_msg: "Expected a plain create, got: {{ __checkmk_var_result_default_location.msg }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the rule created at the default location."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      rule_id: "{{ __checkmk_var_result_default_location.content.id }}"
+    state: "absent"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a rule at the top of a folder."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      properties:
+        comment: "Managed by Ansible"
+        description: "Ansible test - explicit position"
+        disabled: false
+      value_raw: "{'magic': 0.8}"
+      location:
+        folder: "/"
+        position: "top"
+    state: "present"
+  register: __checkmk_var_result_top_create
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Verify that an explicit position still moves the rule."
+  ansible.builtin.assert:
+    that: "'move' in __checkmk_var_result_top_create.msg | lower"
+    fail_msg: "Expected a move, got: {{ __checkmk_var_result_top_create.msg }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create a rule at the top of a folder. Again."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      properties:
+        comment: "Managed by Ansible"
+        description: "Ansible test - explicit position"
+        disabled: false
+      value_raw: "{'magic': 0.8}"
+      location:
+        folder: "/"
+        position: "top"
+    state: "present"
+  register: __checkmk_var_result_top_again
+  failed_when: __checkmk_var_result_top_again.changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Delete the rule at the top of the folder."
+  rule:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      rule_id: "{{ __checkmk_var_result_top_create.content.id }}"
+    state: "absent"

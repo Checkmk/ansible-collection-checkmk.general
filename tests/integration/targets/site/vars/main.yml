@@ -49,3 +49,30 @@ checkmk_var_test_sites:
         authentication:
           username: "{{ checkmk_var_api_user }}"
           password: "{{ checkmk_var_api_secret }}"
+    # Connections without configuration replication.
+    # They cannot log in, so they sit beside remote_sites rather than in it,
+    # and setup_checkmk creates no site for them.
+    status_only_sites:
+      - site_id: "testsite_s_1"
+        site_config:
+          status_connection:
+            connection:
+              socket_type: "tcp"
+              port: 6557
+              encrypted: true
+              host: "localhost"
+              verify: false
+            proxy:
+              use_livestatus_daemon: "direct"
+            connect_timeout: 2
+            status_host:
+              status_host_set: "disabled"
+            url_prefix: "/testsite_s_1/"
+            disable_in_status_gui: false
+          configuration_connection:
+            enable_replication: false
+            message_broker_port: "{{ (checkmk_var_version | regex_replace('p.*', '') is version('2.4', '>=')) | ternary(5671, omit) }}"
+          basic_settings:
+            site_id: "testsite_s_1"
+            alias: "status only test site 1"
+            customer: "{{ (checkmk_var_edition in ['managed', 'ultimatemt']) | ternary('provider', None) }}"

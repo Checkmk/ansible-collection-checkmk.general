@@ -48,7 +48,7 @@ options:
                         description:
                             - Position of the rule in the folder.
                             - Has no effect when I(state=absent).
-                            - For new rule C(any) wil be equivalent to C(bottom).
+                            - For a new rule C(any) will be equivalent to C(bottom).
                         required: false
                         type: str
                         choices:
@@ -100,11 +100,36 @@ options:
         default: present
         type: str
 notes:
-    - If rule_id is omitted, due to the internal processing of the C(value_raw), finding the
-      matching rule is not reliable, when C(rule_id) is omitted. This sometimes leads to the
-      module not being idempotent or to rules being created over and over again.
-    - If rule_id is provided, for the same reason, it might happen, that tasks changing a rule
-      again and again, even if it already meets the expectations.
+    - Provide C(value_raw) in the canonical format of the target Checkmk version,
+      for example by copying it from the GUI (Export rule for API) or from the output
+      of an existing rule. Value formats can change between Checkmk versions, so
+      playbooks may need updating after a Checkmk upgrade.
+    - The Checkmk API masks secrets in its responses. Rules that contain an explicit
+      password in C(value_raw) can therefore never be compared with the desired state.
+      They report a change on every run when C(rule_id) is provided, and create another
+      rule on every run when it is omitted. Reference an entry of the Checkmk password
+      store instead, which can be managed with the M(checkmk.general.password) module.
+      This is the only supported way to manage rules containing secrets with this module.
+    - Write the password store reference exactly as the target Checkmk site returns it,
+      because its representation depends on the Checkmk version and on the ruleset.
+      Rulesets using the modern rule specs return for example
+      C(('cmk_postprocessed', 'stored_password', ('my_password', ''))) on Checkmk 2.3 and
+      2.4, and C(('cmk_postprocessed', 'stored_password', ('my_password', '******'))) on
+      Checkmk 2.5, while rulesets still using the legacy valuespecs return
+      C(('store', 'my_password')). The last element of such a reference is not evaluated
+      for password store entries, so the masked value can be used as it is returned.
+    - The positions C(top), C(bottom), C(before) and C(after) describe the rule order
+      at the time the task runs. Rules created later, including by subsequent tasks or
+      in the GUI, can displace such rules, so the next run detects a location change
+      and moves the rule back.
+    - C(position=any) accepts any position within the folder and is thus the only
+      position that is idempotent on its own. Do not use it for rulesets that are
+      evaluated in first match order, because the rule which takes effect would then
+      depend on an arbitrary position. Order the rules of such a ruleset explicitly,
+      as shown in the examples, anchoring the first rule and chaining the following
+      ones behind their predecessor with C(position=after) and C(neighbour). Once
+      established, such a chain is idempotent, and it restores the intended order if
+      rules are inserted in between.
 
 seealso:
     - plugin: checkmk.general.rule
@@ -134,7 +159,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       conditions:
         host_name:
@@ -145,7 +170,7 @@ EXAMPLES = r"""
         host_labels: []
         service_labels: []
       properties:
-        description: "Allow higher memory usage on myhost01"
+        description: "Allow higher filesystem usage on myhost01"
         comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
@@ -165,7 +190,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       rule_id: "{{ rule_result.content.id }}"
     state: "absent"
@@ -180,7 +205,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       conditions:
         host_name:
@@ -191,7 +216,7 @@ EXAMPLES = r"""
         host_labels: []
         service_labels: []
       properties:
-        description: "Allow even higher memory usage on myhost02"
+        description: "Allow even higher filesystem usage on myhost02"
         comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (85.0, 99.0)}"
@@ -210,7 +235,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       conditions:
         host_labels:
@@ -218,7 +243,7 @@ EXAMPLES = r"""
             operator: "is"
             value: "yes"
       properties:
-        description: "Allow higher memory usage on Checkmk servers"
+        description: "Allow higher filesystem usage on Checkmk servers"
         comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
@@ -233,7 +258,7 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       conditions:
         host_label_groups:
@@ -246,13 +271,60 @@ EXAMPLES = r"""
         host_tags: []
         service_label_groups: []
       properties:
-        description: "Allow higher memory usage on Linux hosts in mysite"
+        description: "Allow higher filesystem usage on Linux hosts in mysite"
         comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
       location:
         folder: "/"
         position: "bottom"
+    state: "present"
+
+# ---------------------------------------------------------------------------
+# Ordered rules in a ruleset that is evaluated in first match order
+# ---------------------------------------------------------------------------
+# Anchor the first rule of the chain, then chain every following rule behind
+# its predecessor. The relative order of the rules is then guaranteed and
+# idempotent, regardless of other rules in the same folder.
+
+- name: "Create the more specific rule first."
+  checkmk.general.rule:
+    server_url: "https://myserver"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      conditions:
+        host_labels:
+          - key: "role"
+            operator: "is"
+            value: "database"
+      properties:
+        description: "Filesystem levels for database servers"
+        comment: "Managed by Ansible"
+      value_raw: "{'levels': (95.0, 98.0)}"
+      location:
+        folder: "/"
+        position: "any"
+    state: "present"
+  register: database_rule
+
+- name: "Create the general rule directly after the specific one."
+  checkmk.general.rule:
+    server_url: "https://myserver"
+    site: "mysite"
+    api_user: "myuser"
+    api_secret: "mysecret"
+    ruleset: "checkgroup_parameters:filesystem"
+    rule:
+      properties:
+        description: "Filesystem levels for all other hosts"
+        comment: "Managed by Ansible"
+      value_raw: "{'levels': (80.0, 90.0)}"
+      location:
+        position: "after"
+        neighbour: "{{ database_rule.content.id }}"
     state: "present"
 
 # ---------------------------------------------------------------------------
@@ -265,13 +337,13 @@ EXAMPLES = r"""
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       rule_id: "{{ item.id }}"
     state: "absent"
   loop: "{{
            lookup('checkmk.general.rules',
-             ruleset='checkgroup_parameters:memory_percentage_used',
+             ruleset='checkgroup_parameters:filesystem',
              comment_regex='Managed by Ansible',
              server_url='https://myserver',
              site='mysite',
@@ -293,10 +365,10 @@ EXAMPLES = r"""
 
 - name: "Create a rule using environment variables for authentication."
   checkmk.general.rule:
-    ruleset: "checkgroup_parameters:memory_percentage_used"
+    ruleset: "checkgroup_parameters:filesystem"
     rule:
       properties:
-        description: "Allow higher memory usage"
+        description: "Allow higher filesystem usage"
         comment: "Managed by Ansible"
         disabled: false
       value_raw: "{'levels': (80.0, 90.0)}"
@@ -371,6 +443,7 @@ content:
 
 import json
 from ast import literal_eval
+from copy import deepcopy
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
@@ -455,6 +528,15 @@ POSITION_MAPPING = {
     "after": "after_specific_rule",
     "before": "before_specific_rule",
 }
+
+
+def _tuples_to_lists(value):
+    # Only containers are converted; string contents are never touched.
+    if isinstance(value, (list, tuple)):
+        return [_tuples_to_lists(v) for v in value]
+    if isinstance(value, dict):
+        return {k: _tuples_to_lists(v) for k, v in value.items()}
+    return value
 
 
 class RuleHTTPCodes:
@@ -631,7 +713,8 @@ class RuleAPI(CheckmkAPI):
             )
 
     def rule_id_found(self):
-        return self.current is not None
+        # _get_rule_by_id returns an empty dict when the rule does not exist.
+        return bool(self.current)
 
     def _clean_desired(self, params):
         desired = {}
@@ -651,24 +734,48 @@ class RuleAPI(CheckmkAPI):
                 if not desired["rule"].get(what).get(key):
                     desired["rule"][what][key] = value
 
+        if self.version_select_str == "230_or_newer":
+            self._migrate_label_conditions(desired["rule"].get("conditions", {}))
+
         return desired
+
+    def _migrate_label_conditions(self, conditions):
+        # Checkmk >= 2.3 stores plain label conditions as label groups.
+        # Apply the same translation to the desired state, so that both
+        # comparing against and sending to the API use the migrated format.
+        for old_key, new_key in (
+            ("host_labels", "host_label_groups"),
+            ("service_labels", "service_label_groups"),
+        ):
+            labels = conditions.pop(old_key, None)
+            if not labels:
+                continue
+            label_group = [
+                {
+                    "operator": ("not" if label.get("operator") == "is_not" else "and"),
+                    "label": "%s:%s" % (label.get("key"), label.get("value")),
+                }
+                for label in labels
+            ]
+            if not conditions.get(new_key):
+                conditions[new_key] = []
+            conditions[new_key].append({"operator": "and", "label_group": label_group})
 
     def _raw_value_eval(self, state, data):
         value_raw = data.get("value_raw", "''")
 
-        # This is an ugly hack that translates tuples into lists to have a better hit rate with
-        # idempotency.
-        # Once the internal handling of value_raw has improved, we will no longer need this.
-        value_raw = value_raw.translate(str.maketrans("()", "[]"))
-
         # As safely as possible evaluate the value_raw
         try:
-            return literal_eval(value_raw)
+            value = literal_eval(value_raw)
 
         except Exception as e:
             self.module.fail_json(
                 msg="ERROR: The %s value_raw has invalid format: %s" % (state, e)
             )
+
+        # Tuples and lists are interchangeable in rule values as far as
+        # change detection is concerned.
+        return _tuples_to_lists(value)
 
     def _get_rules_in_ruleset(self, ruleset):
         result = self._fetch(
@@ -701,17 +808,16 @@ class RuleAPI(CheckmkAPI):
         return None
 
     def _normalize_rule(self, r):
-        loc = r.copy()
+        # Work on a deep copy: normalizing must not modify the rule that was
+        # passed in, which would silently alter self.desired or self.current.
+        loc = deepcopy(r)
         for what, def_vals in IGNORE_DEFAULTS[self.version_select_str].items():
-            if loc.get(what):
+            for candidate in (loc, loc.get("extensions", {})):
+                if not candidate.get(what):
+                    continue
                 for key, value in def_vals.items():
-                    if loc.get(what).get(key, value) == value:
-                        loc[what].pop(key, None)
-            if loc.get("extensions", {}).get(what):
-                ext = loc.get("extensions", {})
-                for key, value in def_vals.items():
-                    if ext.get(what).get(key, value) == value:
-                        ext[what].pop(key, None)
+                    if candidate[what].get(key, value) == value:
+                        candidate[what].pop(key, None)
         return loc
 
     def _detect_changes(self):
@@ -795,12 +901,9 @@ class RuleAPI(CheckmkAPI):
 
         if self.is_new_rule:
             location = self.desired.get("rule").get("location")
-            if location and not (
-                # folder should be there
-                location.get("folder", "/") == "/"
-                # position should be there
-                and location.get("position", "bottom") == "bottom"
-            ):
+            # create() already places the rule at the bottom of the target
+            # folder, so only the other positions need an extra move call.
+            if location and location.get("position", "any") not in ("bottom", "any"):
                 return True
 
         return False
@@ -851,7 +954,7 @@ class RuleAPI(CheckmkAPI):
 
     def create(self):
         # rule is there always (required true)
-        data = self.desired.get("rule").copy()
+        data = self._normalize_rule(self.desired.get("rule"))
         location = data.pop("location", {})
         data["ruleset"] = self.desired.get("ruleset")
         data["folder"] = location.get("folder", "/")
@@ -885,8 +988,8 @@ class RuleAPI(CheckmkAPI):
 
     def edit(self):
         # rule is there always (required true)
-        data = self.desired.get("rule").copy()
-        data.pop("location")
+        data = self._normalize_rule(self.desired.get("rule"))
+        data.pop("location", None)
         self.headers["if-Match"] = self.etag
 
         if not data.get("value_raw"):
@@ -986,7 +1089,7 @@ def run_module():
     )
 
     desired_state = module.params.get("state")
-    rule_id = module.params.get("rule_id")
+    rule_id = module.params.get("rule", {}).get("rule_id")
 
     if desired_state == "present":
         if current_rule.rule_id_found():

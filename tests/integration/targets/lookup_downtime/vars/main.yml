@@ -1,0 +1,14 @@
+---
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    site: "testsite"
+
+checkmk_var_host: "lookup-downtime-host.tld"
+
+checkmk_var_dt_start: "2035-03-25T20:00:00Z"
+checkmk_var_dt_end: "2035-03-26T20:00:00Z"
+
+# Downtimes are scheduled asynchronously via the core's external command
+# interface, so a short settle time is needed before the lookups see them.
+checkmk_var_dt_settle: 5
