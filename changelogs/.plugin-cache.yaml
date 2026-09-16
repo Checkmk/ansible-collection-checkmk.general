@@ -34,6 +34,14 @@ plugins:
       description: Get the bakery status of a Checkmk server
       name: bakery
       version_added: 4.0.0
+    downtime:
+      description: Show a downtime identified by its ID
+      name: downtime
+      version_added: 8.5.0
+    downtimes:
+      description: Get a list of downtimes
+      name: downtimes
+      version_added: 8.5.0
     folder:
       description: Get folder attributes
       name: folder
@@ -200,4 +208,4 @@ plugins:
   strategy: {}
   test: {}
   vars: {}
-version: 8.4.0
+version: 8.5.0

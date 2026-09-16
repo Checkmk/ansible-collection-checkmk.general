@@ -6,7 +6,7 @@
     :trim:
 
 .. meta::
-  :antsibull-docs: 2.26.0
+  :antsibull-docs: 2.27.0
 
 .. Anchors
 
@@ -22,7 +22,7 @@ checkmk.general.rule module -- Manage rules in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.4.0).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.5.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -561,7 +561,7 @@ Parameters
 
       Has no effect when :emphasis:`state=absent`.
 
-      For new rule :literal:`any` wil be equivalent to :literal:`bottom`.
+      For a new rule :literal:`any` will be equivalent to :literal:`bottom`.
 
 
       .. rst-class:: ansible-option-line
@@ -909,8 +909,11 @@ Notes
 -----
 
 .. note::
-   - If rule\_id is omitted, due to the internal processing of the :literal:`value\_raw`\ , finding the matching rule is not reliable, when :literal:`rule\_id` is omitted. This sometimes leads to the module not being idempotent or to rules being created over and over again.
-   - If rule\_id is provided, for the same reason, it might happen, that tasks changing a rule again and again, even if it already meets the expectations.
+   - Provide :literal:`value\_raw` in the canonical format of the target Checkmk version, for example by copying it from the GUI (Export rule for API) or from the output of an existing rule. Value formats can change between Checkmk versions, so playbooks may need updating after a Checkmk upgrade.
+   - The Checkmk API masks secrets in its responses. Rules that contain an explicit password in :literal:`value\_raw` can therefore never be compared with the desired state. They report a change on every run when :literal:`rule\_id` is provided, and create another rule on every run when it is omitted. Reference an entry of the Checkmk password store instead, which can be managed with the :ref:`checkmk.general.password <ansible_collections.checkmk.general.password_module>` module. This is the only supported way to manage rules containing secrets with this module.
+   - Write the password store reference exactly as the target Checkmk site returns it, because its representation depends on the Checkmk version and on the ruleset. Rulesets using the modern rule specs return for example :literal:`('cmk\_postprocessed', 'stored\_password', ('my\_password', ''`\ )) on Checkmk 2.3 and 2.4, and :literal:`('cmk\_postprocessed', 'stored\_password', ('my\_password', '\*\*\*\*\*\*'`\ )) on Checkmk 2.5, while rulesets still using the legacy valuespecs return :literal:`('store', 'my\_password'`\ ). The last element of such a reference is not evaluated for password store entries, so the masked value can be used as it is returned.
+   - The positions :literal:`top`\ , :literal:`bottom`\ , :literal:`before` and :literal:`after` describe the rule order at the time the task runs. Rules created later, including by subsequent tasks or in the GUI, can displace such rules, so the next run detects a location change and moves the rule back.
+   - :literal:`position=any` accepts any position within the folder and is thus the only position that is idempotent on its own. Do not use it for rulesets that are evaluated in first match order, because the rule which takes effect would then depend on an arbitrary position. Order the rules of such a ruleset explicitly, as shown in the examples, anchoring the first rule and chaining the following ones behind their predecessor with :literal:`position=after` and :literal:`neighbour`. Once established, such a chain is idempotent, and it restores the intended order if rules are inserted in between.
 
 .. Seealso
 
@@ -945,7 +948,7 @@ Examples
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        ruleset: "checkgroup_parameters:memory_percentage_used"
+        ruleset: "checkgroup_parameters:filesystem"
         rule:
           conditions:
             host_name:
@@ -956,7 +959,7 @@ Examples
             host_labels: []
             service_labels: []
           properties:
-            description: "Allow higher memory usage on myhost01"
+            description: "Allow higher filesystem usage on myhost01"
             comment: "Managed by Ansible"
             disabled: false
           value_raw: "{'levels': (80.0, 90.0)}"
@@ -976,7 +979,7 @@ Examples
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        ruleset: "checkgroup_parameters:memory_percentage_used"
+        ruleset: "checkgroup_parameters:filesystem"
         rule:
           rule_id: "{{ rule_result.content.id }}"
         state: "absent"
@@ -991,7 +994,7 @@ Examples
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        ruleset: "checkgroup_parameters:memory_percentage_used"
+        ruleset: "checkgroup_parameters:filesystem"
         rule:
           conditions:
             host_name:
@@ -1002,7 +1005,7 @@ Examples
             host_labels: []
             service_labels: []
           properties:
-            description: "Allow even higher memory usage on myhost02"
+            description: "Allow even higher filesystem usage on myhost02"
             comment: "Managed by Ansible"
             disabled: false
           value_raw: "{'levels': (85.0, 99.0)}"
@@ -1021,7 +1024,7 @@ Examples
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        ruleset: "checkgroup_parameters:memory_percentage_used"
+        ruleset: "checkgroup_parameters:filesystem"
         rule:
           conditions:
             host_labels:
@@ -1029,7 +1032,7 @@ Examples
                 operator: "is"
                 value: "yes"
           properties:
-            description: "Allow higher memory usage on Checkmk servers"
+            description: "Allow higher filesystem usage on Checkmk servers"
             comment: "Managed by Ansible"
             disabled: false
           value_raw: "{'levels': (80.0, 90.0)}"
@@ -1044,7 +1047,7 @@ Examples
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        ruleset: "checkgroup_parameters:memory_percentage_used"
+        ruleset: "checkgroup_parameters:filesystem"
         rule:
           conditions:
             host_label_groups:
@@ -1057,13 +1060,60 @@ Examples
             host_tags: []
             service_label_groups: []
           properties:
-            description: "Allow higher memory usage on Linux hosts in mysite"
+            description: "Allow higher filesystem usage on Linux hosts in mysite"
             comment: "Managed by Ansible"
             disabled: false
           value_raw: "{'levels': (80.0, 90.0)}"
           location:
             folder: "/"
             position: "bottom"
+        state: "present"
+
+    # ---------------------------------------------------------------------------
+    # Ordered rules in a ruleset that is evaluated in first match order
+    # ---------------------------------------------------------------------------
+    # Anchor the first rule of the chain, then chain every following rule behind
+    # its predecessor. The relative order of the rules is then guaranteed and
+    # idempotent, regardless of other rules in the same folder.
+
+    - name: "Create the more specific rule first."
+      checkmk.general.rule:
+        server_url: "https://myserver"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        ruleset: "checkgroup_parameters:filesystem"
+        rule:
+          conditions:
+            host_labels:
+              - key: "role"
+                operator: "is"
+                value: "database"
+          properties:
+            description: "Filesystem levels for database servers"
+            comment: "Managed by Ansible"
+          value_raw: "{'levels': (95.0, 98.0)}"
+          location:
+            folder: "/"
+            position: "any"
+        state: "present"
+      register: database_rule
+
+    - name: "Create the general rule directly after the specific one."
+      checkmk.general.rule:
+        server_url: "https://myserver"
+        site: "mysite"
+        api_user: "myuser"
+        api_secret: "mysecret"
+        ruleset: "checkgroup_parameters:filesystem"
+        rule:
+          properties:
+            description: "Filesystem levels for all other hosts"
+            comment: "Managed by Ansible"
+          value_raw: "{'levels': (80.0, 90.0)}"
+          location:
+            position: "after"
+            neighbour: "{{ database_rule.content.id }}"
         state: "present"
 
     # ---------------------------------------------------------------------------
@@ -1076,13 +1126,13 @@ Examples
         site: "mysite"
         api_user: "myuser"
         api_secret: "mysecret"
-        ruleset: "checkgroup_parameters:memory_percentage_used"
+        ruleset: "checkgroup_parameters:filesystem"
         rule:
           rule_id: "{{ item.id }}"
         state: "absent"
       loop: "{{
                lookup('checkmk.general.rules',
-                 ruleset='checkgroup_parameters:memory_percentage_used',
+                 ruleset='checkgroup_parameters:filesystem',
                  comment_regex='Managed by Ansible',
                  server_url='https://myserver',
                  site='mysite',
@@ -1104,10 +1154,10 @@ Examples
 
     - name: "Create a rule using environment variables for authentication."
       checkmk.general.rule:
-        ruleset: "checkgroup_parameters:memory_percentage_used"
+        ruleset: "checkgroup_parameters:filesystem"
         rule:
           properties:
-            description: "Allow higher memory usage"
+            description: "Allow higher filesystem usage"
             comment: "Managed by Ansible"
             disabled: false
           value_raw: "{'levels': (80.0, 90.0)}"

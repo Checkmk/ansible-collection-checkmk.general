@@ -10,14 +10,14 @@
 
 .. Anchors
 
-.. _ansible_collections.checkmk.general.ldap_connections_lookup:
+.. _ansible_collections.checkmk.general.downtimes_lookup:
 
 .. Anchors: short name for ansible.builtin
 
 .. Title
 
-checkmk.general.ldap_connections lookup -- Get a list of all ldap\_connections
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+checkmk.general.downtimes lookup -- Get a list of downtimes
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. Collection note
 
@@ -29,13 +29,13 @@ checkmk.general.ldap_connections lookup -- Get a list of all ldap\_connections
 
     To install it, use: :code:`ansible\-galaxy collection install checkmk.general`.
 
-    To use it in a playbook, specify: :code:`checkmk.general.ldap_connections`.
+    To use it in a playbook, specify: :code:`checkmk.general.downtimes`.
 
 .. version_added
 
 .. rst-class:: ansible-version-added
 
-New in checkmk.general 6.6.0
+New in checkmk.general 8.5.0
 
 .. contents::
    :local:
@@ -49,7 +49,7 @@ Synopsis
 
 .. Description
 
-- Returns a list of all ldap\_connections and their configuration.
+- Returns a list of downtimes, optionally filtered by host name and service description, or by a Livestatus query.
 
 
 .. Aliases
@@ -68,7 +68,7 @@ Keyword parameters
 ------------------
 
 This describes keyword parameters of the lookup. These are the values ``key1=value1``, ``key2=value2`` and so on in the following
-examples: ``lookup('checkmk.general.ldap_connections', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.ldap_connections', key1=value1, key2=value2, ...)``
+examples: ``lookup('checkmk.general.downtimes', key1=value1, key2=value2, ...)`` and ``query('checkmk.general.downtimes', key1=value1, key2=value2, ...)``
 
 .. tabularcolumns:: \X{1}{3}\X{2}{3}
 
@@ -86,7 +86,7 @@ examples: ``lookup('checkmk.general.ldap_connections', key1=value1, key2=value2,
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_cookie"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-api_auth_cookie:
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-api_auth_cookie:
 
       .. rst-class:: ansible-option-title
 
@@ -140,7 +140,7 @@ examples: ``lookup('checkmk.general.ldap_connections', key1=value1, key2=value2,
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-api_auth_type"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-api_auth_type:
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-api_auth_type:
 
       .. rst-class:: ansible-option-title
 
@@ -199,8 +199,8 @@ examples: ``lookup('checkmk.general.ldap_connections', key1=value1, key2=value2,
         <div class="ansibleOptionAnchor" id="parameter-api_secret"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_secret"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-api_secret:
-      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-automation_secret:
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-api_secret:
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-automation_secret:
 
       .. rst-class:: ansible-option-title
 
@@ -257,8 +257,8 @@ examples: ``lookup('checkmk.general.ldap_connections', key1=value1, key2=value2,
         <div class="ansibleOptionAnchor" id="parameter-api_user"></div>
         <div class="ansibleOptionAnchor" id="parameter-automation_user"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-api_user:
-      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-automation_user:
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-api_user:
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-automation_user:
 
       .. rst-class:: ansible-option-title
 
@@ -312,9 +312,129 @@ examples: ``lookup('checkmk.general.ldap_connections', key1=value1, key2=value2,
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-downtime_type"></div>
+
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-downtime_type:
+
+      .. rst-class:: ansible-option-title
+
+      **downtime_type**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-downtime_type" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Restrict the result to host or service downtimes or accept both.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"host"`
+      - :ansible-option-choices-entry:`"service"`
+      - :ansible-option-choices-entry-default:`"both"` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-host_name:
+
+      .. rst-class:: ansible-option-title
+
+      **host_name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Restrict the result to downtimes of this host.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-query"></div>
+
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-query:
+
+      .. rst-class:: ansible-option-title
+
+      **query**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-query" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      A Livestatus query (as a JSON string) to filter the downtimes. See the Checkmk REST API documentation for the query syntax.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-server_url"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-server_url:
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-server_url:
 
       .. rst-class:: ansible-option-title
 
@@ -366,9 +486,46 @@ examples: ``lookup('checkmk.general.ldap_connections', key1=value1, key2=value2,
   * - .. raw:: html
 
         <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-service_description"></div>
+
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-service_description:
+
+      .. rst-class:: ansible-option-title
+
+      **service_description**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-service_description" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Restrict the result to service downtimes whose description contains this value.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-site"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-site:
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-site:
 
       .. rst-class:: ansible-option-title
 
@@ -422,7 +579,7 @@ examples: ``lookup('checkmk.general.ldap_connections', key1=value1, key2=value2,
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="parameter-validate_certs"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connections_lookup__parameter-validate_certs:
+      .. _ansible_collections.checkmk.general.downtimes_lookup__parameter-validate_certs:
 
       .. rst-class:: ansible-option-title
 
@@ -509,10 +666,10 @@ See Also
 
 .. seealso::
 
-   :ref:`checkmk.general.ldap <ansible_collections.checkmk.general.ldap_module>`
-       Manage LDAP connections.
-   :ref:`checkmk.general.ldap\_connection <ansible_collections.checkmk.general.ldap_connection_lookup>` lookup plugin
-       Show the configuration of an ldap connection.
+   :ref:`checkmk.general.downtime <ansible_collections.checkmk.general.downtime_module>`
+       Manage downtimes in Checkmk.
+   :ref:`checkmk.general.downtime <ansible_collections.checkmk.general.downtime_lookup>` lookup plugin
+       Show a downtime identified by its ID.
 
 .. Examples
 
@@ -521,11 +678,30 @@ Examples
 
 .. code-block:: yaml+jinja
 
-    - name: "Get all LDAP connections."
+    - name: "Get all downtimes of a host."
       ansible.builtin.debug:
-        msg: "LDAP connection {{ item.id }}: {{ item.extensions }}"
+        msg: "Downtime {{ item.id }} ends at {{ item.extensions.end_time }}"
       loop: "{{
-        lookup('checkmk.general.ldap_connections',
+        lookup('checkmk.general.downtimes',
+            host_name='myhost',
+            server_url='https://myserver',
+            site='mysite',
+            api_user='myuser',
+            api_secret='mysecret',
+            validate_certs=False
+            )
+        }}"
+      loop_control:
+        label: "{{ item.id }}"
+
+    - name: "Get all downtimes matching a query."
+      ansible.builtin.debug:
+        msg: "Downtime {{ item.id }}: {{ item.extensions.comment }}"
+      vars:
+        checkmk_var_query: '{"op": "=", "left": "host_name", "right": "myhost"}'
+      loop: "{{
+        lookup('checkmk.general.downtimes',
+            query=checkmk_var_query,
             server_url='https://myserver',
             site='mysite',
             api_user='myuser',
@@ -545,16 +721,16 @@ Examples
     #   checkmk_var_api_user, checkmk_var_api_secret,
     #   checkmk_var_validate_certs
 
-    - name: "Get all LDAP connections using inventory variables."
+    - name: "Get all downtimes using inventory variables."
       ansible.builtin.debug:
-        msg: "LDAP connection {{ item.id }}: {{ item.extensions }}"
+        msg: "Downtime {{ item.id }}"
       vars:
         checkmk_var_server_url: "https://myserver"
         checkmk_var_site: "mysite"
         checkmk_var_api_user: "myuser"
         checkmk_var_api_secret: "mysecret"
         checkmk_var_validate_certs: false
-      loop: "{{ lookup('checkmk.general.ldap_connections') }}"
+      loop: "{{ lookup('checkmk.general.downtimes') }}"
       loop_control:
         label: "{{ item.id }}"
 
@@ -584,7 +760,7 @@ Return Value
         <div class="ansible-option-cell">
         <div class="ansibleOptionAnchor" id="return-_list"></div>
 
-      .. _ansible_collections.checkmk.general.ldap_connections_lookup__return-_list:
+      .. _ansible_collections.checkmk.general.downtimes_lookup__return-_list:
 
       .. rst-class:: ansible-option-title
 
@@ -606,7 +782,7 @@ Return Value
 
         <div class="ansible-option-cell">
 
-      A list of all LDAP connections and their configuration.
+      A list of downtime objects.
 
 
       .. rst-class:: ansible-option-line

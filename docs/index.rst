@@ -1,5 +1,5 @@
 .. meta::
-  :antsibull-docs: 2.26.0
+  :antsibull-docs: 2.27.0
 
 
 .. _plugins_in_checkmk.general:
@@ -7,7 +7,7 @@
 Checkmk.General
 ===============
 
-Collection version 8.4.0
+Collection version 8.5.0
 
 .. contents::
    :local:
@@ -123,6 +123,8 @@ Lookup Plugins
 * :ansplugin:`activation lookup <checkmk.general.activation#lookup>` -- Get the status of a single activation
 * :ansplugin:`activations lookup <checkmk.general.activations#lookup>` -- Get all activations
 * :ansplugin:`bakery lookup <checkmk.general.bakery#lookup>` -- Get the bakery status of a Checkmk server
+* :ansplugin:`downtime lookup <checkmk.general.downtime#lookup>` -- Show a downtime identified by its ID
+* :ansplugin:`downtimes lookup <checkmk.general.downtimes#lookup>` -- Get a list of downtimes
 * :ansplugin:`folder lookup <checkmk.general.folder#lookup>` -- Get folder attributes
 * :ansplugin:`folders lookup <checkmk.general.folders#lookup>` -- Get various information about a folder
 * :ansplugin:`host lookup <checkmk.general.host#lookup>` -- Get host attributes
@@ -146,6 +148,8 @@ Lookup Plugins
     activation_lookup
     activations_lookup
     bakery_lookup
+    downtime_lookup
+    downtimes_lookup
     folder_lookup
     folders_lookup
     host_lookup
