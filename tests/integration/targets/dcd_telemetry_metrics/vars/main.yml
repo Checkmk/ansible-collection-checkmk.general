@@ -5,9 +5,9 @@ checkmk_var_test_sites:
     site: "testsite"
     dcd:
       id: "IntegrationTestMetricBackendDCD"
-      title: "Integration Test Metric Backend DCD"
-      title_changed: "Integration Test Metric Backend DCD - Changed"
-      title_env: "Integration Test Metric Backend DCD (env)"
+      title: "Integration Test Telemetry Metrics DCD"
+      title_changed: "Integration Test Telemetry Metrics DCD - Changed"
+      title_env: "Integration Test Telemetry Metrics DCD (env)"
       comment: "Created by integration test"
       connector:
         connector_type: "telemetry_metrics"

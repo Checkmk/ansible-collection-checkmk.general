@@ -2,7 +2,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Module DCD Metric Backend Integration
+name: Module DCD Telemetry Metrics Integration
 
 permissions:
   contents: read
@@ -18,14 +18,14 @@ on:
     types:
       - opened
     paths:
-      - 'plugins/modules/dcd_metricbackend.py'
+      - 'plugins/modules/dcd_telemetry_metrics.py'
   push:
     paths:
-      - '.github/workflows/ans-int-test-dcd_metricbackend.yaml'
-      - 'plugins/modules/dcd_metricbackend.py'
+      - '.github/workflows/ans-int-test-dcd_telemetry_metrics.yaml'
+      - 'plugins/modules/dcd_telemetry_metrics.py'
       - 'plugins/module_utils/**'
       - 'tests/integration/targets/setup_checkmk/**'
-      - 'tests/integration/targets/dcd_metricbackend/**'
+      - 'tests/integration/targets/dcd_telemetry_metrics/**'
 
 jobs:
 
@@ -33,13 +33,13 @@ jobs:
     name: "${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
     uses: ./.github/workflows/_template-ans-int-test.yaml
     with:
-      module: dcd_metricbackend
+      module: dcd_telemetry_metrics
       checkmk_version: ${{ matrix.checkmk_version }}
       checkmk_edition: ${{ matrix.checkmk_edition }}
     strategy:
       fail-fast: false
       matrix:
         checkmk_version:
-          - 3.0.0-2026.07.01
+          - 3.0.0-2026.09.21
         checkmk_edition:
           - ultimatemt

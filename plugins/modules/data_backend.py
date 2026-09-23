@@ -9,15 +9,15 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: metricbackend
+module: data_backend
 
-short_description: Manage the Metric Backend configuration in Checkmk
+short_description: Manage the data backend configuration in Checkmk
 
 version_added: "6.4.0"
 
 description:
-- Configure the Metric Backend for a specific site in Checkmk.
-- The Metric Backend can be enabled or disabled, and its ports and memory usage can be configured.
+- Configure the data backend for a specific site in Checkmk.
+- The data backend can be enabled or disabled, and its ports and memory usage can be configured.
 - B(Note:) The read endpoint only exposes the enabled/disabled state, not the configured ports
   or memory limit. The module reports C(changed=False) only when the requested state already
   matches and no ports or memory limit are provided. When any of these are set, the module
@@ -28,16 +28,16 @@ extends_documentation_fragment: [checkmk.general.common]
 
 options:
     site_id:
-        description: The ID of the site for which to configure the metric backend.
+        description: The ID of the site for which to configure the data backend.
         required: true
         type: str
     config:
-        description: The metric backend configuration.
+        description: The data backend configuration.
         required: true
         type: dict
         suboptions:
             type:
-                description: Whether to enable or disable the metric backend.
+                description: Whether to enable or disable the data backend.
                 required: true
                 type: str
                 choices: ["enabled", "disabled"]
@@ -55,13 +55,13 @@ options:
                 type: int
             http_port:
                 description:
-                    - The HTTP port for the metric backend web UI.
+                    - The HTTP port for the data backend web UI.
                     - Omit to keep the current value or leave unset when previously disabled.
                 required: false
                 type: int
             relative_memory_limit_percentage:
                 description:
-                    - Maximum memory the metric backend may use, as a percentage of total available memory.
+                    - Maximum memory the data backend may use, as a percentage of total available memory.
                     - Valid range is 1.0 to 200.0.
                     - Omit to keep the current value or use the default on first enable.
                 required: false
@@ -76,11 +76,11 @@ author:
 
 EXAMPLES = r"""
 # ---------------------------------------------------------------------------
-# Enable the Metric Backend
+# Enable the data backend
 # ---------------------------------------------------------------------------
 
-- name: "Enable the Metric Backend for a site."
-  checkmk.general.metricbackend:
+- name: "Enable the data backend for a site."
+  checkmk.general.data_backend:
     server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
@@ -89,8 +89,8 @@ EXAMPLES = r"""
     config:
       type: "enabled"
 
-- name: "Enable the Metric Backend with custom ports and memory limit."
-  checkmk.general.metricbackend:
+- name: "Enable the data backend with custom ports and memory limit."
+  checkmk.general.data_backend:
     server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
@@ -104,11 +104,11 @@ EXAMPLES = r"""
       relative_memory_limit_percentage: 50.0
 
 # ---------------------------------------------------------------------------
-# Disable the Metric Backend
+# Disable the data backend
 # ---------------------------------------------------------------------------
 
-- name: "Disable the Metric Backend for a site."
-  checkmk.general.metricbackend:
+- name: "Disable the data backend for a site."
+  checkmk.general.data_backend:
     server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
@@ -126,8 +126,8 @@ EXAMPLES = r"""
 #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
 #   CHECKMK_VAR_VALIDATE_CERTS
 
-- name: "Enable the Metric Backend using environment variables for authentication."
-  checkmk.general.metricbackend:
+- name: "Enable the data backend using environment variables for authentication."
+  checkmk.general.data_backend:
     site_id: "mysite"
     config:
       type: "enabled"
@@ -144,7 +144,7 @@ msg:
     description: The output message that the module generates.
     type: str
     returned: always
-    sample: 'Metric backend configuration updated.'
+    sample: 'Data backend configuration updated.'
 http_code:
     description: The HTTP code the Checkmk API returned.
     type: int
@@ -183,7 +183,7 @@ HTTP_CODES_GET = {
 }
 
 HTTP_CODES_UPDATE = {
-    204: (True, False, "Metric backend configuration updated."),
+    204: (True, False, "Data backend configuration updated."),
 }
 
 # Fields beyond "type" that the read endpoint does not expose and therefore
@@ -196,7 +196,7 @@ _EXTRA_CONFIG_FIELDS = (
 )
 
 
-class MetricBackendAPI(CheckmkAPI):
+class DataBackendAPI(CheckmkAPI):
     def __init__(self, module):
         super().__init__(module)
         self.url = self.url.replace("/api/1.0", "/api/internal")
@@ -255,7 +255,7 @@ class MetricBackendAPI(CheckmkAPI):
         # memory limit are being set; otherwise we apply unconditionally.
         if not has_extra and self._get_current_type() == config.get("type"):
             return generate_result(
-                msg="Metric backend already in the desired state.",
+                msg="Data backend already in the desired state.",
                 http_code=0,
                 failed=False,
             )
@@ -283,7 +283,7 @@ def run_module():
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
     logger.set_loglevel(module._verbosity)
 
-    api = MetricBackendAPI(module)
+    api = DataBackendAPI(module)
     result = api.run()
     exit_module(module, result=result, logger=logger)
 
