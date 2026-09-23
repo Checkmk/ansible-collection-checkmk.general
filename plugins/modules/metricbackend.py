@@ -165,8 +165,18 @@ from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
     exit_module,
 )
+from ansible_collections.checkmk.general.plugins.module_utils.version import (
+    CheckmkVersion,
+)
 
 logger = Logger()
+
+# Minimum Checkmk version that serves this configuration under the "data_backend"
+# domain type. Werk 20205 (3.0.0b1) renamed the metric backend to the data
+# backend; 2.5.0 and older keep the "metric_backend" spelling. The threshold is
+# "3.0.0" rather than "3.0.0b1" because a daily build ("3.0.0-2026.09.21")
+# compares equal to a plain "3.0.0" and would otherwise fall to the old name.
+DATA_BACKEND_DOMAIN_TYPE_MIN_VERSION = "3.0.0"
 
 HTTP_CODES_GET = {
     200: (False, False, "OK"),
@@ -191,14 +201,30 @@ class MetricBackendAPI(CheckmkAPI):
         super().__init__(module)
         self.url = self.url.replace("/api/1.0", "/api/internal")
 
+        self.version = self.getversion()
+        self.domain_type = (
+            "data_backend"
+            if self.version >= CheckmkVersion(DATA_BACKEND_DOMAIN_TYPE_MIN_VERSION)
+            else "metric_backend"
+        )
+
     def _get_current_type(self):
         query = urlencode({"site_id": self.params.get("site_id")})
         result = self._fetch(
             code_mapping=HTTP_CODES_GET,
-            endpoint="/domain-types/metric_backend/actions/get/invoke?%s" % query,
+            endpoint="/domain-types/%s/actions/get/invoke?%s"
+            % (self.domain_type, query),
             method="GET",
             logger=logger,
+            # The read endpoint is not guaranteed to exist: it is absent on
+            # sites where the data backend is not registered at all. Treat that
+            # as "state unknown" and fall through to the unconditional update,
+            # rather than failing the whole module on the idempotency probe.
+            fail_on_error=False,
         )
+
+        if result.failed:
+            return None
 
         try:
             return json.loads(result.content).get("type")
@@ -214,7 +240,7 @@ class MetricBackendAPI(CheckmkAPI):
 
         return self._fetch(
             code_mapping=HTTP_CODES_UPDATE,
-            endpoint="/domain-types/metric_backend/actions/update/invoke",
+            endpoint="/domain-types/%s/actions/update/invoke" % self.domain_type,
             data=data,
             method="PATCH",
             logger=logger,

@@ -65,7 +65,10 @@ options:
                 type: dict
                 suboptions:
                     connector_type:
-                        description: The connector type. Currently only C(metric_backend) is supported. API default is C(metric_backend).
+                        description:
+                            - The connector type. Only the telemetry metrics connector is supported.
+                            - Checkmk 3.0.0 and newer call it C(telemetry_metrics), older versions C(metric_backend).
+                            - Either value is accepted and normalised to the one the target version uses.
                         required: false
                         type: str
                     interval:
@@ -199,7 +202,7 @@ EXAMPLES = r"""
       title: "My Metric Backend Connection"
       site: "mysite"
       connector:
-        connector_type: "metric_backend"
+        connector_type: "telemetry_metrics"
         creation_rules:
           - folder_path: "/"
     state: "present"
@@ -217,7 +220,7 @@ EXAMPLES = r"""
       documentation_url: "https://example.com/docs/otel"
       site: "mysite"
       connector:
-        connector_type: "metric_backend"
+        connector_type: "telemetry_metrics"
         interval: 120
         host_name_lookup_rules:
           - host_name_template: "$RESOURCE_ATTR.service.name$"
@@ -266,7 +269,7 @@ EXAMPLES = r"""
       title: "My Metric Backend Connection"
       site: "mysite"
       connector:
-        connector_type: "metric_backend"
+        connector_type: "telemetry_metrics"
         creation_rules:
           - folder_path: "/"
     state: "present"
@@ -320,6 +323,17 @@ HOST_NAME_LOOKUP_RULES_MIN_VERSION = "3.0.0"
 # Minimum Checkmk version that provides a dedicated DCD metric backend delete
 # endpoint. Older versions must fall back to the generic DCD delete endpoint.
 DEDICATED_DELETE_MIN_VERSION = "3.0.0"
+
+# Minimum Checkmk version that serves these connections under the
+# "dcd_telemetry_metrics" domain type and names the connector "telemetry_metrics".
+# Werk 20205 (3.0.0b1) renamed both; 2.5.0 and older use "dcd_metric_backend" and
+# "metric_backend". The threshold is "3.0.0" rather than "3.0.0b1" because a daily
+# build ("3.0.0-2026.09.21") compares equal to a plain "3.0.0".
+TELEMETRY_METRICS_RENAME_MIN_VERSION = "3.0.0"
+
+# Both spellings of the connector type are accepted from the user and normalised
+# to the one the target version speaks, so the same playbook works on both.
+CONNECTOR_TYPE_ALIASES = ("metric_backend", "telemetry_metrics")
 
 # A host name template of the exact form "$RESOURCE_ATTR.<key>$" is equivalent to
 # the pre-3.0.0 single-key host naming (host_name_resource_attribute_key). This
@@ -395,6 +409,12 @@ class DCDMetricBackendAPI(CheckmkAPI):
         self.url = self.url.replace("/api/1.0", "/api/internal")
 
         self.version = self.getversion()
+        self.renamed = self.version >= CheckmkVersion(
+            TELEMETRY_METRICS_RENAME_MIN_VERSION
+        )
+        self.domain_type = (
+            "dcd_telemetry_metrics" if self.renamed else "dcd_metric_backend"
+        )
         dcd_config = self.params.get("dcd_config") or {}
         self.dcd_id = dcd_config.get("dcd_id")
         self.desired = self._build_desired()
@@ -435,6 +455,11 @@ class DCDMetricBackendAPI(CheckmkAPI):
         field verbatim would otherwise fail validation on create, or produce an
         unfixable diff on an existing connection (the API has no update endpoint).
         """
+        if connector.get("connector_type") in CONNECTOR_TYPE_ALIASES:
+            connector["connector_type"] = (
+                "telemetry_metrics" if self.renamed else "metric_backend"
+            )
+
         if self.version < CheckmkVersion(HOST_NAME_LOOKUP_RULES_MIN_VERSION):
             self._downconvert_lookup_rules(connector)
 
@@ -478,7 +503,7 @@ class DCDMetricBackendAPI(CheckmkAPI):
     def _get_current(self):
         result = self._fetch(
             code_mapping=HTTP_CODES_GET,
-            endpoint="/objects/dcd_metric_backend/%s" % self.dcd_id,
+            endpoint="/objects/%s/%s" % (self.domain_type, self.dcd_id),
             method="GET",
             logger=logger,
         )
@@ -507,7 +532,7 @@ class DCDMetricBackendAPI(CheckmkAPI):
     def create(self):
         return self._fetch(
             code_mapping=HTTP_CODES_CREATE,
-            endpoint="/domain-types/dcd_metric_backend/collections/all",
+            endpoint="/domain-types/%s/collections/all" % self.domain_type,
             data=self.desired,
             method="POST",
             logger=logger,
@@ -519,7 +544,7 @@ class DCDMetricBackendAPI(CheckmkAPI):
             # back to the generic DCD delete, which works for all DCD types.
             endpoint = "/objects/dcd/%s" % self.dcd_id
         else:
-            endpoint = "/objects/dcd_metric_backend/%s" % self.dcd_id
+            endpoint = "/objects/%s/%s" % (self.domain_type, self.dcd_id)
 
         return self._fetch(
             code_mapping=HTTP_CODES_DELETE,

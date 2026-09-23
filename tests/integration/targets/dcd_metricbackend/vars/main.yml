@@ -10,7 +10,7 @@ checkmk_var_test_sites:
       title_env: "Integration Test Metric Backend DCD (env)"
       comment: "Created by integration test"
       connector:
-        connector_type: "metric_backend"
+        connector_type: "telemetry_metrics"
         interval: 60
         host_name_lookup_rules:
           - host_name_template: "$RESOURCE_ATTR.service.name$"
@@ -21,11 +21,11 @@ checkmk_var_test_sites:
         validity_period: 3600
         maximum_number_of_hosts: 500
       connector_changed:
-        connector_type: "metric_backend"
+        connector_type: "telemetry_metrics"
         interval: 120
         creation_rules:
           - folder_path: "/"
       connector_minimal:
-        connector_type: "metric_backend"
+        connector_type: "telemetry_metrics"
         creation_rules:
           - folder_path: "/"
