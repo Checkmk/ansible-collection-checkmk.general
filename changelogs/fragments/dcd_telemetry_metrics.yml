@@ -1,8 +1,8 @@
 minor_changes:
-  - dcd_metricbackend module - Add new module to manage Dynamic Configuration Daemon (DCD) connections for the telemetry metrics connector in Checkmk.
+  - dcd_telemetry_metrics module - Add new module to manage Dynamic Configuration Daemon (DCD) connections for the telemetry metrics connector in Checkmk.
     Werk 20205 renamed the connector and its domain type in 3.0.0, so the module selects
     C(dcd_telemetry_metrics)/C(telemetry_metrics) or C(dcd_metric_backend)/C(metric_backend) based on the version of the target site.
 
 known_issues:
-  - dcd_metricbackend module - Updating existing connections is not supported, as the Checkmk API provides no update endpoint.
+  - dcd_telemetry_metrics module - Updating existing connections is not supported, as the Checkmk API provides no update endpoint.
     If a connection exists but differs from the desired state, the module will fail with a diff.

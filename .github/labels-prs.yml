@@ -39,15 +39,20 @@ module:contact_group:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/contact_group.py'
 
+module:data_backend:
+  - any:
+      - changed-files:
+          - any-glob-to-any-file: 'plugins/modules/data_backend.py'
+
 module:dcd:
   - any:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/dcd.py'
 
-module:dcd_metricbackend:
+module:dcd_telemetry_metrics:
   - any:
       - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/dcd_metricbackend.py'
+          - any-glob-to-any-file: 'plugins/modules/dcd_telemetry_metrics.py'
 
 module:discovery:
   - any:
@@ -78,11 +83,6 @@ module:ldap:
   - any:
       - changed-files:
           - any-glob-to-any-file: 'plugins/modules/ldap.py'
-
-module:metricbackend:
-  - any:
-      - changed-files:
-          - any-glob-to-any-file: 'plugins/modules/metricbackend.py'
 
 module:notification:
   - any:

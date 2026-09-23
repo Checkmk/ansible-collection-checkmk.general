@@ -9,15 +9,15 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: dcd_metricbackend
+module: dcd_telemetry_metrics
 
-short_description: Manage Dynamic Host Management connections for the Metric Backend
+short_description: Manage Dynamic Host Management connections for Telemetry Metrics
 
 version_added: "6.4.0"
 
 description:
-- Manage Dynamic Configuration Daemon (DCD) connections that use the Metric Backend connector in Checkmk.
-- DCD metric backend connections periodically poll the metric backend and create or
+- Manage Dynamic Configuration Daemon (DCD) connections that use the Telemetry Metrics connector in Checkmk.
+- DCD telemetry metrics connections periodically poll the telemetry metrics and create or
   update hosts based on the metrics data found there.
 - Available in Checkmk Ultimate, Ultimate with multi-tenancy, and Cloud editions only.
 
@@ -25,12 +25,12 @@ extends_documentation_fragment: [checkmk.general.common]
 
 options:
     dcd_config:
-        description: Configuration parameters for the DCD metric backend connection.
+        description: Configuration parameters for the DCD telemetry metrics connection.
         required: true
         type: dict
         suboptions:
             dcd_id:
-                description: The unique identifier for the DCD metric backend connection.
+                description: The unique identifier for the DCD telemetry metrics connection.
                 required: true
                 type: str
             title:
@@ -60,7 +60,7 @@ options:
                 required: false
                 type: str
             connector:
-                description: The metric backend connector configuration.
+                description: The telemetry metrics connector configuration.
                 required: false
                 type: dict
                 suboptions:
@@ -72,12 +72,12 @@ options:
                         required: false
                         type: str
                     interval:
-                        description: How often (in seconds) the connection checks the metric backend. API default is C(60).
+                        description: How often (in seconds) the connection checks the telemetry metrics. API default is C(60).
                         required: false
                         type: int
                     host_name_lookup_rules:
                         description:
-                            - Rules that derive host names from metric backend attributes.
+                            - Rules that derive host names from telemetry metrics attributes.
                             - Each rule carries a host name template and optional attribute filters
                               that scope which series the resulting host collects. A host produced by
                               several rules collects the series matched by every rule that named it.
@@ -94,12 +94,12 @@ options:
                         suboptions:
                             host_name_template:
                                 description:
-                                    - The template used to derive the host name from metric backend attributes.
+                                    - The template used to derive the host name from telemetry metrics attributes.
                                     - Reference resource attributes with C($RESOURCE_ATTR.<key>$), e.g. C($RESOURCE_ATTR.service.name$).
                                     - API default is C($RESOURCE_ATTR.service.name$).
                                 type: str
                             resource_attribute_filters:
-                                description: Filters applied to resource attributes from the metric backend.
+                                description: Filters applied to resource attributes from the telemetry metrics.
                                 required: false
                                 type: list
                                 elements: dict
@@ -111,7 +111,7 @@ options:
                                         description: The attribute value to filter on.
                                         type: str
                             scope_attribute_filters:
-                                description: Filters applied to scope attributes from the metric backend.
+                                description: Filters applied to scope attributes from the telemetry metrics.
                                 required: false
                                 type: list
                                 elements: dict
@@ -123,7 +123,7 @@ options:
                                         description: The attribute value to filter on.
                                         type: str
                             data_point_attribute_filters:
-                                description: Filters applied to data point attributes from the metric backend.
+                                description: Filters applied to data point attributes from the telemetry metrics.
                                 required: false
                                 type: list
                                 elements: dict
@@ -136,7 +136,7 @@ options:
                                         type: str
                     creation_rules:
                         description:
-                            - Rules governing how hosts are created from metric backend data.
+                            - Rules governing how hosts are created from telemetry metrics data.
                             - The first matching rule is used. At least one rule is required.
                         required: false
                         type: list
@@ -147,7 +147,7 @@ options:
                                 type: str
                                 required: true
                             delete_hosts:
-                                description: Delete hosts when their metric backend data is no longer present. API default is C(true).
+                                description: Delete hosts when their telemetry metrics data is no longer present. API default is C(true).
                                 type: bool
                             host_filters:
                                 description: Regular expressions to restrict which hosts are created.
@@ -161,7 +161,7 @@ options:
                         required: false
                         type: bool
                     validity_period:
-                        description: Seconds to continue considering outdated metric backend data as valid. API default is C(3600).
+                        description: Seconds to continue considering outdated telemetry metrics data as valid. API default is C(3600).
                         required: false
                         type: int
                     maximum_number_of_hosts:
@@ -170,7 +170,7 @@ options:
                         type: int
     state:
         description:
-            - Desired state of the DCD metric backend connection.
+            - Desired state of the DCD telemetry metrics connection.
             - C(absent) will delete the connection if it exists, or succeed without changes if it is already absent.
         required: false
         type: str
@@ -188,18 +188,18 @@ author:
 
 EXAMPLES = r"""
 # ---------------------------------------------------------------------------
-# Create a DCD metric backend connection
+# Create a DCD telemetry metrics connection
 # ---------------------------------------------------------------------------
 
-- name: "Create a minimal DCD metric backend connection."
-  checkmk.general.dcd_metricbackend:
+- name: "Create a minimal DCD telemetry metrics connection."
+  checkmk.general.dcd_telemetry_metrics:
     server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     dcd_config:
-      dcd_id: "my_metric_backend_dcd"
-      title: "My Metric Backend Connection"
+      dcd_id: "my_telemetry_metrics_dcd"
+      title: "My Telemetry Metrics Connection"
       site: "mysite"
       connector:
         connector_type: "telemetry_metrics"
@@ -207,16 +207,16 @@ EXAMPLES = r"""
           - folder_path: "/"
     state: "present"
 
-- name: "Create a DCD metric backend connection with full configuration."
-  checkmk.general.dcd_metricbackend:
+- name: "Create a DCD telemetry metrics connection with full configuration."
+  checkmk.general.dcd_telemetry_metrics:
     server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     dcd_config:
-      dcd_id: "my_metric_backend_dcd"
-      title: "My Metric Backend Connection"
-      comment: "Syncs hosts from metric backend data."
+      dcd_id: "my_telemetry_metrics_dcd"
+      title: "My Telemetry Metrics Connection"
+      comment: "Syncs hosts from telemetry metrics data."
       documentation_url: "https://example.com/docs/otel"
       site: "mysite"
       connector:
@@ -240,17 +240,17 @@ EXAMPLES = r"""
     state: "present"
 
 # ---------------------------------------------------------------------------
-# Delete a DCD metric backend connection
+# Delete a DCD telemetry metrics connection
 # ---------------------------------------------------------------------------
 
-- name: "Delete a DCD metric backend connection."
-  checkmk.general.dcd_metricbackend:
+- name: "Delete a DCD telemetry metrics connection."
+  checkmk.general.dcd_telemetry_metrics:
     server_url: "https://myserver/"
     site: "mysite"
     api_user: "myuser"
     api_secret: "mysecret"
     dcd_config:
-      dcd_id: "my_metric_backend_dcd"
+      dcd_id: "my_telemetry_metrics_dcd"
     state: "absent"
 
 # ---------------------------------------------------------------------------
@@ -262,11 +262,11 @@ EXAMPLES = r"""
 #   CHECKMK_VAR_API_USER, CHECKMK_VAR_API_SECRET,
 #   CHECKMK_VAR_VALIDATE_CERTS
 
-- name: "Create a DCD metric backend connection using environment variables."
-  checkmk.general.dcd_metricbackend:
+- name: "Create a DCD telemetry metrics connection using environment variables."
+  checkmk.general.dcd_telemetry_metrics:
     dcd_config:
-      dcd_id: "my_metric_backend_dcd"
-      title: "My Metric Backend Connection"
+      dcd_id: "my_telemetry_metrics_dcd"
+      title: "My Telemetry Metrics Connection"
       site: "mysite"
       connector:
         connector_type: "telemetry_metrics"
@@ -286,7 +286,7 @@ msg:
     description: The output message that the module generates.
     type: str
     returned: always
-    sample: 'DCD metric backend connection created.'
+    sample: 'DCD telemetry metrics connection created.'
 http_code:
     description: The HTTP code the Checkmk API returned.
     type: int
@@ -317,10 +317,10 @@ logger = Logger()
 # Minimum Checkmk version that supports the host_name_lookup_rules connector
 # field. Older versions use a flat connector shape (top-level attribute filters
 # plus a single host_name_resource_attribute_key), so the lookup rules are
-# translated down to it (see DCDMetricBackendAPI._downconvert_lookup_rules).
+# translated down to it (see DCDTelemetryMetricsAPI._downconvert_lookup_rules).
 HOST_NAME_LOOKUP_RULES_MIN_VERSION = "3.0.0"
 
-# Minimum Checkmk version that provides a dedicated DCD metric backend delete
+# Minimum Checkmk version that provides a dedicated DCD telemetry metrics delete
 # endpoint. Older versions must fall back to the generic DCD delete endpoint.
 DEDICATED_DELETE_MIN_VERSION = "3.0.0"
 
@@ -337,7 +337,7 @@ CONNECTOR_TYPE_ALIASES = ("metric_backend", "telemetry_metrics")
 
 # A host name template of the exact form "$RESOURCE_ATTR.<key>$" is equivalent to
 # the pre-3.0.0 single-key host naming (host_name_resource_attribute_key). This
-# mirrors the server-side backward-compat mapping in the metric backend fetcher.
+# mirrors the server-side backward-compat mapping in the telemetry metrics fetcher.
 _RESOURCE_ATTR_TEMPLATE = re.compile(r"^\$RESOURCE_ATTR\.(.+)\$$")
 
 
@@ -370,7 +370,7 @@ def _normalize_filter_entries(entries):
 def _normalize_current_filters(connector):
     """Rename the API's read-side filter keys to the write-side names, in place.
 
-    The metric backend connector accepts attribute filters as ``{key, value}`` on
+    The telemetry metrics connector accepts attribute filters as ``{key, value}`` on
     create but returns them as ``{attribute_key, attribute_value}`` on read. Without
     this translation the ConfigDiffer would always see a difference (and, with no
     update endpoint available, report an unfixable diff) whenever filters are set.
@@ -389,21 +389,21 @@ def _normalize_current_filters(connector):
 
 
 HTTP_CODES_GET = {
-    200: (False, False, "DCD metric backend connection found."),
-    404: (False, False, "DCD metric backend connection not found."),
+    200: (False, False, "DCD telemetry metrics connection found."),
+    404: (False, False, "DCD telemetry metrics connection not found."),
 }
 
 HTTP_CODES_CREATE = {
-    200: (True, False, "DCD metric backend connection created."),
-    201: (True, False, "DCD metric backend connection created."),
+    200: (True, False, "DCD telemetry metrics connection created."),
+    201: (True, False, "DCD telemetry metrics connection created."),
 }
 
 HTTP_CODES_DELETE = {
-    204: (True, False, "DCD metric backend connection deleted."),
+    204: (True, False, "DCD telemetry metrics connection deleted."),
 }
 
 
-class DCDMetricBackendAPI(CheckmkAPI):
+class DCDTelemetryMetricsAPI(CheckmkAPI):
     def __init__(self, module):
         super().__init__(module)
         self.url = self.url.replace("/api/1.0", "/api/internal")
@@ -478,7 +478,7 @@ class DCDMetricBackendAPI(CheckmkAPI):
         if len(rules) > 1:
             self.module.warn(
                 "Checkmk %s supports only a single host name lookup rule for the "
-                "metric backend connector; the first rule was applied and the "
+                "telemetry metrics connector; the first rule was applied and the "
                 "remaining %d were ignored." % (self.version, len(rules) - 1)
             )
 
@@ -640,7 +640,7 @@ def run_module():
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=False)
     logger.set_loglevel(module._verbosity)
 
-    api = DCDMetricBackendAPI(module)
+    api = DCDTelemetryMetricsAPI(module)
 
     desired_state = module.params["state"]
 
@@ -648,7 +648,7 @@ def run_module():
         if api.state == "absent":
             exit_module(
                 module,
-                msg="DCD metric backend connection already absent.",
+                msg="DCD telemetry metrics connection already absent.",
                 logger=logger,
             )
         else:
@@ -660,7 +660,7 @@ def run_module():
     elif api.needs_update():
         exit_module(
             module,
-            msg="DCD metric backend connection cannot be updated via API. "
+            msg="DCD telemetry metrics connection cannot be updated via API. "
             "Diff: %s" % str(api.differ.generate_diff()),
             failed=True,
             logger=logger,
@@ -668,7 +668,7 @@ def run_module():
     else:
         exit_module(
             module,
-            msg="DCD metric backend connection already in the desired state.",
+            msg="DCD telemetry metrics connection already in the desired state.",
             logger=logger,
         )
 

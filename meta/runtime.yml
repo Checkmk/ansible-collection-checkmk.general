@@ -6,15 +6,15 @@ action_groups:
     - aux_tag
     - bakery
     - contact_group
+    - data_backend
     - dcd
-    - dcd_metricbackend
+    - dcd_telemetry_metrics
     - discovery
     - downtime
     - folder
     - host_group
     - host
     - ldap
-    - metricbackend
     - notification
     - opentelemetry
     - password
