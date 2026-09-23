@@ -26,11 +26,14 @@ module:bakery:
 module:contact_group:
   - 'Component Name: contact_group'
 
+module:data_backend:
+  - 'Component Name: data_backend'
+
 module:dcd:
   - 'Component Name: dcd'
 
-module:dcd_metricbackend:
-  - 'Component Name: dcd_metricbackend'
+module:dcd_telemetry_metrics:
+  - 'Component Name: dcd_telemetry_metrics'
 
 module:discovery:
   - 'Component Name: discovery'
@@ -49,9 +52,6 @@ module:host_group:
 
 module:ldap:
   - 'Component Name: ldap'
-
-module:metricbackend:
-  - 'Component Name: metricbackend'
 
 module:notification:
   - 'Component Name: notification'
