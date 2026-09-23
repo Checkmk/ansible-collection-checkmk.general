@@ -510,6 +510,7 @@ class DCDTelemetryMetricsAPI(CheckmkAPI):
 
         if result.http_code == 200:
             self.state = "present"
+            self.etag = result.etag
             try:
                 raw = json.loads(result.content)
                 self.current = raw.get("extensions", {})
@@ -524,6 +525,7 @@ class DCDTelemetryMetricsAPI(CheckmkAPI):
                 )
         else:
             self.state = "absent"
+            self.etag = ""
             self.current = {}
 
     def needs_update(self):
@@ -545,6 +547,9 @@ class DCDTelemetryMetricsAPI(CheckmkAPI):
             endpoint = "/objects/dcd/%s" % self.dcd_id
         else:
             endpoint = "/objects/%s/%s" % (self.domain_type, self.dcd_id)
+            # The dedicated endpoint rejects a delete without If-Match (428).
+            # Send the ETag from the preceding GET; "*" only if none came back.
+            self.headers["If-Match"] = self.etag or "*"
 
         return self._fetch(
             code_mapping=HTTP_CODES_DELETE,
