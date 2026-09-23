@@ -1,6 +1,6 @@
 ---
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Enable the metric backend."
-  metricbackend:
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Enable the data backend."
+  data_backend:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -21,8 +21,8 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Enable the metric backend with custom ports."
-  metricbackend:
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Enable the data backend with custom ports."
+  data_backend:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -42,8 +42,8 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Disable the metric backend."
-  metricbackend:
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Disable the data backend."
+  data_backend:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -64,8 +64,8 @@
     sites:
       - "{{ outer_item.site }}"
 
-- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Disable the metric backend again (idempotency)."
-  metricbackend:
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Disable the data backend again (idempotency)."
+  data_backend:
     server_url: "{{ checkmk_var_server_url }}"
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
@@ -77,7 +77,7 @@
   failed_when: __checkmk_var_result_mb_disable_again.changed
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run module using environment variables."
-  metricbackend:
+  data_backend:
     site_id: "{{ outer_item.site }}"
     config:
       type: "enabled"
