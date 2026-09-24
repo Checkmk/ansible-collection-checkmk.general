@@ -321,6 +321,25 @@ msg:
     type: str
     returned: always
     sample: 'Host created.'
+http_code:
+    description: The HTTP code the Checkmk API returns.
+    type: int
+    returned: always
+    sample: 200
+content:
+    description:
+        - The raw, undecoded response body of the Checkmk API.
+        - Empty when the API returned no body, e.g. when nothing had to be done.
+    type: str
+    returned: always
+    sample: '{"id": "my_object", "extensions": {}}'
+etag:
+    description:
+        - The ETag the Checkmk API returned for the object.
+        - Empty when the API returned no ETag.
+    type: str
+    returned: always
+    sample: '"ad55730d5488e55e07c58a3da9759fba8cd0b009"'
 """
 
 import json
@@ -332,8 +351,8 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
+    exit_module,
     normalize_folder,
-    result_as_dict,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.version import (
     CheckmkVersion,
@@ -474,7 +493,7 @@ class HostAPI(CheckmkAPI):
                     failed=True,
                     changed=False,
                 )
-                self.module.exit_json(**result_as_dict(result))
+                exit_module(self.module, result=result)
             else:
                 self.module.warn(msg)
 
@@ -948,7 +967,7 @@ def run_module():
         if desired_state in ("present"):
             result = current_host.create()
 
-    module.exit_json(**result_as_dict(result))
+    exit_module(module, result=result)
 
 
 def main():
