@@ -26,8 +26,14 @@ module:bakery:
 module:contact_group:
   - 'Component Name: contact_group'
 
+module:data_backend:
+  - 'Component Name: data_backend'
+
 module:dcd:
   - 'Component Name: dcd'
+
+module:dcd_telemetry_metrics:
+  - 'Component Name: dcd_telemetry_metrics'
 
 module:discovery:
   - 'Component Name: discovery'
@@ -49,6 +55,9 @@ module:ldap:
 
 module:notification:
   - 'Component Name: notification'
+
+module:opentelemetry:
+  - 'Component Name: opentelemetry'
 
 module:password:
   - 'Component Name: password'
