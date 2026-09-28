@@ -169,7 +169,7 @@ the following needs to be done:
 2. Choose and note which feature pull request you want to include in this release.
 3. Check the GitHub Workflows for [EOL Ansible and Python versions and add new releases](https://docs.ansible.com/ansible/latest/reference_appendices/release_and_maintenance.html#ansible-core-support-matrix).
     The ansible-core test matrix is an explicit `include:` list, duplicated in `_template-ans-int-test.yaml`, `_template-ans-unit-test.yaml` and `ansible-sanity-tests.yaml`.
-    Each leg uses a compatible-release range like `ansible-core~=2.21.0`, so patch releases are picked up without changes. Update all three lists together when adding or dropping a release line, switch a pre-release range such as `~=2.22.0b1` to `~=2.22.0` after the final release, keep the oldest line in line with `requires_ansible` in `meta/runtime.yml`, and update `ansible_versions` in `scripts/release.sh`, which feeds `SUPPORT.md`.
+    Each leg uses a compatible-release range like `ansible-core~=2.21.0`, so patch releases are picked up without changes. Update all three lists together when adding or dropping a release line, keep the oldest line in line with `requires_ansible` in `meta/runtime.yml`, and update `ansible_versions` in `scripts/release.sh`, which feeds `SUPPORT.md`.
 4. The following tasks are automated in `scripts/release.sh`. Feel free to use the script, but double-check the result!
     1. Update the collection version in `galaxy.yml` and `requirements.yml`. Look for the string `version:`.
     2. Check the integration and molecule tests for up-to-date Checkmk versions and update if necessary.
