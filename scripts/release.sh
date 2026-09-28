@@ -20,7 +20,7 @@ checkmk_branch_stable="2.5.0"
 
 # The Ansible versions this collection is tested against, as listed in SUPPORT.md.
 # Keep this in sync with the matrix in '.github/workflows/' and 'meta/runtime.yml'.
-ansible_versions="2.19, 2.20, 2.21"
+ansible_versions="2.16, 2.19, 2.20, 2.21"
 
 # The manifest of released Checkmk versions. It is cached between runs, but refreshed
 # once it is older than the maximum age below. Delete the file to force a refresh.

@@ -42,38 +42,29 @@ jobs:
         with:
           enable-cache: true
           github-token: ${{ github.token }}
-          working-directory: ./ansible_collections/checkmk/general/
+          working-directory: ./ansible_collections/checkmk/general
           python-version: '3.13'
 
-      - name: "Create uv venv."
-        run: uv venv
+      - name: "Install Dependencies."
+        run: uv sync --locked
         working-directory: ./ansible_collections/checkmk/general
 
       # Run the linting
       - name: "Run yamllint on roles."
         run:  uv run yamllint -c .yamllint ./roles/
-        working-directory: ./ansible_collections/checkmk/general/
+        working-directory: ./ansible_collections/checkmk/general
 
       - name: "Run yamllint on playbooks."
         run:  uv run yamllint -c .yamllint ./playbooks/
-        working-directory: ./ansible_collections/checkmk/general/
+        working-directory: ./ansible_collections/checkmk/general
 
       - name: "Run yamllint on tests."
         run:  uv run yamllint -c .yamllint ./tests/
-        working-directory: ./ansible_collections/checkmk/general/
+        working-directory: ./ansible_collections/checkmk/general
 
   ansible:
     runs-on: ubuntu-24.04
-    name: Ansible (Ⓐ${{ matrix.ansible }})
-    strategy:
-      fail-fast: false
-      matrix:
-        ansible:
-          - stable-2.16
-          - stable-2.19
-          - stable-2.20
-          - stable-2.21
-          - devel
+    name: Ansible
 
     steps:
       - name: Check out code
@@ -86,39 +77,35 @@ jobs:
         with:
           enable-cache: true
           github-token: ${{ github.token }}
-          working-directory: ./ansible_collections/checkmk/general/
+          working-directory: ./ansible_collections/checkmk/general
           python-version: '3.13'
 
-      - name: "Create uv venv."
-        run: uv venv
-        working-directory: ./ansible_collections/checkmk/general
-
-      - name: Install ansible-base (${{ matrix.ansible }})
-        run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
+      - name: "Install Dependencies."
+        run: uv sync --locked
         working-directory: ./ansible_collections/checkmk/general
 
       - name: "Install Checkmk Collection."
         run: uv run ansible-galaxy collection install ./
-        working-directory: ./ansible_collections/checkmk/general/
+        working-directory: ./ansible_collections/checkmk/general
 
       # Run the linting
       - name: "Run ansible-lint on roles."
         run:  uv run ansible-lint -c .ansible-lint ./roles/
-        working-directory: ./ansible_collections/checkmk/general/
+        working-directory: ./ansible_collections/checkmk/general
         env:
           ANSIBLE_LIBRARY: "./plugins/modules"
           ANSIBLE_ROLES_PATH: "./roles"
 
       - name: "Run ansible-lint on tests."
         run:  uv run ansible-lint -c .ansible-lint ./tests/
-        working-directory: ./ansible_collections/checkmk/general/
+        working-directory: ./ansible_collections/checkmk/general
         env:
           ANSIBLE_LIBRARY: "./plugins/modules"
           ANSIBLE_ROLES_PATH: "./roles"
 
       - name: "Run ansible-lint on playbooks."
         run:  uv run ansible-lint -c .ansible-lint ./playbooks/
-        working-directory: ./ansible_collections/checkmk/general/
+        working-directory: ./ansible_collections/checkmk/general
         env:
           ANSIBLE_LIBRARY: "./plugins/modules"
           ANSIBLE_ROLES_PATH: "./roles"
