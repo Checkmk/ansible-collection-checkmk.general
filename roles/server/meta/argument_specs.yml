@@ -50,6 +50,7 @@ argument_specs:
       checkmk_server_sites:
         type: "list"
         elements: "dict"
+        default: []
         description:
           - Refer to the README for details.
         options:
@@ -122,6 +123,12 @@ argument_specs:
               enabled:
                 type: "bool"
                 description: "Enable the extension package."
+              download_user:
+                type: "str"
+                description: "The user name to authenticate with when downloading the extension package from its URL."
+              download_password:
+                type: "str"
+                description: "The password to authenticate with when downloading the extension package from its URL."
 
       checkmk_server_configure_firewall:
         type: "bool"

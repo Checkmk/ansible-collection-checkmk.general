@@ -220,7 +220,7 @@ argument_specs:
           - Refer to the README for details.
 
       checkmk_agent_download_timeout:
-        type: "str"
+        type: "int"
         description:
           - Refer to the README for details.
             Has no role default on purpose, so that it stays undefined and the
