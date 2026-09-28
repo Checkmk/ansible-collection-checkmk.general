@@ -84,11 +84,6 @@ jobs:
           uv venv --python '${{ matrix.python }}' "$RUNNER_TEMP/ansible-venv"
           uv pip install --python "$RUNNER_TEMP/ansible-venv" '${{ matrix.core }}'
 
-      - name: "Verify ansible-core version."
-        run: |
-          "$ANSIBLE_VENV/bin/ansible" --version
-          "$ANSIBLE_VENV/bin/python" -c 'import sys; print("python", sys.version)'
-
       - name: "Inject variables into integration test."
         run: |
           cat > tests/integration/integration_config.yml <<EOF

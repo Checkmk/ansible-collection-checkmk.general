@@ -56,11 +56,6 @@ jobs:
           uv venv --python '${{ matrix.python }}' "$RUNNER_TEMP/ansible-venv"
           uv pip install --python "$RUNNER_TEMP/ansible-venv" '${{ matrix.core }}'
 
-      - name: "Verify ansible-core version."
-        run: |
-          "$ANSIBLE_VENV/bin/ansible" --version
-          "$ANSIBLE_VENV/bin/python" -c 'import sys; print("python", sys.version)'
-
       - name: "Run unit test."
         run: $ANSIBLE_VENV/bin/ansible-test units ${{ inputs.testpath}} -v --color --python ${{ matrix.python }} --docker default
         working-directory: ./ansible_collections/checkmk/general

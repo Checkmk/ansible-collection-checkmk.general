@@ -68,11 +68,6 @@ jobs:
           uv venv --python '${{ matrix.python }}' "$RUNNER_TEMP/ansible-venv"
           uv pip install --python "$RUNNER_TEMP/ansible-venv" '${{ matrix.core }}'
 
-      - name: "Verify ansible-core version."
-        run: |
-          "$ANSIBLE_VENV/bin/ansible" --version
-          "$ANSIBLE_VENV/bin/python" -c 'import sys; print("python", sys.version)'
-
       - name: Run sanity tests
         run: $ANSIBLE_VENV/bin/ansible-test sanity --docker -v --color --coverage
         working-directory: ./ansible_collections/checkmk/general
