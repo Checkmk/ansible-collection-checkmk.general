@@ -52,9 +52,7 @@ jobs:
           github-token: ${{ github.token }}
 
       - name: "Install Dependencies."
-        run: uv sync
-        env:
-          UV_SYSTEM_PYTHON: 1
+        run: uv sync --locked
 
       #
       # First stage: Build and install collection to generate docs and changelogs.

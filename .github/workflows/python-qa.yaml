@@ -31,7 +31,7 @@ jobs:
           github-token: ${{ github.token }}
 
       - name: "Install Dependencies."
-        run: uv sync --all-extras --dev
+        run: uv sync --locked
 
       - name: "Check format."
         run: uv run black --check --diff plugins

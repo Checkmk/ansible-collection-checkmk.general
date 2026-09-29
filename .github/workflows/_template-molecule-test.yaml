@@ -58,10 +58,10 @@ jobs:
         with:
           enable-cache: true
           github-token: ${{ github.token }}
-          working-directory: ./ansible_collections/checkmk/general/
+          working-directory: ./ansible_collections/checkmk/general
 
       - name: "Install Dependencies."
-        run: uv sync
+        run: uv sync --locked
         working-directory: ./ansible_collections/checkmk/general
 
       - name: "Run Molecule."
