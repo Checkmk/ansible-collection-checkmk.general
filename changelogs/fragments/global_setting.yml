@@ -1,0 +1,16 @@
+---
+major_changes:
+  - Global setting module - Add module to manage global settings and
+    site-specific global settings. Values are given as shown in the GUI
+    (choice and element titles, time spans like ``1h 30min``, data sizes like
+    ``10 MiB``) and translated based on the specification the REST API
+    delivers for each setting. The module is idempotent and supports check
+    mode and diff mode.
+  - Global setting lookup plugin - Add lookup plugin to read the value of a
+    global setting in the representation the ``global_setting`` module accepts.
+
+known_issues:
+  - Global setting module - The module uses the internal REST API
+    (``/check_mk/api/internal``), which is only shipped by Checkmk versions
+    newer than 2.5.0. Its interface may still change. Parts of a setting that
+    are still implemented as legacy ValueSpecs cannot be configured.
