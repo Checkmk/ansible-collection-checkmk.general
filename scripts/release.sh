@@ -166,6 +166,10 @@ replace_collection_version "the Collection version in 'pyproject.toml'" "${colle
   "version = \"${source_version}\"" "version = \"${target_version}\""
 echo
 
+echo "## Regenerate uv.lock prior to release"
+uv sync
+echo
+
 echo "## Checkmk version in the roles"
 mapfile -t role_files < <(find "${collection_dir}/roles/" -type f \( -path "*/defaults/main.yml" -o -path "*/meta/argument_specs.yml" \))
 replace_checkmk_version "the default Checkmk version for roles" "${checkmk_branch_stable}" "${checkmk_stable}" "${role_files[@]}"
