@@ -15,6 +15,7 @@ action_groups:
     - discovery
     - downtime
     - folder
+    - global_setting
     - host_group
     - host
     - ldap
