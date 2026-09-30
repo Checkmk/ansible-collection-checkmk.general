@@ -30,18 +30,17 @@ jobs:
       fail-fast: false
       max-parallel: 2
       matrix:
-        ansible:
-          - stable-2.16
-          - stable-2.19
-          - stable-2.20
-          - stable-2.21
-          - devel
-        python:
-          - '3.12'
-          - '3.13'
-        exclude:
-          - ansible: devel
-            python: '3.12'
+        include:
+          - {ansible: stable-2.16, python: '3.12', core: 'ansible-core~=2.16.0'}
+          - {ansible: stable-2.19, python: '3.12', core: 'ansible-core~=2.19.0'}
+          - {ansible: stable-2.19, python: '3.13', core: 'ansible-core~=2.19.0'}
+          - {ansible: stable-2.20, python: '3.12', core: 'ansible-core~=2.20.0'}
+          - {ansible: stable-2.20, python: '3.13', core: 'ansible-core~=2.20.0'}
+          - {ansible: stable-2.20, python: '3.14', core: 'ansible-core~=2.20.0'}
+          - {ansible: stable-2.21, python: '3.12', core: 'ansible-core~=2.21.0'}
+          - {ansible: stable-2.21, python: '3.13', core: 'ansible-core~=2.21.0'}
+          - {ansible: stable-2.21, python: '3.14', core: 'ansible-core~=2.21.0'}
+          - {ansible: devel, python: '3.13', core: 'https://github.com/ansible/ansible/archive/devel.tar.gz'}
 
     services:
       testsite:
@@ -76,16 +75,14 @@ jobs:
         with:
           enable-cache: true
           github-token: ${{ github.token }}
-          working-directory: ./ansible_collections/checkmk/general/
+          working-directory: ./ansible_collections/checkmk/general
           python-version: ${{ matrix.python }}
 
-      - name: "Setup uv venv."
-        run: uv venv
-        working-directory: ./ansible_collections/checkmk/general
-
-      - name: "Install ansible-base (${{ matrix.ansible }})."
-        run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
-        working-directory: ./ansible_collections/checkmk/general
+      - name: "Setup uv venv for: (${{ matrix.core }})."
+        run: |
+          echo "ANSIBLE_VENV=$RUNNER_TEMP/ansible-venv" >> "$GITHUB_ENV"
+          uv venv --python '${{ matrix.python }}' "$RUNNER_TEMP/ansible-venv"
+          uv pip install --python "$RUNNER_TEMP/ansible-venv" '${{ matrix.core }}'
 
       - name: "Inject variables into integration test."
         run: |
@@ -135,5 +132,5 @@ jobs:
           check http://localhost:5001/testsite_r_1/check_mk/login.py "$REMOTE_CID"  testsite_r_1 true
 
       - name: "Run integration test."
-        run: uv run ansible-test integration ${{ inputs.module }} -v --color --continue-on-error --retry-on-error --diff --python ${{ matrix.python }}
+        run: $ANSIBLE_VENV/bin/ansible-test integration ${{ inputs.module }} -v --color --continue-on-error --retry-on-error --diff --python ${{ matrix.python }}
         working-directory: ./ansible_collections/checkmk/general

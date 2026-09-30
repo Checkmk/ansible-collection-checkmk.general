@@ -22,6 +22,12 @@ Published-collection install (consumers, not development): see [`INSTALL.md`](IN
 
 All tooling runs via `uv run`. `ansible-test` requires `--docker` **last**, after any target paths.
 
+Locally, `uv run ansible-test` uses the ansible-core that `uv.lock` pulls in through
+`ansible-lint`/`molecule`. CI does not: each matrix leg installs its own ansible-core into
+a separate venv outside the uv project (see `_template-ans-int-test.yaml`). `uv run`
+would otherwise sync the lock and replace it, so never `uv pip install` an ansible-core
+into the project venv and expect it to survive.
+
 ```bash
 uv run ansible-test sanity --docker
 uv run ansible-test units --docker

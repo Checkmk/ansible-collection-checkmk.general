@@ -12,6 +12,5 @@ playbooks/test*.yml
 *venv*/
 .direnv/
 .vscode/
-uv.lock
 __pycache__/
 *.py[cod]

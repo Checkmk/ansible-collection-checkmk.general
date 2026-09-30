@@ -38,14 +38,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ansible:
-          - stable-2.16
-          - stable-2.17
-          - stable-2.18
-          - stable-2.19
-          - stable-2.20
-          - stable-2.21
-          - devel
+        include:
+          - {ansible: stable-2.16, python: '3.12', core: 'ansible-core~=2.16.0'}
+          - {ansible: stable-2.17, python: '3.12', core: 'ansible-core~=2.17.0'}
+          - {ansible: stable-2.18, python: '3.13', core: 'ansible-core~=2.18.0'}
+          - {ansible: stable-2.19, python: '3.13', core: 'ansible-core~=2.19.0'}
+          - {ansible: stable-2.20, python: '3.13', core: 'ansible-core~=2.20.0'}
+          - {ansible: stable-2.21, python: '3.13', core: 'ansible-core~=2.21.0'}
+          - {ansible: devel, python: '3.13', core: 'https://github.com/ansible/ansible/archive/devel.tar.gz'}
 
     steps:
 
@@ -54,22 +54,20 @@ jobs:
         with:
           path: ansible_collections/checkmk/general
 
-      - name: "Install uv."
+      - name: "Install uv and set the python version."
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
           github-token: ${{ github.token }}
-          working-directory: ./ansible_collections/checkmk/general/
-          python-version: '3.13'
+          working-directory: ./ansible_collections/checkmk/general
+          python-version: ${{ matrix.python }}
 
-      - name: "Create uv venv."
-        run: uv venv
-        working-directory: ./ansible_collections/checkmk/general
-
-      - name: Install ansible-base (${{ matrix.ansible }})
-        run: uv pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible }}.tar.gz
-        working-directory: ./ansible_collections/checkmk/general
+      - name: "Setup uv venv for: (${{ matrix.core }})."
+        run: |
+          echo "ANSIBLE_VENV=$RUNNER_TEMP/ansible-venv" >> "$GITHUB_ENV"
+          uv venv --python '${{ matrix.python }}' "$RUNNER_TEMP/ansible-venv"
+          uv pip install --python "$RUNNER_TEMP/ansible-venv" '${{ matrix.core }}'
 
       - name: Run sanity tests
-        run: uv run ansible-test sanity --docker -v --color --coverage
+        run: $ANSIBLE_VENV/bin/ansible-test sanity --docker -v --color --coverage
         working-directory: ./ansible_collections/checkmk/general

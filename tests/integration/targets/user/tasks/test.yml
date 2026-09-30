@@ -1,7 +1,7 @@
 ---
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else '' }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create contact groups."
   contact_group:
@@ -9,7 +9,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item }}"
     title: "{{ item }}"
     state: "present"
@@ -32,7 +32,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item.name }}"
     fullname: "{{ item.fullname }}"
     email: "{{ item.email | default(omit) }}"
@@ -76,7 +76,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item.name }}"
     fullname: "{{ item.fullname }}"
     email: "{{ item.email | default(omit) }}"
@@ -109,7 +109,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item.name }}"
     email: "{{ item.email | default(omit) }}"
     disable_notifications: "{{ item.disable_notifications | default(omit) }}"
@@ -135,7 +135,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ checkmk_var_api_user }}"
     show_mode: "enforce_show_more"
     state: "present"
@@ -159,7 +159,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item.name }}"
     password: "{{ item.password }}"
     auth_type: "{{ item.auth_type }}"
@@ -188,7 +188,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item.name }}"
     mega_menu_icons: "{{ item.mega_menu_icons | default(omit) }}"
     state: "present"
@@ -203,7 +203,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item.name }}"
     main_menu_icons: "{{ item.mega_menu_icons | default(omit) }}"
     state: "present"
