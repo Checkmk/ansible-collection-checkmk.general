@@ -1,7 +1,7 @@
 ---
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set customer attribute."
   ansible.builtin.set_fact:
-    checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else None }}"
+    checkmk_var_customer: "{{ 'provider' if outer_item.edition in ['managed', 'ultimatemt'] else '' }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Create contact groups."
   contact_group:
@@ -9,7 +9,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item.name }}"
     title: "{{ item.title | default(item.name) }}"
     state: "present"
@@ -21,7 +21,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item.name }}"
     title: "{{ item.title | default(item.name) }}"
     groups: "{{ checkmk_var_contact_groups_create }}"
@@ -46,7 +46,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item.name | default(item.name) }}"
     title: "{{ item.title }}"
     state: "present"
@@ -68,7 +68,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item.name }}"
     state: "absent"
   loop: "{{ checkmk_var_contact_groups_delete }}"
@@ -89,7 +89,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     name: "{{ item.name }}"
     state: "absent"
   loop: "{{ checkmk_var_contact_groups_create }}"
@@ -110,7 +110,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     groups: "{{ checkmk_var_contact_groups_create }}"
     state: "present"
 
@@ -120,7 +120,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     groups: "{{ checkmk_var_contact_groups_create }}"
     name: "test"
     state: "present"
@@ -133,7 +133,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     groups: "{{ checkmk_var_contact_groups_create }}"
     title: "Test"
     state: "present"
@@ -147,7 +147,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     groups: "{{ checkmk_var_contact_groups_modify }}"
     state: "present"
 
@@ -157,7 +157,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     groups: "{{ checkmk_var_contact_groups_delete }}"
     state: "absent"
 
@@ -167,7 +167,7 @@
     site: "{{ outer_item.site }}"
     api_user: "{{ checkmk_var_api_user }}"
     api_secret: "{{ checkmk_var_api_secret }}"
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     groups: "{{ checkmk_var_contact_groups_create }}"
     state: "absent"
 
@@ -183,14 +183,14 @@
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables."
   contact_group:
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     groups: "{{ checkmk_var_contact_groups_create }}"
     state: "present"
   environment: "{{ __checkmk_var_testing_environment }}"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Run Module using Environment Variables (cleanup)."
   contact_group:
-    customer: "{{ (checkmk_var_customer != None) | ternary(checkmk_var_customer, omit) }}"  # See PR #427
+    customer: "{{ checkmk_var_customer | default(omit, true) }}"  # See PR #427
     groups: "{{ checkmk_var_contact_groups_create }}"
     state: "absent"
   environment: "{{ __checkmk_var_testing_environment }}"
