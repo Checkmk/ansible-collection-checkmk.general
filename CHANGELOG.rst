@@ -4,6 +4,14 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v8.5.1
+======
+
+Minor Changes
+-------------
+
+- Lower ``requires_ansible`` back to ``>=2.16.0`` to match the tested support. ansible-core 2.16 is the default on RHEL. Sanity tests cover every release from 2.16 to 2.21, integration and unit tests cover 2.16, 2.19, 2.20 and 2.21.
+
 v8.5.0
 ======
 

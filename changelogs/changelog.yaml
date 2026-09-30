@@ -1926,3 +1926,12 @@ releases:
         name: downtimes
         namespace: null
     release_date: '2026-09-16'
+  8.5.1:
+    changes:
+      minor_changes:
+      - Lower ``requires_ansible`` back to ``>=2.16.0`` to match the tested support.
+        ansible-core 2.16 is the default on RHEL. Sanity tests cover every release
+        from 2.16 to 2.21, integration and unit tests cover 2.16, 2.19, 2.20 and 2.21.
+    fragments:
+    - ansible.yml
+    release_date: '2026-09-30'
