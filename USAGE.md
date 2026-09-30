@@ -170,7 +170,7 @@ site: "mysite"
 api_user: "myuser"
 api_secret: "mysecret"
 # Group the hosts based on the following elements
-groupsources: ["hosttags", "sites"]
+groupsources: ["hosttags", "sites", "labels"]
 want_ipv4: false
 folder: "/"
 recursive: true
@@ -190,3 +190,32 @@ ansible-playbook -i checkmk.yml my_playbook.yml
 ```
 
 Ansible will now dynamically execute the playbook against the hosts monitored by your Checkmk site.
+
+### Host labels
+
+The labels of a host are always available as the host variable `checkmk_labels`,
+whether or not you list `labels` in `groupsources`.
+
+```yaml
+- name: "Show what Checkmk knows about a host."
+  hosts: all
+  tasks:
+    - name: "Print the labels."
+      ansible.builtin.debug:
+        var: checkmk_labels
+
+    - name: "Only run this on Linux hosts."
+      ansible.builtin.debug:
+        msg: "This is a Linux machine."
+      when: checkmk_labels['cmk/os_family'] | default('') == 'linux'
+```
+
+Adding `labels` to `groupsources` additionally creates one group per label, named
+`label_<key>_<value>`, so the example above can also be written as a host
+pattern:
+
+```bash
+ansible-playbook -i checkmk.yml my_playbook.yml --limit label_cmk_os_family_linux
+```
+
+Characters that are not valid in a group name are replaced by underscores.
