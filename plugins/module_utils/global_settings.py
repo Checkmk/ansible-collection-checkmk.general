@@ -18,6 +18,11 @@ This module walks the spec to translate between that representation and the
 values a user sees in the GUI (choice titles, dictionary element titles,
 "1h 30min", "10 MiB", ...), in both directions, and provides a canonical form
 of a frontend value that makes two values comparable for idempotency.
+
+All translation functions accept an optional ``logger`` (anything with a
+``debug(msg)`` method). Each level of the spec logs its type, its position
+in the value and a shortened representation of the value, so a failing
+translation can be followed without dumping the (large) spec repeatedly.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -34,6 +39,9 @@ except ImportError:  # Python 2
 HIDDEN_SECRET = "(hidden)"
 
 API_VERSION_PATH = "internal"
+
+# Maximum length of a value representation in the debug log.
+_LOG_VALUE_MAX = 200
 
 # Frontend types whose values are already plain data that a user can read and
 # write as-is. They are passed through unchanged.
@@ -57,6 +65,24 @@ _PASSTHROUGH_TYPES = frozenset(
         "oauth2_connection_setup",
         "telemetry_metrics_custom_query",
         "dcd_telemetry_metrics_filter",
+    }
+)
+
+# Types whose values must never end up in the log.
+_SECRET_TYPES = frozenset({"simple_password", "password"})
+
+# Types that contain other specs. Their values are not logged: the nested
+# levels log their own parts, and a container value could hold a secret.
+_CONTAINER_TYPES = frozenset(
+    {
+        "dictionary",
+        "two_column_dictionary",
+        "catalog",
+        "cascading_single_choice",
+        "list",
+        "list_unique_selection",
+        "tuple",
+        "optional_choice",
     }
 )
 
@@ -141,6 +167,42 @@ def internal_api_url(url):
 
 
 # ---------------------------------------------------------------------------
+# Logging helpers
+# ---------------------------------------------------------------------------
+
+
+def _short(value):
+    """A shortened representation of a value for the debug log."""
+    text = repr(value)
+    if len(text) > _LOG_VALUE_MAX:
+        return text[:_LOG_VALUE_MAX] + "... (%d chars)" % len(text)
+    return text
+
+
+def _debug(logger, func, spec, path, **items):
+    """Log one step of a translation: function, spec type, path and values.
+
+    Values are only logged at the leaves of the spec. Values of secret types
+    are replaced, so passwords never reach the log.
+    """
+    if not logger:
+        return
+    kind = (spec or {}).get("type")
+    parts = []
+    for key, value in items.items():
+        if key in ("value", "current", "result"):
+            if kind in _CONTAINER_TYPES:
+                continue
+            if kind in _SECRET_TYPES:
+                value = HIDDEN_SECRET if value else value
+        parts.append("%s=%s" % (key, _short(value)))
+    logger.debug(
+        "%s(): type=%s, path=%s%s"
+        % (func, kind, _path_str(path), (", " + ", ".join(parts)) if parts else "")
+    )
+
+
+# ---------------------------------------------------------------------------
 # Generic spec helpers
 # ---------------------------------------------------------------------------
 
@@ -157,21 +219,40 @@ def _norm(text):
     return re.sub(r"\s+", " ", str(text)).strip().casefold()
 
 
-def _match_choice(elements, wanted, path, get_name, get_title):
+def _match_choice(elements, wanted, path, get_name, get_title, logger=None):
     """Find a choice element by its title (preferred) or internal name.
 
     Matching order: exact title, exact name, case/whitespace-insensitive title.
     """
+    match, how = None, None
     for element in elements:
         if get_title(element) == wanted:
-            return element
-    for element in elements:
-        if get_name(element) == wanted:
-            return element
-    wanted_norm = _norm(wanted)
-    candidates = [e for e in elements if _norm(get_title(e)) == wanted_norm]
-    if len(candidates) == 1:
-        return candidates[0]
+            match, how = element, "title"
+            break
+    if match is None:
+        for element in elements:
+            if get_name(element) == wanted:
+                match, how = element, "name"
+                break
+    if match is None:
+        wanted_norm = _norm(wanted)
+        candidates = [e for e in elements if _norm(get_title(e)) == wanted_norm]
+        if len(candidates) == 1:
+            match, how = candidates[0], "normalized title"
+
+    if match is not None:
+        if logger:
+            logger.debug(
+                "_match_choice(): path=%s, %r matched by %s -> name=%s"
+                % (_path_str(path), wanted, how, _short(get_name(match)))
+            )
+        return match
+
+    if logger:
+        logger.debug(
+            "_match_choice(): path=%s, %r did not match any of %d choices"
+            % (_path_str(path), wanted, len(elements))
+        )
     raise GlobalSettingValueError(
         "%s: %r is not a valid choice. Valid choices are: %s"
         % (
@@ -198,7 +279,7 @@ def _element_keys(elements, get_name, get_spec):
     return keys
 
 
-def _resolve_key(elements, key, path, get_name, get_spec):
+def _resolve_key(elements, key, path, get_name, get_spec, logger=None):
     """Find an element by user key (title or internal name)."""
     return _match_choice(
         elements,
@@ -206,6 +287,7 @@ def _resolve_key(elements, key, path, get_name, get_spec):
         path,
         get_name=get_name,
         get_title=lambda e: _title(get_spec(e)),
+        logger=logger,
     )
 
 
@@ -343,8 +425,15 @@ def _to_number(value, kind, path):
 # ---------------------------------------------------------------------------
 
 
-def to_ui(spec, value, path=()):
+def to_ui(spec, value, path=(), logger=None):
     """Translate a frontend value into the representation shown in the GUI."""
+    _debug(logger, "to_ui", spec, path, value=value)
+    result = _to_ui(spec, value, path, logger)
+    _debug(logger, "to_ui", spec, path, result=result)
+    return result
+
+
+def _to_ui(spec, value, path, logger):
     kind = (spec or {}).get("type")
 
     if kind in _PASSTHROUGH_TYPES or kind is None:
@@ -366,6 +455,11 @@ def to_ui(spec, value, path=()):
         for element in spec.get("elements") or []:
             if element.get("name") == value:
                 return element.get("title") or value
+        if logger:
+            logger.debug(
+                "to_ui(): path=%s, value %s is not among the choices, kept as-is"
+                % (_path_str(path), _short(value))
+            )
         return value
 
     if kind == "cascading_single_choice":
@@ -378,7 +472,9 @@ def to_ui(spec, value, path=()):
                 sub_spec = element.get("parameter_form") or {}
                 if sub_spec.get("type") == "fixed_value":
                     return title
-                return {title: to_ui(sub_spec, sub_value, path + (title,))}
+                return {
+                    title: to_ui(sub_spec, sub_value, path + (title,), logger=logger)
+                }
         return value
 
     if kind in ("dictionary", "two_column_dictionary"):
@@ -394,7 +490,10 @@ def to_ui(spec, value, path=()):
             if name in value:
                 key = keys[name]
                 result[key] = to_ui(
-                    element.get("parameter_form"), value[name], path + (key,)
+                    element.get("parameter_form"),
+                    value[name],
+                    path + (key,),
+                    logger=logger,
                 )
         return result
 
@@ -415,6 +514,7 @@ def to_ui(spec, value, path=()):
                     e.get("parameter_form"),
                     topic_value[e["name"]],
                     path + (topic_key, keys[e["name"]]),
+                    logger=logger,
                 )
                 for e in elements
                 if e["name"] in topic_value
@@ -425,20 +525,22 @@ def to_ui(spec, value, path=()):
         if not isinstance(value, list):
             return value
         template = spec.get("element_template")
-        return [to_ui(template, v, path + (i,)) for i, v in enumerate(value)]
+        return [
+            to_ui(template, v, path + (i,), logger=logger) for i, v in enumerate(value)
+        ]
 
     if kind == "tuple":
         if not isinstance(value, (list, tuple)):
             return value
         return [
-            to_ui(s, v, path + (i,))
+            to_ui(s, v, path + (i,), logger=logger)
             for i, (s, v) in enumerate(zip(spec.get("elements") or [], value))
         ]
 
     if kind == "optional_choice":
         if value is None:
             return None
-        return to_ui(spec.get("parameter_form"), value, path)
+        return to_ui(spec.get("parameter_form"), value, path, logger=logger)
 
     if kind in ("checkbox_list_choice", "dual_list_choice"):
         if not isinstance(value, list):
@@ -472,6 +574,11 @@ def to_ui(spec, value, path=()):
             return {"password_store": password_id}
         return HIDDEN_SECRET if value[2] else None
 
+    if logger:
+        logger.debug(
+            "to_ui(): path=%s, unknown type %r, value passed through"
+            % (_path_str(path), kind)
+        )
     return value
 
 
@@ -497,13 +604,28 @@ def _current_by_name(current, name):
     return None
 
 
-def from_ui(spec, value, current=None, update_secrets=False, path=()):
+def from_ui(spec, value, current=None, update_secrets=False, path=(), logger=None):
     """Translate a GUI style value into the frontend representation.
 
     C(current) is the current frontend value at the same position (or None).
     It is used to keep secrets unchanged unless C(update_secrets) is set, and
     to keep the identity of explicit passwords.
     """
+    _debug(
+        logger,
+        "from_ui",
+        spec,
+        path,
+        value=value,
+        current=current,
+        update_secrets=update_secrets,
+    )
+    result = _from_ui(spec, value, current, update_secrets, path, logger)
+    _debug(logger, "from_ui", spec, path, result=result)
+    return result
+
+
+def _from_ui(spec, value, current, update_secrets, path, logger):
     kind = (spec or {}).get("type")
 
     if kind == "legacy_valuespec":
@@ -534,17 +656,25 @@ def from_ui(spec, value, current=None, update_secrets=False, path=()):
             path,
             get_name=lambda e: e.get("name"),
             get_title=lambda e: e.get("title") or "",
+            logger=logger,
         )
         return element.get("name")
 
     if kind == "cascading_single_choice":
-        return _cascading_from_ui(spec, value, current, update_secrets, path)
+        return _cascading_from_ui(
+            spec, value, current, update_secrets, path, logger=logger
+        )
 
     if kind in ("dictionary", "two_column_dictionary"):
         if not isinstance(value, dict):
             raise GlobalSettingValueError("%s: expected a dictionary" % _path_str(path))
         return _elements_from_ui(
-            spec.get("elements") or [], value, current, update_secrets, path
+            spec.get("elements") or [],
+            value,
+            current,
+            update_secrets,
+            path,
+            logger=logger,
         )
 
     if kind == "catalog":
@@ -561,6 +691,7 @@ def from_ui(spec, value, current=None, update_secrets=False, path=()):
                 path,
                 get_name=lambda t: t.get("name"),
                 get_title=lambda t: t.get("title") or "",
+                logger=logger,
             )
             given[topic["name"]] = (topic.get("title") or topic["name"], topic_value)
         result = {}
@@ -577,6 +708,7 @@ def from_ui(spec, value, current=None, update_secrets=False, path=()):
                 _current_by_name(current, name),
                 update_secrets,
                 path + (topic_key,),
+                logger=logger,
             )
         return result
 
@@ -592,6 +724,7 @@ def from_ui(spec, value, current=None, update_secrets=False, path=()):
                 current_list[i] if i < len(current_list) else None,
                 update_secrets,
                 path + (i,),
+                logger=logger,
             )
             for i, v in enumerate(value)
         ]
@@ -610,6 +743,7 @@ def from_ui(spec, value, current=None, update_secrets=False, path=()):
                 current_list[i] if i < len(current_list) else None,
                 update_secrets,
                 path + (i,),
+                logger=logger,
             )
             for i, (s, v) in enumerate(zip(elements, value))
         ]
@@ -617,7 +751,14 @@ def from_ui(spec, value, current=None, update_secrets=False, path=()):
     if kind == "optional_choice":
         if value is None:
             return None
-        return from_ui(spec.get("parameter_form"), value, current, update_secrets, path)
+        return from_ui(
+            spec.get("parameter_form"),
+            value,
+            current,
+            update_secrets,
+            path,
+            logger=logger,
+        )
 
     if kind in ("checkbox_list_choice", "dual_list_choice"):
         if not isinstance(value, list):
@@ -635,6 +776,7 @@ def from_ui(spec, value, current=None, update_secrets=False, path=()):
                 path,
                 get_name=lambda e: e.get("name"),
                 get_title=lambda e: e.get("title") or "",
+                logger=logger,
             )
             result.append({"name": element["name"], "title": element.get("title")})
         return result
@@ -648,15 +790,24 @@ def from_ui(spec, value, current=None, update_secrets=False, path=()):
         return _data_size_to_frontend(spec, value, path)
 
     if kind == "simple_password":
-        return _simple_password_from_ui(value, current, update_secrets, path)
+        return _simple_password_from_ui(
+            value, current, update_secrets, path, logger=logger
+        )
 
     if kind == "password":
-        return _password_from_ui(spec, value, current, update_secrets, path)
+        return _password_from_ui(
+            spec, value, current, update_secrets, path, logger=logger
+        )
 
+    if logger:
+        logger.debug(
+            "from_ui(): path=%s, unknown type %r, value passed through"
+            % (_path_str(path), kind)
+        )
     return value
 
 
-def _cascading_from_ui(spec, value, current, update_secrets, path):
+def _cascading_from_ui(spec, value, current, update_secrets, path, logger=None):
     elements = spec.get("elements") or []
     if isinstance(value, dict):
         if len(value) != 1:
@@ -678,6 +829,7 @@ def _cascading_from_ui(spec, value, current, update_secrets, path):
         path,
         get_name=lambda e: e.get("name"),
         get_title=lambda e: e.get("title") or "",
+        logger=logger,
     )
     sub_spec = element.get("parameter_form") or {}
     sub_path = path + (element.get("title") or element["name"],)
@@ -700,15 +852,18 @@ def _cascading_from_ui(spec, value, current, update_secrets, path):
 
     return [
         element["name"],
-        from_ui(sub_spec, sub_value, current_sub, update_secrets, sub_path),
+        from_ui(
+            sub_spec, sub_value, current_sub, update_secrets, sub_path, logger=logger
+        ),
     ]
 
 
-def _elements_from_ui(elements, value, current, update_secrets, path):
+def _elements_from_ui(elements, value, current, update_secrets, path, logger=None):
     """Translate dictionary (or catalog topic) elements.
 
     Elements not given by the user are left out (i.e. unchecked in the GUI),
-    unless they are required, in which case the spec's default is used.
+    unless they are required, in which case they keep their current value or,
+    if there is none, get the spec's default.
     """
     result = {}
     for key, element_value in value.items():
@@ -718,6 +873,7 @@ def _elements_from_ui(elements, value, current, update_secrets, path):
             path,
             get_name=lambda e: e["name"],
             get_spec=lambda e: e.get("parameter_form"),
+            logger=logger,
         )
         result[element["name"]] = from_ui(
             element.get("parameter_form"),
@@ -725,19 +881,26 @@ def _elements_from_ui(elements, value, current, update_secrets, path):
             _current_by_name(current, element["name"]),
             update_secrets,
             path + (key,),
+            logger=logger,
         )
     for element in elements:
         if element.get("required") and element["name"] not in result:
             current_value = _current_by_name(current, element["name"])
-            result[element["name"]] = (
-                current_value
-                if current_value is not None
-                else element.get("default_value")
-            )
+            if current_value is not None:
+                result[element["name"]] = current_value
+                source = "current value"
+            else:
+                result[element["name"]] = element.get("default_value")
+                source = "spec default"
+            if logger:
+                logger.debug(
+                    "_elements_from_ui(): path=%s, required element %r not given, "
+                    "using the %s" % (_path_str(path), element["name"], source)
+                )
     return result
 
 
-def _simple_password_from_ui(value, current, update_secrets, path):
+def _simple_password_from_ui(value, current, update_secrets, path, logger=None):
     if value is None or value == "":
         raise GlobalSettingValueError("%s: a password is required" % _path_str(path))
     has_current = isinstance(current, (list, tuple)) and current and current[0]
@@ -747,13 +910,22 @@ def _simple_password_from_ui(value, current, update_secrets, path):
                 "%s: no password is set yet, provide the actual password"
                 % _path_str(path)
             )
-        return list(current)
-    if has_current and not update_secrets:
-        return list(current)
-    return [str(value), False]
+        decision = "keeping the stored password (hidden marker given)"
+        result = list(current)
+    elif has_current and not update_secrets:
+        decision = "keeping the stored password (update_secrets is false)"
+        result = list(current)
+    else:
+        decision = "writing the given password"
+        result = [str(value), False]
+    if logger:
+        logger.debug(
+            "_simple_password_from_ui(): path=%s, %s" % (_path_str(path), decision)
+        )
+    return result
 
 
-def _password_from_ui(spec, value, current, update_secrets, path):
+def _password_from_ui(spec, value, current, update_secrets, path, logger=None):
     current_ok = isinstance(current, (list, tuple)) and len(current) == 4
 
     if isinstance(value, dict):
@@ -770,6 +942,7 @@ def _password_from_ui(spec, value, current, update_secrets, path):
             path,
             get_name=lambda c: c.get("password_id"),
             get_title=lambda c: c.get("name") or "",
+            logger=logger,
         )
         return ["stored_password", choice["password_id"], "", False]
 
@@ -785,11 +958,18 @@ def _password_from_ui(spec, value, current, update_secrets, path):
                 "%s: no explicit password is set yet, provide the actual password"
                 % _path_str(path)
             )
-        return list(current)
-    if current_is_explicit and not update_secrets:
-        return list(current)
-    password_id = current[1] if current_is_explicit else ""
-    return ["explicit_password", password_id, str(value), False]
+        decision = "keeping the stored password (hidden marker given)"
+        result = list(current)
+    elif current_is_explicit and not update_secrets:
+        decision = "keeping the stored password (update_secrets is false)"
+        result = list(current)
+    else:
+        decision = "writing the given password"
+        password_id = current[1] if current_is_explicit else ""
+        result = ["explicit_password", password_id, str(value), False]
+    if logger:
+        logger.debug("_password_from_ui(): path=%s, %s" % (_path_str(path), decision))
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -867,7 +1047,7 @@ def canonical(spec, value):
     if kind == "float":
         return None if value is None else float(value)
 
-    if kind in ("simple_password", "password"):
+    if kind in _SECRET_TYPES:
         return list(value) if isinstance(value, (list, tuple)) else value
 
     if isinstance(value, tuple):
@@ -875,7 +1055,25 @@ def canonical(spec, value):
     return value
 
 
-def ui_from_setting(setting):
+def diff_paths(a, b, path=()):
+    """List the paths at which two canonical values differ (for the log)."""
+    if isinstance(a, dict) and isinstance(b, dict):
+        paths = []
+        for key in sorted(set(a) | set(b), key=str):
+            if key not in a or key not in b:
+                paths.append(_path_str(path + (key,)))
+            else:
+                paths.extend(diff_paths(a[key], b[key], path + (key,)))
+        return paths
+    if isinstance(a, list) and isinstance(b, list) and len(a) == len(b):
+        paths = []
+        for i, (x, y) in enumerate(zip(a, b)):
+            paths.extend(diff_paths(x, y, path + (i,)))
+        return paths
+    return [] if a == b else [_path_str(path)]
+
+
+def ui_from_setting(setting, logger=None):
     """Build the user facing representation of a REST API setting object."""
     spec = setting.get("spec") or {}
     return {
@@ -883,5 +1081,5 @@ def ui_from_setting(setting):
         "site_id": setting.get("site_id"),
         "origin": setting.get("origin"),
         "title": _title(spec),
-        "value": to_ui(spec, setting.get("value")),
+        "value": to_ui(spec, setting.get("value"), logger=logger),
     }

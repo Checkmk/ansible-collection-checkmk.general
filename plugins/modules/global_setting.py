@@ -294,6 +294,7 @@ from ansible_collections.checkmk.general.plugins.module_utils.api import Checkmk
 from ansible_collections.checkmk.general.plugins.module_utils.global_settings import (
     GlobalSettingValueError,
     canonical,
+    diff_paths,
     from_ui,
     internal_api_url,
     setting_endpoint,
@@ -345,6 +346,10 @@ class GlobalSettingAPI(CheckmkAPI):
         self.endpoint = setting_endpoint(self.varname, self.gs_site_id)
         # The level this module configures, as reported in 'origin'.
         self.own_origin = "site" if self.gs_site_id else "global"
+        logger.debug(
+            "GlobalSettingAPI: url=%s, endpoint=%s, own origin=%s"
+            % (self.url, self.endpoint, self.own_origin)
+        )
 
         self.etag = ""
         self.current = self._get_current()
@@ -357,7 +362,22 @@ class GlobalSettingAPI(CheckmkAPI):
             logger=logger,
         )
         self.etag = result.etag
-        return json.loads(result.content)
+        setting = json.loads(result.content)
+        spec = setting.get("spec") or {}
+        logger.debug(
+            "Current setting: varname=%s, site_id=%s, origin=%s, spec type=%s, "
+            "spec title=%r, top-level elements=%d, etag=%s"
+            % (
+                setting.get("varname"),
+                setting.get("site_id"),
+                setting.get("origin"),
+                spec.get("type"),
+                spec.get("title"),
+                len(spec.get("elements") or []),
+                self.etag,
+            )
+        )
+        return setting
 
     @property
     def spec(self):
@@ -409,11 +429,15 @@ def _exit(module, api, result=None, msg="", changed=False, setting=None, diff=No
 
 
 def _ui_setting(spec, frontend_value, origin):
-    return {
-        "value": to_ui(spec, frontend_value),
+    ui_setting = {
+        "value": to_ui(spec, frontend_value, logger=logger),
         "origin": origin,
         "title": spec.get("title") or "",
     }
+    logger.debug(
+        "UI setting: origin=%s, title=%r" % (ui_setting["origin"], ui_setting["title"])
+    )
+    return ui_setting
 
 
 def _diff(before, after):
@@ -435,6 +459,8 @@ def _present(module, api):
             module.params.get("value"),
             current=current_value,
             update_secrets=module.params.get("update_secrets"),
+            path=(),
+            logger=logger,
         )
     except GlobalSettingValueError as e:
         exit_module(
@@ -444,15 +470,29 @@ def _present(module, api):
             logger=logger,
         )
 
-    if current_origin == api.own_origin and canonical(spec, desired_value) == canonical(
-        spec, current_value
-    ):
+    # Only the paths that differ are logged, not the values themselves: the
+    # desired value may hold a password in plain text (update_secrets).
+    differences = diff_paths(
+        canonical(spec, current_value), canonical(spec, desired_value)
+    )
+    logger.debug(
+        "Comparison: current origin=%s, own origin=%s, differing paths=%s"
+        % (current_origin, api.own_origin, differences or "none")
+    )
+
+    if current_origin == api.own_origin and not differences:
         _exit(
             module,
             api,
             msg="Global setting already in the desired state.",
             setting=before,
             diff=_diff(before, before),
+        )
+
+    if not differences:
+        logger.debug(
+            "Value unchanged, but inherited (origin=%s): writing it to configure "
+            "it explicitly on level '%s'." % (current_origin, api.own_origin)
         )
 
     # For display purposes, a password that is about to be written is hidden.
@@ -476,7 +516,9 @@ def _present(module, api):
             response.get("origin", api.own_origin),
         )
     except (TypeError, ValueError):
-        pass
+        logger.debug(
+            "Update response could not be parsed, reporting the desired value."
+        )
     _exit(
         module,
         api,
@@ -491,6 +533,10 @@ def _absent(module, api):
     spec = api.spec
     current_origin = api.current.get("origin")
     before = _ui_setting(spec, api.current.get("value"), current_origin)
+    logger.debug(
+        "Reset requested: current origin=%s, own origin=%s"
+        % (current_origin, api.own_origin)
+    )
 
     if current_origin != api.own_origin:
         _exit(
