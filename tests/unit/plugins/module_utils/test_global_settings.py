@@ -298,3 +298,100 @@ class TestMisc:
         assert from_ui(spec, None) is None
         assert from_ui(spec, "1min") == 60.0
         assert to_ui(spec, 60.0) == "1min"
+
+
+# ---------------------------------------------------------------------------
+# Logging
+# ---------------------------------------------------------------------------
+
+
+class _Log:
+    def __init__(self):
+        self.lines = []
+
+    def debug(self, msg):
+        self.lines.append(msg)
+
+
+class TestLogging:
+    def test_logger_is_threaded_through_nested_specs(self):
+        log = _Log()
+        frontend = from_ui(CASCADING_SPEC, {"Enabled": {"Timeout": "2min"}}, logger=log)
+        assert to_ui(CASCADING_SPEC, frontend, logger=log) == {
+            "Enabled": {"Timeout": "2min"}
+        }
+        assert any("path=Enabled/Timeout" in line for line in log.lines)
+        assert any("matched by title" in line for line in log.lines)
+
+    def test_required_default_is_logged(self):
+        log = _Log()
+        from_ui(LOG_LEVELS_SPEC, {"Web": "Debug"}, logger=log)
+        assert any("required element 'cmk.core'" in line for line in log.lines)
+
+    def test_secrets_are_not_logged(self):
+        log = _Log()
+        spec = {
+            "type": "dictionary",
+            "elements": [
+                {"name": "pw", "required": True, "parameter_form": PASSWORD_SPEC}
+            ],
+        }
+        from_ui(spec, {"Secret": "s3cr3t-value"}, update_secrets=True, logger=log)
+        assert log.lines
+        assert not any("s3cr3t-value" in line for line in log.lines)
+
+    def test_real_log_levels_spec(self):
+        """The spec as delivered by the REST API (shortened to two loggers)."""
+        levels = [
+            ("1a65", "Critical"),
+            ("d59e", "Error"),
+            ("624b", "Warning"),
+            ("f5ca", "Informational"),
+            ("e629", "Verbose"),
+            ("4a44", "Debug"),
+        ]
+
+        def element(name, title):
+            return {
+                "name": name,
+                "required": True,
+                "default_value": "624b",
+                "parameter_form": {
+                    "title": title,
+                    "type": "single_choice",
+                    "elements": [{"name": n, "title": t} for n, t in levels],
+                },
+            }
+
+        spec = {
+            "type": "dictionary",
+            "title": "Logging",
+            "elements": [
+                element("cmk.web", "Web"),
+                element("cmk.web.auth", "Authentication"),
+            ],
+        }
+        current = {"cmk.web": "624b", "cmk.web.auth": "624b"}
+        log = _Log()
+        desired = from_ui(
+            spec,
+            {"Web": "Informational", "Authentication": "Debug"},
+            current=current,
+            logger=log,
+        )
+        assert desired == {"cmk.web": "f5ca", "cmk.web.auth": "4a44"}
+        assert to_ui(spec, current, logger=log) == {
+            "Web": "Warning",
+            "Authentication": "Warning",
+        }
+
+
+class TestDiffPaths:
+    def test_paths(self):
+        from ansible_collections.checkmk.general.plugins.module_utils.global_settings import (
+            diff_paths,
+        )
+
+        assert diff_paths({"a": 1, "b": [1, 2]}, {"a": 1, "b": [1, 3]}) == ["b/1"]
+        assert diff_paths({"a": 1}, {"a": 1}) == []
+        assert diff_paths({"a": 1}, {}) == ["a"]
