@@ -173,10 +173,6 @@
   changed_when: "'-----BEGIN PRIVATE KEY-----' in __checkmk_agent_proxy_registration_state.stdout"
   tags:
     - register-agent
-  vars:
-    ansible_user: "{{ root_user }}"
-    ansible_password: "{{ root_password }}"
-    ansible_python_interpreter: /omd/sites/master/bin/python #da Linux System seitig auf dem Master nur python3.7
 
 - name: "{{ ansible_facts['system'] }}: Create temporary proxy-register file."
   ansible.windows.win_copy:
@@ -240,6 +236,3 @@
   when: checkmk_agent_mode == 'push'
   tags:
     - register-agent
-
-
-# abc
