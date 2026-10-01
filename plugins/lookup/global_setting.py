@@ -130,4 +130,3 @@ class LookupModule(LookupBase):
             setting = ui_from_setting(response)
             ret.append(setting if full else setting["value"])
         return ret
-
