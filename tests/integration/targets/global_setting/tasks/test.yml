@@ -1,0 +1,179 @@
+---
+# =============================================================================
+# Global setting module and lookup integration tests
+# =============================================================================
+# Every change is followed by a re-run of the same task, asserting that it no
+# longer reports a change (idempotency). Check mode runs assert that nothing
+# is written. Values are given the way the GUI shows them.
+# Site-specific settings need a distributed setup and are covered by the
+# unit tests only.
+# =============================================================================
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Reset wato_max_snapshots."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "wato_max_snapshots"
+    state: "absent"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set wato_max_snapshots in check mode."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "wato_max_snapshots"
+    value: 123
+  check_mode: true
+  register: checkmk_var_result
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert check mode reported a change but wrote nothing."
+  ansible.builtin.assert:
+    that:
+      - checkmk_var_result is changed
+      - checkmk_var_result.value == 123
+      - (lookup('checkmk.general.global_setting', 'wato_max_snapshots', full=true, server_url=checkmk_var_server_url, site=outer_item.site, api_user=checkmk_var_api_user, api_secret=checkmk_var_api_secret)).origin == 'factory'
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set wato_max_snapshots."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "wato_max_snapshots"
+    value: 123
+  register: checkmk_var_result
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set wato_max_snapshots again, given as a string."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "wato_max_snapshots"
+    value: "123"
+  register: checkmk_var_result_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert change and idempotency."
+  ansible.builtin.assert:
+    that:
+      - checkmk_var_result is changed
+      - checkmk_var_result.origin == 'global'
+      - checkmk_var_result_again is not changed
+      - lookup('checkmk.general.global_setting', 'wato_max_snapshots', server_url=checkmk_var_server_url, site=outer_item.site, api_user=checkmk_var_api_user, api_secret=checkmk_var_api_secret) == 123
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set profile by its title."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "profile"
+    value: "Enable profiling by request"
+  register: checkmk_var_result
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set profile by a loosely matching title."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "profile"
+    value: "enable profiling by REQUEST"
+  register: checkmk_var_result_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert single choice."
+  ansible.builtin.assert:
+    that:
+      - checkmk_var_result is changed
+      - checkmk_var_result.value == 'Enable profiling by request'
+      - checkmk_var_result_again is not changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Try an invalid choice."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "profile"
+    value: "Profile everything, always"
+  register: checkmk_var_result
+  failed_when: checkmk_var_result is not failed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set log levels."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "log_levels"
+    value:
+      Web: "Informational"
+      Authentication: "Debug"
+  register: checkmk_var_result
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set log levels again."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "log_levels"
+    value:
+      Web: "Informational"
+      Authentication: "Debug"
+  register: checkmk_var_result_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert log levels."
+  ansible.builtin.assert:
+    that:
+      - checkmk_var_result is changed
+      - checkmk_var_result.value['Web'] == 'Informational'
+      - checkmk_var_result.value['Authentication'] == 'Debug'
+      - checkmk_var_result_again is not changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Reset the settings."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item }}"
+    state: "absent"
+  loop:
+    - "wato_max_snapshots"
+    - "profile"
+    - "log_levels"
+  register: checkmk_var_result
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Reset the settings again."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item }}"
+    state: "absent"
+  loop:
+    - "wato_max_snapshots"
+    - "profile"
+    - "log_levels"
+  register: checkmk_var_result_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert reset and idempotency."
+  ansible.builtin.assert:
+    that:
+      - checkmk_var_result.results | map(attribute='changed') | list == [true, true, true]
+      - checkmk_var_result.results | map(attribute='origin') | unique | list == ['factory']
+      - checkmk_var_result_again is not changed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
+  activation:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    force_foreign_changes: true
+  run_once: true
