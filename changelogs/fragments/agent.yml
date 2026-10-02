@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - Agent role - Support delegated agent registration on Windows hosts.
+    The registration target must be a Linux host with the Checkmk agent installed.
