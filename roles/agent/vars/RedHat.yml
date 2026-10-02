@@ -6,6 +6,11 @@ __checkmk_agent_agent:
     community: "{{ __checkmk_agent_site_url }}/check_mk/agents/check-mk-agent-{{ checkmk_agent_version }}-1.noarch.rpm"
     pro: "{{ __checkmk_agent_site_url }}/check_mk/api/1.0/domain-types/agent/actions/download_by_host/invoke"
   file:
-    community: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-vanilla.rpm"
-    pro: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-generic.rpm"
-    host: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-{{ inventory_hostname }}.rpm"
+    download:
+      community: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-vanilla.rpm"
+      pro: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-generic.rpm"
+      host: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-{{ inventory_hostname }}.rpm"
+    upload:
+      community: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-vanilla.rpm"
+      pro: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-generic.rpm"
+      host: "{{ __checkmk_agent_host_tmp_dir }}/check-mk-agent-{{ checkmk_agent_version }}-1.noarch-{{ inventory_hostname }}.rpm"

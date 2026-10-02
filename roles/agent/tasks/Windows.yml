@@ -1,7 +1,7 @@
 ---
 - name: "{{ ansible_facts['os_family'] }}: Install host-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.windows.win_package:
-    path: "{{ __checkmk_agent_agent.file.host }}"
+    path: "{{ __checkmk_agent_agent.file.upload.host }}"
     state: present
   when: |
     checkmk_agent_edition | lower != "community"
@@ -11,7 +11,7 @@
 
 - name: "{{ ansible_facts['os_family'] }}: Install folder-specific {{ checkmk_agent_edition | upper }} Agent."
   ansible.windows.win_package:
-    path: "{{ __checkmk_agent_agent.file.pro }}"
+    path: "{{ __checkmk_agent_agent.file.upload.pro }}"
     state: present
   when: |
     checkmk_agent_edition | lower != "community"
@@ -21,7 +21,7 @@
 
 - name: "{{ ansible_facts['os_family'] }}: Install Vanilla Agent."
   ansible.windows.win_package:
-    path: "{{ __checkmk_agent_agent.file.community }}"
+    path: "{{ __checkmk_agent_agent.file.upload.community }}"
     state: present
   when: |
     checkmk_agent_edition | lower == "community"
@@ -34,8 +34,8 @@
     path: "{{ item }}"
     state: absent
   loop:
-    - "{{ __checkmk_agent_agent.file.community }}"
-    - "{{ __checkmk_agent_agent.file.pro }}"
-    - "{{ __checkmk_agent_agent.file.host }}"
+    - "{{ __checkmk_agent_agent.file.upload.community }}"
+    - "{{ __checkmk_agent_agent.file.upload.pro }}"
+    - "{{ __checkmk_agent_agent.file.upload.host }}"
   tags:
     - download-package
