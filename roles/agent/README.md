@@ -209,6 +209,7 @@ This feature can be used in case a direct connection to the Checkmk site on the 
     checkmk_agent_delegate_registration_target: "{{ inventory_hostname }}"
 
 Configure the target which is used to register the monitored host on the Checkmk server for TLS. The target needs to have a Checkmk agent installed.
+For Windows hosts, the target must be a Linux host, as the registration is performed via `cmk-agent-ctl proxy-register` on the target and the result is then imported on the Windows host. The default, the Windows host itself, does not work.
 
 ## Advanced options
 

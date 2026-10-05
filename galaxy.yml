@@ -64,5 +64,6 @@ issues: https://github.com/Checkmk/ansible-collection-checkmk.general/issues?q=i
 build_ignore:
   - .venv*
   - misc/
+  - roles/*/molecule
   - scripts/
   - tests/
