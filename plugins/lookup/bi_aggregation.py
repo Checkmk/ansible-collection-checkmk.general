@@ -12,7 +12,7 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: bi_aggregation
     author: Lars Getwan (@lgetwan)
-    version_added: "8.4.0"
+    version_added: "8.6.0"
 
     short_description: Get BI aggregation attributes
 

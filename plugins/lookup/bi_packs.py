@@ -8,15 +8,12 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: bi_packs
     author: Lars Getwan (@lgetwan)
-    version_added: "8.4.0"
+    version_added: "8.6.0"
 
-    short_description: Get the ids of all BI packs
+    short_description: Get all BI packs
 
     description:
-      - Returns the ids of all BI packs of a Checkmk site.
-      - Checkmk reports the pack collection as links rather than as objects, so this
-        plugin returns ids. Pass them to the M(checkmk.general.bi_pack) lookup to get
-        the packs themselves.
+      - Returns the attributes of all BI packs of a Checkmk site.
 
     extends_documentation_fragment: [checkmk.general.common_lookup]
 
@@ -27,6 +24,11 @@ DOCUMENTATION = """
       - The directory of the play is used as the current working directory.
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
+      - Checkmk has no endpoint that returns several BI packs at once, so this lookup
+        sends one request for the list of packs and one for each pack.
+      - C(rules) and C(aggregations) of each pack hold the ids of its rules and
+        aggregations. Use the P(checkmk.general.bi_rules#lookup) and
+        P(checkmk.general.bi_aggregations#lookup) lookups to get the objects.
 
     seealso:
       - module: checkmk.general.bi_pack
@@ -41,46 +43,69 @@ DOCUMENTATION = """
 EXAMPLES = """
 - name: "Get all BI packs."
   ansible.builtin.debug:
-    msg: "BI packs: {{ packs }}"
-  vars:
-    packs: "{{
-      lookup('checkmk.general.bi_packs',
-        server_url='https://myserver',
-        site='mysite',
-        api_user='myuser',
-        api_secret='mysecret',
-        validate_certs=False
-      )
-    }}"
+    msg: "BI pack {{ item.id }} has the rules {{ item.rules }}."
+  loop: "{{
+    lookup('checkmk.general.bi_packs',
+      server_url='https://myserver',
+      site='mysite',
+      api_user='myuser',
+      api_secret='mysecret',
+      validate_certs=False
+    )
+  }}"
+  loop_control:
+    label: "{{ item.id }}"
 
-- name: "Get the packs themselves, by feeding the ids to the singular lookup."
+- name: "Use variables outside the module call."
   ansible.builtin.debug:
-    msg: "BI packs: {{ query('checkmk.general.bi_pack', packs) }}"
+    msg: "BI pack {{ item.id }}: {{ item.title }}"
+  loop: "{{ lookup('checkmk.general.bi_packs') }}"
+  loop_control:
+    label: "{{ item.id }}"
   vars:
     checkmk_var_server_url: "https://myserver"
     checkmk_var_site: "mysite"
     checkmk_var_api_user: "myuser"
     checkmk_var_api_secret: "mysecret"
-    packs: "{{ lookup('checkmk.general.bi_packs') }}"
 """
 
 RETURN = """
   _list:
     description:
-      - The ids of all BI packs of the site.
-      - Pass these to the M(checkmk.general.bi_pack) lookup to get the packs.
+      - The attributes of all BI packs of the site.
+      - C(rules) and C(aggregations) hold the ids of each pack's rules and
+        aggregations, not the objects.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
-from ansible_collections.checkmk.general.plugins.module_utils.bi import collection_ids
+from ansible_collections.checkmk.general.plugins.module_utils.bi import (
+    collection_ids,
+    pack_attributes,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
 )
+
+
+def _get(api, endpoint):
+    response = json.loads(api.get(endpoint))
+
+    if "code" in response:
+        raise AnsibleError(
+            "Received error for %s - %s: %s"
+            % (
+                response.get("url", ""),
+                response.get("code", ""),
+                response.get("msg", ""),
+            )
+        )
+
+    return response
 
 
 class LookupModule(LookupBase):
@@ -104,17 +129,13 @@ class LookupModule(LookupBase):
             validate_certs=validate_certs,
         )
 
-        response = json.loads(api.get("/domain-types/bi_pack/collections/all"))
+        # The collection reports its packs as links rather than as objects,
+        # and there is no bulk endpoint, so fetch them one by one.
+        packs = _get(api, "/domain-types/bi_pack/collections/all")
 
-        if "code" in response:
-            raise AnsibleError(
-                "Received error for %s - %s: %s"
-                % (
-                    response.get("url", ""),
-                    response.get("code", ""),
-                    response.get("msg", ""),
-                )
-            )
-
-        # The collection reports its packs as links, not as objects.
-        return [collection_ids(response)]
+        return [
+            [
+                pack_attributes(_get(api, "/objects/bi_pack/" + pack_id))
+                for pack_id in collection_ids(packs)
+            ]
+        ]
