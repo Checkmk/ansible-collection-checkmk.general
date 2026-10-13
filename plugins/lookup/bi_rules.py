@@ -8,15 +8,12 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: bi_rules
     author: Lars Getwan (@lgetwan)
-    version_added: "8.4.0"
+    version_added: "8.6.0"
 
-    short_description: Get the ids of all BI rules of a BI pack
+    short_description: Get all BI rules of a BI pack
 
     description:
-      - Returns the ids of all BI rules of a BI pack.
-      - Checkmk reports a pack's rules as links rather than as objects, and has no
-        bulk endpoint for them, so this plugin returns ids. Pass them to the
-        M(checkmk.general.bi_rule) lookup to get the objects themselves.
+      - Returns the attributes of all BI rules of a BI pack.
 
     options:
 
@@ -35,9 +32,10 @@ DOCUMENTATION = """
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
       - The Checkmk API has no endpoint to list BI rules across all BI packs, so a
-        I(pack_id) is required. Use the M(checkmk.general.bi_packs) lookup to discover pack IDs.
-      - There is no bulk endpoint for BI rules either, so hydrating every id costs one
-        request per object. That is left to the caller rather than done here.
+        I(pack_id) is required. Use the P(checkmk.general.bi_packs#lookup) lookup to get all packs.
+      - Checkmk has no endpoint that returns several BI rules at once, so this
+        lookup sends one request for the pack and one for each of its rules.
+      - Checkmk reports C(pack_id) of a BI rule as an empty string.
 
     seealso:
       - module: checkmk.general.bi_rule
@@ -50,34 +48,26 @@ DOCUMENTATION = """
 EXAMPLES = """
 - name: "Get all BI rules of a BI pack."
   ansible.builtin.debug:
-    msg: "BI rules: {{ items }}"
-  vars:
-    items: "{{
-      lookup('checkmk.general.bi_rules',
-        pack_id='default',
-        server_url='https://myserver',
-        site='mysite',
-        api_user='myuser',
-        api_secret='mysecret',
-        validate_certs=False
-      )
-    }}"
+    msg: "BI rule: {{ item.id }}"
+  loop: "{{
+    lookup('checkmk.general.bi_rules',
+      pack_id='default',
+      server_url='https://myserver',
+      site='mysite',
+      api_user='myuser',
+      api_secret='mysecret',
+      validate_certs=False
+    )
+  }}"
+  loop_control:
+    label: "{{ item.id }}"
 
-- name: "Get the BI rules themselves, by feeding the ids to the singular lookup."
+- name: "Use variables outside the module call."
   ansible.builtin.debug:
-    msg: "BI rules: {{ items }}"
-  vars:
-    checkmk_var_server_url: "https://myserver"
-    checkmk_var_site: "mysite"
-    checkmk_var_api_user: "myuser"
-    checkmk_var_api_secret: "mysecret"
-    items: "{{ lookup('checkmk.general.bi_rule',
-                 lookup('checkmk.general.bi_rules', pack_id='default')) }}"
-
-- name: "Get all BI rules of every BI pack."
-  ansible.builtin.debug:
-    msg: "BI rules of pack {{ item }}: {{ lookup('checkmk.general.bi_rules', pack_id=item) }}"
-  loop: "{{ lookup('checkmk.general.bi_packs') }}"
+    msg: "BI rule: {{ item.id }}"
+  loop: "{{ lookup('checkmk.general.bi_rules', pack_id='default') }}"
+  loop_control:
+    label: "{{ item.id }}"
   vars:
     checkmk_var_server_url: "https://myserver"
     checkmk_var_site: "mysite"
@@ -88,20 +78,38 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - The ids of all BI rules of the BI pack.
-      - Pass these to the M(checkmk.general.bi_rule) lookup to get the objects.
+      - The attributes of all BI rules of the BI pack.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
-from ansible_collections.checkmk.general.plugins.module_utils.bi import member_ids
+from ansible_collections.checkmk.general.plugins.module_utils.bi import (
+    member_ids,
+    object_attributes,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
 )
+
+
+def _get(api, endpoint):
+    response = json.loads(api.get(endpoint))
+
+    if "code" in response:
+        raise AnsibleError(
+            "Received error for %s - %s: %s"
+            % (
+                response.get("url", ""),
+                response.get("code", ""),
+                response.get("msg", ""),
+            )
+        )
+
+    return response
 
 
 class LookupModule(LookupBase):
@@ -126,18 +134,13 @@ class LookupModule(LookupBase):
             validate_certs=validate_certs,
         )
 
-        # There is no collection endpoint for BI rules. The pack endpoint
-        # reports them, but as links rather than as objects.
-        response = json.loads(api.get("/objects/bi_pack/" + pack_id))
+        # The pack reports its rules as links rather than as objects, and
+        # there is no bulk endpoint, so fetch them one by one.
+        pack = _get(api, "/objects/bi_pack/" + pack_id)
 
-        if "code" in response:
-            raise AnsibleError(
-                "Received error for %s - %s: %s"
-                % (
-                    response.get("url", ""),
-                    response.get("code", ""),
-                    response.get("msg", ""),
-                )
-            )
-
-        return [member_ids(response, "rules")]
+        return [
+            [
+                object_attributes(_get(api, "/objects/bi_rule/" + object_id))
+                for object_id in member_ids(pack, "rules")
+            ]
+        ]
