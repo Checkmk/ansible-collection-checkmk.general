@@ -7,8 +7,8 @@ checkmk_var_test_sites:
 checkmk_var_bi_pack_id: "ansible_test_pack"
 
 checkmk_var_bi_aggregations_create:
-  - id: "ansible_test_aggregation"
-    pack_id: "ansible_test_pack"
+  - name: "ansible_test_aggregation"
+    pack: "ansible_test_pack"
     comment: "created by the integration test"
     groups:
       names: []
@@ -30,8 +30,8 @@ checkmk_var_bi_aggregations_create:
       freeze_aggregations: false
 
 checkmk_var_bi_aggregations_modify:
-  - id: "ansible_test_aggregation"
-    pack_id: "ansible_test_pack"
+  - name: "ansible_test_aggregation"
+    pack: "ansible_test_pack"
     comment: "modified by the integration test"
     groups:
       names: []

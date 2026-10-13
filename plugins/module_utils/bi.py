@@ -10,7 +10,15 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import json
+
 from ansible.module_utils.six.moves.urllib.parse import unquote
+from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
+from ansible_collections.checkmk.general.plugins.module_utils.differ import (
+    ConfigDiffer,
+    prune_to_shape,
+)
+from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
 
 
 def _with_id(key, value):
@@ -131,8 +139,7 @@ def member_ids(response, name):
          "href": ".../api/1.0/objects/bi_rule/my_rule"}
 
     Checkmk has no bulk endpoint for BI rules or aggregations, so the objects
-    can only be fetched one at a time. The plural lookups therefore return ids
-    and leave hydration to the singular lookups, which accept a list of ids.
+    can only be fetched one at a time, by these ids.
 
     Args:
         response (dict): The decoded API response.
@@ -169,3 +176,110 @@ def collection_ids(response):
         list: The ids of the objects in the collection.
     """
     return member_ids(response, "value")
+
+
+def pack_attributes(response):
+    """Return a BI pack from its REST API response, with member ids.
+
+    The pack endpoint reports the pack's rules and aggregations as links
+    rather than as objects, so they are exposed as lists of ids.
+
+    Args:
+        response (dict): The decoded response of 'GET /objects/bi_pack/{id}'.
+
+    Returns:
+        dict: The pack's attributes, plus 'rules' and 'aggregations' ids.
+    """
+    pack = object_attributes(response)
+    pack["rules"] = member_ids(response, "rules")
+    pack["aggregations"] = member_ids(response, "aggregations")
+    return pack
+
+
+class BIObjectAPI(CheckmkAPI):
+    """Create, update and delete a single BI pack, rule or aggregation.
+
+    All three live on one object endpoint each, '/objects/<domain type>/<id>',
+    which takes GET, POST (create), PUT (update) and DELETE. None of them
+    uses ETags.
+
+    Subclasses set DOMAIN_TYPE and LABEL and pass the desired state, already
+    stripped of unset options with prune_none().
+    """
+
+    DOMAIN_TYPE = ""
+    LABEL = ""
+
+    def __init__(self, module, object_id, desired):
+        super().__init__(module)
+        self.endpoint = "/objects/%s/%s" % (self.DOMAIN_TYPE, object_id)
+        self.desired = desired
+
+        result = self._fetch(
+            code_mapping={404: (False, False, "%s not found." % self.LABEL)},
+            endpoint=self.endpoint,
+            method="GET",
+        )
+        self.exists = result.http_code == 200
+        self.current = (
+            object_attributes(json.loads(result.content)) if self.exists else {}
+        )
+
+        # Rules and aggregations report pack_id as "" rather than the pack
+        # they belong to, so it cannot be compared. Use the desired value
+        # while the API reports none. Moving an object to another pack is
+        # therefore not detected.
+        if self.exists and "pack_id" in desired and not self.current.get("pack_id"):
+            self.current["pack_id"] = desired["pack_id"]
+
+    def needs_update(self):
+        # Checkmk fills in defaults for options it was not given, so compare
+        # only what the playbook actually specified.
+        return ConfigDiffer(
+            self.desired, prune_to_shape(self.desired, self.current)
+        ).needs_update()
+
+    def _write(self, method, done, data=None):
+        if self.module.check_mode:
+            return RESULT(
+                http_code=0,
+                msg="Running in check mode. Would have %s the %s." % (done, self.LABEL),
+                content="",
+                etag="",
+                failed=False,
+                changed=True,
+            )
+
+        message = "%s %s." % (self.LABEL, done)
+        return self._fetch(
+            code_mapping={
+                200: (True, False, message),
+                201: (True, False, message),
+                204: (True, False, message),
+            },
+            endpoint=self.endpoint,
+            data=data,
+            method=method,
+        )
+
+    def ensure(self, state):
+        """Bring the object into the given state and return the RESULT."""
+        if state == "present":
+            if not self.exists:
+                return self._write("POST", "created", self.desired)
+            if self.needs_update():
+                return self._write("PUT", "updated", self.desired)
+            msg = "%s is already in the desired state." % self.LABEL
+        elif self.exists:
+            return self._write("DELETE", "deleted")
+        else:
+            msg = "%s is already absent." % self.LABEL
+
+        return RESULT(
+            http_code=0,
+            msg=msg,
+            content="",
+            etag="",
+            failed=False,
+            changed=False,
+        )
