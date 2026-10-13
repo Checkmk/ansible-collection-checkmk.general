@@ -604,7 +604,6 @@ def run_module():
     )
 
     logger.set_loglevel(module._verbosity)
-    logger.set_loglevel(2)
 
     desired_state = module.params["state"]
     dcd_api = DCDAPI(module)
