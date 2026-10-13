@@ -308,7 +308,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import (
     CheckmkAPI,
 )
-from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
+from ansible_collections.checkmk.general.plugins.module_utils.differ import (
+    ConfigDiffer,
+    prune_none,
+    prune_to_shape,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.logger import Logger
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
@@ -366,7 +370,8 @@ class DCDAPI(CheckmkAPI):
             )
 
         self.dcd_id = dcd_config["dcd_id"]
-        self.desired = dcd_config.copy()
+        # Unset options arrive as None; they must neither be sent nor compared.
+        self.desired = prune_none(dcd_config)
 
         # Ensure 'site' is present in the desired state
         if "site" not in self.desired or self.desired["site"] is None:
@@ -396,8 +401,11 @@ class DCDAPI(CheckmkAPI):
 
         self._get_current()
 
-        # Initialize the ConfigDiffer with desired and current configurations
-        self.differ = ConfigDiffer(self.desired, self.current)
+        # Checkmk fills in defaults for nested options it was not given, so
+        # compare only what the playbook actually specified.
+        self.differ = ConfigDiffer(
+            self.desired, prune_to_shape(self.desired, self.current)
+        )
 
     def _get_current(self):
         """
