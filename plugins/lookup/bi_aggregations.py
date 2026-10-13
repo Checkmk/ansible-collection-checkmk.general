@@ -8,15 +8,12 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: bi_aggregations
     author: Lars Getwan (@lgetwan)
-    version_added: "8.4.0"
+    version_added: "8.6.0"
 
-    short_description: Get the ids of all BI aggregations of a BI pack
+    short_description: Get all BI aggregations of a BI pack
 
     description:
-      - Returns the ids of all BI aggregations of a BI pack.
-      - Checkmk reports a pack's aggregations as links rather than as objects, and has no
-        bulk endpoint for them, so this plugin returns ids. Pass them to the
-        M(checkmk.general.bi_aggregation) lookup to get the objects themselves.
+      - Returns the attributes of all BI aggregations of a BI pack.
 
     options:
 
@@ -35,9 +32,10 @@ DOCUMENTATION = """
       - It is B(NOT) possible to assign other variables to the variables mentioned in the C(vars) section!
         This is a limitation of Ansible itself.
       - The Checkmk API has no endpoint to list BI aggregations across all BI packs, so a
-        I(pack_id) is required. Use the M(checkmk.general.bi_packs) lookup to discover pack IDs.
-      - There is no bulk endpoint for BI aggregations either, so hydrating every id costs one
-        request per object. That is left to the caller rather than done here.
+        I(pack_id) is required. Use the P(checkmk.general.bi_packs#lookup) lookup to get all packs.
+      - Checkmk has no endpoint that returns several BI aggregations at once, so this
+        lookup sends one request for the pack and one for each of its aggregations.
+      - Checkmk reports C(pack_id) of a BI aggregation as an empty string.
 
     seealso:
       - module: checkmk.general.bi_aggregation
@@ -50,34 +48,26 @@ DOCUMENTATION = """
 EXAMPLES = """
 - name: "Get all BI aggregations of a BI pack."
   ansible.builtin.debug:
-    msg: "BI aggregations: {{ items }}"
-  vars:
-    items: "{{
-      lookup('checkmk.general.bi_aggregations',
-        pack_id='default',
-        server_url='https://myserver',
-        site='mysite',
-        api_user='myuser',
-        api_secret='mysecret',
-        validate_certs=False
-      )
-    }}"
+    msg: "BI aggregation: {{ item.id }}"
+  loop: "{{
+    lookup('checkmk.general.bi_aggregations',
+      pack_id='default',
+      server_url='https://myserver',
+      site='mysite',
+      api_user='myuser',
+      api_secret='mysecret',
+      validate_certs=False
+    )
+  }}"
+  loop_control:
+    label: "{{ item.id }}"
 
-- name: "Get the BI aggregations themselves, by feeding the ids to the singular lookup."
+- name: "Use variables outside the module call."
   ansible.builtin.debug:
-    msg: "BI aggregations: {{ items }}"
-  vars:
-    checkmk_var_server_url: "https://myserver"
-    checkmk_var_site: "mysite"
-    checkmk_var_api_user: "myuser"
-    checkmk_var_api_secret: "mysecret"
-    items: "{{ lookup('checkmk.general.bi_aggregation',
-                 lookup('checkmk.general.bi_aggregations', pack_id='default')) }}"
-
-- name: "Get all BI aggregations of every BI pack."
-  ansible.builtin.debug:
-    msg: "BI aggregations of pack {{ item }}: {{ lookup('checkmk.general.bi_aggregations', pack_id=item) }}"
-  loop: "{{ lookup('checkmk.general.bi_packs') }}"
+    msg: "BI aggregation: {{ item.id }}"
+  loop: "{{ lookup('checkmk.general.bi_aggregations', pack_id='default') }}"
+  loop_control:
+    label: "{{ item.id }}"
   vars:
     checkmk_var_server_url: "https://myserver"
     checkmk_var_site: "mysite"
@@ -88,20 +78,38 @@ EXAMPLES = """
 RETURN = """
   _list:
     description:
-      - The ids of all BI aggregations of the BI pack.
-      - Pass these to the M(checkmk.general.bi_aggregation) lookup to get the objects.
+      - The attributes of all BI aggregations of the BI pack.
     type: list
-    elements: str
+    elements: dict
 """
 
 import json
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
-from ansible_collections.checkmk.general.plugins.module_utils.bi import member_ids
+from ansible_collections.checkmk.general.plugins.module_utils.bi import (
+    member_ids,
+    object_attributes,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
 )
+
+
+def _get(api, endpoint):
+    response = json.loads(api.get(endpoint))
+
+    if "code" in response:
+        raise AnsibleError(
+            "Received error for %s - %s: %s"
+            % (
+                response.get("url", ""),
+                response.get("code", ""),
+                response.get("msg", ""),
+            )
+        )
+
+    return response
 
 
 class LookupModule(LookupBase):
@@ -126,18 +134,13 @@ class LookupModule(LookupBase):
             validate_certs=validate_certs,
         )
 
-        # There is no collection endpoint for BI aggregations. The pack endpoint
-        # reports them, but as links rather than as objects.
-        response = json.loads(api.get("/objects/bi_pack/" + pack_id))
+        # The pack reports its aggregations as links rather than as objects, and
+        # there is no bulk endpoint, so fetch them one by one.
+        pack = _get(api, "/objects/bi_pack/" + pack_id)
 
-        if "code" in response:
-            raise AnsibleError(
-                "Received error for %s - %s: %s"
-                % (
-                    response.get("url", ""),
-                    response.get("code", ""),
-                    response.get("msg", ""),
-                )
-            )
-
-        return [member_ids(response, "aggregations")]
+        return [
+            [
+                object_attributes(_get(api, "/objects/bi_aggregation/" + object_id))
+                for object_id in member_ids(pack, "aggregations")
+            ]
+        ]

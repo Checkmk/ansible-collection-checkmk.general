@@ -12,7 +12,7 @@ __metaclass__ = type
 DOCUMENTATION = """
     name: bi_pack
     author: Lars Getwan (@lgetwan)
-    version_added: "8.4.0"
+    version_added: "8.6.0"
 
     short_description: Get BI pack attributes
 
@@ -20,9 +20,9 @@ DOCUMENTATION = """
       - Returns the attributes of a BI pack in Checkmk, including the ids of its
         rules and aggregations.
       - Checkmk reports a pack's rules and aggregations as links rather than as
-        objects, so C(rules) and C(aggregations) are lists of ids. Pass them to the
-        M(checkmk.general.bi_rule) or M(checkmk.general.bi_aggregation) lookup to
-        get the objects themselves.
+        objects, so C(rules) and C(aggregations) are lists of ids. The
+        P(checkmk.general.bi_rules#lookup) and P(checkmk.general.bi_aggregations#lookup)
+        lookups return the objects.
 
     options:
 
@@ -78,17 +78,6 @@ EXAMPLES = """
 #   checkmk_var_api_user, checkmk_var_api_secret,
 #   checkmk_var_validate_certs
 
-- name: "Get the rules of a pack, by feeding the pack's rule ids to the singular lookup."
-  ansible.builtin.debug:
-    msg: "Rules of the default pack: {{ rules }}"
-  vars:
-    checkmk_var_server_url: "https://myserver"
-    checkmk_var_site: "mysite"
-    checkmk_var_api_user: "myuser"
-    checkmk_var_api_secret: "mysecret"
-    rules: "{{ query('checkmk.general.bi_rule',
-                 lookup('checkmk.general.bi_pack', 'default').rules) }}"
-
 - name: "Get BI pack attributes using inventory variables."
   ansible.builtin.debug:
     msg: "Attributes of BI pack: {{ attributes }}"
@@ -116,8 +105,7 @@ import json
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible_collections.checkmk.general.plugins.module_utils.bi import (
-    member_ids,
-    object_attributes,
+    pack_attributes,
 )
 from ansible_collections.checkmk.general.plugins.module_utils.lookup_api import (
     CheckMKLookupAPI,
@@ -160,14 +148,9 @@ class LookupModule(LookupBase):
                     )
                 )
 
-            # This endpoint reports the pack's rules and aggregations as links
-            # rather than as objects, so expose their ids. Checkmk has no bulk
-            # endpoint for either, so hydrating them here would cost one request
-            # per object; that is left to the caller.
-            pack = object_attributes(response)
-            pack["rules"] = member_ids(response, "rules")
-            pack["aggregations"] = member_ids(response, "aggregations")
-
-            ret.append(pack)
+            # The pack reports its rules and aggregations as links rather than
+            # as objects, so expose their ids. The bi_rules and
+            # bi_aggregations lookups return the objects.
+            ret.append(pack_attributes(response))
 
         return ret

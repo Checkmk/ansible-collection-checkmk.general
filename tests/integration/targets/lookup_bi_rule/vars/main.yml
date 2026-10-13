@@ -7,8 +7,8 @@ checkmk_var_test_sites:
 checkmk_var_bi_pack_id: "ansible_test_pack"
 
 checkmk_var_bi_rules:
-  - pack_id: "ansible_test_pack"
-    id: "ansible_test_rule_one"
+  - pack: "ansible_test_pack"
+    name: "ansible_test_rule_one"
     nodes: []
     properties:
       title: "Ansible Test Rule One"
@@ -25,8 +25,8 @@ checkmk_var_bi_rules:
     node_visualization:
       type: "block"
       style_config: {}
-  - pack_id: "ansible_test_pack"
-    id: "ansible_test_rule_two"
+  - pack: "ansible_test_pack"
+    name: "ansible_test_rule_two"
     nodes: []
     properties:
       title: "Ansible Test Rule Two"
