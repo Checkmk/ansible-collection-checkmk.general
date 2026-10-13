@@ -3,6 +3,7 @@
 .*.swo
 *~
 checkmk-general-*.tar.gz
+.claude/
 .vagrant/
 build/
 tests/output

@@ -328,6 +328,25 @@ msg:
     type: str
     returned: always
     sample: 'User created.'
+http_code:
+    description: The HTTP code the Checkmk API returns.
+    type: int
+    returned: always
+    sample: 200
+content:
+    description:
+        - The raw, undecoded response body of the Checkmk API.
+        - Empty when the API returned no body, e.g. when nothing had to be done.
+    type: str
+    returned: always
+    sample: '{"id": "my_object", "extensions": {}}'
+etag:
+    description:
+        - The ETag the Checkmk API returned for the object.
+        - Empty when the API returned no ETag.
+    type: str
+    returned: always
+    sample: '"ad55730d5488e55e07c58a3da9759fba8cd0b009"'
 """
 
 
