@@ -192,10 +192,12 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.checkmk.general.plugins.module_utils.api import CheckmkAPI
 from ansible_collections.checkmk.general.plugins.module_utils.bi import (
     object_attributes,
-    prune_none,
-    restrict_to_shape,
 )
-from ansible_collections.checkmk.general.plugins.module_utils.differ import ConfigDiffer
+from ansible_collections.checkmk.general.plugins.module_utils.differ import (
+    ConfigDiffer,
+    prune_none,
+    prune_to_shape,
+)
 from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     base_argument_spec,
 )
@@ -263,7 +265,7 @@ class BIRuleAPI(CheckmkAPI):
         # Checkmk fills in defaults for nested options it was not given, so
         # compare only what the playbook actually specified.
         self.differ = ConfigDiffer(
-            self.desired, restrict_to_shape(self.desired, self.current)
+            self.desired, prune_to_shape(self.desired, self.current)
         )
 
     def _get_current(self):
