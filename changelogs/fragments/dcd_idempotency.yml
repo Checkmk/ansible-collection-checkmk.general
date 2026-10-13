@@ -1,0 +1,13 @@
+---
+bugfixes:
+  - dcd module - Fix creating a DCD connection whose creation rule has no
+    ``host_attributes`` failing with "Field may not be null". Options left
+    unset in the playbook are no longer sent to Checkmk.
+  - dcd module - Fix the second run of an unchanged task failing with
+    "DCD object cannot be updated". Defaults that Checkmk fills in for nested
+    options, such as ``host_attributes`` of a creation rule, and options left unset
+    in the playbook no longer count as a difference.
+minor_changes:
+  - module_utils - Add ``prune_none()`` and ``prune_to_shape()`` to ``differ.py``,
+    so that modules can compare nested configuration with ``ConfigDiffer``
+    without the defaults Checkmk fills in.
