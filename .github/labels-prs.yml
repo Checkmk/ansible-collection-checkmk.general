@@ -178,11 +178,6 @@ lookup:bi_rule:
           - any-glob-to-any-file: 'plugins/lookup/bi_rule.py'
           - any-glob-to-any-file: 'plugins/lookup/bi_rules.py'
 
-lookup:dcd:
-  - any:
-      - changed-files:
-          - any-glob-to-any-file: 'plugins/lookup/dcd.py'
-
 lookup:folder:
   - any:
       - changed-files:
