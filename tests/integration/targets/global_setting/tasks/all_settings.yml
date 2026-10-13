@@ -1,0 +1,233 @@
+---
+# =============================================================================
+# Every global setting, written the way the GUI shows it
+# =============================================================================
+# vars/settings.yml holds the value of every setting on a new site. Writing
+# that value back must be accepted and idempotent, and reading it back must
+# return exactly the same value. This proves the representation for each
+# setting, not only for the examples in test.yml.
+# There is no activation between the steps: activating the site settings
+# restarts the site, so the next requests would hit a site that is down.
+# =============================================================================
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Load all settings."
+  ansible.builtin.include_vars: settings.yml
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Sort the settings for the steps below."
+  ansible.builtin.set_fact:
+    __checkmk_var_settings: "{{ __checkmk_var_all }}"
+    __checkmk_var_plain: "{{ __checkmk_var_all | rejectattr('secret', 'defined') | rejectattr('from_site', 'defined') | rejectattr('invalid_default', 'defined') }}"
+    __checkmk_var_examples: "{{ __checkmk_var_all | selectattr('example', 'defined') }}"
+  vars:
+    __checkmk_var_all: "{{ checkmk_var_global_settings.values() | flatten }}"
+
+# -----------------------------------------------------------------------------
+# Change settings to the non-default example values.
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set the example values."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    value: "{{ item.example }}"
+  loop: "{{ __checkmk_var_examples }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: checkmk_var_result
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set the example values again."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    value: "{{ item.example }}"
+  loop: "{{ __checkmk_var_examples }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: checkmk_var_result_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the example values changed once."
+  ansible.builtin.assert:
+    that:
+      - checkmk_var_result.results | rejectattr('changed') | map(attribute='item.name') | list == []
+      - checkmk_var_result_again.results | selectattr('changed') | map(attribute='item.name') | list == []
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the example values read back unchanged."
+  ansible.builtin.assert:
+    that:
+      - item.value == item.item.example
+    quiet: true
+  loop: "{{ checkmk_var_result_again.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+
+# -----------------------------------------------------------------------------
+# Write the value of a new site to every setting.
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set every setting."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+  loop: "{{ __checkmk_var_plain }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: checkmk_var_result
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set every setting again."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+  loop: "{{ __checkmk_var_plain }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: checkmk_var_result_again
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert every setting is configured and idempotent."
+  ansible.builtin.assert:
+    that:
+      # Settings that were not preset change from 'factory' to 'global'.
+      - checkmk_var_result.results | rejectattr('changed') | rejectattr('item.preset', 'defined') | map(attribute='item.name') | list == []
+      - checkmk_var_result_again.results | selectattr('changed') | map(attribute='item.name') | list == []
+      - checkmk_var_result_again.results | map(attribute='origin') | unique | list == ['global']
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert every setting reads back unchanged through the lookup."
+  ansible.builtin.assert:
+    that:
+      - item.0 == item.1.value
+    quiet: true
+  loop: "{{ __checkmk_var_read | zip(__checkmk_var_plain) | list }}"
+  loop_control:
+    label: "{{ item.1.name }}"
+  vars:
+    __checkmk_var_read: "{{ query('checkmk.general.global_setting', *(__checkmk_var_plain | map(attribute='name')), server_url=checkmk_var_server_url, site=outer_item.site, api_user=checkmk_var_api_user, api_secret=checkmk_var_api_secret) }}"
+
+# -----------------------------------------------------------------------------
+# Site-specific values: write back what the site has.
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Write back the site-specific settings."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    value: "{{ lookup('checkmk.general.global_setting', item.name, server_url=checkmk_var_server_url, site=outer_item.site, api_user=checkmk_var_api_user, api_secret=checkmk_var_api_secret) }}"
+  loop: "{{ __checkmk_var_settings | selectattr('from_site', 'defined') }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: checkmk_var_result
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the site-specific settings are unchanged."
+  ansible.builtin.assert:
+    that:
+      - checkmk_var_result.results | selectattr('changed') | map(attribute='item.name') | list == []
+
+# -----------------------------------------------------------------------------
+# Settings with a password.
+# Checkmk 3.0 cannot decrypt the encrypted password its own GET returns
+# (HTTP 500 "InvalidTag"). Without update_secrets, the module sends that
+# value back once a password is set, so only update_secrets=true works here.
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Set the settings with a password."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    update_secrets: true
+  loop: "{{ __checkmk_var_settings | selectattr('secret', 'defined') }}"
+  loop_control:
+    label: "{{ item.name }}"
+  no_log: true
+  register: checkmk_var_result
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert the settings with a password are configured."
+  ansible.builtin.assert:
+    that:
+      - checkmk_var_result.results | rejectattr('changed') | list == []
+      - checkmk_var_result.results | map(attribute='origin') | unique | list == ['global']
+
+# -----------------------------------------------------------------------------
+# Reset everything.
+# -----------------------------------------------------------------------------
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Reset every setting."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  loop: "{{ __checkmk_var_resettable }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: checkmk_var_result
+  vars:
+    __checkmk_var_resettable: "{{ __checkmk_var_settings | rejectattr('resettable', 'defined') | rejectattr('from_site', 'defined') }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Reset every setting again."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  loop: "{{ __checkmk_var_resettable }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: checkmk_var_result_again
+  vars:
+    __checkmk_var_resettable: "{{ __checkmk_var_settings | rejectattr('resettable', 'defined') | rejectattr('from_site', 'defined') }}"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Assert every setting is reset and idempotent."
+  ansible.builtin.assert:
+    that:
+      - checkmk_var_result.results | rejectattr('changed') | map(attribute='item.name') | list == []
+      - checkmk_var_result_again.results | selectattr('changed') | map(attribute='item.name') | list == []
+      - checkmk_var_result_again.results | map(attribute='origin') | unique | list == ['factory']
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Try to reset a setting Checkmk cannot reset."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    state: "absent"
+  loop: "{{ __checkmk_var_settings | selectattr('resettable', 'defined') }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: checkmk_var_result
+  failed_when: checkmk_var_result is not failed
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Restore what Checkmk presets on new sites."
+  global_setting:
+    server_url: "{{ checkmk_var_server_url }}"
+    site: "{{ outer_item.site }}"
+    api_user: "{{ checkmk_var_api_user }}"
+    api_secret: "{{ checkmk_var_api_secret }}"
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+  loop: "{{ __checkmk_var_plain | selectattr('preset', 'defined') }}"
+  loop_control:
+    label: "{{ item.name }}"

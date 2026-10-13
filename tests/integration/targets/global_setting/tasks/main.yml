@@ -1,6 +1,9 @@
 ---
+# The global settings endpoints only exist from Checkmk 3.0.0 on, so older
+# versions are skipped instead of failing with a 404.
 - name: "Testing."
   ansible.builtin.include_tasks: test.yml
   loop: "{{ checkmk_var_test_sites }}"
   loop_control:
     loop_var: outer_item
+  when: outer_item.version is version('3.0.0', '>=', version_type='loose')
