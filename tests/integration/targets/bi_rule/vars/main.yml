@@ -1,0 +1,106 @@
+---
+checkmk_var_test_sites:
+  - version: "{{ checkmk_var_version }}"
+    edition: "{{ checkmk_var_edition }}"
+    site: "testsite"
+
+checkmk_var_bi_pack_id: "ansible_test_pack"
+
+checkmk_var_bi_rules_create:
+  - pack: "ansible_test_pack"
+    name: "ansible_test_rule"
+    nodes: []
+    properties:
+      title: "Ansible Test Rule"
+      comment: ""
+      docu_url: ""
+      icon: ""
+      state_messages: {}
+    aggregation_function:
+      type: "worst"
+      count: 1
+      restrict_state: 2
+    computation_options:
+      disabled: false
+    node_visualization:
+      type: "block"
+      style_config: {}
+
+checkmk_var_bi_rules_modify:
+  - pack: "ansible_test_pack"
+    name: "ansible_test_rule"
+    nodes: []
+    properties:
+      title: "Ansible Test Rule Modified"
+      comment: "modified by the integration test"
+      docu_url: ""
+      icon: ""
+      state_messages: {}
+    aggregation_function:
+      type: "best"
+      count: 1
+      restrict_state: 2
+    computation_options:
+      disabled: false
+    node_visualization:
+      type: "block"
+      style_config: {}
+
+# A rule with a parameter, and a rule that calls it, as in the module's EXAMPLES.
+checkmk_var_bi_rule_called:
+  name: "ansible_test_rule_called"
+  pack: "ansible_test_pack"
+  nodes:
+    - search:
+        type: "empty"
+      action:
+        type: "state_of_host"
+        host_regex: "$HOST$"
+  params:
+    arguments:
+      - "HOST"
+  properties:
+    title: "Host $HOST$"
+    comment: ""
+    docu_url: ""
+    icon: ""
+    state_messages: {}
+  aggregation_function:
+    type: "worst"
+    count: 1
+    restrict_state: 2
+  computation_options:
+    disabled: false
+  node_visualization:
+    type: "block"
+    style_config: {}
+
+checkmk_var_bi_rule_calling:
+  name: "ansible_test_rule_calling"
+  pack: "ansible_test_pack"
+  nodes:
+    - search:
+        type: "empty"
+      action:
+        type: "call_a_rule"
+        rule_id: "ansible_test_rule_called"
+        params:
+          arguments:
+            - "node1"
+  params:
+    arguments: []
+  properties:
+    title: "Cluster"
+    comment: ""
+    docu_url: ""
+    icon: ""
+    state_messages: {}
+  aggregation_function:
+    type: "best"
+    count: 1
+    restrict_state: 2
+  computation_options:
+    disabled: false
+  node_visualization:
+    type: "block"
+    style_config: {}
