@@ -1,0 +1,47 @@
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+name: Module Global Setting Integration
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+  pull_request:
+    branches:
+      - main
+      - devel
+    types:
+      - opened
+    paths:
+      - 'plugins/modules/global_setting.py'
+  push:
+    paths:
+      - '.github/workflows/ans-int-test-global_setting.yaml'
+      - 'plugins/modules/global_setting.py'
+      - 'plugins/lookup/global_setting.py'
+      - 'tests/integration/targets/setup_checkmk/**'
+      - 'tests/integration/targets/global_setting/**'
+
+jobs:
+
+  integration:
+    name: "${{ matrix.checkmk_version }}.${{ matrix.checkmk_edition }}"
+    uses: ./.github/workflows/_template-ans-int-test.yaml
+    with:
+      module: global_setting
+      checkmk_version: ${{ matrix.checkmk_version }}
+      checkmk_edition: ${{ matrix.checkmk_edition }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # The global settings endpoints are only shipped by Checkmk 3.0.0 and
+        # newer. Until a 3.0.0 release exists, test against a daily build.
+        checkmk_version:
+          - 3.0.0-2026.10.01
+        checkmk_edition:
+          - ultimate
