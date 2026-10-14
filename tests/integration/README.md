@@ -21,6 +21,28 @@ creates a central site (`testsite`, port 5000) plus one
 remote site (`testsite_r_1`, port 5001) - see
 `tests/integration/targets/setup_checkmk/defaults/main.yml`.
 
+## Podman: raise the task limit
+
+With rootless podman, add this once - without it the tests fail:
+
+```ini
+# ~/.config/containers/containers.conf
+[containers]
+pids_limit = 0
+```
+
+Podman's default `pids_limit = 2048` makes `systemd` inside the ansible-test
+container cap everything the run starts at 307 tasks, which a Checkmk site
+plus its ClickHouse metric backend exceeds. It has to be that file -
+`ansible-test` does not pass `CONTAINERS_CONF_OVERRIDE` through to podman. CI
+uses Docker, which sets no pids limit.
+
+Symptoms, none of which name the real cause:
+
+- `/bin/sh: 1: Cannot fork`
+- a bare Apache `500 Internal Server Error` from the site
+- `Couldn't get 512 threads from global thread pool` from ClickHouse
+
 ## Testing a different version or edition
 
 Copy the template and uncomment what you need:

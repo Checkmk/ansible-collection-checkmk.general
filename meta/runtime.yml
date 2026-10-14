@@ -6,7 +6,9 @@ action_groups:
     - aux_tag
     - bakery
     - contact_group
+    - data_backend
     - dcd
+    - dcd_telemetry_metrics
     - discovery
     - downtime
     - folder
@@ -14,6 +16,7 @@ action_groups:
     - host
     - ldap
     - notification
+    - opentelemetry
     - password
     - role
     - rule

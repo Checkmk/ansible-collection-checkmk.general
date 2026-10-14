@@ -1,0 +1,5 @@
+minor_changes:
+  - data_backend module - Add new module to manage the data backend configuration in Checkmk.
+    The module supports enabling and disabling the data backend per site as well as configuring ports and memory limits.
+    Werk 20205 renamed the metric backend to the data backend in 3.0.0, so the module selects the
+    C(data_backend) or C(metric_backend) domain type based on the version of the target site.

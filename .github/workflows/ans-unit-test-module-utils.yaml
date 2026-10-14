@@ -1,0 +1,32 @@
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+name: Module Utils Unit Tests
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+  pull_request:
+    branches:
+      - main
+      - devel
+    paths:
+      - 'plugins/module_utils/**'
+  push:
+    paths:
+      - '.github/workflows/ans-unit-test-module-utils.yaml'
+      - 'plugins/module_utils/**'
+      - 'tests/unit/plugins/module_utils/**'
+
+jobs:
+
+  integration:
+    name: "Unit Tests"
+    uses: ./.github/workflows/_template-ans-unit-test.yaml
+    with:
+      testpath: tests/unit/plugins/module_utils/
