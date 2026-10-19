@@ -678,7 +678,7 @@ requires-dist = [
     { name = "antsibull-changelog", specifier = "==0.35.1" },
     { name = "antsibull-docs", specifier = "==2.27.0" },
     { name = "molecule", specifier = "==26.10.0" },
-    { name = "molecule-plugins", extras = ["podman"], specifier = "==26.9.28" },
+    { name = "molecule-plugins", extras = ["podman"], specifier = "==26.10.12" },
     { name = "pywinrm", specifier = "==0.5.0" },
     { name = "yamllint", specifier = "==1.38.0" },
 ]
@@ -1089,14 +1089,14 @@ wheels = [
 
 [[package]]
 name = "molecule-plugins"
-version = "26.9.28"
+version = "26.10.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "molecule" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/28/56/ad3cdeccce8329532f1bdee1ddfce5c01eda24a454e2ca3b4b74f2ef6bba/molecule_plugins-26.9.28.tar.gz", hash = "sha256:bef4549c2a9d342c206cea4b6733c67282346b628cfce8d9a1500a9de0f8fc15", size = 283299, upload-time = "2026-09-28T07:12:26.425Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9d/a9/0e69e39a9e65a673b0d5f4fc1ea810a2f6fab671162b21b157a0cf124f71/molecule_plugins-26.10.12.tar.gz", hash = "sha256:03f79df9f7d6d6107ad9507f6c58724bbd18c21afb6f020fc532361b343ea333", size = 276741, upload-time = "2026-10-12T21:47:46.334Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/07/81/50b82b82209f1bf1c5519c77aa6da53c77bfab16ea78e36b798ea34a3c95/molecule_plugins-26.9.28-py3-none-any.whl", hash = "sha256:15a3317d2a054af1fabefd6acc5a1de91de25586bbb7ed5684395caab508ac77", size = 96295, upload-time = "2026-09-28T07:12:24.733Z" },
+    { url = "https://files.pythonhosted.org/packages/07/79/192c2de4e0d25472182d45ca84bbe4eb9c646396f212c616554c71aec51d/molecule_plugins-26.10.12-py3-none-any.whl", hash = "sha256:a618b60016eac397d8e279eeb5c494a9cee6d33103dbe5222891df81657759f1", size = 88940, upload-time = "2026-10-12T21:47:44.832Z" },
 ]
 
 [[package]]
