@@ -12,7 +12,7 @@ all six fields of the RESULT. Their RETURN block has to list the four that are
 the module's own output -- `changed` and `failed` are Ansible's own keys and
 are never documented.
 
-The four modules in FETCH_URL_MODULES build their requests by hand, have no
+The three modules in FETCH_URL_MODULES build their requests by hand, have no
 RESULT, and so may only document `msg`.
 
 If you add a module and this test fails, copy the RETURN block from an
@@ -47,7 +47,7 @@ EXPECTED_KEYS = set(RESULT._fields) - {"failed", "changed"}
 # These use fetch_url() instead of CheckmkAPI and can only report `msg`.
 # Port one of them to CheckmkAPI and remove it here, and it gets checked
 # like all the others.
-FETCH_URL_MODULES = {"contact_group", "downtime", "host_group", "service_group"}
+FETCH_URL_MODULES = {"contact_group", "host_group", "service_group"}
 
 # `dcd` and `ldap` document a `diff` key that exit_module() cannot return.
 # Listed here so the mismatch stays visible instead of spreading.
