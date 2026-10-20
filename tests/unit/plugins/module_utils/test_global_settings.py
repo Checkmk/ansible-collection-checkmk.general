@@ -282,6 +282,100 @@ class TestPasswords:
         assert to_ui(PASSWORD_SPEC, frontend) == {"password_store": "My stored pw"}
 
 
+class TestDictionaryVariants:
+    # Shaped like 'data_backend' since Checkmk 3.0 (2026-10-17): a dictionary
+    # under its own type name.
+    SPEC = {
+        "type": "data_backend_settings",
+        "title": "Data backend",
+        "elements": [
+            {
+                "name": "local_instance",
+                "required": False,
+                "default_value": {},
+                "parameter_form": {
+                    "type": "dictionary",
+                    "title": "Enable local data backend instance",
+                    "elements": [
+                        {
+                            "name": "tls_port",
+                            "required": True,
+                            "default_value": 28889,
+                            "parameter_form": {
+                                "type": "integer",
+                                "title": "Native protocol SSL/TLS port (ingress)",
+                            },
+                        },
+                    ],
+                },
+            },
+            {
+                "name": "features",
+                "required": True,
+                "default_value": {},
+                "parameter_form": {
+                    "type": "dictionary",
+                    "title": "Data backend used by each feature",
+                    "elements": [
+                        {
+                            "name": "telemetry",
+                            "required": True,
+                            "default_value": "h_disabled",
+                            "parameter_form": {
+                                "type": "single_choice",
+                                "title": "OpenTelemetry metrics",
+                                "elements": [
+                                    {
+                                        "name": "h_local",
+                                        "title": "Local data backend (site master)",
+                                    },
+                                    {"name": "h_disabled", "title": "Disabled"},
+                                ],
+                            },
+                        },
+                    ],
+                },
+            },
+        ],
+    }
+    CURRENT = {
+        "local_instance": {"tls_port": 28889},
+        "features": {"telemetry": "h_local"},
+    }
+    UI = {
+        "Enable local data backend instance": {
+            "Native protocol SSL/TLS port (ingress)": 28889
+        },
+        "Data backend used by each feature": {
+            "OpenTelemetry metrics": "Local data backend (site master)"
+        },
+    }
+
+    def test_to_ui(self):
+        assert to_ui(self.SPEC, self.CURRENT) == self.UI
+
+    def test_from_ui_translates_titles(self):
+        assert from_ui(self.SPEC, self.UI) == self.CURRENT
+
+    def test_canonical_is_stable(self):
+        assert canonical(self.SPEC, self.CURRENT) == canonical(
+            self.SPEC, from_ui(self.SPEC, self.UI)
+        )
+
+    def test_unknown_type_with_dictionary_elements(self):
+        spec = dict(self.SPEC, type="some_future_dictionary")
+        assert from_ui(spec, self.UI) == self.CURRENT
+        assert to_ui(spec, self.CURRENT) == self.UI
+
+    def test_unknown_type_with_mapping_value_is_rejected(self):
+        with pytest.raises(GlobalSettingValueError) as e:
+            from_ui({"type": "some_future_type"}, {"Title": 1})
+        assert "some_future_type" in str(e.value)
+
+    def test_unknown_type_with_plain_value_passes(self):
+        assert from_ui({"type": "some_future_type"}, "text") == "text"
+
+
 class TestMisc:
     def test_legacy_valuespec_is_rejected(self):
         with pytest.raises(GlobalSettingValueError):
