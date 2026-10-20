@@ -22,7 +22,7 @@ checkmk.general.rule module -- Manage rules in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.5.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.6.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -1221,12 +1221,14 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-cell">
 
-      The complete created/changed rule
+      The complete created or changed rule, as decoded from the API response.
+
+      Empty when the API returned no body, e.g. when nothing had to be done.
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+      :ansible-option-returned-bold:`Returned:` always
 
 
       .. raw:: html
@@ -1303,7 +1305,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`dictionary`
 
       .. raw:: html
 
@@ -1317,12 +1319,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The contitions of the rule.
+      The conditions of the rule.
 
 
       .. rst-class:: ansible-option-line
 
       :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`{}`
 
 
       .. raw:: html
@@ -1372,6 +1379,11 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
 
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"/"`
+
 
       .. raw:: html
 
@@ -1399,7 +1411,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`integer`
 
       .. raw:: html
 
@@ -1419,6 +1431,11 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
 
       :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`0`
 
 
       .. raw:: html
@@ -1447,7 +1464,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`dictionary`
 
       .. raw:: html
 
@@ -1467,6 +1484,11 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
 
       :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`{"description": "", "disabled": false}`
 
 
       .. raw:: html
@@ -1516,6 +1538,11 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
 
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"active\_checks:ping"`
+
 
       .. raw:: html
 
@@ -1557,12 +1584,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
 
-      The actual value of the rule
+      The actual value of the rule.
 
 
       .. rst-class:: ansible-option-line
 
       :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"{'levels': (200.0, 500.0)}"`
 
 
       .. raw:: html
@@ -1652,12 +1684,14 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-cell">
 
-      The etag of the rule.
+      The ETag the Checkmk API returned for the rule.
+
+      Empty when the API returned no ETag.
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-returned-bold:`Returned:` when the rule is created or when it already exists
+      :ansible-option-returned-bold:`Returned:` always
 
       .. rst-class:: ansible-option-line
       .. rst-class:: ansible-option-sample
