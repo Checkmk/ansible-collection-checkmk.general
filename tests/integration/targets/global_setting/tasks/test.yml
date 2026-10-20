@@ -169,6 +169,9 @@
       - checkmk_var_result.results | map(attribute='origin') | unique | list == ['factory']
       - checkmk_var_result_again is not changed
 
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Test every setting."
+  ansible.builtin.include_tasks: all_settings.yml
+
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Activate."
   activation:
     server_url: "{{ checkmk_var_server_url }}"

@@ -1,7 +1,7 @@
 ---
 # The global settings endpoints are part of the internal REST API and are only
-# shipped by Checkmk versions newer than 2.5.0. Enable the entry below (and add
-# a workflow in .github/workflows/) once such a version is available to the CI.
+# shipped by Checkmk 3.0.0 and newer. tasks/main.yml skips older versions, so
+# set checkmk_var_version to a 3.0 build to run the tests locally.
 checkmk_var_test_sites:
   - version: "{{ checkmk_var_version }}"
     edition: "{{ checkmk_var_edition }}"

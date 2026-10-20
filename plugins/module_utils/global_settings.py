@@ -68,6 +68,38 @@ _PASSTHROUGH_TYPES = frozenset(
     }
 )
 
+# Specialised dictionaries that only add GUI behaviour, e.g.
+# "data_backend_settings" (Checkmk 3.0, since 2026-10-17).
+_DICTIONARY_TYPES = frozenset(
+    {"dictionary", "two_column_dictionary", "data_backend_settings"}
+)
+
+# Types the translation below handles. Any other type that has dictionary
+# elements is handled as a dictionary, see _spec_type().
+_HANDLED_TYPES = _PASSTHROUGH_TYPES | frozenset(
+    {
+        "integer",
+        "float",
+        "boolean_choice",
+        "legacy_valuespec",
+        "fixed_value",
+        "single_choice",
+        "single_choice_editable",
+        "cascading_single_choice",
+        "catalog",
+        "list",
+        "list_unique_selection",
+        "tuple",
+        "optional_choice",
+        "checkbox_list_choice",
+        "dual_list_choice",
+        "time_span",
+        "data_size",
+        "simple_password",
+        "password",
+    }
+)
+
 # Types whose values must never end up in the log.
 _SECRET_TYPES = frozenset({"simple_password", "password"})
 
@@ -76,7 +108,6 @@ _SECRET_TYPES = frozenset({"simple_password", "password"})
 _CONTAINER_TYPES = frozenset(
     {
         "dictionary",
-        "two_column_dictionary",
         "catalog",
         "cascading_single_choice",
         "list",
@@ -187,7 +218,7 @@ def _debug(logger, func, spec, path, **items):
     """
     if not logger:
         return
-    kind = (spec or {}).get("type")
+    kind = _spec_type(spec)
     parts = []
     for key, value in items.items():
         if key in ("value", "current", "result"):
@@ -205,6 +236,33 @@ def _debug(logger, func, spec, path, **items):
 # ---------------------------------------------------------------------------
 # Generic spec helpers
 # ---------------------------------------------------------------------------
+
+
+def _spec_type(spec):
+    """Return the type of a spec, with every kind of dictionary as "dictionary".
+
+    Checkmk adds specialised dictionaries from time to time. A type that is
+    unknown here but has dictionary elements is handled as a dictionary, so
+    that its keys are still translated instead of being sent as titles.
+    """
+    raw_type = (spec or {}).get("type")
+    if raw_type in _DICTIONARY_TYPES:
+        return "dictionary"
+    if raw_type not in _HANDLED_TYPES and _has_dictionary_elements(spec):
+        return "dictionary"
+    return raw_type
+
+
+def _has_dictionary_elements(spec):
+    elements = (spec or {}).get("elements")
+    return (
+        isinstance(elements, list)
+        and bool(elements)
+        and all(
+            isinstance(e, dict) and "name" in e and "parameter_form" in e
+            for e in elements
+        )
+    )
 
 
 def _path_str(path):
@@ -434,7 +492,7 @@ def to_ui(spec, value, path=(), logger=None):
 
 
 def _to_ui(spec, value, path, logger):
-    kind = (spec or {}).get("type")
+    kind = _spec_type(spec)
 
     if kind in _PASSTHROUGH_TYPES or kind is None:
         return value
@@ -477,7 +535,7 @@ def _to_ui(spec, value, path, logger):
                 }
         return value
 
-    if kind in ("dictionary", "two_column_dictionary"):
+    if kind == "dictionary":
         if not isinstance(value, dict):
             return value
         elements = spec.get("elements") or []
@@ -626,7 +684,7 @@ def from_ui(spec, value, current=None, update_secrets=False, path=(), logger=Non
 
 
 def _from_ui(spec, value, current, update_secrets, path, logger):
-    kind = (spec or {}).get("type")
+    kind = _spec_type(spec)
 
     if kind == "legacy_valuespec":
         raise GlobalSettingValueError(
@@ -665,7 +723,7 @@ def _from_ui(spec, value, current, update_secrets, path, logger):
             spec, value, current, update_secrets, path, logger=logger
         )
 
-    if kind in ("dictionary", "two_column_dictionary"):
+    if kind == "dictionary":
         if not isinstance(value, dict):
             raise GlobalSettingValueError("%s: expected a dictionary" % _path_str(path))
         return _elements_from_ui(
@@ -799,6 +857,13 @@ def _from_ui(spec, value, current, update_secrets, path, logger):
             spec, value, current, update_secrets, path, logger=logger
         )
 
+    if isinstance(value, dict):
+        # The keys would need translating, which is unknown for this type.
+        # Sending them as they are only gets a confusing error from Checkmk.
+        raise GlobalSettingValueError(
+            "%s: Checkmk uses the form type %r here, which this module does not "
+            "support yet." % (_path_str(path), kind)
+        )
     if logger:
         logger.debug(
             "from_ui(): path=%s, unknown type %r, value passed through"
@@ -985,9 +1050,9 @@ def canonical(spec, value):
     Secrets that are about to be (re)written in plain text never compare equal
     to stored, encrypted ones.
     """
-    kind = (spec or {}).get("type")
+    kind = _spec_type(spec)
 
-    if kind in ("dictionary", "two_column_dictionary"):
+    if kind == "dictionary":
         if not isinstance(value, dict):
             return value
         specs = {e["name"]: e.get("parameter_form") for e in spec.get("elements") or []}
