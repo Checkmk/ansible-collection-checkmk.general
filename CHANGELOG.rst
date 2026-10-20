@@ -4,6 +4,16 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v8.6.0
+======
+
+Minor Changes
+-------------
+
+- Agent role - Support delegated agent registration on Windows hosts. The registration target must be a Linux host with the Checkmk agent installed.
+- All modules - ``http_code``, ``content`` and ``etag`` are now returned by every module that talks to the REST API. Existing return values are unchanged, the keys are only added.
+- All modules - ``result_as_dict()`` was removed from ``module_utils.utils``. It returned a subset of the result and was what dropped the keys above. Every module exits through ``exit_module()`` now. This only affects code importing the helper directly from ``module_utils``, not playbooks or roles.
+
 v8.5.1
 ======
 

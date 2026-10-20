@@ -22,7 +22,7 @@ checkmk.general.ldap module -- Manage LDAP connections
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.5.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.6.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -4241,7 +4241,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`dictionary`
+        :ansible-option-type:`string`
 
       .. raw:: html
 
@@ -4251,12 +4251,19 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-cell">
 
-      Content of the LDAP object.
+      The raw, undecoded response body of the Checkmk API.
+
+      Empty when the API returned no body, e.g. when nothing had to be done.
 
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-returned-bold:`Returned:` when state is present and LDAP created or updated.
+      :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"{\\"id\\": \\"my\_object\\", \\"extensions\\": {}}"`
 
 
       .. raw:: html
@@ -4296,7 +4303,59 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       .. rst-class:: ansible-option-line
 
-      :ansible-option-returned-bold:`Returned:` when in diff mode
+      :ansible-option-returned-bold:`Returned:` when differences are detected or in diff mode
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`{"after": {"title": "My LDAP connection"}, "before": {}}`
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-etag"></div>
+
+      .. _ansible_collections.checkmk.general.ldap_module__return-etag:
+
+      .. rst-class:: ansible-option-title
+
+      **etag**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-etag" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The ETag the Checkmk API returned for the object.
+
+      Empty when the API returned no ETag.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"\\"ad55730d5488e55e07c58a3da9759fba8cd0b009\\""`
 
 
       .. raw:: html
@@ -4331,12 +4390,17 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
         <div class="ansible-option-cell">
 
-      HTTP code returned by the Checkmk API.
+      The HTTP code the Checkmk API returns.
 
 
       .. rst-class:: ansible-option-line
 
       :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`200`
 
 
       .. raw:: html
@@ -4377,6 +4441,11 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
       .. rst-class:: ansible-option-line
 
       :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`"LDAP connection created."`
 
 
       .. raw:: html
