@@ -1,0 +1,37 @@
+---
+# This playbook sets a downtime for children of the current host, i.e. were the host is a parent of other hosts
+- name: "Checkmk downtime of child hosts"
+  hosts: linux
+  tasks:
+    - name: "Query cmk for children of host"
+      delegate_to: localhost
+      ansible.builtin.set_fact:
+        # Searches through all hosts if they have parents and if they are parents of a host
+        cmk_children: >-
+          {{ lookup('checkmk.general.hosts')
+            | selectattr(
+                'extensions.attributes.parents',
+                'defined'
+              )
+            | selectattr(
+                'extensions.attributes.parents',
+                'contains',
+                ansible_hostname
+              )
+            | map(attribute='id')
+            | list
+          }}
+
+    - name: "Schedule downtime children"
+      # Only do this if there were children found
+      when: cmk_children | default([]) | length
+      delegate_to: localhost
+      loop: "{{ cmk_children }}"
+      checkmk.general.downtime:
+        server_url: "{{ server_url }}"
+        site: "{{ site }}"
+        automation_user: "{{ api_user }}"
+        automation_secret: "{{ api_secret }}"
+        host_name: "{{ item }}"
+        end_after:
+          days: 1
