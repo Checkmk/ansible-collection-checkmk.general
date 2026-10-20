@@ -418,6 +418,18 @@ http_code:
         - The HTTP code returned by the Checkmk API.
     type: int
     returned: always
+content:
+    description:
+        - The raw, undecoded response body of the Checkmk API.
+        - Empty when the API returned no body, e.g. when nothing had to be done.
+    type: str
+    returned: always
+etag:
+    description:
+        - The ETag the Checkmk API returned for the object.
+        - Empty when the API returned no ETag.
+    type: str
+    returned: always
 """
 
 import json

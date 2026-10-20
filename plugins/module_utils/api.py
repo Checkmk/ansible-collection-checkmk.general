@@ -15,7 +15,7 @@ import json
 
 from ansible.module_utils.urls import fetch_url
 from ansible_collections.checkmk.general.plugins.module_utils.types import RESULT
-from ansible_collections.checkmk.general.plugins.module_utils.utils import (  # result_as_dict,
+from ansible_collections.checkmk.general.plugins.module_utils.utils import (
     GENERIC_HTTP_CODES,
     base_api_url,
     exit_module,
@@ -169,7 +169,6 @@ class CheckmkAPI:
                 failed=True,
                 logger=logger,
             )
-            # self.module.fail_json(**result_as_dict(result))
         if logger:
             logger.debug("_fetch(): result: %s" % str(result))
         return result
