@@ -22,7 +22,7 @@ checkmk.general.downtime module -- Manage downtimes in Checkmk
 .. Collection note
 
 .. note::
-    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.5.1).
+    This module is part of the `checkmk.general collection <https://galaxy.ansible.com/ui/repo/published/checkmk/general/>`_ (version 8.6.0).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
@@ -1275,6 +1275,90 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
   * - Key
     - Description
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-content"></div>
+
+      .. _ansible_collections.checkmk.general.downtime_module__return-content:
+
+      .. rst-class:: ansible-option-title
+
+      **content**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-content" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The raw, undecoded response body of the Checkmk API.
+
+      Empty when the API returned no body, e.g. when nothing had to be done.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-etag"></div>
+
+      .. _ansible_collections.checkmk.general.downtime_module__return-etag:
+
+      .. rst-class:: ansible-option-title
+
+      **etag**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-etag" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The ETag the Checkmk API returned for the object.
+
+      Empty when the API returned no ETag.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+
+      .. raw:: html
+
+        </div>
+
 
   * - .. raw:: html
 
