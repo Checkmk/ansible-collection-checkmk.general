@@ -279,7 +279,7 @@ wheels = [
 
 [[package]]
 name = "antsibull-changelog"
-version = "0.35.1"
+version = "0.35.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
@@ -292,9 +292,9 @@ dependencies = [
     { name = "rstcheck" },
     { name = "semantic-version" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1d/12/56f23723ac30af83b56e47f993067af5c7dee0a1f89559694bb7c47f8d4f/antsibull_changelog-0.35.1.tar.gz", hash = "sha256:79359ed45ef1d542ea3bf31b09a3ad8389678a2b584254e7c15d6f140a53b33b", size = 143413, upload-time = "2026-05-18T19:53:09.259Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/58/72/98cb4306ca5abee477da7ec945f41d1c3e32a6b4b3fd9817a9c8646b3022/antsibull_changelog-0.35.2.tar.gz", hash = "sha256:b43693067d3f8f52b24509152844faba8f8e96109f01753996e663dd70cf2dbc", size = 144131, upload-time = "2026-10-18T15:15:28.163Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dd/72/4c42f5076df37fc6957bbce7d4711c477c4a0a80cd3a804bc2292e68de8d/antsibull_changelog-0.35.1-py3-none-any.whl", hash = "sha256:638042a8517e4f0453a308128d37b013b1e433a3e36cca374205decce6498b2a", size = 74201, upload-time = "2026-05-18T19:53:07.298Z" },
+    { url = "https://files.pythonhosted.org/packages/c7/b7/7c676a470ea98a5ef162ffe519fa7ba3cb0892f1cdec13503f49c5d13199/antsibull_changelog-0.35.2-py3-none-any.whl", hash = "sha256:0bbfb043b48501f1671a2d6728922a0d6e8a816cb8aa1a030765119adbd967c5", size = 74284, upload-time = "2026-10-18T15:15:26.327Z" },
 ]
 
 [[package]]
@@ -319,7 +319,7 @@ wheels = [
 
 [[package]]
 name = "antsibull-docs"
-version = "2.27.0"
+version = "2.28.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -339,9 +339,9 @@ dependencies = [
     { name = "semantic-version" },
     { name = "sphinx" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9c/8e/844eceb5ef4b1d10468be2c0f555c6f0d03fbceb9dc8e39ff3c88f0a80c6/antsibull_docs-2.27.0.tar.gz", hash = "sha256:ed89776c5bfd9c779ee20965dc29e84aacb5efb7e21e3c72b2ed9a81378afa96", size = 1602777, upload-time = "2026-09-10T20:14:39.269Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/99/0f/98e6b0821023096226c4c988c72cf67ca579a18da97d1c8bea142da03984/antsibull_docs-2.28.0.tar.gz", hash = "sha256:6e1cde199ccbe172fbf47e53cbda448223501a7d8b4f06d1b633d3fc8a5949fc", size = 1601688, upload-time = "2026-10-16T09:34:06.569Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8b/a2/053f3a36ce18dd538966f73cfa498c86ad4a14bf6be0965ef01ea5260c75/antsibull_docs-2.27.0-py3-none-any.whl", hash = "sha256:e68cb05494eaa2dcb834d464ae09f5249d64fbb58574dffe397314c8b07be99c", size = 304395, upload-time = "2026-09-10T20:14:36.912Z" },
+    { url = "https://files.pythonhosted.org/packages/db/bb/1bc882bac5d01918debcb39aa12dbce090987f03c8864746eb2e5b6073e8/antsibull_docs-2.28.0-py3-none-any.whl", hash = "sha256:e71ef8c52f517eeec5c0f672b4952cd4f8df55461b9b842b4f2544932ab3ba58", size = 302724, upload-time = "2026-10-16T09:34:00.903Z" },
 ]
 
 [[package]]
@@ -471,11 +471,11 @@ wheels = [
 
 [[package]]
 name = "certifi"
-version = "2026.7.22"
+version = "2026.10.19"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a3/c2/24167ea9858356b47a87a50d39908bfdb72ceeefe0041586e704e5376b3a/certifi-2026.7.22.tar.gz", hash = "sha256:741e2c3b351ddf169a738da9f2c048608ff7f2c5cc02f1ebc6b118bb090d5d55", size = 138112, upload-time = "2026-07-22T03:35:12.644Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a6/bd/1436c50cc46699de0230fbaacc1d1de7bfec413176099949e9d5112e88f2/certifi-2026.10.19.tar.gz", hash = "sha256:035c1e85572b141bf1c3a3eff0e33a8eb74917522f2559075ff8d2fea780a1ae", size = 137598, upload-time = "2026-10-20T02:24:16.604Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0b/a7/71ac2cff56fec219ed242bb11b8efb69fcc4bec75db06fb7bfe35de520e6/certifi-2026.7.22-py3-none-any.whl", hash = "sha256:62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775", size = 136983, upload-time = "2026-07-22T03:35:11.276Z" },
+    { url = "https://files.pythonhosted.org/packages/c4/51/29046e48f693c54e5b7412216d447a1d8362c9653148d98c02cdf65fa733/certifi-2026.10.19-py3-none-any.whl", hash = "sha256:42d35340cc5b9ba78e818ddbff0c5b1c2b779de448a340fd1b989f5fa8670e1b", size = 136464, upload-time = "2026-10-20T02:24:15.072Z" },
 ]
 
 [[package]]
@@ -717,8 +717,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "ansible-lint", specifier = "==26.10.1" },
-    { name = "antsibull-changelog", specifier = "==0.35.1" },
-    { name = "antsibull-docs", specifier = "==2.27.0" },
+    { name = "antsibull-changelog", specifier = "==0.35.2" },
+    { name = "antsibull-docs", specifier = "==2.28.0" },
     { name = "molecule", specifier = "==26.10.0" },
     { name = "molecule-plugins", extras = ["podman"], specifier = "==26.10.12" },
     { name = "pywinrm", specifier = "==0.5.0" },
@@ -831,11 +831,11 @@ wheels = [
 
 [[package]]
 name = "filelock"
-version = "4.0.1"
+version = "4.2.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/6f/38/88cd6eda96c40594a1e3da7d8b40f04bc40ace5a6aef9ac5cb407540f173/filelock-4.0.1.tar.gz", hash = "sha256:fdefc3f3e87716d855ae2b732c1cfd521dd99799ef2b4d00e8c0d4dcdc7cc94b", size = 238888, upload-time = "2026-09-19T01:08:15.958Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d5/98/771d8ca889f220d7d7e352addf500666368f0fd081c6080a83767580c6e4/filelock-4.2.1.tar.gz", hash = "sha256:c4c937ccac2a813cee448e662a56366cfb374c0f8702e75f295c412cc1c5d5a3", size = 650997, upload-time = "2026-10-17T16:48:14.435Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/29/33/af0635ab07fe83b1788a1dbe370ff3e226062495a998335cb18a1cac81aa/filelock-4.0.1-py3-none-any.whl", hash = "sha256:481a321a27bef441e23c53371c6abc8d7d16e26b97090074ba44f7538a3fd55a", size = 106219, upload-time = "2026-09-19T01:08:14.49Z" },
+    { url = "https://files.pythonhosted.org/packages/28/00/db89d339bc4ecdc8087fa7b8607ba22ffc27bf96286f340c9620bea428b3/filelock-4.2.1-py3-none-any.whl", hash = "sha256:7be2662e9e826b9bba28afc0f843a123280d799a2ea44bb5d35ccec67905ae44", size = 162455, upload-time = "2026-10-17T16:48:12.937Z" },
 ]
 
 [[package]]
