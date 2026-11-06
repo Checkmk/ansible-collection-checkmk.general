@@ -11,7 +11,8 @@ DOCUMENTATION = """
     short_description: Dynamic Inventory Source for Checkmk
     description:
         - Get hosts from any Checkmk site.
-        - Generate groups based on tag groups or sites in Checkmk.
+        - Generate groups based on tag groups, sites or labels in Checkmk.
+        - Sets the host labels as a dictionary variable C(checkmk_labels) for each host.
 
     extends_documentation_fragment: [checkmk.general.common_lookup]
 
@@ -24,7 +25,9 @@ DOCUMENTATION = """
         groupsources:
             description:
               - List of sources for grouping.
-              - Possible sources are C(sites) and C(hosttags).
+              - Possible sources are C(sites), C(hosttags) and C(labels).
+              - Grouping by C(labels) creates one group per label,
+                named C(label_<key>_<value>).
             type: list
             elements: str
             required: false
@@ -93,6 +96,17 @@ DOCUMENTATION = """
         - The C(lowercase_hosts) and C(domain_map) options change hostnames. If a
           transformation maps two different Checkmk hosts to the same name, they are
           merged into a single inventory host, so make sure transformed names stay unique.
+        - Labels are always fetched, whether or not C(labels) is listed in
+          C(groupsources), because C(checkmk_labels) is set for every host. This costs
+          one additional REST call per run, because the host configuration only knows
+          explicitly configured labels and the effective set has to be read from the
+          monitoring core. If that call fails, the run continues with the configured
+          labels and reports a warning.
+        - Only labels that at least one host actually has become groups. Unlike tag
+          groups, the set of labels is not known in advance.
+        - Group names replace every character that is neither a letter, a digit nor an
+          underscore with an underscore, so labels that differ only in such characters
+          share a group, e.g. C(my/label) and C(my_label).
 
     author:
         - Max Sickora (@max-checkmk)
@@ -105,18 +119,36 @@ EXAMPLES = """
 # one of the example blocks below and use it as your inventory source.
 # E.g., with `ansible-inventory -i checkmk.yml --graph`.
 
-# Group all hosts based on both tag groups and sites
+# Group all hosts based on tag groups, sites and labels
 # and update ansible_host with the ip address from Checkmk:
 plugin: checkmk.general.checkmk
 server_url: "http://myserver"
 site: "mysite"
 api_user: "myuser"
 api_secret: "mysecret"
-groupsources: ["hosttags", "sites"]
+groupsources: ["hosttags", "sites", "labels"]
 want_ipv4: true
 
 # The connection options are omitted in the following examples for brevity.
 # They can be set as shown above or via environment variables (see below).
+
+# ---------------------------------------------------------------------------
+# Using host labels
+# ---------------------------------------------------------------------------
+# The labels of a host are always exposed as the host variable
+# `checkmk_labels`, regardless of `groupsources`:
+#
+# - name: Show the labels of a host
+#   hosts: my_checkmk_host
+#   tasks:
+#     - name: Display the labels
+#       ansible.builtin.debug:
+#         var: checkmk_labels
+#
+#     - name: Run a task only if a label is set
+#       ansible.builtin.debug:
+#         msg: "This is a Linux machine."
+#       when: checkmk_labels['cmk/os_family'] | default('') == 'linux'
 
 # Exclude test and offline systems from the inventory:
 plugin: checkmk.general.checkmk
@@ -334,6 +366,9 @@ class InventoryModule(BaseInventoryPlugin):
             self.inventory.add_host(host["id"])
             self.inventory.set_variable(host["id"], "ipaddress", host["ipaddress"])
             self.inventory.set_variable(host["id"], "folder", host["folder"])
+            self.inventory.set_variable(
+                host["id"], "checkmk_labels", host.get("labels", {})
+            )
             if self.want_ipv4:
                 self.inventory.set_variable(
                     host["id"], "ansible_host", host["ipaddress"]
@@ -355,6 +390,17 @@ class InventoryModule(BaseInventoryPlugin):
                     self.inventory.add_child(
                         "site_" + self.convertname(host.get("site")), host.get("id")
                     )
+            if "labels" in self.groupsources:
+                # Unlike tag groups and sites, the set of labels is not known
+                # before the hosts have been fetched, so the groups cannot be
+                # pre-created in _generate_groups() and are added here.
+                for host in self.hosts:
+                    for key, value in host.get("labels", {}).items():
+                        group_name = self.convertname(
+                            "label_{0}_{1}".format(key, value)
+                        )
+                        self.inventory.add_group(group_name)
+                        self.inventory.add_child(group_name, host.get("id"))
 
     def _get_domain_suffix(self, host_tags):
         """Return the suffix of the first domain_map entry matching a host tag, or empty string."""
@@ -389,9 +435,17 @@ class InventoryModule(BaseInventoryPlugin):
             )
         return False
 
-    def _parse_hosts(self, raw_hosts):
-        """Convert raw API host list to internal format, apply folder, exclude_tags and domain_map."""
+    def _parse_hosts(self, raw_hosts, livestatus_labels=None):
+        """Convert raw API host list to internal format, apply folder, exclude_tags and domain_map.
+
+        ``livestatus_labels`` maps the Checkmk host name to the labels the
+        monitoring core actually uses. It is merged on top of the labels from
+        the host configuration, which do not include labels added by rules or
+        discovery. The merge happens before the hostname transformations, so it
+        is always keyed by the original Checkmk host name.
+        """
         folder_target = normalize_folder(self.folder) if self.folder else None
+        livestatus_labels = livestatus_labels or {}
         hosts = []
         for host in raw_hosts:
             host_id = host.get("id")
@@ -402,12 +456,17 @@ class InventoryModule(BaseInventoryPlugin):
                 .items()
                 if taggroup in self.tags
             }
+            host_labels = dict(
+                host.get("extensions").get("effective_attributes").get("labels") or {}
+            )
+            host_labels.update(livestatus_labels.get(host_id) or {})
             parsed = {
                 "id": host_id,
                 "title": host.get("extensions").get("title"),
                 "ipaddress": host.get("extensions").get("attributes").get("ipaddress"),
                 "folder": host.get("extensions").get("folder"),
                 "site": host.get("extensions").get("effective_attributes").get("site"),
+                "labels": host_labels,
                 "tags": host_tags,
             }
 
@@ -458,7 +517,52 @@ class InventoryModule(BaseInventoryPlugin):
                 )
             )
 
-        return self._parse_hosts(response.get("value", []))
+        return self._parse_hosts(
+            response.get("value", []), self._get_livestatus_labels(api)
+        )
+
+    def _get_livestatus_labels(self, api):
+        """Return the labels the monitoring core uses, keyed by host name.
+
+        The host configuration only knows explicitly configured labels, so the
+        monitoring core is queried for the effective set, which also covers
+        labels from rules and discovery. A failure here is not fatal: the
+        configuration labels are used as a fallback.
+        """
+        try:
+            # POST and not GET: the GET variant of this endpoint is deprecated
+            # since Checkmk 2.3 and no longer available in 3.0, while POST is
+            # supported on all versions this collection supports.
+            response = json.loads(
+                api.post(
+                    "/domain-types/host/collections/all",
+                    {"columns": ["name", "labels"]},
+                )
+            )
+        except Exception as e:
+            display.warning(
+                "Could not fetch the labels from the monitoring core: %s. "
+                "Falling back to the labels from the host configuration." % e
+            )
+            return {}
+
+        if "code" in response:
+            display.warning(
+                "Could not fetch the labels from the monitoring core: %s - %s. "
+                "Falling back to the labels from the host configuration."
+                % (response.get("code", ""), response.get("msg", ""))
+            )
+            return {}
+
+        labels = {}
+        for host in response.get("value", []):
+            extensions = host.get("extensions") or {}
+            # The host name is the object identifier; it is additionally
+            # returned as the "name" column that is requested above.
+            host_name = extensions.get("name") or host.get("id")
+            if host_name:
+                labels[host_name] = extensions.get("labels") or {}
+        return labels
 
     def _get_taggroups(self, api):
         response = json.loads(api.get("/domain-types/host_tag_group/collections/all"))

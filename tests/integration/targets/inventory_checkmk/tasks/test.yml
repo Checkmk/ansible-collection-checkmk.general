@@ -22,6 +22,7 @@
       site: "{{ outer_item.site }}"
       tag_criticality: "{{ item.criticality }}"
       ipaddress: "{{ item.ipaddress | default(omit) }}"
+      labels: "{{ item.labels | default(omit) }}"
     state: "present"
   loop: "{{ checkmk_var_hosts }}"
 
@@ -72,6 +73,8 @@
       - "checkmk_var_hosts | map(attribute='name') | difference(__checkmk_var_inventory['site_' ~ outer_item.site]['hosts']) | length == 0"
       - "__checkmk_var_inventory._meta.hostvars['inv-prod'].ansible_host == '127.0.0.1'"
       - "__checkmk_var_inventory._meta.hostvars['inv-sub'].folder == '/top/sub'"
+      - "__checkmk_var_inventory._meta.hostvars['inv-prod'].checkmk_labels['os_family'] == 'linux'"
+      - "'label_os_family_linux' not in __checkmk_var_inventory"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'folder': Run inventory."
   ansible.builtin.include_tasks: run_inventory.yml
@@ -166,6 +169,27 @@
       - "__checkmk_var_inventory_hosts == ['inv-prod.example.com', 'inv-upper.example.com']"
       - "'inv-prod.example.com' in __checkmk_var_inventory['tag_criticality_prod']['hosts']"
       - "__checkmk_var_inventory._meta.hostvars['inv-prod.example.com'].ansible_host == '127.0.0.1'"
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'labels': Run inventory."
+  ansible.builtin.include_tasks: run_inventory.yml
+  vars:
+    __checkmk_var_scenario: "labels"
+    __checkmk_var_inventory_options:
+      groupsources: ["labels"]
+
+- name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'labels': Verify label groups and host variables."
+  ansible.builtin.assert:
+    that:
+      - "'inv-prod' in __checkmk_var_inventory['label_os_family_linux']['hosts']"
+      - "'inv-sub' in __checkmk_var_inventory['label_os_family_windows']['hosts']"
+      # The space of "ops team" has to be gone from the group name.
+      - "'inv-prod' in __checkmk_var_inventory['label_team_opsteam']['hosts']"
+      - "'inv-sub' not in __checkmk_var_inventory['label_os_family_linux']['hosts']"
+      # A host without labels is inventoried, just not grouped by one.
+      - "'inv-offline' in __checkmk_var_inventory_hosts"
+      - "'os_family' not in __checkmk_var_inventory._meta.hostvars['inv-offline'].checkmk_labels"
+      # No group exists for a label value nobody uses.
+      - "'label_os_family_solaris' not in __checkmk_var_inventory"
 
 - name: "{{ outer_item.version }}.{{ outer_item.edition }} - Scenario 'environment': Run inventory."
   ansible.builtin.include_tasks: run_inventory.yml
