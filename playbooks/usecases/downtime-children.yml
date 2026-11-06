@@ -7,7 +7,7 @@
       delegate_to: localhost
       ansible.builtin.set_fact:
         # Searches through all hosts if they have parents and if they are parents of a host
-        cmk_children: >-
+        checkmk_var_children: >-
           {{ lookup('checkmk.general.hosts')
             | selectattr(
                 'extensions.attributes.parents',
@@ -24,9 +24,9 @@
 
     - name: "Schedule downtime children"
       # Only do this if there were children found
-      when: cmk_children | default([]) | length
+      when: checkmk_var_children | default([]) | length
       delegate_to: localhost
-      loop: "{{ cmk_children }}"
+      loop: "{{ checkmk_var_children }}"
       checkmk.general.downtime:
         server_url: "{{ server_url }}"
         site: "{{ site }}"
