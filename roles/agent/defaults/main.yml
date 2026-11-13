@@ -49,7 +49,7 @@ checkmk_agent_configure_firewall: true
 
 ## Delegation
 checkmk_agent_delegate_api_calls: "localhost"
-checkmk_agent_delegate_download: "{{ inventory_hostname }}"
+checkmk_agent_delegate_download: true
 checkmk_agent_delegate_registration: false
 checkmk_agent_delegate_registration_target: "{{ inventory_hostname }}"
 
