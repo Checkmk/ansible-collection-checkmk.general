@@ -279,12 +279,12 @@ wheels = [
 
 [[package]]
 name = "antsibull-changelog"
-version = "0.36.0"
+version = "0.37.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
     { name = "antsibull-docs-parser" },
-    { name = "antsibull-docutils" },
+    { name = "antsibull-docutils", extra = ["unicode"] },
     { name = "antsibull-fileutils" },
     { name = "docutils" },
     { name = "packaging" },
@@ -292,9 +292,9 @@ dependencies = [
     { name = "rstcheck" },
     { name = "semantic-version" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b5/90/c374a7d2fabfb7707dc52d64d61bf892438296be53a21094471a3bc655a3/antsibull_changelog-0.36.0.tar.gz", hash = "sha256:f448fb6bae539d3bf6b8c68c8f94622aba3efddba3e9a40d5c3820356af0f686", size = 145713, upload-time = "2026-10-25T20:18:11.731Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fe/cb/404b53665166994de2be129e8714cf82a947e70b45749db2780cd086740f/antsibull_changelog-0.37.0.tar.gz", hash = "sha256:649105fe6ccd4f035688c4e2e580573660712af1e46f8c0d3d8891352ffc7e2e", size = 158153, upload-time = "2026-11-08T13:43:31.204Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/df/3e/53c1ab8eb50febf5d6ac30e91b40c9e9ab594434689b451d95f106a8d08f/antsibull_changelog-0.36.0-py3-none-any.whl", hash = "sha256:2e5e1bcd0d0f8ba3ec95ea67ce71f8751e5904ca3dcdda23e075c79a8a60a0f2", size = 74527, upload-time = "2026-10-25T20:18:13.539Z" },
+    { url = "https://files.pythonhosted.org/packages/ae/c0/f59b2a5730ae6eef8b383032a596af0806af534b3cdefd270849303d7ad1/antsibull_changelog-0.37.0-py3-none-any.whl", hash = "sha256:c9fb0e7625b208ae4ea6fe3633bc0dbeb029bcd2a79da36a8ef7f5a256beadc4", size = 77387, upload-time = "2026-11-08T13:43:32.623Z" },
 ]
 
 [[package]]
@@ -355,14 +355,19 @@ wheels = [
 
 [[package]]
 name = "antsibull-docutils"
-version = "1.4.1"
+version = "1.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docutils" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/82/36/cf629b3ca6f559aad19df1b9d8da6af9d3ef32fc4f8d3edac48ad8634f36/antsibull_docutils-1.4.1.tar.gz", hash = "sha256:c4f6f9e7ded9dce9a02524763f076dff97ed0a399e1f9fad5ba9dd5fa77a0372", size = 45918, upload-time = "2026-09-01T18:30:13.866Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a1/08/c5eb1cf6f2f07b3042aaec24506b139cbd522c9b6e93842fd85e3a161232/antsibull_docutils-1.5.0.tar.gz", hash = "sha256:d325c2ce57cde5343bf50e647e2e7714718337748b1a9db5a1b529a2dd765603", size = 70449, upload-time = "2026-11-08T13:26:53.668Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ce/ec/c54da04de9a620378219682ad1c7c858044cf3c62102effa7b5a7b41b47c/antsibull_docutils-1.4.1-py3-none-any.whl", hash = "sha256:69cb329d17cd694aa1f8345d5d08ff543e53552fa961493e14564e213a7ce2b3", size = 30762, upload-time = "2026-09-01T18:30:15.288Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/3a/a2f4e50b84994603a7e4ce52ce76beb102c1792bae3bea017a7865ca428a/antsibull_docutils-1.5.0-py3-none-any.whl", hash = "sha256:9f8f4293bc4d8a0e70f99f64c3c4c39d4953c32f817568222ac23f9ac6c2d351", size = 52724, upload-time = "2026-11-08T13:26:52.312Z" },
+]
+
+[package.optional-dependencies]
+unicode = [
+    { name = "graphemeu", marker = "python_full_version < '3.15'" },
 ]
 
 [[package]]
@@ -717,7 +722,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "ansible-lint", specifier = "==26.11.0" },
-    { name = "antsibull-changelog", specifier = "==0.36.0" },
+    { name = "antsibull-changelog", specifier = "==0.37.0" },
     { name = "antsibull-docs", specifier = "==2.28.0" },
     { name = "molecule", specifier = "==26.11.0" },
     { name = "molecule-plugins", extras = ["podman"], specifier = "==26.11.0" },
@@ -925,6 +930,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/89/76/c615883b7b521ead2944bb3480398cbb07e12b7b4e4d073d3752eb721558/frozenlist-1.8.0-cp314-cp314t-win_amd64.whl", hash = "sha256:06be8f67f39c8b1dc671f5d83aaefd3358ae5cdcf8314552c57e7ed3e6475bdd", size = 49451, upload-time = "2025-10-06T05:37:53.425Z" },
     { url = "https://files.pythonhosted.org/packages/e0/a3/5982da14e113d07b325230f95060e2169f5311b1017ea8af2a29b374c289/frozenlist-1.8.0-cp314-cp314t-win_arm64.whl", hash = "sha256:102e6314ca4da683dca92e3b1355490fed5f313b768500084fbe6371fddfdb79", size = 42507, upload-time = "2025-10-06T05:37:54.513Z" },
     { url = "https://files.pythonhosted.org/packages/9a/9a/e35b4a917281c0b8419d4207f4334c8e8c5dbf4f3f5f9ada73958d937dcc/frozenlist-1.8.0-py3-none-any.whl", hash = "sha256:0c18a16eab41e82c295618a77502e17b195883241c563b00f0aa5106fc4eaa0d", size = 13409, upload-time = "2025-10-06T05:38:16.721Z" },
+]
+
+[[package]]
+name = "graphemeu"
+version = "0.11.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/63/f6/6a1f04e839f9200402bdae9dc9c47ffc481082d530599e034d74452a1603/graphemeu-0.11.0.tar.gz", hash = "sha256:d03e0f625dcf8c6ff81e52d85bacad3f1ecf66c54df27a2dbd0544a0d02903d4", size = 373543, upload-time = "2026-09-22T06:45:59.535Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/61/ec/69a36a4a669e968088448f69f10b2333e3218d0ebec043a6064b6af5f3e8/graphemeu-0.11.0-py3-none-any.whl", hash = "sha256:fd52b7e88ccc8d7523466be6694486eb14ae91b1cef4bb5aae37339543d09237", size = 23175, upload-time = "2026-09-22T06:45:58.324Z" },
 ]
 
 [[package]]
