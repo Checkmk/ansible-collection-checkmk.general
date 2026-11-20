@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - dcd module - Report unexpected errors as failed instead of as a successful task.

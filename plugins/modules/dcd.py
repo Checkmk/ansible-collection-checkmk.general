@@ -418,7 +418,7 @@ class DCDAPI(CheckmkAPI):
                 self.current = current_raw.get("extensions", {})
                 self.current["dcd_id"] = current_raw.get("id")
 
-            except json.JSONDecodeError:
+            except (ValueError, TypeError):
                 exit_module(
                     self.module,
                     msg="Failed to decode JSON response from API.",
@@ -590,17 +590,9 @@ def run_module():
         state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
-    # Is this necessary? Or should it be handles by api.py?
-    required_if = [
-        ("api_auth_type", "bearer", ["api_user", "api_secret"]),
-        ("api_auth_type", "basic", ["api_user", "api_secret"]),
-        ("api_auth_type", "cookie", ["api_auth_cookie"]),
-    ]
-
     module = AnsibleModule(
         argument_spec=argument_spec,
         supports_check_mode=True,
-        required_if=required_if,
     )
 
     logger.set_loglevel(module._verbosity)
@@ -642,7 +634,10 @@ def run_module():
 
     except Exception as e:
         exit_module(
-            module, msg="Error managing the DCD configuration: %s" % e, logger=logger
+            module,
+            msg="Error managing the DCD configuration: %s" % e,
+            failed=True,
+            logger=logger,
         )
 
 
