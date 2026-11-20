@@ -1,0 +1,10 @@
+---
+minor_changes:
+  - Inventory plugin - Add C(labels) as a source for C(groupsources), which creates
+    one group per host label, named ``label_<key>_<value>``.
+    Characters that are not valid in a group name are replaced by underscores.
+  - Inventory plugin - The labels of a host are now available as the host variable
+    ``checkmk_labels``, whether or not ``labels`` is listed in ``groupsources``.
+    The effective labels are read from the monitoring core, so they include the
+    labels Checkmk assigns through label rules and service discovery and not only
+    the ones configured in Setup.
