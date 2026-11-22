@@ -240,7 +240,7 @@ wheels = [
 
 [[package]]
 name = "ansible-lint"
-version = "26.10.1"
+version = "26.11.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansible-compat" },
@@ -260,9 +260,9 @@ dependencies = [
     { name = "wcmatch" },
     { name = "yamllint" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fe/55/94814bfe335b58e1f65c0b2e6c8d0676737eadd7cc1466d8fe7213345a13/ansible_lint-26.10.1.tar.gz", hash = "sha256:a746c6f3cb5719d1c202bc14e956ef3b0eca704025d1aa92707a27fc73ed73ea", size = 829069, upload-time = "2026-10-13T12:45:06.196Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bc/22/4db7a3ab031c7f08f6b1340df9fbc7b730a2ee25ec21047c1a3da445af0a/ansible_lint-26.11.0.tar.gz", hash = "sha256:74813203aa5450d720c3d86b9d0d4ddc51d30e36ac69e1f0d9f7650f5a3b5dd3", size = 876436, upload-time = "2026-11-05T08:50:53.758Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/c7/80a6ac01d970257979f8f18e34e5a1a4c1ad356ea8507425fe74ea9178bc/ansible_lint-26.10.1-py3-none-any.whl", hash = "sha256:cc26d405ee38c3390e80ec18c4137b5685c36d03ce7d4d8233b0470d9a0e21e9", size = 342245, upload-time = "2026-10-13T12:45:04.243Z" },
+    { url = "https://files.pythonhosted.org/packages/92/74/15896e47ad1087c1549f7d863631d05d661df0123747622e4cdab88c1428/ansible_lint-26.11.0-py3-none-any.whl", hash = "sha256:b778ea87fa873384b373e8c3fe53a06b3acc7b72ac283e2d2070f76fdf9f8358", size = 349253, upload-time = "2026-11-05T08:50:51.623Z" },
 ]
 
 [[package]]
@@ -279,12 +279,12 @@ wheels = [
 
 [[package]]
 name = "antsibull-changelog"
-version = "0.35.2"
+version = "0.37.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
     { name = "antsibull-docs-parser" },
-    { name = "antsibull-docutils" },
+    { name = "antsibull-docutils", extra = ["unicode"] },
     { name = "antsibull-fileutils" },
     { name = "docutils" },
     { name = "packaging" },
@@ -292,9 +292,9 @@ dependencies = [
     { name = "rstcheck" },
     { name = "semantic-version" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/58/72/98cb4306ca5abee477da7ec945f41d1c3e32a6b4b3fd9817a9c8646b3022/antsibull_changelog-0.35.2.tar.gz", hash = "sha256:b43693067d3f8f52b24509152844faba8f8e96109f01753996e663dd70cf2dbc", size = 144131, upload-time = "2026-10-18T15:15:28.163Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fe/cb/404b53665166994de2be129e8714cf82a947e70b45749db2780cd086740f/antsibull_changelog-0.37.0.tar.gz", hash = "sha256:649105fe6ccd4f035688c4e2e580573660712af1e46f8c0d3d8891352ffc7e2e", size = 158153, upload-time = "2026-11-08T13:43:31.204Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c7/b7/7c676a470ea98a5ef162ffe519fa7ba3cb0892f1cdec13503f49c5d13199/antsibull_changelog-0.35.2-py3-none-any.whl", hash = "sha256:0bbfb043b48501f1671a2d6728922a0d6e8a816cb8aa1a030765119adbd967c5", size = 74284, upload-time = "2026-10-18T15:15:26.327Z" },
+    { url = "https://files.pythonhosted.org/packages/ae/c0/f59b2a5730ae6eef8b383032a596af0806af534b3cdefd270849303d7ad1/antsibull_changelog-0.37.0-py3-none-any.whl", hash = "sha256:c9fb0e7625b208ae4ea6fe3633bc0dbeb029bcd2a79da36a8ef7f5a256beadc4", size = 77387, upload-time = "2026-11-08T13:43:32.623Z" },
 ]
 
 [[package]]
@@ -355,14 +355,19 @@ wheels = [
 
 [[package]]
 name = "antsibull-docutils"
-version = "1.4.1"
+version = "1.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docutils" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/82/36/cf629b3ca6f559aad19df1b9d8da6af9d3ef32fc4f8d3edac48ad8634f36/antsibull_docutils-1.4.1.tar.gz", hash = "sha256:c4f6f9e7ded9dce9a02524763f076dff97ed0a399e1f9fad5ba9dd5fa77a0372", size = 45918, upload-time = "2026-09-01T18:30:13.866Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a1/08/c5eb1cf6f2f07b3042aaec24506b139cbd522c9b6e93842fd85e3a161232/antsibull_docutils-1.5.0.tar.gz", hash = "sha256:d325c2ce57cde5343bf50e647e2e7714718337748b1a9db5a1b529a2dd765603", size = 70449, upload-time = "2026-11-08T13:26:53.668Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ce/ec/c54da04de9a620378219682ad1c7c858044cf3c62102effa7b5a7b41b47c/antsibull_docutils-1.4.1-py3-none-any.whl", hash = "sha256:69cb329d17cd694aa1f8345d5d08ff543e53552fa961493e14564e213a7ce2b3", size = 30762, upload-time = "2026-09-01T18:30:15.288Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/3a/a2f4e50b84994603a7e4ce52ce76beb102c1792bae3bea017a7865ca428a/antsibull_docutils-1.5.0-py3-none-any.whl", hash = "sha256:9f8f4293bc4d8a0e70f99f64c3c4c39d4953c32f817568222ac23f9ac6c2d351", size = 52724, upload-time = "2026-11-08T13:26:52.312Z" },
+]
+
+[package.optional-dependencies]
+unicode = [
+    { name = "graphemeu", marker = "python_full_version < '3.15'" },
 ]
 
 [[package]]
@@ -448,11 +453,11 @@ wheels = [
 
 [[package]]
 name = "bracex"
-version = "3.0.1"
+version = "3.2.4"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ac/01/5f394b8bcd6e5b92f73130990960423bbb19711f906bd9fe9ea5557c667c/bracex-3.0.1.tar.gz", hash = "sha256:4e38e32392e4a4780fe15d644bfc7c8514057cfc3861e060b11814ce829c25e4", size = 44019, upload-time = "2026-07-20T13:43:00.335Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/66/6f/95a6fcb1c430007cda4122c77aace4541fba297f08e2be791ab235a4c548/bracex-3.2.4.tar.gz", hash = "sha256:c1e67eb59f81445dee15b2c588b7c81352b697cfbd6c4931a2943ea6b71eb5ea", size = 35456, upload-time = "2026-11-20T13:05:37.452Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b8/8f/6f7273a7adb8d73fc8d21ede4376a3e475e52f98435c6007f69100dec8ca/bracex-3.0.1-py3-none-any.whl", hash = "sha256:6523ad83aeb5098a4ee597cff0f964442ff74e460bd3fafaffab6a013ff2288c", size = 11940, upload-time = "2026-07-20T13:42:59.268Z" },
+    { url = "https://files.pythonhosted.org/packages/a1/5b/7b404360cc0946686cae68ee564d859a7c57379d190c88edec18fcdc9396/bracex-3.2.4-py3-none-any.whl", hash = "sha256:82e9e738b63fca213c33211d30b0b1ca330896a1091736e78da2c1bcda93ab30", size = 14207, upload-time = "2026-11-20T13:05:35.996Z" },
 ]
 
 [[package]]
@@ -696,7 +701,7 @@ wheels = [
 
 [[package]]
 name = "checkmk-ansible-collection"
-version = "8.6.0"
+version = "8.6.1"
 source = { virtual = "." }
 dependencies = [
     { name = "ansible-lint" },
@@ -716,11 +721,11 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ansible-lint", specifier = "==26.10.1" },
-    { name = "antsibull-changelog", specifier = "==0.35.2" },
+    { name = "ansible-lint", specifier = "==26.11.0" },
+    { name = "antsibull-changelog", specifier = "==0.37.0" },
     { name = "antsibull-docs", specifier = "==2.28.0" },
-    { name = "molecule", specifier = "==26.10.0" },
-    { name = "molecule-plugins", extras = ["podman"], specifier = "==26.10.12" },
+    { name = "molecule", specifier = "==26.11.0" },
+    { name = "molecule-plugins", extras = ["podman"], specifier = "==26.11.0" },
     { name = "pywinrm", specifier = "==0.5.0" },
     { name = "yamllint", specifier = "==1.38.0" },
 ]
@@ -928,6 +933,15 @@ wheels = [
 ]
 
 [[package]]
+name = "graphemeu"
+version = "0.11.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/63/f6/6a1f04e839f9200402bdae9dc9c47ffc481082d530599e034d74452a1603/graphemeu-0.11.0.tar.gz", hash = "sha256:d03e0f625dcf8c6ff81e52d85bacad3f1ecf66c54df27a2dbd0544a0d02903d4", size = 373543, upload-time = "2026-09-22T06:45:59.535Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/61/ec/69a36a4a669e968088448f69f10b2333e3218d0ebec043a6064b6af5f3e8/graphemeu-0.11.0-py3-none-any.whl", hash = "sha256:fd52b7e88ccc8d7523466be6694486eb14ae91b1cef4bb5aae37339543d09237", size = 23175, upload-time = "2026-09-22T06:45:58.324Z" },
+]
+
+[[package]]
 name = "idna"
 version = "3.20"
 source = { registry = "https://pypi.org/simple" }
@@ -1109,7 +1123,7 @@ wheels = [
 
 [[package]]
 name = "molecule"
-version = "26.10.0"
+version = "26.11.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansible-compat" },
@@ -1124,21 +1138,21 @@ dependencies = [
     { name = "rich" },
     { name = "wcmatch" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ea/86/6f3b9af840bea4296746db9ebfe6809f7848bb68e0dac7ac639879b72d6a/molecule-26.10.0.tar.gz", hash = "sha256:32533aaba78c29eed80bcaab5d03ff63fe48b8f43071cf77953f391e0732d439", size = 4753214, upload-time = "2026-10-12T09:11:19.381Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/29/40/126b3198761054132f2ee59f89224428e7a10208b395d985d012c8b15d37/molecule-26.11.0.tar.gz", hash = "sha256:706bb3d9a34e1531cfe1cda294974aad4ccba70af3ecb2d434266e0df73b0c09", size = 4734709, upload-time = "2026-11-05T08:52:49.341Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6e/da/7bef0163484b9dc1bdce6883eb4898aebaf8e559cbea0df7db065e308e9f/molecule-26.10.0-py3-none-any.whl", hash = "sha256:deb351b11f1b329ae3b3c856d5b1c1d9a9d8f8d40ba717c77e54b1778b4557d2", size = 163735, upload-time = "2026-10-12T09:11:17.85Z" },
+    { url = "https://files.pythonhosted.org/packages/82/3a/8b36cd2a705f03e0cf506dbe3bf77c813588d41aae60e23e697fe821a484/molecule-26.11.0-py3-none-any.whl", hash = "sha256:5e48f66e97ce03ba1e9cfdf4a3667db499e960543c91bb62f530c6cd6337dd9b", size = 163665, upload-time = "2026-11-05T08:52:47.333Z" },
 ]
 
 [[package]]
 name = "molecule-plugins"
-version = "26.10.12"
+version = "26.11.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "molecule" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9d/a9/0e69e39a9e65a673b0d5f4fc1ea810a2f6fab671162b21b157a0cf124f71/molecule_plugins-26.10.12.tar.gz", hash = "sha256:03f79df9f7d6d6107ad9507f6c58724bbd18c21afb6f020fc532361b343ea333", size = 276741, upload-time = "2026-10-12T21:47:46.334Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bd/9e/8d3e3e747b68637f76375d9ed1038341f3cc798bab7893f2d87009cc54b4/molecule_plugins-26.11.0.tar.gz", hash = "sha256:194be2c43d950545cc699ab19f1a55b26853809e6e8c855ea1a42edacf5c7ee7", size = 278341, upload-time = "2026-11-02T09:50:26.07Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/07/79/192c2de4e0d25472182d45ca84bbe4eb9c646396f212c616554c71aec51d/molecule_plugins-26.10.12-py3-none-any.whl", hash = "sha256:a618b60016eac397d8e279eeb5c494a9cee6d33103dbe5222891df81657759f1", size = 88940, upload-time = "2026-10-12T21:47:44.832Z" },
+    { url = "https://files.pythonhosted.org/packages/21/ca/51af9c76e4b61420f8e7e02d8d5e1991e3853acfdeac1a1a2a9a9d446511/molecule_plugins-26.11.0-py3-none-any.whl", hash = "sha256:513808288b7027c465b124e66a2a31002c7c907b2fea9002f63ee90bb2d0ef84", size = 89609, upload-time = "2026-11-02T09:50:24.34Z" },
 ]
 
 [[package]]
@@ -2074,14 +2088,14 @@ wheels = [
 
 [[package]]
 name = "wcmatch"
-version = "11.0.1"
+version = "11.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bracex" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/57/43/30e407989e313677dbb9d5f045f966549a7254834571e342eaa4b55cc67b/wcmatch-11.0.1.tar.gz", hash = "sha256:1ea2b4fa678b8ca268253798d5963935df39132d47c3e241c0a0732224005e7d", size = 144662, upload-time = "2026-08-14T15:20:40.477Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bd/07/b7a9162a804bc0f7d03fe84c93e374d3e1c4d828043d5f9b797f7d4e30e0/wcmatch-11.2.tar.gz", hash = "sha256:1605bde546fbde4c063628c7d89eda486909fd4337e51d73a873987fbcb2554c", size = 134939, upload-time = "2026-10-22T00:37:57.622Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ce/77/7a02b0f05b3ffcdbef9719ce3ee0b508d6a29b58e95299f1580055671db3/wcmatch-11.0.1-py3-none-any.whl", hash = "sha256:fd149ecddb9f0a88ea780017d6dde17c994e494e7f7303d4e3c9d6251f978f4b", size = 43449, upload-time = "2026-08-14T15:20:39.379Z" },
+    { url = "https://files.pythonhosted.org/packages/34/96/b6cebd4bd75320743a291fed494c79f07c01b58fa9b187d12aeb5110f002/wcmatch-11.2-py3-none-any.whl", hash = "sha256:952bab83c75c233836007a69550a3a8753cf06964c1eb3b84ff11ad5bff1c272", size = 44361, upload-time = "2026-10-22T00:37:56.293Z" },
 ]
 
 [[package]]
