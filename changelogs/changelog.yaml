@@ -1951,3 +1951,5 @@ releases:
     - agent.yml
     - module_return_alignment.yml
     release_date: '2026-10-20'
+  8.6.1:
+    release_date: '2026-11-23'

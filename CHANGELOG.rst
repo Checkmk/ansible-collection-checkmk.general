@@ -4,6 +4,9 @@ checkmk.general Release Notes
 
 .. contents:: Topics
 
+v8.6.1
+======
+
 v8.6.0
 ======
 
